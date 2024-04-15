@@ -224,8 +224,7 @@ LOGGING = {
 }
 
 CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080', 'http://localhost', 'https://demo2.drdroid.io',
-                        'https://app.drdroid.io', 'https://sandbox.drdroid.io']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080', 'http://localhost']
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
@@ -274,7 +273,7 @@ EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CELERY_EMAIL_TASK_CONFIG = {
     'queue': 'notification',
-    'rate_limit': '50/m',  # * CELERY_EMAIL_CHUNK_SIZE (default: 10)
+    'rate_limit': '50/m',
 }
 
 
