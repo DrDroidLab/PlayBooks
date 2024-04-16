@@ -10,7 +10,8 @@ from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.utils import current_epoch_timestamp
 from protos.base_pb2 import Meta, TimeRange
-from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse
+from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
+    RunPlaybookStepResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult
 
 
@@ -31,3 +32,25 @@ def task_run(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTaskRe
                                            error=StringValue(value=str(e))))
     return RunPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                    task_execution_result=task_execution_result)
+
+
+@web_api(RunPlaybookStepRequest)
+def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepResponse, HttpResponse]:
+    account: Account = get_request_account()
+    step = request_message.playbook_step
+    tasks = step.tasks
+    task_execution_results = []
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    if not time_range.time_lt or not time_range.time_geq:
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    for task in tasks:
+        try:
+            task_result = execute_task(account.id, time_range, task)
+            task_execution_results.append(task_result)
+        except Exception as e:
+            task_execution_results.append(PlaybookTaskExecutionResult(error=StringValue(value=str(e))))
+
+    return RunPlaybookStepResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True), name=step.name,
+                                   description=step.description, task_execution_results=task_execution_results)

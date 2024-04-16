@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from google.protobuf.wrappers_pb2 import BoolValue
 
 from accounts.models import get_request_account, Account, User, get_request_user
+from connectors.assets.utils.playbooks_utils import get_playbooks_sources_options
 from connectors.crud.connectors_crud import get_db_connectors, create_connector, get_all_available_connectors, \
     get_all_request_connectors, get_connector_keys_options, get_db_connector_keys
 from connectors.crud.connectors_update_processor import connector_update_processor
@@ -13,7 +14,8 @@ from playbooks.utils.decorators import web_api
 from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
-    GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse
+    GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
+    GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorType
 
 
@@ -112,3 +114,12 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
     connector_key_protos = list(x.get_proto for x in connector_keys)
     return GetConnectorKeysResponse(success=BoolValue(value=True), connector=connector.proto,
                                     connector_keys=connector_key_protos)
+
+
+@web_api(GetConnectorPlaybookSourceOptionsRequest)
+def playbooks_sources_options(request_message: GetConnectorPlaybookSourceOptionsRequest) -> \
+        Union[GetConnectorPlaybookSourceOptionsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    account_active_connector_types = get_playbooks_sources_options(account)
+    return GetConnectorPlaybookSourceOptionsResponse(success=BoolValue(value=True),
+                                                     active_account_connectors=account_active_connector_types)

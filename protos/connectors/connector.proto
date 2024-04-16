@@ -235,3 +235,12 @@ message UpdateConnectorOp {
     UpdateConnectorKeys update_connector_keys = 4;
   }
 }
+
+message AccountActiveConnectorModelTypes {
+  message ConnectorMetadataModelTypeMap {
+    ConnectorMetadataModelType model_type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+  ConnectorType connector_type = 1;
+  repeated ConnectorMetadataModelTypeMap model_types_map = 2;
+}

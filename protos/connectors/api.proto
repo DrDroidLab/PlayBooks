@@ -58,3 +58,13 @@ message GetConnectorKeysResponse {
   Connector connector = 3;
   repeated ConnectorKey connector_keys = 4;
 }
+
+message GetConnectorPlaybookSourceOptionsRequest {
+  Meta meta = 1;
+}
+
+message GetConnectorPlaybookSourceOptionsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  repeated AccountActiveConnectorModelTypes active_account_connectors = 3;
+}

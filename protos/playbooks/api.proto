@@ -17,3 +17,17 @@ message RunPlaybookTaskResponse {
   Message message = 3;
   PlaybookTaskExecutionResult task_execution_result = 4;
 }
+
+message RunPlaybookStepRequest {
+  Meta meta = 1;
+  PlaybookStepDefinition playbook_step = 2;
+}
+
+message RunPlaybookStepResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue name = 4;
+  google.protobuf.StringValue description = 5;
+  repeated PlaybookTaskExecutionResult task_execution_results = 6;
+}

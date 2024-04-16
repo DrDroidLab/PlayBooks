@@ -16,7 +16,7 @@ from protos import base_pb2 as protos_dot_base__pb2
 from protos.playbooks import playbook_pb2 as protos_dot_playbooks_dot_playbook__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResultb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"u\n\x16RunPlaybookStepRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12?\n\rplaybook_step\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookStepDefinition\"\xb2\x02\n\x17RunPlaybookStepResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12*\n\x04name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\x16task_execution_results\x18\x06 \x03(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResultb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.api_pb2', globals())
@@ -27,4 +27,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _RUNPLAYBOOKTASKREQUEST._serialized_end=261
   _RUNPLAYBOOKTASKRESPONSE._serialized_start=264
   _RUNPLAYBOOKTASKRESPONSE._serialized_end=474
+  _RUNPLAYBOOKSTEPREQUEST._serialized_start=476
+  _RUNPLAYBOOKSTEPREQUEST._serialized_end=593
+  _RUNPLAYBOOKSTEPRESPONSE._serialized_start=596
+  _RUNPLAYBOOKSTEPRESPONSE._serialized_end=902
 # @@protoc_insertion_point(module_scope)
