@@ -150,7 +150,7 @@ def get_connector_keys_options(connector_type):
 
 
 def get_db_connectors(account: Account, connector_id=None, connector_name=None, connector_type=None,
-                      is_active=None):
+                      connector_type_list=None, is_active=None):
     filters = {}
     if connector_id:
         filters['id'] = connector_id
@@ -160,7 +160,9 @@ def get_db_connectors(account: Account, connector_id=None, connector_name=None, 
         filters['name'] = connector_name
     if connector_type:
         filters['connector_type'] = connector_type
-    if not connector_type:
+    if connector_type_list:
+        filters['connector_type__in'] = connector_type_list
+    if not connector_type and not connector_type_list:
         filters['connector_type__in'] = integrations_connector_type_connector_keys_map.keys()
     try:
         return account.connector_set.filter(**filters)

@@ -42,6 +42,7 @@ LOCAL_APPS = [
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
     'management.apps.ManagementConfig',
+    'executor.apps.ExecutorConfig',
 ]
 
 THIRD_PARTY_APPS = [

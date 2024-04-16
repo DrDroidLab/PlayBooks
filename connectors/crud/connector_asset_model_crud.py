@@ -14,12 +14,14 @@ class ConnectorAssetModelCrudException(ValueError):
 
 def get_connector_metadata_models(account: Account, model_uid: str = None,
                                   connector_type: ConnectorTypeProto = None,
-                                  model_type: ConnectorMetadataModelTypeProto = None, is_active=True):
+                                  model_type: ConnectorMetadataModelTypeProto = None, model_types=None, is_active=True):
     filters = {}
     if connector_type:
         filters['connector_type'] = connector_type
     if model_type:
         filters['model_type'] = model_type
+    if model_types:
+        filters['model_type__in'] = model_types
     if is_active is not None:
         filters['is_active'] = is_active
     if model_uid:

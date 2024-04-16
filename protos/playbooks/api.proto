@@ -1,0 +1,33 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+import "protos/playbooks/playbook.proto";
+
+message RunPlaybookTaskRequest {
+  Meta meta = 1;
+  PlaybookTaskDefinition playbook_task_definition = 2;
+}
+
+message RunPlaybookTaskResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookTaskExecutionResult task_execution_result = 4;
+}
+
+message RunPlaybookStepRequest {
+  Meta meta = 1;
+  PlaybookStepDefinition playbook_step = 2;
+}
+
+message RunPlaybookStepResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue name = 4;
+  google.protobuf.StringValue description = 5;
+  repeated PlaybookTaskExecutionResult task_execution_results = 6;
+}

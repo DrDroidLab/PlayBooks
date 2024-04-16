@@ -13,15 +13,6 @@ import "protos/connectors/assets/postgres_asset.proto";
 import "protos/connectors/assets/eks_asset.proto";
 
 
-message AccountActiveConnectorModelTypes {
-  message ConnectorMetadataModelTypeMap {
-    ConnectorMetadataModelType model_type = 1;
-    google.protobuf.StringValue display_name = 2;
-  }
-  ConnectorType connector_type = 1;
-  repeated ConnectorMetadataModelTypeMap model_types_map = 2;
-}
-
 message AccountConnectorAssetsModelOptions {
   message ModelTypeOption {
     ConnectorMetadataModelType model_type = 1;

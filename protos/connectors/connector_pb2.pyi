@@ -544,3 +544,40 @@ class UpdateConnectorOp(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_connector_name", "update_connector_status", "update_connector_keys"] | None: ...
 
 global___UpdateConnectorOp = UpdateConnectorOp
+
+@typing_extensions.final
+class AccountActiveConnectorModelTypes(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class ConnectorMetadataModelTypeMap(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        MODEL_TYPE_FIELD_NUMBER: builtins.int
+        DISPLAY_NAME_FIELD_NUMBER: builtins.int
+        model_type: global___ConnectorMetadataModelType.ValueType
+        @property
+        def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            model_type: global___ConnectorMetadataModelType.ValueType = ...,
+            display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["display_name", b"display_name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["display_name", b"display_name", "model_type", b"model_type"]) -> None: ...
+
+    CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+    MODEL_TYPES_MAP_FIELD_NUMBER: builtins.int
+    connector_type: global___ConnectorType.ValueType
+    @property
+    def model_types_map(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap]: ...
+    def __init__(
+        self,
+        *,
+        connector_type: global___ConnectorType.ValueType = ...,
+        model_types_map: collections.abc.Iterable[global___AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "model_types_map", b"model_types_map"]) -> None: ...
+
+global___AccountActiveConnectorModelTypes = AccountActiveConnectorModelTypes

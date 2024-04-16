@@ -236,3 +236,45 @@ class GetConnectorKeysResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["connector", b"connector", "connector_keys", b"connector_keys", "message", b"message", "success", b"success"]) -> None: ...
 
 global___GetConnectorKeysResponse = GetConnectorKeysResponse
+
+@typing_extensions.final
+class GetConnectorPlaybookSourceOptionsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> None: ...
+
+global___GetConnectorPlaybookSourceOptionsRequest = GetConnectorPlaybookSourceOptionsRequest
+
+@typing_extensions.final
+class GetConnectorPlaybookSourceOptionsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    ACTIVE_ACCOUNT_CONNECTORS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def active_account_connectors(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.connectors.connector_pb2.AccountActiveConnectorModelTypes]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        active_account_connectors: collections.abc.Iterable[protos.connectors.connector_pb2.AccountActiveConnectorModelTypes] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["active_account_connectors", b"active_account_connectors", "meta", b"meta", "success", b"success"]) -> None: ...
+
+global___GetConnectorPlaybookSourceOptionsResponse = GetConnectorPlaybookSourceOptionsResponse
