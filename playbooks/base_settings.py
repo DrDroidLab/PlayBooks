@@ -41,6 +41,7 @@ LOCAL_APPS = [
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
+    'management.apps.ManagementConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -241,7 +242,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'  # set to 'mandatory' to require email verification
 ACCOUNT_EMAIL_VERIFICATION_URL = '/confirm-email/{}/'
 ACCOUNT_USER_DISPLAY = 'accounts.authentication.user_display'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'

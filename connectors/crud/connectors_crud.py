@@ -14,10 +14,13 @@ from integrations_api_processors.grafana_api_processor import GrafanaApiProcesso
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
+from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
+from management.models import TaskRun, PeriodicTaskStatus
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
     ConnectorType
-from playbooks.utils.utils import current_milli_time
+from playbooks.utils.utils import current_milli_time, current_datetime
+from connectors.tasks import populate_connector_metadata
 from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -146,40 +149,6 @@ def get_connector_keys_options(connector_type):
     return connector_key_option_protos
 
 
-# def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto, connector_keys: [ConnectorKeyProto]):
-#     from connectors.tasks import populate_connector_metadata
-#
-#     if not connector or not connector_keys or not connector.id or not connector.id.value or not connector.type:
-#         capture_exception(
-#             Exception('Failed to trigger Connector Metadata Fetch Task Invalid Connector or Connector Keys'))
-#     connector_id = connector.id.value
-#     connector_type: ConnectorType = connector.type
-#     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
-#     if credentials_dict:
-#         saved_task = get_or_create_task(populate_connector_metadata.__name__, account.id, connector_id,
-#                                         connector_type, credentials_dict)
-#         if saved_task:
-#             if not check_scheduled_or_running_task_run_for_task(saved_task):
-#                 current_date_time = current_datetime()
-#                 task = populate_connector_metadata.delay(account.id, connector_id, connector_type, credentials_dict)
-#                 try:
-#                     task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
-#                                                       status=PeriodicTaskStatus.SCHEDULED,
-#                                                       account_id=account.id,
-#                                                       scheduled_at=current_date_time)
-#                 except Exception as e:
-#                     capture_exception(e)
-#                     print(f"Exception occurred while saving task run for account: {account.id}, "
-#                           f"connector_type: "
-#                           f"{integrations_connector_type_display_name_map.get(connector_type, connector_type)} "
-#                           f"with error: {e}")
-#     else:
-#         capture_exception(
-#             Exception(
-#                 f'Failed to trigger Connector Metadata Fetch Task Invalid Credentials for Connector: {connector_id}'))
-#     return
-
-
 def get_db_connectors(account: Account, connector_id=None, connector_name=None, connector_type=None,
                       is_active=None):
     filters = {}
@@ -279,7 +248,7 @@ def create_connector(account: Account, created_by, connector_proto: ConnectorPro
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'
-    # trigger_connector_metadata_fetch(account, db_connector.proto, connector_keys)
+    trigger_connector_metadata_fetch(account, db_connector.proto, connector_keys)
     return db_connector, None
 
 
@@ -343,3 +312,32 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                       f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)} ' \
                       f'with error: {str(e)}'
     return True, 'Source Connection Successful'
+
+
+def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto, connector_keys: [ConnectorKeyProto]):
+    if not connector or not connector_keys or not connector.id or not connector.id.value or not connector.type:
+        logger.error(f'Invalid Connector Config for Metadata Fetch')
+        return
+    connector_id = connector.id.value
+    connector_type: ConnectorType = connector.type
+    credentials_dict = generate_credentials_dict(connector_type, connector_keys)
+    if credentials_dict:
+        saved_task = get_or_create_task(populate_connector_metadata.__name__, account.id, connector_id,
+                                        connector_type, credentials_dict)
+        if saved_task:
+            if not check_scheduled_or_running_task_run_for_task(saved_task):
+                current_date_time = current_datetime()
+                task = populate_connector_metadata.delay(account.id, connector_id, connector_type, credentials_dict)
+                try:
+                    task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
+                                                      status=PeriodicTaskStatus.SCHEDULED,
+                                                      account_id=account.id,
+                                                      scheduled_at=current_date_time)
+                except Exception as e:
+                    logger.error(f"Exception occurred while saving task run for account: {account.id}, "
+                                 f"connector_type: "
+                                 f"{integrations_connector_type_display_name_map.get(connector_type, connector_type)} "
+                                 f"with error: {e}")
+    else:
+        logger.error(f'Invalid Credentials for Connector: {connector_id}')
+    return
