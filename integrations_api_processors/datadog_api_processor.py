@@ -30,7 +30,7 @@ from datadog_api_client.v2.model.timeseries_formula_request_queries import Times
 from datadog_api_client.v2.model.timeseries_formula_request_type import TimeseriesFormulaRequestType
 
 from protos.base_pb2 import TimeRange
-from protos.event.connectors_pb2 import ConnectorType as ConnectorTypeProto
+from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto
 
 logger = logging.getLogger(__name__)
 
