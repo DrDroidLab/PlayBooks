@@ -16,7 +16,7 @@ from protos import base_pb2 as protos_dot_base__pb2
 from protos.playbooks import playbook_pb2 as protos_dot_playbooks_dot_playbook__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"u\n\x16RunPlaybookStepRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12?\n\rplaybook_step\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookStepDefinition\"\xb2\x02\n\x17RunPlaybookStepResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12*\n\x04name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\x16task_execution_results\x18\x06 \x03(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResultb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"u\n\x16RunPlaybookStepRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12?\n\rplaybook_step\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookStepDefinition\"\xb2\x02\n\x17RunPlaybookStepResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12*\n\x04name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\x16task_execution_results\x18\x06 \x03(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"G\n\x13GetPlaybooksRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cplaybook_ids\x18\x02 \x03(\x04\"a\n\x14GetPlaybooksResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12-\n\tplaybooks\x18\x02 \x03(\x0b\x32\x1a.protos.playbooks.Playbook\"S\n\x15\x43reatePlaybookRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x08playbook\x18\x02 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x95\x01\n\x16\x43reatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12,\n\x08playbook\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x8b\x01\n\x15UpdatePlaybookRequest\x12\x31\n\x0bplaybook_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x13update_playbook_ops\x18\x02 \x03(\x0b\x32\".protos.playbooks.UpdatePlaybookOp\"g\n\x16UpdatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Messageb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.api_pb2', globals())
@@ -31,4 +31,16 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _RUNPLAYBOOKSTEPREQUEST._serialized_end=593
   _RUNPLAYBOOKSTEPRESPONSE._serialized_start=596
   _RUNPLAYBOOKSTEPRESPONSE._serialized_end=902
+  _GETPLAYBOOKSREQUEST._serialized_start=904
+  _GETPLAYBOOKSREQUEST._serialized_end=975
+  _GETPLAYBOOKSRESPONSE._serialized_start=977
+  _GETPLAYBOOKSRESPONSE._serialized_end=1074
+  _CREATEPLAYBOOKREQUEST._serialized_start=1076
+  _CREATEPLAYBOOKREQUEST._serialized_end=1159
+  _CREATEPLAYBOOKRESPONSE._serialized_start=1162
+  _CREATEPLAYBOOKRESPONSE._serialized_end=1311
+  _UPDATEPLAYBOOKREQUEST._serialized_start=1314
+  _UPDATEPLAYBOOKREQUEST._serialized_end=1453
+  _UPDATEPLAYBOOKRESPONSE._serialized_start=1455
+  _UPDATEPLAYBOOKRESPONSE._serialized_end=1558
 # @@protoc_insertion_point(module_scope)

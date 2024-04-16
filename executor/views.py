@@ -1,18 +1,26 @@
+import logging
 from typing import Union
 
+from django.db.models import QuerySet
 from django.http import HttpResponse
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
-from accounts.models import Account, get_request_account
+from accounts.models import Account, get_request_account, get_request_user
+from executor.crud.playbooks_crud import create_db_playbook
+from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.task_executor import execute_task
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
+from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp
-from protos.base_pb2 import Meta, TimeRange
+from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
-    RunPlaybookStepResponse
-from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult
+    RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
+    UpdatePlaybookRequest, UpdatePlaybookResponse
+from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
+
+logger = logging.getLogger(__name__)
 
 
 @web_api(RunPlaybookTaskRequest)
@@ -54,3 +62,66 @@ def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepRe
 
     return RunPlaybookStepResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True), name=step.name,
                                    description=step.description, task_execution_results=task_execution_results)
+
+
+@web_api(GetPlaybooksRequest)
+def playbooks_get(request_message: GetPlaybooksRequest) -> Union[GetPlaybooksResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    show_inactive = meta.show_inactive
+    page: Page = meta.page
+    list_all = True
+
+    qs: QuerySet = account.playbook_set.all()
+    if request_message.playbook_ids:
+        qs = qs.filter(id__in=request_message.playbook_ids)
+        list_all = False
+    elif not show_inactive or not show_inactive.value:
+        qs = qs.filter(is_active=True, is_generated=False)
+
+    total_count = qs.count()
+    qs = qs.order_by('-created_at')
+    qs = filter_page(qs, page)
+
+    playbooks_list = list(pb.proto_partial for pb in qs)
+    if not list_all:
+        playbooks_list = list(pb.proto for pb in qs)
+
+    return GetPlaybooksResponse(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
+
+
+@web_api(CreatePlaybookRequest)
+def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    playbook: PlaybookProto = request_message.playbook
+    if not playbook or not playbook.name:
+        return CreatePlaybookResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Missing name/playbook"))
+    playbook, error = create_db_playbook(account, user, playbook)
+    if error:
+        return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
+    return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
+
+
+@web_api(UpdatePlaybookRequest)
+def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlaybookResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    playbook_id = request_message.playbook_id.value
+    update_playbook_ops = request_message.update_playbook_ops
+    if not playbook_id or not update_playbook_ops:
+        return UpdatePlaybookResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Missing playbook_id/ops"))
+    account_playbook = account.playbook_set.get(id=playbook_id)
+    if account_playbook.created_by != user.email:
+        return UpdatePlaybookResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request",
+                                                      description="Unauthorized Action for user"))
+    try:
+        playbooks_update_processor.update(account_playbook, update_playbook_ops)
+    except Exception as e:
+        logger.error(f"Error updating playbook: {e}")
+        return UpdatePlaybookResponse(success=BoolValue(value=False),
+                                      message=Message(title="Error", description=str(e)))
+    return UpdatePlaybookResponse(success=BoolValue(value=True))
