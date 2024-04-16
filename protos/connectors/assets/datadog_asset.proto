@@ -1,0 +1,47 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message DataDogAsset {
+  uint64 id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  string uid = 4;
+  uint64 last_updated = 5;
+  string metadata = 6;
+}
+
+message DatadogServiceAssetModel {
+  message Metric {
+    google.protobuf.StringValue metric_family = 1;
+    google.protobuf.StringValue metric = 2;
+  }
+  google.protobuf.StringValue service_name = 1;
+  repeated string environments = 2;
+  repeated Metric metrics = 3;
+}
+
+message DatadogServiceAssetOptions {
+  message DatadogServiceAssetOption {
+    google.protobuf.StringValue name = 1;
+    repeated string metric_families = 2;
+  }
+  repeated DatadogServiceAssetOption services = 1;
+}
+
+message DatadogAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    DatadogServiceAssetModel datadog_service = 5;
+  }
+}
+
+message DatadogAssets {
+  repeated DatadogAssetModel assets = 1;
+}

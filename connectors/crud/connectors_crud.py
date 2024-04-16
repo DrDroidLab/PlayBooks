@@ -200,23 +200,26 @@ def get_db_connectors(account: Account, connector_id=None, connector_name=None, 
         return None
 
 
-def get_db_connector_keys(account: Account, connector_id):
+def get_db_connector_keys(account: Account, connector_id, key_type=None):
     if not connector_id:
         return None, 'Invalid Connector ID'
     active_connector = get_db_connectors(account, connector_id=connector_id, is_active=True)
     if not active_connector.exists():
         return None, 'Active Connector not found for given ID'
     connector_type = active_connector.first().connector_type
-    connector_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
-    all_key_types = []
-    for ckt in connector_key_types:
-        all_key_types.extend(ckt)
-    all_key_types = list(set(all_key_types))
+    if not key_type:
+        connector_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
+        all_key_types = []
+        for ckt in connector_key_types:
+            all_key_types.extend(ckt)
+        all_key_types = list(set(all_key_types))
+    else:
+        all_key_types = [key_type]
     try:
-        return account.connectorkey_set.filter(connector_id=connector_id, key_type__in=all_key_types), ''
+        return account.connectorkey_set.filter(connector_id=connector_id, key_type__in=all_key_types)
     except Exception as e:
         logger.error(f'Error fetching Connector Keys: {str(e)}')
-        return None, f'Error fetching Connector Keys: {str(e)}'
+        raise ConnectorCrudException(f'Error fetching Connector Keys: {str(e)}')
 
 
 def create_connector(account: Account, created_by, connector_proto: ConnectorProto,

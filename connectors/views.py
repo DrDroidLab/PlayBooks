@@ -105,9 +105,10 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
                                         message=Message(title='Active Connector not found'))
     else:
         connector = connector.first()
-    connector_keys, err = get_db_connector_keys(account, connector_id)
-    if err:
-        return GetConnectorKeysResponse(success=BoolValue(value=False), message=Message(title=err))
+    try:
+        connector_keys = get_db_connector_keys(account, connector_id)
+    except Exception as e:
+        return GetConnectorKeysResponse(success=BoolValue(value=False), message=Message(title=str(e)))
     connector_key_protos = list(x.get_proto for x in connector_keys)
     return GetConnectorKeysResponse(success=BoolValue(value=True), connector=connector.proto,
                                     connector_keys=connector_key_protos)

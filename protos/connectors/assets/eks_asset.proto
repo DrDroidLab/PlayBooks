@@ -1,0 +1,51 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message Command {
+  google.protobuf.StringValue type = 1;
+  google.protobuf.StringValue description = 2;
+}
+
+message Namespace {
+  google.protobuf.StringValue name = 1;
+  repeated string pods = 2;
+}
+
+message Cluster {
+  google.protobuf.StringValue name = 1;
+  repeated Namespace namespaces = 2;
+}
+
+message RegionCluster {
+  google.protobuf.StringValue region = 1;
+  repeated Cluster clusters = 2;
+}
+
+message EksClusterAssetModel {
+  google.protobuf.StringValue region = 1;
+  repeated Cluster clusters = 2;
+  repeated Command commands = 3;
+}
+
+message EksClusterAssetOptions {
+  repeated RegionCluster regions = 1;
+}
+
+
+message EksAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    EksClusterAssetModel eks_cluster = 5;
+  }
+}
+
+message EksAssets {
+  repeated EksAssetModel assets = 1;
+}

@@ -1,0 +1,35 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message SlackChannelAssetModel {
+  message ChannelMetadata {
+    google.protobuf.BoolValue is_auto_rca_enabled = 1;
+  }
+  google.protobuf.StringValue channel_id = 1;
+  google.protobuf.StringValue channel_name = 2;
+  ChannelMetadata metadata = 3;
+}
+
+message SlackChannelAssetOptions {
+  repeated string channel_ids = 1;
+}
+
+
+message SlackAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    SlackChannelAssetModel slack_channel = 5;
+  }
+}
+
+message SlackAssets {
+  repeated SlackAssetModel assets = 1;
+}

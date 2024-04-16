@@ -38,8 +38,9 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
-    'connectors.apps.ConnectorsConfig',
     'playbooks.apps.PlaybooksConfig',
+    'connectors.apps.ConnectorsConfig',
+    'connectors.assets.apps.AssetsManagerConfig',
 ]
 
 THIRD_PARTY_APPS = [

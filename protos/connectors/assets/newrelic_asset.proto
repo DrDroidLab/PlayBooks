@@ -1,0 +1,81 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message NewRelicAsset {
+  uint64 id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  string uid = 4;
+  uint64 last_updated = 5;
+  string metadata = 6;
+}
+
+message NewRelicApplicationEntityAssetModel {
+  message GoldenMetric {
+    google.protobuf.StringValue golden_metric_name = 1;
+    google.protobuf.StringValue golden_metric_unit = 2;
+    google.protobuf.StringValue golden_metric_nrql_expression = 3;
+  }
+
+  google.protobuf.StringValue application_entity_guid = 1;
+  google.protobuf.StringValue application_name = 2;
+  repeated GoldenMetric golden_metrics = 3;
+}
+
+message NewRelicApplicationEntityAssetOptions {
+  repeated string application_names = 1;
+}
+
+
+message NewRelicDashboardEntityAssetModel {
+  message PageWidget {
+    google.protobuf.StringValue widget_id = 1;
+    google.protobuf.StringValue widget_title = 2;
+    google.protobuf.StringValue widget_type = 3;
+    google.protobuf.StringValue widget_nrql_expression = 4;
+  }
+
+  message DashboardPage {
+    google.protobuf.StringValue page_guid = 1;
+    google.protobuf.StringValue page_name = 2;
+    repeated PageWidget widgets = 3;
+  }
+
+  google.protobuf.StringValue dashboard_guid = 1;
+  google.protobuf.StringValue dashboard_name = 2;
+  repeated DashboardPage pages = 3;
+}
+
+message NewRelicDashboardEntityAssetOptions {
+  message DashboardOptions {
+    message DashboardPageOptions {
+      google.protobuf.StringValue page_guid = 1;
+      google.protobuf.StringValue page_name = 2;
+    }
+    google.protobuf.StringValue dashboard_guid = 1;
+    google.protobuf.StringValue dashboard_name = 2;
+    repeated DashboardPageOptions page_options = 4;
+  }
+  repeated DashboardOptions dashboards = 1;
+}
+
+
+message NewRelicAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    NewRelicApplicationEntityAssetModel new_relic_entity_application = 5;
+    NewRelicDashboardEntityAssetModel new_relic_entity_dashboard = 6;
+  }
+}
+
+message NewRelicAssets {
+  repeated NewRelicAssetModel assets = 1;
+}

@@ -1,0 +1,71 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+import "protos/connectors/assets/cloudwatch_asset.proto";
+import "protos/connectors/assets/grafana_asset.proto";
+import "protos/connectors/assets/clickhouse_asset.proto";
+import "protos/connectors/assets/slack_asset.proto";
+import "protos/connectors/assets/newrelic_asset.proto";
+import "protos/connectors/assets/datadog_asset.proto";
+import "protos/connectors/assets/postgres_asset.proto";
+import "protos/connectors/assets/eks_asset.proto";
+
+
+message AccountActiveConnectorModelTypes {
+  message ConnectorMetadataModelTypeMap {
+    ConnectorMetadataModelType model_type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+  ConnectorType connector_type = 1;
+  repeated ConnectorMetadataModelTypeMap model_types_map = 2;
+}
+
+message AccountConnectorAssetsModelOptions {
+  message ModelTypeOption {
+    ConnectorMetadataModelType model_type = 1;
+    oneof options {
+      CloudwatchLogGroupAssetOptions cloudwatch_log_group_model_options = 2;
+      CloudwatchMetricAssetOptions cloudwatch_metric_model_options = 3;
+      GrafanaTargetMetricPromQlAssetOptions grafana_target_metric_promql_model_options = 4;
+      ClickhouseDatabaseAssetOptions clickhouse_database_model_options = 5;
+      SlackChannelAssetOptions slack_channel_model_options = 6;
+      NewRelicApplicationEntityAssetOptions new_relic_entity_application_model_options = 7;
+      NewRelicDashboardEntityAssetOptions new_relic_entity_dashboard_model_options = 8;
+      DatadogServiceAssetOptions datadog_service_model_options = 9;
+      PostgresDatabaseAssetOptions postgres_database_model_options = 10;
+      EksClusterAssetOptions eks_cluster_model_options = 11;
+    }
+  }
+  ConnectorType connector_type = 1;
+  repeated ModelTypeOption model_types_options = 2;
+}
+
+message AccountConnectorAssets {
+  oneof assets {
+    CloudwatchAssets cloudwatch = 1;
+    GrafanaAssets grafana = 2;
+    ClickhouseAssets clickhouse = 3;
+    SlackAssets slack = 4;
+    NewRelicAssets new_relic = 5;
+    DatadogAssets datadog = 6;
+    PostgresAssets postgres = 7;
+    EksAssets eks = 8;
+  }
+}
+
+message AccountConnectorAssetsModelFilters {
+  oneof filters {
+    CloudwatchLogGroupAssetOptions cloudwatch_log_group_model_filters = 1;
+    CloudwatchMetricAssetOptions cloudwatch_metric_model_filters = 2;
+    GrafanaTargetMetricPromQlAssetOptions grafana_target_metric_promql_model_filters = 3;
+    ClickhouseDatabaseAssetOptions clickhouse_database_model_filters = 4;
+    SlackChannelAssetOptions slack_channel_model_filters = 5;
+    NewRelicApplicationEntityAssetOptions new_relic_entity_application_model_filters = 6;
+    NewRelicDashboardEntityAssetOptions new_relic_entity_dashboard_model_filters = 7;
+    DatadogServiceAssetOptions datadog_service_model_filters = 8;
+    PostgresDatabaseAssetOptions postgres_database_model_filters = 9;
+    EksClusterAssetOptions eks_cluster_model_filters = 10;
+  }
+}

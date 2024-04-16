@@ -1,0 +1,45 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+import "protos/connectors/assets/asset.proto";
+
+message GetConnectorsAssetsModelsOptionsRequest {
+  Meta meta = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType model_type = 3;
+}
+
+message GetConnectorsAssetsModelsOptionsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated AccountConnectorAssetsModelOptions asset_model_options = 4;
+}
+
+message GetConnectorsAssetsModelsRequest {
+  Meta meta = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  AccountConnectorAssetsModelFilters filters = 4;
+}
+
+message GetConnectorsAssetsModelsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated AccountConnectorAssets assets = 4;
+}
+
+message GetConnectorsAssetsModelsRefreshRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value connector_id = 2;
+}
+
+message GetConnectorsAssetsModelsRefreshResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+}

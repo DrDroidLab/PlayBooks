@@ -1,0 +1,72 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message GrafanaAsset {
+  uint64 id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  string uid = 4;
+  uint64 last_updated = 5;
+  string metadata = 6;
+}
+
+message GrafanaTargetMetricPromQlAssetModel {
+  message PromqlMetric {
+    message QueryVariableValueOptions {
+      google.protobuf.StringValue variable = 1;
+      repeated string values = 2;
+    }
+    message QueryLabelVariableMap {
+      google.protobuf.StringValue label = 1;
+      google.protobuf.StringValue variable = 2;
+    }
+    google.protobuf.StringValue target_metric_ref_id = 1;
+    google.protobuf.StringValue datasource_uid = 2;
+    google.protobuf.StringValue expression = 3;
+    repeated QueryLabelVariableMap label_variable_map = 4;
+    repeated QueryVariableValueOptions variable_values_options = 5;
+  }
+
+  message PanelPromqlMap {
+    google.protobuf.StringValue panel_id = 1;
+    google.protobuf.StringValue panel_title = 2;
+    repeated PromqlMetric promql_metrics = 3;
+  }
+
+  google.protobuf.StringValue dashboard_id = 1;
+  google.protobuf.StringValue dashboard_title = 2;
+  google.protobuf.StringValue dashboard_url = 3;
+  repeated PanelPromqlMap panel_promql_map = 4;
+}
+
+message GrafanaTargetMetricPromQlAssetOptions {
+  message GrafanaDashboardOptions {
+    message GrafanaPanelOptions {
+      google.protobuf.StringValue panel_id = 1;
+      google.protobuf.StringValue panel_title = 2;
+    }
+    google.protobuf.StringValue dashboard_id = 1;
+    google.protobuf.StringValue dashboard_title = 2;
+    google.protobuf.StringValue dashboard_url = 3;
+    repeated GrafanaPanelOptions panel_options = 4;
+  }
+  repeated GrafanaDashboardOptions dashboards = 1;
+}
+
+message GrafanaAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    GrafanaTargetMetricPromQlAssetModel grafana_target_metric_promql = 5;
+  }
+}
+
+message GrafanaAssets {
+  repeated GrafanaAssetModel assets = 1;
+}

@@ -1,0 +1,64 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message CloudwatchAsset {
+  uint64 id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+
+  string uid = 5;
+  uint64 last_updated = 6;
+
+  string metadata = 7;
+}
+
+message CloudwatchLogGroupAssetModel {
+  google.protobuf.StringValue region = 1;
+  repeated string log_groups = 2;
+}
+
+message CloudwatchLogGroupAssetOptions {
+  repeated string regions = 1;
+}
+
+
+message CloudwatchMetricAssetModel {
+  message MetricDimension {
+    google.protobuf.StringValue name = 1;
+    repeated string values = 2;
+    repeated string metrics = 3;
+  }
+
+  message RegionDimensionMap {
+    google.protobuf.StringValue region = 1;
+    repeated MetricDimension dimensions = 2;
+  }
+
+  google.protobuf.StringValue namespace = 1;
+  repeated RegionDimensionMap region_dimension_map = 2;
+}
+
+message CloudwatchMetricAssetOptions {
+  repeated string namespaces = 1;
+}
+
+
+message CloudwatchAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    CloudwatchLogGroupAssetModel cloudwatch_log_group = 5;
+    CloudwatchMetricAssetModel cloudwatch_metric = 6;
+  }
+}
+
+message CloudwatchAssets {
+  repeated CloudwatchAssetModel assets = 1;
+}
