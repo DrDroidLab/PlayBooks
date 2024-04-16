@@ -322,30 +322,31 @@ class ConnectorKey(google.protobuf.message.Message):
 
     class _KeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ConnectorKey._KeyType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN_CKT: ConnectorKey._KeyType.ValueType  # 0
+        UNKNOWN: ConnectorKey._KeyType.ValueType  # 0
         SENTRY_API_KEY: ConnectorKey._KeyType.ValueType  # 1
-        SENTRY_ORG_SLUG: ConnectorKey._KeyType.ValueType  # 2
-        DATADOG_APP_KEY: ConnectorKey._KeyType.ValueType  # 3
-        DATADOG_API_KEY: ConnectorKey._KeyType.ValueType  # 4
-        DATADOG_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 5
-        DATADOG_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 6
-        NEWRELIC_API_KEY: ConnectorKey._KeyType.ValueType  # 7
-        NEWRELIC_APP_ID: ConnectorKey._KeyType.ValueType  # 8
-        NEWRELIC_QUERY_KEY: ConnectorKey._KeyType.ValueType  # 9
-        NEWRELIC_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 10
-        SLACK_BOT_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 11
-        SLACK_CHANNEL: ConnectorKey._KeyType.ValueType  # 12
-        HONEYBADGER_USERNAME: ConnectorKey._KeyType.ValueType  # 13
-        HONEYBADGER_PASSWORD: ConnectorKey._KeyType.ValueType  # 14
-        HONEYBADGER_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 15
-        AWS_ACCESS_KEY: ConnectorKey._KeyType.ValueType  # 16
-        AWS_SECRET_KEY: ConnectorKey._KeyType.ValueType  # 17
-        AWS_REGION: ConnectorKey._KeyType.ValueType  # 18
-        EKS_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 19
-        GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 20
-        GOOGLE_CHAT_BOT_SPACES: ConnectorKey._KeyType.ValueType  # 21
-        GRAFANA_HOST: ConnectorKey._KeyType.ValueType  # 22
-        GRAFANA_API_KEY: ConnectorKey._KeyType.ValueType  # 23
+        SENTRY_ORG_SLUG: ConnectorKey._KeyType.ValueType  # 6
+        DATADOG_APP_KEY: ConnectorKey._KeyType.ValueType  # 2
+        DATADOG_API_KEY: ConnectorKey._KeyType.ValueType  # 3
+        DATADOG_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 15
+        DATADOG_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 18
+        NEWRELIC_API_KEY: ConnectorKey._KeyType.ValueType  # 4
+        NEWRELIC_APP_ID: ConnectorKey._KeyType.ValueType  # 5
+        NEWRELIC_QUERY_KEY: ConnectorKey._KeyType.ValueType  # 7
+        NEWRELIC_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 19
+        SLACK_BOT_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 8
+        SLACK_CHANNEL: ConnectorKey._KeyType.ValueType  # 9
+        HONEYBADGER_USERNAME: ConnectorKey._KeyType.ValueType  # 10
+        HONEYBADGER_PASSWORD: ConnectorKey._KeyType.ValueType  # 11
+        HONEYBADGER_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 12
+        AWS_ACCESS_KEY: ConnectorKey._KeyType.ValueType  # 13
+        AWS_SECRET_KEY: ConnectorKey._KeyType.ValueType  # 14
+        AWS_REGION: ConnectorKey._KeyType.ValueType  # 20
+        AWS_ASSUMED_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 23
+        EKS_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 40
+        GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 16
+        GOOGLE_CHAT_BOT_SPACES: ConnectorKey._KeyType.ValueType  # 17
+        GRAFANA_HOST: ConnectorKey._KeyType.ValueType  # 21
+        GRAFANA_API_KEY: ConnectorKey._KeyType.ValueType  # 22
         CLICKHOUSE_INTERFACE: ConnectorKey._KeyType.ValueType  # 24
         CLICKHOUSE_HOST: ConnectorKey._KeyType.ValueType  # 25
         CLICKHOUSE_PORT: ConnectorKey._KeyType.ValueType  # 26
@@ -358,41 +359,42 @@ class ConnectorKey(google.protobuf.message.Message):
         POSTGRES_HOST: ConnectorKey._KeyType.ValueType  # 33
         POSTGRES_USER: ConnectorKey._KeyType.ValueType  # 34
         POSTGRES_PASSWORD: ConnectorKey._KeyType.ValueType  # 35
-        POSTGRES_DATABASE: ConnectorKey._KeyType.ValueType  # 36
-        POSTGRES_PORT: ConnectorKey._KeyType.ValueType  # 37
+        POSTGRES_PORT: ConnectorKey._KeyType.ValueType  # 36
+        POSTGRES_DATABASE: ConnectorKey._KeyType.ValueType  # 37
         POSTGRES_OPTIONS: ConnectorKey._KeyType.ValueType  # 38
         DB_CONNECTION_STRING_URI: ConnectorKey._KeyType.ValueType  # 39
-        AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 40
-        AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 41
-        GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 42
-        PAGER_DUTY_API_KEY: ConnectorKey._KeyType.ValueType  # 43
-        OPS_GENIE_API_KEY: ConnectorKey._KeyType.ValueType  # 44
+        PAGER_DUTY_API_KEY: ConnectorKey._KeyType.ValueType  # 41
+        OPS_GENIE_API_KEY: ConnectorKey._KeyType.ValueType  # 42
+        AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 43
+        AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 44
+        GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
-    UNKNOWN_CKT: ConnectorKey.KeyType.ValueType  # 0
+    UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
     SENTRY_API_KEY: ConnectorKey.KeyType.ValueType  # 1
-    SENTRY_ORG_SLUG: ConnectorKey.KeyType.ValueType  # 2
-    DATADOG_APP_KEY: ConnectorKey.KeyType.ValueType  # 3
-    DATADOG_API_KEY: ConnectorKey.KeyType.ValueType  # 4
-    DATADOG_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 5
-    DATADOG_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 6
-    NEWRELIC_API_KEY: ConnectorKey.KeyType.ValueType  # 7
-    NEWRELIC_APP_ID: ConnectorKey.KeyType.ValueType  # 8
-    NEWRELIC_QUERY_KEY: ConnectorKey.KeyType.ValueType  # 9
-    NEWRELIC_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 10
-    SLACK_BOT_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 11
-    SLACK_CHANNEL: ConnectorKey.KeyType.ValueType  # 12
-    HONEYBADGER_USERNAME: ConnectorKey.KeyType.ValueType  # 13
-    HONEYBADGER_PASSWORD: ConnectorKey.KeyType.ValueType  # 14
-    HONEYBADGER_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 15
-    AWS_ACCESS_KEY: ConnectorKey.KeyType.ValueType  # 16
-    AWS_SECRET_KEY: ConnectorKey.KeyType.ValueType  # 17
-    AWS_REGION: ConnectorKey.KeyType.ValueType  # 18
-    EKS_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 19
-    GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 20
-    GOOGLE_CHAT_BOT_SPACES: ConnectorKey.KeyType.ValueType  # 21
-    GRAFANA_HOST: ConnectorKey.KeyType.ValueType  # 22
-    GRAFANA_API_KEY: ConnectorKey.KeyType.ValueType  # 23
+    SENTRY_ORG_SLUG: ConnectorKey.KeyType.ValueType  # 6
+    DATADOG_APP_KEY: ConnectorKey.KeyType.ValueType  # 2
+    DATADOG_API_KEY: ConnectorKey.KeyType.ValueType  # 3
+    DATADOG_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 15
+    DATADOG_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 18
+    NEWRELIC_API_KEY: ConnectorKey.KeyType.ValueType  # 4
+    NEWRELIC_APP_ID: ConnectorKey.KeyType.ValueType  # 5
+    NEWRELIC_QUERY_KEY: ConnectorKey.KeyType.ValueType  # 7
+    NEWRELIC_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 19
+    SLACK_BOT_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 8
+    SLACK_CHANNEL: ConnectorKey.KeyType.ValueType  # 9
+    HONEYBADGER_USERNAME: ConnectorKey.KeyType.ValueType  # 10
+    HONEYBADGER_PASSWORD: ConnectorKey.KeyType.ValueType  # 11
+    HONEYBADGER_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 12
+    AWS_ACCESS_KEY: ConnectorKey.KeyType.ValueType  # 13
+    AWS_SECRET_KEY: ConnectorKey.KeyType.ValueType  # 14
+    AWS_REGION: ConnectorKey.KeyType.ValueType  # 20
+    AWS_ASSUMED_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 23
+    EKS_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 40
+    GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 16
+    GOOGLE_CHAT_BOT_SPACES: ConnectorKey.KeyType.ValueType  # 17
+    GRAFANA_HOST: ConnectorKey.KeyType.ValueType  # 21
+    GRAFANA_API_KEY: ConnectorKey.KeyType.ValueType  # 22
     CLICKHOUSE_INTERFACE: ConnectorKey.KeyType.ValueType  # 24
     CLICKHOUSE_HOST: ConnectorKey.KeyType.ValueType  # 25
     CLICKHOUSE_PORT: ConnectorKey.KeyType.ValueType  # 26
@@ -405,15 +407,15 @@ class ConnectorKey(google.protobuf.message.Message):
     POSTGRES_HOST: ConnectorKey.KeyType.ValueType  # 33
     POSTGRES_USER: ConnectorKey.KeyType.ValueType  # 34
     POSTGRES_PASSWORD: ConnectorKey.KeyType.ValueType  # 35
-    POSTGRES_DATABASE: ConnectorKey.KeyType.ValueType  # 36
-    POSTGRES_PORT: ConnectorKey.KeyType.ValueType  # 37
+    POSTGRES_PORT: ConnectorKey.KeyType.ValueType  # 36
+    POSTGRES_DATABASE: ConnectorKey.KeyType.ValueType  # 37
     POSTGRES_OPTIONS: ConnectorKey.KeyType.ValueType  # 38
     DB_CONNECTION_STRING_URI: ConnectorKey.KeyType.ValueType  # 39
-    AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 40
-    AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 41
-    GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 42
-    PAGER_DUTY_API_KEY: ConnectorKey.KeyType.ValueType  # 43
-    OPS_GENIE_API_KEY: ConnectorKey.KeyType.ValueType  # 44
+    PAGER_DUTY_API_KEY: ConnectorKey.KeyType.ValueType  # 41
+    OPS_GENIE_API_KEY: ConnectorKey.KeyType.ValueType  # 42
+    AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 43
+    AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 44
+    GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int
