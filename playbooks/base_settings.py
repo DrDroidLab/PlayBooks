@@ -41,6 +41,7 @@ LOCAL_APPS = [
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
+    'management.apps.ManagementConfig',
 ]
 
 THIRD_PARTY_APPS = [
