@@ -21,7 +21,8 @@ from playbooks import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    # path('connectors/', include('connectors.urls')),
+    path('connectors/', include('connectors.urls')),
+    path('connectors/assets/', include('connectors.assets.urls')),
     path('', include('django_prometheus.urls')),
     path('', views.index),
 ]

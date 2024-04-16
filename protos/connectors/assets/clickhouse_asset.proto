@@ -1,0 +1,66 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+
+
+message ClickhouseAsset {
+  uint64 id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+
+  string uid = 4;
+  uint64 last_updated = 5;
+
+  string metadata = 6;
+}
+
+message ClickhouseDatabaseAssetModel {
+  message ClickhouseTable {
+    message ClickhouseColumn {
+      google.protobuf.StringValue name = 1;
+      google.protobuf.StringValue type = 2;
+      google.protobuf.StringValue comment = 3;
+      google.protobuf.StringValue default_type = 4;
+      google.protobuf.StringValue ttl_expression = 5;
+      google.protobuf.StringValue codec_expression = 6;
+      google.protobuf.StringValue default_expression = 7;
+    }
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue engine = 2;
+    google.protobuf.StringValue partition_key = 3;
+    google.protobuf.StringValue partition_type = 4;
+    google.protobuf.StringValue partition_expression = 5;
+    google.protobuf.StringValue order_by = 6;
+    google.protobuf.StringValue sample_by = 7;
+    google.protobuf.StringValue primary_key = 8;
+    google.protobuf.StringValue sample = 9;
+    google.protobuf.StringValue ttl = 10;
+    google.protobuf.StringValue settings = 11;
+    google.protobuf.StringValue timestamp_column = 12;
+    repeated ClickhouseColumn columns = 13;
+  }
+  google.protobuf.StringValue database = 1;
+  repeated ClickhouseTable tables = 2;
+}
+
+message ClickhouseDatabaseAssetOptions {
+  repeated string databases = 1;
+}
+
+
+message ClickhouseAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType connector_type = 2;
+  ConnectorMetadataModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    ClickhouseDatabaseAssetModel clickhouse_database = 5;
+  }
+}
+
+message ClickhouseAssets {
+  repeated ClickhouseAssetModel assets = 1;
+}

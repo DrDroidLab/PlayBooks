@@ -1,0 +1,60 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "protos/connectors/connector.proto";
+import "protos/base.proto";
+
+package protos.connectors;
+
+/////////////////////  Connectors API schema  /////////////////////
+message CreateConnectorRequest {
+  Connector connector = 1;
+  repeated ConnectorKey connector_keys = 2;
+}
+
+message CreateConnectorResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+}
+
+message GetConnectorsListRequest {
+}
+
+message GetConnectorsListResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  repeated Connector request_connectors = 3;
+  repeated Connector available_connectors = 4;
+  repeated Connector connectors = 5;
+}
+
+message UpdateConnectorRequest {
+  google.protobuf.UInt64Value connector_id = 1;
+  repeated UpdateConnectorOp update_connector_ops = 2;
+}
+
+message UpdateConnectorResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+}
+
+message GetConnectorKeysOptionsRequest {
+  ConnectorType connector_type = 1;
+}
+
+message GetConnectorKeysOptionsResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  repeated ConnectorKey connector_key_options = 3;
+}
+
+message GetConnectorKeysRequest {
+  google.protobuf.UInt64Value connector_id = 1;
+  ConnectorType connector_type = 2;
+}
+
+message GetConnectorKeysResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  Connector connector = 3;
+  repeated ConnectorKey connector_keys = 4;
+}

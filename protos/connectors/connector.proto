@@ -1,0 +1,238 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+
+package protos.connectors;
+
+
+enum ConnectorType {
+  UNKNOWN = 0;
+  SENTRY = 1;
+  SEGMENT = 2;
+  ELASTIC_SEARCH = 3;
+  AMPLITUDE = 4;
+  AWS_KINESIS = 5;
+  CLOUDWATCH = 6;
+  CLEVERTAP = 7;
+  RUDDERSTACK = 8;
+  MOENGAGE = 9;
+  CRIBL = 10;
+  KAFKA = 11;
+  DATADOG = 12;
+  FILEBEAT = 13;
+  LOGSTASH = 14;
+  FLUENTD = 15;
+  FLUENTBIT = 16;
+  PAGER_DUTY = 17;
+  NEW_RELIC = 18;
+  SLACK = 19;
+  HONEYBADGER = 20;
+  GOOGLE_CHAT = 21;
+  DATADOG_OAUTH = 22;
+  GCM = 23;
+  PROMETHEUS = 24;
+  ELASTIC_APM = 25;
+  VICTORIA_METRICS = 26;
+  SLACK_CONNECT = 27;
+  GRAFANA = 28;
+  CLICKHOUSE = 29;
+  DOCUMENTATION = 30;
+  POSTGRES = 31;
+  OPS_GENIE = 32;
+  EKS = 33;
+  AGENT_PROXY = 34;
+  GRAFANA_VPC = 35;
+  GITHUB_ACTIONS = 36;
+}
+
+
+enum ConnectorMetadataModelType {
+  UNKNOWN_MT = 0;
+  // New Relic Models
+  NEW_RELIC_POLICY = 1;
+  NEW_RELIC_CONDITION = 2;
+  NEW_RELIC_ENTITY = 3;
+  NEW_RELIC_ENTITY_DASHBOARD = 4;
+  NEW_RELIC_ENTITY_APPLICATION = 5;
+  NEW_RELIC_NRQL = 6;
+
+  //Datadog Models
+  DATADOG_MONITOR = 101;
+  DATADOG_DASHBOARD = 102;
+  DATADOG_LIVE_INTEGRATION_AWS = 103;
+  DATADOG_LIVE_INTEGRATION_AWS_LOG = 104;
+  DATADOG_LIVE_INTEGRATION_AZURE = 105;
+  DATADOG_LIVE_INTEGRATION_CLOUDFLARE = 106;
+  DATADOG_LIVE_INTEGRATION_FASTLY = 107;
+  DATADOG_LIVE_INTEGRATION_GCP = 108;
+  DATADOG_LIVE_INTEGRATION_CONFLUENT = 109;
+  DATADOG_SERVICE = 110;
+  DATADOG_METRIC = 111;
+
+
+  //Cloudwatch Models
+  CLOUDWATCH_METRIC = 201;
+  CLOUDWATCH_LOG_GROUP = 202;
+
+
+  //Grafana Models
+  GRAFANA_DATASOURCE = 301;
+  GRAFANA_DASHBOARD = 302;
+  GRAFANA_TARGET_METRIC_PROMQL = 303;
+
+  //Clickhouse Models
+  CLICKHOUSE_DATABASE = 401;
+
+  //Slack Models
+  SLACK_CHANNEL = 501;
+
+  //Documentation Models
+  MARKDOWN = 601;
+
+  //Postgres Models
+  POSTGRES_DATABASE = 701;
+
+  //EKS Models
+  EKS_CLUSTER = 801;
+}
+
+enum TransformerType {
+  UNKNOWN_TT = 0;
+  SEGMENT_DFAULT_TRANSFORMER = 2;
+  AMPLITUDE_DEFAULT_TRANSFORMER = 3;
+  PRODIGAL_CLOUDWATCH_LOG_TRANSFORMER = 4;
+  CLOUDWATCH_JSON_LOG_TRANSFORMER = 5;
+}
+
+
+enum DecoderType {
+  UNKNOWN_DT = 0;
+  AWS_KINESIS_DECODER = 1;
+  AWS_CLOUDWATCH_KINESIS_DECODER = 2;
+}
+
+enum ReportType {
+  UNKNOWN_RT = 0;
+  INITIAL = 1;
+  FINAL = 2;
+}
+
+message Connector {
+  google.protobuf.UInt64Value id = 1;
+  ConnectorType type = 2;
+  google.protobuf.BoolValue is_active = 3;
+  google.protobuf.StringValue name = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  sfixed64 updated_at = 7;
+  google.protobuf.StringValue display_name = 8;
+  google.protobuf.StringValue category = 9;
+  oneof config {
+    SentryConnectorConfig sentry_config = 10;
+  }
+}
+
+message SentryConnectorConfig {
+  google.protobuf.UInt64Value polling_frequency = 1;
+}
+
+message ConnectorKey {
+  enum KeyType {
+    UNKNOWN_CKT = 0;
+
+    SENTRY_API_KEY = 1;
+    SENTRY_ORG_SLUG = 2;
+
+    DATADOG_APP_KEY = 3;
+    DATADOG_API_KEY = 4;
+    DATADOG_API_DOMAIN = 5;
+    DATADOG_AUTH_TOKEN = 6;
+
+    NEWRELIC_API_KEY = 7;
+    NEWRELIC_APP_ID = 8;
+    NEWRELIC_QUERY_KEY = 9;
+    NEWRELIC_API_DOMAIN = 10;
+
+    SLACK_BOT_AUTH_TOKEN = 11;
+    SLACK_CHANNEL = 12;
+
+    HONEYBADGER_USERNAME = 13;
+    HONEYBADGER_PASSWORD = 14;
+    HONEYBADGER_PROJECT_ID = 15;
+
+    AWS_ACCESS_KEY = 16;
+    AWS_SECRET_KEY = 17;
+    AWS_REGION = 18;
+    EKS_ROLE_ARN = 19;
+
+    GOOGLE_CHAT_BOT_OAUTH_TOKEN = 20;
+    GOOGLE_CHAT_BOT_SPACES = 21;
+
+    GRAFANA_HOST = 22;
+    GRAFANA_API_KEY = 23;
+
+    CLICKHOUSE_INTERFACE = 24;
+    CLICKHOUSE_HOST = 25;
+    CLICKHOUSE_PORT = 26;
+    CLICKHOUSE_USER = 27;
+    CLICKHOUSE_PASSWORD = 28;
+
+    GCM_PROJECT_ID = 29;
+    GCM_PRIVATE_KEY = 30;
+    GCM_CLIENT_EMAIL = 31;
+    GCM_TOKEN_URI = 32;
+
+    POSTGRES_HOST = 33;
+    POSTGRES_USER = 34;
+    POSTGRES_PASSWORD = 35;
+    POSTGRES_DATABASE = 36;
+    POSTGRES_PORT = 37;
+    POSTGRES_OPTIONS = 38;
+
+    DB_CONNECTION_STRING_URI = 39;
+
+    AGENT_PROXY_HOST = 40;
+    AGENT_PROXY_API_KEY = 41;
+
+    GITHUB_ACTIONS_TOKEN = 42;
+
+    PAGER_DUTY_API_KEY = 43;
+
+    OPS_GENIE_API_KEY = 44;
+  }
+  google.protobuf.UInt64Value id = 1;
+  KeyType key_type = 2;
+  google.protobuf.StringValue key = 3;
+  google.protobuf.BoolValue is_active = 4;
+  google.protobuf.UInt64Value connector_id = 5;
+  sfixed64 created_at = 6;
+  sfixed64 updated_at = 7;
+  google.protobuf.StringValue display_name = 8;
+}
+
+message UpdateConnectorOp {
+  enum Op {
+    UNKNOWN = 0;
+    UPDATE_CONNECTOR_NAME = 1;
+    UPDATE_CONNECTOR_STATUS = 2;
+    UPDATE_CONNECTOR_KEYS = 3;
+  }
+
+  message UpdateConnectorName {
+    google.protobuf.StringValue name = 1;
+  }
+
+  message UpdateConnectorStatus {
+    google.protobuf.BoolValue is_active = 1;
+  }
+
+  message UpdateConnectorKeys {
+    repeated ConnectorKey connector_keys = 1;
+  }
+
+  Op op = 1;
+  oneof update {
+    UpdateConnectorName update_connector_name = 2;
+    UpdateConnectorStatus update_connector_status = 3;
+    UpdateConnectorKeys update_connector_keys = 4;
+  }
+}
