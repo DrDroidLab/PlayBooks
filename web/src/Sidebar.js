@@ -7,15 +7,8 @@ import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import API from './API';
-
 import SlackIcon from './data/slack.png';
 
-import AssessmentIcon from '@mui/icons-material/Assessment';
 import SlackConnectOverlay from './SlackConnectOverlay';
 import useToggle from './hooks/useToggle';
 
@@ -23,76 +16,12 @@ import logo from './data/black_logo.png';
 import useLogout from './hooks/useLogout';
 import '../src/Layout.css';
 import { Key, Terminal } from '@mui/icons-material';
-import { useGetConnectorListQuery } from './store/features/integrations/api/index.ts';
-import { CircularProgress } from '@mui/material';
-import useAuth from './hooks/useAuth.js';
 
 function Sidebar() {
   const navigate = useNavigate();
   const logout = useLogout();
-  const { auth } = useAuth();
-  const { data: integrations, isFetching } = useGetConnectorListQuery();
-  const slackConnectorExists =
-    integrations?.integrations?.allAvailableConnectors?.find(
-      integration => integration.title === 'SLACK'
-    ).status === 'active';
 
   const [open, setOpen] = useState(false);
-
-  const [alertTypes, setAlertTypes] = useState([]);
-
-  const alertOptions = API.useGetAlertOptions();
-
-  useEffect(() => {
-    if (!auth.accessToken) return;
-    alertOptions(
-      {
-        connector_type_requests: [
-          {
-            connector_type: 'SLACK'
-          },
-          {
-            connector_type: 'GOOGLE_CHAT'
-          }
-        ]
-      },
-      res => {
-        const data = res?.data;
-        const { alert_ops_options } = data;
-        const { comm_options } = alert_ops_options;
-        const { workspaces } = comm_options;
-        const { alert_types } = workspaces[0];
-        if (alert_types) {
-          const filteredAlertTypes = alert_types
-            .filter(
-              (value, index, self) =>
-                index === self.findIndex(t => t.alert_type === value.alert_type)
-            )
-            .map(alertType => {
-              return alertType.alert_type;
-            })
-            .filter(
-              alertType =>
-                [
-                  'New Relic',
-                  'Sentry',
-                  'Datadog',
-                  'Prometheus_AlertManager',
-                  'Robusta',
-                  'Grafana',
-                  'Cloudwatch',
-                  'Coralogix'
-                ].indexOf(alertType) >= 0
-            );
-          setAlertTypes(filteredAlertTypes);
-        }
-      },
-      err => {
-        console.error(err);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const { isOpen: isActionOpen, toggle } = useToggle();
 
@@ -116,12 +45,6 @@ function Sidebar() {
       default:
         break;
     }
-  };
-
-  const handleAlertTypeItemClick = (alert_type, index) => {
-    setSelectedIndex(index);
-
-    navigate('/at-insights/' + alert_type);
   };
 
   // Active styling
@@ -180,73 +103,6 @@ function Sidebar() {
             <p style={{ fontSize: '14px' }}>Integrations</p>
           </NavLink>
           <hr></hr>
-          <NavLink
-            className={activeStyle}
-            exact
-            to={slackConnectorExists ? '/alert-insights' : '/sample-insights'}
-          >
-            <ListItemButton
-              selected={selectedIndex === 1}
-              onClick={event => handleListItemClick(event, 1)}
-              sx={{
-                padding: 0,
-                ':hover': {
-                  backgroundColor: 'transparent'
-                }
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: '44px' }}>
-                <AssessmentIcon />
-              </ListItemIcon>
-              <p style={{ fontSize: '14px' }}>Alert Insights</p>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {isFetching ? (
-                <CircularProgress color="primary" size={20} />
-              ) : slackConnectorExists && open ? (
-                <ExpandLess />
-              ) : (
-                <ExpandMore />
-              )}
-            </ListItemButton>
-          </NavLink>
-
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {alertTypes.map((alert_type, index) => (
-                <NavLink
-                  key={index}
-                  className={activeStyle}
-                  exact
-                  to={`/at-insights/${alert_type}`}
-                >
-                  <ListItemButton
-                    selected={selectedIndex === `${index}-sub`}
-                    key={index}
-                    onClick={_ => handleAlertTypeItemClick(alert_type, `${index}-sub`)}
-                    sx={{
-                      padding: 0,
-                      ':hover': {
-                        backgroundColor: 'transparent'
-                      }
-                    }}
-                  >
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex'
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: '5px' }}></ListItemIcon>
-                      <ListItemIcon sx={{ minWidth: '44px' }}>
-                        <KeyboardArrowRightIcon />
-                      </ListItemIcon>
-                      <p style={{ fontSize: '14px' }}>{alert_type}</p>
-                    </div>
-                  </ListItemButton>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
 
           <NavLink className={activeStyle} exact to="/api-keys">
             <ListItemIcon sx={{ minWidth: '44px' }}>

@@ -31,19 +31,9 @@ const PlayBookRunLogs = React.lazy(() => import('./components/Playbooks/PlayBook
 const ApiTokens = React.lazy(() => import('./components/Apikeys/Apikeys'));
 const EditPlaybook = React.lazy(() => import('./components/Playbooks/EditPlaybook.jsx'));
 const CreatePlaybook = React.lazy(() => import('./components/Playbooks/CreatePlaybook'));
-const Insights = React.lazy(() => import('./pages/Insights'));
-const AlertTypeSpecificInsights = React.lazy(() =>
-  import('./pages/Insights/AlertTypeSpecificInsights')
-);
-const SampleAlerts = React.lazy(() => import('./pages/Insights/SampleAlerts'));
 
 const App = () => {
   const { auth } = useAuth();
-  const { data: integrations, isFetching } = useGetConnectorListQuery();
-  const slackConnectorExists =
-    integrations?.integrations?.allAvailableConnectors?.find(
-      integration => integration.title === 'SLACK'
-    ).status === 'active';
 
   useEffect(() => {
     if (auth.email) {
@@ -51,13 +41,6 @@ const App = () => {
     }
   }, [auth]);
 
-  useEffect(() => {
-    // Hide the loading indicator
-    const loader = document.querySelector('.loader-container');
-    if (loader && !isFetching) {
-      loader.style.display = 'none';
-    }
-  }, [isFetching]);
 
   return (
     <Routes>
@@ -69,12 +52,6 @@ const App = () => {
         <Route path="/reset-password-confirm/" element={<ResetPasswordConfirm />} />
       </Route>
 
-      <Route element={<AxiosPrivate />}>
-        <Route element={<Layout />}>
-          <Route path="/sample-insights" element={<SampleAlerts />} />
-        </Route>
-      </Route>
-
       <Route element={<PersistLogin />}>
         <Route element={<RequireAuth />}>
           <Route element={<AxiosPrivate />}>
@@ -82,12 +59,8 @@ const App = () => {
               <Route
                 exact
                 path="/"
-                element={slackConnectorExists ? <Insights /> : <SampleAlerts />}
+                element={<Playbooks />}
               />
-              <Route path="/insights" element={<Insights />} />
-              <Route path="/alert-insights" element={<Insights />} />
-              <Route path="/at-insights/:alertType" element={<AlertTypeSpecificInsights />} />
-              <Route path="/sample-insights" element={<SampleAlerts />} />
               <Route path="/playbooks/explore" element={<PlaybooksExplore />} />
               <Route path="/playbooks" element={<Playbooks />} />
               <Route path="/playbooks/create" element={<CreatePlaybook />} />
