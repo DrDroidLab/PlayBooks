@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../data/black_logo.png';
 import '../css/SignUp.css';
-import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -52,7 +51,6 @@ function SignUp() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [btnLoading, setBtnLoading] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState();
 
   const handleCloseToast = () => {
     setError('');
@@ -83,23 +81,14 @@ function SignUp() {
       if (!errObj.email && errObj.password) return errObj.password[0];
       if (!errObj.email && !errObj.password && errObj.non_field_errors)
         return errObj.non_field_errors[0];
-      if (errObj.g_captcha_token) return 'Your captcha verification failed. Please try again.';
 
       return 'Something went wrong!!';
     }
   };
 
-  const handleRecaptcha = val => {
-    setCaptchaValue(val);
-  };
 
   const handleSubmit = async e => {
     e.preventDefault();
-
-    if (!captchaValue) {
-      setError('Please verify you are not a robot');
-      return;
-    }
 
     setBtnLoading(true);
     try {
@@ -107,17 +96,12 @@ function SignUp() {
         email: email,
         first_name: firstName,
         last_name: lastName,
-        password: password,
-        g_captcha_token: captchaValue
+        password: password
       };
       const response = await axios.post('/accounts/signup/', JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       });
-
-      if (response.g_captcha_token) {
-        setError('Please verify you are not a robot');
-      }
 
       setEmail('');
       setPassword('');
@@ -245,12 +229,6 @@ function SignUp() {
                       }
                     />
                   </FormControl>
-
-                  <ReCAPTCHA
-                    sitekey="6LfGFpgmAAAAAC0Vef3C5cTTC3ZuM8gqPxmAVyHA"
-                    onChange={handleRecaptcha}
-                  />
-                  <br />
 
                   <Button
                     style={{ marginBottom: '15px' }}

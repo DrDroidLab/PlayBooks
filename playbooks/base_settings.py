@@ -227,7 +227,7 @@ LOGGING = {
 }
 
 CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),

@@ -266,7 +266,7 @@ const apis = {
       }
     ) => {
       apiCallback(
-        '/connectors/playbooks/run_playbook_task',
+        '/executor/task/run',
         requestData,
         onSuccess,
         onError,

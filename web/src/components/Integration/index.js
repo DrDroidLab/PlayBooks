@@ -27,7 +27,7 @@ function Integrations() {
           Looking for any other integration? Chat with us or{' '}
           <a
             className={styles['meeting-link']}
-            href="https://calendly.com/siddarthjain/catchup-call-clone"
+            href="https://calendly.com/dipesh-droid/integrations"
             target="_blank"
             rel="noreferrer"
           >
