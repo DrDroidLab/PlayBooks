@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 
 import boto3
 import kubernetes
-from botocore import session
-from awscli.customizations.eks.get_token import STSClientFactory, TokenGenerator, TOKEN_EXPIRATION_MINS
+from awscli.customizations.eks.get_token import TokenGenerator, TOKEN_EXPIRATION_MINS, STSClientFactory
 
 from playbooks.utils.utils import current_milli_time
 
@@ -18,9 +17,15 @@ def get_expiration_time():
     return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
-def get_eks_token(cluster_name: str, role_arn: str = None) -> dict:
-    work_session = session.get_session()
-    client_factory = STSClientFactory(work_session)
+def get_eks_token(cluster_name: str, aws_access_key: str, aws_secret_key: str, region: str,
+                  role_arn: str = None, aws_session_token=None) -> dict:
+    aws_session = boto3.Session(
+        aws_access_key_id=aws_access_key,
+        aws_secret_access_key=aws_secret_key,
+        region_name=region,
+        aws_session_token=aws_session_token
+    )
+    client_factory = STSClientFactory(aws_session._session)
     sts_client = client_factory.get_sts_client(role_arn=role_arn)
     token = TokenGenerator(sts_client).get_token(cluster_name)
     return token
@@ -38,7 +43,10 @@ def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn
     fp.close()
 
     # Token for the EKS cluster
-    token = get_eks_token(cluster_name, k8_role_arn)
+    token = get_eks_token(cluster_name, aws_access_key, aws_secret_key, aws_region, k8_role_arn, aws_session_token)
+    if not token:
+        logger.error(f"Error occurred while fetching token for EKS cluster: {cluster_name}")
+        return None
 
     # Kubernetes client config
     conf = kubernetes.client.Configuration()
