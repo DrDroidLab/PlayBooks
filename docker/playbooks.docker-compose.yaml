@@ -7,8 +7,6 @@ services:
       - "POSTGRES_DB=db"
       - "POSTGRES_USER=user"
       - "POSTGRES_PASSWORD=pass"
-    ports:
-      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -23,7 +21,7 @@ services:
 
   setup_db:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
     image: playbooks
     command: ./setup_db.sh
@@ -45,7 +43,7 @@ services:
 
   server:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-server.sh
@@ -80,7 +78,7 @@ services:
 
   celery_worker:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -101,7 +99,7 @@ services:
 
   notification_celery_worker:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
