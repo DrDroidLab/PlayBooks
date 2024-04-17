@@ -24,6 +24,7 @@ urlpatterns = [
     path('connectors/', include('connectors.urls')),
     path('connectors/assets/', include('connectors.assets.urls')),
     path('executor/', include('executor.urls')),
+    path('playbooks/', include('executor.urls')),
     path('', include('django_prometheus.urls')),
     path('', views.index),
 ]

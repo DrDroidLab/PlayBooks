@@ -38,7 +38,7 @@ model_type_display_name_maps = {
 }
 
 
-def get_playbooks_sources_options(account: Account):
+def playbooks_builder_get_connector_sources_options(account: Account):
     active_account_connectors = get_db_connectors(account, connector_type_list=playbooks_supported_connectors,
                                                   is_active=True)
     active_model_type: [AccountActiveConnectorModelTypes] = []

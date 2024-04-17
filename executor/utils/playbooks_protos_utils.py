@@ -1,8 +1,12 @@
-from google.protobuf.wrappers_pb2 import StringValue
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookCloudwatchTask, PlaybookGrafanaTask, \
     PlaybookNewRelicTask, PlaybookDatadogTask, PlaybookDataFetchTaskDefinition, PlaybookClickhouseDataFetchTask, \
-    PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask
+    PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
+    ElseEvaluationTask, PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, \
+    PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
+    TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
+    PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto
 from utils.proto_utils import dict_to_proto
 
 
@@ -112,3 +116,102 @@ def get_eks_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     eks_data_fetch_task_proto = dict_to_proto(eks_data_fetch_task, PlaybookEksDataFetchTask)
     return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.EKS,
                                            eks_data_fetch_task=eks_data_fetch_task_proto)
+
+
+def get_playbook_task_definition_proto(db_task_definition):
+    task_type = db_task_definition.type
+    task = db_task_definition.task
+    if task_type == PlaybookTaskDefinitionProto.Type.DECISION:
+        decision_task = task.get('decision_task', None)
+        if decision_task.get('evaluation_type', None) == 'ELSE':
+            else_evaluation_task_proto = dict_to_proto(decision_task.get('else_evaluation_task', {}),
+                                                       ElseEvaluationTask)
+            decision_task_proto = PlaybookDecisionTaskDefinitionProto(
+                evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.ELSE,
+                else_evaluation_task=else_evaluation_task_proto
+            )
+            return PlaybookTaskDefinitionProto(
+                id=UInt64Value(value=db_task_definition.id),
+                name=StringValue(value=db_task_definition.name),
+                description=StringValue(value=db_task_definition.description),
+                type=db_task_definition.type,
+                decision_task=decision_task_proto,
+                notes=StringValue(value=db_task_definition.notes)
+            )
+        elif decision_task.get('evaluation_type', None) == 'TIMESERIES':
+            timeseries_evaluation_task = decision_task.get('timeseries_evaluation_task', {})
+            if timeseries_evaluation_task.get('input_type', None) == 'METRIC_TIMESERIES':
+                metric_timeseries_input = dict_to_proto(
+                    timeseries_evaluation_task.get('metric_timeseries_input', {}),
+                    PlaybookMetricTaskExecutionResultProto)
+                rules_proto = dict_to_proto(decision_task.get('rule', {}), TimeseriesEvaluationTaskProto.Rule)
+                timeseries_evaluation_task_proto = TimeseriesEvaluationTaskProto(
+                    input_type=PlaybookTaskDefinitionProto.TimeseriesEvaluationTask.InputType.METRIC_TIMESERIES,
+                    rules=rules_proto,
+                    metric_timeseries_input=metric_timeseries_input
+                )
+                decision_task_proto = PlaybookDecisionTaskDefinitionProto(
+                    evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.TIMESERIES,
+                    timeseries_evaluation_task=timeseries_evaluation_task_proto
+                )
+                return PlaybookTaskDefinitionProto(
+                    id=UInt64Value(value=db_task_definition.id),
+                    name=StringValue(value=db_task_definition.name),
+                    description=StringValue(value=db_task_definition.description),
+                    notes=StringValue(value=db_task_definition.notes),
+                    type=db_task_definition.type, decision_task=decision_task_proto
+                )
+            else:
+                raise ValueError(f"Invalid input type: {timeseries_evaluation_task.get('input_type', None)}")
+        else:
+            raise ValueError(f"Invalid evaluation type: {decision_task.get('evaluation_type', None)}")
+    elif task_type == PlaybookTaskDefinitionProto.Type.METRIC:
+        source = task.get('source', None)
+        if source == 'CLOUDWATCH':
+            metric_task_proto = get_cloudwatch_task_execution_proto(task)
+        elif source == 'GRAFANA':
+            metric_task_proto = get_grafana_task_execution_proto(task)
+        elif source == 'NEW_RELIC':
+            metric_task_proto = get_new_relic_task_execution_proto(task)
+        elif source == 'DATADOG':
+            metric_task_proto = get_datadog_task_execution_proto(task)
+        else:
+            raise ValueError(f"Invalid source: {source}")
+        return PlaybookTaskDefinitionProto(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=db_task_definition.type,
+            metric_task=metric_task_proto,
+            notes=StringValue(value=db_task_definition.notes)
+        )
+    elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
+        source = task.get('source', None)
+        if source == 'CLICKHOUSE':
+            data_fetch_task_proto = get_clickhouse_task_execution_proto(task)
+        elif source == 'POSTGRES':
+            data_fetch_task_proto = get_postgres_task_execution_proto(task)
+        elif source == 'EKS':
+            data_fetch_task_proto = get_eks_task_execution_proto(task)
+        else:
+            raise ValueError(f"Invalid source: {source}")
+        return PlaybookTaskDefinitionProto(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=db_task_definition.type,
+            data_fetch_task=data_fetch_task_proto,
+            notes=StringValue(value=db_task_definition.notes)
+        )
+    elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
+        documentation_task_proto = dict_to_proto(db_task_definition.task, PlaybookDocumentationTaskDefinitionProto)
+        return PlaybookTaskDefinitionProto(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=db_task_definition.type,
+            documentation_task=documentation_task_proto,
+            notes=StringValue(value=db_task_definition.notes)
+        )
+    else:
+        raise ValueError(f"Invalid type: {task_type}")

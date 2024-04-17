@@ -66,27 +66,27 @@ EQUAL: EvaluationConditionOperator.ValueType  # 5
 NOT_EQUAL: EvaluationConditionOperator.ValueType  # 6
 global___EvaluationConditionOperator = EvaluationConditionOperator
 
-class _PlaybookRunStatusType:
+class _PlaybookExecutionStatusType:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
 
-class _PlaybookRunStatusTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_PlaybookRunStatusType.ValueType], builtins.type):
+class _PlaybookExecutionStatusTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_PlaybookExecutionStatusType.ValueType], builtins.type):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN_STATUS: _PlaybookRunStatusType.ValueType  # 0
-    CREATED: _PlaybookRunStatusType.ValueType  # 1
-    RUNNING: _PlaybookRunStatusType.ValueType  # 2
-    FINISHED: _PlaybookRunStatusType.ValueType  # 3
-    FAILED: _PlaybookRunStatusType.ValueType  # 4
+    UNKNOWN_STATUS: _PlaybookExecutionStatusType.ValueType  # 0
+    CREATED: _PlaybookExecutionStatusType.ValueType  # 1
+    RUNNING: _PlaybookExecutionStatusType.ValueType  # 2
+    FINISHED: _PlaybookExecutionStatusType.ValueType  # 3
+    FAILED: _PlaybookExecutionStatusType.ValueType  # 4
 
-class PlaybookRunStatusType(_PlaybookRunStatusType, metaclass=_PlaybookRunStatusTypeEnumTypeWrapper):
+class PlaybookExecutionStatusType(_PlaybookExecutionStatusType, metaclass=_PlaybookExecutionStatusTypeEnumTypeWrapper):
     """Crud Protos"""
 
-UNKNOWN_STATUS: PlaybookRunStatusType.ValueType  # 0
-CREATED: PlaybookRunStatusType.ValueType  # 1
-RUNNING: PlaybookRunStatusType.ValueType  # 2
-FINISHED: PlaybookRunStatusType.ValueType  # 3
-FAILED: PlaybookRunStatusType.ValueType  # 4
-global___PlaybookRunStatusType = PlaybookRunStatusType
+UNKNOWN_STATUS: PlaybookExecutionStatusType.ValueType  # 0
+CREATED: PlaybookExecutionStatusType.ValueType  # 1
+RUNNING: PlaybookExecutionStatusType.ValueType  # 2
+FINISHED: PlaybookExecutionStatusType.ValueType  # 3
+FAILED: PlaybookExecutionStatusType.ValueType  # 4
+global___PlaybookExecutionStatusType = PlaybookExecutionStatusType
 
 @typing_extensions.final
 class PlaybookMetricTaskExecutionResult(google.protobuf.message.Message):
@@ -1593,7 +1593,7 @@ class Playbook(google.protobuf.message.Message):
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     created_at: builtins.int
     last_run_at: builtins.int
-    status: global___PlaybookRunStatusType.ValueType
+    status: global___PlaybookExecutionStatusType.ValueType
     @property
     def steps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepDefinition]: ...
     @property
@@ -1609,7 +1609,7 @@ class Playbook(google.protobuf.message.Message):
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: builtins.int = ...,
         last_run_at: builtins.int = ...,
-        status: global___PlaybookRunStatusType.ValueType = ...,
+        status: global___PlaybookExecutionStatusType.ValueType = ...,
         steps: collections.abc.Iterable[global___PlaybookStepDefinition] | None = ...,
         global_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
         has_triggers: google.protobuf.wrappers_pb2.BoolValue | None = ...,
@@ -1620,53 +1620,79 @@ class Playbook(google.protobuf.message.Message):
 global___Playbook = Playbook
 
 @typing_extensions.final
-class PlaybookRunLog(google.protobuf.message.Message):
+class PlaybookExecutionLog(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
-    LOG_FIELD_NUMBER: builtins.int
     TIMESTAMP_FIELD_NUMBER: builtins.int
     PLAYBOOK_RUN_ID_FIELD_NUMBER: builtins.int
-    id: builtins.int
-    log: builtins.str
+    PLAYBOOK_FIELD_NUMBER: builtins.int
+    STEP_FIELD_NUMBER: builtins.int
+    TASK_FIELD_NUMBER: builtins.int
+    TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     timestamp: builtins.int
-    playbook_run_id: builtins.str
+    @property
+    def playbook_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def playbook(self) -> global___Playbook: ...
+    @property
+    def step(self) -> global___PlaybookStepDefinition: ...
+    @property
+    def task(self) -> global___PlaybookTaskDefinition: ...
+    @property
+    def task_execution_result(self) -> global___PlaybookTaskExecutionResult: ...
     def __init__(
         self,
         *,
-        id: builtins.int = ...,
-        log: builtins.str = ...,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         timestamp: builtins.int = ...,
-        playbook_run_id: builtins.str = ...,
+        playbook_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        playbook: global___Playbook | None = ...,
+        step: global___PlaybookStepDefinition | None = ...,
+        task: global___PlaybookTaskDefinition | None = ...,
+        task_execution_result: global___PlaybookTaskExecutionResult | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "log", b"log", "playbook_run_id", b"playbook_run_id", "timestamp", b"timestamp"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "step", b"step", "task", b"task", "task_execution_result", b"task_execution_result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "step", b"step", "task", b"task", "task_execution_result", b"task_execution_result", "timestamp", b"timestamp"]) -> None: ...
 
-global___PlaybookRunLog = PlaybookRunLog
+global___PlaybookExecutionLog = PlaybookExecutionLog
 
 @typing_extensions.final
-class PlaybookRun(google.protobuf.message.Message):
+class PlaybookExecution(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    LOGS_FIELD_NUMBER: builtins.int
-    STATUS_FIELD_NUMBER: builtins.int
-    STARTED_AT_FIELD_NUMBER: builtins.int
+    ID_FIELD_NUMBER: builtins.int
     PLAYBOOK_RUN_ID_FIELD_NUMBER: builtins.int
+    STARTED_AT_FIELD_NUMBER: builtins.int
+    STATUS_FIELD_NUMBER: builtins.int
+    PLAYBOOK_FIELD_NUMBER: builtins.int
+    LOGS_FIELD_NUMBER: builtins.int
     @property
-    def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookRunLog]: ...
-    status: global___PlaybookRunStatusType.ValueType
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def playbook_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     started_at: builtins.int
-    playbook_run_id: builtins.str
+    status: global___PlaybookExecutionStatusType.ValueType
+    @property
+    def playbook(self) -> global___Playbook: ...
+    @property
+    def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
     def __init__(
         self,
         *,
-        logs: collections.abc.Iterable[global___PlaybookRunLog] | None = ...,
-        status: global___PlaybookRunStatusType.ValueType = ...,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        playbook_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         started_at: builtins.int = ...,
-        playbook_run_id: builtins.str = ...,
+        status: global___PlaybookExecutionStatusType.ValueType = ...,
+        playbook: global___Playbook | None = ...,
+        logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["logs", b"logs", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status"]) -> None: ...
 
-global___PlaybookRun = PlaybookRun
+global___PlaybookExecution = PlaybookExecution
 
 @typing_extensions.final
 class UpdatePlaybookOp(google.protobuf.message.Message):

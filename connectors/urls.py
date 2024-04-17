@@ -8,5 +8,5 @@ urlpatterns = [
     path('update', connector_views.connectors_update),
     path('keys/options', connector_views.connector_keys_options),
     path('keys/get', connector_views.connector_keys_get),
-    path('playbooks/sources/options', connector_views.playbooks_sources_options),
+    path('playbooks/builder/sources/options', connector_views.playbooks_sources_options),
 ]

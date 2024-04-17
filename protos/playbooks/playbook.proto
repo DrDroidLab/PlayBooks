@@ -458,7 +458,7 @@ message PlaybookStepDefinition {
 
 
 // Crud Protos
-enum PlaybookRunStatusType {
+enum PlaybookExecutionStatusType {
   UNKNOWN_STATUS = 0;
   CREATED = 1;
   RUNNING = 2;
@@ -473,24 +473,29 @@ message Playbook {
   google.protobuf.StringValue created_by = 4;
   sfixed64 created_at = 5;
   sfixed64 last_run_at = 6;
-  PlaybookRunStatusType status = 7;
+  PlaybookExecutionStatusType status = 7;
   repeated PlaybookStepDefinition steps = 8;
   google.protobuf.Struct global_variable_set = 9;
   google.protobuf.BoolValue has_triggers = 10;
 }
 
-message PlaybookRunLog {
-  uint64 id = 1;
-  string log = 2;
-  uint64 timestamp = 3;
-  string playbook_run_id = 4;
+message PlaybookExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 3;
+  google.protobuf.StringValue playbook_run_id = 4;
+  Playbook playbook = 5;
+  PlaybookStepDefinition step = 6;
+  PlaybookTaskDefinition task = 7;
+  PlaybookTaskExecutionResult task_execution_result = 8;
 }
 
-message PlaybookRun {
-  repeated PlaybookRunLog logs = 1;
-  PlaybookRunStatusType status = 2;
-  uint64 started_at = 3;
-  string playbook_run_id = 4;
+message PlaybookExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+  sfixed64 started_at = 3;
+  PlaybookExecutionStatusType status = 4;
+  Playbook playbook = 5;
+  repeated PlaybookExecutionLog logs = 6;
 }
 
 message UpdatePlaybookOp {
