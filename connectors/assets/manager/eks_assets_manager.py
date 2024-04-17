@@ -92,9 +92,9 @@ class EKSAssetManager(ConnectorAssetManager):
                     region_cluster_filters else asset.metadata['clusters']
                 region_clusters = []
                 for c in filter_clusters:
-                    eks_api_instance = get_eks_api_instance(aws_access_key, aws_secret_key, region_name, eks_role_arn,
-                                                            c, aws_session_token)
                     try:
+                        eks_api_instance = get_eks_api_instance(aws_access_key, aws_secret_key, region_name,
+                                                                eks_role_arn, c, aws_session_token)
                         api_response: V1NamespaceList = eks_api_instance.list_namespace(pretty='pretty')
                     except Exception as e:
                         logger.error("Error while fetching namespaces for cluster: {} in region: {} - {}".format(c,

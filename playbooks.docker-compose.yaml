@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:11
+    environment:
+      - "POSTGRES_DB=db"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '6379:6379'
+
+  setup_db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./setup_db.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_DB=db"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+      - "POSTGRES_HOST=db"
+      - "POSTGRES_PORT=5432"
+    depends_on:
+      - db
+      - redis
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-server.sh
+    ports:
+      - 8080:8080
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-worker.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+
+  notification_celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-worker.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+      - "CELERY_QUEUE=notification"
+    depends_on:
+      - db
+      - redis
+      - setup_db

@@ -10,40 +10,11 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
-from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor, get_eks_token
+from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
     PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, \
     PlaybookEksDataFetchTask as PlaybookEksDataFetchTaskProto, PlaybookDataFetchTaskDefinition
-
-
-def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn, cluster_name, aws_session_token=None,
-                         client='api'):
-    aws_client = AWSBoto3ApiProcessor('eks', aws_region, aws_access_key, aws_secret_key, aws_session_token)
-    eks_details = aws_client.eks_describe_cluster(cluster_name)
-
-    fp = tempfile.NamedTemporaryFile(delete=False)
-    ca_filename = fp.name
-    cert_bs = base64.urlsafe_b64decode(eks_details['certificateAuthority']['data'].encode('utf-8'))
-    fp.write(cert_bs)
-    fp.close()
-
-    # Token for the EKS cluster
-    token = get_eks_token(cluster_name, k8_role_arn)
-
-    # Kubernetes client config
-    conf = kubernetes.client.Configuration()
-    conf.host = eks_details['endpoint']
-    conf.api_key['authorization'] = token
-    conf.api_key_prefix['authorization'] = 'Bearer'
-    conf.ssl_ca_cert = ca_filename
-    with kubernetes.client.ApiClient(conf) as api_client:
-        if client == 'api':
-            api_instance = kubernetes.client.CoreV1Api(api_client)
-            return api_instance
-        elif client == 'app':
-            app_instance = kubernetes.client.AppsV1Api(api_client)
-            return app_instance
 
 
 class EksDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
