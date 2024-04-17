@@ -9,10 +9,12 @@ from protos.playbooks.playbook_pb2 import PlaybookExecutionStatusType
 logger = logging.getLogger(__name__)
 
 
-def get_db_playbook_execution(account: Account, playbook_run_id=None):
+def get_db_playbook_execution(account: Account, playbook_execution_id=None, playbook_run_id=None):
     filters = {}
+    if playbook_execution_id:
+        filters['id'] = playbook_execution_id
     if playbook_run_id:
-        filters['id'] = playbook_run_id
+        filters['playbook_run_id'] = playbook_run_id
     try:
         return account.playbookexecution_set.filter(**filters)
     except Exception as e:
@@ -21,14 +23,15 @@ def get_db_playbook_execution(account: Account, playbook_run_id=None):
     return None
 
 
-def create_playbook_execution(account: Account, playbook_id, playbook_run_id):
+def create_playbook_execution(account: Account, playbook_id, playbook_run_id, created_by=None):
     try:
         playbook_execution = PlayBookExecution.objects.create(
             account=account,
             playbook_id=playbook_id,
             playbook_run_id=playbook_run_id,
             status=PlaybookExecutionStatusType.CREATED,
-            created_at=timezone.now()
+            created_at=timezone.now(),
+            created_by=created_by
         )
         return playbook_execution
     except Exception as e:
@@ -69,7 +72,7 @@ def update_db_playbook_execution_status(playbook_run_id: str, status: PlaybookEx
 
 
 def create_db_playbook_execution_log(account, playbook, playbook_execution, playbook_step, playbook_task_definition,
-                                     playbook_task_result_type, playbook_task_result):
+                                     playbook_task_result):
     try:
         playbook_execution_log = PlayBookExecutionLog.objects.create(
             account=account,
@@ -77,7 +80,6 @@ def create_db_playbook_execution_log(account, playbook, playbook_execution, play
             playbook_execution=playbook_execution,
             playbook_step=playbook_step,
             playbook_task_definition=playbook_task_definition,
-            playbook_task_result_type=playbook_task_result_type,
             playbook_task_result=playbook_task_result
         )
         return playbook_execution_log
@@ -96,7 +98,6 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 playbook_execution=playbook_execution,
                 playbook_step=step,
                 playbook_task_definition=result['task'],
-                playbook_task_result_type=result['task_result_type'],
                 playbook_task_result=result['task_result']
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)

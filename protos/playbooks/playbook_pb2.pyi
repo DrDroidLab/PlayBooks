@@ -591,14 +591,12 @@ class PlaybookTaskExecutionResult(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ERROR_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
     METRIC_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     DECISION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     DATA_FETCH_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     DOCUMENTATION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     @property
     def error(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    type: global___PlaybookTaskDefinition.Type.ValueType
     @property
     def metric_task_execution_result(self) -> global___PlaybookMetricTaskExecutionResult: ...
     @property
@@ -611,14 +609,13 @@ class PlaybookTaskExecutionResult(google.protobuf.message.Message):
         self,
         *,
         error: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        type: global___PlaybookTaskDefinition.Type.ValueType = ...,
         metric_task_execution_result: global___PlaybookMetricTaskExecutionResult | None = ...,
         decision_task_execution_result: global___PlaybookDecisionTaskExecutionResult | None = ...,
         data_fetch_task_execution_result: global___PlaybookDataFetchTaskExecutionResult | None = ...,
         documentation_task_execution_result: global___PlaybookDocumentationTaskExecutionResult | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result", "type", b"type"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["metric_task_execution_result", "decision_task_execution_result", "data_fetch_task_execution_result", "documentation_task_execution_result"] | None: ...
 
 global___PlaybookTaskExecutionResult = PlaybookTaskExecutionResult

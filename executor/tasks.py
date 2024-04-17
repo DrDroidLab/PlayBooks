@@ -23,7 +23,7 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
     try:
         account = Account.objects.get(id=account_id)
         pb = get_db_playbook(account, playbook_id, is_active=True)
-        pb_execution = get_db_playbook_execution(account, playbook_execution_id)
+        pb_execution = get_db_playbook_execution(account, playbook_execution_id=playbook_execution_id)
         if not pb or not pb_execution:
             raise Exception("Playbook or Playbook Execution not found")
     except Exception as exc:
@@ -49,7 +49,6 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
                 all_task_executions.append({
                     'task': task,
                     'task_result': proto_to_dict(task_result),
-                    'task_result_type': task_result.type
                 })
             all_step_executions[step] = all_task_executions
         bulk_create_playbook_execution_log(account, pb, pb_execution, all_step_executions)

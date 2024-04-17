@@ -76,3 +76,16 @@ message ExecutePlaybookResponse {
   Message message = 3;
   google.protobuf.StringValue playbook_run_id = 4;
 }
+
+
+message ExecutionPlaybookGetRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+}
+
+message ExecutionPlaybookGetResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookExecution playbook_execution = 4;
+}

@@ -7,10 +7,12 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    PlaybookExecutionStatusType
+    PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
+    PlaybookExecution as PlaybookExecutionProto, PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
+from utils.proto_utils import dict_to_proto
 
 
 class PlayBook(models.Model):
@@ -53,7 +55,9 @@ class PlayBook(models.Model):
     @property
     def proto_partial(self) -> PlaybookProto:
         return PlaybookProto(
-            id=UInt64Value(value=self.id), name=StringValue(value=self.name), is_active=BoolValue(value=self.is_active),
+            id=UInt64Value(value=self.id),
+            name=StringValue(value=self.name),
+            is_active=BoolValue(value=self.is_active),
             created_by=StringValue(value=self.created_by),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
         )
@@ -135,8 +139,23 @@ class PlayBookExecution(models.Model):
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
 
+    created_by = models.TextField(null=True, blank=True)
+
     class Meta:
         unique_together = [['account', 'playbook_run_id']]
+
+    @property
+    def proto(self) -> PlaybookExecutionProto:
+        playbook_execution_logs = self.playbookexecutionlog_set.all()
+        logs = [pel.proto_partial for pel in playbook_execution_logs]
+        return PlaybookExecutionProto(
+            id=UInt64Value(value=self.id),
+            playbook_run_id=StringValue(value=self.playbook_run_id),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            status=self.status,
+            playbook=self.playbook.proto_partial,
+            logs=logs
+        )
 
 
 class PlayBookExecutionLog(models.Model):
@@ -145,6 +164,28 @@ class PlayBookExecutionLog(models.Model):
     playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     playbook_task_definition = models.ForeignKey(PlayBookTaskDefinition, on_delete=models.CASCADE, db_index=True)
-    playbook_task_result_type = models.IntegerField(choices=generate_choices(PlaybookTaskDefinitionProto.Type))
     playbook_task_result = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    @property
+    def proto(self) -> PlaybookExecutionLogProto:
+        playbook_proto = self.playbook.proto_partial
+        task = self.playbook_task_definition.proto
+        return PlaybookExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            playbook_run_id=StringValue(value=self.playbook_execution.playbook_run_id),
+            playbook=playbook_proto,
+            task=task,
+            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
+        )
+
+    @property
+    def proto_partial(self) -> PlaybookExecutionLogProto:
+        task = self.playbook_task_definition.proto
+        return PlaybookExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            task=task,
+            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
+        )
