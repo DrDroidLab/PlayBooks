@@ -93,9 +93,28 @@ class PlayBookStep(models.Model):
                     url=StringValue(value=el['url'])
                 ))
         return PlaybookStepDefinitionProto(
-            id=UInt64Value(value=self.id), name=StringValue(value=self.name),
+            id=UInt64Value(value=self.id),
+            name=StringValue(value=self.name),
             external_links=el_list_proto,
-            description=StringValue(value=self.description), tasks=tasks
+            description=StringValue(value=self.description),
+            tasks=tasks
+        )
+
+    @property
+    def proto_partial(self) -> PlaybookProto:
+        metadata = self.metadata if self.metadata else {}
+        el_list_proto: [PlaybookStepDefinitionProto.ExternalLink] = []
+        if 'external_links' in metadata:
+            for el in metadata['external_links']:
+                el_list_proto.append(PlaybookStepDefinitionProto.ExternalLink(
+                    name=StringValue(value=el['name']),
+                    url=StringValue(value=el['url'])
+                ))
+        return PlaybookStepDefinitionProto(
+            id=UInt64Value(value=self.id),
+            name=StringValue(value=self.name),
+            external_links=el_list_proto,
+            description=StringValue(value=self.description),
         )
 
 
@@ -122,6 +141,16 @@ class PlayBookTaskDefinition(models.Model):
     @property
     def proto(self) -> PlaybookTaskDefinitionProto:
         return get_playbook_task_definition_proto(self)
+
+    @property
+    def proto_partial(self) -> PlaybookTaskDefinitionProto:
+        return PlaybookTaskDefinitionProto(
+            id=UInt64Value(value=self.id),
+            name=StringValue(value=self.name),
+            description=StringValue(value=self.description),
+            type=self.type,
+            notes=StringValue(value=self.notes)
+        )
 
     def save(self, **kwargs):
         if self.task:
