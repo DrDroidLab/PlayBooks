@@ -39,6 +39,11 @@ Start server (on port 8080)
 python manage.py runserver 0.0.0.0:8080
 ```
 
+Start Celery (in a separate terminal window)
+```
+celery -A playbooks worker --concurrency=5 -l INFO -Ofair -Q celery --max-tasks-per-child=1000 --prefetch-multiplier=1
+```
+
 
 ## Web
 Go to the web directory
@@ -55,7 +60,7 @@ Start Node Server
 npm start
 ```
 
-In a separate window, start nginx process (accepts on port 80)
+In a separate terminal window, start nginx process (accepts on port 80)
 ```
 nginx -c $PWD/nginx.local.conf -g "daemon off;"
 ```
