@@ -1,0 +1,18 @@
+@import url('../../../src/css/_animations.css');
+.notFoundContainer {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.notFoundContainer img {
+  width: 261px;
+  height: 225px;
+  margin-bottom: 40px;
+  opacity: 0;
+}
+.notFoundContainer .animate {
+  animation: grow 300ms, fadeIn 480ms;
+  opacity: 1;
+}

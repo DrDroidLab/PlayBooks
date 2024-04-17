@@ -1,0 +1,48 @@
+._container {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+._input {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #a8acb1;
+  background-color: #fff;
+  border-radius: 2px;
+  width: 0.75rem;
+  height: 0.75rem;
+  cursor: pointer;
+  width: 0.75rem;
+  height: 0.75rem;
+  transition: all 0.1s ease-in-out;
+}
+
+._input:checked::after {
+  content: '\2713';
+  color: gray;
+  width: 0.5em;
+  height: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  padding-top: 4px;
+}
+._input:disabled {
+  cursor: not-allowed;
+  background-color: lightgray;
+  border: none;
+}
+
+._label {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 150%;
+  cursor: pointer;
+}
+
+._container ._input:disabled + ._label {
+  color: lightgray;
+  cursor: not-allowed;
+}

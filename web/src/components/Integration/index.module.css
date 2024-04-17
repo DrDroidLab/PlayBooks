@@ -1,0 +1,44 @@
+.intercom-text {
+  font-weight: 200;
+  padding: 20px;
+  padding-top: 0px;
+}
+
+.meeting-link {
+  color: #9553fe;
+}
+
+.tabContainer {
+  border: 1px solid rgb(200, 192, 192);
+  margin: 20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  line-height: 10px;
+  text-align: justify;
+  margin-top: 0;
+  width: 350px;
+}
+
+.searchBox {
+  margin: 20px;
+}
+
+.slack-button {
+  align-items: center;
+  color: #fff;
+  background-color: #4a154b;
+  display: inline-flex;
+  font-family: Lato, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+  justify-content: center;
+  text-decoration: none;
+  width: -webkit-fill-available;
+}
+
+.slack-svg {
+  height: 20px;
+  width: 20px;
+  margin-right: 12px;
+}

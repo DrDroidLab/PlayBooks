@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "time_range": {},
+    "page": {},
+    "total_count": 0,
+    "show_inactive": false
+  },
+  "global_query_options": {
+    "op_descriptions": [
+      {
+        "op": "EQ",
+        "label": "="
+      },
+      {
+        "op": "NEQ",
+        "label": "!="
+      },
+      {
+        "op": "GT",
+        "label": ">"
+      },
+      {
+        "op": "LT",
+        "label": "<"
+      },
+      {
+        "op": "GTE",
+        "label": ">="
+      },
+      {
+        "op": "LTE",
+        "label": "<="
+      },
+      {
+        "op": "IN",
+        "label": "IN"
+      },
+      {
+        "op": "NOT_IN",
+        "label": "NOT IN"
+      },
+      {
+        "op": "OR",
+        "label": "OR",
+        "is_logical": true
+      },
+      {
+        "op": "AND",
+        "label": "AND",
+        "is_logical": true
+      },
+      {
+        "op": "IS_NULL",
+        "label": "IS NULL",
+        "is_unary": true
+      },
+      {
+        "op": "EXISTS",
+        "label": "EXISTS",
+        "is_unary": true
+      },
+      {
+        "op": "NOT",
+        "label": "NOT",
+        "is_unary": true,
+        "is_logical": true
+      }
+    ],
+    "op_mapping": [
+      {
+        "lhs": "STRING",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "STRING"
+          },
+          {
+            "op": "NEQ",
+            "rhs": "STRING"
+          },
+          {
+            "op": "IN",
+            "rhs": "STRING_ARRAY"
+          },
+          {
+            "op": "NOT_IN",
+            "rhs": "STRING_ARRAY"
+          },
+          {
+            "op": "IS_NULL",
+            "rhs": "NULL_STRING"
+          },
+          {
+            "op": "EXISTS",
+            "rhs": "NULL_STRING"
+          }
+        ]
+      },
+      {
+        "lhs": "LONG",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "LONG"
+          },
+          {
+            "op": "NEQ",
+            "rhs": "LONG"
+          },
+          {
+            "op": "GT",
+            "rhs": "LONG"
+          },
+          {
+            "op": "LT",
+            "rhs": "LONG"
+          },
+          {
+            "op": "GTE",
+            "rhs": "LONG"
+          },
+          {
+            "op": "LTE",
+            "rhs": "LONG"
+          },
+          {
+            "op": "IN",
+            "rhs": "LONG_ARRAY"
+          },
+          {
+            "op": "NOT_IN",
+            "rhs": "LONG_ARRAY"
+          },
+          {
+            "op": "IS_NULL",
+            "rhs": "NULL_NUMBER"
+          },
+          {
+            "op": "EXISTS",
+            "rhs": "NULL_NUMBER"
+          }
+        ]
+      },
+      {
+        "lhs": "DOUBLE",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "NEQ",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "GT",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "LT",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "GTE",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "LTE",
+            "rhs": "DOUBLE"
+          },
+          {
+            "op": "IN",
+            "rhs": "DOUBLE_ARRAY"
+          },
+          {
+            "op": "NOT_IN",
+            "rhs": "DOUBLE_ARRAY"
+          },
+          {
+            "op": "IS_NULL",
+            "rhs": "NULL_NUMBER"
+          },
+          {
+            "op": "EXISTS",
+            "rhs": "NULL_NUMBER"
+          }
+        ]
+      },
+      {
+        "lhs": "BOOLEAN",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "BOOLEAN"
+          },
+          {
+            "op": "NEQ",
+            "rhs": "BOOLEAN"
+          },
+          {
+            "op": "IS_NULL",
+            "rhs": "NULL_NUMBER"
+          },
+          {
+            "op": "EXISTS",
+            "rhs": "NULL_NUMBER"
+          }
+        ]
+      },
+      {
+        "lhs": "TIMESTAMP",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "TIMESTAMP"
+          },
+          {
+            "op": "GT",
+            "rhs": "TIMESTAMP"
+          },
+          {
+            "op": "LT",
+            "rhs": "TIMESTAMP"
+          },
+          {
+            "op": "GTE",
+            "rhs": "TIMESTAMP"
+          },
+          {
+            "op": "LTE",
+            "rhs": "TIMESTAMP"
+          }
+        ]
+      },
+      {
+        "lhs": "ID",
+        "op_rhs": [
+          {
+            "op": "EQ",
+            "rhs": "ID"
+          },
+          {
+            "op": "IN",
+            "rhs": "ID_ARRAY"
+          }
+        ]
+      }
+    ],
+    "literal_type_description": [
+      {
+        "literal_type": "STRING",
+        "label": "str"
+      },
+      {
+        "literal_type": "LONG",
+        "label": "long"
+      },
+      {
+        "literal_type": "DOUBLE",
+        "label": "double"
+      },
+      {
+        "literal_type": "BOOLEAN",
+        "label": "bool"
+      },
+      {
+        "literal_type": "TIMESTAMP",
+        "label": "timestamp"
+      },
+      {
+        "literal_type": "ID",
+        "label": "id"
+      },
+      {
+        "literal_type": "STRING_ARRAY",
+        "label": "str array"
+      },
+      {
+        "literal_type": "LONG_ARRAY",
+        "label": "long array"
+      },
+      {
+        "literal_type": "DOUBLE_ARRAY",
+        "label": "double array"
+      },
+      {
+        "literal_type": "BOOLEAN_ARRAY",
+        "label": "bool array"
+      },
+      {
+        "literal_type": "ID_ARRAY",
+        "label": "id array"
+      }
+    ]
+  }
+}

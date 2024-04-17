@@ -1,0 +1,131 @@
+.main {
+  font-size: 12px;
+  text-align: left;
+}
+
+.pb-button {
+  margin-right: 5px;
+  border: 0.5px solid #9554ff;
+  background-color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 2px 5px 2px 5px;
+  color: #9554ff;
+}
+
+.pb-button:hover {
+  background-color: #9554ff;
+  color: white;
+}
+
+.close {
+  font-size: 15px;
+  color: rgb(211, 68, 68);
+  cursor: pointer;
+}
+
+.variable:hover .close {
+  display: block;
+}
+
+.info {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.name {
+  background-color: #e9ddfd;
+  color: black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.variable {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.dashboardSaveOverlay {
+  box-sizing: border-box;
+  min-width: calc(600px);
+  min-height: calc(200px);
+  height: max-content;
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 0px 24px 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.dashboardSaveOverlay__content {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboardSaveOverlay__content .panel__description {
+  display: flex;
+  gap: 2rem;
+}
+
+.dashboardSaveOverlay__select {
+  width: 220px;
+  color: #6b7280;
+}
+.dashboardSaveOverlay__title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 150%;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 48px;
+}
+
+.submitButton {
+  color: #9553fe;
+  border: 1px solid #9553fe;
+  border-radius: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-top: 5px;
+}
+
+.submitButtonRight {
+  color: #9553fe;
+  border: 1px solid #9553fe;
+  border-radius: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title svg {
+  cursor: pointer;
+}

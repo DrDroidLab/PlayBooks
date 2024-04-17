@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+.container input {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid #6b7280;
+  border-radius: 50%;
+  transition: all 0.1s ease-in-out;
+}
+.container input:hover {
+  cursor: pointer;
+}
+
+.container input::after {
+  content: '';
+  display: block;
+  border-radius: 50%;
+  width: 0.5em;
+  height: 0.5em;
+  margin: 2px;
+}
+
+.container input:checked::after {
+  background-color: #6b7280;
+}
+
+.container input:disabled {
+  cursor: not-allowed;
+  background-color: lightgray;
+  border: none;
+}
+
+.container label {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 150%;
+}
+
+.container label:hover {
+  cursor: pointer;
+}
+
+.container input:disabled + label {
+  color: lightgray;
+  cursor: not-allowed;
+}

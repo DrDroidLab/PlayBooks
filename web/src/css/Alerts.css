@@ -1,0 +1,201 @@
+.accordion {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+  /* margin: 10px; */
+}
+
+.accordion__tabs {
+  border: 1px solid #ccc;
+  /* padding: 7px; */
+  border-radius: 5px;
+}
+
+.accordion__tabs button {
+  display: inline-block;
+  /* background-color: #eee; */
+  border: none;
+  /* border-radius: 5px; */
+  padding: 14px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.accordion__tabs button:hover {
+  background-color: #ddd;
+}
+
+.accordion__tabs button.active {
+  background-color: #ccc;
+}
+
+.accordion__tab-content {
+  margin-top: 10px;
+}
+
+.accordion__tab-content h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.accordion__tab-content pre {
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.accordion-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.accordion-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.accordion-header span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.accordion-content {
+  display: flex;
+  flex-direction: row;
+  /* justify-content:space-between; */
+  padding: 10px;
+}
+
+.dropdown {
+  display: flex;
+  align-items: center;
+  width: 400px;
+  margin-right: 10px;
+  padding: 10px;
+  border: 1px solid rgb(138, 132, 132);
+  border-radius: 5px;
+}
+.dropdownOption {
+  display: flex;
+  align-items: center;
+  width: 140px;
+  margin-right: 10px;
+  padding: 16px;
+  border: 1px solid rgb(138, 132, 132);
+  border-radius: 5px;
+}
+
+.dropdown select {
+  /* appearance: none; */
+  border: 1px solid rgb(205, 201, 201);
+  background-color: #fff;
+  padding: 5px;
+  font-size: 14px;
+  margin-right: 5px;
+  width: 80%;
+  border: 1px solid grey;
+}
+
+button {
+  padding: 5px;
+  background-color: #9553fe;
+  color: #fff;
+  border: none;
+  min-width: 70px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #fff;
+}
+
+.smart-alert {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.smart-alert label {
+  margin-right: 10px;
+}
+
+.setup-action {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #2ecc71;
+}
+
+.dropdown span {
+  font-size: 24px;
+  line-height: 1;
+  margin-right: 5px;
+}
+
+.tabs {
+  width: 48%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tab-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-links button {
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #9553fe;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-links button:hover,
+.tab-links button.active {
+  background-color: #ddd;
+  color: #9553fe;
+}
+
+.tab-content .tab-pane {
+  display: none;
+  padding: 10px;
+}
+
+.tab-content .tab-pane.active {
+  display: block;
+}
+
+.accordion1 {
+  /* margin: 20px; */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.accordion1-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.condition-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
