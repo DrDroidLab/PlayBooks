@@ -1,4 +1,5 @@
 import logging
+import uuid
 from typing import Union
 
 from django.db.models import QuerySet
@@ -7,18 +8,23 @@ from django.http import HttpResponse
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user
+from executor.crud.playbook_execution_crud import create_playbook_execution
 from executor.crud.playbooks_crud import create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.task_executor import execute_task
+from executor.tasks import execute_playbook
+from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
+from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from playbooks.utils.utils import current_epoch_timestamp
+from playbooks.utils.utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
-    UpdatePlaybookRequest, UpdatePlaybookResponse
+    UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
+from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -125,3 +131,46 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
         return UpdatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Error", description=str(e)))
     return UpdatePlaybookResponse(success=BoolValue(value=True))
+
+
+@web_api(ExecutePlaybookRequest)
+def playbooks_execute(request_message: ExecutePlaybookRequest) -> Union[ExecutePlaybookResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    if not time_range.time_lt or not time_range.time_geq:
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook_id = request_message.playbook_id.value
+    if not playbook_id:
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                   message=Message(title="Invalid Request", description="Missing playbook_id"))
+    playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
+    try:
+        playbook_execution = create_playbook_execution(account, playbook_id, playbook_run_uuid)
+    except Exception as e:
+        logger.error(e)
+        return ExecutePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=str(e)))
+
+    saved_task = get_or_create_task(execute_playbook.__name__, account.id, playbook_id, playbook_execution.id,
+                                    proto_to_dict(time_range))
+    if saved_task:
+        if not check_scheduled_or_running_task_run_for_task(saved_task):
+            current_date_time = current_datetime()
+            task = execute_playbook.delay(account.id, playbook_id, playbook_execution.id, proto_to_dict(time_range))
+            try:
+                saved_task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
+                                                        status=PeriodicTaskStatus.SCHEDULED,
+                                                        account_id=account.id,
+                                                        scheduled_at=current_date_time)
+            except Exception as e:
+                logger.error(f"Exception occurred while saving task run for account: {account.id}, "
+                             f"task: {saved_task.id}, error: {e}")
+    else:
+        logger.error(f"Failed to create task for playbook execution: {playbook_run_uuid}")
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                   message=Message(title="Error",
+                                                   description="Failed to create task for playbook execution"))
+
+    return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                               playbook_run_id=StringValue(value=playbook_run_uuid))

@@ -40,12 +40,12 @@ def get_db_playbook(account: Account, playbook_id=None, playbook_name=None, is_a
     try:
         return account.playbook_set.filter(**filters)
     except Exception as e:
-        print("Failed to get playbook for account_id", account.id, e)
+        logger.error(f"Failed to get playbook for account_id {account.id} with error {e}")
         return None
 
 
-def get_db_playbook_step(account: Account, playbook: PlayBook, playbook_step_name=None, is_active=None):
-    filters = {'playbook_id': playbook.id}
+def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=None, is_active=None):
+    filters = {'playbook_id': playbook_id}
     if is_active is not None:
         filters['is_active'] = is_active
     if playbook_step_name:
@@ -53,7 +53,20 @@ def get_db_playbook_step(account: Account, playbook: PlayBook, playbook_step_nam
     try:
         return account.playbookstep_set.filter(**filters)
     except Exception as e:
-        print("Failed to get playbook step for account_id", account.id, e)
+        logger.error(f"Failed to get playbook steps for account_id {account.id} with error {e}")
+    return None
+
+
+def get_db_playbook_task_definitions(account: Account, playbook_id: str, playbook_step_id, is_active=None):
+    filters = {'playbook_id': playbook_id, 'playbook_step_id': playbook_step_id}
+    if is_active is not None:
+        filters['is_active'] = is_active
+    if is_active is not None:
+        filters['is_active'] = is_active
+    try:
+        return account.playbooktaskdefinition_set.filter(**filters)
+    except Exception as e:
+        logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
     return None
 
 

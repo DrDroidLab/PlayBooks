@@ -4,18 +4,13 @@ from django.db import models
 from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
-from executor.utils.playbooks_protos_utils import get_cloudwatch_task_execution_proto, \
-    get_grafana_task_execution_proto, get_new_relic_task_execution_proto, get_datadog_task_execution_proto, \
-    get_clickhouse_task_execution_proto, get_postgres_task_execution_proto, get_eks_task_execution_proto
+from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    PlaybookDocumentationTaskDefinition, ElseEvaluationTask, \
-    PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, PlaybookMetricTaskExecutionResult, \
-    TimeseriesEvaluationTask
+    PlaybookExecutionStatusType
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
-from utils.proto_utils import dict_to_proto
 
 
 class PlayBook(models.Model):
@@ -122,97 +117,34 @@ class PlayBookTaskDefinition(models.Model):
 
     @property
     def proto(self) -> PlaybookTaskDefinitionProto:
-        task_type = self.type
-        task = self.task
-        if task_type == PlaybookTaskDefinitionProto.Type.DECISION:
-            decision_task = task.get('decision_task', None)
-            if decision_task.get('evaluation_type', None) == 'ELSE':
-                else_evaluation_task_proto = dict_to_proto(decision_task.get('else_evaluation_task', {}),
-                                                           ElseEvaluationTask)
-                decision_task_proto = PlaybookDecisionTaskDefinitionProto(
-                    evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.ELSE,
-                    else_evaluation_task=else_evaluation_task_proto
-                )
-                return PlaybookTaskDefinitionProto(
-                    id=UInt64Value(value=self.id), name=StringValue(value=self.name),
-                    description=StringValue(value=self.description),
-                    type=self.type, decision_task=decision_task_proto, notes=StringValue(value=self.notes)
-                )
-            elif decision_task.get('evaluation_type', None) == 'TIMESERIES':
-                timeseries_evaluation_task = decision_task.get('timeseries_evaluation_task', {})
-                if timeseries_evaluation_task.get('input_type', None) == 'METRIC_TIMESERIES':
-                    metric_timeseries_input = dict_to_proto(
-                        timeseries_evaluation_task.get('metric_timeseries_input', {}),
-                        PlaybookMetricTaskExecutionResult)
-                    rules_proto = dict_to_proto(decision_task.get('rule', {}), TimeseriesEvaluationTask.Rule)
-                    timeseries_evaluation_task_proto = TimeseriesEvaluationTask(
-                        input_type=PlaybookTaskDefinitionProto.TimeseriesEvaluationTask.InputType.METRIC_TIMESERIES,
-                        rules=rules_proto, metric_timeseries_input=metric_timeseries_input)
-                    decision_task_proto = PlaybookDecisionTaskDefinitionProto(
-                        evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.TIMESERIES,
-                        timeseries_evaluation_task=timeseries_evaluation_task_proto
-                    )
-                    return PlaybookTaskDefinitionProto(
-                        id=UInt64Value(value=self.id), name=StringValue(value=self.name),
-                        description=StringValue(value=self.description), notes=StringValue(value=self.notes),
-                        type=self.type, decision_task=decision_task_proto
-                    )
-                else:
-                    raise ValueError(f"Invalid input type: {timeseries_evaluation_task.get('input_type', None)}")
-            else:
-                raise ValueError(f"Invalid evaluation type: {decision_task.get('evaluation_type', None)}")
-        elif task_type == PlaybookTaskDefinitionProto.Type.METRIC:
-            source = task.get('source', None)
-            if source == 'CLOUDWATCH':
-                metric_task_proto = get_cloudwatch_task_execution_proto(task)
-            elif source == 'GRAFANA':
-                metric_task_proto = get_grafana_task_execution_proto(task)
-            elif source == 'NEW_RELIC':
-                metric_task_proto = get_new_relic_task_execution_proto(task)
-            elif source == 'DATADOG':
-                metric_task_proto = get_datadog_task_execution_proto(task)
-            else:
-                raise ValueError(f"Invalid source: {source}")
-            return PlaybookTaskDefinitionProto(
-                id=UInt64Value(value=self.id),
-                name=StringValue(value=self.name),
-                description=StringValue(value=self.description),
-                type=self.type,
-                metric_task=metric_task_proto,
-                notes=StringValue(value=self.notes)
-            )
-        elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
-            source = task.get('source', None)
-            if source == 'CLICKHOUSE':
-                data_fetch_task_proto = get_clickhouse_task_execution_proto(task)
-            elif source == 'POSTGRES':
-                data_fetch_task_proto = get_postgres_task_execution_proto(task)
-            elif source == 'EKS':
-                data_fetch_task_proto = get_eks_task_execution_proto(task)
-            else:
-                raise ValueError(f"Invalid source: {source}")
-            return PlaybookTaskDefinitionProto(
-                id=UInt64Value(value=self.id),
-                name=StringValue(value=self.name),
-                description=StringValue(value=self.description),
-                type=self.type,
-                data_fetch_task=data_fetch_task_proto,
-                notes=StringValue(value=self.notes)
-            )
-        elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
-            documentation_task_proto = dict_to_proto(self.task, PlaybookDocumentationTaskDefinition)
-            return PlaybookTaskDefinitionProto(
-                id=UInt64Value(value=self.id),
-                name=StringValue(value=self.name),
-                description=StringValue(value=self.description),
-                type=self.type,
-                documentation_task=documentation_task_proto,
-                notes=StringValue(value=self.notes)
-            )
-        else:
-            raise ValueError(f"Invalid type: {task_type}")
+        return get_playbook_task_definition_proto(self)
 
     def save(self, **kwargs):
         if self.task:
             self.task_md5 = md5(str(self.task).encode('utf-8')).hexdigest()
         super().save(**kwargs)
+
+
+class PlayBookExecution(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE)
+    playbook_run_id = models.CharField(max_length=255)
+    status = models.IntegerField(null=True, blank=True, choices=generate_choices(PlaybookExecutionStatusType),
+                                 default=PlaybookExecutionStatusType.CREATED)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    started_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+
+    class Meta:
+        unique_together = [['account', 'playbook_run_id']]
+
+
+class PlayBookExecutionLog(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
+    playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
+    playbook_task_definition = models.ForeignKey(PlayBookTaskDefinition, on_delete=models.CASCADE, db_index=True)
+    playbook_task_result_type = models.IntegerField(choices=generate_choices(PlaybookTaskDefinitionProto.Type))
+    playbook_task_result = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('get', executor_views.playbooks_get),
     path('create', executor_views.playbooks_create),
     path('update', executor_views.playbooks_update),
+    path('execute', executor_views.playbooks_execute),
 ]

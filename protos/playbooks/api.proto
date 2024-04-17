@@ -64,3 +64,15 @@ message UpdatePlaybookResponse {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
 }
+
+message ExecutePlaybookRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value playbook_id = 2;
+}
+
+message ExecutePlaybookResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue playbook_run_id = 4;
+}
