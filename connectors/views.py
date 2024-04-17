@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from google.protobuf.wrappers_pb2 import BoolValue
 
 from accounts.models import get_request_account, Account, User, get_request_user
-from connectors.assets.utils.playbooks_utils import get_playbooks_sources_options
+from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
 from connectors.crud.connectors_crud import get_db_connectors, create_connector, get_all_available_connectors, \
     get_all_request_connectors, get_connector_keys_options, get_db_connector_keys
 from connectors.crud.connectors_update_processor import connector_update_processor
@@ -120,6 +120,6 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
 def playbooks_sources_options(request_message: GetConnectorPlaybookSourceOptionsRequest) -> \
         Union[GetConnectorPlaybookSourceOptionsResponse, HttpResponse]:
     account: Account = get_request_account()
-    account_active_connector_types = get_playbooks_sources_options(account)
+    account_active_connector_types = playbooks_builder_get_connector_sources_options(account)
     return GetConnectorPlaybookSourceOptionsResponse(success=BoolValue(value=True),
                                                      active_account_connectors=account_active_connector_types)

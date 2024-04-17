@@ -31,3 +31,61 @@ message RunPlaybookStepResponse {
   google.protobuf.StringValue description = 5;
   repeated PlaybookTaskExecutionResult task_execution_results = 6;
 }
+
+
+///////////////////// PlayBooks CRUD APIs /////////////////////
+message GetPlaybooksRequest {
+  Meta meta = 1;
+  repeated uint64 playbook_ids = 2;
+}
+
+message GetPlaybooksResponse {
+  Meta meta = 1;
+  repeated Playbook playbooks = 2;
+}
+
+message CreatePlaybookRequest {
+  string name = 1;
+  Playbook playbook = 2;
+}
+
+message CreatePlaybookResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  Playbook playbook = 3;
+}
+
+message UpdatePlaybookRequest {
+  google.protobuf.UInt64Value playbook_id = 1;
+  repeated UpdatePlaybookOp update_playbook_ops = 2;
+}
+
+message UpdatePlaybookResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+}
+
+message ExecutePlaybookRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value playbook_id = 2;
+}
+
+message ExecutePlaybookResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue playbook_run_id = 4;
+}
+
+
+message ExecutionPlaybookGetRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+}
+
+message ExecutionPlaybookGetResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookExecution playbook_execution = 4;
+}
