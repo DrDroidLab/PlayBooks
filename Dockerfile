@@ -13,7 +13,7 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-COPY nginx.default /etc/nginx/sites-available/default
+COPY docker/nginx.default /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
@@ -33,15 +33,15 @@ RUN chown -R www-data:www-data /code
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY setup_db.sh .
+COPY scripts/setup_db.sh .
 RUN sed -i 's/\r$//g' setup_db.sh
 RUN chmod +x setup_db.sh
 
-COPY start-server.sh .
+COPY scripts/start-server.sh .
 RUN sed -i 's/\r$//g' start-server.sh
 RUN chmod +x start-server.sh
 
-COPY start-celery-worker.sh .
+COPY scripts/start-celery-worker.sh .
 RUN sed -i 's/\r$//g' start-celery-worker.sh
 RUN chmod +x start-celery-worker.sh
 
