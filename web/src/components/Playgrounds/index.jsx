@@ -1,32 +1,21 @@
-import Heading from '../Heading.js';
-import SuspenseLoader from '../Skeleton/SuspenseLoader.js';
-import TableSkeleton from '../Skeleton/TableLoader.js';
-import { useGetPlaygroundsQuery } from '../../store/features/playground/api/index.ts';
-import PlaygroundTable from './PlaygroundTable.jsx';
+import React from "react";
 
-const Playground = () => {
-  const { data: playbookList, isLoading, refetch } = useGetPlaygroundsQuery();
-
-  const total = 0;
-  const pageMeta = { limit: 10, offset: 0 };
-
+function Playgrounds() {
   return (
-    <div>
-      <Heading heading={'Playground'} onTimeRangeChangeCb={false} onRefreshCb={false} />
-      <SuspenseLoader loading={isLoading} loader={<TableSkeleton />}>
-        <PlaygroundTable
-          playbookList={playbookList?.playbooks ?? []}
-          total={total}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          tableContainerStyles={
-            playbookList?.playbooks?.length ? {} : { maxHeight: '35vh', minHeight: '35vh' }
-          }
-          refreshTable={refetch}
-          showDelete={false}
-        />
-      </SuspenseLoader>
+    <div className="p-2">
+      <p className="mt-4">
+        View our sample playbooks on our{" "}
+        <a
+          className="text-violet-500 hover:underline"
+          href="https://sandbox.drdroid.io/"
+          target="_blank"
+          rel="noreferrer">
+          sandbox
+        </a>
+        .
+      </p>
     </div>
   );
-};
+}
 
-export default Playground;
+export default Playgrounds;
