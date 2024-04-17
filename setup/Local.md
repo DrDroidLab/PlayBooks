@@ -8,6 +8,16 @@ Install python dependencies (root directory)
 pip install -r requirements.txt
 ```
 
+Setup a local postgres DB (Optional)
+```
+docker-compose -f docker/db.docker-compose.yml up -d
+```
+
+Setup a local redis server (Optional)
+```
+docker run -d redis
+```
+
 Setup local environments variables for the python server to pickup
 ```
 export POSTGRES_HOST=<database_host>
