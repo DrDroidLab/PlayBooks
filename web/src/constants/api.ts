@@ -5,13 +5,13 @@ export const REFRESH_TOKEN = '/accounts/token/refresh/';
 export const LOGOUT_USER = '/accounts/logout/';
 
 // Playbooks
-export const GET_PLAYBOOKS = '/connectors/playbooks/get';
-export const UPDATE_PLAYBOOK = '/connectors/playbooks/update';
+export const GET_PLAYBOOKS = '/playbooks/get';
+export const UPDATE_PLAYBOOK = '/playbooks/update';
 export const GET_CONNECTORS = '/connectors/playbooks/sources/options';
 export const GET_ASSET_MODEL_OPTIONS = '/connectors/assets/models/options';
 export const GET_ASSETS = '/connectors/assets/models/get';
 
-export const DELETE_PLAYBOOK = '/connectors/playbooks/update';
+export const DELETE_PLAYBOOK = '/playbooks/update';
 
 // Triggers
 export const CREATE_TRIGGER = '/connectors/alertops/playbook_triggers/create';
