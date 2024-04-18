@@ -1,5 +1,6 @@
 <p align="center">
   <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/Horizontal+Logo.png" alt="Doctor Droid Logo" width="50%" height="50%">
+
 </p>
 
 <center>
@@ -10,8 +11,8 @@
 
 ## Accelerate triaging and automate diagnosis with Playbooks
 <div style="display: flex; justify-content: space-between;">
-<img src="https://assets-global.website-files.com/642ad9ebc00f9544d49b1a6b/65e82550d0b81966987ea751_status-quo-p-500.png" alt="Doctor Droid before" style="width: 50%; margin-right: 1%;margin-left: 1%; height: 50%;">
-<img src="https://assets-global.website-files.com/642ad9ebc00f9544d49b1a6b/65e825a048a51382adfbe967_with-doctor-droid-tree-p-500.png" alt="Doctor Droid after" style="width: 50%; margin-right: 1%; margin-left: 1%; height: 50%;">
+<img src="https://assets-global.website-files.com/642ad9ebc00f9544d49b1a6b/65e82550d0b81966987ea751_status-quo-p-500.png" alt="Doctor Droid before" style="width: 50%; margin-right: 1%;margin-left: 1%; height: 40%;">
+<img src="https://assets-global.website-files.com/642ad9ebc00f9544d49b1a6b/65e825a048a51382adfbe967_with-doctor-droid-tree-p-500.png" alt="Doctor Droid after" style="width: 50%; margin-right: 1%; margin-left: 1%; height: 40%;">
 </div>
 
 
@@ -26,14 +27,14 @@
 - [ ] Add support for custom API call from playbook.
 - [ ] Add templates.
 
-## Playbooks demo ([sandbox](https://sandbox.drdroid.io))
-<p align="center">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/8PEZlZbb6Fs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
+Explore [sandbox](https://sandbox.drdroid.io/).
+
+
 
 ## Getting Started with Installation:
 Refer to Docker based setup instructions [here](/setup/Docker.md).
 - [ ] Run on Kubernetes (via Helm)
+
 
 ## License
 Playbooks is licensed under the [MIT License](https://github.com/DrDroidLab/PlayBooks/blob/main/LICENSE).
