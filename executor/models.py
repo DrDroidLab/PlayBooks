@@ -163,10 +163,11 @@ class PlayBookExecution(models.Model):
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE)
     playbook_run_id = models.CharField(max_length=255)
     status = models.IntegerField(null=True, blank=True, choices=generate_choices(PlaybookExecutionStatusType),
-                                 default=PlaybookExecutionStatusType.CREATED)
+                                 default=PlaybookExecutionStatusType.CREATED, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    time_range = models.JSONField(null=True, blank=True)
 
     created_by = models.TextField(null=True, blank=True)
 
@@ -180,10 +181,26 @@ class PlayBookExecution(models.Model):
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
-            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            playbook=self.playbook.proto,
             status=self.status,
-            playbook=self.playbook.proto_partial,
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
             logs=logs
+        )
+
+    @property
+    def proto_partial(self) -> PlaybookExecutionProto:
+        return PlaybookExecutionProto(
+            id=UInt64Value(value=self.id),
+            playbook_run_id=StringValue(value=self.playbook_run_id),
+            playbook=self.playbook.proto_partial,
+            status=self.status,
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            created_by=StringValue(value=self.created_by) if self.created_by else None
         )
 
 
@@ -211,10 +228,12 @@ class PlayBookExecutionLog(models.Model):
 
     @property
     def proto_partial(self) -> PlaybookExecutionLogProto:
-        task = self.playbook_task_definition.proto
+        step = PlaybookStepDefinitionProto(id=UInt64Value(value=self.playbook_step.id))
+        task = PlaybookTaskDefinitionProto(id=UInt64Value(value=self.playbook_task_definition.id))
         return PlaybookExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            step=step,
             task=task,
             task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
         )

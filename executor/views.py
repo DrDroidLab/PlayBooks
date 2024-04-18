@@ -23,9 +23,10 @@ from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
-    ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse
+    ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
+    ExecutionsPlaybooksListRequest
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
-from utils.proto_utils import proto_to_dict
+from utils.proto_utils import proto_to_dict, dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -149,7 +150,7 @@ def playbooks_execute(request_message: ExecutePlaybookRequest) -> Union[ExecuteP
                                        message=Message(title="Invalid Request", description="Missing playbook_id"))
     playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
     try:
-        playbook_execution = create_playbook_execution(account, playbook_id, playbook_run_uuid, user.email)
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
         logger.error(e)
         return ExecutePlaybookResponse(success=BoolValue(value=False),
@@ -197,4 +198,24 @@ def playbooks_execution_get(request_message: ExecutionPlaybookGetRequest) -> \
                                             message=Message(title="Error", description=str(e)))
 
     playbook_execution = playbook_execution.first()
-    return ExecutionPlaybookGetResponse(success=BoolValue(value=True), playbook_execution=playbook_execution.proto)
+    time_range = playbook_execution.time_range
+    time_range_proto = dict_to_proto(time_range, TimeRange) if time_range else TimeRange()
+    return ExecutionPlaybookGetResponse(meta=get_meta(time_range_proto), success=BoolValue(value=True),
+                                        playbook_execution=playbook_execution.proto)
+
+
+@web_api(ExecutionsPlaybooksListRequest)
+def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -> \
+        Union[ExecutionsPlaybooksListResponse, HttpResponse]:
+    account: Account = get_request_account()
+    playbook_ids = request_message.playbook_ids
+    try:
+        playbook_executions = get_db_playbook_execution(account, playbook_ids=playbook_ids)
+        if not playbook_executions:
+            return ExecutionsPlaybooksListResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                   description="Playbook Executions not found"))
+        pbe_protos = [pbe.proto_partial for pbe in playbook_executions]
+        return ExecutionsPlaybooksListResponse(success=BoolValue(value=True), playbook_executions=pbe_protos)
+    except Exception as e:
+        return ExecutionPlaybookGetResponse(success=BoolValue(value=False),
+                                            message=Message(title="Error", description=str(e)))

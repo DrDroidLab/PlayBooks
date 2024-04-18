@@ -1,7 +1,7 @@
 import uuid
 from typing import Union
 
-from allauth.account.models import EmailConfirmationHMAC, EmailConfirmation, EmailAddress
+from allauth.account.models import EmailConfirmationHMAC, EmailConfirmation
 from django.http import HttpResponse, HttpRequest, Http404
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue
