@@ -10,6 +10,7 @@ import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
+import protos.base_pb2
 import sys
 import typing
 
@@ -1665,18 +1666,28 @@ class PlaybookExecution(google.protobuf.message.Message):
 
     ID_FIELD_NUMBER: builtins.int
     PLAYBOOK_RUN_ID_FIELD_NUMBER: builtins.int
-    STARTED_AT_FIELD_NUMBER: builtins.int
-    STATUS_FIELD_NUMBER: builtins.int
     PLAYBOOK_FIELD_NUMBER: builtins.int
+    STATUS_FIELD_NUMBER: builtins.int
+    CREATED_AT_FIELD_NUMBER: builtins.int
+    STARTED_AT_FIELD_NUMBER: builtins.int
+    FINISHED_AT_FIELD_NUMBER: builtins.int
+    TIME_RANGE_FIELD_NUMBER: builtins.int
+    CREATED_BY_FIELD_NUMBER: builtins.int
     LOGS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
     def playbook_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    started_at: builtins.int
-    status: global___PlaybookExecutionStatusType.ValueType
     @property
     def playbook(self) -> global___Playbook: ...
+    status: global___PlaybookExecutionStatusType.ValueType
+    created_at: builtins.int
+    started_at: builtins.int
+    finished_at: builtins.int
+    @property
+    def time_range(self) -> protos.base_pb2.TimeRange: ...
+    @property
+    def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
     def __init__(
@@ -1684,13 +1695,17 @@ class PlaybookExecution(google.protobuf.message.Message):
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         playbook_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        started_at: builtins.int = ...,
-        status: global___PlaybookExecutionStatusType.ValueType = ...,
         playbook: global___Playbook | None = ...,
+        status: global___PlaybookExecutionStatusType.ValueType = ...,
+        created_at: builtins.int = ...,
+        started_at: builtins.int = ...,
+        finished_at: builtins.int = ...,
+        time_range: protos.base_pb2.TimeRange | None = ...,
+        created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "time_range", b"time_range"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "finished_at", b"finished_at", "id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status", "time_range", b"time_range"]) -> None: ...
 
 global___PlaybookExecution = PlaybookExecution
 
