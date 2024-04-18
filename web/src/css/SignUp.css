@@ -1,0 +1,160 @@
+.signup-container {
+  display: flex;
+  height: 100vh;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.logoName {
+  margin-bottom: 10px;
+}
+
+.logo img {
+  height: 2rem;
+}
+
+.tf {
+  margin-bottom: 25px;
+}
+
+.tb {
+  margin-bottom: 0px;
+}
+
+.logo h2 {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.signup-form-container {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+  padding: 25 25 15 15;
+  background-color: #f8f8f8;
+}
+
+.signup-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #9553fe;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* .Signup p a {
+    color:  #9553FE;
+    text-decoration: none;
+  } */
+
+.signup-button:hover {
+  background-color: #9553fe;
+}
+
+.signup-image-container {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('https://via.placeholder.com/1200x800.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.signup-card-iframe {
+  width: 640px;
+  height: 416px;
+}
+
+.video-card-iframe {
+  width: 640px;
+  height: 416px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+  padding: 0px;
+}
+
+.half-width {
+  flex: 1;
+  width: 50%;
+}
+
+.logos {
+  display: flex;
+  flex-direction: row;
+}
+
+.plus-logo {
+  height: 40px;
+  width: 40px;
+  margin: 25px 20px 0px 20px;
+}
+
+.slack-logo {
+  height: 60px;
+  width: 60px;
+  margin: 10px 0px 0px 0px;
+}
+
+/* Media query for screens smaller than 600 pixels */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+
+  .signup-card-iframe {
+    width: 320px;
+    height: 208px;
+  }
+
+  .video-card-iframe {
+    width: 320px;
+    height: 208px;
+  }
+
+  .logos {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .plus-logo {
+    height: 40px;
+    width: 40px;
+    margin: 0px;
+  }
+
+  .slack-logo {
+    height: 60px;
+    width: 60px;
+  }
+}

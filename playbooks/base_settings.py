@@ -125,7 +125,7 @@ DATABASES = {
         'NAME': env.str('POSTGRES_DB', default='db'),
         'USER': env.str('POSTGRES_USER', default='user'),
         'PASSWORD': env.str('POSTGRES_PASSWORD', default='pass'),
-        'HOST': env.str('REPLICA1_POSTGRES_HOST', default=_default_postgres_host),
+        'HOST': _default_postgres_host,
         'PORT': env.str('POSTGRES_PORT', default='5432'),
     },
     # 'clickhouse': {
@@ -227,7 +227,7 @@ LOGGING = {
 }
 
 CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),

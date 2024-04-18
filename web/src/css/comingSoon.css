@@ -1,0 +1,35 @@
+.coming-soon {
+  -webkit-filter: blur(5px);
+  filter: blur(5px);
+  /* background-image:   */
+  /* "url('https://media.geeksforgeeks.org/wp-content/uploads/rk.png')"; */
+}
+
+.comingSoon-container {
+  height: 80vh;
+  width: 100%;
+  background-position: center center;
+  background-size: cover;
+  position: relative;
+  filter: blur(3px);
+}
+
+.comingSoon-card {
+  background-color: white;
+  padding: 2rem;
+  max-width: 700px;
+  text-align: center;
+  position: absolute;
+  height: 30%;
+  width: 40%;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 999;
+}

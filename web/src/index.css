@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* * {
+  position: relative;
+} */
+
+.MuiCircularProgress-colorPrimary {
+  color: #9553fe !important;
+}
+
+.activeNavLink .Mui-selected,
+.activeNavLink .Mui-selected:hover {
+  background-color: #9553fe;
+}
+
+.activeNavLink .Mui-selected,
+.activeNavLink .Mui-selected .MuiListItemIcon-root {
+  color: #ffffff;
+}
+
+.wmde-markdown ol {
+  list-style: auto !important;
+}
+
+.wmde-markdown ul {
+  list-style: circle !important;
+}

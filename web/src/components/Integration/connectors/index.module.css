@@ -1,0 +1,128 @@
+div.ruleBox {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  border: thin solid black;
+  padding-bottom: 0px;
+  background-color: #efebf4;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.container .eventTypeSelectionSection {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 10px;
+  min-width: 200px;
+}
+
+.container .content {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  color: #6b7280;
+  padding-top: 4px;
+  min-width: 100px;
+}
+
+.container .content-centre {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  color: #6b7280;
+  padding-top: 4px;
+  min-width: 100px;
+  text-align: center;
+}
+
+.container {
+  padding-left: 8px;
+  padding-top: 12px;
+  background-color: #fff;
+  margin: 0px 12px 12px 0px;
+  border-width: 1px;
+  border-color: hsl(240deg 21% 87%);
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.container .heading {
+  padding-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.container .subHeading {
+  font-size: 11px;
+  padding-top: 4px;
+  color: #6b7280;
+}
+
+.addConditionStyle {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.crossIcon {
+  cursor: pointer;
+}
+
+.container .content {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  color: #6b7280;
+  padding-top: 4px;
+  min-width: 100px;
+}
+
+.eventsEnrich {
+  display: flex;
+}
+
+.dataCount {
+  padding-top: 4px;
+  padding-left: 4px;
+  padding-left: 10px;
+  color: #6b7280;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.tab-section {
+  margin-left: 10px;
+}
+
+.MuiBox-root {
+  padding: 0px;
+}
+
+.chip {
+  padding: 5px;
+  background-color: #6b728045;
+  font-size: 12px;
+  border-radius: 10px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.chips {
+  margin-top: 5px;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.vpcToggle {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 15px;
+  font-size: small;
+}

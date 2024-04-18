@@ -7,11 +7,17 @@ services:
       - "POSTGRES_DB=db"
       - "POSTGRES_USER=user"
       - "POSTGRES_PASSWORD=pass"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
   redis:
     image: 'redis:alpine'
     ports:
       - '6379:6379'
+    networks:
+      - mynetwork
 
   setup_db:
     build:
@@ -32,6 +38,8 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - mynetwork
 
   server:
     build:
@@ -53,6 +61,20 @@ services:
       - db
       - redis
       - setup_db
+    networks:
+      - mynetwork
+
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    image: web
+    ports:
+      - '80:80'
+    depends_on:
+      - server
+    networks:
+      - mynetwork
 
   celery_worker:
     build:
@@ -72,23 +94,11 @@ services:
       - db
       - redis
       - setup_db
+    networks:
+      - mynetwork
 
-  notification_celery_worker:
-    build:
-      context: ..
-      dockerfile: Dockerfile
-    image: playbooks
-    command: ./start-celery-worker.sh
-    environment:
-      - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
-      - "CELERY_BROKER_URL=redis://redis:6379/0"
-      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
-      - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
-      - "CELERY_QUEUE=notification"
-    depends_on:
-      - db
-      - redis
-      - setup_db
+networks:
+  mynetwork:
+
+volumes:
+  postgres_data:
