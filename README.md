@@ -5,7 +5,7 @@
 
 <center>
 
-[Docs](https://docs.drdroid.io) | [Sandbox](https://sandbox.drdroid.io) | [Installation](https://docs.drdroid.io/docs/installation) | [Quick Start Guide](https://docs.drdroid.io/docs/quick-start-guide) | [Changelog](https://docs.drdroid.io/changelog)
+[Docs](https://docs.drdroid.io) | [Sandbox](https://sandbox.drdroid.io) | [Installation](https://docs.drdroid.io/docs/installation) | [Quick Start Guide](https://docs.drdroid.io/docs/quick-start-guide) | [Changelog](https://docs.drdroid.io/changelog) | [Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
 
 </center>
 
@@ -34,6 +34,12 @@ Explore [sandbox](https://sandbox.drdroid.io/).
 ## Getting Started with Installation:
 Refer to Docker based setup instructions [here](/setup/Docker.md).
 - [ ] Run on Kubernetes (via Helm)
+
+
+## Learn more
+- Learn about [integrations](https://docs.drdroid.io/docs/integrations) on Doctor Droid
+- Asks questions in the [community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
+- [Talk to us](https://calendly.com/dipesh-droid/integrations)
 
 
 ## License
