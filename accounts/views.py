@@ -48,8 +48,8 @@ def get_account_api_tokens(request_message: GetAccountApiTokensRequest) -> \
 @web_api(CreateAccountApiTokenRequest)
 def create_account_api_token(request_message: CreateAccountApiTokenRequest) -> \
         Union[CreateAccountApiTokenResponse, HttpResponse]:
-    if not is_request_user_email_verified():
-        return CreateAccountApiTokenResponse(success=BoolValue(value=False))
+    # if not is_request_user_email_verified():
+    #     return CreateAccountApiTokenResponse(success=BoolValue(value=False))
 
     user = get_current_request().user
     account: Account = get_request_account()

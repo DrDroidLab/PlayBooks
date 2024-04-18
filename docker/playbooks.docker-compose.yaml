@@ -97,28 +97,6 @@ services:
     networks:
       - mynetwork
 
-  notification_celery_worker:
-    build:
-      context: ..
-      dockerfile: Dockerfile
-    image: playbooks
-    command: ./start-celery-worker.sh
-    environment:
-      - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
-      - "CELERY_BROKER_URL=redis://redis:6379/0"
-      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
-      - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
-      - "CELERY_QUEUE=notification"
-    depends_on:
-      - db
-      - redis
-      - setup_db
-    networks:
-      - mynetwork
-
 networks:
   mynetwork:
 
