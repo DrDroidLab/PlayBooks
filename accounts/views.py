@@ -29,9 +29,6 @@ from playbooks.utils.queryset import filter_page
 @web_api(GetAccountApiTokensRequest)
 def get_account_api_tokens(request_message: GetAccountApiTokensRequest) -> \
         Union[GetAccountApiTokensResponse, HttpResponse]:
-    if not is_request_user_email_verified():
-        return GetAccountApiTokensResponse(meta=get_meta(), account_api_tokens=[])
-
     account: Account = get_request_account()
     qs = account.account_api_token.all()
 
@@ -48,9 +45,6 @@ def get_account_api_tokens(request_message: GetAccountApiTokensRequest) -> \
 @web_api(CreateAccountApiTokenRequest)
 def create_account_api_token(request_message: CreateAccountApiTokenRequest) -> \
         Union[CreateAccountApiTokenResponse, HttpResponse]:
-    # if not is_request_user_email_verified():
-    #     return CreateAccountApiTokenResponse(success=BoolValue(value=False))
-
     user = get_current_request().user
     account: Account = get_request_account()
 
@@ -60,11 +54,8 @@ def create_account_api_token(request_message: CreateAccountApiTokenRequest) -> \
 
 
 @web_api(DeleteAccountApiTokenRequest)
-def delete_account_api_token(request_message: DeleteAccountApiTokenRequest) -> Union[
-    DeleteAccountApiTokenResponse, HttpResponse]:
-    if not is_request_user_email_verified():
-        return DeleteAccountApiTokenResponse(success=BoolValue(value=False))
-
+def delete_account_api_token(request_message: DeleteAccountApiTokenRequest) -> \
+        Union[DeleteAccountApiTokenResponse, HttpResponse]:
     account: Account = get_request_account()
     key: str = request_message.account_api_token_key
     if key == "":

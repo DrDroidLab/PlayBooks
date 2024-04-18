@@ -50,7 +50,12 @@ def create_user_account(sender, instance, created, **kwargs):
     if instance.is_staff:
         return
 
-    account = get_account_for_user(instance)
+    account, _ = Account.objects.get_or_create(id=1)
+    if not account.owner:
+        if not account.is_whitelisted:
+            account.is_whitelisted = True
+        account.owner = instance
+        account.save()
 
     instance.account = account
     instance.save()
