@@ -8,6 +8,6 @@ Go to [http://localhost](http://localhost:80) to access the portal.
 ## Thing to note
 A default user is created for instant access and getting started with following credentials:
 ```
-Email: admin@admin
+Email: admin@example.com
 Password: admin
 ```

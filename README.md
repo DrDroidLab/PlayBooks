@@ -13,11 +13,8 @@ Quick start: https://docs.drdroid.io/docs/quick-start-guide
 
 See the [Change log](https://docs.drdroid.io/changelog) for our recent releases.
 
-## Run locally
-Refer to Local setup instructions [here](/setup/Local.md).
-
 ## Run via Docker
-Coming soon.
+Refer to Docker based setup instructions [here](/setup/Docker.md).
 
 ## Run on Kubernetes (via Helm)
 Coming soon.

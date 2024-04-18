@@ -286,7 +286,7 @@ const apis = {
         console.log(e);
       }
     ) => {
-      apiCallback('/playbooks/get', requestData, onSuccess, onError, false);
+      apiCallback('/pb/get', requestData, onSuccess, onError, false);
     };
 
     return callback;
@@ -303,7 +303,7 @@ const apis = {
         console.log('error');
       }
     ) => {
-      apiCallback('/playbooks/create', requestData, onSuccess, onError, false);
+      apiCallback('/pb/create', requestData, onSuccess, onError, false);
     };
 
     return callback;
