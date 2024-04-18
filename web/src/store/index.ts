@@ -7,6 +7,7 @@ import integrationsSlice from "./features/integrations/integrationsSlice.ts";
 import timeRangeSlice from "./features/timeRange/timeRangeSlice.ts";
 import triggerSlice from "./features/triggers/triggerSlice.ts";
 import snackbarSlice from "./features/snackbar/snackbarSlice.ts";
+import triggersBetaSlice from "./features/triggersBeta/triggersBetaSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     playbook: playbookSlice,
     integrations: integrationsSlice,
     trigger: triggerSlice,
+    triggersBeta: triggersBetaSlice,
     snackbar: snackbarSlice,
   },
   middleware: (getDefaultMiddleware) =>
