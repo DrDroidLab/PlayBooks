@@ -71,7 +71,7 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
 
   function redirectToLoginAfterSignup() {
-    navigate('/login', { state: { prevState: 'signup_filled' } });
+    navigate('/login');
   }
 
   const getError = err => {
