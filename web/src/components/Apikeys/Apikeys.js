@@ -115,8 +115,9 @@ const ApiTokens = () => {
     setPageSize(newPageSize);
   };
 
-  const handleCreateApiKey = () => {
-    triggerGenerateAPIKey();
+  const handleCreateApiKey = async () => {
+    await triggerGenerateAPIKey();
+    window.location.reload();
   };
 
   return (
