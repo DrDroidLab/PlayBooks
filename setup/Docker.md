@@ -5,9 +5,5 @@ docker-compose -f playbooks.docker-compose.yaml up -d
 
 Go to [http://localhost](http://localhost:80) to access the portal. 
 
-## Thing to note
-A default user is created for instant access and getting started with following credentials:
-```
-Email: admin@example.com
-Password: admin
-```
+## Get started
+Signup at [http://localhost/signup](http://localhost:80/signup) to create your user and create playbooks. 
