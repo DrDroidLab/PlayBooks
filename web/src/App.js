@@ -27,6 +27,9 @@ const PlaybookTriggers = React.lazy(() =>
 const CreateTrigger = React.lazy(() =>
   import("./components/Playbooks/triggers/CreateTrigger.jsx"),
 );
+const CreateWorkflow = React.lazy(() =>
+  import("./components/Playbooks/CreateWorkflow.jsx"),
+);
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const PlaybooksExplore = React.lazy(() =>
   import("./components/Playbooks/Explore"),
@@ -42,6 +45,9 @@ const EditPlaybook = React.lazy(() =>
 );
 const CreatePlaybook = React.lazy(() =>
   import("./components/Playbooks/CreatePlaybook"),
+);
+const PlaybookLog = React.lazy(() =>
+  import("./components/Playbooks/logs/PlaybookLog"),
 );
 
 const App = () => {
@@ -91,6 +97,10 @@ const App = () => {
                 element={<EditPlaybook />}
               />
               <Route
+                path="/playbooks/logs/:playbook_run_id"
+                element={<PlaybookLog />}
+              />
+              <Route
                 path="/playbook-runs/:playbook_run_id"
                 element={<PlayBookRunLogs />}
               />
@@ -101,6 +111,10 @@ const App = () => {
               <Route
                 path="/playbooks/triggers/create/:playbook_id"
                 element={<CreateTrigger />}
+              />
+              <Route
+                path="/playbooks/workflows/create"
+                element={<CreateWorkflow />}
               />
               <Route
                 path="/playbooks/triggers/view/:playbook_id/:triggerId"

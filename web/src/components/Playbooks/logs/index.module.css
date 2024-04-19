@@ -1,0 +1,130 @@
+.variables-box {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  gap: 5px;
+}
+
+.addConditionStyle {
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: #9554ff;
+}
+
+.notes {
+  width: 100%;
+  font-size: 13px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  color: #676666;
+  padding: 5px;
+}
+
+.notesRead {
+  width: 100%;
+  font-size: 13px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  color: #676666;
+  margin-bottom: 10px;
+  height: 4rem;
+}
+
+.notesHeading {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #9554ff;
+}
+
+.output-box {
+  width: calc(100% - 5px); /* Each item takes up 50% of the width with a gap of 20px */
+  background-color: #fafafa;
+  padding: 5px;
+  box-sizing: border-box;
+  max-height: 500px;
+  overflow: scroll;
+}
+
+.output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two items per row */
+  gap: 10px; /* Gap between items */
+}
+
+.output-grid-table {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Two items per row */
+  gap: 10px; /* Gap between items */
+}
+
+.step-buttons {
+  margin-top: 5px;
+}
+
+.pb-button {
+  margin-right: 5px;
+  border: 0.5px solid #9554ff;
+  background-color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 2px 5px 2px 5px;
+  color: #9554ff;
+}
+
+.pb-button:hover {
+  background-color: #9554ff;
+  color: white;
+}
+
+.input {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  color: #1f2937;
+  padding: 4px 8px;
+  outline: none;
+  height: auto;
+  width: 200px;
+  font-size: 0.8rem;
+}
+
+form {
+  gap: 10px;
+  align-items: end;
+}
+
+.btn {
+  border: 0.5px solid #9554ff;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 4px 8px;
+  color: #9554ff;
+  height: fit-content;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background-color: #9554ff;
+  color: white;
+}
+
+.table {
+  margin: 10px 0;
+}
+
+.table td,
+.table th {
+  border-collapse: collapse;
+  border: 1px solid #d1d5db;
+  padding: 5px;
+  font-size: 14px;
+}
+
+td,
+td {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
