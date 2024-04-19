@@ -69,6 +69,8 @@ services:
       context: ../web
       dockerfile: Dockerfile
     image: web
+    environment:
+      - POSTHOG_ENABLED=true
     ports:
       - '80:80'
     depends_on:
