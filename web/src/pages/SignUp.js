@@ -321,24 +321,6 @@ function SignUp() {
           </Box>
         </Box>
       </BlankLayoutWrapper>
-      <BlankLayoutWrapper className="half-width">
-        <Box className="app-content">
-          <Box className="content-center-video">
-            <Typography variant="h6" style={{ justifyContent: 'center', fontWeight: '400' }}>
-              Watch it in action
-            </Typography>
-            <iframe
-              className="video-card-iframe"
-              src="https://www.loom.com/embed/8558192a87be434aba0d895a1463da5c?sid=c98add88-8709-43bb-9969-4a9e4998f516"
-              frameborder="5"
-              webkitallowfullscreen
-              mozallowfullscreen
-              allowfullscreen
-              title="DrDroid Loom video"
-            ></iframe>
-          </Box>
-        </Box>
-      </BlankLayoutWrapper>
     </div>
   );
 }
