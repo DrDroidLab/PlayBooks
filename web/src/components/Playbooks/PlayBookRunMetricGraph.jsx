@@ -1,13 +1,13 @@
-import ReactECharts from 'echarts-for-react';
-import { useState, useEffect, useMemo } from 'react';
-import styles from './index.module.css';
+import ReactECharts from "echarts-for-react";
+import { useState, useEffect, useMemo } from "react";
+import styles from "./index.module.css";
 
-import { getTSLabel } from './utils';
+import { getTSLabel } from "./utils";
 
-import SeeMoreText from './SeeMoreText';
+import SeeMoreText from "./SeeMoreText";
 
-import dayjs from 'dayjs';
-import useKeyPressed from '../../hooks/useKeyPressed';
+import dayjs from "dayjs";
+import useKeyPressed from "../../hooks/useKeyPressed";
 
 const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const [chartOptions, setChartOptions] = useState({});
@@ -25,10 +25,13 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
     ? result?.timeseries?.labeled_metric_timeseries[0]?.unit
     : null;
 
-  const handleLegendClick = params => {
+  const handleLegendClick = (params) => {
     let newSelectedLegends = selectedLegends;
-    const selectedLegendsFiltered = Object.values(selectedLegends).filter(e => e);
-    const allSelected = selectedLegendsFiltered.length === Object.keys(selectedLegends).length;
+    const selectedLegendsFiltered = Object.values(selectedLegends).filter(
+      (e) => e,
+    );
+    const allSelected =
+      selectedLegendsFiltered.length === Object.keys(selectedLegends).length;
     const isSelected = selectedLegends[params.name];
 
     if (!allSelected && isSelected) {
@@ -39,7 +42,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       if (keyPressed) {
         newSelectedLegends = {
           ...newSelectedLegends,
-          [params.name]: !isSelected
+          [params.name]: !isSelected,
         };
       } else {
         for (let legend of Object.keys(selectedLegends)) {
@@ -48,18 +51,18 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
         // Toggle the selection state for the clicked legend
         newSelectedLegends = {
           ...newSelectedLegends,
-          [params.name]: true
+          [params.name]: true,
         };
       }
     }
 
-    setChartOptions(prev => {
+    setChartOptions((prev) => {
       return {
         ...prev,
         legend: {
           ...prev.legend,
-          selected: newSelectedLegends
-        }
+          selected: newSelectedLegends,
+        },
       };
     });
 
@@ -76,15 +79,17 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
         });
       }
 
-      let tsLabels = sortedTSData.map(x => getTSLabel(x?.metric_label_values ?? []));
+      let tsLabels = sortedTSData.map((x) =>
+        getTSLabel(x?.metric_label_values ?? []),
+      );
 
       let data = [];
       for (let j = 0; j < sortedTSData.length; j++) {
         data.push({
-          ts: sortedTSData[j].datapoints.map(ts => {
+          ts: sortedTSData[j].datapoints.map((ts) => {
             return parseFloat(ts?.value?.toFixed(2));
           }),
-          label: sortedTSData[j].label
+          label: sortedTSData[j].label,
         });
       }
 
@@ -92,11 +97,11 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       for (let i = 0; i < data.length; i++) {
         series.push({
           name: tsLabels[i],
-          type: 'line',
-          data: data[i]['ts'],
+          type: "line",
+          data: data[i]["ts"],
           emphasis: {
-            focus: 'series'
-          }
+            focus: "series",
+          },
         });
       }
 
@@ -106,31 +111,31 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       }, {});
       setSelectedLegends(initialLegendsState);
 
-      let xaxisArray = sortedTSData[0].datapoints.map(ts => {
-        return dayjs.unix(parseInt(ts.timestamp) / 1000).format('HH:mm');
+      let xaxisArray = sortedTSData[0].datapoints.map((ts) => {
+        return dayjs.unix(parseInt(ts.timestamp) / 1000).format("HH:mm");
       });
 
       let updatedChartOptions = {
         xAxis: {
-          type: 'category',
+          type: "category",
           data: xaxisArray,
-          boundaryGap: false
+          boundaryGap: false,
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: "axis",
         },
         legend: {
-          type: 'scroll',
-          orient: 'horizontal',
+          type: "scroll",
+          orient: "horizontal",
           bottom: 0,
           data: tsLabels,
-          selected: initialLegendsState
+          selected: initialLegendsState,
         },
         yAxis: {
-          type: 'value',
-          name: unit
+          type: "value",
+          name: unit,
         },
-        series: series
+        series: series,
       };
 
       setChartOptions(updatedChartOptions);
@@ -143,24 +148,28 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   }, [tsData]);
 
   const onEvents = {
-    legendselectchanged: handleLegendClick
+    legendselectchanged: handleLegendClick,
   };
 
   return (
-    <div className={styles['graph-box']}>
-      <p className={styles['graph-title']}>
+    <div className={styles["graph-box"]}>
+      <p className={styles["graph-title"]}>
         <SeeMoreText text={title} />
       </p>
       {!showGraph && (
-        <p className={styles['graph-error']}>
-          {error ? <SeeMoreText truncSize={150} text={error} /> : 'No data available'}
+        <p className={styles["graph-error"]}>
+          {error ? (
+            <SeeMoreText truncSize={150} text={error} />
+          ) : (
+            "No data available"
+          )}
         </p>
       )}
       {showGraph && (
         <ReactECharts
           onEvents={onEvents}
           style={{
-            overflow: 'scroll'
+            overflow: "scroll",
           }}
           option={chartOptions}
           notMerge={true}
@@ -168,12 +177,12 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       )}
 
       {!showGraph && timestamp && (
-        <p className={styles['graph-ts-error']}>
+        <p className={styles["graph-ts-error"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}
       {showGraph && timestamp && (
-        <p className={styles['graph-ts']}>
+        <p className={styles["graph-ts"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}

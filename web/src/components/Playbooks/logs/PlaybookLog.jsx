@@ -9,6 +9,7 @@ import { getAssetModelOptions } from "../../../store/features/playbook/api/index
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
+  resetState,
   setSteps,
   toggleStep,
   updateStep,
@@ -19,6 +20,10 @@ import { ArrowDropDown } from "@mui/icons-material";
 import GlobalVariables from "../../common/GlobalVariable/index.jsx";
 import styles from "./playbooks.module.css";
 import Step from "./Step.jsx";
+import {
+  resetTimeRange,
+  setPlaybookState,
+} from "../../../store/features/timeRange/timeRangeSlice.ts";
 
 function PlaybookLog() {
   const { playbook_run_id } = useParams();
@@ -27,6 +32,7 @@ function PlaybookLog() {
     useLazyGetPlaybookExecutionQuery();
   const { steps } = useSelector(playbookSelector);
   const playbook = data?.playbook_execution?.playbook;
+  const outputs = data?.playbook_execution?.logs;
 
   useEffect(() => {
     if (playbook_run_id) {
@@ -39,6 +45,14 @@ function PlaybookLog() {
       populateData();
     }
   }, [playbook]);
+
+  useEffect(() => {
+    dispatch(setPlaybookState());
+    return () => {
+      dispatch(resetState());
+      dispatch(resetTimeRange());
+    };
+  }, [dispatch]);
 
   if (isLoading || !playbook_run_id) {
     return <Loading />;
@@ -79,19 +93,20 @@ function PlaybookLog() {
       console.log("Error: ", err);
     });
 
+    for (let output of outputs) {
+      const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
+      if (stepIndex === isNaN) continue;
+      const step = pbData[stepIndex];
+      step.showOutput = true;
+      step.output = output;
+    }
+
     dispatch(setSteps(pbData));
   };
 
   return (
     <div className="flex flex-col h-screen">
-      <Heading
-        heading={playbook.name}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-        showRunAll={steps?.length > 0}
-        showEditTitle={!playbook}
-        customTimeRange={true}
-      />
+      <Heading heading={playbook.name} customTimeRange={true} />
       <div className={styles["pb-container"]}>
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
