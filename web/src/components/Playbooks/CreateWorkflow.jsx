@@ -1,7 +1,7 @@
 import React from "react";
-import Heading from "../Heading";
-import ValueComponent from "../ValueComponent";
-import SelectComponent from "../SelectComponent";
+import Heading from "../Heading.js";
+import ValueComponent from "../ValueComponent/index.jsx";
+import SelectComponent from "../SelectComponent/index.jsx";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import { actionOptions, scheduleOptions } from "../../utils/triggerOptions.ts";
@@ -10,9 +10,14 @@ import {
   currentTriggerSelctor,
   setKey,
 } from "../../store/features/triggersBeta/triggersBetaSlice.ts";
+import { RefreshRounded } from "@mui/icons-material";
 
 function CreateTrigger() {
-  const { data, isLoading: playbooksLoading } = useGetPlaybooksQuery({});
+  const {
+    data,
+    isFetching: playbooksLoading,
+    refetch,
+  } = useGetPlaybooksQuery({});
   const dispatch = useDispatch();
   const currentTrigger = useSelector(currentTriggerSelctor);
 
@@ -28,25 +33,32 @@ function CreateTrigger() {
 
   return (
     <div>
-      <Heading heading={"Create Trigger"} />
+      <Heading heading={"Create Workflow"} />
       <div class="p-6 flex flex-col gap-6">
         <div class="flex gap-4">
           <div class="space-y-2">
             <label
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               for="playbook">
-              Trigger Name
+              Workflow Name
             </label>
             <ValueComponent
               valueType={"STRING"}
-              placeHolder={"Enter trigger name"}
+              placeHolder={"Enter workflow name"}
             />
           </div>
           <div class="space-y-2">
             <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              class="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               for="playbook">
               Select Playbook
+              <a
+                href="/playbooks/create"
+                rel="noreferrer"
+                target="_blank"
+                className="border border-violet-500 p-1 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs">
+                + Add New
+              </a>
             </label>
             <div className="flex gap-2 items-center">
               <SelectComponent
@@ -62,12 +74,19 @@ function CreateTrigger() {
                 searchable={true}
               />
               {playbooksLoading && <CircularProgress size={20} />}
+              <button onClick={refetch}>
+                <RefreshRounded
+                  className={`text-gray-400 hover:text-gray-600 transition-all`}
+                />
+              </button>
             </div>
           </div>
         </div>
+        <hr />
         <div>
           <label class="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block font-medium">
             Schedule
+            <p className="text-gray-500 text-xs italic">Select one of these</p>
           </label>
           <div
             class="flex items-center bg-gray-100 my-2 rounded-lg overflow-hidden"
@@ -80,13 +99,13 @@ function CreateTrigger() {
                 className={`${
                   currentTrigger.schedule === option.id
                     ? "!bg-violet-500 !text-white"
-                    : ""
-                } p-2 text-sm hover:bg-violet-300 hover:text-black cursor-pointer transition-all`}>
+                    : "text-gray-500"
+                } p-2 text-sm hover:bg-violet-200 cursor-pointer transition-all`}>
                 {option.label}
               </button>
             ))}
           </div>
-          <div>
+          <div className="mt-4">
             {scheduleOptions
               .find((e) => e.id === currentTrigger.schedule)
               ?.options.map((option) => (
@@ -104,9 +123,11 @@ function CreateTrigger() {
               ))}
           </div>
         </div>
+        <hr />
         <div>
           <label class="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block font-medium">
             Actions
+            <p className="text-gray-500 text-xs italic">Select one of these</p>
           </label>
           <div
             class="flex items-center bg-gray-100 my-2 rounded-lg overflow-hidden"
@@ -119,13 +140,13 @@ function CreateTrigger() {
                 className={`${
                   currentTrigger.action === option.id
                     ? "!bg-violet-500 !text-white"
-                    : ""
-                } p-2 text-sm hover:bg-violet-300 hover:text-black cursor-pointer transition-all`}>
+                    : "text-gray-500"
+                } p-2 text-sm hover:bg-violet-200 cursor-pointer transition-all`}>
                 {option.label}
               </button>
             ))}
           </div>
-          <div>
+          <div className="mt-4">
             {actionOptions
               .find((e) => e.id === currentTrigger.action)
               ?.options.map((option) => (
@@ -138,6 +159,7 @@ function CreateTrigger() {
                   <ValueComponent
                     valueType={"STRING"}
                     placeHolder={`Enter ${option.label}`}
+                    length={400}
                   />
                 </>
               ))}

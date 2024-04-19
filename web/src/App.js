@@ -27,8 +27,8 @@ const PlaybookTriggers = React.lazy(() =>
 const CreateTrigger = React.lazy(() =>
   import("./components/Playbooks/triggers/CreateTrigger.jsx"),
 );
-const CreateTriggerBeta = React.lazy(() =>
-  import("./components/Playbooks/CreateTrigger.jsx"),
+const CreateWorkflow = React.lazy(() =>
+  import("./components/Playbooks/CreateWorkflow.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const PlaybooksExplore = React.lazy(() =>
@@ -113,8 +113,8 @@ const App = () => {
                 element={<CreateTrigger />}
               />
               <Route
-                path="/playbooks/triggers/create/beta/:playbook_id"
-                element={<CreateTriggerBeta />}
+                path="/playbooks/workflows/create"
+                element={<CreateWorkflow />}
               />
               <Route
                 path="/playbooks/triggers/view/:playbook_id/:triggerId"
