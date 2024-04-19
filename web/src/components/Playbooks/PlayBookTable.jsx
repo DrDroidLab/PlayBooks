@@ -50,7 +50,6 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
         <TableHead>
           <TableRow>
             <TableCell className={styles['tableTitle']}>Name</TableCell>
-            {showDelete && <TableCell className={styles['tableTitle']}>Triggers</TableCell>}
             {showDelete && <TableCell className={styles['tableTitle']}>Actions</TableCell>}
             <TableCell className={styles['tableTitle']}>Created At</TableCell>
           </TableRow>
@@ -68,13 +67,6 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
                   {item.name}
                 </Link>
               </TableCell>
-              {showDelete && (
-                <TableCell component="th" scope="row">
-                  <button onClick={() => handleTriggers(item)} className={styles['pb-button']}>
-                    {item.has_triggers ? 'View' : 'Add'}
-                  </button>
-                </TableCell>
-              )}
               {showDelete && (
                 <TableCell component="th" scope="row">
                   <div className="flex gap-2">
