@@ -7,7 +7,7 @@ from google.protobuf.wrappers_pb2 import BoolValue
 from accounts.models import get_request_account, Account, User, get_request_user
 from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
 from connectors.crud.connectors_crud import get_db_connectors, create_connector, get_all_available_connectors, \
-    get_all_request_connectors, get_connector_keys_options, get_db_connector_keys
+    get_all_request_connectors, get_connector_keys_options, get_db_connector_keys, test_connection_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
 from playbooks.utils.decorators import web_api
@@ -114,6 +114,14 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
     connector_key_protos = list(x.get_proto for x in connector_keys)
     return GetConnectorKeysResponse(success=BoolValue(value=True), connector=connector.proto,
                                     connector_keys=connector_key_protos)
+
+
+@web_api(CreateConnectorRequest)
+def connectors_test_connection(request_message: CreateConnectorRequest) -> Union[CreateConnectorResponse, HttpResponse]:
+    connector: ConnectorProto = request_message.connector
+    connector_keys = request_message.connector_keys
+    connection_state, message = test_connection_connector(connector, connector_keys)
+    return CreateConnectorResponse(success=BoolValue(value=connection_state), message=Message(title=message))
 
 
 @web_api(GetConnectorPlaybookSourceOptionsRequest)
