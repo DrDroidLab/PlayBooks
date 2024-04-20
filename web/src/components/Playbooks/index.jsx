@@ -1,73 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
-import API from "../../API";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
 
 import PlaybookTable from "./PlayBookTable";
+import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 
 const Playbooks = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-
-  const [playbookList, setPlaybookList] = useState([]);
-
-  const [total, setTotal] = useState(0);
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-
-  const getPlaybooks = API.useGetPlaybooksData();
-
-  const fetchData = () => {
-    getPlaybooks(
-      {
-        meta: {
-          page: pageMeta,
-        },
-      },
-      (response) => {
-        if (response.data?.playbooks?.length > 0) {
-          setPlaybookList(response.data.playbooks);
-          setTotal(Number(response.data?.meta?.total_count));
-        }
-        setLoading(false);
-      },
-      (err) => {
-        setLoading(false);
-      },
-    );
-  };
+  const { data, isFetching, refetch } = useGetPlaybooksQuery(pageMeta);
+  const playbookList = data?.playbooks;
+  const total = data?.meta?.total_count;
 
   useEffect(() => {
-    if (loading) {
-      setPlaybookList([]);
-      fetchData();
-    }
-  }, [loading]);
+    if (!isFetching) refetch(pageMeta);
+  }, [pageMeta]);
 
-  const pageUpdateCb = useCallback(
-    (page, successCb, errCb) => {
-      setPageMeta(page);
-      getPlaybooks(
-        {
-          meta: {
-            page,
-          },
-        },
-        (resp) => {
-          setPlaybookList(resp.data?.playbooks);
-          setTotal(Number(resp.data?.meta?.total_count));
-          successCb(resp.data?.playbooks, Number(resp.data?.meta?.total_count));
-        },
-        (err) => {
-          errCb(err);
-        },
-      );
-    },
-    [getPlaybooks],
-  );
+  const pageUpdateCb = (page) => {
+    setPageMeta(page);
+  };
 
   const handleCreatePlaybook = () => {
     navigate({
@@ -97,7 +52,7 @@ const Playbooks = () => {
           + Create Playbook
         </button>
       </div>
-      <SuspenseLoader loading={!!loading} loader={<TableSkeleton />}>
+      <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
         <PlaybookTable
           playbookList={playbookList}
           total={total}
@@ -106,7 +61,7 @@ const Playbooks = () => {
           tableContainerStyles={
             playbookList?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
           }
-          refreshTable={fetchData}></PlaybookTable>
+          refreshTable={refetch}></PlaybookTable>
       </SuspenseLoader>
     </div>
   );

@@ -22,6 +22,7 @@ import {
   useLazyGetConnectorListQuery,
 } from "../../../store/features/integrations/api/index.ts";
 import { ChevronLeft } from "@mui/icons-material";
+import GoogleChatIntegration from "./GoogleChatIntegration.jsx";
 
 function ConnectorPage() {
   const { id } = useParams();
@@ -80,6 +81,8 @@ function ConnectorPage() {
   switch (id) {
     case unsupportedConnectors.SLACK:
       return <SlackIntegration />;
+    case unsupportedConnectors.GOOGLE_CHAT:
+      return <GoogleChatIntegration />;
     default:
       break;
   }

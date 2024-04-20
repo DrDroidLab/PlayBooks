@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import Heading from "../../components/Heading";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import styles from "./playbooks.module.css";
-import { getAssetModelOptions } from "../../store/features/playbook/api/index.ts";
+import {
+  getAssetModelOptions,
+  useExecutePlaybookMutation,
+} from "../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   copyPlaybook,
@@ -16,7 +19,6 @@ import {
 import { playbookToSteps } from "../../utils/playbookToSteps.ts";
 import Step from "./steps/Step.jsx";
 import StepActions from "./StepActions.jsx";
-import API from "../../API";
 import { getStepTitle } from "./utils.jsx";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PlaybookTitle from "../common/PlaybookTitle.jsx";
@@ -38,7 +40,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
     useLazyGetPlaybookQuery();
   const { steps, isEditing } = useSelector(playbookSelector);
-  const executePlaybooksTask = API.useExecutePlaybooksTask();
+  const [triggerExecutePlaybook] = useExecutePlaybookMutation();
   const [outputs, setOutputs] = useState([]);
   const timeRange = useSelector(rangeSelector);
   const copied = useRef(false);
@@ -77,7 +79,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
     );
   };
 
-  const queryForStepTask = (step, cb) => {
+  const queryForStepTask = async (step, cb) => {
     if (Object.keys(step.errors ?? {}).length > 0) {
       cb({}, false);
       return;
@@ -106,38 +108,35 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
       return;
     }
 
-    executePlaybooksTask(
-      body,
-      (res) => {
-        if (!res.data?.success) {
-          dispatch(
-            showSnackbar(
-              res.data?.task_execution_result?.error || "There was an error",
-            ),
-          );
-          cb({}, false);
-          return;
-        }
-        cb(
-          {
-            step: step,
-            data: res.data,
-            timestamp: new Date().toTimeString(),
-            title: getStepTitle(step),
-          },
-          true,
+    try {
+      const response = await triggerExecutePlaybook(body).unwrap();
+      if (!response?.success) {
+        dispatch(
+          showSnackbar(
+            response?.task_execution_result?.error || "There was an error",
+          ),
         );
-      },
-      (err) => {
-        console.error(err);
-        cb(
-          {
-            error: err.err,
-          },
-          false,
-        );
-      },
-    );
+        cb({}, false);
+        return;
+      }
+      cb(
+        {
+          step: step,
+          data: response,
+          timestamp: new Date().toTimeString(),
+          title: getStepTitle(step),
+        },
+        true,
+      );
+    } catch (e) {
+      console.error(e);
+      cb(
+        {
+          error: e.err,
+        },
+        false,
+      );
+    }
   };
 
   const handleGlobalExecute = () => {

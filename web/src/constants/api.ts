@@ -3,6 +3,8 @@ export const API_URL = "/";
 // Auth
 export const REFRESH_TOKEN = "/accounts/token/refresh/";
 export const LOGOUT_USER = "/accounts/logout/";
+export const GET_ACCOUNT_USERS = "/accounts/current_users";
+export const INVITE_USERS = "/accounts/invite_users";
 
 // API Key
 export const CREATE_API_TOKEN = "/accounts/account_api_tokens/create";
@@ -11,6 +13,8 @@ export const FETCH_API_TOKEN = "/accounts/account_api_tokens";
 // Playbooks
 export const GET_PLAYBOOKS = "/pb/get";
 export const UPDATE_PLAYBOOK = "/pb/update";
+export const CREATE_PLAYBOOK = "/pb/create";
+export const EXECUTE_TASK = "/executor/task/run";
 export const GET_CONNECTORS = "/connectors/playbooks/builder/sources/options";
 export const GET_ASSET_MODEL_OPTIONS = "/connectors/assets/models/options";
 export const GET_ASSETS = "/connectors/assets/models/get";
@@ -28,21 +32,6 @@ export const GET_TRIGGER = "/connectors/alertops/triggers/get";
 export const GET_TRIGGER_OPTIONS = "/connectors/alertops/options/get";
 export const SEARCH_TRIGGER = "/connectors/alertops/slack/alerts/search";
 
-// Playground
-export const GET_PLAYGROUNDS = "/connectors/playbooks/playground/get";
-export const RUN_PLAYGROUND_TASK =
-  "/connectors/playbooks/playground/run_playbook_task";
-export const RUN_PLAYGROUND_STEP =
-  "/connectors/playbooks/playground/run_playbook_step";
-export const GET_PLAYGROUND_CONNECTORS =
-  "/connectors/playbooks/playground/sources/options";
-export const GET_PLAYGROUND_ASSET_MODEL_OPTIONS =
-  "/connectors/playbooks/playground/assets/models/options";
-export const GET_PLAYGROUND_ASSETS =
-  "/connectors/playbooks/playground/assets/models/get";
-export const EXECUTE_TASK =
-  "/connectors/playbooks/playground/run_playbook_task";
-
 // Integrations
 export const ALL_CONNECTORS = "/connectors/list";
 export const GET_CONNECTOR_OPTIONS = "/connectors/keys/options";
@@ -56,9 +45,15 @@ export const GET_SLACK_ASSETS = "/connectors/assets/models/get";
 export const UPDATE_SLACK_RCA =
   "/connectors/alertops/slack/alerts/auto_rca/update_state";
 
+export const GOOGLE_SPACES_LIST =
+  "/connectors/integrations/handlers/g_chat/list_spaces";
+export const GOOGLE_SPACES_REGISTER =
+  "/connectors/integrations/handlers/g_chat/register_spaces";
+
 // Alert Insights
 export const GET_SLACK_ALERT_METRIC =
   "/connectors/alertops/slack/get_alert_metric";
+export const SLACK_CONNECT = "/connectors/alertops/slack/connect";
 
 // Sample Alert Insights
 export const GET_ALERT_OPTIONS_PLAYGROUND =

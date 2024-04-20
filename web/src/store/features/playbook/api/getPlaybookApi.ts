@@ -1,32 +1,33 @@
-import { GET_PLAYBOOKS } from '../../../../constants/index.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
-import { setCurrentPlaybook } from '../playbookSlice.ts';
+import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
+import { setCurrentPlaybook, setPlaybookData } from "../playbookSlice.ts";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     getPlaybook: builder.query<any, { playbookId: number }>({
       query: ({ playbookId }) => ({
         url: GET_PLAYBOOKS,
         body: {
-          playbook_ids: [playbookId]
+          playbook_ids: [playbookId],
         },
-        method: 'POST'
+        method: "POST",
       }),
-      transformResponse: response => {
+      transformResponse: (response) => {
         return response?.playbooks[0];
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCurrentPlaybook(data));
+          dispatch(setPlaybookData(data));
         } catch (error) {
           // Handle any errors
           console.log(error);
         }
       },
-      providesTags: ['Playbooks']
-    })
-  })
+      providesTags: ["Playbooks"],
+    }),
+  }),
 });
 
-export const { useLazyGetPlaybookQuery } = getPlaybookApi;
+export const { useGetPlaybookQuery, useLazyGetPlaybookQuery } = getPlaybookApi;

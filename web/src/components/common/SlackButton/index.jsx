@@ -1,15 +1,18 @@
-import styles from './styles.module.css';
+import styles from "./styles.module.css";
 
 function SlackButton() {
   return (
     <div>
       <a
         href={`/connectors/integrations/handlers/slack_bot/install?user_email=${localStorage.getItem(
-          'email'
+          "email",
         )}`}
-        className={styles['slack-button']}
-      >
-        <img src="/slack-logo.svg" alt="Slack Logo" className={styles['slack-svg']} />
+        className={styles["slack-button"]}>
+        <img
+          src="/integrations/slack-logo.svg"
+          alt="Slack Logo"
+          className={styles["slack-svg"]}
+        />
         Add to Slack
       </a>
     </div>

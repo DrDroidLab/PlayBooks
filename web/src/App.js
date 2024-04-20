@@ -31,14 +31,8 @@ const CreateWorkflow = React.lazy(() =>
   import("./components/Playbooks/CreateWorkflow.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
-const PlaybooksExplore = React.lazy(() =>
-  import("./components/Playbooks/Explore"),
-);
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
 const Support = React.lazy(() => import("./components/Support"));
-const PlayBookRunLogs = React.lazy(() =>
-  import("./components/Playbooks/PlayBookRunLogs"),
-);
 const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys"));
 const EditPlaybook = React.lazy(() =>
   import("./components/Playbooks/EditPlaybook.jsx"),
@@ -85,7 +79,6 @@ const App = () => {
           <Route element={<AxiosPrivate />}>
             <Route element={<Layout />}>
               <Route exact path="/" element={<Playbooks />} />
-              <Route path="/playbooks/explore" element={<PlaybooksExplore />} />
               <Route path="/playbooks" element={<Playbooks />} />
               <Route path="/playbooks/create" element={<CreatePlaybook />} />
               <Route
@@ -99,10 +92,6 @@ const App = () => {
               <Route
                 path="/playbooks/logs/:playbook_run_id"
                 element={<PlaybookLog />}
-              />
-              <Route
-                path="/playbook-runs/:playbook_run_id"
-                element={<PlayBookRunLogs />}
               />
               <Route
                 path="/playbooks/triggers/:playbook_id"

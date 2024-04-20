@@ -1,6 +1,6 @@
-import { connectors } from '../constants/connectors.ts';
+import { connectors } from "../constants/connectors.ts";
 
 export const unsupportedConnectors = {
-  NEW_RELIC: connectors.NEW_RELIC.toLowerCase(),
-  SLACK: connectors.SLACK.toLowerCase()
+  GOOGLE_CHAT: connectors.GOOGLE_CHAT.toLowerCase(),
+  SLACK: connectors.SLACK.toLowerCase(),
 };

@@ -6,13 +6,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-
-import SlackIcon from "./data/slack.png";
-
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
-
-import logo from "./data/black_logo.png";
 import useLogout from "./hooks/useLogout";
 import "../src/Layout.css";
 import { Key, Terminal } from "@mui/icons-material";
@@ -65,7 +60,7 @@ function Sidebar() {
           <Link to="/">
             <div style={{ display: "flex", justifyContent: "center" }}>
               <img
-                src={logo}
+                src="/logo/drdroid-logo-full.png"
                 alt="Logo"
                 style={{ width: "100px" }}
                 className="main_logo_option"
@@ -127,7 +122,7 @@ function Sidebar() {
               minWidth: "34px",
             }}>
             <img
-              src={SlackIcon}
+              src="/integrations/slack-logo.svg"
               alt="Slack Logo"
               style={{ width: "18px", marginLeft: "-5px" }}
             />

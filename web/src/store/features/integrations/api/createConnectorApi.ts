@@ -1,22 +1,22 @@
-import { CREATE_CONNECTOR_STATUS } from '../../../../constants/api.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
+import { CREATE_CONNECTOR_STATUS } from "../../../../constants/api.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const createConnectorApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     createConnector: builder.mutation<any, any>({
       query: ({ keys, type }) => ({
         url: CREATE_CONNECTOR_STATUS,
-        method: 'POST',
+        method: "POST",
         body: {
           connector: {
-            type: type
+            type: type,
           },
-          connector_keys: keys
-        }
+          connector_keys: keys,
+        },
       }),
-      invalidatesTags: ['Integrations']
-    })
-  })
+      invalidatesTags: ["Integrations"],
+    }),
+  }),
 });
 
 export const { useCreateConnectorMutation } = createConnectorApi;
