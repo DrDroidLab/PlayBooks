@@ -61,13 +61,14 @@ class AssetManagerFacade:
                                filters: AccountConnectorAssetsModelFiltersProto):
         if not connector_type:
             raise ValueError(f"Missing ConnectorType in request")
-        if not model_type:
-            raise ValueError(f"Missing ModelType in request")
         manager: ConnectorAssetManager = self._map.get(connector_type)
         if not manager:
             raise ValueError(f"No asset manager found for connector_type: {connector_type}")
-        connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type,
-                                                                  model_type=model_type)
+        if not model_type:
+            connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type)
+        else:
+            connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type,
+                                                                      model_type=model_type)
         assets = manager.get_asset_model_values(account, model_type, filters, connector_metadata_models)
         return [assets]
 
