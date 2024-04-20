@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/SignUp.css";
-import axios from "axios";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -17,7 +16,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CardContent, CircularProgress } from "@mui/material";
 import Toast from "../components/Toast";
-import posthog from "posthog-js";
+import { useSignupMutation } from "../store/features/auth/api/index.ts";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -50,6 +49,7 @@ function SignUp() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
+  const [triggerSignup] = useSignupMutation();
 
   const handleCloseToast = () => {
     setError("");
@@ -96,10 +96,7 @@ function SignUp() {
         last_name: lastName,
         password: password,
       };
-      await axios.post("/accounts/signup/", JSON.stringify(data), {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+      await triggerSignup(data).unwrap();
 
       setEmail("");
       setPassword("");
@@ -107,12 +104,6 @@ function SignUp() {
       setLastName("");
 
       redirectToLoginAfterSignup();
-      posthog.identify(data.email, {
-        email: data?.email,
-        first_name: data?.first_name,
-        last_name: data?.last_name,
-        identify_type: "sign_up",
-      });
     } catch (err) {
       console.error(err);
       setBtnLoading(false);

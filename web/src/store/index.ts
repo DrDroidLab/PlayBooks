@@ -5,7 +5,6 @@ import authSlice from "./features/auth/authSlice.ts";
 import playbookSlice from "./features/playbook/playbookSlice.ts";
 import integrationsSlice from "./features/integrations/integrationsSlice.ts";
 import timeRangeSlice from "./features/timeRange/timeRangeSlice.ts";
-import triggerSlice from "./features/triggers/triggerSlice.ts";
 import snackbarSlice from "./features/snackbar/snackbarSlice.ts";
 import triggersBetaSlice from "./features/triggersBeta/triggersBetaSlice.ts";
 
@@ -16,7 +15,6 @@ export const store = configureStore({
     auth: authSlice,
     playbook: playbookSlice,
     integrations: integrationsSlice,
-    trigger: triggerSlice,
     triggersBeta: triggersBetaSlice,
     snackbar: snackbarSlice,
   },

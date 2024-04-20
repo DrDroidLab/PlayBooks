@@ -1,6 +1,7 @@
 export enum ErrorType {
-  GENERAL = 'general',
-  TASK_FAILED = 'task_failed'
+  GENERAL = "general",
+  TASK_FAILED = "task_failed",
+  AUTHENTICATION = "authorization",
 }
 
 export class CustomError {

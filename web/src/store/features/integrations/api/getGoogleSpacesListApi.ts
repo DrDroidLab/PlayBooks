@@ -1,4 +1,4 @@
-import { CREATE_CONNECTOR_STATUS } from "../../../../constants/api.ts";
+import { CREATE_CONNECTOR_STATUS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const getGoogleSpacesListApi = apiSlice.injectEndpoints({

@@ -8,20 +8,18 @@ import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
-import useLogout from "./hooks/useLogout";
 import "../src/Layout.css";
 import { Key, Terminal } from "@mui/icons-material";
+import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 function Sidebar() {
   const navigate = useNavigate();
-  const logout = useLogout();
-
   const [open, setOpen] = useState(false);
-
+  const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
 
   const signOut = async () => {
-    await logout();
+    await triggerLogout();
     navigate("/login");
   };
 

@@ -1,4 +1,4 @@
-import { GOOGLE_SPACES_REGISTER } from "../../../../constants/api.ts";
+import { GOOGLE_SPACES_REGISTER } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const registerGoogleSpacesApi = apiSlice.injectEndpoints({

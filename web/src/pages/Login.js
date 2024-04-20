@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import "../css/Login.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -16,11 +15,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import MuiCard from "@mui/material/Card";
 import IconButton from "@mui/material/IconButton";
 import { CircularProgress, CardContent } from "@mui/material";
-import useAuth from "../hooks/useAuth";
 import Toast from "../components/Toast";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "../store/features/auth/authSlice.ts";
-import posthog from "posthog-js";
+import { useLoginMutation } from "../store/features/auth/api/loginApi.ts";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -44,7 +40,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }));
 
 function Login() {
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -56,8 +51,7 @@ function Login() {
   const [toastOpen, setToastOpen] = useState("");
   const [toastMsg, setToastMsg] = useState(false);
   const [toastType, setToastType] = useState("success");
-  const [btnLoading, setBtnLoading] = useState(false);
-  const dispatch = useDispatch();
+  const [triggerLogin, { isLoading }] = useLoginMutation();
 
   const handleOpenToast = (msg, toastType) => {
     setToastMsg(msg);
@@ -79,35 +73,18 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setBtnLoading(true);
     try {
       const data = {
         email: email,
         password: password,
       };
-      const response = await axios.post(
-        "/accounts/login/",
-        JSON.stringify(data),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
-
-      const accessToken = response?.data?.access_token;
-      const refreshToken = response?.data?.refresh_token;
-
-      setAuth({ email, refreshToken, accessToken });
-      dispatch(setCredentials({ accessToken, refreshToken, email }));
-      localStorage.setItem("email", email);
+      await triggerLogin(data).unwrap();
       setEmail("");
       setPassword("");
       handleOpenToast("Login Successful!", "success");
       navigate(from, { replace: true });
-      posthog.identify(data.email);
     } catch (err) {
       console.error(err);
-      setBtnLoading(false);
       if (!err?.response) {
         handleOpenToast("No Server Response", "error");
       } else if (err.response?.status === 400) {
@@ -222,7 +199,7 @@ function Login() {
                     type="submit"
                     variant="contained"
                     sx={{ mb: 7 }}>
-                    {btnLoading ? (
+                    {isLoading ? (
                       <CircularProgress style={{ color: "white" }} />
                     ) : (
                       "Login"

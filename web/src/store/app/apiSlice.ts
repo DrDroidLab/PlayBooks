@@ -13,6 +13,7 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
+  credentials: "include",
 });
 
 const modifyRequestBody = (originalArgs, api) => {
@@ -38,6 +39,21 @@ const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
   const modifiedArgs = modifyRequestBody(args, api);
 
   let result: any = await baseQuery(modifiedArgs, api, extraOptions);
+
+  // if (result.error?.status === 401) {
+  //   // Try to refresh the token
+  //   const refreshResult = await api.dispatch(refreshToken());
+
+  //   if (refreshResult.type.endsWith("fulfilled")) {
+  //     result = await baseQuery(modifiedArgs, api, extraOptions);
+  //   } else {
+  //     api.dispatch(redirectToLogin());
+  //     throw new CustomError(
+  //       "Session expired. Please login again.",
+  //       ErrorType.AUTHENTICATION,
+  //     );
+  //   }
+  // }
 
   if (result?.error?.originalStatus === 502) {
     const retryCount = extraOptions?.retryCount || 0;

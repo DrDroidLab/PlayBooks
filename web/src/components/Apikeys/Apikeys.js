@@ -77,7 +77,11 @@ const columns = [
 const ApiTokens = () => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const { data, isLoading, isError, refetch } = useGetAPIKeyQuery();
+  const meta = {
+    limit: pageSize,
+    offset: pageSize * page,
+  };
+  const { data, isLoading, isError, refetch } = useGetAPIKeyQuery(meta);
   const [triggerGenerateAPIKey, { isLoading: generateLoading }] =
     useGenerateAPIKeyMutation();
 
@@ -86,7 +90,7 @@ const ApiTokens = () => {
   }, [page, pageSize]);
 
   useEffect(() => {
-    if (data.meta) setPageSize(Number(data?.meta?.page?.limit));
+    if (data?.meta) setPageSize(Number(data?.meta?.page?.limit));
   }, [data]);
 
   const handlePageChange = (newPage) => {

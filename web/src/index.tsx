@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { TimeRangeProvider } from "./context/TimeRangeProvider";
 import { Provider } from "react-redux";
@@ -24,21 +23,19 @@ root.render(
   <PostHogProvider client={posthog}>
     <Provider store={store}>
       <BrowserRouter>
-        <AuthProvider>
-          <TimeRangeProvider>
-            <Routes>
-              <Route
-                path={"/*"}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <App />
-                  </React.Suspense>
-                }
-              />
-            </Routes>
-            <GlobalSnackbar />
-          </TimeRangeProvider>
-        </AuthProvider>
+        <TimeRangeProvider>
+          <Routes>
+            <Route
+              path={"/*"}
+              element={
+                <React.Suspense fallback={<Loading />}>
+                  <App />
+                </React.Suspense>
+              }
+            />
+          </Routes>
+          <GlobalSnackbar />
+        </TimeRangeProvider>
       </BrowserRouter>
     </Provider>
   </PostHogProvider>,
