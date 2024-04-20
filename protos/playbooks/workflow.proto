@@ -1,0 +1,56 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+enum WorkflowTriggerType {
+  UNKNOWN_WTT = 0;
+  API = 1;
+  SLACK_ALERT = 2;
+}
+
+message SlackAlertTrigger {
+    string channel = 1;
+    string alert_type = 2;
+    string matching_string = 3;
+}
+
+message WorkflowTrigger {
+  WorkflowTriggerType type = 1;
+  string workflow_trigger_api_endpoint = 2;
+  SlackAlertTrigger slack_alert_trigger = 3;
+}
+
+enum WorkflowScheduleType {
+  UNKNOWN_WST = 0;
+  ONCE = 1;
+  SCHEDULED = 2;
+}
+
+message WorkflowSchedule {
+  WorkflowScheduleType type = 1;
+  string schedule_cron = 2;
+  google.protobuf.UInt64Value duration = 3;
+}
+
+enum WorkflowNotificationType {
+  UNKNOWN_WTNT = 0;
+  SLACK_MESSAGE = 1;
+  SLACK_REPLY = 2;
+  WEBHOOK = 3;
+}
+
+message WorkflowNotification {
+    string slack_message_channel = 1;
+    string webhook_url = 2;
+}
+
+message Workflow {
+  string name = 1;
+  google.protobuf.UInt64Value playbook_id = 2;
+  repeated WorkflowTrigger Triggers = 3;
+  WorkflowSchedule schedule = 4;
+  WorkflowNotification notification = 5;
+}

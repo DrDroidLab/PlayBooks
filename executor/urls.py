@@ -11,6 +11,10 @@ urlpatterns = [
     path('create', executor_views.playbooks_create),
     path('update', executor_views.playbooks_update),
 
+    # Workflows CRUD
+    path('workflows/create', executor_views.workflows_create),
+    path('workflows/get', executor_views.workflows_get),
+
     # Playbooks Execution APIs
     path('execute', executor_views.playbooks_execute),
     path('execution/get', executor_views.playbooks_execution_get),

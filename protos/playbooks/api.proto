@@ -5,6 +5,7 @@ import "google/protobuf/wrappers.proto";
 
 import "protos/base.proto";
 import "protos/playbooks/playbook.proto";
+import "protos/playbooks/workflow.proto";
 
 message RunPlaybookTaskRequest {
   Meta meta = 1;
@@ -101,3 +102,24 @@ message ExecutionsPlaybooksListResponse {
   Message message = 3;
   repeated PlaybookExecution playbook_executions = 4;
 }
+
+//////////////// Workflow APIs ////////////////
+message CreateWorkflowRequest {
+  Workflow workflow = 1;
+}
+
+message CreateWorkflowResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  google.protobuf.UInt64Value workflow_id = 3;
+}
+
+message GetWorkflowsRequest {
+  repeated uint64 workflow_ids = 2;
+}
+
+message GetWorkflowsResponse {
+  Meta meta = 1;
+  repeated Workflow workflows = 2;
+}
+

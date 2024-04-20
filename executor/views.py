@@ -20,7 +20,7 @@ from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
-from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
+from protos.playbooks.api_pb2 import CreateWorkflowRequest, CreateWorkflowResponse, GetWorkflowsRequest, GetWorkflowsResponse, RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
@@ -133,6 +133,24 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
         return UpdatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Error", description=str(e)))
     return UpdatePlaybookResponse(success=BoolValue(value=True))
+
+
+@web_api(CreateWorkflowRequest)
+def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+
+    # Create workflow
+    return CreateWorkflowResponse(success=BoolValue(value=True))
+
+
+@web_api(GetWorkflowsRequest)
+def workflows_get(request_message: GetWorkflowsRequest) -> Union[GetWorkflowsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+
+    # Get workflows
+    return GetWorkflowsResponse(success=BoolValue(value=True))
 
 
 @web_api(ExecutePlaybookRequest)
