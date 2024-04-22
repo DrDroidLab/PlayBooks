@@ -85,7 +85,7 @@ function Query({ step, index }) {
               className={`text-gray-400 hover:text-gray-600 transition-all`}
             />
           </button>
-          {connectorData?.length === 0 && (
+          {(!connectorData || connectorData?.length === 0) && (
             <button
               href="/playbooks/create"
               rel="noreferrer"
