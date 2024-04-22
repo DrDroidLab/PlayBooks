@@ -224,6 +224,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
           <div className={styles.steps}>
             {steps?.map((step, index) => (
               <Accordion
+                key={index}
                 style={{ borderRadius: "5px" }}
                 className="collapsible_option"
                 defaultExpanded={step.isPrefetched ? false : true}

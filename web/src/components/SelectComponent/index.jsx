@@ -87,10 +87,12 @@ const SelectComponent = ({
         {selected ? (
           <>
             <Tooltip title={data?.find((item) => item.id === selected)?.label}>
-              <span>
-                {tr(data?.find((item) => item.id === selected)?.label)}
-              </span>{" "}
-              &nbsp;
+              <>
+                <span>
+                  {tr(data?.find((item) => item.id === selected)?.label)}
+                </span>{" "}
+                &nbsp;
+              </>
             </Tooltip>
             {returnSubLabel(data, selected)}{" "}
           </>

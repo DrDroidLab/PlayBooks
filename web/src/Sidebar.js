@@ -68,7 +68,7 @@ function Sidebar() {
         </div>
 
         <List sx={{ padding: 0 }}>
-          <NavLink className={activeStyle} exact to="/playbooks">
+          <NavLink className={activeStyle} to="/playbooks">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 6)}>
@@ -78,7 +78,7 @@ function Sidebar() {
               Playbooks
             </p>
           </NavLink>
-          <NavLink className={activeStyle} exact to="/playgrounds">
+          <NavLink className={activeStyle} to="/playgrounds">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 7)}>
@@ -88,7 +88,7 @@ function Sidebar() {
               Sample Playbooks
             </p>
           </NavLink>
-          <NavLink className={activeStyle} exact to="/integrations">
+          <NavLink className={activeStyle} to="/integrations">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 2)}>
@@ -98,7 +98,7 @@ function Sidebar() {
           </NavLink>
           <hr></hr>
 
-          <NavLink className={activeStyle} exact to="/api-keys">
+          <NavLink className={activeStyle} to="/api-keys">
             <ListItemIcon sx={{ minWidth: "44px" }}>
               <Key />
             </ListItemIcon>
@@ -130,7 +130,7 @@ function Sidebar() {
           </p>
         </ListItemButton>
 
-        <NavLink exact to="/invite-team">
+        <NavLink to="/invite-team">
           <ListItemButton
             selected={selectedIndex === 3}
             onClick={(event) => handleListItemClick(event, 3)}

@@ -1,12 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import Layout from "./Layout";
 import BaseLayout from "./BaseLayout";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
 import NotFound from "./pages/NotFound";
 import posthog from "posthog-js";
 import { useSelector } from "react-redux";
-import { selectEmail } from "./store/features/auth/authSlice.ts";
+import {
+  selectAccessToken,
+  selectEmail,
+} from "./store/features/auth/authSlice.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -33,7 +37,11 @@ const PlaybookLog = React.lazy(() =>
 );
 
 const App = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const email = useSelector(selectEmail);
+  const accessToken = useSelector(selectAccessToken);
+
   useEffect(() => {
     if (email) {
       posthog.identify(email);
@@ -41,7 +49,15 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    // Hide the loading indicator
+    if (!accessToken) {
+      navigate("/signup", {
+        replace: true,
+        state: { from: location.pathname },
+      });
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
     const loader = document.querySelector(".loader-container");
     if (loader) {
       loader.style.display = "none";
@@ -57,7 +73,7 @@ const App = () => {
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route exact path="/" element={<Playbooks />} />
+          <Route path="/" element={<Playbooks />} />
           <Route path="/playbooks" element={<Playbooks />} />
           <Route path="/playbooks/create" element={<CreatePlaybook />} />
           <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />

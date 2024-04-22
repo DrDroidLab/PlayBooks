@@ -52,7 +52,6 @@ function Step({ step, index }) {
   }
 
   const queryForStepTask = async (step, cb) => {
-    console.log("step", step);
     if (Object.keys(step.errors ?? {}).length > 0) {
       cb({}, false);
       return;
@@ -183,7 +182,9 @@ function Step({ step, index }) {
                 className={styles["pb-button"]}
                 onClick={() => handleExecute(index)}>
                 <Tooltip title="Run this Step">
-                  Run <PlayArrowIcon />
+                  <>
+                    Run <PlayArrowIcon />
+                  </>
                 </Tooltip>
               </button>
             )}

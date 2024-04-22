@@ -68,7 +68,7 @@ function TaskDetails({ task, data, stepIndex }) {
     }
   }, [task]);
 
-  function handleOption(data) {
+  function handleOption(data, index) {
     const handleChange = (...args) => {
       if (data.handleChange) {
         data.handleChange(...args);
@@ -101,7 +101,7 @@ function TaskDetails({ task, data, stepIndex }) {
         if (!(data.options?.length > 0)) return;
         return (
           <SelectComponent
-            key={data.key}
+            key={index}
             data={data.options}
             placeholder={`Select ${data.label}`}
             onSelectionChange={handleChange}
@@ -113,13 +113,12 @@ function TaskDetails({ task, data, stepIndex }) {
         );
       case "text":
         return (
-          <div className="flex flex-col">
+          <div key={index} className="flex flex-col">
             <p
               style={{ marginTop: "10px", fontSize: "13px", color: "#676666" }}>
               <b>{data.label}</b>
             </p>
             <ValueComponent
-              key={data.key}
               placeHolder={`Enter ${data?.label}`}
               valueType={"STRING"}
               onValueChange={handleChange}
@@ -132,7 +131,7 @@ function TaskDetails({ task, data, stepIndex }) {
       case "multiline":
         return (
           <div
-            key={data.key}
+            key={index}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}>
             <p
               style={{ marginTop: "10px", fontSize: "13px", color: "#676666" }}>
@@ -168,7 +167,7 @@ function TaskDetails({ task, data, stepIndex }) {
             gap: "5px",
             alignItems: "center",
           }}>
-          {step.map((value) => {
+          {step.map((value, i) => {
             let flag = true;
             for (let val of value?.requires ?? []) {
               if (!task[val]) {
@@ -177,7 +176,7 @@ function TaskDetails({ task, data, stepIndex }) {
               }
             }
 
-            if (flag) return handleOption(value);
+            if (flag) return handleOption(value, i);
             else return <></>;
           })}
           {isFetching && <CircularProgress size={20} />}
@@ -192,7 +191,7 @@ function TaskDetails({ task, data, stepIndex }) {
             </p>
             {task?.options.map((option, i) => {
               return (
-                <div key={stepIndex} style={{ display: "flex", gap: "5px" }}>
+                <div key={i} style={{ display: "flex", gap: "5px" }}>
                   {option?.values?.length > 0 ? (
                     <SelectComponent
                       data={option?.values.map((e, i) => {
