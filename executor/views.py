@@ -3,7 +3,7 @@ import uuid
 from typing import Union
 
 from django.db.models import QuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
@@ -15,7 +15,7 @@ from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.decorators import web_api
+from playbooks.utils.decorators import web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp, current_datetime
@@ -24,7 +24,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
-    ExecutionsPlaybooksListRequest
+    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
@@ -219,3 +219,37 @@ def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -
     except Exception as e:
         return ExecutionPlaybookGetResponse(success=BoolValue(value=False),
                                             message=Message(title="Error", description=str(e)))
+
+
+@account_post_api(ExecutePlaybookRequest)
+def playbooks_api_execute(request_message: ExecutePlaybookRequest) -> Union[ExecutePlaybookResponse, HttpResponse]:
+    return playbooks_execute(request_message)
+
+
+@account_get_api()
+def playbooks_api_execution_get(request_message: HttpRequest) -> \
+        Union[ExecutionPlaybookAPIGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    query_dict = request_message.GET
+    if 'playbook_run_id' not in query_dict:
+        return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
+                                                                                               description="Missing playbook_run_id"))
+    request_dict = dict(query_dict)
+    playbook_run_id = request_dict.get('playbook_run_id')
+    if isinstance(playbook_run_id, list):
+        playbook_run_ids = playbook_run_id
+    else:
+        playbook_run_ids = [playbook_run_id]
+    try:
+        playbook_executions = get_db_playbook_execution(account, playbook_run_ids=playbook_run_ids)
+        if not playbook_executions:
+            return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                   description="Playbook Execution not found"))
+    except Exception as e:
+        return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
+
+    pe_protos = []
+    for pe in playbook_executions:
+        pe_protos.append(pe.proto)
+    return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=True), playbook_executions=pe_protos)

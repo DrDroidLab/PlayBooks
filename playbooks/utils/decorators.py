@@ -48,7 +48,7 @@ class ProtoJsonResponse(JsonResponse):
         super().__init__(json_data, **kwargs)
 
 
-def proto_schema_validator(request_schema):
+def post_proto_schema_validator(request_schema):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(request: HttpRequest):
@@ -81,6 +81,28 @@ def proto_schema_validator(request_schema):
     return decorator
 
 
+def get_proto_schema_validator():
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(request: HttpRequest):
+            try:
+                response = func(request)
+                if isinstance(response, ProtoMessage):
+                    return JsonResponse(proto_to_dict(response), status=200, content_type='application/json')
+                elif isinstance(response, dict):
+                    return JsonResponse(response, status=200, content_type='application/json')
+                elif isinstance(response, HttpResponse):
+                    return response
+            except Exception as e:
+                logger.error("Error while processing the request", exc_info=True)
+                return JsonResponse(error_dict('Error while processing the request', e), status=500,
+                                    content_type='application/json')
+
+        return wrapper
+
+    return decorator
+
+
 def web_api(request_schema):
     def decorator(func):
         @functools.wraps(func)
@@ -88,7 +110,7 @@ def web_api(request_schema):
         @api_view(['POST'])
         @authentication_classes([JWTCookieAuthentication])
         @login_required
-        @proto_schema_validator(request_schema)
+        @post_proto_schema_validator(request_schema)
         def wrapper(message):
             return func(message)
 
@@ -124,14 +146,14 @@ def api_auth_check(func):
     return _wrapped_view
 
 
-def account_data_api(request_schema):
+def account_post_api(request_schema):
     def decorator(func):
         @functools.wraps(func)
         @csrf_exempt
         @api_view(['POST'])
         @authentication_classes([AccountApiTokenAuthentication])
         @api_auth_check
-        @proto_schema_validator(request_schema)
+        @post_proto_schema_validator(request_schema)
         def wrapper(message):
             return func(message)
 
@@ -140,14 +162,14 @@ def account_data_api(request_schema):
     return decorator
 
 
-def aws_kinesis_data_api(request_schema):
+def account_get_api():
     def decorator(func):
         @functools.wraps(func)
         @csrf_exempt
-        @api_view(['POST'])
-        @authentication_classes([AwsKinesisApiTokenAuthentication])
+        @api_view(['GET'])
+        @authentication_classes([AccountApiTokenAuthentication])
         @api_auth_check
-        @proto_schema_validator(request_schema)
+        @get_proto_schema_validator()
         def wrapper(message):
             return func(message)
 
@@ -161,7 +183,7 @@ def auth_web_api(request_schema):
         @functools.wraps(func)
         @csrf_exempt
         @api_view(['POST'])
-        @proto_schema_validator(request_schema)
+        @post_proto_schema_validator(request_schema)
         def wrapper(message):
             return func(message)
 
