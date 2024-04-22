@@ -31,34 +31,6 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
         const vpcConnectors: any = [];
         let agentProxy: any = {};
 
-        for (let integration of response?.request_connectors ?? []) {
-          if (integration.type === connectors.AGENT_PROXY)
-            agentProxy = integration;
-          if (unsupportedConnectorTypes.includes(integration.type)) continue;
-          if (integration.type.includes("VPC")) {
-            vpcConnectors.push({
-              title: integration.display_name,
-              enum: integration.type,
-              status: IntegrationStatus.REQUEST,
-            });
-            continue;
-          }
-          const card = cardsData.find((e) => e.enum === integration.type);
-          const cardData: CardData = {
-            title: integration.display_name,
-            buttonLink: card?.buttonLink ?? "",
-            buttonText: "Request Access",
-            desc: card?.desc ?? "",
-            imgUrl: card?.url ?? "",
-            enum: integration.type,
-            docs: card?.docs,
-            status: IntegrationStatus.REQUEST,
-          };
-          integrations[integration.category] =
-            integrations[integration.category] || []; // Check if the key exists, if not create an empty array
-          integrations[integration.category].push(cardData);
-        }
-
         for (let integration of response?.available_connectors ?? []) {
           if (integration.type === connectors.AGENT_PROXY)
             agentProxy = integration;
@@ -117,6 +89,34 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
             integrations[integration.category] || []; // Check if the key exists, if not create an empty array
           integrations[integration.category].push(cardData);
           allAvailableConnectors.push(cardData);
+        }
+
+        for (let integration of response?.request_connectors ?? []) {
+          if (integration.type === connectors.AGENT_PROXY)
+            agentProxy = integration;
+          if (unsupportedConnectorTypes.includes(integration.type)) continue;
+          if (integration.type.includes("VPC")) {
+            vpcConnectors.push({
+              title: integration.display_name,
+              enum: integration.type,
+              status: IntegrationStatus.REQUEST,
+            });
+            continue;
+          }
+          const card = cardsData.find((e) => e.enum === integration.type);
+          const cardData: CardData = {
+            title: integration.display_name,
+            buttonLink: card?.buttonLink ?? "",
+            buttonText: "Request on Github",
+            desc: card?.desc ?? "",
+            imgUrl: card?.url ?? "",
+            enum: integration.type,
+            docs: card?.docs,
+            status: IntegrationStatus.REQUEST,
+          };
+          integrations[integration.category] =
+            integrations[integration.category] || []; // Check if the key exists, if not create an empty array
+          integrations[integration.category].push(cardData);
         }
 
         integrations["allAvailableConnectors"] = allAvailableConnectors;

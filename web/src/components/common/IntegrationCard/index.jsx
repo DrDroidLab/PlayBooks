@@ -44,7 +44,7 @@ function IntegrationCard({ data }) {
         <a
           href={
             data?.status === "request"
-              ? "https://calendly.com/siddarthjain/catchup-call-clone"
+              ? "https://github.com/DrDroidLab/PlayBooks/issues/new"
               : data.buttonLink
           }
           target={data?.status === "request" ? "_blank" : "_self"}
