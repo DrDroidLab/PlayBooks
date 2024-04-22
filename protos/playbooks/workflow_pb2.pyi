@@ -310,9 +310,12 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     API: WorkflowEntryPoint.Type.ValueType  # 1
     ALERT: WorkflowEntryPoint.Type.ValueType  # 2
 
+    ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     API_CONFIG_FIELD_NUMBER: builtins.int
     ALERT_CONFIG_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowEntryPoint.Type.ValueType
     @property
     def api_config(self) -> global___WorkflowEntryPointApiConfig: ...
@@ -321,12 +324,13 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     def __init__(
         self,
         *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: global___WorkflowEntryPoint.Type.ValueType = ...,
         api_config: global___WorkflowEntryPointApiConfig | None = ...,
         alert_config: global___WorkflowEntryPointAlertConfig | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config", "id", b"id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config", "id", b"id", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api_config", "alert_config"] | None: ...
 
 global___WorkflowEntryPoint = WorkflowEntryPoint
@@ -348,19 +352,23 @@ class WorkflowAction(google.protobuf.message.Message):
     UNKNOWN: WorkflowAction.Type.ValueType  # 0
     NOTIFY: WorkflowAction.Type.ValueType  # 1
 
+    ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     NOTIFY_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowAction.Type.ValueType
     @property
     def notify(self) -> global___WorkflowActionNotify: ...
     def __init__(
         self,
         *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: global___WorkflowAction.Type.ValueType = ...,
         notify: global___WorkflowActionNotify | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action", b"action", "notify", b"notify"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "notify", b"notify", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notify", b"notify"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notify", b"notify", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["action", b"action"]) -> typing_extensions.Literal["notify"] | None: ...
 
 global___WorkflowAction = WorkflowAction
@@ -416,3 +424,171 @@ class Workflow(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["actions", b"actions", "created_at", b"created_at", "created_by", b"created_by", "description", b"description", "entry_points", b"entry_points", "id", b"id", "is_active", b"is_active", "name", b"name", "playbooks", b"playbooks", "schedule", b"schedule"]) -> None: ...
 
 global___Workflow = Workflow
+
+@typing_extensions.final
+class UpdateWorkflowOp(google.protobuf.message.Message):
+    """/////////////////// Workflow Update Ops Proto /////////////////////"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _Op:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _OpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[UpdateWorkflowOp._Op.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: UpdateWorkflowOp._Op.ValueType  # 0
+        UPDATE_WORKFLOW_NAME: UpdateWorkflowOp._Op.ValueType  # 1
+        UPDATE_WORKFLOW_STATUS: UpdateWorkflowOp._Op.ValueType  # 2
+        UPDATE_WORKFLOW: UpdateWorkflowOp._Op.ValueType  # 3
+        UPDATE_WORKFLOW_ENTRY_POINT_STATUS: UpdateWorkflowOp._Op.ValueType  # 4
+        UPDATE_WORKFLOW_ACTION_STATUS: UpdateWorkflowOp._Op.ValueType  # 5
+        UPDATE_WORKFLOW_PLAYBOOK_STATUS: UpdateWorkflowOp._Op.ValueType  # 6
+
+    class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
+    UNKNOWN: UpdateWorkflowOp.Op.ValueType  # 0
+    UPDATE_WORKFLOW_NAME: UpdateWorkflowOp.Op.ValueType  # 1
+    UPDATE_WORKFLOW_STATUS: UpdateWorkflowOp.Op.ValueType  # 2
+    UPDATE_WORKFLOW: UpdateWorkflowOp.Op.ValueType  # 3
+    UPDATE_WORKFLOW_ENTRY_POINT_STATUS: UpdateWorkflowOp.Op.ValueType  # 4
+    UPDATE_WORKFLOW_ACTION_STATUS: UpdateWorkflowOp.Op.ValueType  # 5
+    UPDATE_WORKFLOW_PLAYBOOK_STATUS: UpdateWorkflowOp.Op.ValueType  # 6
+
+    @typing_extensions.final
+    class UpdateWorkflowName(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        NAME_FIELD_NUMBER: builtins.int
+        @property
+        def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["name", b"name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["name", b"name"]) -> None: ...
+
+    @typing_extensions.final
+    class UpdateWorkflowStatus(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        IS_ACTIVE_FIELD_NUMBER: builtins.int
+        @property
+        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+        def __init__(
+            self,
+            *,
+            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["is_active", b"is_active"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["is_active", b"is_active"]) -> None: ...
+
+    @typing_extensions.final
+    class UpdateWorkflow(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        WORKFLOW_FIELD_NUMBER: builtins.int
+        @property
+        def workflow(self) -> global___Workflow: ...
+        def __init__(
+            self,
+            *,
+            workflow: global___Workflow | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["workflow", b"workflow"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["workflow", b"workflow"]) -> None: ...
+
+    @typing_extensions.final
+    class UpdateWorkflowEntryPointStatus(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        ENTRY_POINT_ID_FIELD_NUMBER: builtins.int
+        IS_ACTIVE_FIELD_NUMBER: builtins.int
+        @property
+        def entry_point_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+        def __init__(
+            self,
+            *,
+            entry_point_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["entry_point_id", b"entry_point_id", "is_active", b"is_active"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["entry_point_id", b"entry_point_id", "is_active", b"is_active"]) -> None: ...
+
+    @typing_extensions.final
+    class UpdateWorkflowActionStatus(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        ACTION_ID_FIELD_NUMBER: builtins.int
+        IS_ACTIVE_FIELD_NUMBER: builtins.int
+        @property
+        def action_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+        def __init__(
+            self,
+            *,
+            action_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["action_id", b"action_id", "is_active", b"is_active"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["action_id", b"action_id", "is_active", b"is_active"]) -> None: ...
+
+    @typing_extensions.final
+    class UpdateWorkflowPlaybookStatus(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PLAYBOOK_ID_FIELD_NUMBER: builtins.int
+        IS_ACTIVE_FIELD_NUMBER: builtins.int
+        @property
+        def playbook_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+        def __init__(
+            self,
+            *,
+            playbook_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["is_active", b"is_active", "playbook_id", b"playbook_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["is_active", b"is_active", "playbook_id", b"playbook_id"]) -> None: ...
+
+    OP_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_NAME_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_STATUS_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_ENTRY_POINT_STATUS_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_ACTION_STATUS_FIELD_NUMBER: builtins.int
+    UPDATE_WORKFLOW_PLAYBOOK_STATUS_FIELD_NUMBER: builtins.int
+    op: global___UpdateWorkflowOp.Op.ValueType
+    @property
+    def update_workflow_name(self) -> global___UpdateWorkflowOp.UpdateWorkflowName: ...
+    @property
+    def update_workflow_status(self) -> global___UpdateWorkflowOp.UpdateWorkflowStatus: ...
+    @property
+    def update_workflow(self) -> global___UpdateWorkflowOp.UpdateWorkflow: ...
+    @property
+    def update_workflow_entry_point_status(self) -> global___UpdateWorkflowOp.UpdateWorkflowEntryPointStatus: ...
+    @property
+    def update_workflow_action_status(self) -> global___UpdateWorkflowOp.UpdateWorkflowActionStatus: ...
+    @property
+    def update_workflow_playbook_status(self) -> global___UpdateWorkflowOp.UpdateWorkflowPlaybookStatus: ...
+    def __init__(
+        self,
+        *,
+        op: global___UpdateWorkflowOp.Op.ValueType = ...,
+        update_workflow_name: global___UpdateWorkflowOp.UpdateWorkflowName | None = ...,
+        update_workflow_status: global___UpdateWorkflowOp.UpdateWorkflowStatus | None = ...,
+        update_workflow: global___UpdateWorkflowOp.UpdateWorkflow | None = ...,
+        update_workflow_entry_point_status: global___UpdateWorkflowOp.UpdateWorkflowEntryPointStatus | None = ...,
+        update_workflow_action_status: global___UpdateWorkflowOp.UpdateWorkflowActionStatus | None = ...,
+        update_workflow_playbook_status: global___UpdateWorkflowOp.UpdateWorkflowPlaybookStatus | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["update", b"update", "update_workflow", b"update_workflow", "update_workflow_action_status", b"update_workflow_action_status", "update_workflow_entry_point_status", b"update_workflow_entry_point_status", "update_workflow_name", b"update_workflow_name", "update_workflow_playbook_status", b"update_workflow_playbook_status", "update_workflow_status", b"update_workflow_status"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "update", b"update", "update_workflow", b"update_workflow", "update_workflow_action_status", b"update_workflow_action_status", "update_workflow_entry_point_status", b"update_workflow_entry_point_status", "update_workflow_name", b"update_workflow_name", "update_workflow_playbook_status", b"update_workflow_playbook_status", "update_workflow_status", b"update_workflow_status"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_workflow_name", "update_workflow_status", "update_workflow", "update_workflow_entry_point_status", "update_workflow_action_status", "update_workflow_playbook_status"] | None: ...
+
+global___UpdateWorkflowOp = UpdateWorkflowOp

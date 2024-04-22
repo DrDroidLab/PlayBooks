@@ -37,7 +37,7 @@ def get_db_workflows(account: Account, workflow_id=None, workflow_name=None, is_
         return None
 
 
-def create_db_workflow(account: Account, user: User, workflow_proto: WorkflowProto) -> (Workflow, str):
+def create_db_workflow(account: Account, created_by, workflow_proto: WorkflowProto) -> (Workflow, str):
     if not workflow_proto.name.value or not workflow_proto.schedule or not workflow_proto.playbooks:
         return None, 'Received invalid Workflow Config'
 
@@ -81,7 +81,7 @@ def create_db_workflow(account: Account, user: User, workflow_proto: WorkflowPro
                                    schedule_type=wf_schedule_type,
                                    schedule=wf_schedule,
                                    is_active=True,
-                                   created_by=user.email)
+                                   created_by=created_by)
             db_workflow.save()
             for ep in wf_entry_point_protos:
                 ep_type = ep.type
@@ -90,7 +90,7 @@ def create_db_workflow(account: Account, user: User, workflow_proto: WorkflowPro
                 saved_ep, _ = WorkflowEntryPoint.objects.get_or_create(account=account,
                                                                        type=ep_type,
                                                                        entry_point=entry_point,
-                                                                       created_by=user.email,
+                                                                       created_by=created_by,
                                                                        defaults={
                                                                            'is_active': True,
                                                                        })
@@ -102,7 +102,7 @@ def create_db_workflow(account: Account, user: User, workflow_proto: WorkflowPro
                 saved_ep, _ = WorkflowAction.objects.get_or_create(account=account,
                                                                    type=ap_type,
                                                                    action=action,
-                                                                   created_by=user.email,
+                                                                   created_by=created_by,
                                                                    defaults={
                                                                        'is_active': True,
                                                                    })

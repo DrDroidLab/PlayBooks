@@ -8,12 +8,13 @@ from google.protobuf.wrappers_pb2 import BoolValue
 
 from accounts.models import Account, get_request_account, get_request_user
 from executor.workflows.crud.workflows_crud import create_db_workflow
+from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
-    CreateWorkflowResponse
+    CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto
 
 logger = logging.getLogger(__name__)
@@ -54,29 +55,34 @@ def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWork
     if not workflow or not workflow.name:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/workflow"))
-    workflow, error = create_db_workflow(account, user, workflow)
+    workflow, error = create_db_workflow(account, user.email, workflow)
     if error:
         return CreateWorkflowResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreateWorkflowResponse(success=BoolValue(value=True), workflow=workflow.proto)
 
-# @web_api(UpdatePlaybookRequest)
-# def workflows_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlaybookResponse, HttpResponse]:
-#     account: Account = get_request_account()
-#     user = get_request_user()
-#     playbook_id = request_message.playbook_id.value
-#     update_playbook_ops = request_message.update_playbook_ops
-#     if not playbook_id or not update_playbook_ops:
-#         return UpdatePlaybookResponse(success=BoolValue(value=False),
-#                                       message=Message(title="Invalid Request", description="Missing playbook_id/ops"))
-#     account_playbook = account.playbook_set.get(id=playbook_id)
-#     if account_playbook.created_by != user.email:
-#         return UpdatePlaybookResponse(success=BoolValue(value=False),
-#                                       message=Message(title="Invalid Request",
-#                                                       description="Unauthorized Action for user"))
-#     try:
-#         playbooks_update_processor.update(account_playbook, update_playbook_ops)
-#     except Exception as e:
-#         logger.error(f"Error updating playbook: {e}")
-#         return UpdatePlaybookResponse(success=BoolValue(value=False),
-#                                       message=Message(title="Error", description=str(e)))
-#     return UpdatePlaybookResponse(success=BoolValue(value=True))
+
+@web_api(UpdateWorkflowRequest)
+def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWorkflowResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow_id = request_message.workflow_id.value
+    update_workflow_ops = request_message.update_workflow_ops
+    if not workflow_id or not update_workflow_ops:
+        return UpdateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Missing workflow_id/ops"))
+    try:
+        account_workflow = account.workflow_set.get(id=workflow_id)
+    except Exception as e:
+        logger.error(f"Error fetching workflow: {e}")
+        return UpdateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Error", description=str(e)))
+    if account_workflow.created_by != user.email:
+        return UpdateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Error", description="Unauthorized"))
+    try:
+        workflows_update_processor.update(account_workflow, update_workflow_ops)
+    except Exception as e:
+        logger.error(f"Error updating playbook: {e}")
+        return UpdateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Error", description=str(e)))
+    return UpdateWorkflowResponse(success=BoolValue(value=True))

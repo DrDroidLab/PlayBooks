@@ -31,7 +31,21 @@ class WorkflowEntryPoint(models.Model):
 
     @property
     def proto(self) -> WorkflowEntryPointProto:
-        return dict_to_proto(self.entry_point, WorkflowEntryPointProto)
+        ep_proto = dict_to_proto(self.entry_point, WorkflowEntryPointProto)
+        if ep_proto.type == WorkflowEntryPointProto.Type.API:
+            return WorkflowEntryPointProto(
+                id=UInt64Value(value=self.id),
+                type=ep_proto.type,
+                api_config=ep_proto.api_config
+            )
+        elif ep_proto.type == WorkflowEntryPointProto.Type.ALERT:
+            return WorkflowEntryPointProto(
+                id=UInt64Value(value=self.id),
+                type=ep_proto.type,
+                alert_config=ep_proto.alert_config
+            )
+        else:
+            raise ValueError(f"Invalid entry point type: {ep_proto.type}")
 
 
 class WorkflowAction(models.Model):
@@ -53,7 +67,15 @@ class WorkflowAction(models.Model):
 
     @property
     def proto(self) -> WorkflowActionProto:
-        return dict_to_proto(self.action, WorkflowActionProto)
+        wf_action_proto = dict_to_proto(self.action, WorkflowActionProto)
+        if wf_action_proto.type == WorkflowActionProto.Type.NOTIFY:
+            return WorkflowActionProto(
+                id=UInt64Value(value=self.id),
+                type=wf_action_proto.type,
+                notify=wf_action_proto.notify
+            )
+        else:
+            raise ValueError(f"Invalid action type: {wf_action_proto.type}")
 
 
 class Workflow(models.Model):

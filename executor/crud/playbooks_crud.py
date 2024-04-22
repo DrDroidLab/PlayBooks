@@ -73,7 +73,7 @@ def get_db_playbook_task_definitions(account: Account, playbook_id: str, playboo
 
 
 # TODO(MG): Add validation checks for the playbook
-def create_db_playbook(account: Account, user: User, playbook: PlaybookProto, is_generated: bool = False) -> (
+def create_db_playbook(account: Account, created_by, playbook: PlaybookProto, is_generated: bool = False) -> (
         PlayBook, bool, str):
     playbook_name = playbook.name.value
     db_playbook = get_db_playbooks(account, playbook_name=playbook_name)
@@ -88,7 +88,7 @@ def create_db_playbook(account: Account, user: User, playbook: PlaybookProto, is
             db_playbook = PlayBook(account=account,
                                    name=playbook_name,
                                    playbook=playbook,
-                                   created_by=user.email,
+                                   created_by=created_by,
                                    is_active=True,
                                    global_variable_set=global_variable_set,
                                    is_generated=is_generated)

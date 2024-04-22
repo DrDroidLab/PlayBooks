@@ -97,10 +97,11 @@ message WorkflowEntryPoint {
     API = 1;
     ALERT = 2;
   }
-  Type type = 1;
+  google.protobuf.UInt64Value id = 1;
+  Type type = 2;
   oneof config {
-    WorkflowEntryPointApiConfig api_config = 2;
-    WorkflowEntryPointAlertConfig alert_config = 3;
+    WorkflowEntryPointApiConfig api_config = 3;
+    WorkflowEntryPointAlertConfig alert_config = 4;
   }
 }
 
@@ -109,9 +110,10 @@ message WorkflowAction {
     UNKNOWN = 0;
     NOTIFY = 1;
   }
-  Type type = 1;
+  google.protobuf.UInt64Value id = 1;
+  Type type = 2;
   oneof action {
-    WorkflowActionNotify notify = 2;
+    WorkflowActionNotify notify = 3;
   }
 }
 
@@ -126,4 +128,55 @@ message Workflow {
   repeated Playbook playbooks = 8;
   repeated WorkflowEntryPoint entry_points = 9;
   repeated WorkflowAction actions = 10;
+}
+
+
+///////////////////// Workflow Update Ops Proto /////////////////////
+message UpdateWorkflowOp {
+  enum Op {
+    UNKNOWN = 0;
+    UPDATE_WORKFLOW_NAME = 1;
+    UPDATE_WORKFLOW_STATUS = 2;
+    UPDATE_WORKFLOW = 3;
+    UPDATE_WORKFLOW_ENTRY_POINT_STATUS = 4;
+    UPDATE_WORKFLOW_ACTION_STATUS = 5;
+    UPDATE_WORKFLOW_PLAYBOOK_STATUS = 6;
+  }
+
+  message UpdateWorkflowName {
+    google.protobuf.StringValue name = 1;
+  }
+
+  message UpdateWorkflowStatus {
+    google.protobuf.BoolValue is_active = 1;
+  }
+
+  message UpdateWorkflow {
+    Workflow workflow = 1;
+  }
+
+  message UpdateWorkflowEntryPointStatus {
+    google.protobuf.UInt64Value entry_point_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  message UpdateWorkflowActionStatus {
+    google.protobuf.UInt64Value action_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  message UpdateWorkflowPlaybookStatus {
+    google.protobuf.UInt64Value playbook_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  Op op = 1;
+  oneof update {
+    UpdateWorkflowName update_workflow_name = 2;
+    UpdateWorkflowStatus update_workflow_status = 3;
+    UpdateWorkflow update_workflow = 4;
+    UpdateWorkflowEntryPointStatus update_workflow_entry_point_status = 5;
+    UpdateWorkflowActionStatus update_workflow_action_status = 6;
+    UpdateWorkflowPlaybookStatus update_workflow_playbook_status = 7;
+  }
 }

@@ -133,12 +133,12 @@ message CreateWorkflowResponse {
   Workflow workflow = 3;
 }
 
-//message UpdateWorkflowRequest {
-//  google.protobuf.UInt64Value workflow_id = 1;
-//  repeated UpdateWorkflowOp update_workflow_ops = 2;
-//}
-//
-//message UpdateWorkflowResponse {
-//  google.protobuf.BoolValue success = 1;
-//  Message message = 2;
-//}
+message UpdateWorkflowRequest {
+  google.protobuf.UInt64Value workflow_id = 1;
+  repeated UpdateWorkflowOp update_workflow_ops = 2;
+}
+
+message UpdateWorkflowResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+}
