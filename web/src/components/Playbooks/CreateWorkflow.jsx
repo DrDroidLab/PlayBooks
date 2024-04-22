@@ -62,7 +62,7 @@ function CreateTrigger() {
             </label>
             <div className="flex gap-2 items-center">
               <SelectComponent
-                data={data?.playbooks.map((e) => {
+                data={data?.playbooks?.map((e) => {
                   return {
                     id: e.id,
                     label: e.name,
