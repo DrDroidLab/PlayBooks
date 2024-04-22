@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import API from "../../API";
 import { MaskCharacter } from "../../utils/Apikeys";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
@@ -12,7 +11,10 @@ import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import Heading from "../Heading";
 import NoAPIKeys from "./NoAPIKeys";
 import dayjs from "dayjs";
-import { useGenerateAPIKeyMutation } from "../../store/features/APIKeys/api/index.ts";
+import {
+  useGenerateAPIKeyMutation,
+  useGetAPIKeyQuery,
+} from "../../store/features/APIKeys/api/index.ts";
 import { CircularProgress } from "@mui/material";
 
 const columns = [
@@ -73,39 +75,23 @@ const columns = [
 ];
 
 const ApiTokens = () => {
-  const [apiTokens, setApiTokens] = useState([]);
-  const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const fetchAccountApiToken = API.useGetAccountApiToken();
+  const meta = {
+    limit: pageSize,
+    offset: pageSize * page,
+  };
+  const { data, isLoading, isError, refetch } = useGetAPIKeyQuery(meta);
   const [triggerGenerateAPIKey, { isLoading: generateLoading }] =
     useGenerateAPIKeyMutation();
 
   useEffect(() => {
-    setLoading(true);
-    fetchAccountApiToken(
-      {
-        meta: {
-          page: {
-            limit: pageSize,
-            offset: pageSize * page,
-          },
-        },
-      },
-      (res) => {
-        setLoading(false);
-        setApiTokens(res.data?.account_api_tokens);
-        setTotal(Number(res.data?.meta?.total_count));
-        setPageSize(Number(res.data?.meta?.page?.limit));
-      },
-      (err) => {
-        console.error(err);
-        setIsError(true);
-      },
-    );
+    if (!isLoading) refetch({ limit: pageSize, offset: pageSize * page });
   }, [page, pageSize]);
+
+  useEffect(() => {
+    if (data?.meta) setPageSize(Number(data?.meta?.page?.limit));
+  }, [data]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -132,10 +118,10 @@ const ApiTokens = () => {
         {generateLoading && <CircularProgress color="primary" size={20} />}
       </div>
       <SuspenseLoader
-        loading={!!loading}
+        loading={isLoading}
         loader={<TableSkeleton noOfLines={7} />}>
         <Paper sx={{ width: "100%", height: "360px" }}>
-          {apiTokens && (
+          {data?.account_api_tokens && (
             <DataGrid
               sx={{
                 ".MuiDataGrid-columnSeparator": {
@@ -145,14 +131,13 @@ const ApiTokens = () => {
               disableColumnMenu
               sortable={false}
               pagination
-              // loading={loading}
               paginationMode="server"
-              rowCount={total}
+              rowCount={data?.meta?.total_count}
               pageSize={pageSize}
               onPageSizeChange={handlePageSizeChange}
               rowsPerPageOptions={[10, 20, 50]}
               onPageChange={handlePageChange}
-              rows={apiTokens}
+              rows={data?.account_api_tokens}
               columns={columns.map((column) => ({
                 ...column,
                 sortable: false,
@@ -162,7 +147,7 @@ const ApiTokens = () => {
             />
           )}
 
-          {!apiTokens && <NoAPIKeys />}
+          {!data?.account_api_tokens && <NoAPIKeys />}
         </Paper>
       </SuspenseLoader>
       <Snackbar

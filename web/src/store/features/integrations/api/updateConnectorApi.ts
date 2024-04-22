@@ -1,30 +1,30 @@
-import { UPDATE_CONNECTOR_STATUS } from '../../../../constants/api.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
+import { UPDATE_CONNECTOR_STATUS } from "../../../../constants/index.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const updateConnectorApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     updateConnector: builder.mutation<any, any>({
       query: ({ id, keys, type }) => ({
         url: UPDATE_CONNECTOR_STATUS,
-        method: 'POST',
+        method: "POST",
         body: {
           connector_id: id,
           connector: {
-            type: type
+            type: type,
           },
           update_connector_ops: [
             {
-              op: 'UPDATE_CONNECTOR_KEYS',
+              op: "UPDATE_CONNECTOR_KEYS",
               update_connector_keys: {
-                connector_keys: keys
-              }
-            }
-          ]
-        }
+                connector_keys: keys,
+              },
+            },
+          ],
+        },
       }),
-      invalidatesTags: ['Integrations']
-    })
-  })
+      invalidatesTags: ["Integrations"],
+    }),
+  }),
 });
 
 export const { useUpdateConnectorMutation } = updateConnectorApi;

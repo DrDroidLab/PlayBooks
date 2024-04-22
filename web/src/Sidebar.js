@@ -6,27 +6,20 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-
-import SlackIcon from "./data/slack.png";
-
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
-
-import logo from "./data/black_logo.png";
-import useLogout from "./hooks/useLogout";
 import "../src/Layout.css";
 import { Key, Terminal } from "@mui/icons-material";
+import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 function Sidebar() {
   const navigate = useNavigate();
-  const logout = useLogout();
-
   const [open, setOpen] = useState(false);
-
+  const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
 
   const signOut = async () => {
-    await logout();
+    await triggerLogout();
     navigate("/login");
   };
 
@@ -65,7 +58,7 @@ function Sidebar() {
           <Link to="/">
             <div style={{ display: "flex", justifyContent: "center" }}>
               <img
-                src={logo}
+                src="/logo/drdroid-logo-full.png"
                 alt="Logo"
                 style={{ width: "100px" }}
                 className="main_logo_option"
@@ -75,7 +68,7 @@ function Sidebar() {
         </div>
 
         <List sx={{ padding: 0 }}>
-          <NavLink className={activeStyle} exact to="/playbooks">
+          <NavLink className={activeStyle} to="/playbooks">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 6)}>
@@ -85,7 +78,7 @@ function Sidebar() {
               Playbooks
             </p>
           </NavLink>
-          <NavLink className={activeStyle} exact to="/playgrounds">
+          <NavLink className={activeStyle} to="/playgrounds">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 7)}>
@@ -95,7 +88,7 @@ function Sidebar() {
               Sample Playbooks
             </p>
           </NavLink>
-          <NavLink className={activeStyle} exact to="/integrations">
+          <NavLink className={activeStyle} to="/integrations">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 2)}>
@@ -105,7 +98,7 @@ function Sidebar() {
           </NavLink>
           <hr></hr>
 
-          <NavLink className={activeStyle} exact to="/api-keys">
+          <NavLink className={activeStyle} to="/api-keys">
             <ListItemIcon sx={{ minWidth: "44px" }}>
               <Key />
             </ListItemIcon>
@@ -127,7 +120,7 @@ function Sidebar() {
               minWidth: "34px",
             }}>
             <img
-              src={SlackIcon}
+              src="/integrations/slack-logo.svg"
               alt="Slack Logo"
               style={{ width: "18px", marginLeft: "-5px" }}
             />
@@ -137,7 +130,7 @@ function Sidebar() {
           </p>
         </ListItemButton>
 
-        <NavLink exact to="/invite-team">
+        <NavLink to="/invite-team">
           <ListItemButton
             selected={selectedIndex === 3}
             onClick={(event) => handleListItemClick(event, 3)}

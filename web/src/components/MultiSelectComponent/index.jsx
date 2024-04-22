@@ -1,35 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useRef, useState, useEffect } from 'react';
-import styles from '../SelectComponent/index.module.css';
-import useToggle from '../../hooks/useToggle';
-import ArrowDown from '../../data/arrow-down.svg';
-import cx from 'classnames';
-import useOutsideClick from '../../hooks/useOutsideClick';
-import CheckboxGroupComponent from '../CheckboxGroupComponent';
+import React, { useMemo, useRef, useState, useEffect } from "react";
+import styles from "../SelectComponent/index.module.css";
+import useToggle from "../../hooks/useToggle";
+import cx from "classnames";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import CheckboxGroupComponent from "../CheckboxGroupComponent";
 
 const MultiSelectComponent = ({
   data,
-  placeholder = 'Select options',
+  placeholder = "Select options",
   disabled,
   searchable,
   onSelectionChange,
   selectedValues,
-  containerClassName = {}
+  containerClassName = {},
 }) => {
   const selectedRef = useRef(null);
-  const [searchVal, setSearchVal] = useState('');
+  const [searchVal, setSearchVal] = useState("");
   const [options, setOptions] = useState(data);
   // const [selectedValues, setSelectedValues] = useState([]);
 
-  const _containerClassName = cx(styles['_dropdown__container'], containerClassName);
+  const _containerClassName = cx(
+    styles["_dropdown__container"],
+    containerClassName,
+  );
   const { isOpen, toggle } = useToggle();
   const toggleDropdown = () => toggle();
 
-  const handleSelectionChange = selectedIds => {
+  const handleSelectionChange = (selectedIds) => {
     onSelectionChange(selectedIds);
   };
 
-  const disableCheckboxClick = e => {
+  const disableCheckboxClick = (e) => {
     e.stopPropagation();
   };
 
@@ -38,13 +40,15 @@ const MultiSelectComponent = ({
   }, [data]);
 
   const getSelectedValues = useMemo(() => {
-    return selectedValues?.map(val => data.find(item => item.id === val)?.label).join(', ');
+    return selectedValues
+      ?.map((val) => data.find((item) => item.id === val)?.label)
+      .join(", ");
   }, [selectedValues, data]);
 
-  const handleSearchChange = event => {
+  const handleSearchChange = (event) => {
     const searchedVal = event.target.value;
-    const values = data.filter(item =>
-      item.label.toLowerCase().includes(searchedVal.toLowerCase())
+    const values = data.filter((item) =>
+      item.label.toLowerCase().includes(searchedVal.toLowerCase()),
     );
     setSearchVal(searchedVal);
     setOptions(values);
@@ -53,15 +57,17 @@ const MultiSelectComponent = ({
   useOutsideClick(selectedRef, () => toggle(false));
   return (
     <div className={_containerClassName} ref={selectedRef}>
-      <div className={styles['dropdown__header']} onClick={toggleDropdown}>
-        <span>{selectedValues.length > 0 ? getSelectedValues : placeholder}</span>
+      <div className={styles["dropdown__header"]} onClick={toggleDropdown}>
+        <span>
+          {selectedValues.length > 0 ? getSelectedValues : placeholder}
+        </span>
         {!disabled && (
           <img
             width="20px"
             height="20px"
-            src={ArrowDown}
-            className={cx(styles['arrow-down-icon'], {
-              [styles['open']]: isOpen
+            src={"/icons/arrow-down.svg"}
+            className={cx(styles["arrow-down-icon"], {
+              [styles["open"]]: isOpen,
             })}
             alt="arrow-down"
           />
@@ -71,20 +77,19 @@ const MultiSelectComponent = ({
       {!disabled && (
         <div
           className={cx(styles[`dropdown__body`], {
-            [styles['open']]: isOpen
+            [styles["open"]]: isOpen,
           })}
-          onClick={disableCheckboxClick}
-        >
+          onClick={disableCheckboxClick}>
           {!!searchable && (
             <input
-              className={styles['searchContainer']}
+              className={styles["searchContainer"]}
               onChange={handleSearchChange}
               value={searchVal}
-              type={'text'}
+              type={"text"}
             />
           )}
           <CheckboxGroupComponent
-            itemClassName={styles['dropdown__item']}
+            itemClassName={styles["dropdown__item"]}
             orientation="vertical"
             options={options}
             checkedIds={selectedValues}

@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import Overlay from './components/Overlay';
-import API from './API';
-
-import styles from './components/Playbooks/index.module.css';
-import { CircularProgress } from '@mui/material';
+import React, { useState } from "react";
+import Overlay from "./components/Overlay";
+import styles from "./components/Playbooks/index.module.css";
+import { CircularProgress } from "@mui/material";
+import { useLazyRequestSlackConnectQuery } from "./store/features/alertInsights/api/index.ts";
 
 const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
-  const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const requestSlackConnect = API.useRequestSlackConnect();
+  const [triggerRequestSlackConnect, { isLoading }] =
+    useLazyRequestSlackConnectQuery();
 
   const close = () => {
     toggleOverlay();
@@ -17,19 +15,9 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
     onRefresh();
   };
 
-  const handleSuccess = () => {
-    setLoading(true);
-    requestSlackConnect(
-      {},
-      response => {
-        setLoading(false);
-        setShowSuccess(true);
-      },
-      () => {
-        setLoading(false);
-        toggleOverlay();
-      }
-    );
+  const handleSuccess = async () => {
+    await triggerRequestSlackConnect();
+    toggleOverlay();
   };
 
   return (
@@ -37,46 +25,49 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
       {isOpen && (
         <Overlay visible={isOpen}>
           {!showSuccess && (
-            <div className={styles['actionOverlay']}>
-              <header className="text-gray-800" style={{ fontSize: '14px' }}>
+            <div className={styles["actionOverlay"]}>
+              <header className="text-gray-800" style={{ fontSize: "14px" }}>
                 Connect with Doctor Droid team on Slack?
               </header>
               <br></br>
-              <p className="text-gray-500" style={{ fontSize: '14px' }}>
+              <p className="text-gray-500" style={{ fontSize: "14px" }}>
                 We will be inviting you to a slack channel.
               </p>
-              <div className={styles['actions']}>
-                <button className={styles['submitButton']} onClick={toggleOverlay}>
+              <div className={styles["actions"]}>
+                <button
+                  className={styles["submitButton"]}
+                  onClick={toggleOverlay}>
                   Cancel
                 </button>
                 <button
-                  className={styles['submitButtonRight']}
-                  sx={{ marginLeft: '5px' }}
-                  onClick={() => handleSuccess()}
-                >
+                  className={styles["submitButtonRight"]}
+                  sx={{ marginLeft: "5px" }}
+                  onClick={() => handleSuccess()}>
                   Send me invite
                 </button>
-                {loading ? (
+                {isLoading ? (
                   <CircularProgress
                     style={{
-                      marginLeft: '12px',
-                      marginBottom: '12px'
+                      marginLeft: "12px",
+                      marginBottom: "12px",
                     }}
                     size={20}
                   />
                 ) : (
-                  ''
+                  ""
                 )}
               </div>
             </div>
           )}
           {showSuccess && (
-            <div className={styles['actionOverlay']}>
+            <div className={styles["actionOverlay"]}>
               <header className="text-gray-500">
-                {'Check your inbox for an invite to join Doctor Droid on Slack.'}
+                {
+                  "Check your inbox for an invite to join Doctor Droid on Slack."
+                }
               </header>
-              <div className={styles['actions']}>
-                <button className={styles['submitButton']} onClick={close}>
+              <div className={styles["actions"]}>
+                <button className={styles["submitButton"]} onClick={close}>
                   Close
                 </button>
               </div>

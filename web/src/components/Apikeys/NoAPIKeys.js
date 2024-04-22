@@ -1,11 +1,10 @@
-import logo from "../../data/logo.png";
 import { Link } from "react-router-dom";
 
 const NoAPIKeys = () => {
   return (
     <>
       <div className="justify-center w-full items-center flex flex-col py-8">
-        <img src={logo} alt="logo" className="h-20 mb-4 " />
+        <img src="/logo/logo.png" alt="logo" className="h-20 mb-4 " />
         <div className="text-sm text-gray-500 mb-2 text-center">
           No API Keys generated
         </div>

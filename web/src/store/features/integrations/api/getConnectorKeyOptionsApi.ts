@@ -1,18 +1,18 @@
-import { GET_CONNECTOR_OPTIONS } from '../../../../constants/api.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
-import { setKeysOptions } from '../integrationsSlice.ts';
+import { GET_CONNECTOR_OPTIONS } from "../../../../constants/index.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
+import { setKeysOptions } from "../integrationsSlice.ts";
 
 export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     getConnectorKeyOptions: builder.query<any, string>({
-      query: connectorType => ({
+      query: (connectorType) => ({
         url: GET_CONNECTOR_OPTIONS,
-        method: 'POST',
+        method: "POST",
         body: {
-          connector_type: connectorType
-        }
+          connector_type: connectorType,
+        },
       }),
-      providesTags: ['Integrations'],
+      providesTags: ["Integrations"],
       transformResponse: (response: any) => {
         return response?.connector_key_options ?? [];
       },
@@ -23,9 +23,9 @@ export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
         } catch (e) {
           console.log(e);
         }
-      }
-    })
-  })
+      },
+    }),
+  }),
 });
 
 export const { useLazyGetConnectorKeyOptionsQuery } = getConnectorKeyOptionsApi;
