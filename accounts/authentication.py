@@ -16,7 +16,7 @@ class AccountApiTokenAuthentication(TokenAuthentication):
 
     def authenticate_credentials(self, key):
         token = GLOBAL_ACCOUNT_API_TOKEN_CACHE.get(api_key=key)
-        return AccountApiTokenUser(token.account_id), token
+        return AccountApiTokenUser(token.account_id, token.created_by.email), token
 
 
 def user_display(user):

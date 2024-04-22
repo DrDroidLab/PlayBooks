@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpRequest
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
-from accounts.models import Account, get_request_account, get_request_user
+from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
@@ -223,12 +223,51 @@ def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -
 
 @account_post_api(ExecutePlaybookRequest)
 def playbooks_api_execute(request_message: ExecutePlaybookRequest) -> Union[ExecutePlaybookResponse, HttpResponse]:
-    return playbooks_execute(request_message)
+    account: Account = get_request_account()
+    user = get_api_token_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    if not time_range.time_lt or not time_range.time_geq:
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook_id = request_message.playbook_id.value
+    if not playbook_id:
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                       message=Message(title="Invalid Request", description="Missing playbook_id"))
+    playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
+    try:
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+    except Exception as e:
+        logger.error(e)
+        return ExecutePlaybookResponse(success=BoolValue(value=False),
+                                       message=Message(title="Error", description=str(e)))
+
+    saved_task = get_or_create_task(execute_playbook.__name__, account.id, playbook_id, playbook_execution.id,
+                                    proto_to_dict(time_range))
+    if saved_task:
+        if not check_scheduled_or_running_task_run_for_task(saved_task):
+            current_date_time = current_datetime()
+            task = execute_playbook.delay(account.id, playbook_id, playbook_execution.id, proto_to_dict(time_range))
+            try:
+                saved_task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
+                                                        status=PeriodicTaskStatus.SCHEDULED,
+                                                        account_id=account.id,
+                                                        scheduled_at=current_date_time)
+            except Exception as e:
+                logger.error(f"Exception occurred while saving task run for account: {account.id}, "
+                             f"task: {saved_task.id}, error: {e}")
+    else:
+        logger.error(f"Failed to create task for playbook execution: {playbook_run_uuid}")
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                       message=Message(title="Error",
+                                                       description="Failed to create task for playbook execution"))
+
+    return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                   playbook_run_id=StringValue(value=playbook_run_uuid))
 
 
 @account_get_api()
-def playbooks_api_execution_get(request_message: HttpRequest) -> \
-        Union[ExecutionPlaybookAPIGetResponse, HttpResponse]:
+def playbooks_api_execution_get(request_message: HttpRequest) -> Union[ExecutionPlaybookAPIGetResponse, HttpResponse]:
     account: Account = get_request_account()
     query_dict = request_message.GET
     if 'playbook_run_id' not in query_dict:
