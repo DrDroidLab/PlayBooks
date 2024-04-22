@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/base.proto\x12\x06protos\x1a\x1egoogle/protobuf/wrappers.proto\".\n\tTimeRange\x12\x10\n\x08time_geq\x18\x01 \x01(\x04\x12\x0f\n\x07time_lt\x18\x02 \x01(\x04\"a\n\x04Page\x12+\n\x05limit\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\x12,\n\x06offset\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\"\xaf\x01\n\x04Meta\x12%\n\ntime_range\x18\x01 \x01(\x0b\x32\x11.protos.TimeRange\x12\x1a\n\x04page\x18\x02 \x01(\x0b\x32\x0c.protos.Page\x12\x31\n\x0btotal_count\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\x12\x31\n\rshow_inactive\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\"@\n\x07Message\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x11\n\ttraceback\x18\x03 \x01(\t\"[\n\x0c\x45rrorMessage\x12)\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Messageb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/base.proto\x12\x06protos\x1a\x1egoogle/protobuf/wrappers.proto\".\n\tTimeRange\x12\x10\n\x08time_geq\x18\x01 \x01(\x04\x12\x0f\n\x07time_lt\x18\x02 \x01(\x04\"a\n\x04Page\x12+\n\x05limit\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\x12,\n\x06offset\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\"\xaf\x01\n\x04Meta\x12%\n\ntime_range\x18\x01 \x01(\x0b\x32\x11.protos.TimeRange\x12\x1a\n\x04page\x18\x02 \x01(\x0b\x32\x0c.protos.Page\x12\x31\n\x0btotal_count\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\x12\x31\n\rshow_inactive\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\"@\n\x07Message\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x11\n\ttraceback\x18\x03 \x01(\t\"[\n\x0c\x45rrorMessage\x12)\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"Q\n\x14TaskIntervalSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\xc7\x02\n\x10TaskCronSchedule\x12-\n\x07minutes\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05hours\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10\x64\x61ys_of_the_week\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x37\n\x11\x64\x61ys_of_the_month\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10\x64\x61ys_of_the_year\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08timezone\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"j\n\x0cTaskCronRule\x12*\n\x04rule\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08timezone\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.base_pb2', globals())
@@ -31,4 +31,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _MESSAGE._serialized_end=450
   _ERRORMESSAGE._serialized_start=452
   _ERRORMESSAGE._serialized_end=543
+  _TASKINTERVALSCHEDULE._serialized_start=545
+  _TASKINTERVALSCHEDULE._serialized_end=626
+  _TASKCRONSCHEDULE._serialized_start=629
+  _TASKCRONSCHEDULE._serialized_end=956
+  _TASKCRONRULE._serialized_start=958
+  _TASKCRONRULE._serialized_end=1064
 # @@protoc_insertion_point(module_scope)

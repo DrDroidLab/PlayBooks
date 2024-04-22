@@ -10,6 +10,7 @@ import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.playbooks.playbook_pb2
+import protos.playbooks.workflow_pb2
 import sys
 
 if sys.version_info >= (3, 8):
@@ -436,3 +437,92 @@ class ExecutionsPlaybooksListResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_executions", b"playbook_executions", "success", b"success"]) -> None: ...
 
 global___ExecutionsPlaybooksListResponse = ExecutionsPlaybooksListResponse
+
+@typing_extensions.final
+class GetWorkflowsRequest(google.protobuf.message.Message):
+    """/////////////////// Workflows APIs /////////////////////"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    WORKFLOW_IDS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def workflow_ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        workflow_ids: collections.abc.Iterable[builtins.int] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "workflow_ids", b"workflow_ids"]) -> None: ...
+
+global___GetWorkflowsRequest = GetWorkflowsRequest
+
+@typing_extensions.final
+class GetWorkflowsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    WORKFLOWS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def workflows(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.Workflow]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        workflows: collections.abc.Iterable[protos.playbooks.workflow_pb2.Workflow] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "workflows", b"workflows"]) -> None: ...
+
+global___GetWorkflowsResponse = GetWorkflowsResponse
+
+@typing_extensions.final
+class CreateWorkflowRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    NAME_FIELD_NUMBER: builtins.int
+    WORKFLOW_FIELD_NUMBER: builtins.int
+    name: builtins.str
+    @property
+    def workflow(self) -> protos.playbooks.workflow_pb2.Workflow: ...
+    def __init__(
+        self,
+        *,
+        name: builtins.str = ...,
+        workflow: protos.playbooks.workflow_pb2.Workflow | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["workflow", b"workflow"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "workflow", b"workflow"]) -> None: ...
+
+global___CreateWorkflowRequest = CreateWorkflowRequest
+
+@typing_extensions.final
+class CreateWorkflowResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    WORKFLOW_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def workflow(self) -> protos.playbooks.workflow_pb2.Workflow: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        workflow: protos.playbooks.workflow_pb2.Workflow | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "success", b"success", "workflow", b"workflow"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "success", b"success", "workflow", b"workflow"]) -> None: ...
+
+global___CreateWorkflowResponse = CreateWorkflowResponse

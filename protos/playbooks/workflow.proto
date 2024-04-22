@@ -1,0 +1,129 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+import "protos/playbooks/playbook.proto";
+
+///////////////////// Workflow Scheduling /////////////////////
+message WorkflowOneOffSchedule {
+}
+
+message WorkflowPeriodicSchedule {
+  google.protobuf.UInt64Value duration_in_seconds = 1;
+  oneof schedule {
+    TaskIntervalSchedule interval = 2;
+    TaskCronRule cron = 3;
+  }
+}
+
+
+///////////////////// Workflow Entry Points Configurations /////////////////////
+message WorkflowEntryPointApiConfig {}
+
+
+message WorkflowEntryPointSlackChannelAlertConfig {
+  google.protobuf.UInt64Value slack_channel_asset_id = 1;
+  google.protobuf.StringValue slack_channel_id = 2;
+  google.protobuf.StringValue slack_channel_name = 3;
+  google.protobuf.StringValue slack_alert_type = 4;
+  google.protobuf.StringValue slack_alert_filter_string = 5;
+}
+
+message WorkflowEntryPointAlertConfig {
+  enum AlertType {
+    UNKNOWN = 0;
+    SLACK_CHANNEL_ALERT = 1;
+  }
+  AlertType alert_type = 1;
+  oneof alert_config {
+    WorkflowEntryPointSlackChannelAlertConfig slack_channel_alert_config = 2;
+  }
+}
+
+
+///////////////////// Workflow Actions /////////////////////
+message WorkflowActionWebhookNotificationConfig {
+  google.protobuf.StringValue endpoint = 1;
+  google.protobuf.StringValue method = 2;
+  google.protobuf.Struct headers = 3;
+  google.protobuf.Struct body = 4;
+}
+
+message WorkflowActionSlackNotificationConfig {
+  enum MessageType {
+    UNKNOWN_SNT = 0;
+    MESSAGE = 1;
+    THREAD_REPLY = 2;
+  }
+  MessageType message_type = 1;
+  google.protobuf.StringValue slack_channel_id = 2;
+  google.protobuf.StringValue thread_ts = 3;
+}
+
+message WorkflowActionNotify {
+  enum NotificationType {
+    UNKNOWN_NT = 0;
+    WEBHOOK = 1;
+    SLACK = 2;
+  }
+  NotificationType notification_type = 1;
+  oneof notification_config {
+    WorkflowActionWebhookNotificationConfig webhook_config = 2;
+    WorkflowActionSlackNotificationConfig slack_config = 3;
+  }
+}
+
+
+///////////////////// Workflow Builder Proto /////////////////////
+message WorkflowSchedule {
+  enum Type {
+    UNKNOWN = 0;
+    ONE_OFF = 1;
+    PERIODIC = 2;
+  }
+  Type type = 1;
+  oneof scheduler {
+    WorkflowOneOffSchedule one_off = 2;
+    WorkflowPeriodicSchedule periodic = 3;
+  }
+}
+
+message WorkflowEntryPoint {
+  enum Type {
+    UNKNOWN = 0;
+    API = 1;
+    ALERT = 2;
+  }
+  Type type = 1;
+  oneof config {
+    WorkflowEntryPointApiConfig api_config = 2;
+    WorkflowEntryPointAlertConfig alert_config = 3;
+  }
+}
+
+message WorkflowAction {
+  enum Type {
+    UNKNOWN = 0;
+    NOTIFY = 1;
+  }
+  Type type = 1;
+  oneof action {
+    WorkflowActionNotify notify = 2;
+  }
+}
+
+message Workflow {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue created_by = 4;
+  sfixed64 created_at = 5;
+  google.protobuf.BoolValue is_active = 6;
+  WorkflowSchedule schedule = 7;
+  repeated Playbook playbooks = 8;
+  repeated WorkflowEntryPoint entry_points = 9;
+  repeated WorkflowAction actions = 10;
+}
