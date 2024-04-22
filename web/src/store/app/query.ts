@@ -4,7 +4,7 @@ import { rangeSelector } from "../features/timeRange/timeRangeSlice.ts";
 import { showSnackbar } from "../features/snackbar/snackbarSlice.ts";
 import { CustomError, ErrorType } from "../../utils/Error.ts";
 import { refreshToken } from "./refreshTokenService.ts";
-import { logOut } from "../features/auth/authSlice.ts";
+import { logOut, setCredentials } from "../features/auth/authSlice.ts";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
@@ -45,6 +45,8 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
     try {
       const refreshResult = await refreshToken();
       const newAccessToken = refreshResult.data?.access;
+      localStorage.setItem("access_token", newAccessToken);
+      api.dispatch(setCredentials({ accessToken: newAccessToken }));
 
       if (newAccessToken) {
         modifiedArgs.headers.set("Authorization", `Bearer ${newAccessToken}`);

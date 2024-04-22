@@ -74,11 +74,26 @@ function StepActions({ allowSave }) {
     <div
       style={{ marginLeft: "5px", marginTop: "10px", marginBottom: "10px" }}
       className="flex items-center">
-      <button
-        className={`${styles["pb-button"]} add_step`}
-        onClick={handleAddCard}>
-        + Add Step
-      </button>
+      <div>
+        <button
+          className={`${styles["pb-button"]} add_step`}
+          onClick={handleAddCard}>
+          + Add Step
+        </button>
+        {steps.length === 0 && (
+          <p className="text-sm text-gray-400 mt-2">
+            Read more about steps{" "}
+            <a
+              href="https://docs.drdroid.io/docs/creating-a-playbook#a-step-can-further-be-broken-down-into-the-following-fields"
+              target="_blank"
+              rel="noreferrer"
+              className="text-violet-600">
+              here
+            </a>
+            .
+          </p>
+        )}
+      </div>
       {steps && steps?.length > 0 && (
         <>
           {allowSave && (

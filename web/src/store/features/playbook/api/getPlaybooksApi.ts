@@ -1,21 +1,24 @@
-import { GET_PLAYBOOKS } from '../../../../constants/index.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
-import { setMeta, setPlaybooks } from '../playbookSlice.ts';
+import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
+import { setMeta, setPlaybooks } from "../playbookSlice.ts";
 
 export const getPlaybooksApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
-    getPlaybooks: builder.query<any, { limit: number; offset: number }>({
+  endpoints: (builder) => ({
+    getPlaybooks: builder.query<
+      any,
+      { limit: number | undefined; offset: number | undefined }
+    >({
       query: ({ limit, offset }) => ({
         url: GET_PLAYBOOKS,
         body: {
           meta: {
             page: {
               limit,
-              offset
-            }
-          }
+              offset,
+            },
+          },
         },
-        method: 'POST'
+        method: "POST",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
@@ -27,9 +30,9 @@ export const getPlaybooksApi = apiSlice.injectEndpoints({
           console.log(error);
         }
       },
-      providesTags: ['Playbooks']
-    })
-  })
+      providesTags: ["Playbooks"],
+    }),
+  }),
 });
 
 export const { useGetPlaybooksQuery } = getPlaybooksApi;
