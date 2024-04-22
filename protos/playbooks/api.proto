@@ -90,6 +90,13 @@ message ExecutionPlaybookGetResponse {
   PlaybookExecution playbook_execution = 4;
 }
 
+message ExecutionPlaybookAPIGetResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated PlaybookExecution playbook_executions = 4;
+}
+
 message ExecutionsPlaybooksListRequest {
   Meta meta = 1;
   repeated string playbook_ids = 2;

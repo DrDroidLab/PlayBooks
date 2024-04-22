@@ -15,4 +15,8 @@ urlpatterns = [
     path('execute', executor_views.playbooks_execute),
     path('execution/get', executor_views.playbooks_execution_get),
     path('executions/list', executor_views.playbooks_executions_list),
+
+    # Playbooks API based executions
+    path('api/execute', executor_views.playbooks_api_execute),
+    path('api/executions/get', executor_views.playbooks_api_execution_get),
 ]

@@ -11,7 +11,8 @@ from utils.proto_utils import proto_to_dict
 logger = logging.getLogger(__name__)
 
 
-def get_db_playbook_execution(account: Account, playbook_execution_id=None, playbook_run_id=None, playbook_ids=None):
+def get_db_playbook_execution(account: Account, playbook_execution_id=None, playbook_run_id=None, playbook_ids=None,
+                              playbook_run_ids=None):
     filters = {}
     if playbook_execution_id:
         filters['id'] = playbook_execution_id
@@ -19,6 +20,8 @@ def get_db_playbook_execution(account: Account, playbook_execution_id=None, play
         filters['playbook_run_id'] = playbook_run_id
     if playbook_ids:
         filters['playbook_id__in'] = playbook_ids
+    if playbook_run_ids:
+        filters['playbook_run_id__in'] = playbook_run_ids
     try:
         return account.playbookexecution_set.filter(**filters)
     except Exception as e:

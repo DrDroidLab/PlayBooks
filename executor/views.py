@@ -3,11 +3,11 @@ import uuid
 from typing import Union
 
 from django.db.models import QuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
-from accounts.models import Account, get_request_account, get_request_user
+from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
@@ -15,7 +15,7 @@ from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.decorators import web_api
+from playbooks.utils.decorators import web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp, current_datetime
@@ -24,7 +24,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
-    ExecutionsPlaybooksListRequest
+    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
@@ -219,3 +219,76 @@ def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -
     except Exception as e:
         return ExecutionPlaybookGetResponse(success=BoolValue(value=False),
                                             message=Message(title="Error", description=str(e)))
+
+
+@account_post_api(ExecutePlaybookRequest)
+def playbooks_api_execute(request_message: ExecutePlaybookRequest) -> Union[ExecutePlaybookResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_api_token_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    if not time_range.time_lt or not time_range.time_geq:
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook_id = request_message.playbook_id.value
+    if not playbook_id:
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                       message=Message(title="Invalid Request", description="Missing playbook_id"))
+    playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
+    try:
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+    except Exception as e:
+        logger.error(e)
+        return ExecutePlaybookResponse(success=BoolValue(value=False),
+                                       message=Message(title="Error", description=str(e)))
+
+    saved_task = get_or_create_task(execute_playbook.__name__, account.id, playbook_id, playbook_execution.id,
+                                    proto_to_dict(time_range))
+    if saved_task:
+        if not check_scheduled_or_running_task_run_for_task(saved_task):
+            current_date_time = current_datetime()
+            task = execute_playbook.delay(account.id, playbook_id, playbook_execution.id, proto_to_dict(time_range))
+            try:
+                saved_task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
+                                                        status=PeriodicTaskStatus.SCHEDULED,
+                                                        account_id=account.id,
+                                                        scheduled_at=current_date_time)
+            except Exception as e:
+                logger.error(f"Exception occurred while saving task run for account: {account.id}, "
+                             f"task: {saved_task.id}, error: {e}")
+    else:
+        logger.error(f"Failed to create task for playbook execution: {playbook_run_uuid}")
+        return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                       message=Message(title="Error",
+                                                       description="Failed to create task for playbook execution"))
+
+    return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                   playbook_run_id=StringValue(value=playbook_run_uuid))
+
+
+@account_get_api()
+def playbooks_api_execution_get(request_message: HttpRequest) -> Union[ExecutionPlaybookAPIGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    query_dict = request_message.GET
+    if 'playbook_run_id' not in query_dict:
+        return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
+                                                                                               description="Missing playbook_run_id"))
+    request_dict = dict(query_dict)
+    playbook_run_id = request_dict.get('playbook_run_id')
+    if isinstance(playbook_run_id, list):
+        playbook_run_ids = playbook_run_id
+    else:
+        playbook_run_ids = [playbook_run_id]
+    try:
+        playbook_executions = get_db_playbook_execution(account, playbook_run_ids=playbook_run_ids)
+        if not playbook_executions:
+            return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                   description="Playbook Execution not found"))
+    except Exception as e:
+        return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
+
+    pe_protos = []
+    for pe in playbook_executions:
+        pe_protos.append(pe.proto)
+    return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=True), playbook_executions=pe_protos)

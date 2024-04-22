@@ -68,6 +68,18 @@ def get_request_user():
     return user
 
 
+def get_api_token_user():
+    request = get_current_request()
+
+    if request.user.is_authenticated:
+        user = request.user
+        set_current_request_user(user)
+    else:
+        raise MissingAccountException(f'User is unauthenticated. Missing user info')
+
+    return user
+
+
 class MissingOrgHeaderException(ValueError):
     pass
 
@@ -243,11 +255,12 @@ class AccountApiToken(models.Model):
 class AccountApiTokenUser:
     is_active = True
 
-    def __init__(self, account_id):
+    def __init__(self, account_id, email):
         self._account_id = account_id
+        self._email = email
 
     def __str__(self):
-        return f'AccountUser {self._account_id}'
+        return f'AccountUser {self._account_id}:{self._email}'
 
     @cached_property
     def account(self):
@@ -256,6 +269,10 @@ class AccountApiTokenUser:
     @cached_property
     def account_id(self):
         return self._account_id
+
+    @cached_property
+    def email(self):
+        return self._email
 
     def __eq__(self, other):
         return self.account_id == other.account_id

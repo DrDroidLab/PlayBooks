@@ -5,6 +5,7 @@ from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
 from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
+from protos.base_pb2 import TimeRange
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
@@ -178,6 +179,7 @@ class PlayBookExecution(models.Model):
     def proto(self) -> PlaybookExecutionProto:
         playbook_execution_logs = self.playbookexecutionlog_set.all()
         logs = [pel.proto_partial for pel in playbook_execution_logs]
+        time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
@@ -187,11 +189,13 @@ class PlayBookExecution(models.Model):
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
+            time_range=time_range_proto,
             logs=logs
         )
 
     @property
     def proto_partial(self) -> PlaybookExecutionProto:
+        time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
@@ -200,7 +204,8 @@ class PlayBookExecution(models.Model):
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
-            created_by=StringValue(value=self.created_by) if self.created_by else None
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            time_range=time_range_proto,
         )
 
 
