@@ -5,9 +5,10 @@ from django.db import models
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
-from executor.models import PlayBook
+from executor.models import PlayBook, PlayBookExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto
+    WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
+    WorkflowExecutionStatusType
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -72,7 +73,7 @@ class WorkflowAction(models.Model):
             return WorkflowActionProto(
                 id=UInt64Value(value=self.id),
                 type=wf_action_proto.type,
-                notify=wf_action_proto.notify
+                notification_config=wf_action_proto.notification_config
             )
         else:
             raise ValueError(f"Invalid action type: {wf_action_proto.type}")
@@ -184,3 +185,33 @@ class WorkflowActionMapping(models.Model):
 
     class Meta:
         unique_together = [['account', 'workflow', 'action']]
+
+
+class WorkflowExecution(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, db_index=True)
+    workflow_run_id = models.CharField(max_length=256, db_index=True)
+    status = models.IntegerField(choices=generate_choices(WorkflowExecutionStatusType),
+                                 default=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, db_index=True)
+
+    scheduled_at = models.DateTimeField(db_index=True)
+    expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    interval = models.IntegerField(db_index=True, default=60)
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    started_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    time_range = models.JSONField(null=True, blank=True)
+
+    created_by = models.TextField(null=True, blank=True)
+
+    class Meta:
+        unique_together = [['account', 'workflow_run_id']]
+
+
+class WorkflowExecutionLog(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
+    workflow_execution = models.ForeignKey(WorkflowExecution, on_delete=models.CASCADE, db_index=True)
+    playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)

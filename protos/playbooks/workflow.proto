@@ -13,10 +13,8 @@ message WorkflowOneOffSchedule {
 
 message WorkflowPeriodicSchedule {
   google.protobuf.UInt64Value duration_in_seconds = 1;
-  oneof schedule {
-    TaskIntervalSchedule interval = 2;
-    TaskCronRule cron = 3;
-  }
+  google.protobuf.UInt64Value interval = 2;
+  TaskCronRule cron = 3;
 }
 
 
@@ -25,11 +23,10 @@ message WorkflowEntryPointApiConfig {}
 
 
 message WorkflowEntryPointSlackChannelAlertConfig {
-  google.protobuf.UInt64Value slack_channel_asset_id = 1;
-  google.protobuf.StringValue slack_channel_id = 2;
-  google.protobuf.StringValue slack_channel_name = 3;
-  google.protobuf.StringValue slack_alert_type = 4;
-  google.protobuf.StringValue slack_alert_filter_string = 5;
+  google.protobuf.StringValue slack_channel_id = 1;
+  google.protobuf.StringValue slack_channel_name = 2;
+  google.protobuf.StringValue slack_alert_type = 3;
+  google.protobuf.StringValue slack_alert_filter_string = 4;
 }
 
 message WorkflowEntryPointAlertConfig {
@@ -115,6 +112,15 @@ message WorkflowAction {
   oneof action {
     WorkflowActionNotificationConfig notification_config = 3;
   }
+}
+
+enum WorkflowExecutionStatusType {
+  UNKNOWN_WORKFLOW_STATUS = 0;
+  WORKFLOW_SCHEDULED = 1;
+  WORKFLOW_RUNNING = 2;
+  WORKFLOW_FINISHED = 3;
+  WORKFLOW_FAILED = 4;
+  WORKFLOW_CANCELLED = 5;
 }
 
 message Workflow {

@@ -22,6 +22,29 @@ else:
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
+class _WorkflowExecutionStatusType:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _WorkflowExecutionStatusTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_WorkflowExecutionStatusType.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_WORKFLOW_STATUS: _WorkflowExecutionStatusType.ValueType  # 0
+    WORKFLOW_SCHEDULED: _WorkflowExecutionStatusType.ValueType  # 1
+    WORKFLOW_RUNNING: _WorkflowExecutionStatusType.ValueType  # 2
+    WORKFLOW_FINISHED: _WorkflowExecutionStatusType.ValueType  # 3
+    WORKFLOW_FAILED: _WorkflowExecutionStatusType.ValueType  # 4
+    WORKFLOW_CANCELLED: _WorkflowExecutionStatusType.ValueType  # 5
+
+class WorkflowExecutionStatusType(_WorkflowExecutionStatusType, metaclass=_WorkflowExecutionStatusTypeEnumTypeWrapper): ...
+
+UNKNOWN_WORKFLOW_STATUS: WorkflowExecutionStatusType.ValueType  # 0
+WORKFLOW_SCHEDULED: WorkflowExecutionStatusType.ValueType  # 1
+WORKFLOW_RUNNING: WorkflowExecutionStatusType.ValueType  # 2
+WORKFLOW_FINISHED: WorkflowExecutionStatusType.ValueType  # 3
+WORKFLOW_FAILED: WorkflowExecutionStatusType.ValueType  # 4
+WORKFLOW_CANCELLED: WorkflowExecutionStatusType.ValueType  # 5
+global___WorkflowExecutionStatusType = WorkflowExecutionStatusType
+
 @typing_extensions.final
 class WorkflowOneOffSchedule(google.protobuf.message.Message):
     """/////////////////// Workflow Scheduling /////////////////////"""
@@ -44,19 +67,18 @@ class WorkflowPeriodicSchedule(google.protobuf.message.Message):
     @property
     def duration_in_seconds(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def interval(self) -> protos.base_pb2.TaskIntervalSchedule: ...
+    def interval(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
     def cron(self) -> protos.base_pb2.TaskCronRule: ...
     def __init__(
         self,
         *,
         duration_in_seconds: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        interval: protos.base_pb2.TaskIntervalSchedule | None = ...,
+        interval: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         cron: protos.base_pb2.TaskCronRule | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval", "schedule", b"schedule"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval", "schedule", b"schedule"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["schedule", b"schedule"]) -> typing_extensions.Literal["interval", "cron"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval"]) -> None: ...
 
 global___WorkflowPeriodicSchedule = WorkflowPeriodicSchedule
 
@@ -76,13 +98,10 @@ global___WorkflowEntryPointApiConfig = WorkflowEntryPointApiConfig
 class WorkflowEntryPointSlackChannelAlertConfig(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    SLACK_CHANNEL_ASSET_ID_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_ID_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_NAME_FIELD_NUMBER: builtins.int
     SLACK_ALERT_TYPE_FIELD_NUMBER: builtins.int
     SLACK_ALERT_FILTER_STRING_FIELD_NUMBER: builtins.int
-    @property
-    def slack_channel_asset_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
     def slack_channel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -94,14 +113,13 @@ class WorkflowEntryPointSlackChannelAlertConfig(google.protobuf.message.Message)
     def __init__(
         self,
         *,
-        slack_channel_asset_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         slack_channel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         slack_channel_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         slack_alert_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
         slack_alert_filter_string: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_asset_id", b"slack_channel_asset_id", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_asset_id", b"slack_channel_asset_id", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> None: ...
 
 global___WorkflowEntryPointSlackChannelAlertConfig = WorkflowEntryPointSlackChannelAlertConfig
 

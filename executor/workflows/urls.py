@@ -9,4 +9,6 @@ urlpatterns = [
     path('create', workflow_views.workflows_create),
     path('update', workflow_views.workflows_update),
 
+    path('execute', workflow_views.workflows_execute),
+
 ]

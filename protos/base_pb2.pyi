@@ -126,23 +126,6 @@ class ErrorMessage(google.protobuf.message.Message):
 global___ErrorMessage = ErrorMessage
 
 @typing_extensions.final
-class TaskIntervalSchedule(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    DURATION_IN_SECONDS_FIELD_NUMBER: builtins.int
-    @property
-    def duration_in_seconds(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    def __init__(
-        self,
-        *,
-        duration_in_seconds: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["duration_in_seconds", b"duration_in_seconds"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["duration_in_seconds", b"duration_in_seconds"]) -> None: ...
-
-global___TaskIntervalSchedule = TaskIntervalSchedule
-
-@typing_extensions.final
 class TaskCronSchedule(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 

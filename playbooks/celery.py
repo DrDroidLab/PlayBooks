@@ -9,9 +9,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'playbooks.base_settings')
 
 app = Celery('playbooks')
 app.config_from_object('django.conf:settings', namespace='CELERY')
-# app.conf.update(task_routes={
-#     'accounts.tasks.*': {'queue': 'account_management'},
-# })
+app.conf.update(task_routes={
+    'executor.workflows.tasks.workflow_scheduler': {'queue': 'workflow_scheduler'},
+    'executor.workflows.tasks.workflow_executor': {'queue': 'workflow_executor'},
+})
 app.autodiscover_tasks()
 
 

@@ -32,10 +32,6 @@ message ErrorMessage {
   Message message = 2;
 }
 
-message TaskIntervalSchedule {
-  google.protobuf.UInt64Value duration_in_seconds = 1;
-}
-
 message TaskCronSchedule {
   google.protobuf.StringValue minutes = 1;
   google.protobuf.StringValue hours = 2;

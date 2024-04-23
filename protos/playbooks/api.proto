@@ -142,3 +142,15 @@ message UpdateWorkflowResponse {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
 }
+
+message ExecuteWorkflowRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value workflow_id = 2;
+}
+
+message ExecuteWorkflowResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue workflow_run_id = 4;
+}

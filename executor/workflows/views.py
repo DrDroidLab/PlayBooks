@@ -1,21 +1,27 @@
 import logging
+from datetime import timedelta
 from typing import Union
 
 from django.db.models import QuerySet
 from django.http import HttpResponse
 
-from google.protobuf.wrappers_pb2 import BoolValue
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user
+from executor.workflows.crud.workflow_execution_crud import create_workflow_execution
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from protos.base_pb2 import Meta, Message, Page
+from playbooks.utils.utils import current_datetime
+from protos.base_pb2 import Meta, Message, Page, TimeRange
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
-    CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto
+    CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
+    ExecuteWorkflowResponse
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
+    WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -86,3 +92,39 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
         return UpdateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Error", description=str(e)))
     return UpdateWorkflowResponse(success=BoolValue(value=True))
+
+
+@web_api(ExecuteWorkflowRequest)
+def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteWorkflowResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    current_time_utc = current_datetime()
+    workflow_id = request_message.workflow_id.value
+    if not workflow_id:
+        return ExecuteWorkflowResponse(success=BoolValue(value=False),
+                                       message=Message(title="Invalid Request", description="Missing workflow_id"))
+    try:
+        account_workflow = account.workflow_set.get(id=workflow_id)
+    except Exception as e:
+        logger.error(f"Error fetching workflow: {e}")
+        return ExecuteWorkflowResponse(success=BoolValue(value=False),
+                                       message=Message(title="Error", description=str(e)))
+    try:
+        schedule_type = account_workflow.schedule_type
+        schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
+        if schedule_type == WorkflowScheduleProto.Type.PERIODIC:
+            periodic_schedule: WorkflowPeriodicScheduleProto = schedule.periodic
+            interval = periodic_schedule.interval.value
+            duration_in_seconds = periodic_schedule.duration_in_seconds.value
+            scheduled_at = current_time_utc
+            expiry_at = scheduled_at + timedelta(seconds=duration_in_seconds)
+            time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
+            workflow_run_id = f'{account.id}_{workflow_id}_{current_time_utc.timestamp()}_workflow_run'
+            create_workflow_execution(account, time_range, workflow_id, workflow_run_id, scheduled_at, expiry_at,
+                                      interval, user.email)
+            return ExecuteWorkflowResponse(success=BoolValue(value=True),
+                                           workflow_run_id=StringValue(value=workflow_run_id))
+    except Exception as e:
+        logger.error(f"Error updating playbook: {e}")
+        return ExecuteWorkflowResponse(success=BoolValue(value=False),
+                                       message=Message(title="Error", description=str(e)))

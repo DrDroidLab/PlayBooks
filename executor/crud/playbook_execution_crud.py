@@ -69,16 +69,16 @@ def update_db_account_playbook_execution_status(account: Account, playbook_run_i
     return False
 
 
-def update_db_playbook_execution_status(playbook_run_id: str, status: PlaybookExecutionStatusType):
+def update_db_playbook_execution_status(playbook_execution_id: int, status: PlaybookExecutionStatusType):
     try:
-        playbook_execution = PlayBookExecution.objects.get(playbook_run_id=playbook_run_id)
+        playbook_execution = PlayBookExecution.objects.get(id=playbook_execution_id)
         playbook_execution.status = status
         playbook_execution.save(update_fields=['status'])
         return True
     except PlayBookExecution.DoesNotExist:
-        logger.error(f"Failed to get playbook execution for playbook_run_id: {playbook_run_id}")
+        logger.error(f"Failed to get playbook execution for id: {playbook_execution_id}")
     except Exception as e:
-        logger.error(f"Failed to get playbook execution for  playbook_run_id: {playbook_run_id}, error: {e}")
+        logger.error(f"Failed to get playbook execution for  id: {playbook_execution_id}, error: {e}")
     return False
 
 
