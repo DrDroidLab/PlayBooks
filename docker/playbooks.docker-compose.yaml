@@ -64,19 +64,19 @@ services:
     networks:
       - mynetwork
 
-  # web:
-  #   build:
-  #     context: ../web
-  #     dockerfile: Dockerfile
-  #   image: web
-  #   environment:
-  #     - POSTHOG_ENABLED=true
-  #   ports:
-  #     - '80:80'
-  #   depends_on:
-  #     - server
-  #   networks:
-  #     - mynetwork
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    image: web
+    environment:
+      - POSTHOG_ENABLED=true
+    ports:
+      - '80:80'
+    depends_on:
+      - server
+    networks:
+      - mynetwork
 
   celery_worker:
     build:
