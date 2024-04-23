@@ -35,7 +35,7 @@ export const cardsData = [
     title: "SLACK",
     enum: "SLACK",
     desc: "Authorise Doctor Droid to read alerts from your Slack channel",
-    buttonTitle: "Configure Slack",
+    buttonTitle: "Connect Slack",
     buttonType: "link",
     buttonLink: "/configure/slack",
     // buttonLink: `/connectors/integrations/handlers/slack_bot/install?user_email=${localStorage.getItem(
