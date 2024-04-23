@@ -92,8 +92,8 @@ function SignUp() {
     try {
       const data = {
         email: email,
-        first_name: firstName,
-        last_name: lastName,
+        firstName,
+        lastName,
         password: password,
       };
       await triggerSignup(data).unwrap();
