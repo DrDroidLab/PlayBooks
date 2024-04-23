@@ -23,7 +23,7 @@ export const HandleInputRender = ({ option }) => {
           <ValueComponent
             valueType={"STRING"}
             placeHolder={option.placeholder || `Enter ${option.label}`}
-            value={currentWorkflow[option.id]}
+            value={option.value || currentWorkflow[option.id]}
             onValueChange={(val) =>
               option.handleChange
                 ? option.handleChange(val)
