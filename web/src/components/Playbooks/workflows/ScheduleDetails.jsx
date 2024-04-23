@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { handleSelect } from "../../../utils/workflow/handleInputs.ts";
 import { scheduleOptions } from "../../../utils/workflow/scheduleOptions.tsx";
-import { HandleRender } from "../../../utils/workflow/handleRender.tsx";
+import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
 function ScheduleDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -33,7 +33,7 @@ function ScheduleDetails() {
         {scheduleOptions
           .find((e) => e.id === currentWorkflow.schedule)
           ?.options.map((option) => (
-            <HandleRender option={option} />
+            <HandleInputRender option={option} />
           ))}
       </div>
       {(currentWorkflow["cron-schedule"] ||

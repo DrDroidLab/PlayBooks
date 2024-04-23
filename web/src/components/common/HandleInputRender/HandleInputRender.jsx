@@ -1,11 +1,14 @@
 import React from "react";
-import ValueComponent from "../../components/ValueComponent";
-import SelectComponent from "../../components/SelectComponent";
-import { handleCheckbox, handleInput } from "./handleInputs.ts";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
+import {
+  handleCheckbox,
+  handleInput,
+} from "../../../utils/workflow/handleInputs.ts";
+import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import ValueComponent from "../../ValueComponent/index.jsx";
+import SelectComponent from "../../SelectComponent/index.jsx";
 
-export const HandleRender = ({ option }) => {
+export const HandleInputRender = ({ option }) => {
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   switch (option.type) {
@@ -21,7 +24,11 @@ export const HandleRender = ({ option }) => {
             valueType={"STRING"}
             placeHolder={option.placeholder || `Enter ${option.label}`}
             value={currentWorkflow[option.id]}
-            onValueChange={(val) => handleInput(option.id, val)}
+            onValueChange={(val) =>
+              option.handleChange
+                ? option.handleChange(val)
+                : handleInput(option.id, val)
+            }
             {...option.additionalProps}
           />
         </div>
@@ -63,7 +70,7 @@ export const HandleRender = ({ option }) => {
             </label>
           </div>
           {currentWorkflow[option.id] &&
-            option.options?.map((op) => <HandleRender option={op} />)}
+            option.options?.map((op) => <HandleInputRender option={op} />)}
         </div>
       );
 
@@ -71,7 +78,7 @@ export const HandleRender = ({ option }) => {
       return (
         <div key={option.id} className="my-2">
           {option.options.map((option) => (
-            <HandleRender option={option} />
+            <HandleInputRender option={option} />
           ))}
         </div>
       );
@@ -86,7 +93,7 @@ export const HandleRender = ({ option }) => {
           </label>
           <div className="flex gap-2 items-center">
             {option.options.map((option) => (
-              <HandleRender option={option} />
+              <HandleInputRender option={option} />
             ))}
           </div>
         </div>

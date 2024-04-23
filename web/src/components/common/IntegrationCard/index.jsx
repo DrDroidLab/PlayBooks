@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import styles from "./styles.module.css";
-import SlackButton from "../SlackButton";
 import capitalizeFirstLetter from "../../../utils/capitalize";
 import { CheckCircle } from "@mui/icons-material";
 
@@ -38,8 +37,6 @@ function IntegrationCard({ data }) {
           className={styles.button}>
           <div>View Details</div>
         </a>
-      ) : data.enum === "SLACK" ? (
-        <SlackButton />
       ) : (
         <a
           href={

@@ -9,7 +9,7 @@ import {
   integrationsSelector,
   setCurrentConnector,
 } from "../../../store/features/integrations/integrationsSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Config from "./Config.jsx";
 import TabPanel from "./TabPanel.jsx";
 import Assets from "./Assets.jsx";
@@ -21,12 +21,11 @@ import {
   useLazyGetConnectorKeysQuery,
   useLazyGetConnectorListQuery,
 } from "../../../store/features/integrations/api/index.ts";
-import { ChevronLeft } from "@mui/icons-material";
 import GoogleChatIntegration from "./GoogleChatIntegration.jsx";
+import BackButton from "../../common/BackButton/BackButton.jsx";
 
 function ConnectorPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
@@ -109,11 +108,7 @@ function ConnectorPage() {
         onRefreshCb={false}
       />
 
-      <button
-        onClick={() => navigate(-1)}
-        className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
-        <ChevronLeft /> All Integrations
-      </button>
+      <BackButton />
 
       {isActive && (
         <Tabs

@@ -1,6 +1,6 @@
 import React from "react";
 import { notificationOptions } from "../../../utils/workflow/notificationOptions.ts";
-import { HandleRender } from "../../../utils/workflow/handleRender.tsx";
+import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
 function ActionDetails() {
   return (
@@ -10,7 +10,7 @@ function ActionDetails() {
       </label>
 
       {notificationOptions.map((option) => (
-        <HandleRender option={option} />
+        <HandleInputRender option={option} />
       ))}
     </div>
   );
