@@ -11,7 +11,6 @@ import {
   selectAccessToken,
   selectEmail,
 } from "./store/features/auth/authSlice.ts";
-import ConfigureSlack from "./components/Integration/connectors/ConfigureSlack.jsx";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -92,7 +91,6 @@ const App = () => {
           />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />
-          <Route path="/configure/slack" element={<ConfigureSlack />} />
           <Route path="/integrations/:id" element={<ConnectorPage />} />
           <Route path="/api-keys" element={<ApiTokens />} />
           <Route path="/invite-team" element={<InviteTeam />} />
