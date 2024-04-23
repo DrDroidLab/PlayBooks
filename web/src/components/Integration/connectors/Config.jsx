@@ -104,7 +104,7 @@ function Config({ keyOptions }) {
         </div>
       )}
 
-      <SlackManifestGenerator />
+      {currentConnector.enum === "SLACK" && <SlackManifestGenerator />}
 
       {vpcEnabled ? (
         <AgentProxy />

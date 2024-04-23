@@ -5,11 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useGenerateManifestMutation } from "../../../store/features/integrations/api/generateManifestApi.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
+import { CircularProgress } from "@mui/material";
 
 function SlackManifestGenerator() {
   const [host, setHost] = useState("");
   const dispatch = useDispatch();
-  const [triggerManifest] = useGenerateManifestMutation();
+  const [triggerManifest, { isLoading }] = useGenerateManifestMutation();
   const currentConnector = useSelector(connectorSelector);
 
   const handleSubmit = (e) => {
@@ -36,9 +37,14 @@ function SlackManifestGenerator() {
             handleChange: setHost,
           }}
         />
-        <button className="p-1 text-violet-500 hover:text-white hover:bg-violet-500 border border-violet-500 text-xs rounded cursor-pointer transition-all">
-          Get Manifest
-        </button>
+
+        <div className="flex items-center gap-2">
+          <button className="p-1 text-violet-500 hover:text-white hover:bg-violet-500 border border-violet-500 text-xs rounded cursor-pointer transition-all">
+            Get Manifest
+          </button>
+
+          {isLoading && <CircularProgress size={20} />}
+        </div>
       </form>
 
       {currentConnector.manifest && (
