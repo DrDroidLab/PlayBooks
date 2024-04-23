@@ -61,16 +61,16 @@ integrations_connector_type_category_map = {
 }
 
 integrations_connector_type_connector_keys_map = {
-    # ConnectorType.SLACK: [
-    #     [
-    #         ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN
-    #     ]
-    # ],
-    # ConnectorType.GOOGLE_CHAT: [
-    #     [
-    #         ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
-    #     ]
-    # ],
+    ConnectorType.SLACK: [
+        [
+            ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN
+        ]
+    ],
+    ConnectorType.GOOGLE_CHAT: [
+        [
+            ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
+        ]
+    ],
     ConnectorType.SENTRY: [
         [
             ConnectorKeyProto.KeyType.SENTRY_API_KEY,
