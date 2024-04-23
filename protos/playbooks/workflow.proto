@@ -63,13 +63,13 @@ message WorkflowActionSlackNotificationConfig {
   google.protobuf.StringValue thread_ts = 3;
 }
 
-message WorkflowActionNotify {
-  enum NotificationType {
-    UNKNOWN_NT = 0;
+message WorkflowActionNotificationConfig {
+  enum Type {
+    UNKNOWN = 0;
     WEBHOOK = 1;
     SLACK = 2;
   }
-  NotificationType notification_type = 1;
+  Type type = 1;
   oneof notification_config {
     WorkflowActionWebhookNotificationConfig webhook_config = 2;
     WorkflowActionSlackNotificationConfig slack_config = 3;
@@ -113,7 +113,7 @@ message WorkflowAction {
   google.protobuf.UInt64Value id = 1;
   Type type = 2;
   oneof action {
-    WorkflowActionNotify notify = 3;
+    WorkflowActionNotificationConfig notification_config = 3;
   }
 }
 

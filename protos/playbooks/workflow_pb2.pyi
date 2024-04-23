@@ -210,28 +210,28 @@ class WorkflowActionSlackNotificationConfig(google.protobuf.message.Message):
 global___WorkflowActionSlackNotificationConfig = WorkflowActionSlackNotificationConfig
 
 @typing_extensions.final
-class WorkflowActionNotify(google.protobuf.message.Message):
+class WorkflowActionNotificationConfig(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _NotificationType:
+    class _Type:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _NotificationTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionNotify._NotificationType.ValueType], builtins.type):  # noqa: F821
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionNotificationConfig._Type.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN_NT: WorkflowActionNotify._NotificationType.ValueType  # 0
-        WEBHOOK: WorkflowActionNotify._NotificationType.ValueType  # 1
-        SLACK: WorkflowActionNotify._NotificationType.ValueType  # 2
+        UNKNOWN: WorkflowActionNotificationConfig._Type.ValueType  # 0
+        WEBHOOK: WorkflowActionNotificationConfig._Type.ValueType  # 1
+        SLACK: WorkflowActionNotificationConfig._Type.ValueType  # 2
 
-    class NotificationType(_NotificationType, metaclass=_NotificationTypeEnumTypeWrapper): ...
-    UNKNOWN_NT: WorkflowActionNotify.NotificationType.ValueType  # 0
-    WEBHOOK: WorkflowActionNotify.NotificationType.ValueType  # 1
-    SLACK: WorkflowActionNotify.NotificationType.ValueType  # 2
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+    UNKNOWN: WorkflowActionNotificationConfig.Type.ValueType  # 0
+    WEBHOOK: WorkflowActionNotificationConfig.Type.ValueType  # 1
+    SLACK: WorkflowActionNotificationConfig.Type.ValueType  # 2
 
-    NOTIFICATION_TYPE_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
     WEBHOOK_CONFIG_FIELD_NUMBER: builtins.int
     SLACK_CONFIG_FIELD_NUMBER: builtins.int
-    notification_type: global___WorkflowActionNotify.NotificationType.ValueType
+    type: global___WorkflowActionNotificationConfig.Type.ValueType
     @property
     def webhook_config(self) -> global___WorkflowActionWebhookNotificationConfig: ...
     @property
@@ -239,15 +239,15 @@ class WorkflowActionNotify(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        notification_type: global___WorkflowActionNotify.NotificationType.ValueType = ...,
+        type: global___WorkflowActionNotificationConfig.Type.ValueType = ...,
         webhook_config: global___WorkflowActionWebhookNotificationConfig | None = ...,
         slack_config: global___WorkflowActionSlackNotificationConfig | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "webhook_config", b"webhook_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "notification_type", b"notification_type", "slack_config", b"slack_config", "webhook_config", b"webhook_config"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "type", b"type", "webhook_config", b"webhook_config"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["webhook_config", "slack_config"] | None: ...
 
-global___WorkflowActionNotify = WorkflowActionNotify
+global___WorkflowActionNotificationConfig = WorkflowActionNotificationConfig
 
 @typing_extensions.final
 class WorkflowSchedule(google.protobuf.message.Message):
@@ -354,22 +354,22 @@ class WorkflowAction(google.protobuf.message.Message):
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
-    NOTIFY_FIELD_NUMBER: builtins.int
+    NOTIFICATION_CONFIG_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowAction.Type.ValueType
     @property
-    def notify(self) -> global___WorkflowActionNotify: ...
+    def notification_config(self) -> global___WorkflowActionNotificationConfig: ...
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: global___WorkflowAction.Type.ValueType = ...,
-        notify: global___WorkflowActionNotify | None = ...,
+        notification_config: global___WorkflowActionNotificationConfig | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notify", b"notify"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notify", b"notify", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["action", b"action"]) -> typing_extensions.Literal["notify"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["action", b"action"]) -> typing_extensions.Literal["notification_config"] | None: ...
 
 global___WorkflowAction = WorkflowAction
 
