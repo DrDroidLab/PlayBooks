@@ -32,3 +32,17 @@ message ErrorMessage {
   Message message = 2;
 }
 
+message TaskCronSchedule {
+  google.protobuf.StringValue minutes = 1;
+  google.protobuf.StringValue hours = 2;
+  google.protobuf.StringValue days_of_the_week = 3;
+  google.protobuf.StringValue days_of_the_month = 4;
+  google.protobuf.StringValue days_of_the_year = 5;
+  google.protobuf.StringValue timezone = 6;
+}
+
+message TaskCronRule {
+  google.protobuf.StringValue rule = 1;
+  google.protobuf.StringValue timezone = 2;
+}
+

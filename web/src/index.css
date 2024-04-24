@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* nprogress custom styles */
+#nprogress .bar {
+  background: #9553fe !important;
+  height: 3px !important; /* Default is 2px, increase to 3px */
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #9553fe, 0 0 5px #9553fe !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #9553fe !important;
+  border-left-color: #9553fe !important;
+}
+
 img {
   user-drag: none;
   -webkit-user-drag: none;

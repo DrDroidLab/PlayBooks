@@ -11,6 +11,8 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
     networks:
       - mynetwork
 
@@ -66,20 +68,6 @@ services:
     networks:
       - mynetwork
 
-  web:
-    build:
-      context: ../web
-      dockerfile: Dockerfile
-    image: web
-    environment:
-      - POSTHOG_ENABLED=true
-    ports:
-      - '80:80'
-    depends_on:
-      - server
-    networks:
-      - mynetwork
-
   celery_worker:
     build:
       context: ..
@@ -98,6 +86,85 @@ services:
       - db
       - redis
       - setup_db
+    networks:
+      - mynetwork
+
+  workflow_scheduler_celery_worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-worker.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+      - "CELERY_QUEUE=workflow_scheduler"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+    networks:
+      - mynetwork
+
+  workflow_executor_celery_worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-worker.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+      - "CELERY_QUEUE=workflow_executor"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+    networks:
+      - mynetwork
+
+  celery_beat:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-beat.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+    networks:
+      - mynetwork
+
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    image: web
+    environment:
+      - POSTHOG_ENABLED=true
+    ports:
+      - '80:80'
+    depends_on:
+      - server
     networks:
       - mynetwork
 

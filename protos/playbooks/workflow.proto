@@ -1,0 +1,188 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+import "protos/playbooks/playbook.proto";
+
+///////////////////// Workflow Scheduling /////////////////////
+message WorkflowOneOffSchedule {
+}
+
+message WorkflowPeriodicSchedule {
+  google.protobuf.UInt64Value duration_in_seconds = 1;
+  google.protobuf.UInt64Value interval = 2;
+  TaskCronRule cron = 3;
+}
+
+
+///////////////////// Workflow Entry Points Configurations /////////////////////
+message WorkflowEntryPointApiConfig {}
+
+
+message WorkflowEntryPointSlackChannelAlertConfig {
+  google.protobuf.StringValue slack_channel_id = 1;
+  google.protobuf.StringValue slack_channel_name = 2;
+  google.protobuf.StringValue slack_alert_type = 3;
+  google.protobuf.StringValue slack_alert_filter_string = 4;
+}
+
+message WorkflowEntryPointAlertConfig {
+  enum AlertType {
+    UNKNOWN = 0;
+    SLACK_CHANNEL_ALERT = 1;
+  }
+  AlertType alert_type = 1;
+  oneof alert_config {
+    WorkflowEntryPointSlackChannelAlertConfig slack_channel_alert_config = 2;
+  }
+}
+
+
+///////////////////// Workflow Actions /////////////////////
+message WorkflowActionWebhookNotificationConfig {
+  google.protobuf.StringValue endpoint = 1;
+  google.protobuf.StringValue method = 2;
+  google.protobuf.Struct headers = 3;
+  google.protobuf.Struct body = 4;
+}
+
+message WorkflowActionSlackNotificationConfig {
+  enum MessageType {
+    UNKNOWN_SNT = 0;
+    MESSAGE = 1;
+    THREAD_REPLY = 2;
+  }
+  MessageType message_type = 1;
+  google.protobuf.StringValue slack_channel_id = 2;
+  google.protobuf.StringValue thread_ts = 3;
+}
+
+message WorkflowActionNotificationConfig {
+  enum Type {
+    UNKNOWN = 0;
+    WEBHOOK = 1;
+    SLACK = 2;
+  }
+  Type type = 1;
+  oneof notification_config {
+    WorkflowActionWebhookNotificationConfig webhook_config = 2;
+    WorkflowActionSlackNotificationConfig slack_config = 3;
+  }
+}
+
+
+///////////////////// Workflow Builder Proto /////////////////////
+message WorkflowSchedule {
+  enum Type {
+    UNKNOWN = 0;
+    ONE_OFF = 1;
+    PERIODIC = 2;
+  }
+  Type type = 1;
+  oneof scheduler {
+    WorkflowOneOffSchedule one_off = 2;
+    WorkflowPeriodicSchedule periodic = 3;
+  }
+}
+
+message WorkflowEntryPoint {
+  enum Type {
+    UNKNOWN = 0;
+    API = 1;
+    ALERT = 2;
+  }
+  google.protobuf.UInt64Value id = 1;
+  Type type = 2;
+  oneof config {
+    WorkflowEntryPointApiConfig api_config = 3;
+    WorkflowEntryPointAlertConfig alert_config = 4;
+  }
+}
+
+message WorkflowAction {
+  enum Type {
+    UNKNOWN = 0;
+    NOTIFY = 1;
+  }
+  google.protobuf.UInt64Value id = 1;
+  Type type = 2;
+  oneof action {
+    WorkflowActionNotificationConfig notification_config = 3;
+  }
+}
+
+enum WorkflowExecutionStatusType {
+  UNKNOWN_WORKFLOW_STATUS = 0;
+  WORKFLOW_SCHEDULED = 1;
+  WORKFLOW_RUNNING = 2;
+  WORKFLOW_FINISHED = 3;
+  WORKFLOW_FAILED = 4;
+  WORKFLOW_CANCELLED = 5;
+}
+
+message Workflow {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue created_by = 4;
+  sfixed64 created_at = 5;
+  google.protobuf.BoolValue is_active = 6;
+  WorkflowSchedule schedule = 7;
+  repeated Playbook playbooks = 8;
+  repeated WorkflowEntryPoint entry_points = 9;
+  repeated WorkflowAction actions = 10;
+}
+
+
+///////////////////// Workflow Update Ops Proto /////////////////////
+message UpdateWorkflowOp {
+  enum Op {
+    UNKNOWN = 0;
+    UPDATE_WORKFLOW_NAME = 1;
+    UPDATE_WORKFLOW_STATUS = 2;
+    UPDATE_WORKFLOW = 3;
+    UPDATE_WORKFLOW_ENTRY_POINT_STATUS = 4;
+    UPDATE_WORKFLOW_ACTION_STATUS = 5;
+    UPDATE_WORKFLOW_PLAYBOOK_STATUS = 6;
+  }
+
+  message UpdateWorkflowName {
+    google.protobuf.StringValue name = 1;
+  }
+
+  message UpdateWorkflowStatus {
+    google.protobuf.BoolValue is_active = 1;
+  }
+
+  message UpdateWorkflow {
+    Workflow workflow = 1;
+  }
+
+  message UpdateWorkflowEntryPointStatus {
+    google.protobuf.UInt64Value entry_point_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  message UpdateWorkflowActionStatus {
+    google.protobuf.UInt64Value action_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  message UpdateWorkflowPlaybookStatus {
+    google.protobuf.UInt64Value playbook_id = 1;
+    google.protobuf.BoolValue is_active = 2;
+  }
+
+  Op op = 1;
+  oneof update {
+    UpdateWorkflowName update_workflow_name = 2;
+    UpdateWorkflowStatus update_workflow_status = 3;
+    UpdateWorkflow update_workflow = 4;
+    UpdateWorkflowEntryPointStatus update_workflow_entry_point_status = 5;
+    UpdateWorkflowActionStatus update_workflow_action_status = 6;
+    UpdateWorkflowPlaybookStatus update_workflow_playbook_status = 7;
+  }
+}

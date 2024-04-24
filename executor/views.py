@@ -106,7 +106,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     if not playbook or not playbook.name:
         return CreatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/playbook"))
-    playbook, error = create_db_playbook(account, user, playbook)
+    playbook, error = create_db_playbook(account, user.email, playbook)
     if error:
         return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
@@ -121,7 +121,12 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
     if not playbook_id or not update_playbook_ops:
         return UpdatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing playbook_id/ops"))
-    account_playbook = account.playbook_set.get(id=playbook_id)
+    try:
+        account_playbook = account.playbook_set.get(id=playbook_id)
+    except Exception as e:
+        logger.error(f"Error fetching playbook: {e}")
+        return UpdatePlaybookResponse(success=BoolValue(value=False),
+                                      message=Message(title="Error", description=str(e)))
     if account_playbook.created_by != user.email:
         return UpdatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",

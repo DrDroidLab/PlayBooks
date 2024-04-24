@@ -29,7 +29,7 @@ def get_db_playbook_dict(db_name=None, requested_name=None, is_active=None):
     return db_playbook_default
 
 
-def get_db_playbook(account: Account, playbook_id=None, playbook_name=None, is_active=None):
+def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None, playbook_ids=None):
     filters = {}
     if playbook_id:
         filters['id'] = playbook_id
@@ -37,6 +37,8 @@ def get_db_playbook(account: Account, playbook_id=None, playbook_name=None, is_a
         filters['is_active'] = is_active
     if playbook_name:
         filters['name'] = playbook_name
+    if playbook_ids:
+        filters['id__in'] = playbook_ids
     try:
         return account.playbook_set.filter(**filters)
     except Exception as e:
@@ -71,10 +73,10 @@ def get_db_playbook_task_definitions(account: Account, playbook_id: str, playboo
 
 
 # TODO(MG): Add validation checks for the playbook
-def create_db_playbook(account: Account, user: User, playbook: PlaybookProto, is_generated: bool = False) -> (
+def create_db_playbook(account: Account, created_by, playbook: PlaybookProto, is_generated: bool = False) -> (
         PlayBook, bool, str):
     playbook_name = playbook.name.value
-    db_playbook = get_db_playbook(account, playbook_name=playbook_name)
+    db_playbook = get_db_playbooks(account, playbook_name=playbook_name)
     if not db_playbook.exists():
         try:
             is_valid_playbook, err = validate_playbook_request(playbook)
@@ -86,7 +88,7 @@ def create_db_playbook(account: Account, user: User, playbook: PlaybookProto, is
             db_playbook = PlayBook(account=account,
                                    name=playbook_name,
                                    playbook=playbook,
-                                   created_by=user.email,
+                                   created_by=created_by,
                                    is_active=True,
                                    global_variable_set=global_variable_set,
                                    is_generated=is_generated)

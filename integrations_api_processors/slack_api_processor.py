@@ -40,33 +40,16 @@ class SlackApiProcessor:
                                                      latest=latest_timestamp, limit=100,
                                                      timeout=300)
 
-    def send_bot_message(self, channel_id: str, text_message: str, reply_to=None, blocks=None):
+    def send_bot_message(self, channel_id: str, text_message=None, reply_to=None, blocks=None):
         try:
+            method_params = {'channel': channel_id}
+            if blocks:
+                method_params['blocks'] = blocks
+            if text_message:
+                method_params['text'] = text_message
             if reply_to:
-                if blocks:
-                    result = self.client.chat_postMessage(
-                        channel=channel_id,
-                        blocks=blocks,
-                        thread_ts=reply_to
-                    )
-                else:
-                    result = self.client.chat_postMessage(
-                        channel=channel_id,
-                        text=text_message,
-                        thread_ts=reply_to
-                    )
-            else:
-                if blocks:
-                    result = self.client.chat_postMessage(
-                        channel=channel_id,
-                        blocks=blocks
-                    )
-                else:
-                    result = self.client.chat_postMessage(
-                        channel=channel_id,
-                        text=text_message
-                    )
-            # logger.info(result)
+                method_params['thread_ts'] = reply_to
+            self.client.chat_postMessage(**method_params)
         except SlackApiError as e:
             logger.error(f"Error posting slack message: {e}")
 
