@@ -7,15 +7,12 @@ import {
 } from "@mui/material";
 import NoExistingTrigger from "./NoExistingTrigger";
 import { renderTimestamp } from "../../../utils/DateUtils";
+import SeeMoreText from "../../Playbooks/SeeMoreText";
 
 const AlertsTable = ({ data }) => {
   return (
     <>
-      <p
-        className="font-bold mb-2"
-        style={{ paddingLeft: "1rem", paddingTop: "10px" }}>
-        Alerts matching the search criteria
-      </p>
+      <p className="font-bold mb-2">Alerts matching the search criteria</p>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
@@ -31,7 +28,7 @@ const AlertsTable = ({ data }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                {item.alert_text}
+                <SeeMoreText text={item.alert_text} />
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.alert_timestamp)}
