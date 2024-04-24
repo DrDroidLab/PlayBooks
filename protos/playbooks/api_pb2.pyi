@@ -647,7 +647,7 @@ class ExecutionWorkflowGetResponse(google.protobuf.message.Message):
     META_FIELD_NUMBER: builtins.int
     SUCCESS_FIELD_NUMBER: builtins.int
     MESSAGE_FIELD_NUMBER: builtins.int
-    WORKFLOW_EXECUTION_FIELD_NUMBER: builtins.int
+    WORKFLOW_EXECUTIONS_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
@@ -655,17 +655,17 @@ class ExecutionWorkflowGetResponse(google.protobuf.message.Message):
     @property
     def message(self) -> protos.base_pb2.Message: ...
     @property
-    def workflow_execution(self) -> protos.playbooks.workflow_pb2.WorkflowExecution: ...
+    def workflow_executions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.WorkflowExecution]: ...
     def __init__(
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
         success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         message: protos.base_pb2.Message | None = ...,
-        workflow_execution: protos.playbooks.workflow_pb2.WorkflowExecution | None = ...,
+        workflow_executions: collections.abc.Iterable[protos.playbooks.workflow_pb2.WorkflowExecution] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_execution", b"workflow_execution"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_execution", b"workflow_execution"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_executions", b"workflow_executions"]) -> None: ...
 
 global___ExecutionWorkflowGetResponse = ExecutionWorkflowGetResponse
 

@@ -12,9 +12,17 @@ message WorkflowOneOffSchedule {
 }
 
 message WorkflowPeriodicSchedule {
+  enum Type {
+    UNKNOWN = 0;
+    INTERVAL = 1;
+    CRON = 4;
+  }
   google.protobuf.UInt64Value duration_in_seconds = 1;
-  google.protobuf.UInt64Value interval = 2;
-  TaskCronRule cron = 3;
+  Type type = 2;
+  oneof schedule {
+    TaskInterval task_interval = 3;
+    TaskCronRule cron_rule = 4;
+  }
 }
 
 

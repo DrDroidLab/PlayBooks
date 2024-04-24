@@ -63,8 +63,8 @@ class WorkflowAction(models.Model):
         unique_together = [['account', 'type', 'action_md5', 'created_by']]
 
     def save(self, **kwargs):
-        if self.action_md5:
-            self.action_md5_md5 = md5(str(self.action).encode('utf-8')).hexdigest()
+        if self.action:
+            self.action_md5 = md5(str(self.action).encode('utf-8')).hexdigest()
         super().save(**kwargs)
 
     @property
@@ -197,7 +197,7 @@ class WorkflowExecution(models.Model):
 
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    interval = models.IntegerField(db_index=True, default=60)
+    interval = models.IntegerField(null=True, blank=True, db_index=True)
     total_executions = models.IntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -208,7 +208,7 @@ class WorkflowExecution(models.Model):
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = [['account', 'workflow_run_id']]
+        unique_together = [['account', 'workflow_run_id', 'scheduled_at']]
 
     @property
     def proto(self) -> WorkflowExecutionProto:
@@ -239,7 +239,7 @@ class WorkflowExecution(models.Model):
             status=self.status,
             scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
             expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval),
+            interval=UInt64Value(value=self.interval) if self.interval else None,
             total_executions=UInt64Value(value=self.total_executions),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,

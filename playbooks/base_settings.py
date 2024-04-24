@@ -319,3 +319,5 @@ GLOBAL_ACCOUNT_PASSWORD_CONTEXT_CACHE = {
     'cache_key': env.str("ACCOUNT_PASSWORD_CONTEXT_CACHE_KEY", default='default'),
     'enabled': env.bool("GLOBAL_ACCOUNT_PASSWORD_CONTEXT_CACHE", default=True),
 }
+
+WORKFLOW_SCHEDULER_INTERVAL = env.int("WORKFLOW_SCHEDULER_INTERVAL", default=10)

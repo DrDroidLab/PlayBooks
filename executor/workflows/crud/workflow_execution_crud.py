@@ -24,7 +24,11 @@ def get_db_workflow_executions(account: Account, workflow_execution_id=None, wor
     if status:
         filters['status'] = status
     try:
-        return account.workflowexecution_set.filter(**filters)
+        db_we = account.workflowexecution_set.all()
+        db_we = db_we.order_by('workflow_run_id', 'scheduled_at')
+        if filters:
+            db_we = db_we.filter(**filters)
+        return db_we
     except Exception as e:
         logger.error(f"Failed to get workflow execution for account_id: {account.id}, with error: {str(e)}")
     return None
@@ -52,6 +56,7 @@ def get_workflow_executions(account_id=None, workflow_execution_id=None, workflo
         all_we = all_we.select_related('account')
         if filters:
             all_we = all_we.filter(**filters)
+        all_we = all_we.order_by('scheduled_at')
         return all_we
     except Exception as e:
         logger.error(f"Failed to get workflow execution with error: {str(e)}")
@@ -89,10 +94,10 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
         raise e
 
 
-def update_db_account_workflow_execution_status(account: Account, workflow_run_id: int,
+def update_db_account_workflow_execution_status(account: Account, workflow_execution_id: int, scheduled_at,
                                                 status: WorkflowExecutionStatusType):
     try:
-        workflow_execution = account.workflowexecution_set.get(id=workflow_run_id)
+        workflow_execution = account.workflowexecution_set.get(id=workflow_execution_id, scheduled_at=scheduled_at)
         workflow_execution.status = status
         update_fields = ['status']
         if status == WorkflowExecutionStatusType.WORKFLOW_RUNNING:
@@ -106,10 +111,10 @@ def update_db_account_workflow_execution_status(account: Account, workflow_run_i
         return True
     except WorkflowExecution.DoesNotExist:
         logger.error(f"Failed to get workflow execution for account_id: {account.id}, "
-                     f"workflow_run_id: {workflow_run_id}")
+                     f"workflow_run_id: {workflow_execution_id}")
     except Exception as e:
         logger.error(f"Failed to update workflow execution status for account_id: {account.id}, "
-                     f"workflow_run_id: {workflow_run_id}, error: {e}")
+                     f"workflow_run_id: {workflow_execution_id}, error: {e}")
     return False
 
 

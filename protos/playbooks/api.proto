@@ -164,7 +164,7 @@ message ExecutionWorkflowGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  WorkflowExecution workflow_execution = 4;
+  repeated WorkflowExecution workflow_executions = 4;
 }
 
 message ExecutionsWorkflowsListRequest {

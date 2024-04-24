@@ -61,24 +61,43 @@ global___WorkflowOneOffSchedule = WorkflowOneOffSchedule
 class WorkflowPeriodicSchedule(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    class _Type:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowPeriodicSchedule._Type.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: WorkflowPeriodicSchedule._Type.ValueType  # 0
+        INTERVAL: WorkflowPeriodicSchedule._Type.ValueType  # 1
+        CRON: WorkflowPeriodicSchedule._Type.ValueType  # 4
+
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+    UNKNOWN: WorkflowPeriodicSchedule.Type.ValueType  # 0
+    INTERVAL: WorkflowPeriodicSchedule.Type.ValueType  # 1
+    CRON: WorkflowPeriodicSchedule.Type.ValueType  # 4
+
     DURATION_IN_SECONDS_FIELD_NUMBER: builtins.int
-    INTERVAL_FIELD_NUMBER: builtins.int
-    CRON_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
+    TASK_INTERVAL_FIELD_NUMBER: builtins.int
+    CRON_RULE_FIELD_NUMBER: builtins.int
     @property
     def duration_in_seconds(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    type: global___WorkflowPeriodicSchedule.Type.ValueType
     @property
-    def interval(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def task_interval(self) -> protos.base_pb2.TaskInterval: ...
     @property
-    def cron(self) -> protos.base_pb2.TaskCronRule: ...
+    def cron_rule(self) -> protos.base_pb2.TaskCronRule: ...
     def __init__(
         self,
         *,
         duration_in_seconds: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        interval: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        cron: protos.base_pb2.TaskCronRule | None = ...,
+        type: global___WorkflowPeriodicSchedule.Type.ValueType = ...,
+        task_interval: protos.base_pb2.TaskInterval | None = ...,
+        cron_rule: protos.base_pb2.TaskCronRule | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cron", b"cron", "duration_in_seconds", b"duration_in_seconds", "interval", b"interval"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cron_rule", b"cron_rule", "duration_in_seconds", b"duration_in_seconds", "schedule", b"schedule", "task_interval", b"task_interval"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cron_rule", b"cron_rule", "duration_in_seconds", b"duration_in_seconds", "schedule", b"schedule", "task_interval", b"task_interval", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["schedule", b"schedule"]) -> typing_extensions.Literal["task_interval", "cron_rule"] | None: ...
 
 global___WorkflowPeriodicSchedule = WorkflowPeriodicSchedule
 
