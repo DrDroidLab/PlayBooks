@@ -45,6 +45,10 @@ COPY scripts/start-celery-worker.sh .
 RUN sed -i 's/\r$//g' start-celery-worker.sh
 RUN chmod +x start-celery-worker.sh
 
+COPY scripts/start-celery-beat.sh .
+RUN sed -i 's/\r$//g' start-celery-beat.sh
+RUN chmod +x start-celery-beat.sh
+
 
 EXPOSE 8080
 STOPSIGNAL SIGTERM

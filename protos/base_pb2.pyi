@@ -124,3 +124,61 @@ class ErrorMessage(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "message", b"message"]) -> None: ...
 
 global___ErrorMessage = ErrorMessage
+
+@typing_extensions.final
+class TaskCronSchedule(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    MINUTES_FIELD_NUMBER: builtins.int
+    HOURS_FIELD_NUMBER: builtins.int
+    DAYS_OF_THE_WEEK_FIELD_NUMBER: builtins.int
+    DAYS_OF_THE_MONTH_FIELD_NUMBER: builtins.int
+    DAYS_OF_THE_YEAR_FIELD_NUMBER: builtins.int
+    TIMEZONE_FIELD_NUMBER: builtins.int
+    @property
+    def minutes(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def hours(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def days_of_the_week(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def days_of_the_month(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def days_of_the_year(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def timezone(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        minutes: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        hours: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        days_of_the_week: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        days_of_the_month: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        days_of_the_year: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        timezone: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["days_of_the_month", b"days_of_the_month", "days_of_the_week", b"days_of_the_week", "days_of_the_year", b"days_of_the_year", "hours", b"hours", "minutes", b"minutes", "timezone", b"timezone"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["days_of_the_month", b"days_of_the_month", "days_of_the_week", b"days_of_the_week", "days_of_the_year", b"days_of_the_year", "hours", b"hours", "minutes", b"minutes", "timezone", b"timezone"]) -> None: ...
+
+global___TaskCronSchedule = TaskCronSchedule
+
+@typing_extensions.final
+class TaskCronRule(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    RULE_FIELD_NUMBER: builtins.int
+    TIMEZONE_FIELD_NUMBER: builtins.int
+    @property
+    def rule(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def timezone(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        rule: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        timezone: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["rule", b"rule", "timezone", b"timezone"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["rule", b"rule", "timezone", b"timezone"]) -> None: ...
+
+global___TaskCronRule = TaskCronRule
