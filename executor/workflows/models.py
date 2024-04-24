@@ -8,7 +8,8 @@ from accounts.models import Account
 from executor.models import PlayBook, PlayBookExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
-    WorkflowExecutionStatusType
+    WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
+    WorkflowExecutionLog as WorkflowExecutionLogProto
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -62,8 +63,8 @@ class WorkflowAction(models.Model):
         unique_together = [['account', 'type', 'action_md5', 'created_by']]
 
     def save(self, **kwargs):
-        if self.action_md5:
-            self.action_md5_md5 = md5(str(self.action).encode('utf-8')).hexdigest()
+        if self.action:
+            self.action_md5 = md5(str(self.action).encode('utf-8')).hexdigest()
         super().save(**kwargs)
 
     @property
@@ -196,7 +197,7 @@ class WorkflowExecution(models.Model):
 
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    interval = models.IntegerField(db_index=True, default=60)
+    interval = models.IntegerField(null=True, blank=True, db_index=True)
     total_executions = models.IntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -207,7 +208,44 @@ class WorkflowExecution(models.Model):
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = [['account', 'workflow_run_id']]
+        unique_together = [['account', 'workflow_run_id', 'scheduled_at']]
+
+    @property
+    def proto(self) -> WorkflowExecutionProto:
+        workflow_execution_logs = self.workflowexecutionlog_set.all()
+        wf_logs = [wel.proto for wel in workflow_execution_logs]
+        return WorkflowExecutionProto(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto_partial,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            interval=UInt64Value(value=self.interval),
+            total_executions=UInt64Value(value=self.total_executions),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            workflow_logs=wf_logs
+        )
+
+    @property
+    def proto_partial(self) -> WorkflowExecutionProto:
+        return WorkflowExecutionProto(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto_partial,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            interval=UInt64Value(value=self.interval) if self.interval else None,
+            total_executions=UInt64Value(value=self.total_executions),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+        )
 
 
 class WorkflowExecutionLog(models.Model):
@@ -216,3 +254,19 @@ class WorkflowExecutionLog(models.Model):
     workflow_execution = models.ForeignKey(WorkflowExecution, on_delete=models.CASCADE, db_index=True)
     playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    @property
+    def proto(self) -> WorkflowExecutionLogProto:
+        playbook_execution_proto = self.playbook_execution.proto
+        return WorkflowExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            playbook_execution=playbook_execution_proto,
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+        )
+
+    @property
+    def proto_partial(self) -> WorkflowExecutionLogProto:
+        return WorkflowExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+        )

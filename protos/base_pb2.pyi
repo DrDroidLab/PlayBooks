@@ -163,6 +163,23 @@ class TaskCronSchedule(google.protobuf.message.Message):
 global___TaskCronSchedule = TaskCronSchedule
 
 @typing_extensions.final
+class TaskInterval(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    INTERVAL_IN_SECONDS_FIELD_NUMBER: builtins.int
+    @property
+    def interval_in_seconds(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def __init__(
+        self,
+        *,
+        interval_in_seconds: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["interval_in_seconds", b"interval_in_seconds"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["interval_in_seconds", b"interval_in_seconds"]) -> None: ...
+
+global___TaskInterval = TaskInterval
+
+@typing_extensions.final
 class TaskCronRule(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 

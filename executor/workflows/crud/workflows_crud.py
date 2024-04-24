@@ -99,14 +99,14 @@ def create_db_workflow(account: Account, created_by, workflow_proto: WorkflowPro
             for ap in wf_action_protos:
                 ap_type = ap.type
                 action = proto_to_dict(ap)
-                saved_ep, _ = WorkflowAction.objects.get_or_create(account=account,
-                                                                   type=ap_type,
-                                                                   action=action,
-                                                                   created_by=created_by,
-                                                                   defaults={
-                                                                       'is_active': True,
-                                                                   })
-                WorkflowActionMapping.objects.create(account=account, workflow=db_workflow, action=saved_ep,
+                saved_a, _ = WorkflowAction.objects.get_or_create(account=account,
+                                                                  type=ap_type,
+                                                                  action=action,
+                                                                  created_by=created_by,
+                                                                  defaults={
+                                                                      'is_active': True,
+                                                                  })
+                WorkflowActionMapping.objects.create(account=account, workflow=db_workflow, action=saved_a,
                                                      is_active=True)
 
             for pb in db_playbooks:

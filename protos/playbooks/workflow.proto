@@ -12,9 +12,17 @@ message WorkflowOneOffSchedule {
 }
 
 message WorkflowPeriodicSchedule {
+  enum Type {
+    UNKNOWN = 0;
+    INTERVAL = 1;
+    CRON = 4;
+  }
   google.protobuf.UInt64Value duration_in_seconds = 1;
-  google.protobuf.UInt64Value interval = 2;
-  TaskCronRule cron = 3;
+  Type type = 2;
+  oneof schedule {
+    TaskInterval task_interval = 3;
+    TaskCronRule cron_rule = 4;
+  }
 }
 
 
@@ -185,4 +193,28 @@ message UpdateWorkflowOp {
     UpdateWorkflowActionStatus update_workflow_action_status = 6;
     UpdateWorkflowPlaybookStatus update_workflow_playbook_status = 7;
   }
+}
+
+
+///////////////////// Workflow Executions Proto /////////////////////
+message WorkflowExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  PlaybookExecution playbook_execution = 2;
+  sfixed64 created_at = 3;
+}
+
+message WorkflowExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+  Workflow workflow = 3;
+  WorkflowExecutionStatusType status = 4;
+  sfixed64 scheduled_at = 5;
+  sfixed64 expiry_at = 6;
+  google.protobuf.UInt64Value interval = 7;
+  google.protobuf.UInt64Value total_executions = 8;
+  sfixed64 created_at = 9;
+  sfixed64 started_at = 10;
+  sfixed64 finished_at = 11;
+  google.protobuf.StringValue created_by = 12;
+  repeated WorkflowExecutionLog workflow_logs = 13;
 }
