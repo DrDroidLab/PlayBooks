@@ -24,12 +24,6 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
           alignItems: "center",
           gap: "10px",
         }}>
-        {step.isPrefetched && !step.isCopied && (
-          <b>
-            {index + 1}: {step.description || `Step - ${index + 1}`}
-          </b>
-        )}
-
         {(step.outputLoading || step.inprogress) && (
           <CircularProgress size={20} />
         )}
@@ -42,7 +36,7 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
           step.output &&
           !step.showError && <CheckCircleOutline color="success" size={20} />}
 
-        {!step.editTitle && (!step.isPrefetched || step.isCopied) && (
+        {!step.editTitle && (
           <div onClick={(e) => editCardTitle(e, index)}>
             <b>
               {index + 1}: {step.description || `Step - ${index + 1}`}
