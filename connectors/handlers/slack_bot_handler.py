@@ -1,3 +1,4 @@
+import traceback
 from typing import Dict
 from datetime import datetime, timedelta, timezone
 
@@ -44,6 +45,21 @@ def create_or_update_slack_channel_metadata(account_id, account_slack_connector_
         print(
             f"Error while saving SlackChannelMetadata: {account_slack_connector_id}:{channel_id} with error: {e}")
         return None
+    
+
+def check_if_active_channel_exists(account_id, slack_connector_id, channel_id):
+    try:
+        slack_channel_metadata = ConnectorMetadataModelStore.objects.filter(account_id=account_id,
+                                                                            connector_id=slack_connector_id,
+                                                                            connector_type=ConnectorType.SLACK,
+                                                                            model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                                            model_uid=channel_id, is_active=True).first()
+        if slack_channel_metadata:
+            return True
+        return False
+    except Exception as e:
+        print(f"Error while fetching active SlackChannelMetadata: {slack_connector_id}:{channel_id} with error: {e}")
+        return False
 
 
 def handle_event_callback(data: Dict):
@@ -70,63 +86,70 @@ def handle_event_callback(data: Dict):
                     print(f"Error while handling slack 'message' event with error: {e} for connector: {team_id}")
                 return True
             if event_subtype == 'channel_join':
-                try:
-                    bot_auth_token = slack_connector.metadata.get('bot_auth_token', None)
-                    if not bot_auth_token:
-                        print(
-                            f"Error while registering slack channel for connector: {team_id}: bot_auth_token not found")
-                        return False
-                    slack_api_processor = SlackApiProcessor(bot_auth_token)
-                    channel_name = None
-                    channel_info = slack_api_processor.fetch_channel_info(channel_id)
-                    if channel_info:
-                        if 'name' in channel_info:
-                            channel_name = channel_info['name']
-                    inviter_id = event.get('inviter', None)
-                    slack_channel_metadata, is_created = create_or_update_slack_channel_metadata(
-                        slack_connector.account_id,
-                        slack_connector.id,
-                        channel_id,
-                        event_ts,
-                        channel_name,
-                        inviter_id)
-                    if slack_channel_metadata:
-                        if channel_name:
-                            channel_header = channel_name
-                        if not channel_name:
-                            task_channel_name = channel_id
+                channel_exists = check_if_active_channel_exists(slack_connector.account_id, slack_connector.id, channel_id)
+                if not channel_exists:
+                    try:
+
+                        bot_auth_token = None
+                        bot_auth_token_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id, key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN).first()
+                        if bot_auth_token_connector_key:
+                            bot_auth_token = bot_auth_token_connector_key.key
+
+                        if not bot_auth_token:
+                            print(
+                                f"Error while registering slack channel for connector: {team_id}: bot_auth_token not found")
+                            return False
+
+                        slack_api_processor = SlackApiProcessor(bot_auth_token)
+                        channel_name = None
+                        channel_info = slack_api_processor.fetch_channel_info(channel_id)
+                        if channel_info:
+                            if 'name' in channel_info:
+                                channel_name = channel_info['name']
+                        inviter_id = event.get('inviter', None)
+                        slack_channel_metadata, is_created = create_or_update_slack_channel_metadata(
+                            slack_connector.account_id,
+                            slack_connector.id,
+                            channel_id,
+                            event_ts,
+                            channel_name,
+                            inviter_id)
+                        if slack_channel_metadata:
+                            if not channel_name:
+                                task_channel_name = channel_id
+                            else:
+                                task_channel_name = channel_name
+                            if is_created:
+                                start_timestamp = str((datetime.fromtimestamp(float(event_ts)) - timedelta(days=7)).timestamp())
+                                task = slack_connector_data_fetch_job.delay(account_id=slack_connector.account_id,
+                                                                            connector_id=slack_connector.id,
+                                                                            source_metadata_model_id=None,
+                                                                            workspace_id=team_id,
+                                                                            bot_auth_token=bot_auth_token,
+                                                                            channel_id=channel_id,
+                                                                            channel_name=task_channel_name,
+                                                                            latest_timestamp=str(event_ts),
+                                                                            oldest_timestamp=start_timestamp,
+                                                                            is_first_run=True)
+                                task_id = task.id
+                                data_extraction_to = datetime.fromtimestamp(float(event_ts))
+                                create_slack_connector_channel_scrap_schedule(slack_connector.account_id,
+                                                                            slack_connector.id,
+                                                                            channel_id,
+                                                                            task_id,
+                                                                            data_extraction_to,
+                                                                            '')
+                            return True
                         else:
-                            task_channel_name = channel_name
-                        if is_created:
-                            start_timestamp = str((datetime.fromtimestamp(float(event_ts)) - timedelta(days=7)).timestamp())
-                            task = slack_connector_data_fetch_job.delay(account_id=slack_connector.account_id,
-                                                                        connector_id=slack_connector.id,
-                                                                        source_connector_key_id=None,
-                                                                        workspace_id=team_id,
-                                                                        bot_auth_token=bot_auth_token,
-                                                                        channel_id=channel_id,
-                                                                        channel_name=task_channel_name,
-                                                                        latest_timestamp=str(event_ts),
-                                                                        oldest_timestamp=start_timestamp,
-                                                                        is_first_run=True)
-                            task_id = task.id
-                            data_extraction_to = datetime.fromtimestamp(float(event_ts))
-                            create_slack_connector_channel_scrap_schedule(slack_connector.account_id,
-                                                                        slack_connector.id,
-                                                                        channel_id,
-                                                                        task_id,
-                                                                        data_extraction_to,
-                                                                        '')
-                        return True
-                    else:
-                        print(f"Error while saving SlackBotConfig for connector: {team_id}:{channel_id}:{event_ts}")
+                            print(f"Error while saving SlackBotConfig for connector: {team_id}:{channel_id}:{event_ts}")
+                            return False
+                    except Exception as e:
+                        print(traceback.format_exc())
+                        print(f"Error while registering slack bot config for connector: {team_id} with error: {e}")
                         return False
-                except Exception as e:
-                    print(f"Error while registering slack bot config for connector: {team_id} with error: {e}")
+                else:
+                    print(f"Received invalid event type: {event['type']} for connector {team_id}")
                     return False
-            else:
-                print(f"Received invalid event type: {event['type']} for connector {team_id}")
-                return False
     else:
         print(f"Error handling event in connector {team_id}: No event found in request data: {data}")
         return False

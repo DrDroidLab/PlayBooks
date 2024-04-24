@@ -12,14 +12,14 @@ from accounts.models import Account
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from connectors.assets.extractor.metadata_extractor_facade import connector_metadata_extractor_facade
 from connectors.assets.extractor.slack_metadata_extractor import source_identifier, text_identifier_v2
-from connectors.models import Connector, ConnectorKey, SlackConnectorAlertTag, SlackConnectorAlertType, SlackConnectorDataReceived
+from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertTag, SlackConnectorAlertType, SlackConnectorDataReceived
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import PeriodicTaskStatus, TaskRun
 from management.utils.celery_task_signal_utils import publish_task_failure, publish_pre_run_task, publish_post_run_task
 from playbooks.utils.utils import current_datetime, current_epoch_timestamp, current_milli_time
 
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 def clean_raw_extracted_data(message):
     if isinstance(message, dict):
@@ -81,8 +81,16 @@ def handle_receive_message(slack_connector_id, message):
     try:
         slack_connector = Connector.objects.get(id=slack_connector_id)
         account_id = slack_connector.account_id
-        bot_auth_token = slack_connector.metadata.get('bot_auth_token', None)
-        doctor_droid_app_id = slack_connector.metadata.get('app_id', None)
+
+        bot_auth_token = None
+        bot_auth_token_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id, key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN).first()
+        if bot_auth_token_connector_key:
+            bot_auth_token = bot_auth_token_connector_key.key
+
+        doctor_droid_app_id = None
+        app_id_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id, key_type=ConnectorKeyProto.SLACK_APP_ID).first()
+        if app_id_connector_key:
+            doctor_droid_app_id = app_id_connector_key.key
 
         api_app_id = message['api_app_id']
 
@@ -152,6 +160,13 @@ def handle_receive_message(slack_connector_id, message):
 
                 if channel_id:
                     slack_received_msg.channel_id = channel_id
+                    # get model store
+                    slack_channel_metadata = ConnectorMetadataModelStore.objects.filter(account_id=account_id,
+                                                                            connector_type=ConnectorType.SLACK,
+                                                                            model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                                            model_uid=channel_id, is_active=True).first()
+                    if slack_channel_metadata:
+                        slack_received_msg.slack_channel_metadata_model = slack_channel_metadata
 
                 slack_received_msg.save()
             except Exception as e:
@@ -167,10 +182,10 @@ handle_receive_message_postrun_notifier = publish_post_run_task(handle_receive_m
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def slack_connector_data_fetch_storage_job(account_id, connector_id, source_connector_key_id, workspace_id: str,
+def slack_connector_data_fetch_storage_job(account_id, connector_id, source_metadata_model_id, workspace_id: str,
                                            channel_id: str, channel_name: str, raw_data_json, is_first_run=False):
-    if not source_connector_key_id and not channel_id:
-        print(f"Invalid arguments provided for slack_connector_data_fetch_storage_job. Missing source_connector_key_id:"
+    if not source_metadata_model_id and not channel_id:
+        print(f"Invalid arguments provided for slack_connector_data_fetch_storage_job. Missing source_metadata_model_id:"
               f" or channel_id")
         return
     current_time = time.time()
@@ -185,13 +200,27 @@ def slack_connector_data_fetch_storage_job(account_id, connector_id, source_conn
 
     extracted_data = []
     for index, row in raw_data.iterrows():
-        data_uuid = row['uuid']
         full_message = row['full_message']
-        cleaned_full_message = clean_raw_extracted_data(full_message)
-        extracted_data.append(
-            SlackConnectorDataReceived(account_id=account_id, connector_id=connector_id,
-                                       source_connector_key_id=source_connector_key_id, source=channel_id,
-                                       data_uuid=data_uuid, data=cleaned_full_message))
+
+        # Check if its a bot alert and should be stored
+        is_bot_message = True
+        if not full_message.get('bot_profile'):
+            if not full_message.get('subtype') or full_message.get('subtype') != 'bot_message':
+                is_bot_message = False
+
+        if is_bot_message:
+            alert_text = text_identifier_v2(full_message, 'slack')
+            alert_type = source_identifier(full_message, 'slack')
+
+            event_ts = full_message.get('ts', None)
+            data_timestamp = datetime.utcfromtimestamp(float(event_ts))
+            data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)
+
+            extracted_data.append(
+                SlackConnectorDataReceived(account_id=account_id, connector_id=connector_id,
+                                        slack_channel_metadata_model_id=source_metadata_model_id, channel_id=channel_id,
+                                        data=full_message, text=alert_text, alert_type=alert_type,
+                                        data_timestamp=data_timestamp))
     try:
         saved_data: List[SlackConnectorDataReceived] = SlackConnectorDataReceived.objects.bulk_create(extracted_data,
                                                                                                       batch_size=1000)
@@ -207,21 +236,23 @@ slack_connector_data_fetch_storage_job_postrun_notifier = publish_post_run_task(
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def slack_connector_data_fetch_job(account_id, connector_id, source_connector_key_id, workspace_id: str,
+def slack_connector_data_fetch_job(account_id, connector_id, source_metadata_model_id, workspace_id: str,
                                    bot_auth_token: str, channel_id: str, channel_name: str, latest_timestamp: str,
                                    oldest_timestamp: str, is_first_run=False):
-    if not source_connector_key_id and not channel_id:
-        print(f"Invalid arguments provided for slack_connector_data_fetch_job. Missing source_connector_key_id"
+    if not source_metadata_model_id and not channel_id:
+        print(f"Invalid arguments provided for slack_connector_data_fetch_job. Missing source_metadata_model_id"
               f" or channel id")
         return
-    if not source_connector_key_id:
+    if not source_metadata_model_id:
         try:
-            source_connector_key_id = ConnectorKey.objects.filter(account_id=account_id, connector_id=connector_id,
-                                                                  key_type=ConnectorKeyProto.SLACK_CHANNEL,
-                                                                  key=channel_id).first().id
+            source_metadata_model_id = ConnectorMetadataModelStore.objects.filter(account_id=account_id,
+                                                                            connector_id=connector_id,
+                                                                            connector_type=ConnectorType.SLACK,
+                                                                            model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                                            model_uid=channel_id, is_active=True).first().id
         except Exception as e:
             print(f"Exception occurred in slack_connector_data_fetch_job: error while fetching "
-                  f"source_connector_key_id for account: {account_id}, connector: {connector_id} with error: {e}")
+                  f"source_metadata_model_id for account: {account_id}, connector: {connector_id} with error: {e}")
             return
     current_time = time.time()
     if not bot_auth_token or not channel_id:
@@ -308,7 +339,7 @@ def slack_connector_data_fetch_job(account_id, connector_id, source_connector_ke
                     break
                 raw_data_json = raw_data.to_json(orient='records')
                 saved_task = get_or_create_task(slack_connector_data_fetch_storage_job.__name__, account_id,
-                                                connector_id, source_connector_key_id, workspace_id, channel_id,
+                                                connector_id, source_metadata_model_id, workspace_id, channel_id,
                                                 channel_name, raw_data_json, scheduled_first_run)
 
                 if not saved_task:
@@ -318,7 +349,7 @@ def slack_connector_data_fetch_job(account_id, connector_id, source_connector_ke
                 if check_scheduled_or_running_task_run_for_task(saved_task):
                     continue
 
-                task = slack_connector_data_fetch_storage_job.delay(account_id, connector_id, source_connector_key_id,
+                task = slack_connector_data_fetch_storage_job.delay(account_id, connector_id, source_metadata_model_id,
                                                                     workspace_id, channel_id, channel_name,
                                                                     raw_data_json, scheduled_first_run)
                 try:
