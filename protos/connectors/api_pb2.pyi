@@ -9,6 +9,7 @@ import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
+import protos.connectors.alert_ops_pb2
 import protos.connectors.connector_pb2
 import sys
 
@@ -278,3 +279,170 @@ class GetConnectorPlaybookSourceOptionsResponse(google.protobuf.message.Message)
     def ClearField(self, field_name: typing_extensions.Literal["active_account_connectors", b"active_account_connectors", "meta", b"meta", "success", b"success"]) -> None: ...
 
 global___GetConnectorPlaybookSourceOptionsResponse = GetConnectorPlaybookSourceOptionsResponse
+
+@typing_extensions.final
+class GetSlackAlertTriggerOptionsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class ConnectorTypeRequest(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+        FILTER_CHANNELS_FIELD_NUMBER: builtins.int
+        FILTER_ALERT_TYPES_FIELD_NUMBER: builtins.int
+        FILTER_ALERT_TAGS_FIELD_NUMBER: builtins.int
+        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+        @property
+        def filter_channels(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        @property
+        def filter_alert_types(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        @property
+        def filter_alert_tags(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        def __init__(
+            self,
+            *,
+            connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+            filter_channels: collections.abc.Iterable[builtins.str] | None = ...,
+            filter_alert_types: collections.abc.Iterable[builtins.str] | None = ...,
+            filter_alert_tags: collections.abc.Iterable[builtins.str] | None = ...,
+        ) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "filter_alert_tags", b"filter_alert_tags", "filter_alert_types", b"filter_alert_types", "filter_channels", b"filter_channels"]) -> None: ...
+
+    META_FIELD_NUMBER: builtins.int
+    CONNECTOR_TYPE_REQUESTS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def connector_type_requests(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___GetSlackAlertTriggerOptionsRequest.ConnectorTypeRequest]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        connector_type_requests: collections.abc.Iterable[global___GetSlackAlertTriggerOptionsRequest.ConnectorTypeRequest] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_type_requests", b"connector_type_requests", "meta", b"meta"]) -> None: ...
+
+global___GetSlackAlertTriggerOptionsRequest = GetSlackAlertTriggerOptionsRequest
+
+@typing_extensions.final
+class GetSlackAlertTriggerOptionsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    ALERT_OPS_OPTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def alert_ops_options(self) -> protos.connectors.alert_ops_pb2.AlertOpsOptions: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        alert_ops_options: protos.connectors.alert_ops_pb2.AlertOpsOptions | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alert_ops_options", b"alert_ops_options", "meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alert_ops_options", b"alert_ops_options", "meta", b"meta"]) -> None: ...
+
+global___GetSlackAlertTriggerOptionsResponse = GetSlackAlertTriggerOptionsResponse
+
+@typing_extensions.final
+class GetSlackAlertsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    USE_DB_SOURCE_TAGS_FIELD_NUMBER: builtins.int
+    WORKSPACE_ID_FIELD_NUMBER: builtins.int
+    CHANNEL_ID_FIELD_NUMBER: builtins.int
+    ALERT_TYPE_FIELD_NUMBER: builtins.int
+    PATTERN_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def use_db_source_tags(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def workspace_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def channel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def alert_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def pattern(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        use_db_source_tags: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        workspace_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        channel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        alert_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        pattern: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alert_type", b"alert_type", "channel_id", b"channel_id", "meta", b"meta", "pattern", b"pattern", "use_db_source_tags", b"use_db_source_tags", "workspace_id", b"workspace_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alert_type", b"alert_type", "channel_id", b"channel_id", "meta", b"meta", "pattern", b"pattern", "use_db_source_tags", b"use_db_source_tags", "workspace_id", b"workspace_id"]) -> None: ...
+
+global___GetSlackAlertsRequest = GetSlackAlertsRequest
+
+@typing_extensions.final
+class GetSlackAlertsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SLACK_ALERTS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def slack_alerts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.connectors.alert_ops_pb2.SlackAlert]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        slack_alerts: collections.abc.Iterable[protos.connectors.alert_ops_pb2.SlackAlert] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "slack_alerts", b"slack_alerts"]) -> None: ...
+
+global___GetSlackAlertsResponse = GetSlackAlertsResponse
+
+@typing_extensions.final
+class GetSlackAppManifestRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    HOST_NAME_FIELD_NUMBER: builtins.int
+    @property
+    def host_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        host_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["host_name", b"host_name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["host_name", b"host_name"]) -> None: ...
+
+global___GetSlackAppManifestRequest = GetSlackAppManifestRequest
+
+@typing_extensions.final
+class GetSlackAppManifestResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    APP_MANIFEST_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def app_manifest(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        app_manifest: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["app_manifest", b"app_manifest", "message", b"message", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["app_manifest", b"app_manifest", "message", b"message", "success", b"success"]) -> None: ...
+
+global___GetSlackAppManifestResponse = GetSlackAppManifestResponse

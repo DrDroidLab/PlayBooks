@@ -8,7 +8,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
 
 integrations_request_connectors = [
     ConnectorType.ELASTIC_APM,
@@ -61,11 +61,12 @@ integrations_connector_type_category_map = {
 }
 
 integrations_connector_type_connector_keys_map = {
-    # ConnectorType.SLACK: [
-    #     [
-    #         ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN
-    #     ]
-    # ],
+    ConnectorType.SLACK: [
+        [
+            ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
+            ConnectorKeyProto.KeyType.SLACK_APP_ID
+        ]
+    ],
     # ConnectorType.GOOGLE_CHAT: [
     #     [
     #         ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
@@ -337,3 +338,77 @@ class ConnectorMetadataModelStore(models.Model):
 
     def __str__(self):
         return f'{self.account}:{self.connector_type}:{self.model_type}:{self.model_uid}'
+
+
+class SlackConnectorAlertType(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    channel = models.ForeignKey(ConnectorKey, on_delete=models.CASCADE)
+    alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+    class Meta:
+        unique_together = [['account', 'connector', 'channel', 'alert_type']]
+
+
+class SlackConnectorAlertTag(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    channel = models.ForeignKey(ConnectorKey, on_delete=models.CASCADE)
+    alert_type = models.ForeignKey(SlackConnectorAlertType, on_delete=models.CASCADE, null=True, blank=True,
+                                   db_index=True)
+    alert_tag = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+    class Meta:
+        unique_together = [['account', 'connector', 'channel', 'alert_type', 'alert_tag']]
+
+
+class SlackConnectorDataReceived(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    slack_channel_metadata_model = models.ForeignKey(ConnectorMetadataModelStore, on_delete=models.CASCADE, db_index=True, null=True)
+    channel_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    data = models.JSONField(null=True, blank=True)
+
+    db_alert_type = models.ForeignKey(SlackConnectorAlertType, on_delete=models.CASCADE, null=True, blank=True,
+                                      db_index=True)
+    alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+
+    db_alert_tags = models.ManyToManyField(
+        SlackConnectorAlertTag,
+        through='SlackConnectorDataReceivedAlertTagMapping',
+        related_name='tags',
+    )
+    tags = models.JSONField(null=True, blank=True)
+    title = models.TextField(null=True, blank=True)
+    text = models.TextField(null=True, blank=True)
+
+    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
+    received_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class SlackConnectorDataReceivedAlertTagMapping(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    slack_connector_data_received = models.ForeignKey(SlackConnectorDataReceived, on_delete=models.CASCADE,
+                                                      db_index=True)
+    alert_tag = models.ForeignKey(SlackConnectorAlertTag, on_delete=models.CASCADE, db_index=True)
+    value = models.TextField(null=True, blank=True)
+    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        unique_together = [['account', 'slack_connector_data_received', 'alert_tag']]
+
+
+class ConnectorPeriodicRunMetadata(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    metadata = models.JSONField()
+    task_run_id = models.CharField(max_length=255)
+    status = models.IntegerField(null=True, blank=True,
+                                 choices=generate_choices(PeriodicRunStatus.StatusType))
+    started_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    finished_at = models.DateTimeField(blank=True, null=True, db_index=True)

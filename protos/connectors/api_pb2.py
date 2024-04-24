@@ -13,38 +13,53 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connector__pb2
+from protos.connectors import alert_ops_pb2 as protos_dot_connectors_dot_alert__ops__pb2
 from protos import base_pb2 as protos_dot_base__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bprotos/connectors/api.proto\x12\x11protos.connectors\x1a\x1egoogle/protobuf/wrappers.proto\x1a!protos/connectors/connector.proto\x1a\x11protos/base.proto\"\x82\x01\n\x16\x43reateConnectorRequest\x12/\n\tconnector\x18\x01 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12\x37\n\x0e\x63onnector_keys\x18\x02 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"h\n\x17\x43reateConnectorResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"\x1a\n\x18GetConnectorsListRequest\"\x92\x02\n\x19GetConnectorsListResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12\x38\n\x12request_connectors\x18\x03 \x03(\x0b\x32\x1c.protos.connectors.Connector\x12:\n\x14\x61vailable_connectors\x18\x04 \x03(\x0b\x32\x1c.protos.connectors.Connector\x12\x30\n\nconnectors\x18\x05 \x03(\x0b\x32\x1c.protos.connectors.Connector\"\x90\x01\n\x16UpdateConnectorRequest\x12\x32\n\x0c\x63onnector_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x42\n\x14update_connector_ops\x18\x02 \x03(\x0b\x32$.protos.connectors.UpdateConnectorOp\"h\n\x17UpdateConnectorResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"Z\n\x1eGetConnectorKeysOptionsRequest\x12\x38\n\x0e\x63onnector_type\x18\x01 \x01(\x0e\x32 .protos.connectors.ConnectorType\"\xb0\x01\n\x1fGetConnectorKeysOptionsResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12>\n\x15\x63onnector_key_options\x18\x03 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"\x87\x01\n\x17GetConnectorKeysRequest\x12\x32\n\x0c\x63onnector_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x38\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32 .protos.connectors.ConnectorType\"\xd3\x01\n\x18GetConnectorKeysResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12/\n\tconnector\x18\x03 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12\x37\n\x0e\x63onnector_keys\x18\x04 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"F\n(GetConnectorPlaybookSourceOptionsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\"\xcc\x01\n)GetConnectorPlaybookSourceOptionsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12V\n\x19\x61\x63tive_account_connectors\x18\x03 \x03(\x0b\x32\x33.protos.connectors.AccountActiveConnectorModelTypesb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bprotos/connectors/api.proto\x12\x11protos.connectors\x1a\x1egoogle/protobuf/wrappers.proto\x1a!protos/connectors/connector.proto\x1a!protos/connectors/alert_ops.proto\x1a\x11protos/base.proto\"\x82\x01\n\x16\x43reateConnectorRequest\x12/\n\tconnector\x18\x01 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12\x37\n\x0e\x63onnector_keys\x18\x02 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"h\n\x17\x43reateConnectorResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"\x1a\n\x18GetConnectorsListRequest\"\x92\x02\n\x19GetConnectorsListResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12\x38\n\x12request_connectors\x18\x03 \x03(\x0b\x32\x1c.protos.connectors.Connector\x12:\n\x14\x61vailable_connectors\x18\x04 \x03(\x0b\x32\x1c.protos.connectors.Connector\x12\x30\n\nconnectors\x18\x05 \x03(\x0b\x32\x1c.protos.connectors.Connector\"\x90\x01\n\x16UpdateConnectorRequest\x12\x32\n\x0c\x63onnector_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x42\n\x14update_connector_ops\x18\x02 \x03(\x0b\x32$.protos.connectors.UpdateConnectorOp\"h\n\x17UpdateConnectorResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"Z\n\x1eGetConnectorKeysOptionsRequest\x12\x38\n\x0e\x63onnector_type\x18\x01 \x01(\x0e\x32 .protos.connectors.ConnectorType\"\xb0\x01\n\x1fGetConnectorKeysOptionsResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12>\n\x15\x63onnector_key_options\x18\x03 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"\x87\x01\n\x17GetConnectorKeysRequest\x12\x32\n\x0c\x63onnector_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x38\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32 .protos.connectors.ConnectorType\"\xd3\x01\n\x18GetConnectorKeysResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12/\n\tconnector\x18\x03 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12\x37\n\x0e\x63onnector_keys\x18\x04 \x03(\x0b\x32\x1f.protos.connectors.ConnectorKey\"F\n(GetConnectorPlaybookSourceOptionsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\"\xcc\x01\n)GetConnectorPlaybookSourceOptionsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12V\n\x19\x61\x63tive_account_connectors\x18\x03 \x03(\x0b\x32\x33.protos.connectors.AccountActiveConnectorModelTypes\"\xd0\x02\n\"GetSlackAlertTriggerOptionsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12k\n\x17\x63onnector_type_requests\x18\x02 \x03(\x0b\x32J.protos.connectors.GetSlackAlertTriggerOptionsRequest.ConnectorTypeRequest\x1a\xa0\x01\n\x14\x43onnectorTypeRequest\x12\x38\n\x0e\x63onnector_type\x18\x01 \x01(\x0e\x32 .protos.connectors.ConnectorType\x12\x17\n\x0f\x66ilter_channels\x18\x02 \x03(\t\x12\x1a\n\x12\x66ilter_alert_types\x18\x03 \x03(\t\x12\x19\n\x11\x66ilter_alert_tags\x18\x04 \x03(\t\"n\n#GetSlackAlertTriggerOptionsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x11\x61lert_ops_options\x18\x02 \x01(\x0b\x32\x10.AlertOpsOptions\"\xb2\x02\n\x15GetSlackAlertsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x36\n\x12use_db_source_tags\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12\x32\n\x0cworkspace_id\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x30\n\nchannel_id\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\nalert_type\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07pattern\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"W\n\x16GetSlackAlertsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12!\n\x0cslack_alerts\x18\x02 \x03(\x0b\x32\x0b.SlackAlert\"M\n\x1aGetSlackAppManifestRequest\x12/\n\thost_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa0\x01\n\x1bGetSlackAppManifestResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12\x32\n\x0c\x61pp_manifest\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.api_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _CREATECONNECTORREQUEST._serialized_start=137
-  _CREATECONNECTORREQUEST._serialized_end=267
-  _CREATECONNECTORRESPONSE._serialized_start=269
-  _CREATECONNECTORRESPONSE._serialized_end=373
-  _GETCONNECTORSLISTREQUEST._serialized_start=375
-  _GETCONNECTORSLISTREQUEST._serialized_end=401
-  _GETCONNECTORSLISTRESPONSE._serialized_start=404
-  _GETCONNECTORSLISTRESPONSE._serialized_end=678
-  _UPDATECONNECTORREQUEST._serialized_start=681
-  _UPDATECONNECTORREQUEST._serialized_end=825
-  _UPDATECONNECTORRESPONSE._serialized_start=827
-  _UPDATECONNECTORRESPONSE._serialized_end=931
-  _GETCONNECTORKEYSOPTIONSREQUEST._serialized_start=933
-  _GETCONNECTORKEYSOPTIONSREQUEST._serialized_end=1023
-  _GETCONNECTORKEYSOPTIONSRESPONSE._serialized_start=1026
-  _GETCONNECTORKEYSOPTIONSRESPONSE._serialized_end=1202
-  _GETCONNECTORKEYSREQUEST._serialized_start=1205
-  _GETCONNECTORKEYSREQUEST._serialized_end=1340
-  _GETCONNECTORKEYSRESPONSE._serialized_start=1343
-  _GETCONNECTORKEYSRESPONSE._serialized_end=1554
-  _GETCONNECTORPLAYBOOKSOURCEOPTIONSREQUEST._serialized_start=1556
-  _GETCONNECTORPLAYBOOKSOURCEOPTIONSREQUEST._serialized_end=1626
-  _GETCONNECTORPLAYBOOKSOURCEOPTIONSRESPONSE._serialized_start=1629
-  _GETCONNECTORPLAYBOOKSOURCEOPTIONSRESPONSE._serialized_end=1833
+  _CREATECONNECTORREQUEST._serialized_start=172
+  _CREATECONNECTORREQUEST._serialized_end=302
+  _CREATECONNECTORRESPONSE._serialized_start=304
+  _CREATECONNECTORRESPONSE._serialized_end=408
+  _GETCONNECTORSLISTREQUEST._serialized_start=410
+  _GETCONNECTORSLISTREQUEST._serialized_end=436
+  _GETCONNECTORSLISTRESPONSE._serialized_start=439
+  _GETCONNECTORSLISTRESPONSE._serialized_end=713
+  _UPDATECONNECTORREQUEST._serialized_start=716
+  _UPDATECONNECTORREQUEST._serialized_end=860
+  _UPDATECONNECTORRESPONSE._serialized_start=862
+  _UPDATECONNECTORRESPONSE._serialized_end=966
+  _GETCONNECTORKEYSOPTIONSREQUEST._serialized_start=968
+  _GETCONNECTORKEYSOPTIONSREQUEST._serialized_end=1058
+  _GETCONNECTORKEYSOPTIONSRESPONSE._serialized_start=1061
+  _GETCONNECTORKEYSOPTIONSRESPONSE._serialized_end=1237
+  _GETCONNECTORKEYSREQUEST._serialized_start=1240
+  _GETCONNECTORKEYSREQUEST._serialized_end=1375
+  _GETCONNECTORKEYSRESPONSE._serialized_start=1378
+  _GETCONNECTORKEYSRESPONSE._serialized_end=1589
+  _GETCONNECTORPLAYBOOKSOURCEOPTIONSREQUEST._serialized_start=1591
+  _GETCONNECTORPLAYBOOKSOURCEOPTIONSREQUEST._serialized_end=1661
+  _GETCONNECTORPLAYBOOKSOURCEOPTIONSRESPONSE._serialized_start=1664
+  _GETCONNECTORPLAYBOOKSOURCEOPTIONSRESPONSE._serialized_end=1868
+  _GETSLACKALERTTRIGGEROPTIONSREQUEST._serialized_start=1871
+  _GETSLACKALERTTRIGGEROPTIONSREQUEST._serialized_end=2207
+  _GETSLACKALERTTRIGGEROPTIONSREQUEST_CONNECTORTYPEREQUEST._serialized_start=2047
+  _GETSLACKALERTTRIGGEROPTIONSREQUEST_CONNECTORTYPEREQUEST._serialized_end=2207
+  _GETSLACKALERTTRIGGEROPTIONSRESPONSE._serialized_start=2209
+  _GETSLACKALERTTRIGGEROPTIONSRESPONSE._serialized_end=2319
+  _GETSLACKALERTSREQUEST._serialized_start=2322
+  _GETSLACKALERTSREQUEST._serialized_end=2628
+  _GETSLACKALERTSRESPONSE._serialized_start=2630
+  _GETSLACKALERTSRESPONSE._serialized_end=2717
+  _GETSLACKAPPMANIFESTREQUEST._serialized_start=2719
+  _GETSLACKAPPMANIFESTREQUEST._serialized_end=2796
+  _GETSLACKAPPMANIFESTRESPONSE._serialized_start=2799
+  _GETSLACKAPPMANIFESTRESPONSE._serialized_end=2959
 # @@protoc_insertion_point(module_scope)

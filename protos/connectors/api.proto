@@ -1,6 +1,7 @@
 syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 import "protos/connectors/connector.proto";
+import "protos/connectors/alert_ops.proto";
 import "protos/base.proto";
 
 package protos.connectors;
@@ -67,4 +68,44 @@ message GetConnectorPlaybookSourceOptionsResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   repeated AccountActiveConnectorModelTypes active_account_connectors = 3;
+}
+
+message GetSlackAlertTriggerOptionsRequest {
+  message ConnectorTypeRequest {
+    ConnectorType connector_type = 1;
+    repeated string filter_channels = 2;
+    repeated string filter_alert_types = 3;
+    repeated string filter_alert_tags = 4;
+  }
+  Meta meta = 1;
+  repeated ConnectorTypeRequest connector_type_requests = 2;
+}
+
+message GetSlackAlertTriggerOptionsResponse {
+  Meta meta = 1;
+  AlertOpsOptions alert_ops_options = 2;
+}
+
+message GetSlackAlertsRequest {
+  Meta meta = 1;
+  google.protobuf.BoolValue use_db_source_tags = 2;
+  google.protobuf.UInt64Value workspace_id = 3;
+  google.protobuf.StringValue channel_id = 4;
+  google.protobuf.StringValue alert_type = 5;
+  google.protobuf.StringValue pattern = 6;
+}
+
+message GetSlackAlertsResponse {
+  Meta meta = 1;
+  repeated SlackAlert slack_alerts = 2;
+}
+
+message GetSlackAppManifestRequest {
+  google.protobuf.StringValue host_name = 1;
+}
+
+message GetSlackAppManifestResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  google.protobuf.StringValue app_manifest = 3;
 }

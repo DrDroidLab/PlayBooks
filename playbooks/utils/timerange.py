@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 from django.db.models import QuerySet
 
-from protos.event.base_pb2 import TimeRange
+from protos.base_pb2 import TimeRange
 
 
 @dataclass

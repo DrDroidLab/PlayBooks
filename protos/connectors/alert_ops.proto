@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+message CommWorkspace {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  repeated CommChannel active_channels = 3;
+  repeated CommAlertType alert_types = 4;
+  repeated CommAlertTag alert_tags = 5;
+}
+
+message CommChannel {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue channel_id = 2;
+  google.protobuf.StringValue channel_name = 3;
+}
+
+message CommAlertType {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.UInt64Value channel_connector_key_id = 2;
+  google.protobuf.StringValue alert_type = 3;
+}
+
+message CommAlertTag {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.UInt64Value active_channel_id = 2;
+  google.protobuf.UInt64Value alert_type_id = 3;
+  google.protobuf.StringValue alert_tag = 4;
+}
+
+message CommAlertOpsOptions {
+  repeated CommWorkspace workspaces = 1;
+}
+
+message AlertOpsOptions {
+  CommAlertOpsOptions comm_options = 1;
+}
+
+message SlackAlert {
+  message AlertTag {
+    google.protobuf.StringValue key = 1;
+    google.protobuf.StringValue value = 2;
+  }
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue alert_type = 2;
+  google.protobuf.StringValue alert_title = 3;
+  google.protobuf.StringValue alert_text = 4;
+  CommChannel slack_channel = 5;
+  sfixed64 alert_timestamp = 6;
+  repeated AlertTag alert_tags = 7;
+}
+
+

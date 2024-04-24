@@ -57,6 +57,7 @@ multidict==6.0.5
 mypy-protobuf==3.4.0
 oauthlib==3.2.2
 packaging==24.0
+pandas==1.5.2
 prometheus_client==0.20.0
 prompt-toolkit==3.0.43
 proto-plus==1.23.0
