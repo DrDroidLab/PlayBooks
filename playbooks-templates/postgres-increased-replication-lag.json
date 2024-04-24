@@ -1,0 +1,128 @@
+{
+    "name": "PostgreSQL Increased Replication Lag",
+    "steps": [
+        {
+            "description": "Replication Status",
+            "tasks": [
+                {
+                    "description": "Replication Status",
+                    "notes": "A significant lag in replication can cause errors because of stale data.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT client_addr, state, sync_state, sent_lsn, write_lsn, flush_lsn, replay_lsn, write_lag, flush_lag, replay_lag FROM pg_stat_replication;"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Network Latency via PING",
+            "tasks": [
+                {
+                    "description": "Check Network Latency via PING",
+                    "notes": "check network latency between primary and replica",
+                    "type": "Run BASH Query Task",
+                    "data_fetch_task": {
+                        "source": "Run BASH Query Task",
+                        "bash_fetch_task": {
+                            "query": "ping replica-server-ip"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Load on Primary DB",
+            "tasks": [
+                {
+                    "description": "Check Load on Primary DB",
+                    "notes": "Keep a check on this value during investigation.",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "METRIC_EXECUTION",
+                            "metric_execution_task": {
+                                "namespace": "AWS/RDS",
+                                "region": "{aws-region}",
+                                "metric_name": [
+                                    "DatabaseConnections",
+                                    "CPUUtilization",
+                                    "FreeableMemory",
+                                    "ReadIOPS",
+                                    "WriteIOPS",
+                                    "ReadLatency",
+                                    "WriteLatency"
+                                ],
+                                "dimensions": [
+                                    {
+                                        "name": "DBInstanceIdentifier",
+                                        "value": "{replica_db_name}"
+                                    }
+                                ],
+                                "statistic": "Average",
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Load on Replica DB",
+            "tasks": [
+                {
+                    "description": "Check Load on Replica DB",
+                    "notes": "Keep a check on this value during investigation.",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "METRIC_EXECUTION",
+                            "metric_execution_task": {
+                                "namespace": "AWS/RDS",
+                                "region": "{aws-region}",
+                                "metric_name": [
+                                    "CPUUtilization",
+                                    "FreeableMemory",
+                                    "ReadIOPS",
+                                    "WriteIOPS",
+                                    "ReadLatency",
+                                    "WriteLatency"
+                                ],
+                                "dimensions": [
+                                    {
+                                        "name": "DBInstanceIdentifier",
+                                        "value": "{replica_db_name}"
+                                    }
+                                ],
+                                "statistic": "Average",
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Configuration wal_keep_segments, max_wal_senders, max_standby_archive_delay and max_standby_streaming_delay",
+            "tasks": [
+                {
+                    "description": "Check Configuration wal_keep_segments, max_wal_senders, max_standby_archive_delay and max_standby_streaming_delay",
+                    "notes": "Check if any of the critical configurations look off",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT name AS parameter, setting, unit FROM pg_settings WHERE name IN ('wal_keep_segments', 'max_wal_senders', 'max_standby_archive_delay', 'max_standby_streaming_delay');"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

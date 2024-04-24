@@ -1,0 +1,81 @@
+{
+    "name": "PostgreSQL High CPU Utilisation or Memory Utilisation",
+    "steps": [
+        {
+            "description": "Inefficient Queries",
+            "tasks": [
+                {
+                    "description": "Check Current Sessions and Queries",
+                    "notes": "Check if there are any long running queries or queries that might be causing the errors.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT * FROM pg_stat_activity;"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Important DB Metrics",
+            "tasks": [
+                {
+                    "description": "Check Important DB Metrics",
+                    "notes": "Keep a check on this value during investigation.",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "METRIC_EXECUTION",
+                            "metric_execution_task": {
+                                "namespace": "AWS/RDS",
+                                "region": "{aws-region}",
+                                "metric_name": [
+                                    "DatabaseConnections",
+                                    "ReadIOPS",
+                                    "WriteIOPS"
+                                ],
+                                "dimensions": [
+                                    {
+                                        "name": "DBInstanceIdentifier",
+                                        "value": "{db_name}"
+                                    }
+                                ],
+                                "statistic": "Average",
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "throughput_from_different_services",
+            "tasks": [
+                {
+                    "description": "service_metric_deviation",
+                    "notes": "",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "DATADOG",
+                        "datadog_task": {
+                            "type": "SERVICE_METRIC_EXECUTION",
+                            "service_metric_execution_task": {
+                                "service_name": "{ingest}",
+                                "environment_name": "{prod}",
+                                "metric_family": "{trace}",
+                                "metric": [
+                                    "trace.django.request.duration.by_http_status",
+                                    "trace.django.request.hits"
+                                ],
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,139 @@
+{
+    "name": "PostgreSQL Queries Latency Increase",
+    "steps": [
+        {
+            "description": "Check Important Metrics",
+            "tasks": [
+                {
+                    "description": "Check Important Metrics",
+                    "notes": "Keep a check on this value during investigation.",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "METRIC_EXECUTION",
+                            "metric_execution_task": {
+                                "namespace": "AWS/RDS",
+                                "region": "{aws-region}",
+                                "metric_name": [
+                                    "CPUUtilization",
+                                    "FreeableMemory",
+                                    "ReadIOPS",
+                                    "WriteIOPS",
+                                    "ReadLatency",
+                                    "WriteLatency",
+                                    "NetworkReceiveThroughput",
+                                    "NetworkTransmitThroughput"
+                                ],
+                                "dimensions": [
+                                    {
+                                        "name": "DBInstanceIdentifier",
+                                        "value": "{db_name}"
+                                    }
+                                ],
+                                "statistic": "Average",
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check errors in logs",
+            "tasks": [
+                {
+                    "description": "Check errors in logs",
+                    "notes": "",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "FILTER_LOG_EVENTS",
+                            "filter_log_events_task": {
+                                "region": "{aws-region}",
+                                "log_group_name": "{log_group_name}",
+                                "filter_query": "{fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20}"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Analyze Query Performance for Slow Queries & analyse some of them",
+            "tasks": [
+                {
+                    "description": "Analyze Query Performance for Slow Queries & analyse some of them",
+                    "notes": "If there are any long running queries from events table, save that variable and run explain analyse on it separately.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT query, calls, total_time, rows, avg_time, min_time, max_time FROM pg_stat_statements WHERE dbid = (SELECT oid FROM pg_database WHERE datname = '{db_name}') ORDER BY total_time DESC LIMIT 10;"
+                        }
+                    }
+                },
+                {
+                    "description": "Analyze Query Performance for Slow Queries & analyse some of them",
+                    "notes": "This shows the explain plan for the slow query. Check for any missing indexes or any other issues.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "EXPLAIN ANALYZE {your_slow_query_here};"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check Database Configuration and Tuning",
+            "tasks": [
+                {
+                    "description": "Check Database Configuration and Tuning",
+                    "notes": "A lower work_mem value can cause sorts to spill to disk, which can be slow. A higher value can cause memory pressure.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SHOW work_mem;"
+                        }
+                    }
+                },
+                {
+                    "description": "Check Database Configuration and Tuning",
+                    "notes": "A lower shared_buffers value can cause more disk reads, which can be slow.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SHOW shared_buffers;"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Assess Index Usage",
+            "tasks": [
+                {
+                    "description": "Assess Index Usage",
+                    "notes": "Understand usage of index",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT relname, seq_scan, idx_scan, n_tup_ins, n_tup_upd, n_tup_del FROM pg_stat_all_tables WHERE schemaname = 'public';"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
