@@ -155,8 +155,8 @@ def playbooks_sources_options(request_message: GetConnectorPlaybookSourceOptions
 def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonResponse:
     timestamp = request_message.headers['X-Slack-Request-Timestamp']
 
-    # Discard messages older than 5 minutes
-    if int(time.time()) - int(timestamp) > 60 * 5:
+    # Discard messages older than 15 minutes
+    if int(time.time()) - int(timestamp) > 60 * 15:
         return JsonResponse("Invalid Message Received", status=403)
 
     data = request_message.data
@@ -302,6 +302,10 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
             - mpim:write
             - im:write
             - channels:manage
+            - channels:read
+            - groups:read
+            - mpim:read
+            - im:read
         settings:
         event_subscriptions:
             request_url: HOST_NAME/connectors/integrations/handlers/slack_bot/handle_callback_events
