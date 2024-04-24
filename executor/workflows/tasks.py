@@ -7,7 +7,8 @@ from celery import shared_task
 from executor.crud.playbook_execution_crud import create_playbook_execution
 from executor.tasks import execute_playbook
 from executor.workflows.crud.workflow_execution_crud import update_db_account_workflow_execution_status, \
-    get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log
+    get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
+    update_db_account_workflow_execution_count_increment
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
@@ -23,7 +24,8 @@ logger = logging.getLogger(__name__)
 def workflow_scheduler():
     current_time_utc = current_datetime()
     current_time = current_time_utc.timestamp()
-    all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
+    all_scheduled_wf_executions = get_workflow_executions(
+        status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
     for wf_execution in all_scheduled_wf_executions:
         workflow_id = wf_execution.workflow_id
         account = wf_execution.account
@@ -52,6 +54,7 @@ def workflow_scheduler():
                 logger.info(f"Workflow execution already scheduled for workflow_execution_id: {wf_execution.id}")
                 return True
 
+        update_db_account_workflow_execution_count_increment(account, wf_execution.id)
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
             update_db_account_workflow_execution_status(account, wf_execution.id,
                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING)

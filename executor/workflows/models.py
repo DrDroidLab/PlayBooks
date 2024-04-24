@@ -197,6 +197,7 @@ class WorkflowExecution(models.Model):
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
     interval = models.IntegerField(db_index=True, default=60)
+    total_executions = models.IntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
