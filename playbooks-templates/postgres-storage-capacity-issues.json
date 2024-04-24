@@ -1,0 +1,86 @@
+{
+    "name": "PostgreSQL Error Rate Increased",
+    "steps": [
+        {
+            "description": "Check the current disk usage",
+            "tasks": [
+                {
+                    "description": "Check the current disk usage",
+                    "notes": "Keep a check on this value during investigation.",
+                    "type": "METRIC",
+                    "metric_task": {
+                        "source": "CLOUDWATCH",
+                        "cloudwatch_task": {
+                            "type": "METRIC_EXECUTION",
+                            "metric_execution_task": {
+                                "namespace": "AWS/RDS",
+                                "region": "{aws-region}",
+                                "metric_name": [
+                                    "FreeStorageSpace"                                ],
+                                "dimensions": [
+                                    {
+                                        "name": "DBInstanceIdentifier",
+                                        "value": "{db_name}"
+                                    }
+                                ],
+                                "statistic": "Average",
+                                "process_function": "timeseries"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Analyze Database Growth",
+            "tasks": [
+                {
+                    "description": "Analyze Database Growth",
+                    "notes": "See the growth of the database over time.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Identify Large Objects or Tables",
+            "tasks": [
+                {
+                    "description": "Identify Large Objects or Tables",
+                    "notes": "Check if there are any large objects or tables that might be causing the storage issues.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT nspname AS schemaname, relname AS tablename, pg_size_pretty(pg_relation_size(C.oid)) AS size FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND C.relkind <> 'i' ORDER BY pg_relation_size(C.oid) DESC LIMIT 10;"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "description": "Check for Unused Indexes",
+            "tasks": [
+                {
+                    "description": "Check for Unused Indexes",
+                    "notes": "Check if there are any indexes that are not being used and can be removed to free up space.",
+                    "type": "DATA_FETCH",
+                    "data_fetch_task": {
+                        "source": "POSTGRES",
+                        "postgres_data_fetch_task": {
+                            "database": "{db_name}",
+                            "query": "SELECT indexrelid::regclass AS index, idx_scan, pg_size_pretty(pg_relation_size(indexrelid::regclass)) AS index_size FROM pg_stat_user_indexes JOIN pg_index USING (indexrelid) WHERE idx_scan < 50 AND pg_relation_size(indexrelid::regclass) > 50000000 order by index_size;"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
