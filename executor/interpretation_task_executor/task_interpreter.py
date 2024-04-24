@@ -20,7 +20,6 @@ from adtk.detector import QuantileAD, PersistAD, LevelShiftAD, VolatilityShiftAD
 
 import time
 from snapshot_selenium import snapshot as driver
-# from pyecharts_snapshot.main import make_a_snapshot
 
 public_bucket_name = os.environ['PUBLIC_BUCKET_NAME']
 AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
@@ -103,7 +102,7 @@ def transform_playbook_task_result_to_dataframe(playbook_task):
         return table_df
     except Exception as e:
         print(e)
-        schema = get_schema(playbook_data)
+        schema = get_schema(playbook_task)
         print(schema)
         return None
 
@@ -133,7 +132,6 @@ def generate_graph_using_data(df, file_name):
     # # Save the .png file to S3 bucket
     image_url = save_to_s3(file_name)
     return image_url
-
 
 
 def evaluation_functions(mode,data_type,df):
