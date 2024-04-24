@@ -20,8 +20,9 @@ const ConnectorPage = React.lazy(() =>
 );
 const Integrations = React.lazy(() => import("./components/Integration"));
 const Playbooks = React.lazy(() => import("./components/Playbooks"));
+const Workflows = React.lazy(() => import("./components/Workflows"));
 const CreateWorkflow = React.lazy(() =>
-  import("./components/Workflows/CreateWorkflow.jsx"),
+  import("./components/Workflows/create/CreateWorkflow.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
@@ -86,10 +87,8 @@ const App = () => {
             path="/playbooks/logs/:playbook_run_id"
             element={<PlaybookLog />}
           />
-          <Route
-            path="/playbooks/workflows/create"
-            element={<CreateWorkflow />}
-          />
+          <Route path="/workflows/create" element={<CreateWorkflow />} />
+          <Route path="/workflows" element={<Workflows />} />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/integrations/:id" element={<ConnectorPage />} />

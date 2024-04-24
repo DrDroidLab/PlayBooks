@@ -1,6 +1,6 @@
 import React from "react";
-import { notificationOptions } from "../../utils/workflow/notificationOptions.ts";
-import { HandleInputRender } from "../common/HandleInputRender/HandleInputRender.jsx";
+import { notificationOptions } from "../../../utils/workflow/notificationOptions.ts";
+import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
 function NotificationDetails() {
   return (

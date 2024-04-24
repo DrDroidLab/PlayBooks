@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
-import { scheduleOptions } from "../../utils/workflow/scheduleOptions.tsx";
-import { HandleInputRender } from "../common/HandleInputRender/HandleInputRender.jsx";
-import { handleSelect } from "./utils/handleInputs.ts";
+import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import { scheduleOptions } from "../../../utils/workflow/scheduleOptions.tsx";
+import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
+import { handleSelect } from "../utils/handleInputs.ts";
 
 function ScheduleDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
