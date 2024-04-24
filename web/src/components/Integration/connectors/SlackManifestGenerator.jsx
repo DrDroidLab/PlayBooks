@@ -6,6 +6,11 @@ import { connectorSelector } from "../../../store/features/integrations/integrat
 import { useGenerateManifestMutation } from "../../../store/features/integrations/api/generateManifestApi.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { CircularProgress } from "@mui/material";
+import hljs from "highlight.js/lib/core";
+import yaml from "highlight.js/lib/languages/yaml";
+import "highlight.js/styles/default.css";
+
+hljs.registerLanguage("yaml", yaml);
 
 function SlackManifestGenerator() {
   const [host, setHost] = useState("");
@@ -22,6 +27,10 @@ function SlackManifestGenerator() {
     }
 
     triggerManifest(host);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(currentConnector.manifest);
   };
 
   return (
@@ -50,13 +59,21 @@ function SlackManifestGenerator() {
       {currentConnector.manifest && (
         <div className="my-2 lg:max-w-xl">
           <div className="w-full flex justify-end">
-            <button className="border my-2 bg-white rounded p-1 text-xs font-bold flex gap-1 items-center cursor-pointer hover:border-violet-500 hover:text-violet-500 transition-all">
+            <button
+              onClick={handleCopy}
+              className="border my-2 bg-white rounded p-1 text-xs font-bold flex gap-1 items-center cursor-pointer hover:border-violet-500 hover:text-violet-500 transition-all">
               <ContentCopy fontSize="small" />
               Copy Code
             </button>
           </div>
-          <div className="border bg-gray-100 h-64 relative overflow-scroll p-2 text-gray-500">
-            {currentConnector.manifest}
+          <div className="border bg-gray-100 h-64 relative overflow-scroll p-2">
+            <pre
+              dangerouslySetInnerHTML={{
+                __html: hljs.highlight(currentConnector.manifest, {
+                  language: "yaml",
+                }).value,
+              }}
+            />
           </div>
         </div>
       )}

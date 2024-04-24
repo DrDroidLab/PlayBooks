@@ -15,7 +15,12 @@ export const generateManifestApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setKey({ key: "manifest", value: data.manifest }));
+          dispatch(
+            setKey({
+              key: "manifest",
+              value: data.app_manifest,
+            }),
+          );
         } catch (e) {
           console.log(e);
         }
