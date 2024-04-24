@@ -9,7 +9,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
 import "../src/Layout.css";
-import { Key, Terminal } from "@mui/icons-material";
+import { Key, Layers, Terminal } from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 function Sidebar() {
@@ -76,6 +76,16 @@ function Sidebar() {
             </ListItemIcon>
             <p style={{ fontSize: "14px" }} className="playbook_page">
               Playbooks
+            </p>
+          </NavLink>
+          <NavLink className={activeStyle} to="/workflows">
+            <ListItemIcon
+              sx={{ minWidth: "44px" }}
+              onClick={(event) => handleListItemClick(event, 6)}>
+              <Layers />
+            </ListItemIcon>
+            <p style={{ fontSize: "14px" }} className="playbook_page">
+              Workflows
             </p>
           </NavLink>
           <NavLink className={activeStyle} to="/playgrounds">

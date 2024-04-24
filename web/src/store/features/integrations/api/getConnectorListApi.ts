@@ -47,7 +47,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           const cardData: CardData = {
             title: integration.display_name,
             buttonLink: card?.buttonLink ?? "",
-            buttonText: "Connect",
+            buttonText: card?.buttonTitle ?? "Connect",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",
             enum: integration.type,
@@ -132,7 +132,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
 
         return { integrations, vpcConnectors, agentProxy };
       },
-      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
           const { data } = await queryFulfilled;
