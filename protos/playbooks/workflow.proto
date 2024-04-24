@@ -186,3 +186,27 @@ message UpdateWorkflowOp {
     UpdateWorkflowPlaybookStatus update_workflow_playbook_status = 7;
   }
 }
+
+
+///////////////////// Workflow Executions Proto /////////////////////
+message WorkflowExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  PlaybookExecution playbook_execution = 2;
+  sfixed64 created_at = 3;
+}
+
+message WorkflowExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+  Workflow workflow = 3;
+  WorkflowExecutionStatusType status = 4;
+  sfixed64 scheduled_at = 5;
+  sfixed64 expiry_at = 6;
+  google.protobuf.UInt64Value interval = 7;
+  google.protobuf.UInt64Value total_executions = 8;
+  sfixed64 created_at = 9;
+  sfixed64 started_at = 10;
+  sfixed64 finished_at = 11;
+  google.protobuf.StringValue created_by = 12;
+  repeated WorkflowExecutionLog workflow_logs = 13;
+}

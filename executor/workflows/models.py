@@ -8,7 +8,8 @@ from accounts.models import Account
 from executor.models import PlayBook, PlayBookExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
-    WorkflowExecutionStatusType
+    WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
+    WorkflowExecutionLog as WorkflowExecutionLogProto
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -209,6 +210,43 @@ class WorkflowExecution(models.Model):
     class Meta:
         unique_together = [['account', 'workflow_run_id']]
 
+    @property
+    def proto(self) -> WorkflowExecutionProto:
+        workflow_execution_logs = self.workflowexecutionlog_set.all()
+        wf_logs = [wel.proto for wel in workflow_execution_logs]
+        return WorkflowExecutionProto(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto_partial,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            interval=UInt64Value(value=self.interval),
+            total_executions=UInt64Value(value=self.total_executions),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            workflow_logs=wf_logs
+        )
+
+    @property
+    def proto_partial(self) -> WorkflowExecutionProto:
+        return WorkflowExecutionProto(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto_partial,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            interval=UInt64Value(value=self.interval),
+            total_executions=UInt64Value(value=self.total_executions),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+        )
+
 
 class WorkflowExecutionLog(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
@@ -216,3 +254,19 @@ class WorkflowExecutionLog(models.Model):
     workflow_execution = models.ForeignKey(WorkflowExecution, on_delete=models.CASCADE, db_index=True)
     playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    @property
+    def proto(self) -> WorkflowExecutionLogProto:
+        playbook_execution_proto = self.playbook_execution.proto
+        return WorkflowExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            playbook_execution=playbook_execution_proto,
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+        )
+
+    @property
+    def proto_partial(self) -> WorkflowExecutionLogProto:
+        return WorkflowExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+        )

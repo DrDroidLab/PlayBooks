@@ -610,3 +610,88 @@ class UpdateWorkflowOp(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_workflow_name", "update_workflow_status", "update_workflow", "update_workflow_entry_point_status", "update_workflow_action_status", "update_workflow_playbook_status"] | None: ...
 
 global___UpdateWorkflowOp = UpdateWorkflowOp
+
+@typing_extensions.final
+class WorkflowExecutionLog(google.protobuf.message.Message):
+    """/////////////////// Workflow Executions Proto /////////////////////"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    PLAYBOOK_EXECUTION_FIELD_NUMBER: builtins.int
+    CREATED_AT_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def playbook_execution(self) -> protos.playbooks.playbook_pb2.PlaybookExecution: ...
+    created_at: builtins.int
+    def __init__(
+        self,
+        *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        playbook_execution: protos.playbooks.playbook_pb2.PlaybookExecution | None = ...,
+        created_at: builtins.int = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_execution", b"playbook_execution"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "id", b"id", "playbook_execution", b"playbook_execution"]) -> None: ...
+
+global___WorkflowExecutionLog = WorkflowExecutionLog
+
+@typing_extensions.final
+class WorkflowExecution(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    WORKFLOW_RUN_ID_FIELD_NUMBER: builtins.int
+    WORKFLOW_FIELD_NUMBER: builtins.int
+    STATUS_FIELD_NUMBER: builtins.int
+    SCHEDULED_AT_FIELD_NUMBER: builtins.int
+    EXPIRY_AT_FIELD_NUMBER: builtins.int
+    INTERVAL_FIELD_NUMBER: builtins.int
+    TOTAL_EXECUTIONS_FIELD_NUMBER: builtins.int
+    CREATED_AT_FIELD_NUMBER: builtins.int
+    STARTED_AT_FIELD_NUMBER: builtins.int
+    FINISHED_AT_FIELD_NUMBER: builtins.int
+    CREATED_BY_FIELD_NUMBER: builtins.int
+    WORKFLOW_LOGS_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def workflow_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def workflow(self) -> global___Workflow: ...
+    status: global___WorkflowExecutionStatusType.ValueType
+    scheduled_at: builtins.int
+    expiry_at: builtins.int
+    @property
+    def interval(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def total_executions(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    created_at: builtins.int
+    started_at: builtins.int
+    finished_at: builtins.int
+    @property
+    def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def workflow_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowExecutionLog]: ...
+    def __init__(
+        self,
+        *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        workflow_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        workflow: global___Workflow | None = ...,
+        status: global___WorkflowExecutionStatusType.ValueType = ...,
+        scheduled_at: builtins.int = ...,
+        expiry_at: builtins.int = ...,
+        interval: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        total_executions: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        created_at: builtins.int = ...,
+        started_at: builtins.int = ...,
+        finished_at: builtins.int = ...,
+        created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        workflow_logs: collections.abc.Iterable[global___WorkflowExecutionLog] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interval", b"interval", "total_executions", b"total_executions", "workflow", b"workflow", "workflow_run_id", b"workflow_run_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "expiry_at", b"expiry_at", "finished_at", b"finished_at", "id", b"id", "interval", b"interval", "scheduled_at", b"scheduled_at", "started_at", b"started_at", "status", b"status", "total_executions", b"total_executions", "workflow", b"workflow", "workflow_logs", b"workflow_logs", "workflow_run_id", b"workflow_run_id"]) -> None: ...
+
+global___WorkflowExecution = WorkflowExecution

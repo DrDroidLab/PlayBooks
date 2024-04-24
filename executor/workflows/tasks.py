@@ -1,5 +1,4 @@
 import logging
-import uuid
 from datetime import timedelta, datetime
 
 from celery import shared_task
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 @shared_task(max_retries=3, default_retry_delay=10)
 def workflow_scheduler():
     current_time_utc = current_datetime()
-    current_time = current_time_utc.timestamp()
+    current_time = int(current_time_utc.timestamp())
     all_scheduled_wf_executions = get_workflow_executions(
         status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
     for wf_execution in all_scheduled_wf_executions:
@@ -63,7 +62,7 @@ def workflow_scheduler():
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                playbook_run_uuid = f'{account.id}_{pb_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
+                playbook_run_uuid = f'{account.id}_{pb_id}_{str(current_time)}_run'
                 time_range_proto = dict_to_proto(time_range, TimeRange)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by)

@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user
-from executor.workflows.crud.workflow_execution_crud import create_workflow_execution
+from executor.workflows.crud.workflow_execution_crud import create_workflow_execution, get_db_workflow_executions
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from playbooks.utils.decorators import web_api
@@ -18,7 +18,8 @@ from playbooks.utils.utils import current_datetime
 from protos.base_pb2 import Meta, Message, Page, TimeRange
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
-    ExecuteWorkflowResponse
+    ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
+    ExecutionsWorkflowsListRequest
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
     WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
 from utils.proto_utils import dict_to_proto
@@ -119,12 +120,50 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
             scheduled_at = current_time_utc
             expiry_at = scheduled_at + timedelta(seconds=duration_in_seconds)
             time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
-            workflow_run_id = f'{account.id}_{workflow_id}_{current_time_utc.timestamp()}_workflow_run'
-            create_workflow_execution(account, time_range, workflow_id, workflow_run_id, scheduled_at, expiry_at,
+            workflow_run_uuid = f'{account.id}_{workflow_id}_{str(int(current_time_utc.timestamp()))}_wf_run'
+            create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, expiry_at,
                                       interval, user.email)
             return ExecuteWorkflowResponse(success=BoolValue(value=True),
-                                           workflow_run_id=StringValue(value=workflow_run_id))
+                                           workflow_run_id=StringValue(value=workflow_run_uuid))
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
+
+
+@web_api(ExecutionWorkflowGetRequest)
+def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
+        Union[ExecutionWorkflowGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
+                                                                                            description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                description="Workflow Execution not found"))
+    except Exception as e:
+        return ExecutionWorkflowGetResponse(success=BoolValue(value=False),
+                                            message=Message(title="Error", description=str(e)))
+
+    workflow_execution = workflow_execution.first()
+    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_execution=workflow_execution.proto)
+
+
+@web_api(ExecutionsWorkflowsListRequest)
+def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) -> \
+        Union[ExecutionsWorkflowsListResponse, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_ids = request_message.workflow_ids
+    try:
+        workflow_executions = get_db_workflow_executions(account, workflow_ids=workflow_ids)
+        if not workflow_executions:
+            return ExecutionsWorkflowsListResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                   description="Workflow Executions not found"))
+        we_protos = [we.proto_partial for we in workflow_executions]
+        return ExecutionsWorkflowsListResponse(success=BoolValue(value=True), workflow_executions=we_protos)
+    except Exception as e:
+        return ExecutionsWorkflowsListResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
