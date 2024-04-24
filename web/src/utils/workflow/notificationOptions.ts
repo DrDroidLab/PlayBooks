@@ -11,17 +11,10 @@ export const notificationOptions = [
           "Get reply to the alert which triggered this workflow. (Only works if Trigger type is Slack)",
       },
       {
-        id: "slack-webhook",
-        label: "Send via Slack webhook",
+        id: "slack-message",
+        label: "Send via Slack message",
         type: "checkbox",
         group: "notification",
-        options: [
-          {
-            id: "slack-webhook-url",
-            label: "Webhook URL",
-            type: "string",
-          },
-        ],
       },
     ],
   },

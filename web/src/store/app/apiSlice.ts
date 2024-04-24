@@ -4,5 +4,11 @@ import { baseQueryWithReauthAndModify } from "./query.ts";
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauthAndModify,
   endpoints: (_) => ({}),
-  tagTypes: ["Integrations", "Playbooks", "Triggers", "API_Tokens"],
+  tagTypes: [
+    "Integrations",
+    "Playbooks",
+    "Triggers",
+    "API_Tokens",
+    "Workflows",
+  ],
 });

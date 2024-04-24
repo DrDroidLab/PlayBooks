@@ -2,63 +2,55 @@ import React from "react";
 
 export const scheduleOptions = [
   {
-    id: "run-once",
+    id: "one_off",
     label: "Run once",
     options: [],
   },
   {
-    id: "run-schedule",
+    id: "periodic",
     label: "Run continuously",
     options: [
       {
-        id: "cron-schedule",
-        label: (
-          <>
-            Cron Schedule (See{" "}
-            <a
-              href="https://crontab.guru/#*/2_*_*_*_*"
-              rel="noreferrer"
-              target="_blank"
-              className="text-violet-500">
-              Docs
-            </a>
-            )
-          </>
-        ),
-        type: "string",
-        placeholder: "Enter Cron Schedule",
-      },
-      {
-        id: "stop-after",
-        label: "Stop after",
-        type: "multi",
+        type: "multi-option",
         options: [
           {
-            id: "duration",
-            label: "Duration",
+            id: "cron",
+            label: (
+              <>
+                Cron Schedule (See{" "}
+                <a
+                  href="https://crontab.guru/#*/2_*_*_*_*"
+                  rel="noreferrer"
+                  target="_blank"
+                  className="text-violet-500">
+                  Docs
+                </a>
+                )
+              </>
+            ),
             type: "string",
-            placeholder: "Enter Duration",
-            additionalProps: {
-              length: 200,
-            },
+            placeholder: "Enter Cron Schedule",
+            disabledKey: "interval",
           },
           {
             id: "interval",
             label: "Interval",
-            type: "dropdown",
-            options: [
-              {
-                id: "minutes",
-                label: "Minutes",
-              },
-              {
-                id: "hours",
-                label: "Hours",
-              },
-            ],
-            placeholder: "Enter Interval",
+            valueType: "LONG",
+            type: "string",
+            placeholder: "Enter Interval in seconds",
+            disabledKey: "cron",
           },
         ],
+      },
+      {
+        id: "duration",
+        label: "Stop after",
+        type: "string",
+        placeholder: "Enter Duration (in seconds)",
+        valueType: "LONG",
+        additionalProps: {
+          length: 200,
+        },
       },
     ],
   },

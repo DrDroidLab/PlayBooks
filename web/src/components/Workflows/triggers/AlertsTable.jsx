@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Table,
   TableBody,
   TableCell,
@@ -10,10 +7,8 @@ import {
 } from "@mui/material";
 import NoExistingTrigger from "./NoExistingTrigger";
 import { renderTimestamp } from "../../../utils/DateUtils";
-import { ExpandMore } from "@mui/icons-material";
 
 const AlertsTable = ({ data }) => {
-  console.log(data);
   return (
     <>
       <p

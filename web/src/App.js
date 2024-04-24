@@ -89,6 +89,7 @@ const App = () => {
           />
           <Route path="/workflows/create" element={<CreateWorkflow />} />
           <Route path="/workflows" element={<Workflows />} />
+          <Route path="/workflows/:id" element={<CreateWorkflow />} />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/integrations/:id" element={<ConnectorPage />} />

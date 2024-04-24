@@ -84,7 +84,7 @@ function Sidebar() {
               onClick={(event) => handleListItemClick(event, 6)}>
               <Layers />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }} className="playbook_page">
+            <p style={{ fontSize: "14px" }} className="workflows_page">
               Workflows
             </p>
           </NavLink>
