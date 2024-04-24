@@ -1,13 +1,13 @@
 import React from "react";
-import ValueComponent from "../../ValueComponent";
-import SelectComponent from "../../SelectComponent";
+import ValueComponent from "../ValueComponent";
+import SelectComponent from "../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
-import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
+import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
 import SlackTriggerForm from "./triggers/SlackTriggerForm.jsx";
-import { triggerTypes } from "../../../utils/workflow/triggerTypes.ts";
+import { triggerTypes } from "../../utils/workflow/triggerTypes.ts";
 import { handleInput, handleSelect } from "./utils/handleInputs.ts";
 
 function BasicDetails() {

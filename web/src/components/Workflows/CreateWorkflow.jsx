@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "../../Heading.js";
+import Heading from "../Heading.js";
 import BasicDetails from "./BasicDetails.jsx";
 import ScheduleDetails from "./ScheduleDetails.jsx";
 import NotificationDetails from "./NotificationDetails.jsx";

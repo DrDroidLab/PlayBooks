@@ -1,8 +1,8 @@
-import { store } from "../../../../store/index.ts";
+import { store } from "../../../store/index.ts";
 import {
   setCurrentWorkflowKey,
   setCurrentWorkflowTriggerKey,
-} from "../../../../store/features/workflow/workflowSlice.ts";
+} from "../../../store/features/workflow/workflowSlice.ts";
 
 export const handleSelect = (e, option) => {
   const type = e.target?.getAttribute("data-type") ?? e;

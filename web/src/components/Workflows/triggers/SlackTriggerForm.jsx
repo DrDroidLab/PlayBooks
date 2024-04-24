@@ -1,16 +1,16 @@
 import React from "react";
-import SelectComponent from "../../../SelectComponent/index.jsx";
-import ValueComponent from "../../../ValueComponent/index.jsx";
+import SelectComponent from "../../SelectComponent/index.jsx";
+import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../../../store/features/workflow/workflowSlice.ts";
-import { useGetTriggerOptionsQuery } from "../../../../store/features/triggers/api/getTriggerOptionsApi.ts";
+import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import { useGetTriggerOptionsQuery } from "../../../store/features/triggers/api/getTriggerOptionsApi.ts";
 import {
   handleTriggerInput,
   handleTriggerSelect,
 } from "../utils/handleInputs.ts";
-import { useLazyGetSearchTriggersQuery } from "../../../../store/features/triggers/api/searchTriggerApi.ts";
 import AlertsTable from "./AlertsTable.jsx";
 import { CircularProgress } from "@mui/material";
+import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 
 function SlackTriggerForm() {
   const { data: options } = useGetTriggerOptionsQuery();

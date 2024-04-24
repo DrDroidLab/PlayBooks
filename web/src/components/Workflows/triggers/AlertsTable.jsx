@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import NoExistingTrigger from "./NoExistingTrigger";
-import { renderTimestamp } from "../../../../utils/DateUtils";
+import { renderTimestamp } from "../../../utils/DateUtils";
 import { ExpandMore } from "@mui/icons-material";
 
 const AlertsTable = ({ data }) => {
