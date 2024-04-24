@@ -235,8 +235,8 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
     dtr: DateTimeRange = to_dtr(tr)
     page: Page = meta.page
     qs = account.slackconnectordatareceived_set.all()
-    if request_message.pattern:
-        qs = qs.filter(text__icontains=request_message.pattern)
+    if request_message.pattern and request_message.pattern.value:
+        qs = qs.filter(text__icontains=request_message.pattern.value)
     if request_message.workspace_id and request_message.workspace_id.value:
         qs = qs.filter(connector_id=request_message.workspace_id.value)
     if request_message.channel_id and request_message.channel_id.value:
