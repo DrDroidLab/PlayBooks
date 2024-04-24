@@ -187,7 +187,7 @@ def get_db_connector_keys(account: Account, connector_id, key_type=None):
     else:
         all_key_types = [key_type]
     try:
-        return account.connectorkey_set.filter(connector_id=connector_id, key_type__in=all_key_types)
+        return account.connectorkey_set.filter(connector_id=connector_id, key_type__in=all_key_types, is_active=True)
     except Exception as e:
         logger.error(f'Error fetching Connector Keys: {str(e)}')
         raise ConnectorCrudException(f'Error fetching Connector Keys: {str(e)}')
