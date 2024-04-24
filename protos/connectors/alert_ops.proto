@@ -19,7 +19,7 @@ message CommChannel {
 
 message CommAlertType {
   google.protobuf.UInt64Value id = 1;
-  google.protobuf.UInt64Value channel_connector_key_id = 2;
+  google.protobuf.StringValue channel_id = 2;
   google.protobuf.StringValue alert_type = 3;
 }
 

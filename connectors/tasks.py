@@ -12,7 +12,7 @@ from accounts.models import Account
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from connectors.assets.extractor.metadata_extractor_facade import connector_metadata_extractor_facade
 from connectors.assets.extractor.slack_metadata_extractor import source_identifier, text_identifier_v2
-from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertTag, SlackConnectorAlertType, SlackConnectorDataReceived
+from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertType, SlackConnectorDataReceived
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import PeriodicTaskStatus, TaskRun
@@ -147,13 +147,21 @@ def handle_receive_message(slack_connector_id, message):
             try:
                 alert_text = text_identifier_v2(message['event'], 'slack')
                 alert_type = source_identifier(message['event'], 'slack')
+
+                db_alert_type, is_created = SlackConnectorAlertType.objects.get_or_create(
+                    account_id=slack_connector.account_id,
+                    connector=slack_connector,
+                    channel_id=channel_id,
+                    alert_type=alert_type)
+
                 slack_received_msg = SlackConnectorDataReceived(
                     account_id=slack_connector.account_id,
                     connector=slack_connector,
                     data=message,
                     data_timestamp=data_timestamp,
                     text=alert_text,
-                    alert_type=alert_type
+                    alert_type=alert_type,
+                    db_alert_type=db_alert_type
                 )
                 if slack_connector_key:
                     slack_received_msg.slack_channel_connector_key = slack_connector_key
@@ -212,6 +220,12 @@ def slack_connector_data_fetch_storage_job(account_id, connector_id, source_meta
             alert_text = text_identifier_v2(full_message, 'slack')
             alert_type = source_identifier(full_message, 'slack')
 
+            db_alert_type, is_created = SlackConnectorAlertType.objects.get_or_create(
+                    account_id=account_id,
+                    connector_id=connector_id,
+                    channel_id=channel_id,
+                    alert_type=alert_type)
+
             event_ts = full_message.get('ts', None)
             data_timestamp = datetime.utcfromtimestamp(float(event_ts))
             data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)
@@ -220,7 +234,7 @@ def slack_connector_data_fetch_storage_job(account_id, connector_id, source_meta
                 SlackConnectorDataReceived(account_id=account_id, connector_id=connector_id,
                                         slack_channel_metadata_model_id=source_metadata_model_id, channel_id=channel_id,
                                         data=full_message, text=alert_text, alert_type=alert_type,
-                                        data_timestamp=data_timestamp))
+                                        data_timestamp=data_timestamp, db_alert_type=db_alert_type))
     try:
         saved_data: List[SlackConnectorDataReceived] = SlackConnectorDataReceived.objects.bulk_create(extracted_data,
                                                                                                       batch_size=1000)

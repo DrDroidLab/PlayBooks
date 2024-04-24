@@ -13,6 +13,7 @@ import { renderTimestamp } from "../../../utils/DateUtils";
 import { ExpandMore } from "@mui/icons-material";
 
 const AlertsTable = ({ data }) => {
+  console.log(data);
   return (
     <>
       <p
@@ -25,7 +26,6 @@ const AlertsTable = ({ data }) => {
           <TableRow>
             <TableCell>Title</TableCell>
             <TableCell>Timestamp</TableCell>
-            <TableCell>Alert Tags</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,38 +36,10 @@ const AlertsTable = ({ data }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                {item.alert_title}
+                {item.alert_text}
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.alert_timestamp)}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header">
-                    Details
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Key</TableCell>
-                          <TableCell>Value</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {item.alert_tags.map((tag, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{tag.key}</TableCell>
-                            <TableCell>{tag.value}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </AccordionDetails>
-                </Accordion>
               </TableCell>
             </TableRow>
           ))}

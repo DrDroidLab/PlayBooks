@@ -30,10 +30,7 @@ export const searchTriggerApi = apiSlice.injectEndpoints({
           workspace_id,
           channel_id,
           alert_type,
-          fuzzy_search_request: {
-            context: 'SLACK_ALERT',
-            pattern: filter_string
-          }
+          pattern: filter_string
         }
       }),
       transformResponse: (response: any) => {

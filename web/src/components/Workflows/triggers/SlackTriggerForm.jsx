@@ -24,16 +24,15 @@ function SlackTriggerForm() {
     e?.preventDefault();
     triggerSearchTrigger({
       workspaceId: currentWorkflow?.trigger?.workspaceId,
-      channel_id: currentWorkflow?.trigger?.channel_id,
-      alert_type: currentWorkflow?.trigger?.alert_type,
+      channel_id: currentWorkflow?.trigger?.channel?.channel_id,
+      alert_type: currentWorkflow?.trigger?.source,
       filter_string: currentWorkflow?.trigger?.filterString,
     });
   };
-
   const sources = options?.alert_types?.filter(
-    (e) => e.channel_connector_key_id === currentWorkflow.channel?.id,
+    (e) => e.channel_id === currentWorkflow.trigger.channel?.channel_id,
   );
-  const data = searchTriggerResult?.alerts ?? null;
+  const data = searchTriggerResult?.alerts ?? [];
 
   return (
     <form
@@ -51,7 +50,9 @@ function SlackTriggerForm() {
           })}
           placeholder="Select Channel"
           onSelectionChange={(_, val) =>
-            handleTriggerSelect("channel", val.channel)
+            {
+              handleTriggerSelect("channel", val.channel);
+            }
           }
           selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}
@@ -68,10 +69,10 @@ function SlackTriggerForm() {
             };
           })}
           placeholder="Select Source"
-          onSelectionChange={(_, val) =>
-            handleTriggerSelect("source", val.source)
+          onSelectionChange={(id) =>
+            handleTriggerSelect("source", id)
           }
-          selected={currentWorkflow?.trigger?.source?.alert_type ?? ""}
+          selected={currentWorkflow?.trigger?.source ?? ""}
           searchable={true}
         />
       </div>

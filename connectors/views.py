@@ -191,10 +191,6 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
         if not active_connectors:
             continue
 
-        if connector_type == ConnectorType.SLACK:
-            connector_key_type = ConnectorKeyProto.SLACK_CHANNEL
-        else:
-            continue
         for connector in active_connectors:
             active_channels = []
             active_comm_channels = account.connectormetadatamodelstore_set.filter(connector=connector, is_active=True,
@@ -204,8 +200,8 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
                 channel_name = None
                 if channel.metadata and channel.metadata.get('channel_name', False):
                     channel_name = channel.metadata['channel_name']
-                channel_id = channel.key
-                active_comm_channels_id.append(channel.id)
+                channel_id = channel.model_uid
+                active_comm_channels_id.append(channel.model_uid)
                 active_channels.append(
                     CommChannelProto(id=UInt64Value(value=channel.id), channel_id=StringValue(value=channel_id),
                                      channel_name=StringValue(value=channel_name)))
@@ -218,7 +214,7 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
                 'channel_id')
             for alert_type in alert_types:
                 alert_type_protos.append(CommAlertTypeProto(id=UInt64Value(value=alert_type['id']),
-                                                            channel_connector_key_id=UInt64Value(
+                                                            channel_id=StringValue(
                                                                 value=alert_type['channel_id']),
                                                             alert_type=StringValue(value=alert_type['alert_type'])))
             comm_workspaces.append(
@@ -240,7 +236,7 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
     page: Page = meta.page
     qs = account.slackconnectordatareceived_set.all()
     if request_message.pattern:
-        qs = qs.filter(Q(text__icontains=request_message.pattern))
+        qs = qs.filter(text__icontains=request_message.pattern)
     if request_message.workspace_id and request_message.workspace_id.value:
         qs = qs.filter(connector_id=request_message.workspace_id.value)
     if request_message.channel_id and request_message.channel_id.value:
@@ -253,7 +249,7 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
     total_count = qs.count()
     qs = filter_page(qs, page)
     qs = qs.values('id', 'alert_type', 'title', 'text', 'data_timestamp', 'slack_channel_metadata_model__id', 'channel_id',
-                   'slack_channel_metadata_model__metadata__channel_name', 'source_tags')
+                   'slack_channel_metadata_model__metadata__channel_name')
 
     slack_alerts = []
     for a in qs:

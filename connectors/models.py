@@ -343,27 +343,13 @@ class ConnectorMetadataModelStore(models.Model):
 class SlackConnectorAlertType(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    channel = models.ForeignKey(ConnectorKey, on_delete=models.CASCADE)
+    channel_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
-        unique_together = [['account', 'connector', 'channel', 'alert_type']]
-
-
-class SlackConnectorAlertTag(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    channel = models.ForeignKey(ConnectorKey, on_delete=models.CASCADE)
-    alert_type = models.ForeignKey(SlackConnectorAlertType, on_delete=models.CASCADE, null=True, blank=True,
-                                   db_index=True)
-    alert_tag = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    updated_at = models.DateTimeField(auto_now=True, db_index=True)
-
-    class Meta:
-        unique_together = [['account', 'connector', 'channel', 'alert_type', 'alert_tag']]
+        unique_together = [['account', 'connector', 'channel_id', 'alert_type']]
 
 
 class SlackConnectorDataReceived(models.Model):
@@ -377,11 +363,6 @@ class SlackConnectorDataReceived(models.Model):
                                       db_index=True)
     alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
 
-    db_alert_tags = models.ManyToManyField(
-        SlackConnectorAlertTag,
-        through='SlackConnectorDataReceivedAlertTagMapping',
-        related_name='tags',
-    )
     tags = models.JSONField(null=True, blank=True)
     title = models.TextField(null=True, blank=True)
     text = models.TextField(null=True, blank=True)
@@ -389,18 +370,6 @@ class SlackConnectorDataReceived(models.Model):
     data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
     received_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
-
-class SlackConnectorDataReceivedAlertTagMapping(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    slack_connector_data_received = models.ForeignKey(SlackConnectorDataReceived, on_delete=models.CASCADE,
-                                                      db_index=True)
-    alert_tag = models.ForeignKey(SlackConnectorAlertTag, on_delete=models.CASCADE, db_index=True)
-    value = models.TextField(null=True, blank=True)
-    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-
-    class Meta:
-        unique_together = [['account', 'slack_connector_data_received', 'alert_tag']]
 
 
 class ConnectorPeriodicRunMetadata(models.Model):
