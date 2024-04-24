@@ -5,7 +5,7 @@
 
 <center>
 
-[Docs](https://docs.drdroid.io) | [Sandbox](https://sandbox.drdroid.io) | [Installation](https://docs.drdroid.io/docs/installation) | [Quick Start Guide](https://docs.drdroid.io/docs/quick-start-guide) | [Changelog](https://docs.drdroid.io/changelog) | [Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
+[Docs](https://docs.drdroid.io) | [Sandbox](https://sandbox.drdroid.io) | [Templates](https://github.com/DrDroidLab/PlayBooks/playbooks-templates/README.md) | [Changelog](https://docs.drdroid.io/changelog) | [Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
 
 </center>
 
@@ -22,10 +22,10 @@
     - [ ] Add support for PagerDuty / OpsGenie / Datadog.
 - Sequence: Create sequence of multiple metrics / logs to be fetched in one-go from different tools.
 - Auto-investigation: Receive response after a playbook run in your Slack channel or your alerting tool with the investigation data published.
+- [ ] Interpretation layer: Add a layer of interpretation to the data fetched using Outlier detection models & Vision AI.
 - [ ] Saving past executions.
 - [ ] Enable conditional trees to be created within playbooks
 - [ ] Add support for custom API call from playbook.
-- [ ] Add templates.
 
 Explore [sandbox](https://sandbox.drdroid.io/).
 
