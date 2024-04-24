@@ -63,7 +63,7 @@ def workflow_scheduler():
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                playbook_run_uuid = f'{account.id}_{pb_id}_{str(current_time)}_run'
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run'
                 time_range_proto = dict_to_proto(time_range, TimeRange)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by)

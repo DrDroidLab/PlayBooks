@@ -114,7 +114,7 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
     try:
         schedule_type = account_workflow.schedule_type
         schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
-        workflow_run_uuid = f'{account.id}_{workflow_id}_{str(int(current_time_utc.timestamp()))}_wf_run'
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
         if schedule_type == WorkflowScheduleProto.Type.PERIODIC:
             periodic_schedule: WorkflowPeriodicScheduleProto = schedule.periodic
             duration_in_seconds = periodic_schedule.duration_in_seconds.value

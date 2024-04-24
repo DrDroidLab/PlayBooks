@@ -152,7 +152,7 @@ def playbooks_execute(request_message: ExecutePlaybookRequest) -> Union[ExecuteP
     if not playbook_id:
         return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                        message=Message(title="Invalid Request", description="Missing playbook_id"))
-    playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_pb_run'
+    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
     try:
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
@@ -238,7 +238,7 @@ def playbooks_api_execute(request_message: ExecutePlaybookRequest) -> Union[Exec
     if not playbook_id:
         return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                        message=Message(title="Invalid Request", description="Missing playbook_id"))
-    playbook_run_uuid = f'{account.id}_{playbook_id}_{str(current_time)}_pb_run'
+    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
     try:
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
