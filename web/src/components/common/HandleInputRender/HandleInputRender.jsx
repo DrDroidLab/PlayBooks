@@ -61,7 +61,7 @@ export const HandleInputRender = ({ option }) => {
               type="checkbox"
               className="cursor-pointer"
               name={`checkbox-${option.group}`}
-              checked={currentWorkflow[option.id]}
+              checked={currentWorkflow[option.id] ?? false}
               data-key={option.id}
               onChange={handleCheckbox}
             />
@@ -70,7 +70,9 @@ export const HandleInputRender = ({ option }) => {
             </label>
           </div>
           {currentWorkflow[option.id] &&
-            option.options?.map((op) => <HandleInputRender option={op} />)}
+            option.options?.map((op) => (
+              <HandleInputRender key={op.id} option={op} />
+            ))}
         </div>
       );
 
@@ -78,7 +80,7 @@ export const HandleInputRender = ({ option }) => {
       return (
         <div key={option.id} className="my-2">
           {option.options.map((option) => (
-            <HandleInputRender option={option} />
+            <HandleInputRender key={option.id} option={option} />
           ))}
         </div>
       );
@@ -93,7 +95,7 @@ export const HandleInputRender = ({ option }) => {
           </label>
           <div className="flex gap-2 items-center">
             {option.options.map((option) => (
-              <HandleInputRender option={option} />
+              <HandleInputRender key={option.id} option={option} />
             ))}
           </div>
         </div>

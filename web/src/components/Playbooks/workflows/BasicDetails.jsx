@@ -6,10 +6,11 @@ import { CircularProgress } from "@mui/material";
 import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
-import SlackTriggerForm from "./SlackTriggerForm.jsx";
+import SlackTriggerForm from "./triggers/SlackTriggerForm.jsx";
 import { triggerTypes } from "../../../utils/workflow/triggerTypes.ts";
+import { handleInput, handleSelect } from "./utils/handleInputs.ts";
 
-function BasicDetails({ handleInput, handleSelect }) {
+function BasicDetails() {
   const {
     data,
     isFetching: playbooksLoading,

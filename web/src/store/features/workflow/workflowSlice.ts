@@ -5,6 +5,7 @@ const initialState = {
     name: "",
     schedule: "run-once",
     action: "",
+    trigger: {},
   },
 };
 
@@ -12,13 +13,17 @@ const workflowSlice = createSlice({
   name: "workflows",
   initialState,
   reducers: {
-    setKey(state, { payload }) {
+    setCurrentWorkflowKey(state, { payload }) {
       state.currentWorkflow[payload.key] = payload.value;
+    },
+    setCurrentWorkflowTriggerKey(state, { payload }) {
+      state.currentWorkflow.trigger[payload.key] = payload.value;
     },
   },
 });
 
-export const { setKey } = workflowSlice.actions;
+export const { setCurrentWorkflowKey, setCurrentWorkflowTriggerKey } =
+  workflowSlice.actions;
 
 export default workflowSlice.reducer;
 

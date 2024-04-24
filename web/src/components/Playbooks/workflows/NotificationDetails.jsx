@@ -2,7 +2,7 @@ import React from "react";
 import { notificationOptions } from "../../../utils/workflow/notificationOptions.ts";
 import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
-function ActionDetails() {
+function NotificationDetails() {
   return (
     <div>
       <label className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block font-medium">
@@ -10,10 +10,10 @@ function ActionDetails() {
       </label>
 
       {notificationOptions.map((option) => (
-        <HandleInputRender option={option} />
+        <HandleInputRender key={option.id} option={option} />
       ))}
     </div>
   );
 }
 
-export default ActionDetails;
+export default NotificationDetails;
