@@ -21,7 +21,7 @@ const ConnectorPage = React.lazy(() =>
 const Integrations = React.lazy(() => import("./components/Integration"));
 const Playbooks = React.lazy(() => import("./components/Playbooks"));
 const CreateWorkflow = React.lazy(() =>
-  import("./components/Playbooks/CreateWorkflow.jsx"),
+  import("./components/Playbooks/workflows/CreateWorkflow.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
