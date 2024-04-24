@@ -11,6 +11,7 @@ import {
   selectAccessToken,
   selectEmail,
 } from "./store/features/auth/authSlice.ts";
+import "nprogress/nprogress.css";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
