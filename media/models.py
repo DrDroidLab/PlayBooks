@@ -13,6 +13,8 @@ class Image(models.Model):
 
     image_data = models.BinaryField()
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def save_image_to_db(self, image):
         img_io = io.BytesIO()
         image.save(img_io, format='PNG')
