@@ -36,7 +36,7 @@ const AlertsTable = ({ data }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                {item.alert_text}
+                {item.alert_title}
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.alert_timestamp)}
