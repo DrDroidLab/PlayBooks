@@ -29,6 +29,9 @@ export const workflowToState = (workflow) => {
         (e) =>
           e.notification_config.slack_config.message_type === "THREAD_REPLY",
       ) !== -1,
+    cron: workflow.schedule?.periodic?.cron_rule?.rule,
+    interval: workflow.schedule?.periodic?.task_interval?.interval_in_seconds,
+    duration: workflow.schedule?.periodic?.duration_in_seconds,
   };
 
   return currentWorkflow;
