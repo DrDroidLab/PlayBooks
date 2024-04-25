@@ -75,6 +75,7 @@ class WorkflowsUpdateProcessor(UpdateProcessorMixin):
                 action_mapping.is_active = False
                 action_mapping.save(update_fields=['is_active'])
             random_generated_str = str(uuid.uuid4())
+            elem.is_active = False
             elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
             elem.save(update_fields=['is_active', 'name'])
             updated_workflow = update_op.workflow
