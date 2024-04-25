@@ -16,7 +16,7 @@ import {
   toggleStep,
   updateStep,
 } from "../../store/features/playbook/playbookSlice.ts";
-import { playbookToSteps } from "../../utils/playbookToSteps.ts";
+import { playbookToSteps } from "../../utils/parser/playbooks/playbookToSteps.ts";
 import Step from "./steps/Step.jsx";
 import StepActions from "./StepActions.jsx";
 import { getStepTitle } from "./utils.jsx";
@@ -32,7 +32,10 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../common/Loading/index.tsx";
 import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
-import { getTaskFromStep } from "../../utils/stepsToplaybook.ts";
+import { getTaskFromStep } from "../../utils/parser/playbooks/stepsToplaybook.ts";
+import { DownloadRounded } from "@mui/icons-material";
+import JSONInputOverlay from "./JSONInputOverlay.jsx";
+import useToggle from "../../hooks/useToggle.js";
 
 const CreatePlaybook = ({ playbook, allowSave = true }) => {
   const navigate = useNavigate();
@@ -44,6 +47,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
   const [outputs, setOutputs] = useState([]);
   const timeRange = useSelector(rangeSelector);
   const copied = useRef(false);
+  const { isOpen: isOverlayOpen, toggle } = useToggle();
 
   const populateData = () => {
     const data = playbookToSteps(playbook);
@@ -217,6 +221,11 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
         copyPlaybook={handleCopyPlaybook}
       />
       <div className={styles["pb-container"]}>
+        <button
+          onClick={toggle}
+          className="border border-violet-500 w-fit p-1 text-sm ml-3 my-2 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all flex items-center gap-2">
+          <DownloadRounded /> Import Playbook
+        </button>
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
         </div>
@@ -250,6 +259,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
           </div>
         </div>
       </div>
+      <JSONInputOverlay isOpen={isOverlayOpen} toggleOverlay={toggle} />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/index.ts";
 import Loading from "../../common/Loading/index.tsx";
 import Heading from "../../Heading.js";
-import { playbookToSteps } from "../../../utils/playbookToSteps.ts";
+import { playbookToSteps } from "../../../utils/parser/playbooks/playbookToSteps.ts";
 import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {

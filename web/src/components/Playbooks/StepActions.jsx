@@ -8,7 +8,7 @@ import {
   playbookSelector,
   setLastUpdatedAt,
 } from "../../store/features/playbook/playbookSlice.ts";
-import { stepsToPlaybook } from "../../utils/stepsToplaybook.ts";
+import { stepsToPlaybook } from "../../utils/parser/playbooks/stepsToplaybook.ts";
 import SavePlaybookOverlay from "./SavePlaybookOverlay.jsx";
 import { useNavigate } from "react-router-dom";
 import {

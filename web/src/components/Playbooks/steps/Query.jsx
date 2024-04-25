@@ -23,6 +23,8 @@ function Query({ step, index }) {
     useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [sources, setSources] = useState([]);
+  const [sourceError, setSourceError] = useState(false);
 
   const fetchData = (val) => {
     triggerGetAssetModelOptions({
@@ -55,6 +57,28 @@ function Query({ step, index }) {
     setDrawerOpen(!isDrawerOpen);
   };
 
+  useEffect(() => {
+    if (connectorData?.length > 0) {
+      setSources(connectorData);
+      if (
+        connectorData.findIndex(
+          (e) => e.connector_type === step.connector_type,
+        ) === -1
+      ) {
+        setSourceError(true);
+        setSources([
+          ...connectorData,
+          {
+            id: step.selectedSource,
+            label: step.selectedSource,
+            connector_type: step.source,
+            model_type: step.modelType,
+          },
+        ]);
+      }
+    }
+  }, [connectorData]);
+
   return (
     <div className={styles["step-fields"]}>
       <div
@@ -73,12 +97,18 @@ function Query({ step, index }) {
             />
           )}
           <SelectComponent
-            data={connectorData}
+            data={sources}
             placeholder="Select Data Source"
             onSelectionChange={(key, value) => handleSourceChange(key, value)}
             selected={step.selectedSource}
             searchable={true}
-            disabled={step.isPrefetched && !step.isCopied && step.source}
+            disabled={
+              step.isPrefetched &&
+              !step.isCopied &&
+              !step.isImported &&
+              step.source
+            }
+            error={step.isImported && sourceError}
           />
           <button onClick={refetch}>
             <RefreshRounded

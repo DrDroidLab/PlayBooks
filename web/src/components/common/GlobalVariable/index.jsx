@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import styles from './styles.module.css';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import styles from "./styles.module.css";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteVariable,
   playbookSelector,
-  updateGlobalVariable
-} from '../../../store/features/playbook/playbookSlice.ts';
-import ValueComponent from '../../ValueComponent';
-import AddVariableOverlay from './AddVariableOverlay.jsx';
-import { Close } from '@mui/icons-material';
+  updateGlobalVariable,
+} from "../../../store/features/playbook/playbookSlice.ts";
+import ValueComponent from "../../ValueComponent";
+import AddVariableOverlay from "./AddVariableOverlay.jsx";
+import { Close } from "@mui/icons-material";
 
 function GlobalVariables() {
   const [isAddVariableOpen, setIsAddVariableOpen] = useState(false);
@@ -19,12 +19,13 @@ function GlobalVariables() {
     setIsAddVariableOpen(true);
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index) => {
     dispatch(deleteVariable({ index }));
   };
 
   const isPrefetched =
     !playbook?.currentPlaybook?.isCopied &&
+    !playbook?.currentPlaybook?.isImported &&
     !playbook?.isEditing &&
     Object.keys(playbook?.currentPlaybook ?? {}).length > 0;
 
@@ -32,13 +33,15 @@ function GlobalVariables() {
     <div className="text-sm">
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
-          <button className={`${styles['pb-button']} global_var`} onClick={openOverlay}>
+          <button
+            className={`${styles["pb-button"]} global_var`}
+            onClick={openOverlay}>
             + Add Variable
           </button>
         )}
         {playbook?.globalVariables?.length > 0 &&
           `(${playbook?.globalVariables?.length} variable${
-            playbook?.globalVariables?.length > 1 ? 's' : ''
+            playbook?.globalVariables?.length > 1 ? "s" : ""
           })`}
       </div>
       <hr />
@@ -48,28 +51,31 @@ function GlobalVariables() {
             <div key={index} className={styles.variable}>
               <div className={styles.name}>{variable.name}</div>
               <ValueComponent
-                valueType={'STRING'}
+                valueType={"STRING"}
                 value={variable.value}
-                placeHolder={'Enter variable value'}
+                placeHolder={"Enter variable value"}
                 length={200}
-                onValueChange={val => {
+                onValueChange={(val) => {
                   dispatch(updateGlobalVariable({ index, value: val }));
                 }}
               />
               {!isPrefetched && (
-                <Close onClick={() => handleDelete(index)} className={styles.close} />
+                <Close
+                  onClick={() => handleDelete(index)}
+                  className={styles.close}
+                />
               )}
             </div>
           ))
         ) : (
           <p className="text-gray-400">
-            Variables defined in the playbook will be visible here. Read more about variables{' '}
+            Variables defined in the playbook will be visible here. Read more
+            about variables{" "}
             <a
               href="https://docs.drdroid.io/docs/global-variables"
               target="_blank"
               rel="noreferrer"
-              className="text-violet-600"
-            >
+              className="text-violet-600">
               here
             </a>
             .
@@ -77,7 +83,10 @@ function GlobalVariables() {
         )}
       </div>
 
-      <AddVariableOverlay isOpen={isAddVariableOpen} close={() => setIsAddVariableOpen(false)} />
+      <AddVariableOverlay
+        isOpen={isAddVariableOpen}
+        close={() => setIsAddVariableOpen(false)}
+      />
     </div>
   );
 }

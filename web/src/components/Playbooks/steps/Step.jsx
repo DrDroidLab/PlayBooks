@@ -13,7 +13,7 @@ import {
   deleteStep,
   updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { getTaskFromStep } from "../../../utils/stepsToplaybook.ts";
+import { getTaskFromStep } from "../../../utils/parser/playbooks/stepsToplaybook.ts";
 import { getStepTitle } from "../utils.jsx";
 import ExternalLinks from "./ExternalLinks.jsx";
 import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
