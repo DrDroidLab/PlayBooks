@@ -129,6 +129,11 @@ class Workflow(models.Model):
         all_actions = self.actions.filter(is_active=True)
         all_action_protos = [action.proto for action in all_actions]
 
+        latest_workflow_execution = None
+        latest_workflow_executions = self.workflowexecution_set.order_by('-created_at')
+        if latest_workflow_executions:
+            latest_workflow_execution = latest_workflow_executions.first()
+
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -139,11 +144,22 @@ class Workflow(models.Model):
             schedule=dict_to_proto(self.schedule, WorkflowScheduleProto),
             playbooks=all_ob_protos,
             entry_points=all_ep_protos,
-            actions=all_action_protos
+            actions=all_action_protos,
+            last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
+                tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
         )
 
     @property
     def proto_partial(self) -> WorkflowProto:
+        all_pbs = self.playbooks.filter(is_active=True)
+        all_ob_protos = [pb.proto_partial for pb in all_pbs]
+
+        latest_workflow_execution = None
+        latest_workflow_executions = self.workflowexecution_set.order_by('-created_at')
+        if latest_workflow_executions:
+            latest_workflow_execution = latest_workflow_executions.first()
+
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -151,7 +167,11 @@ class Workflow(models.Model):
             created_by=StringValue(value=self.created_by),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             is_active=BoolValue(value=self.is_active),
-            schedule=dict_to_proto(self.schedule, WorkflowScheduleProto)
+            playbooks=all_ob_protos,
+            schedule=dict_to_proto(self.schedule, WorkflowScheduleProto),
+            last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
+                tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
         )
 
 

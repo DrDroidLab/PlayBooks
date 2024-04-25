@@ -424,6 +424,8 @@ class Workflow(google.protobuf.message.Message):
     PLAYBOOKS_FIELD_NUMBER: builtins.int
     ENTRY_POINTS_FIELD_NUMBER: builtins.int
     ACTIONS_FIELD_NUMBER: builtins.int
+    LAST_EXECUTION_TIME_FIELD_NUMBER: builtins.int
+    LAST_EXECUTION_STATUS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -443,6 +445,8 @@ class Workflow(google.protobuf.message.Message):
     def entry_points(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowEntryPoint]: ...
     @property
     def actions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowAction]: ...
+    last_execution_time: builtins.int
+    last_execution_status: global___WorkflowExecutionStatusType.ValueType
     def __init__(
         self,
         *,
@@ -456,9 +460,11 @@ class Workflow(google.protobuf.message.Message):
         playbooks: collections.abc.Iterable[protos.playbooks.playbook_pb2.Playbook] | None = ...,
         entry_points: collections.abc.Iterable[global___WorkflowEntryPoint] | None = ...,
         actions: collections.abc.Iterable[global___WorkflowAction] | None = ...,
+        last_execution_time: builtins.int = ...,
+        last_execution_status: global___WorkflowExecutionStatusType.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "id", b"id", "is_active", b"is_active", "name", b"name", "schedule", b"schedule"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["actions", b"actions", "created_at", b"created_at", "created_by", b"created_by", "description", b"description", "entry_points", b"entry_points", "id", b"id", "is_active", b"is_active", "name", b"name", "playbooks", b"playbooks", "schedule", b"schedule"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["actions", b"actions", "created_at", b"created_at", "created_by", b"created_by", "description", b"description", "entry_points", b"entry_points", "id", b"id", "is_active", b"is_active", "last_execution_status", b"last_execution_status", "last_execution_time", b"last_execution_time", "name", b"name", "playbooks", b"playbooks", "schedule", b"schedule"]) -> None: ...
 
 global___Workflow = Workflow
 
