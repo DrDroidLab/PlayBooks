@@ -23,7 +23,7 @@ const workflowSlice = createSlice({
       state.currentWorkflow.trigger[payload.key] = payload.value;
     },
     resetWorkflowState(state) {
-      state = initialState;
+      state.currentWorkflow = initialState.currentWorkflow;
     },
   },
 });

@@ -11,9 +11,9 @@ import SeeMoreText from "../../Playbooks/SeeMoreText";
 
 const AlertsTable = ({ data }) => {
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <p className="font-bold mb-2">Alerts matching the search criteria</p>
-      <Table stickyHeader>
+      <Table stickyHeader className="border">
         <TableHead>
           <TableRow>
             <TableCell>Title</TableCell>
@@ -24,11 +24,15 @@ const AlertsTable = ({ data }) => {
           {data?.map((item, index) => (
             <TableRow
               key={index}
+              className="bg-gray-50
+              "
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                <SeeMoreText text={item.alert_title} />
+                <SeeMoreText
+                  text={item.alert_title || item.alert_text || "N/A"}
+                />
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.alert_timestamp)}
@@ -38,7 +42,7 @@ const AlertsTable = ({ data }) => {
         </TableBody>
       </Table>
       {!data?.length ? <NoExistingTrigger /> : null}
-    </>
+    </div>
   );
 };
 
