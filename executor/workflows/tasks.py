@@ -170,7 +170,9 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecutionProto = playbook_execution.proto
         pe_logs = pe_proto.logs
-        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, pe_logs)
+        p_proto = pe_proto.playbook
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions

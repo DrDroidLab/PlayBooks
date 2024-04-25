@@ -39,13 +39,22 @@ class SlackNotifier(Notifier):
         blocks = []
         for i, interpretation in enumerate(execution_output):
             if interpretation.type == InterpretationProto.Type.SUMMARY:
-                blocks.append({
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f'Step {i + 1}: {interpretation.title.value}'
-                    }
-                })
+                if interpretation.title.value.startswith('Hello team'):
+                    blocks.append({
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": interpretation.title.value
+                        }
+                    })
+                else:
+                    blocks.append({
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f'Step {i + 1}: {interpretation.title.value}'
+                        }
+                    })
             elif interpretation.type == InterpretationProto.Type.IMAGE:
                 blocks.append({
                     "type": "section",
