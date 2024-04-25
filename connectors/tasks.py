@@ -2,27 +2,32 @@ from datetime import datetime
 from http.client import IncompleteRead
 from typing import List
 
-from celery import group, shared_task
+from celery import shared_task
 import pandas as pd
 import pytz
 import time
 import json
 
-from accounts.models import Account
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from connectors.assets.extractor.metadata_extractor_facade import connector_metadata_extractor_facade
 from connectors.assets.extractor.slack_metadata_extractor import source_identifier, text_identifier_v2, title_identifier
-from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertType, SlackConnectorDataReceived
+from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertType, \
+    SlackConnectorDataReceived
+from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import PeriodicTaskStatus, TaskRun
 from management.utils.celery_task_signal_utils import publish_task_failure, publish_pre_run_task, publish_post_run_task
-from playbooks.utils.utils import current_datetime, current_epoch_timestamp, current_milli_time
+from playbooks.utils.utils import current_datetime, current_milli_time
 
-from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowEntryPointMapping, WorkflowExecution
+from executor.workflows.models import WorkflowEntryPoint, WorkflowEntryPointMapping
 
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
-from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowExecutionStatusType
+from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, \
+    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto
+from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto
+from utils.proto_utils import dict_to_proto
+
 
 def clean_raw_extracted_data(message):
     if isinstance(message, dict):
@@ -31,6 +36,7 @@ def clean_raw_extracted_data(message):
         return message
     else:
         return str(message)
+
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def populate_connector_metadata(account_id, connector_id, connector_type, connector_credentials_dict):
@@ -85,18 +91,20 @@ def match_workflow_to_slack_alert(slack_alert):
     alert_type = slack_alert.alert_type
     alert_text = slack_alert.text
 
-    matching_channel_alert_trigger_workflows = WorkflowEntryPoint.objects.filter(account_id=account_id, type=WorkflowEntryPointProto.ALERT,
-                                                              is_active=True, 
-                                                              entry_point__alert_config__slack_channel_alert_config__slack_channel_id=channel_id)
+    matching_channel_alert_trigger_workflows = WorkflowEntryPoint.objects.filter(account_id=account_id,
+                                                                                 type=WorkflowEntryPointProto.ALERT,
+                                                                                 is_active=True,
+                                                                                 entry_point__alert_config__slack_channel_alert_config__slack_channel_id=channel_id)
 
     if not matching_channel_alert_trigger_workflows:
         return
-    
+
     matching_workflow_slack_triggers = []
-    
+
     for wf in list(matching_channel_alert_trigger_workflows):
         wf_trigger_alert_type = wf.entry_point['alert_config']['slack_channel_alert_config'].get('slack_alert_type')
-        wf_trigger_alert_string = wf.entry_point['alert_config']['slack_channel_alert_config'].get('slack_alert_filter_string')
+        wf_trigger_alert_string = wf.entry_point['alert_config']['slack_channel_alert_config'].get(
+            'slack_alert_filter_string')
 
         if wf_trigger_alert_type and wf_trigger_alert_type != alert_type:
             continue
@@ -107,19 +115,19 @@ def match_workflow_to_slack_alert(slack_alert):
         matching_workflow_slack_triggers.append(wf)
 
     for trigger in matching_workflow_slack_triggers:
-        workflow_entry_point_mapping = WorkflowEntryPointMapping.objects.filter(account_id=account_id, entry_point_id=trigger.id, is_active=True).first()
+        workflow_entry_point_mapping = WorkflowEntryPointMapping.objects.filter(account_id=account_id,
+                                                                                entry_point_id=trigger.id,
+                                                                                is_active=True).first()
         if workflow_entry_point_mapping:
             workflow = workflow_entry_point_mapping.workflow
-            current_time_utc = current_datetime()
 
-            workflow_execution = WorkflowExecution()
-            workflow_execution.workflow_id = workflow.id
-            workflow_execution.workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
-            workflow_execution.account_id = account_id
-            workflow_execution.status = WorkflowExecutionStatusType.WORKFLOW_SCHEDULED
-            workflow_execution.metadata = {'thread_ts': slack_alert.data.get('event', {}).get('s', None)}
-            workflow_execution.scheduled_at = current_time_utc
-            workflow_execution.save()
+            current_time_utc = current_datetime()
+            workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
+            schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
+            create_workflow_execution_util(workflow.schedule_type, schedule, slack_alert.account, None,
+                                           current_time_utc,
+                                           workflow.id, workflow_run_id,
+                                           {'thread_ts': slack_alert.data.get('event').get('ts')})
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
@@ -129,12 +137,14 @@ def handle_receive_message(slack_connector_id, message):
         account_id = slack_connector.account_id
 
         bot_auth_token = None
-        bot_auth_token_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id, key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN).first()
+        bot_auth_token_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id,
+                                                                   key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN).first()
         if bot_auth_token_connector_key:
             bot_auth_token = bot_auth_token_connector_key.key
 
         doctor_droid_app_id = None
-        app_id_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id, key_type=ConnectorKeyProto.SLACK_APP_ID).first()
+        app_id_connector_key = ConnectorKey.objects.filter(connector_id=slack_connector.id,
+                                                           key_type=ConnectorKeyProto.SLACK_APP_ID).first()
         if app_id_connector_key:
             doctor_droid_app_id = app_id_connector_key.key
 
@@ -218,9 +228,10 @@ def handle_receive_message(slack_connector_id, message):
                     slack_received_msg.channel_id = channel_id
                     # get model store
                     slack_channel_metadata = ConnectorMetadataModelStore.objects.filter(account_id=account_id,
-                                                                            connector_type=ConnectorType.SLACK,
-                                                                            model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
-                                                                            model_uid=channel_id, is_active=True).first()
+                                                                                        connector_type=ConnectorType.SLACK,
+                                                                                        model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                                                        model_uid=channel_id,
+                                                                                        is_active=True).first()
                     if slack_channel_metadata:
                         slack_received_msg.slack_channel_metadata_model = slack_channel_metadata
 
@@ -236,6 +247,7 @@ def handle_receive_message(slack_connector_id, message):
         print(f"Error while handling slack handle_receive_message with error: {e} for message: {message}")
     return
 
+
 handle_receive_message_prerun_notifier = publish_pre_run_task(handle_receive_message)
 handle_receive_message_failure_notifier = publish_task_failure(handle_receive_message)
 handle_receive_message_postrun_notifier = publish_post_run_task(handle_receive_message)
@@ -245,8 +257,9 @@ handle_receive_message_postrun_notifier = publish_post_run_task(handle_receive_m
 def slack_connector_data_fetch_storage_job(account_id, connector_id, source_metadata_model_id, workspace_id: str,
                                            channel_id: str, channel_name: str, raw_data_json, is_first_run=False):
     if not source_metadata_model_id and not channel_id:
-        print(f"Invalid arguments provided for slack_connector_data_fetch_storage_job. Missing source_metadata_model_id:"
-              f" or channel_id")
+        print(
+            f"Invalid arguments provided for slack_connector_data_fetch_storage_job. Missing source_metadata_model_id:"
+            f" or channel_id")
         return
     current_time = time.time()
     print(f"Initiating slack_connector_data_fetch_storage_job for account:{account_id} connector: {connector_id} "
@@ -274,10 +287,10 @@ def slack_connector_data_fetch_storage_job(account_id, connector_id, source_meta
             alert_type = source_identifier(full_message, 'slack')
 
             db_alert_type, is_created = SlackConnectorAlertType.objects.get_or_create(
-                    account_id=account_id,
-                    connector_id=connector_id,
-                    channel_id=channel_id,
-                    alert_type=alert_type)
+                account_id=account_id,
+                connector_id=connector_id,
+                channel_id=channel_id,
+                alert_type=alert_type)
 
             event_ts = full_message.get('ts', None)
             data_timestamp = datetime.utcfromtimestamp(float(event_ts))
@@ -285,9 +298,10 @@ def slack_connector_data_fetch_storage_job(account_id, connector_id, source_meta
 
             extracted_data.append(
                 SlackConnectorDataReceived(account_id=account_id, connector_id=connector_id,
-                                        slack_channel_metadata_model_id=source_metadata_model_id, channel_id=channel_id,
-                                        data=full_message, text=alert_text, alert_type=alert_type, title=alert_title,
-                                        data_timestamp=data_timestamp, db_alert_type=db_alert_type))
+                                           slack_channel_metadata_model_id=source_metadata_model_id,
+                                           channel_id=channel_id,
+                                           data=full_message, text=alert_text, alert_type=alert_type, title=alert_title,
+                                           data_timestamp=data_timestamp, db_alert_type=db_alert_type))
     try:
         saved_data: List[SlackConnectorDataReceived] = SlackConnectorDataReceived.objects.bulk_create(extracted_data,
                                                                                                       batch_size=1000)
@@ -313,10 +327,11 @@ def slack_connector_data_fetch_job(account_id, connector_id, source_metadata_mod
     if not source_metadata_model_id:
         try:
             source_metadata_model_id = ConnectorMetadataModelStore.objects.filter(account_id=account_id,
-                                                                            connector_id=connector_id,
-                                                                            connector_type=ConnectorType.SLACK,
-                                                                            model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
-                                                                            model_uid=channel_id, is_active=True).first().id
+                                                                                  connector_id=connector_id,
+                                                                                  connector_type=ConnectorType.SLACK,
+                                                                                  model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                                                  model_uid=channel_id,
+                                                                                  is_active=True).first().id
         except Exception as e:
             print(f"Exception occurred in slack_connector_data_fetch_job: error while fetching "
                   f"source_metadata_model_id for account: {account_id}, connector: {connector_id} with error: {e}")

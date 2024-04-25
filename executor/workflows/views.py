@@ -1,28 +1,26 @@
 import logging
-from datetime import timedelta
 from typing import Union
 
-from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user
-from executor.workflows.crud.workflow_execution_crud import create_workflow_execution, get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from playbooks.utils.utils import current_datetime, calculate_cron_times
-from protos.base_pb2 import Meta, Message, Page, TimeRange, TaskCronRule
+from playbooks.utils.utils import current_datetime
+from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -115,40 +113,9 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         schedule_type = account_workflow.schedule_type
         schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
-        if schedule_type == WorkflowScheduleProto.Type.PERIODIC:
-            periodic_schedule: WorkflowPeriodicScheduleProto = schedule.periodic
-            duration_in_seconds = periodic_schedule.duration_in_seconds.value
-            expiry_at = current_time_utc + timedelta(seconds=duration_in_seconds)
-            if periodic_schedule.type == WorkflowPeriodicScheduleProto.Type.INTERVAL:
-                scheduled_at = current_time_utc
-                interval = periodic_schedule.task_interval.interval_in_seconds.value
-                if interval < 60:
-                    return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                                   message=Message(title="Error", description="Invalid Interval"))
-                time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                                       time_lt=int(scheduled_at.timestamp()))
-                create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, expiry_at,
-                                          interval, user.email)
-            elif periodic_schedule.type == WorkflowPeriodicScheduleProto.Type.CRON:
-                cron_rule: TaskCronRule = periodic_schedule.cron_rule.rule.value
-                cron_schedules = calculate_cron_times(cron_rule, current_time_utc, expiry_at)
-                if len(cron_schedules) == 0:
-                    return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                                   message=Message(title="Error",
-                                                                   description=f"No Schedules Found with Cron Rule: {cron_rule}"))
-                for scheduled_at in cron_schedules:
-                    if scheduled_at > expiry_at:
-                        break
-                    time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                                           time_lt=int(scheduled_at.timestamp()))
-                    create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at,
-                                              scheduled_at, None, user.email)
-        elif schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
-            scheduled_at = current_time_utc + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL))
-            time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                                   time_lt=int(scheduled_at.timestamp()))
-            create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, scheduled_at,
-                                      None, user.email)
+        if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
+            create_workflow_execution_util(schedule_type, schedule, account, user.email, current_time_utc,
+                                           workflow_id, workflow_run_uuid)
         else:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Error", description="Invalid Schedule Type"))

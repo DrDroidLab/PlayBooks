@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue, DoubleValue
 
 from google.protobuf.wrappers_pb2 import BoolValue
+from django.contrib.sites.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
@@ -313,5 +314,12 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         """
     
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+
+    site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
+    site = Site.objects.get_current()
+    site.domain = site_domain
+    site.name = 'MyDroid'
+    site.save()
+
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
     
