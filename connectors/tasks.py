@@ -117,7 +117,7 @@ def match_workflow_to_slack_alert(slack_alert):
             workflow_execution.workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
             workflow_execution.account_id = account_id
             workflow_execution.status = WorkflowExecutionStatusType.WORKFLOW_SCHEDULED
-            workflow_execution.metadata = {'thread_ts': slack_alert.data.get('s', None)}
+            workflow_execution.metadata = {'thread_ts': slack_alert.data.get('event', {}).get('s', None)}
             workflow_execution.scheduled_at = current_time_utc
             workflow_execution.save()
 
