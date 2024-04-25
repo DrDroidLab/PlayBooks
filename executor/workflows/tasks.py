@@ -4,17 +4,24 @@ from datetime import timedelta, datetime
 from celery import shared_task
 from django.conf import settings
 
-from executor.crud.playbook_execution_crud import create_playbook_execution
+from accounts.models import Account
+from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.tasks import execute_playbook
+from executor.workflows.action.action_executor import action_executor
 from executor.workflows.crud.workflow_execution_crud import update_db_account_workflow_execution_status, \
     get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
     update_db_account_workflow_execution_count_increment
+from executor.workflows.crud.workflows_crud import get_db_workflows
+from intelligence_layer.task_result_interpreters.task_result_interpreter_facade import \
+    playbook_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from playbooks.utils.utils import current_datetime
 from protos.base_pb2 import TimeRange
-from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
+from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto
+from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto
 from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -99,11 +106,30 @@ workflow_scheduler_postrun_notifier = publish_post_run_task(workflow_scheduler)
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_id, playbook_execution_id, time_range):
+    current_time = current_datetime().timestamp()
     logger.info(f"Running workflow execution:: account_id: {account_id}, workflow_execution_id: "
                 f"{workflow_execution_id}, playbook_execution_id: {playbook_execution_id}")
     try:
         create_workflow_execution_log(account_id, workflow_id, workflow_execution_id, playbook_execution_id)
         execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
+        try:
+            saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
+                                            workflow_execution_id, playbook_execution_id)
+            if not saved_task:
+                logger.error(f"Failed to create workflow action execution task for account: {account_id}, workflow_id: "
+                             f"{workflow_id}, workflow_execution_id: {workflow_execution_id}, playbook_id: "
+                             f"{playbook_id}")
+                return
+            task = workflow_action_execution.delay(account_id, workflow_id, workflow_execution_id,
+                                                   playbook_execution_id)
+            task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
+                                              status=PeriodicTaskStatus.SCHEDULED,
+                                              account_id=account_id,
+                                              scheduled_at=datetime.fromtimestamp(float(current_time)))
+        except Exception as e:
+            logger.error(
+                f"Failed to create workflow action execution:: workflow_id: {workflow_id}, workflow_execution_id: "
+                f"{workflow_execution_id} playbook_id: {playbook_id}, error: {e}")
     except Exception as exc:
         logger.error(f"Error occurred while running workflow execution: {exc}")
         raise exc
@@ -112,3 +138,36 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
 workflow_executor_prerun_notifier = publish_pre_run_task(workflow_executor)
 workflow_executor_failure_notifier = publish_task_failure(workflow_executor)
 workflow_executor_postrun_notifier = publish_post_run_task(workflow_executor)
+
+
+@shared_task(max_retries=3, default_retry_delay=10)
+def workflow_action_execution(account_id, workflow_id, workflow_execution_id, playbook_execution_id):
+    logger.info(f"Running workflow action execution:: account_id: {account_id}, workflow_execution_id: "
+                f"{workflow_execution_id}, playbook_execution_id: {playbook_execution_id}")
+    account = Account.objects.get(id=account_id)
+    try:
+        playbook_executions = get_db_playbook_execution(account, playbook_execution_id=playbook_execution_id)
+        workflows = get_db_workflows(account, workflow_id=workflow_id)
+        if not playbook_executions:
+            logger.error(f"Aborting workflow action execution as playbook execution not found for "
+                         f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
+        if not workflows:
+            logger.error(f"Aborting workflow action execution as workflow not found for "
+                         f"account_id: {account_id}, workflow_id: {workflow_id}")
+        playbook_execution = playbook_executions.first()
+        pe_proto: PlaybookExecutionProto = playbook_execution.proto
+        pe_logs = pe_proto.logs
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, pe_logs)
+        workflow = workflows.first()
+        w_proto: WorkflowProto = workflow.proto
+        w_actions = w_proto.actions
+        for w_action in w_actions:
+            action_executor(account, w_action, execution_output)
+    except Exception as exc:
+        logger.error(f"Error occurred while running workflow action execution: {exc}")
+        raise exc
+
+
+workflow_action_execution_prerun_notifier = publish_pre_run_task(workflow_action_execution)
+workflow_action_execution_failure_notifier = publish_task_failure(workflow_action_execution)
+workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
