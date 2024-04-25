@@ -28,6 +28,10 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
     navigate(`/workflows/${id}`);
   };
 
+  const handleExecutionHistory = (id) => {
+    navigate(`/workflows/executions/${id}`);
+  };
+
   return (
     <>
       <Table stickyHeader>
@@ -93,7 +97,7 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                   </button>
                   <button
                     className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
-                    onClick={() => handleDeleteWorkflow(item)}>
+                    onClick={() => handleExecutionHistory(item.id)}>
                     <Tooltip title="View execution history">
                       <History />
                     </Tooltip>
