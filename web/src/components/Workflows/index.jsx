@@ -4,14 +4,14 @@ import Heading from "../Heading";
 import { useEffect, useState } from "react";
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
-import PlaybookTable from "./WorkflowTable.jsx";
-import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
+import { useGetWorkflowsQuery } from "../../store/features/workflow/api/getWorkflowsApi.ts";
+import WorkflowTable from "./WorkflowTable.jsx";
 
 const Workflows = () => {
   const navigate = useNavigate();
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetPlaybooksQuery(pageMeta);
-  const playbookList = data?.playbooks;
+  const { data, isFetching, refetch } = useGetWorkflowsQuery(pageMeta);
+  const workflowsList = data?.workflows;
   const total = data?.meta?.total_count;
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const Workflows = () => {
     setPageMeta(page);
   };
 
-  const handleCreatePlaybook = () => {
+  const handleCreateWorkflow = () => {
     navigate({
       pathname: "/workflows/create",
     });
@@ -45,21 +45,23 @@ const Workflows = () => {
         }}>
         <button
           className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg create_playbook"
-          onClick={handleCreatePlaybook}
+          onClick={handleCreateWorkflow}
           style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
           + Create Workflow
         </button>
       </div>
       <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <PlaybookTable
-          playbookList={playbookList}
+        <WorkflowTable
+          workflowsList={workflowsList}
           total={total}
           pageSize={pageMeta ? pageMeta?.limit : 10}
           pageUpdateCb={pageUpdateCb}
           tableContainerStyles={
-            playbookList?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
+            workflowsList?.length
+              ? {}
+              : { maxHeight: "35vh", minHeight: "35vh" }
           }
-          refreshTable={refetch}></PlaybookTable>
+          refreshTable={refetch}></WorkflowTable>
       </SuspenseLoader>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import {
 import AlertsTable from "./AlertsTable.jsx";
 import { CircularProgress } from "@mui/material";
 import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
+import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 
 function SlackTriggerForm() {
   const { data: options } = useGetTriggerOptionsQuery();
@@ -19,15 +20,16 @@ function SlackTriggerForm() {
     triggerSearchTrigger,
     { data: searchTriggerResult, isFetching: searchLoading },
   ] = useLazyGetSearchTriggersQuery();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e?.preventDefault();
+  const handleSubmit = () => {
     triggerSearchTrigger({
       workspaceId: currentWorkflow?.trigger?.workspaceId,
       channel_id: currentWorkflow?.trigger?.channel?.channel_id,
       alert_type: currentWorkflow?.trigger?.source,
       filter_string: currentWorkflow?.trigger?.filterString,
     });
+    setIsDrawerOpen(true);
   };
   const sources = options?.alert_types?.filter(
     (e) => e.channel_id === currentWorkflow.trigger.channel?.channel_id,
@@ -35,9 +37,7 @@ function SlackTriggerForm() {
   const data = searchTriggerResult?.alerts ?? [];
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
+    <div className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Channel</p>
         <SelectComponent
@@ -49,11 +49,9 @@ function SlackTriggerForm() {
             };
           })}
           placeholder="Select Channel"
-          onSelectionChange={(_, val) =>
-            {
-              handleTriggerSelect("channel", val.channel);
-            }
-          }
+          onSelectionChange={(_, val) => {
+            handleTriggerSelect("channel", val.channel);
+          }}
           selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}
         />
@@ -69,9 +67,7 @@ function SlackTriggerForm() {
             };
           })}
           placeholder="Select Source"
-          onSelectionChange={(id) =>
-            handleTriggerSelect("source", id)
-          }
+          onSelectionChange={(id) => handleTriggerSelect("source", id)}
           selected={currentWorkflow?.trigger?.source ?? ""}
           searchable={true}
         />
@@ -88,18 +84,23 @@ function SlackTriggerForm() {
           length={300}
         />
       </div>
-
-      <button className="text-xs bg-transparent hover:bg-violet-500 p-1 border-violet-500 border hover:text-white text-violet-500 rounded transition-all">
+      <button
+        onClick={handleSubmit}
+        className="text-xs bg-transparent hover:bg-violet-500 p-1 border-violet-500 border hover:text-white text-violet-500 rounded transition-all">
         Search
       </button>
-      {searchLoading ? (
-        <CircularProgress size={20} style={{ marginLeft: "10px" }} />
-      ) : data ? (
-        <AlertsTable data={data} />
-      ) : (
-        <></>
-      )}
-    </form>
+      <CustomDrawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
+        {searchLoading ? (
+          <CircularProgress size={20} style={{ marginLeft: "10px" }} />
+        ) : data ? (
+          <div className="bg-gray-100 p-2">
+            <AlertsTable data={data} />
+          </div>
+        ) : (
+          <></>
+        )}
+      </CustomDrawer>
+    </div>
   );
 }
 

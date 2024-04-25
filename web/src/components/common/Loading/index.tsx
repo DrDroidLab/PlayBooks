@@ -10,7 +10,9 @@ function Loading({ title }: LoadingPropTypes) {
   useEffect(() => {
     NProgress.start();
 
-    return () => NProgress.done(); // Stop nprogress when component is unmounted
+    return () => {
+      NProgress.done(); // Stop nprogress when component is unmounted
+    };
   }, []);
 
   return (

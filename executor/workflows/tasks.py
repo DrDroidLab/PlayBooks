@@ -1,8 +1,8 @@
 import logging
-import uuid
 from datetime import timedelta, datetime
 
 from celery import shared_task
+from django.conf import settings
 
 from executor.crud.playbook_execution_crud import create_playbook_execution
 from executor.tasks import execute_playbook
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 @shared_task(max_retries=3, default_retry_delay=10)
 def workflow_scheduler():
     current_time_utc = current_datetime()
-    current_time = current_time_utc.timestamp()
+    current_time = int(current_time_utc.timestamp())
     all_scheduled_wf_executions = get_workflow_executions(
         status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
     for wf_execution in all_scheduled_wf_executions:
@@ -32,38 +32,38 @@ def workflow_scheduler():
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
             logger.info(
                 f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id} at {current_time}")
-            return True
+            continue
 
         scheduled_at = wf_execution.scheduled_at
         if current_time_utc < scheduled_at:
             logger.info(f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution.id}")
-            return True
+            continue
 
         expiry_at = wf_execution.expiry_at
-        if current_time_utc >= expiry_at:
+        interval = wf_execution.interval
+        if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
             logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}")
-            update_db_account_workflow_execution_status(account, wf_execution.id,
+            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
-            return True
+            continue
         wf_execution_logs = get_db_workflow_execution_logs(account, wf_execution.id)
-        if wf_execution_logs:
-            interval = wf_execution.interval
+        if interval and wf_execution_logs:
             latest_wf_execution_log = wf_execution_logs.first()
             next_schedule = latest_wf_execution_log.created_at + timedelta(seconds=interval)
             if current_time_utc < next_schedule:
                 logger.info(f"Workflow execution already scheduled for workflow_execution_id: {wf_execution.id}")
-                return True
+                continue
 
         update_db_account_workflow_execution_count_increment(account, wf_execution.id)
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
-            update_db_account_workflow_execution_status(account, wf_execution.id,
+            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         time_range = wf_execution.time_range
         all_pbs = wf_execution.workflow.playbooks.filter(is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                playbook_run_uuid = f'{account.id}_{pb_id}_{str(current_time)}_{str(uuid.uuid4())}_run'
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run'
                 time_range_proto = dict_to_proto(time_range, TimeRange)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by)
@@ -84,6 +84,12 @@ def workflow_scheduler():
                     f"Failed to create workflow execution:: workflow_id: {workflow_id}, workflow_execution_id: "
                     f"{wf_execution.id} playbook_id: {pb_id}, error: {e}")
                 continue
+        if not interval:
+            logger.info(
+                f"Workflow execution interval not set for workflow_execution_id, marking complete: {wf_execution.id}")
+            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+                                                        WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+            continue
 
 
 workflow_scheduler_prerun_notifier = publish_pre_run_task(workflow_scheduler)

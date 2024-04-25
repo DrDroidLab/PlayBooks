@@ -36,7 +36,7 @@ function ScheduleDetails() {
             <HandleInputRender key={option.id} option={option} />
           ))}
       </div>
-      {(currentWorkflow["cron-schedule"] ||
+      {/* {(currentWorkflow["cron-schedule"] ||
         (currentWorkflow.interval && currentWorkflow.duration)) && (
         <p className="mt-4 text-xs p-1 bg-gray-50 rounded italic">{`This configuration means that this workflow will run ${
           currentWorkflow["cron-schedule"]
@@ -45,7 +45,7 @@ function ScheduleDetails() {
         } for the next ${currentWorkflow.duration} ${
           currentWorkflow.interval
         }`}</p>
-      )}
+      )} */}
     </div>
   );
 }

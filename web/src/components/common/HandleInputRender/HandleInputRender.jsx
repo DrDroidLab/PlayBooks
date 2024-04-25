@@ -11,17 +11,22 @@ import SelectComponent from "../../SelectComponent/index.jsx";
 export const HandleInputRender = ({ option }) => {
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
+  const disabled = option.disabledKey
+    ? currentWorkflow[option.disabledKey]
+    : false;
   switch (option.type) {
     case "string":
       return (
         <div key={option.id}>
           <label
-            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className={`${
+              disabled ? "!text-gray-200" : ""
+            } text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70`}
             htmlFor="playbook">
             {option.label}
           </label>
           <ValueComponent
-            valueType={"STRING"}
+            valueType={option.valueType ?? "STRING"}
             placeHolder={option.placeholder || `Enter ${option.label}`}
             value={option.value ?? currentWorkflow[option.id] ?? ""}
             onValueChange={(val) =>
@@ -29,6 +34,7 @@ export const HandleInputRender = ({ option }) => {
                 ? option.handleChange(val)
                 : handleInput(option.id, val)
             }
+            disabled={disabled}
             {...option.additionalProps}
           />
         </div>
@@ -95,6 +101,17 @@ export const HandleInputRender = ({ option }) => {
             {option.options.map((option) => (
               <HandleInputRender option={option} />
             ))}
+          </div>
+        </div>
+      );
+
+    case "multi-option":
+      return (
+        <div className="my-2" key={option.id}>
+          <div className="flex gap-4 items-center">
+            <HandleInputRender option={option.options[0]} />
+            <span className="text-gray-500">OR</span>
+            <HandleInputRender option={option.options[1]} />
           </div>
         </div>
       );
