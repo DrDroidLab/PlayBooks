@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Heading from "../../Heading";
 import { useEffect, useState } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader";
@@ -10,9 +10,11 @@ import Loading from "../../common/Loading/index.tsx";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { useGetWorkflowExecutionsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
+import { ChevronLeft } from "@mui/icons-material";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
+  const navigate = useNavigate();
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
   const { data, isFetching, refetch } = useGetWorkflowExecutionsQuery({
     ...pageMeta,
@@ -49,6 +51,11 @@ const WorkflowExecutions = () => {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
       />
+      <button
+        onClick={() => navigate(-1)}
+        className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
+        <ChevronLeft /> All Workflows
+      </button>
       <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
         <ExecutionsTable
           workflowsList={workflowsList}

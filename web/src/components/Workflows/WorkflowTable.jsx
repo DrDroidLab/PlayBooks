@@ -38,9 +38,9 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
         <TableHead>
           <TableRow>
             <TableCell className="!font-bold">Name</TableCell>
-            <TableCell className="!font-bold !text-center">Playbooks</TableCell>
+            <TableCell className="!font-bold">Playbooks</TableCell>
             <TableCell className="!font-bold">Schedule</TableCell>
-            <TableCell className="!font-bold !text-center ">
+            <TableCell className="!font-bold !text-center">
               Last Execution Time
             </TableCell>
             <TableCell className="!font-bold !text-center">
@@ -65,7 +65,15 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                 </Link>
               </TableCell>
               <TableCell component="td" scope="row" className="!text-center">
-                --
+                {item.playbooks?.length > 0
+                  ? item.playbooks.map((e) => (
+                      <div
+                        className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
+                        key={e.id}>
+                        <Link to={`/playbooks/${e.id}`}>{e.name}</Link>
+                      </div>
+                    ))
+                  : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.schedule?.type}
