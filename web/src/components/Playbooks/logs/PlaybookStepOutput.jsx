@@ -3,7 +3,6 @@ import PlayBookRunDataTable from "../PlayBookRunDataTable";
 
 const PlaybookStepOutput = ({ stepOutput, error }) => {
   const out = stepOutput;
-  console.log("out", out);
 
   return (
     <>

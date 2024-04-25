@@ -78,14 +78,14 @@ function SlackTriggerForm() {
         />
       </div>
       <div className="text-sm flex items-center gap-2">
-        <p className="text-xs">Filter</p>
+        <p className="text-xs">Matching string</p>
         <ValueComponent
           valueType={"STRING"}
           onValueChange={(val) => {
             handleTriggerInput("filterString", val);
           }}
           value={currentWorkflow?.trigger?.filterString}
-          placeHolder={"Enter filter string"}
+          placeHolder={"Enter Matching string"}
           length={300}
         />
       </div>

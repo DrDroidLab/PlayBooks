@@ -12,7 +12,7 @@ export const getPlaybookExecutionsApi = apiSlice.injectEndpoints({
         url: GET_PLAYBOOK_EXECUTIONS,
         method: "POST",
         body: {
-          playbook_ids: [playbookId],
+          playbook_ids: playbookId ? [playbookId] : [],
           meta: {
             page: {
               limit,

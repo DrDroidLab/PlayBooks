@@ -33,7 +33,7 @@ function IntegrationCard({ data }) {
       </div>
       {isActive ? (
         <a
-          href={`integrations/${data.enum.toLowerCase()}`}
+          href={`/integrations/${data.enum.toLowerCase()}`}
           className={styles.button}>
           <div>View Details</div>
         </a>

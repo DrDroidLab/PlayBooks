@@ -68,24 +68,24 @@ function Sidebar() {
         </div>
 
         <List sx={{ padding: 0 }}>
-          <NavLink className={activeStyle} to="/playbooks">
+          <NavLink className={activeStyle} to="/playbooks/executions/list">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 6)}>
               <CollectionsBookmarkIcon />
             </ListItemIcon>
             <p style={{ fontSize: "14px" }} className="playbook_page">
-              Playbooks
+              Playbook Executions
             </p>
           </NavLink>
-          <NavLink className={activeStyle} to="/workflows">
+          <NavLink className={activeStyle} to="/workflows/executions/list">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 6)}>
               <Layers />
             </ListItemIcon>
             <p style={{ fontSize: "14px" }} className="workflows_page">
-              Workflows
+              Workflows Executions
             </p>
           </NavLink>
           <NavLink className={activeStyle} to="/playgrounds">
