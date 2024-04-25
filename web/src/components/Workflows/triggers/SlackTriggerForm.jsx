@@ -93,7 +93,7 @@ function SlackTriggerForm() {
         {searchLoading ? (
           <CircularProgress size={20} style={{ marginLeft: "10px" }} />
         ) : data ? (
-          <div className="bg-gray-100 p-2">
+          <div className="bg-gray-100 p-2 h-full">
             <AlertsTable data={data} />
           </div>
         ) : (
