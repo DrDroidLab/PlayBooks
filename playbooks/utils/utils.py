@@ -1,6 +1,12 @@
 import time
+from urllib.parse import urlsplit
+
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.core.exceptions import ImproperlyConfigured
 
 
 def current_milli_time():
@@ -13,3 +19,93 @@ def current_epoch_timestamp():
 
 def current_datetime(timezone=pytz.utc):
     return datetime.now(timezone)
+
+
+def parse_cron_rule(rule):
+    parts = rule.split()
+    if len(parts) != 5:
+        raise ValueError("Invalid cron rule format")
+
+    minute = parse_part(parts[0], 0, 59)
+    hour = parse_part(parts[1], 0, 23)
+    day = parse_part(parts[2], 1, 31)
+    month = parse_part(parts[3], 1, 12)
+    weekday = parse_part(parts[4], 0, 6)
+
+    return minute, hour, day, month, weekday
+
+
+def parse_part(part, min_val, max_val):
+    if part == '*':
+        return list(range(min_val, max_val + 1))
+    if ',' in part:
+        values = []
+        for item in part.split(','):
+            values.extend(parse_part(item, min_val, max_val))
+        return sorted(list(set(values)))
+    if '-' in part:
+        start, end = map(int, part.split('-'))
+        return list(range(start, end + 1))
+    if '/' in part:
+        start, step = map(int, part.split('/'))
+        return list(range(start, max_val + 1, step))
+    return [int(part)]
+
+
+def calculate_cron_times(rule, start_time=None, end_time=None):
+    minute, hour, day, month, weekday = parse_cron_rule(rule)
+
+    if start_time is None:
+        start_time = datetime.now()
+    if end_time is None:
+        end_time = start_time + timedelta(days=1)
+
+    cron_times = []
+    current_time = start_time
+    while current_time < end_time:
+        if (current_time.minute in minute and
+                current_time.hour in hour and
+                current_time.day in day and
+                current_time.month in month and
+                current_time.weekday() in weekday):
+            cron_times.append(current_time)
+        current_time += timedelta(minutes=1)
+
+    return cron_times
+
+
+def build_absolute_uri(request, location, protocol=None, enabled=False):
+    """request.build_absolute_uri() helper
+    like request.build_absolute_uri, but gracefully handling
+    the case where request is None.
+    """
+    if not protocol:
+        protocol = settings.SITE_DEFAULT_HTTP_PROTOCOL
+
+    if request is None:
+        if not enabled:
+            raise ImproperlyConfigured("Passing `request=None` requires `sites` to be enabled")
+
+        site = Site.objects.get_current()
+        bits = urlsplit(location)
+        if not (bits.scheme and bits.netloc):
+            uri = "{protocol}://{domain}{url}".format(
+                protocol=protocol,
+                domain=site.domain,
+                url=location,
+            )
+        else:
+            uri = location
+    else:
+        uri = request.build_absolute_uri(location)
+    # NOTE: We only force a protocol if we are instructed to do so
+    # via the `protocol` parameter, or, if the default is set to
+    # HTTPS. The latter keeps compatibility with the debatable use
+    # case of running your site under both HTTP and HTTPS, where one
+    # would want to make sure HTTPS links end up in password reset
+    # mails even while they were initiated on an HTTP password reset
+    # form.
+    # (end NOTE)
+    if protocol:
+        uri = protocol + ":" + uri.partition(":")[2]
+    return uri

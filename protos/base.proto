@@ -41,6 +41,10 @@ message TaskCronSchedule {
   google.protobuf.StringValue timezone = 6;
 }
 
+message TaskInterval {
+  google.protobuf.UInt64Value interval_in_seconds = 1;
+}
+
 message TaskCronRule {
   google.protobuf.StringValue rule = 1;
   google.protobuf.StringValue timezone = 2;

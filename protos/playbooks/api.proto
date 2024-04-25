@@ -154,3 +154,27 @@ message ExecuteWorkflowResponse {
   Message message = 3;
   google.protobuf.StringValue workflow_run_id = 4;
 }
+
+message ExecutionWorkflowGetRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+}
+
+message ExecutionWorkflowGetResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated WorkflowExecution workflow_executions = 4;
+}
+
+message ExecutionsWorkflowsListRequest {
+  Meta meta = 1;
+  repeated string workflow_ids = 2;
+}
+
+message ExecutionsWorkflowsListResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated WorkflowExecution workflow_executions = 4;
+}
