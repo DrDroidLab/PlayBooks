@@ -97,8 +97,10 @@ function PlaybookLog() {
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
       if (stepIndex === isNaN) continue;
       const step = pbData[stepIndex];
-      step.showOutput = true;
-      step.output = output;
+      if (step) {
+        step.showOutput = true;
+        step.output = output;
+      }
     }
 
     dispatch(setSteps(pbData));
