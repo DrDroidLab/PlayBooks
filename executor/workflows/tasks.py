@@ -178,8 +178,8 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         for w_action in w_actions:
             if w_action.type == WorkflowActionProto.Type.NOTIFY:
                 w_action_dict = proto_to_dict(w_action)
-                if w_action_dict.get('notification_config', {}).get('slack_config', {}).get('message_type', None) == \
-                        WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY and thread_ts:
+                if w_action_dict.get('notification_config', {}).get('slack_config', {}).get('message_type',
+                                                                                            None) == 'THREAD_REPLY' and thread_ts:
                     w_action_dict['notification_config']['slack_config']['thread_ts'] = thread_ts
                     updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                     action_executor(account, updated_w_action, execution_output)
