@@ -13,6 +13,7 @@ import {
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
 import WorkflowExecutions from "./components/Workflows/executions/WorkflowExecutions.jsx";
+import PlaybookExecutions from "./components/Playbooks/executions/PlaybookExecutions.jsx";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -83,6 +84,10 @@ const App = () => {
           <Route
             path="/playbooks/edit/:playbook_id"
             element={<EditPlaybook />}
+          />
+          <Route
+            path="/playbooks/executions/:id"
+            element={<PlaybookExecutions />}
           />
           <Route
             path="/playbooks/logs/:playbook_run_id"

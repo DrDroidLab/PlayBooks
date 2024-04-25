@@ -17,7 +17,7 @@ import NoExistingPlaybook from "./NoExistingPlaybook";
 import styles from "./playbooks.module.css";
 import useToggle from "../../hooks/useToggle";
 import PlaybookActionOverlay from "./PlaybookActionOverlay";
-import { ContentCopy } from "@mui/icons-material";
+import { ContentCopy, History } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
@@ -38,6 +38,10 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     dispatch(copyPlaybook(res));
     navigate("/playbooks/create");
+  };
+
+  const handleExecutionHistory = (id) => {
+    navigate(`/playbooks/executions/${id}`);
   };
 
   return (
@@ -82,6 +86,13 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
                       onClick={() => handleDeletePlaybook(item)}>
                       <Tooltip title="Remove this Playbook">
                         <DeleteIcon />
+                      </Tooltip>
+                    </button>
+                    <button
+                      className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
+                      onClick={() => handleExecutionHistory(item.id)}>
+                      <Tooltip title="View execution history">
+                        <History />
                       </Tooltip>
                     </button>
                   </div>
