@@ -44,7 +44,8 @@ LOCAL_APPS = [
     'management.apps.ManagementConfig',
     'executor.apps.ExecutorConfig',
     'executor.workflows.apps.WorkflowsConfig',
-    'media.apps.MediaConfig'
+    'media.apps.MediaConfig',
+    'intelligence_layer.apps.IntelligenceLayerConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -326,3 +327,4 @@ WORKFLOW_SCHEDULER_INTERVAL = env.int("WORKFLOW_SCHEDULER_INTERVAL", default=10)
 MEDIA_STORAGE_LOCATION = env.str("MEDIA_STORAGE_LOCATION", default='/media/images')
 MEDIA_STORAGE_SITE_HTTP_PROTOCOL = env.str("MEDIA_STORAGE_SITE_HTTP_PROTOCOL", default='https')
 MEDIA_STORAGE_USE_SITE = env.bool("MEDIA_STORAGE_USE_SITE", default=True)
+MEDIA_ASSETS_ROOT = os.path.join(BASE_DIR, 'media/assets')
