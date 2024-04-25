@@ -211,6 +211,8 @@ def playbooks_execution_get(request_message: ExecutionPlaybookGetRequest) -> \
 @web_api(ExecutionsPlaybooksListRequest)
 def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -> \
         Union[ExecutionsPlaybooksListResponse, HttpResponse]:
+    meta: Meta = request_message.meta
+    page: Page = meta.page
     account: Account = get_request_account()
     playbook_ids = request_message.playbook_ids
     try:
@@ -218,8 +220,12 @@ def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -
         if not playbook_executions:
             return ExecutionsPlaybooksListResponse(success=BoolValue(value=False), message=Message(title="Error",
                                                                                                    description="Playbook Executions not found"))
+        total_count = playbook_executions.count()
+        playbook_executions = playbook_executions.order_by('-created_at')
+        playbook_executions = filter_page(playbook_executions, page)
         pbe_protos = [pbe.proto_partial for pbe in playbook_executions]
-        return ExecutionsPlaybooksListResponse(success=BoolValue(value=True), playbook_executions=pbe_protos)
+        return ExecutionsPlaybooksListResponse(meta=get_meta(page=page, total_count=total_count),
+                                               success=BoolValue(value=True), playbook_executions=pbe_protos)
     except Exception as e:
         return ExecutionPlaybookGetResponse(success=BoolValue(value=False),
                                             message=Message(title="Error", description=str(e)))

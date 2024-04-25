@@ -153,14 +153,19 @@ def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
 def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) -> \
         Union[ExecutionsWorkflowsListResponse, HttpResponse]:
     account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    page: Page = meta.page
     workflow_ids = request_message.workflow_ids
     try:
         workflow_executions = get_db_workflow_executions(account, workflow_ids=workflow_ids)
         if not workflow_executions:
             return ExecutionsWorkflowsListResponse(success=BoolValue(value=False), message=Message(title="Error",
                                                                                                    description="Workflow Executions not found"))
+        total_count = workflow_executions.count()
+        workflow_executions = filter_page(workflow_executions, page)
         we_protos = [we.proto_partial for we in workflow_executions]
-        return ExecutionsWorkflowsListResponse(success=BoolValue(value=True), workflow_executions=we_protos)
+        return ExecutionsWorkflowsListResponse(meta=get_meta(page=page, total_count=total_count),
+                                               success=BoolValue(value=True), workflow_executions=we_protos)
     except Exception as e:
         return ExecutionsWorkflowsListResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))
