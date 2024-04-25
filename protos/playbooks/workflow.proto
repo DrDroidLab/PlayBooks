@@ -142,6 +142,9 @@ message Workflow {
   repeated Playbook playbooks = 8;
   repeated WorkflowEntryPoint entry_points = 9;
   repeated WorkflowAction actions = 10;
+
+  sfixed64 last_execution_time = 11;
+  WorkflowExecutionStatusType last_execution_status = 12;
 }
 
 
