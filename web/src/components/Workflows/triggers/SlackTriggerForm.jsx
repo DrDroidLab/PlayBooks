@@ -22,8 +22,7 @@ function SlackTriggerForm() {
   ] = useLazyGetSearchTriggersQuery();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     triggerSearchTrigger({
       workspaceId: currentWorkflow?.trigger?.workspaceId,
       channel_id: currentWorkflow?.trigger?.channel?.channel_id,
@@ -38,9 +37,7 @@ function SlackTriggerForm() {
   const data = searchTriggerResult?.alerts ?? [];
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
+    <div className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Channel</p>
         <SelectComponent
@@ -87,7 +84,9 @@ function SlackTriggerForm() {
           length={300}
         />
       </div>
-      <button className="text-xs bg-transparent hover:bg-violet-500 p-1 border-violet-500 border hover:text-white text-violet-500 rounded transition-all">
+      <button
+        onClick={handleSubmit}
+        className="text-xs bg-transparent hover:bg-violet-500 p-1 border-violet-500 border hover:text-white text-violet-500 rounded transition-all">
         Search
       </button>
       <CustomDrawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
@@ -101,7 +100,7 @@ function SlackTriggerForm() {
           <></>
         )}
       </CustomDrawer>
-    </form>
+    </div>
   );
 }
 
