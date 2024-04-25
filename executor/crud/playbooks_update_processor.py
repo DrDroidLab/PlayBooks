@@ -71,7 +71,9 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                     task.is_active = False
                     task.save(update_fields=['is_active'])
             elem.is_active = False
-            elem.save(update_fields=['is_active'])
+            random_generated_str = str(uuid.uuid4())
+            elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
+            elem.save(update_fields=['is_active', 'name'])
             updated_playbook = update_op.playbook
             updated_elem, err = create_db_playbook(elem.account, elem.created_by, updated_playbook)
             if err:
