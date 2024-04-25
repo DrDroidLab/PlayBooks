@@ -12,9 +12,10 @@ import AlertsTable from "./AlertsTable.jsx";
 import { CircularProgress } from "@mui/material";
 import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
+import { RefreshRounded } from "@mui/icons-material";
 
 function SlackTriggerForm() {
-  const { data: options } = useGetTriggerOptionsQuery();
+  const { data: options, isFetching, refetch } = useGetTriggerOptionsQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const [
     triggerSearchTrigger,
@@ -55,6 +56,10 @@ function SlackTriggerForm() {
           selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}
         />
+        {isFetching && <CircularProgress size={20} />}
+        <button onClick={refetch}>
+          <RefreshRounded className="text-gray-400 text-md cursor-pointer hover:text-black" />
+        </button>
       </div>
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Source</p>
