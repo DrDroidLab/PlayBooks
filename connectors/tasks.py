@@ -13,6 +13,7 @@ from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtr
 from connectors.assets.extractor.metadata_extractor_facade import connector_metadata_extractor_facade
 from connectors.assets.extractor.slack_metadata_extractor import source_identifier, text_identifier_v2, title_identifier
 from connectors.models import Connector, ConnectorKey, ConnectorMetadataModelStore, SlackConnectorAlertType, SlackConnectorDataReceived
+from executor.workflows.crud.workflow_utils import create_workflow_execution_util_function
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import PeriodicTaskStatus, TaskRun
@@ -23,6 +24,9 @@ from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowEntr
 
 from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowExecutionStatusType
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
+    WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from utils.proto_utils import dict_to_proto
 
 def clean_raw_extracted_data(message):
     if isinstance(message, dict):
@@ -110,16 +114,12 @@ def match_workflow_to_slack_alert(slack_alert):
         workflow_entry_point_mapping = WorkflowEntryPointMapping.objects.filter(account_id=account_id, entry_point_id=trigger.id, is_active=True).first()
         if workflow_entry_point_mapping:
             workflow = workflow_entry_point_mapping.workflow
+            
             current_time_utc = current_datetime()
-
-            workflow_execution = WorkflowExecution()
-            workflow_execution.workflow_id = workflow.id
-            workflow_execution.workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
-            workflow_execution.account_id = account_id
-            workflow_execution.status = WorkflowExecutionStatusType.WORKFLOW_SCHEDULED
-            workflow_execution.metadata = {'thread_ts': slack_alert.data.get('event', {}).get('s', None)}
-            workflow_execution.scheduled_at = current_time_utc
-            workflow_execution.save()
+            workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
+            schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
+            create_workflow_execution_util_function(workflow.schedule_type, schedule, slack_alert.account, None, current_time_utc,
+                                                    workflow.id, workflow_run_id, {'thread_ts': slack_alert.data.get('event').get('ts')})
 
 
 @shared_task(max_retries=3, default_retry_delay=10)

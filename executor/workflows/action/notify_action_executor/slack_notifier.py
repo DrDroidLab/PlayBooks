@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class SlackNotifier(Notifier):
 
     def __init__(self, account: Account):
-        self.type = WorkflowActionNotificationConfigProto.NotificationType.SLACK
+        self.type = WorkflowActionNotificationConfigProto.Type.SLACK
         self.account = account
 
         slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
@@ -28,7 +28,7 @@ class SlackNotifier(Notifier):
             raise ValueError('Slack bot auth token is not configured for the account')
 
         slack_bot_auth_token = slack_bot_auth_token_keys.first()
-        self.slack_api_processor = SlackApiProcessor(slack_bot_auth_token.value)
+        self.slack_api_processor = SlackApiProcessor(slack_bot_auth_token.key)
 
     def notify(self, config: WorkflowActionNotificationConfigProto, execution_output: [InterpretationProto]):
         slack_config: WorkflowActionSlackNotificationConfigProto = config.slack_config
