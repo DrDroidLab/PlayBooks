@@ -8,6 +8,8 @@ import {
 import PaginatedTable from "../../PaginatedTable.js";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
+import { handleStatus } from "../../../utils/handleStatus.tsx";
+import { renderTimestamp } from "../../../utils/DateUtils.js";
 
 const ExecutionsTableRender = ({ data }) => {
   return (
@@ -15,16 +17,12 @@ const ExecutionsTableRender = ({ data }) => {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell className="!font-bold">Name</TableCell>
-            <TableCell className="!font-bold !text-center">Playbooks</TableCell>
-            <TableCell className="!font-bold">Schedule</TableCell>
-            <TableCell className="!font-bold !text-center ">
-              Last Execution Time
-            </TableCell>
-            <TableCell className="!font-bold !text-center">
-              Last Execution Status
-            </TableCell>
-            <TableCell className="!font-bold">Created by</TableCell>
+            <TableCell className="!font-bold">Run ID</TableCell>
+            <TableCell className="!font-boldd">Started At</TableCell>
+            <TableCell className="!font-bold">Status</TableCell>
+            <TableCell className="!font-boldd ">Finished At</TableCell>
+            <TableCell className="!font-boldd">Total Execution</TableCell>
+            <TableCell className="!font-boldd">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,25 +34,29 @@ const ExecutionsTableRender = ({ data }) => {
               }}>
               <TableCell component="th" scope="row">
                 <Link
-                  to={`/workflows/${item.id}`}
+                  to={`/workflows/logs/${item.id}`}
                   className="text-violet-500 underline">
-                  {item.name}
+                  {item.workflow_run_id}
                 </Link>
               </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+              <TableCell component="td" scope="row">
+                {renderTimestamp(item.started_at)}
               </TableCell>
               <TableCell component="td" scope="row">
-                {item.schedule?.type}
-              </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
-              </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+                {handleStatus(item.status)}
               </TableCell>
               <TableCell component="td" scope="row">
-                {item.created_by}
+                {renderTimestamp(item.finished_at)}
+              </TableCell>
+              <TableCell component="td" scope="row">
+                {item.total_execution ?? "--"}
+              </TableCell>
+              <TableCell component="td" scope="row">
+                <Link to={`/workflows/logs/${item.workflow_run_id}`}>
+                  <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
+                    View
+                  </div>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
