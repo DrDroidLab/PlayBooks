@@ -70,14 +70,16 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                 for task in tasks:
                     task.is_active = False
                     task.save(update_fields=['is_active'])
+            elem.is_active = False
+            elem.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook
             updated_elem, err = create_db_playbook(elem.account, elem.created_by, updated_playbook)
             if err:
                 raise Exception(err)
+            return updated_elem
         except Exception as ex:
             logger.exception(f"Error occurred updating playbook for {elem.name}")
             raise Exception(f"Error occurred updating playbook status for {elem.name}")
-        return elem
 
     @staticmethod
     def update_playbook_alert_ops_trigger_status(elem: PlayBook,
