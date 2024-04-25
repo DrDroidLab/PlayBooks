@@ -35,12 +35,15 @@ function CreateTrigger() {
         ...stateToWorkflow(currentWorkflow).workflow,
         id: workflowId,
       };
+      let response = {};
       if (workflowId) {
-        await triggerUpdate(workflow);
+        response = await triggerUpdate(workflow).unwrap();
       } else {
-        await triggerSave();
+        response = await triggerSave().unwrap();
       }
-      navigate("/workflows");
+      if (response.success) {
+        navigate("/workflows");
+      }
     } catch (e) {
       dispatch(showSnackbar(e.toString()));
     }

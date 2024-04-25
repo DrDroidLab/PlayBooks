@@ -30,22 +30,11 @@ export const stateToWorkflow = () => {
           },
         },
       ],
-      actions: [
-        {
-          type: "NOTIFY",
-          notification_config: {
-            type: "SLACK",
-            slack_config: {
-              message_type: "MESSAGE",
-              slack_channel_id: workflow.trigger?.channel?.channel_id,
-            },
-          },
-        },
-      ],
+      actions: [],
     },
   };
 
-  if (workflow.slack_message) {
+  if (workflow["slack-message"]) {
     responseBody.workflow.actions.push({
       type: "NOTIFY",
       notification_config: {
@@ -99,6 +88,8 @@ export const stateToWorkflow = () => {
     default:
       break;
   }
+
+  console.log("res", responseBody);
 
   return responseBody;
 };
