@@ -1,0 +1,29 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+import "protos/playbooks/playbook.proto";
+
+enum InterpreterType {
+  UNKNOWN_I = 0;
+  BASIC_I = 1;
+  STATISTICAL_I = 2;
+  LLM_CHAT_GPT_I = 3;
+}
+
+
+
+message Interpretation {
+  enum Type {
+    UNKNOWN = 0;
+    IMAGE = 1;
+    SUMMARY = 2;
+  }
+  Type type = 1;
+  google.protobuf.StringValue title = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue summary = 4;
+  google.protobuf.StringValue image_url = 5;
+}
