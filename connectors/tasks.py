@@ -19,7 +19,10 @@ from management.models import PeriodicTaskStatus, TaskRun
 from management.utils.celery_task_signal_utils import publish_task_failure, publish_pre_run_task, publish_post_run_task
 from playbooks.utils.utils import current_datetime, current_epoch_timestamp, current_milli_time
 
+from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowEntryPointMapping, WorkflowExecution
+
 from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowExecutionStatusType
 
 def clean_raw_extracted_data(message):
     if isinstance(message, dict):
@@ -74,6 +77,49 @@ def extractor_async_method_call(account_id, connector_id, connector_credentials_
 extractor_async_method_call_prerun_notifier = publish_pre_run_task(extractor_async_method_call)
 extractor_async_method_call_failure_notifier = publish_task_failure(extractor_async_method_call)
 extractor_async_method_call_postrun_notifier = publish_post_run_task(extractor_async_method_call)
+
+
+def match_workflow_to_slack_alert(slack_alert):
+    account_id = slack_alert.account_id
+    channel_id = slack_alert.channel_id
+    alert_type = slack_alert.alert_type
+    alert_text = slack_alert.text
+
+    matching_channel_alert_trigger_workflows = WorkflowEntryPoint.objects.filter(account_id=account_id, type=WorkflowEntryPointProto.ALERT,
+                                                              is_active=True, 
+                                                              entry_point__alert_config__slack_channel_alert_config__slack_channel_id=channel_id)
+
+    if not matching_channel_alert_trigger_workflows:
+        return
+    
+    matching_workflow_slack_triggers = []
+    
+    for wf in list(matching_channel_alert_trigger_workflows):
+        wf_trigger_alert_type = wf.entry_point['alert_config']['slack_channel_alert_config'].get('slack_alert_type')
+        wf_trigger_alert_string = wf.entry_point['alert_config']['slack_channel_alert_config'].get('slack_alert_filter_string')
+
+        if wf_trigger_alert_type and wf_trigger_alert_type != alert_type:
+            continue
+
+        if wf_trigger_alert_string and wf_trigger_alert_string not in alert_text:
+            continue
+
+        matching_workflow_slack_triggers.append(wf)
+
+    for trigger in matching_workflow_slack_triggers:
+        workflow_entry_point_mapping = WorkflowEntryPointMapping.objects.filter(account_id=account_id, entry_point_id=trigger.id, is_active=True).first()
+        if workflow_entry_point_mapping:
+            workflow = workflow_entry_point_mapping.workflow
+            current_time_utc = current_datetime()
+
+            workflow_execution = WorkflowExecution()
+            workflow_execution.workflow_id = workflow.id
+            workflow_execution.workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
+            workflow_execution.account_id = account_id
+            workflow_execution.status = WorkflowExecutionStatusType.WORKFLOW_SCHEDULED
+            workflow_execution.metadata = {'thread_ts': slack_alert.data.get('event', {}).get('s', None)}
+            workflow_execution.scheduled_at = current_time_utc
+            workflow_execution.save()
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
@@ -179,6 +225,10 @@ def handle_receive_message(slack_connector_id, message):
                         slack_received_msg.slack_channel_metadata_model = slack_channel_metadata
 
                 slack_received_msg.save()
+
+                # Check if a workflow alert trigger matches this alert and create workflow execution entry
+                match_workflow_to_slack_alert(slack_received_msg)
+
             except Exception as e:
                 print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
                       f"for account: {account_id}")

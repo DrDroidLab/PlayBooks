@@ -209,6 +209,7 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
+    ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
 }
 
 
