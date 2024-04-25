@@ -23,7 +23,7 @@ services:
 
   setup_db:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./setup_db.sh
@@ -45,7 +45,7 @@ services:
 
   server:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-server.sh
@@ -68,7 +68,7 @@ services:
 
   celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -89,7 +89,7 @@ services:
 
   workflow_scheduler_celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -111,7 +111,7 @@ services:
 
   workflow_executor_celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -133,7 +133,7 @@ services:
 
   workflow_action_execution_celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -155,7 +155,7 @@ services:
 
   celery_beat:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-beat.sh
@@ -176,7 +176,7 @@ services:
 
   web:
     build:
-      context: ../web
+      context: ./web
       dockerfile: Dockerfile
     image: web
     environment:
