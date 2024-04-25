@@ -149,19 +149,18 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                 f"{workflow_execution_id}, playbook_execution_id: {playbook_execution_id}")
     account = Account.objects.get(id=account_id)
     try:
+        workflows = get_db_workflows(account, workflow_id=workflow_id)
         workflow_executions = get_db_workflow_executions(account, workflow_execution_id)
         playbook_executions = get_db_playbook_execution(account, playbook_execution_id=playbook_execution_id)
-        workflows = get_db_workflows(account, workflow_id=workflow_id)
+        if not workflows:
+            logger.error(f"Aborting workflow action execution as workflow not found for "
+                         f"account_id: {account_id}, workflow_id: {workflow_id}")
         if not workflow_executions:
             logger.error(f"Aborting workflow action execution as workflow execution not found for "
                          f"account_id: {account_id}, workflow_execution_id: {workflow_execution_id}")
         if not playbook_executions:
             logger.error(f"Aborting workflow action execution as playbook execution not found for "
                          f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
-        if not workflows:
-            logger.error(f"Aborting workflow action execution as workflow not found for "
-                         f"account_id: {account_id}, workflow_id: {workflow_id}")
-
         thread_ts = None
         workflow_execution = workflow_executions.first()
         if workflow_execution.metadata:
@@ -177,14 +176,17 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
         for w_action in w_actions:
-            if w_action.type == WorkflowActionProto.Type.NOTIFY and w_action.notification_config and \
-                    w_action.notification_config.type == WorkflowActionNotificationConfig.Type.SLACK and \
-                    w_action.notification_config.slack_config.message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
+            if w_action.type == WorkflowActionProto.Type.NOTIFY:
                 w_action_dict = proto_to_dict(w_action)
-                slack_config_dict = w_action_dict.get('notification_config', {}).get('slack_config', {})
-                slack_config_dict['thread_ts'] = thread_ts
-                w_actions = dict_to_proto(w_action_dict, WorkflowActionProto)
-            action_executor(account, w_action, execution_output)
+                if w_action_dict.get('notification_config', {}).get('slack_config', {}).get('message_type',
+                                                                                            None) == 'THREAD_REPLY' and thread_ts:
+                    w_action_dict['notification_config']['slack_config']['thread_ts'] = thread_ts
+                    updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                    action_executor(account, updated_w_action, execution_output)
+                else:
+                    action_executor(account, w_action, execution_output)
+            else:
+                action_executor(account, w_action, execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running workflow action execution: {exc}")
         raise exc

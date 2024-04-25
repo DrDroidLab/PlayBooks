@@ -1,29 +1,26 @@
 import logging
-from datetime import timedelta
 from typing import Union
 
-from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user
-from executor.workflows.crud.workflow_execution_crud import create_workflow_execution, get_db_workflow_executions
-from executor.workflows.crud.workflow_utils import create_workflow_execution_util_function
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from playbooks.utils.utils import current_datetime, calculate_cron_times
-from protos.base_pb2 import Meta, Message, Page, TimeRange, TaskCronRule
+from playbooks.utils.utils import current_datetime
+from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -117,8 +114,8 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
         if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
-            create_workflow_execution_util_function(schedule_type, schedule, account, user.email, current_time_utc,
-                                                    workflow_id, workflow_run_uuid)
+            create_workflow_execution_util(schedule_type, schedule, account, user.email, current_time_utc,
+                                           workflow_id, workflow_run_uuid)
         else:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Error", description="Invalid Schedule Type"))

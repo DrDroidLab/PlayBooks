@@ -9,6 +9,7 @@ import PaginatedTable from "../../PaginatedTable.js";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
+import { handleStatus } from "../../../utils/handleStatus.tsx";
 
 const ExecutionsTableRender = ({ data }) => {
   return (
@@ -37,7 +38,7 @@ const ExecutionsTableRender = ({ data }) => {
                 </Link>
               </TableCell>
               <TableCell component="th" scope="row">
-                {item.status}
+                {handleStatus(item.status)}
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.created_by}
