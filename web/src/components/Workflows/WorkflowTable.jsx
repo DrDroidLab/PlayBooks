@@ -76,7 +76,21 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                   : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
-                {item.schedule?.type}
+                <div className="flex flex-col text-xs gap-1">
+                  <span className="text-sm font-bold">
+                    {item.schedule?.type}
+                  </span>
+                  {item.schedule?.periodic?.cron_rule && (
+                    <span className="border bg-gray-50 w-fit p-1 font-bold">
+                      {item.schedule?.periodic?.cron_rule?.rule}
+                    </span>
+                  )}
+                  {item.schedule?.periodic?.duration_in_seconds && (
+                    <span className="border bg-gray-50 w-fit p-1">
+                      For {item.schedule?.periodic?.duration_in_seconds} seconds
+                    </span>
+                  )}
+                </div>
               </TableCell>
               <TableCell component="td" scope="row" className="!text-center">
                 --
