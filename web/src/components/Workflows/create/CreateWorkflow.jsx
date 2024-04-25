@@ -15,19 +15,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetWorkflowQuery } from "../../../store/features/workflow/api/getWorkflowApi.ts";
 import Loading from "../../common/Loading/index.tsx";
+import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/updateWorkflowApi.ts";
+import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 
 function CreateTrigger() {
   const { id: workflowId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [triggerSave, { isLoading }] = useCreateWorkflowMutation();
+  const [triggerUpdate, { isLoading: updateLoading }] =
+    useUpdateWorkflowMutation();
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
     useLazyGetWorkflowQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   const handleSave = async () => {
     try {
-      await triggerSave();
+      const workflow = {
+        ...stateToWorkflow(currentWorkflow).workflow,
+        id: workflowId,
+      };
+      if (workflowId) {
+        await triggerUpdate(workflow);
+      } else {
+        await triggerSave();
+      }
       navigate("/workflows");
     } catch (e) {
       dispatch(showSnackbar(e.toString()));
@@ -54,7 +66,9 @@ function CreateTrigger() {
     <div>
       <Heading
         heading={
-          workflowId ? "Workflow- " + currentWorkflow.name : "Create Workflow"
+          workflowId
+            ? "Editing Workflow- " + currentWorkflow.name
+            : "Create Workflow"
         }
       />
       <div className="p-6 flex flex-col gap-6 bg-white border rounded m-2">
@@ -63,17 +77,15 @@ function CreateTrigger() {
         <ScheduleDetails />
         <hr />
         <NotificationDetails />
-        {!workflowId && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleSave}
-              className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
-              type="submit">
-              Save
-            </button>
-            {isLoading && <CircularProgress size={20} />}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSave}
+            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
+            type="submit">
+            {workflowId ? "Update" : "Save"}
+          </button>
+          {(isLoading || updateLoading) && <CircularProgress size={20} />}
+        </div>
       </div>
     </div>
   );
