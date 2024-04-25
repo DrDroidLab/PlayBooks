@@ -135,6 +135,11 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
         raise exc
 
 
+workflow_executor_prerun_notifier = publish_pre_run_task(workflow_executor)
+workflow_executor_failure_notifier = publish_task_failure(workflow_executor)
+workflow_executor_postrun_notifier = publish_post_run_task(workflow_executor)
+
+
 @shared_task(max_retries=3, default_retry_delay=10)
 def workflow_action_execution(account_id, workflow_id, workflow_execution_id, playbook_execution_id):
     logger.info(f"Running workflow action execution:: account_id: {account_id}, workflow_execution_id: "
@@ -163,6 +168,6 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         raise exc
 
 
-workflow_executor_prerun_notifier = publish_pre_run_task(workflow_executor)
-workflow_executor_failure_notifier = publish_task_failure(workflow_executor)
-workflow_executor_postrun_notifier = publish_post_run_task(workflow_executor)
+workflow_action_execution_prerun_notifier = publish_pre_run_task(workflow_action_execution)
+workflow_action_execution_failure_notifier = publish_task_failure(workflow_action_execution)
+workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
