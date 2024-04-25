@@ -13,6 +13,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.update(task_routes={
     'executor.workflows.tasks.workflow_scheduler': {'queue': 'workflow_scheduler'},
     'executor.workflows.tasks.workflow_executor': {'queue': 'workflow_executor'},
+    'executor.workflows.tasks.workflow_action_execution': {'queue': 'workflow_action_execution'},
 })
 
 app.conf.beat_schedule = {
