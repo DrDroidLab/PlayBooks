@@ -17,6 +17,7 @@ import { useLazyGetWorkflowQuery } from "../../../store/features/workflow/api/ge
 import Loading from "../../common/Loading/index.tsx";
 import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/updateWorkflowApi.ts";
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
+import { validate } from "./utils/validation.ts";
 
 function CreateTrigger() {
   const { id: workflowId } = useParams();
@@ -30,6 +31,7 @@ function CreateTrigger() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   const handleSave = async () => {
+    if (!validate()) return;
     try {
       const workflow = {
         ...stateToWorkflow(currentWorkflow).workflow,

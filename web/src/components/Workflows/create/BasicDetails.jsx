@@ -32,8 +32,41 @@ function BasicDetails() {
             placeHolder={"Enter workflow name"}
             value={currentWorkflow.name}
             onValueChange={(val) => handleInput("name", val)}
+            error={currentWorkflow?.errors?.name ?? false}
           />
         </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <label
+            className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            htmlFor="playbook">
+            Trigger Type
+          </label>
+          <div className="flex gap-2 items-center">
+            <SelectComponent
+              data={triggerTypes?.map((e) => {
+                return {
+                  id: e.id,
+                  label: e.label,
+                };
+              })}
+              placeholder={`Select Workflow Type`}
+              onSelectionChange={(_, val) => {
+                handleSelect("workflowType", val);
+              }}
+              selected={currentWorkflow?.workflowType}
+              searchable={true}
+              error={currentWorkflow?.errors?.workflowType ?? false}
+            />
+          </div>
+        </div>
+        {currentWorkflow.workflowType === "slack" && (
+          <SlackTriggerForm
+            handleInput={handleInput}
+            handleSelect={handleSelect}
+          />
+        )}
         <div className="space-y-2">
           <label
             className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -62,6 +95,7 @@ function BasicDetails() {
               }}
               selected={currentWorkflow?.playbookId}
               searchable={true}
+              error={currentWorkflow?.errors?.playbookId ?? false}
             />
             {playbooksLoading && <CircularProgress size={20} />}
             <button onClick={refetch}>
@@ -71,37 +105,6 @@ function BasicDetails() {
             </button>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col gap-4">
-        <div className="space-y-2">
-          <label
-            className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            Trigger Type
-          </label>
-          <div className="flex gap-2 items-center">
-            <SelectComponent
-              data={triggerTypes?.map((e) => {
-                return {
-                  id: e.id,
-                  label: e.label,
-                };
-              })}
-              placeholder={`Select Workflow Type`}
-              onSelectionChange={(_, val) => {
-                handleSelect("workflowType", val);
-              }}
-              selected={currentWorkflow?.workflowType}
-              searchable={true}
-            />
-          </div>
-        </div>
-        {currentWorkflow.workflowType === "slack" && (
-          <SlackTriggerForm
-            handleInput={handleInput}
-            handleSelect={handleSelect}
-          />
-        )}
       </div>
     </>
   );
