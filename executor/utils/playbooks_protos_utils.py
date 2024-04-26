@@ -90,6 +90,13 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
         dd_task_proto = PlaybookDatadogTask(
             type=PlaybookDatadogTask.TaskType.SERVICE_METRIC_EXECUTION,
             service_metric_execution_task=service_metric_execution_task_proto)
+    elif dd_task.get('type', None) == 'QUERY_METRIC_EXECUTION':
+        query_metric_execution_task = dict_to_proto(
+            dd_task.get('query_metric_execution_task', {}),
+            PlaybookDatadogTask.QueryMetricExecutionTask)
+        dd_task_proto = PlaybookDatadogTask(
+            type=PlaybookDatadogTask.TaskType.QUERY_METRIC_EXECUTION,
+            query_metric_execution_task=query_metric_execution_task)
     else:
         raise Exception(f"Task type {dd_task.get('type', None)} not supported")
     return PlaybookMetricTaskDefinition(

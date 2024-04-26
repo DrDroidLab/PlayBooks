@@ -75,6 +75,7 @@ enum ConnectorMetadataModelType {
   DATADOG_LIVE_INTEGRATION_CONFLUENT = 109;
   DATADOG_SERVICE = 110;
   DATADOG_METRIC = 111;
+  DATADOG_QUERY = 112;
 
 
   //Cloudwatch Models

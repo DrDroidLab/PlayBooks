@@ -1009,10 +1009,12 @@ class PlaybookDatadogTask(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: PlaybookDatadogTask._TaskType.ValueType  # 0
         SERVICE_METRIC_EXECUTION: PlaybookDatadogTask._TaskType.ValueType  # 1
+        QUERY_METRIC_EXECUTION: PlaybookDatadogTask._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: PlaybookDatadogTask.TaskType.ValueType  # 0
     SERVICE_METRIC_EXECUTION: PlaybookDatadogTask.TaskType.ValueType  # 1
+    QUERY_METRIC_EXECUTION: PlaybookDatadogTask.TaskType.ValueType  # 2
 
     @typing_extensions.final
     class ServiceMetricExecutionTask(google.protobuf.message.Message):
@@ -1045,20 +1047,47 @@ class PlaybookDatadogTask(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "process_function", b"process_function", "service_name", b"service_name"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "process_function", b"process_function", "service_name", b"service_name"]) -> None: ...
 
+    @typing_extensions.final
+    class QueryMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        QUERIES_FIELD_NUMBER: builtins.int
+        FORMULA_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def queries(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        @property
+        def formula(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            queries: collections.abc.Iterable[builtins.str] | None = ...,
+            formula: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["formula", b"formula", "process_function", b"process_function"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["formula", b"formula", "process_function", b"process_function", "queries", b"queries"]) -> None: ...
+
     TYPE_FIELD_NUMBER: builtins.int
     SERVICE_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    QUERY_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
     type: global___PlaybookDatadogTask.TaskType.ValueType
     @property
     def service_metric_execution_task(self) -> global___PlaybookDatadogTask.ServiceMetricExecutionTask: ...
+    @property
+    def query_metric_execution_task(self) -> global___PlaybookDatadogTask.QueryMetricExecutionTask: ...
     def __init__(
         self,
         *,
         type: global___PlaybookDatadogTask.TaskType.ValueType = ...,
         service_metric_execution_task: global___PlaybookDatadogTask.ServiceMetricExecutionTask | None = ...,
+        query_metric_execution_task: global___PlaybookDatadogTask.QueryMetricExecutionTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["service_metric_execution_task", b"service_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["service_metric_execution_task", b"service_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["service_metric_execution_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["query_metric_execution_task", b"query_metric_execution_task", "service_metric_execution_task", b"service_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["query_metric_execution_task", b"query_metric_execution_task", "service_metric_execution_task", b"service_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["service_metric_execution_task", "query_metric_execution_task"] | None: ...
 
 global___PlaybookDatadogTask = PlaybookDatadogTask
 
