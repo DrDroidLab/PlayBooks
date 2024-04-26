@@ -218,8 +218,8 @@ def playbooks_executions_list(request_message: ExecutionsPlaybooksListRequest) -
     try:
         playbook_executions = get_db_playbook_execution(account, playbook_ids=playbook_ids)
         if not playbook_executions:
-            return ExecutionsPlaybooksListResponse(success=BoolValue(value=False), message=Message(title="Error",
-                                                                                                   description="Playbook Executions not found"))
+            return ExecutionsPlaybooksListResponse(success=BoolValue(value=True),
+                                                   message=Message(title="No Playbook Executions Found"))
         total_count = playbook_executions.count()
         playbook_executions = playbook_executions.order_by('-created_at')
         playbook_executions = filter_page(playbook_executions, page)
