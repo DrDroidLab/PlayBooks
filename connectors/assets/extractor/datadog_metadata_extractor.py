@@ -11,6 +11,55 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
         super().__init__(account_id, connector_id, ConnectorType.DATADOG)
 
+    def extract_services(self, save_to_db=False):
+        model_type = ConnectorMetadataModelTypeProto.DATADOG_SERVICE
+        model_data = {}
+        prod_env_tags = ['prod', 'production']
+        for tag in prod_env_tags:
+            try:
+                services = self.__dd_api_processor.fetch_service_map(tag)
+            except Exception as e:
+                print(f'Error fetching services for tag: {tag} - {e}')
+                continue
+            if not services:
+                continue
+            for service, metadata in services.items():
+                service_metadata = model_data.get(service, {})
+                service_metadata[tag] = metadata
+                model_data[service] = service_metadata
+        try:
+            all_metrics = self.__dd_api_processor.fetch_metrics().get('data', [])
+        except Exception as e:
+            print(f'Error fetching metrics: {e}')
+            all_metrics = []
+        if not all_metrics:
+            return model_data
+        service_metric_map = {}
+        for mt in all_metrics:
+            try:
+                tags = self.__dd_api_processor.fetch_metric_tags(mt['id']).get('data', {}).get('attributes', {}).get(
+                    'tags', [])
+            except Exception as e:
+                print(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
+                tags = []
+            family = mt['id'].split('.')[0]
+            for tag in tags:
+                if tag.startswith('service:'):
+                    service = tag.split(':')[1]
+                    print(f'service: {service}')
+                    metrics = service_metric_map.get(service, [])
+                    essential_tags = [tag for tag in tags if tag.startswith('env:') or tag.startswith('service:')]
+                    metrics.append({'id': mt['id'], 'type': mt['type'], 'family': family, 'tags': essential_tags})
+                    service_metric_map[service] = metrics
+        for service, metrics in service_metric_map.items():
+            service_model_data = model_data.get(service, {})
+            service_model_data['metrics'] = metrics
+            model_data[service] = service_model_data
+        for service, metadata in model_data.items():
+            if save_to_db:
+                self.create_or_update_model_metadata(model_type, service, metadata)
+        return model_data
+
     def extract_monitor(self, save_to_db=False):
         model_type = ConnectorMetadataModelTypeProto.DATADOG_MONITOR
         model_data = {}
@@ -175,56 +224,6 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
                     self.create_or_update_model_metadata(model_type, gcp_id, gcpa)
         except Exception as e:
             print(f'Error extracting active gcp integrations: {e}')
-        return model_data
-
-    def extract_services(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_SERVICE
-        model_data = {}
-        prod_env_tags = ['prod', 'production']
-        for tag in prod_env_tags:
-            try:
-                services = self.__dd_api_processor.fetch_service_map(tag)
-            except Exception as e:
-                print(f'Error fetching services for tag: {tag} - {e}')
-                continue
-            if not services:
-                continue
-            for service, metadata in services.items():
-                service_metadata = model_data.get(service, {})
-                service_metadata[tag] = metadata
-                model_data[service] = service_metadata
-
-        try:
-            all_metrics = self.__dd_api_processor.fetch_metrics().get('data', [])
-        except Exception as e:
-            print(f'Error fetching metrics: {e}')
-            all_metrics = []
-        if not all_metrics:
-            return model_data
-        service_metric_map = {}
-        for mt in all_metrics:
-            try:
-                tags = self.__dd_api_processor.fetch_metric_tags(mt['id']).get('data', {}).get('attributes', {}).get(
-                    'tags', [])
-            except Exception as e:
-                print(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
-                tags = []
-            family = mt['id'].split('.')[0]
-            for tag in tags:
-                if tag.startswith('service:'):
-                    service = tag.split(':')[1]
-                    print(f'service: {service}')
-                    metrics = service_metric_map.get(service, [])
-                    essential_tags = [tag for tag in tags if tag.startswith('env:') or tag.startswith('service:')]
-                    metrics.append({'id': mt['id'], 'type': mt['type'], 'family': family, 'tags': essential_tags})
-                    service_metric_map[service] = metrics
-        for service, metrics in service_metric_map.items():
-            service_model_data = model_data.get(service, {})
-            service_model_data['metrics'] = metrics
-            model_data[service] = service_model_data
-        for service, metadata in model_data.items():
-            if save_to_db:
-                self.create_or_update_model_metadata(model_type, service, metadata)
         return model_data
 
     def extract_metrics(self, save_to_db=False):
