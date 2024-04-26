@@ -6,6 +6,7 @@ const initialState = {
     schedule: "one_off",
     workflowType: "slack",
     trigger: {},
+    errors: {},
   },
 };
 
@@ -22,6 +23,12 @@ const workflowSlice = createSlice({
     setCurrentWorkflowTriggerKey(state, { payload }) {
       state.currentWorkflow.trigger[payload.key] = payload.value;
     },
+    setErrorKey(state, { payload }) {
+      state.currentWorkflow.errors[payload.key] = payload.value;
+    },
+    removeErrorKey(state, { payload }) {
+      delete state.currentWorkflow.errors[payload];
+    },
     resetWorkflowState(state) {
       state.currentWorkflow = initialState.currentWorkflow;
     },
@@ -32,6 +39,8 @@ export const {
   setWorkflowKey,
   setCurrentWorkflowKey,
   setCurrentWorkflowTriggerKey,
+  setErrorKey,
+  removeErrorKey,
   resetWorkflowState,
 } = workflowSlice.actions;
 

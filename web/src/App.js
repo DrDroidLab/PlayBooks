@@ -90,7 +90,7 @@ const App = () => {
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<PlaybookExecutionsList />} />
+          <Route path="/" element={<Playbooks />} />
           <Route path="/playbooks" element={<Playbooks />} />
           <Route
             path="/playbooks/executions/list"
@@ -111,16 +111,13 @@ const App = () => {
             element={<PlaybookLog />}
           />
           <Route path="/workflows/create" element={<CreateWorkflow />} />
-          <Route path="/workflows" element={<Workflows />} />
+          <Route exact path="/workflows" element={<Workflows />} />
           <Route path="/workflows/:id" element={<CreateWorkflow />} />
           <Route
             path="/workflows/executions/:id"
             element={<WorkflowExecutions />}
           />
-          <Route
-            path="/workflows/executions/list"
-            element={<WorkflowExecutionsList />}
-          />
+          <Route path="/executions/list" element={<WorkflowExecutionsList />} />
           <Route
             path="/workflows/logs/:workflow_run_id"
             element={<WorkflowExecutionLogs />}

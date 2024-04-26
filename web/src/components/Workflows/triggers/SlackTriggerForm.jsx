@@ -55,6 +55,7 @@ function SlackTriggerForm() {
           }}
           selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}
+          error={currentWorkflow?.errors?.channelId ?? false}
         />
         {isFetching && <CircularProgress size={20} />}
         <button onClick={refetch}>
@@ -75,6 +76,7 @@ function SlackTriggerForm() {
           onSelectionChange={(id) => handleTriggerSelect("source", id)}
           selected={currentWorkflow?.trigger?.source ?? ""}
           searchable={true}
+          error={currentWorkflow?.errors?.source ?? false}
         />
       </div>
       <div className="text-sm flex items-center gap-2">
@@ -87,6 +89,7 @@ function SlackTriggerForm() {
           value={currentWorkflow?.trigger?.filterString}
           placeHolder={"Enter Matching string"}
           length={300}
+          error={currentWorkflow?.errors?.filterString ?? false}
         />
       </div>
       <button
