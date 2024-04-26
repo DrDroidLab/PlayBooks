@@ -1,18 +1,18 @@
-import { GET_WORKFLOW_EXECUTIONS } from "../../../../constants/index.ts";
+import { GET_WORKFLOW_EXECUTION_LOGS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setWorkflowKey } from "../workflowSlice.ts";
 
-export const getWorkflowExecutionsApi = apiSlice.injectEndpoints({
+export const getWorkflowExecutionLogsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getWorkflowExecutions: builder.query<
+    getWorkflowExecutionLogs: builder.query<
       any,
-      { limit: number; offset: number; workflowId: string }
+      { limit: number; offset: number; workflowRunId: string }
     >({
-      query: ({ limit, offset, workflowId }) => ({
-        url: GET_WORKFLOW_EXECUTIONS,
+      query: ({ limit, offset, workflowRunId }) => ({
+        url: GET_WORKFLOW_EXECUTION_LOGS,
         method: "POST",
         body: {
-          workflow_ids: workflowId ? [workflowId] : [],
+          workflow_run_id: workflowRunId,
           meta: {
             page: {
               limit,
@@ -24,16 +24,14 @@ export const getWorkflowExecutionsApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setWorkflowKey({ key: "workflows", value: data.workflows }));
           dispatch(setWorkflowKey({ key: "meta", value: data.meta }));
         } catch (error) {
           // Handle any errors
           console.log(error);
         }
       },
-      providesTags: ["Workflows"],
     }),
   }),
 });
 
-export const { useGetWorkflowExecutionsQuery } = getWorkflowExecutionsApi;
+export const { useGetWorkflowExecutionLogsQuery } = getWorkflowExecutionLogsApi;

@@ -17,9 +17,9 @@ const ExecutionsTableRender = ({ data }) => {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell className="!font-bold">Executed At</TableCell>
+            <TableCell className="!font-bold">Playbook</TableCell>
             <TableCell className="!font-bold">Status</TableCell>
-            <TableCell className="!font-bold">Executed By</TableCell>
+            <TableCell className="!font-bold">Executed At</TableCell>
             <TableCell className="!font-bold">Action</TableCell>
           </TableRow>
         </TableHead>
@@ -32,21 +32,25 @@ const ExecutionsTableRender = ({ data }) => {
               }}>
               <TableCell component="td" scope="row">
                 <Link
-                  to={`/playbooks/logs/${item.playbook_run_id}`}
+                  to={`/playbooks/${item.playbook.id}`}
                   className="text-violet-500 underline">
-                  {renderTimestamp(item.created_at)}
+                  {item.playbook?.name}
                 </Link>
               </TableCell>
               <TableCell component="th" scope="row">
                 {handleStatus(item.status)}
               </TableCell>
               <TableCell component="td" scope="row">
-                {item.created_by}
+                <Link
+                  to={`/playbooks/logs/${item.playbook_run_id}`}
+                  className="text-violet-500 underline">
+                  {renderTimestamp(item.created_at)}
+                </Link>
               </TableCell>
               <TableCell component="td" scope="row">
                 <Link to={`/playbooks/logs/${item.playbook_run_id}`}>
                   <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
-                    View
+                    View Playbook Execution
                   </div>
                 </Link>
               </TableCell>

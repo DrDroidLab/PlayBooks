@@ -11,9 +11,9 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto, Connect
     ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
 
 integrations_request_connectors = [
-    ConnectorType.ELASTIC_APM,
-    ConnectorType.VICTORIA_METRICS,
-    ConnectorType.PROMETHEUS
+    # ConnectorType.ELASTIC_APM,
+    # ConnectorType.VICTORIA_METRICS,
+    # ConnectorType.PROMETHEUS
 ]
 
 integrations_connector_type_display_name_map = {
@@ -72,12 +72,12 @@ integrations_connector_type_connector_keys_map = {
     #         ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
     #     ]
     # ],
-    ConnectorType.SENTRY: [
-        [
-            ConnectorKeyProto.KeyType.SENTRY_API_KEY,
-            ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG
-        ]
-    ],
+    # ConnectorType.SENTRY: [
+    #     [
+    #         ConnectorKeyProto.KeyType.SENTRY_API_KEY,
+    #         ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG
+    #     ]
+    # ],
     ConnectorType.NEW_RELIC: [
         [
             ConnectorKeyProto.KeyType.NEWRELIC_API_KEY,
@@ -111,11 +111,11 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY
         ]
     ],
-    ConnectorType.GITHUB_ACTIONS: [
-        [
-            ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
-        ]
-    ],
+    # ConnectorType.GITHUB_ACTIONS: [
+    #     [
+    #         ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
+    #     ]
+    # ],
     ConnectorType.AGENT_PROXY: [
         [
             ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
@@ -129,14 +129,14 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AWS_REGION,
         ]
     ],
-    ConnectorType.GCM: [
-        [
-            ConnectorKeyProto.KeyType.GCM_PROJECT_ID,
-            ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
-            ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL,
-            ConnectorKeyProto.KeyType.GCM_TOKEN_URI
-        ]
-    ],
+    # ConnectorType.GCM: [
+    #     [
+    #         ConnectorKeyProto.KeyType.GCM_PROJECT_ID,
+    #         ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
+    #         ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL,
+    #         ConnectorKeyProto.KeyType.GCM_TOKEN_URI
+    #     ]
+    # ],
     ConnectorType.CLICKHOUSE: [
         [
             ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE,
@@ -161,16 +161,16 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
         ]
     ],
-    ConnectorType.PAGER_DUTY: [
-        [
-            ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
-        ]
-    ],
-    ConnectorType.OPS_GENIE: [
-        [
-            ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-        ]
-    ],
+    # ConnectorType.PAGER_DUTY: [
+    #     [
+    #         ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
+    #     ]
+    # ],
+    # ConnectorType.OPS_GENIE: [
+    #     [
+    #         ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
+    #     ]
+    # ],
 
 }
 

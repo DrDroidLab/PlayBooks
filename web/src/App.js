@@ -12,8 +12,6 @@ import {
   selectEmail,
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
-import WorkflowExecutions from "./components/Workflows/executions/WorkflowExecutions.jsx";
-import PlaybookExecutions from "./components/Playbooks/executions/PlaybookExecutions.jsx";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -25,6 +23,21 @@ const Playbooks = React.lazy(() => import("./components/Playbooks"));
 const Workflows = React.lazy(() => import("./components/Workflows"));
 const CreateWorkflow = React.lazy(() =>
   import("./components/Workflows/create/CreateWorkflow.jsx"),
+);
+const WorkflowExecutionsList = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutionList.jsx"),
+);
+const WorkflowExecutionLogs = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutionLogs.jsx"),
+);
+const WorkflowExecutions = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutions.jsx"),
+);
+const PlaybookExecutions = React.lazy(() =>
+  import("./components/Playbooks/executions/PlaybookExecutions.jsx"),
+);
+const PlaybookExecutionsList = React.lazy(() =>
+  import("./components/Playbooks/executions/PlaybookExecutionsList.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
@@ -77,8 +90,12 @@ const App = () => {
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Playbooks />} />
+          <Route path="/" element={<PlaybookExecutionsList />} />
           <Route path="/playbooks" element={<Playbooks />} />
+          <Route
+            path="/playbooks/executions/list"
+            element={<PlaybookExecutionsList />}
+          />
           <Route path="/playbooks/create" element={<CreatePlaybook />} />
           <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />
           <Route
@@ -99,6 +116,14 @@ const App = () => {
           <Route
             path="/workflows/executions/:id"
             element={<WorkflowExecutions />}
+          />
+          <Route
+            path="/workflows/executions/list"
+            element={<WorkflowExecutionsList />}
+          />
+          <Route
+            path="/workflows/logs/:workflow_run_id"
+            element={<WorkflowExecutionLogs />}
           />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />

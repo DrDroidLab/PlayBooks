@@ -23,7 +23,7 @@ const WorkflowExecutions = () => {
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
     useLazyGetWorkflowQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
-  const workflowsList = data?.workflows;
+  const workflowsList = data?.workflow_executions;
   const total = data?.meta?.total_count;
 
   useEffect(() => {
