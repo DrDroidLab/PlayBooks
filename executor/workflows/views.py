@@ -159,8 +159,8 @@ def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) ->
     try:
         workflow_executions = get_db_workflow_executions(account, workflow_ids=workflow_ids)
         if not workflow_executions:
-            return ExecutionsWorkflowsListResponse(success=BoolValue(value=False), message=Message(title="Error",
-                                                                                                   description="Workflow Executions not found"))
+            return ExecutionsWorkflowsListResponse(success=BoolValue(value=True),
+                                                   message=Message(title="No Workflow Executions Found"))
         total_count = workflow_executions.count()
         workflow_executions = filter_page(workflow_executions, page)
         we_protos = [we.proto_partial for we in workflow_executions]
