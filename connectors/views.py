@@ -317,11 +317,17 @@ settings:
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
 
     site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
-    site = Site.objects.get_current()
-    site.domain = site_domain
-    site.name = 'MyDroid'
-    site.protocol = 'https' if host_name.value.startswith('https://') else 'http'
-    site.save()
+    active_sites = Site.objects.filter(is_active=True)
+    http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
+    
+    if active_sites:
+        site = active_sites.first()
+        site.domain = site_domain
+        site.name = 'MyDroid'
+        site.protocol = http_protocol
+        site.save()
+    else:
+        Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
     
