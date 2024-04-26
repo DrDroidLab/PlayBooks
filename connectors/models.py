@@ -356,7 +356,8 @@ class SlackConnectorAlertType(models.Model):
 class SlackConnectorDataReceived(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    slack_channel_metadata_model = models.ForeignKey(ConnectorMetadataModelStore, on_delete=models.CASCADE, db_index=True, null=True)
+    slack_channel_metadata_model = models.ForeignKey(ConnectorMetadataModelStore, on_delete=models.CASCADE,
+                                                     db_index=True, null=True)
     channel_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     data = models.JSONField(null=True, blank=True)
 
@@ -370,7 +371,6 @@ class SlackConnectorDataReceived(models.Model):
 
     data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
     received_at = models.DateTimeField(auto_now_add=True, db_index=True)
-
 
 
 class ConnectorPeriodicRunMetadata(models.Model):
