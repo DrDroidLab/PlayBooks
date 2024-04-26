@@ -130,6 +130,7 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     DATADOG_LIVE_INTEGRATION_CONFLUENT: _ConnectorMetadataModelType.ValueType  # 109
     DATADOG_SERVICE: _ConnectorMetadataModelType.ValueType  # 110
     DATADOG_METRIC: _ConnectorMetadataModelType.ValueType  # 111
+    DATADOG_QUERY: _ConnectorMetadataModelType.ValueType  # 112
     CLOUDWATCH_METRIC: _ConnectorMetadataModelType.ValueType  # 201
     """Cloudwatch Models"""
     CLOUDWATCH_LOG_GROUP: _ConnectorMetadataModelType.ValueType  # 202
@@ -170,6 +171,7 @@ DATADOG_LIVE_INTEGRATION_GCP: ConnectorMetadataModelType.ValueType  # 108
 DATADOG_LIVE_INTEGRATION_CONFLUENT: ConnectorMetadataModelType.ValueType  # 109
 DATADOG_SERVICE: ConnectorMetadataModelType.ValueType  # 110
 DATADOG_METRIC: ConnectorMetadataModelType.ValueType  # 111
+DATADOG_QUERY: ConnectorMetadataModelType.ValueType  # 112
 CLOUDWATCH_METRIC: ConnectorMetadataModelType.ValueType  # 201
 """Cloudwatch Models"""
 CLOUDWATCH_LOG_GROUP: ConnectorMetadataModelType.ValueType  # 202

@@ -19,7 +19,7 @@ supported_connectors_model_maps = {
                               ConnectorMetadataModelType.NEW_RELIC_NRQL],
     ConnectorType.CLICKHOUSE: [ConnectorMetadataModelType.CLICKHOUSE_DATABASE],
     ConnectorType.SLACK: [ConnectorMetadataModelType.SLACK_CHANNEL],
-    ConnectorType.DATADOG: [ConnectorMetadataModelType.DATADOG_SERVICE],
+    ConnectorType.DATADOG: [ConnectorMetadataModelType.DATADOG_SERVICE, ConnectorMetadataModelType.DATADOG_QUERY],
     ConnectorType.POSTGRES: [ConnectorMetadataModelType.POSTGRES_DATABASE],
     ConnectorType.EKS: [ConnectorMetadataModelType.EKS_CLUSTER]
 }
@@ -33,6 +33,7 @@ model_type_display_name_maps = {
     ConnectorMetadataModelType.NEW_RELIC_NRQL: "Raw NRQL",
     ConnectorMetadataModelType.CLICKHOUSE_DATABASE: "Database",
     ConnectorMetadataModelType.DATADOG_SERVICE: "Service",
+    ConnectorMetadataModelType.DATADOG_QUERY: "Custom Query",
     ConnectorMetadataModelType.POSTGRES_DATABASE: "Database",
     ConnectorMetadataModelType.EKS_CLUSTER: "Cluster",
 }
@@ -60,6 +61,14 @@ def playbooks_builder_get_connector_sources_options(account: Account):
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
+
+        if connector.connector_type == ConnectorType.DATADOG:
+            model_type = ConnectorMetadataModelType.DATADOG_QUERY
+            display_name = model_type_display_name_maps.get(model_type, "")
+            model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
+                                                                                                  display_name=StringValue(
+                                                                                                      value=display_name)))
+
         active_model_type.append(AccountActiveConnectorModelTypes(connector_type=connector.connector_type,
                                                                   model_types_map=model_types_map))
     return active_model_type
