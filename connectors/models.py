@@ -382,3 +382,11 @@ class ConnectorPeriodicRunMetadata(models.Model):
                                  choices=generate_choices(PeriodicRunStatus.StatusType))
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+
+
+class Site(models.Model):
+    domain = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    protocol = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
