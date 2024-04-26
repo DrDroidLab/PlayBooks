@@ -1,5 +1,6 @@
-import re
-import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def safe_eval(dict_string_or_dict):
@@ -10,51 +11,10 @@ def safe_eval(dict_string_or_dict):
         # Safely evaluate the string representation of a dictionary
         return eval(dict_string_or_dict)
     except Exception as e:
+        logger.error(f"Error occurred while evaluating the string: {dict_string_or_dict} with error: {e}")
         # Return an empty dictionary in case of an error
         return {}
-    
 
-def title_update(current_title):
-    try:
-        # Remove leading and trailing spaces
-        title = current_title.strip()
-        # List of keywords to check in the extracted content
-        labels_list = ['alert', 'alerting', 'fired', 'firing', 'resolved', 'ok', 'recovered', 'recover', 'triggered']
-        # Dictionary of pattern categories with their respective regex patterns
-        patterns = {
-            'brackets': [r'\[\s*([^]]*)\s*\]'],  # Allow for empty content within brackets
-            'asterisks': [r'\*{1,3}\s*([^*]*)\s*\*{1,3}'],  # Allow for empty content within asterisks
-            'colons': [r':\s*([^:]*)\s*:']  # Allow for empty content within colons
-        }
-        # Iterate over each category and its patterns
-        for key, patterns_list in patterns.items():
-            for pattern in patterns_list:
-                match = re.search(pattern, title, re.IGNORECASE)
-                if match:
-                    # If a match is found, extract and strip the matched group
-                    matched_content = match.group(1).strip()
-
-                    # Check if the extracted content contains any of the specified words
-                    if any(label.lower() in matched_content.lower() for label in labels_list):
-                        # Remove the matched pattern from the title
-                        end_index = match.end()
-                        title = title[end_index:].strip()
-
-                        # Break out of the loop after processing the first matching pattern
-                        break
-
-            # If a match was found and processed, no need to continue checking other patterns
-            if match:
-                break
-
-        # Return the updated title, whether or not a pattern was removed
-        if title:
-            return title
-        else:
-            return current_title
-    except Exception as e:
-        return current_title
-    
 
 def text_identifier_v2(full_message, channel_type):
     if channel_type == 'slack':
@@ -99,9 +59,9 @@ def title_identifier(full_message, channel_type):
         if titles:
             title = max(titles, key=len)
             if title == '':
-                title = title_deeper_search(full_message, {'title','text','fallback'})
+                title = title_deeper_search(full_message, ['title', 'text', 'fallback'])
         else:
-            title = title_deeper_search(full_message, {'title'})
+            title = title_deeper_search(full_message, ['title'])
         return title
     elif channel_type == 'g_chat':
         message = safe_eval(full_message)
@@ -130,9 +90,11 @@ def title_identifier(full_message, channel_type):
         if title == '':
             title = "Custom Alert"
         return title
-    
 
-def title_deeper_search(full_message, key_names={'title'}):
+
+def title_deeper_search(full_message, key_names=None):
+    if key_names is None:
+        key_names = ['title']
     titles_list = []
     data = safe_eval(full_message)
 
@@ -157,44 +119,6 @@ def title_deeper_search(full_message, key_names={'title'}):
     return title
 
 
-def timestamp_identifier(full_message_cell, channel_type):
-    try:
-        if channel_type == 'slack':
-            timestamp = pd.to_datetime(safe_eval(full_message_cell).get('ts'), unit='s')
-            return timestamp
-        elif channel_type == 'g_chat':
-            timestamp = pd.to_datetime(safe_eval(full_message_cell).get('timestamp'))
-            return timestamp
-    except Exception as e:
-        print(f"Exception occurred while parsing full_message: {full_message_cell} with error: {e}")
-        return pd.to_datetime('now')
-    
-
-def url_identifier(full_message, channel_type):
-    if channel_type == 'slack':
-        key_names = {'title_link','url','text', 'plain_text', 'fallback', 'preview_plain_text'}
-    elif channel_type == 'g_chat':
-        key_names = {'text', 'title', 'subtitle'}
-    all_urls = []
-    data = safe_eval(full_message)
-
-    def traverse(obj):
-        if isinstance(obj, dict):
-            for key, value in obj.items():
-                if key in key_names and isinstance(value, str):
-                    # extract URL from the value
-                    urls = re.findall(r"https?://[^\s|<]+", value)
-                    all_urls.extend(urls)
-                elif isinstance(value, (dict, list)):
-                    traverse(value)
-        elif isinstance(obj, list):
-            for item in obj:
-                traverse(item)
-    traverse(data)
-    all_urls = [x for x in all_urls]
-    return all_urls
-
-
 def source_identifier(full_message_cell, channel_type):
     try:
         message = safe_eval(full_message_cell)
@@ -205,16 +129,17 @@ def source_identifier(full_message_cell, channel_type):
     bot_name_mapping = {'Sentry': 'Sentry', 'Robusta': 'Robusta', 'AWS Chatbot': 'Cloudwatch', 'MetaBot': 'Metabase',
                         'BluejayApp': 'Cloudwatch', 'RDS_lag_alert': 'Cloudwatch',
                         'Postgres Replica Lag Alert': 'Cloudwatch', 'Alertmanager': 'Prometheus_AlertManager',
-                        'Grafana': 'Grafana','Coralogix':'Coralogix','Datadog':'Datadog','PagerDuty':'PagerDuty','Prometheus':'Prometheus_AlertManager', 'Opsgenie for Alert Management':'OpsGenie'}
+                        'Grafana': 'Grafana', 'Coralogix': 'Coralogix', 'Datadog': 'Datadog', 'PagerDuty': 'PagerDuty',
+                        'Prometheus': 'Prometheus_AlertManager', 'Opsgenie for Alert Management': 'OpsGenie'}
     sentry_keywords = ['Sentry']
     newrelic_keywords = ['Newrelic', 'New relic']
     honeybadger_keywords = ['Honeybadger']
     coralogix_keywords = ['coralogix']
     datadog_keywords = ['Datadog']
-    drdroid_keywords = ['drdroid', 'doctordroid', 'doctor droid', 'dr droid', 'dr. droid', 'dr.droid']
+    dr_droid_keywords = ['drdroid', 'doctordroid', 'doctor droid', 'dr droid', 'dr. droid', 'dr.droid']
     cloudwatch_keywords = ['Cloudwatch', 'Cloud watch', 'AWS Cloudwatch', 'marbot', 'AWS Chatbot', 'Amazon CloudWatch']
     gcp_keywords = ['Google Cloud Monitoring', 'console.cloud.google', 'cloud.google.com/monitoring']
-    alertmanager_keywords = ['9093', 'alertmanager']
+    alert_manager_keywords = ['9093', 'alertmanager']
     robusta_keywords = ['Robusta']
     infra_keywords_extension = ['awsMQ', 'Redshift', 'amazonMQ', 'CacheClusterId', 'DBInstanceIdentifier', 'QueueName',
                                 'DBClusterIdentifier', 'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'eu-west-1',
@@ -284,9 +209,9 @@ def source_identifier(full_message_cell, channel_type):
             source = 'Grafana'
         elif any(key_word.lower() in str(message).lower() for key_word in robusta_keywords):
             source = 'Robusta'
-        elif any(key_word.lower() in str(message).lower() for key_word in alertmanager_keywords):
+        elif any(key_word.lower() in str(message).lower() for key_word in alert_manager_keywords):
             source = 'Prometheus_AlertManager'
-        elif any(key_word.lower() in str(message).lower() for key_word in drdroid_keywords):
+        elif any(key_word.lower() in str(message).lower() for key_word in dr_droid_keywords):
             source = 'Doctor Droid'
         elif any(key_word.lower() in str(message).lower() for key_word in infra_keywords_extension):
             source = 'Cloudwatch'
