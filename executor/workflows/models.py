@@ -214,6 +214,7 @@ class WorkflowExecution(models.Model):
     workflow_run_id = models.CharField(max_length=256, db_index=True)
     status = models.IntegerField(choices=generate_choices(WorkflowExecutionStatusType),
                                  default=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, db_index=True)
+    metadata = models.JSONField(null=True, blank=True)
 
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)

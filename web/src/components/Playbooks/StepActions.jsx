@@ -8,7 +8,7 @@ import {
   playbookSelector,
   setLastUpdatedAt,
 } from "../../store/features/playbook/playbookSlice.ts";
-import { stepsToPlaybook } from "../../utils/stepsToplaybook.ts";
+import { stepsToPlaybook } from "../../utils/parser/playbook/stepsToplaybook.ts";
 import SavePlaybookOverlay from "./SavePlaybookOverlay.jsx";
 import { useNavigate } from "react-router-dom";
 import {
@@ -65,6 +65,7 @@ function StepActions({ allowSave }) {
     try {
       await triggerUpdatePlaybook({ ...playbook, id: playbookVal.id }).unwrap();
       dispatch(setLastUpdatedAt());
+      navigate(`/playbooks`);
     } catch (e) {
       console.log(e);
     }

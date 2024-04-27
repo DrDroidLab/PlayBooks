@@ -8,12 +8,12 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
 
 integrations_request_connectors = [
-    ConnectorType.ELASTIC_APM,
-    ConnectorType.VICTORIA_METRICS,
-    ConnectorType.PROMETHEUS
+    # ConnectorType.ELASTIC_APM,
+    # ConnectorType.VICTORIA_METRICS,
+    # ConnectorType.PROMETHEUS
 ]
 
 integrations_connector_type_display_name_map = {
@@ -61,22 +61,23 @@ integrations_connector_type_category_map = {
 }
 
 integrations_connector_type_connector_keys_map = {
-    # ConnectorType.SLACK: [
-    #     [
-    #         ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN
-    #     ]
-    # ],
+    ConnectorType.SLACK: [
+        [
+            ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
+            ConnectorKeyProto.KeyType.SLACK_APP_ID
+        ]
+    ],
     # ConnectorType.GOOGLE_CHAT: [
     #     [
     #         ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
     #     ]
     # ],
-    ConnectorType.SENTRY: [
-        [
-            ConnectorKeyProto.KeyType.SENTRY_API_KEY,
-            ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG
-        ]
-    ],
+    # ConnectorType.SENTRY: [
+    #     [
+    #         ConnectorKeyProto.KeyType.SENTRY_API_KEY,
+    #         ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG
+    #     ]
+    # ],
     ConnectorType.NEW_RELIC: [
         [
             ConnectorKeyProto.KeyType.NEWRELIC_API_KEY,
@@ -110,11 +111,11 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY
         ]
     ],
-    ConnectorType.GITHUB_ACTIONS: [
-        [
-            ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
-        ]
-    ],
+    # ConnectorType.GITHUB_ACTIONS: [
+    #     [
+    #         ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
+    #     ]
+    # ],
     ConnectorType.AGENT_PROXY: [
         [
             ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
@@ -128,14 +129,14 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AWS_REGION,
         ]
     ],
-    ConnectorType.GCM: [
-        [
-            ConnectorKeyProto.KeyType.GCM_PROJECT_ID,
-            ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
-            ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL,
-            ConnectorKeyProto.KeyType.GCM_TOKEN_URI
-        ]
-    ],
+    # ConnectorType.GCM: [
+    #     [
+    #         ConnectorKeyProto.KeyType.GCM_PROJECT_ID,
+    #         ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
+    #         ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL,
+    #         ConnectorKeyProto.KeyType.GCM_TOKEN_URI
+    #     ]
+    # ],
     ConnectorType.CLICKHOUSE: [
         [
             ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE,
@@ -160,16 +161,16 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
         ]
     ],
-    ConnectorType.PAGER_DUTY: [
-        [
-            ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
-        ]
-    ],
-    ConnectorType.OPS_GENIE: [
-        [
-            ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-        ]
-    ],
+    # ConnectorType.PAGER_DUTY: [
+    #     [
+    #         ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
+    #     ]
+    # ],
+    # ConnectorType.OPS_GENIE: [
+    #     [
+    #         ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
+    #     ]
+    # ],
 
 }
 
@@ -208,6 +209,7 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
+    ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
 }
 
 
@@ -337,3 +339,54 @@ class ConnectorMetadataModelStore(models.Model):
 
     def __str__(self):
         return f'{self.account}:{self.connector_type}:{self.model_type}:{self.model_uid}'
+
+
+class SlackConnectorAlertType(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    channel_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+    class Meta:
+        unique_together = [['account', 'connector', 'channel_id', 'alert_type']]
+
+
+class SlackConnectorDataReceived(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    slack_channel_metadata_model = models.ForeignKey(ConnectorMetadataModelStore, on_delete=models.CASCADE,
+                                                     db_index=True, null=True)
+    channel_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    data = models.JSONField(null=True, blank=True)
+
+    db_alert_type = models.ForeignKey(SlackConnectorAlertType, on_delete=models.CASCADE, null=True, blank=True,
+                                      db_index=True)
+    alert_type = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+
+    tags = models.JSONField(null=True, blank=True)
+    title = models.TextField(null=True, blank=True)
+    text = models.TextField(null=True, blank=True)
+
+    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
+    received_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class ConnectorPeriodicRunMetadata(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    metadata = models.JSONField()
+    task_run_id = models.CharField(max_length=255)
+    status = models.IntegerField(null=True, blank=True,
+                                 choices=generate_choices(PeriodicRunStatus.StatusType))
+    started_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+
+
+class Site(models.Model):
+    domain = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    protocol = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)

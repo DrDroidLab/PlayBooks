@@ -1,14 +1,20 @@
 import logging
 from datetime import timedelta, datetime
 
+import time
+
 from celery import shared_task
 from django.conf import settings
 
 from accounts.models import Account
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
+from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions
+from executor.models import PlayBook
+from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor import action_executor
-from executor.workflows.crud.workflow_execution_crud import update_db_account_workflow_execution_status, \
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
+    update_db_account_workflow_execution_status, \
     get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
     update_db_account_workflow_execution_count_increment
 from executor.workflows.crud.workflows_crud import get_db_workflows
@@ -20,9 +26,10 @@ from management.utils.celery_task_signal_utils import publish_pre_run_task, publ
 from playbooks.utils.utils import current_datetime
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto
-from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto
-from utils.proto_utils import dict_to_proto
+from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog, PlaybookTaskDefinition, PlaybookTaskExecutionResult
+from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
+    WorkflowAction as WorkflowActionProto, WorkflowActionNotificationConfig, WorkflowActionSlackNotificationConfig
+from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +41,7 @@ def workflow_scheduler():
     all_scheduled_wf_executions = get_workflow_executions(
         status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
     for wf_execution in all_scheduled_wf_executions:
+        print('wf_execution', wf_execution)
         workflow_id = wf_execution.workflow_id
         account = wf_execution.account
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
@@ -146,14 +154,23 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                 f"{workflow_execution_id}, playbook_execution_id: {playbook_execution_id}")
     account = Account.objects.get(id=account_id)
     try:
-        playbook_executions = get_db_playbook_execution(account, playbook_execution_id=playbook_execution_id)
         workflows = get_db_workflows(account, workflow_id=workflow_id)
-        if not playbook_executions:
-            logger.error(f"Aborting workflow action execution as playbook execution not found for "
-                         f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
+        workflow_executions = get_db_workflow_executions(account, workflow_execution_id)
+        playbook_executions = get_db_playbook_execution(account, playbook_execution_id=playbook_execution_id)
         if not workflows:
             logger.error(f"Aborting workflow action execution as workflow not found for "
                          f"account_id: {account_id}, workflow_id: {workflow_id}")
+        if not workflow_executions:
+            logger.error(f"Aborting workflow action execution as workflow execution not found for "
+                         f"account_id: {account_id}, workflow_execution_id: {workflow_execution_id}")
+        if not playbook_executions:
+            logger.error(f"Aborting workflow action execution as playbook execution not found for "
+                         f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
+        thread_ts = None
+        workflow_execution = workflow_executions.first()
+        if workflow_execution.metadata:
+            thread_ts = workflow_execution.metadata.get('thread_ts', None)
+
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecutionProto = playbook_execution.proto
         pe_logs = pe_proto.logs
@@ -164,7 +181,17 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
         for w_action in w_actions:
-            action_executor(account, w_action, execution_output)
+            if w_action.type == WorkflowActionProto.Type.NOTIFY:
+                w_action_dict = proto_to_dict(w_action)
+                if w_action_dict.get('notification_config', {}).get('slack_config', {}).get('message_type',
+                                                                                            None) == 'THREAD_REPLY' and thread_ts:
+                    w_action_dict['notification_config']['slack_config']['thread_ts'] = thread_ts
+                    updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                    action_executor(account, updated_w_action, execution_output)
+                else:
+                    action_executor(account, w_action, execution_output)
+            else:
+                action_executor(account, w_action, execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running workflow action execution: {exc}")
         raise exc
@@ -173,3 +200,50 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
 workflow_action_execution_prerun_notifier = publish_pre_run_task(workflow_action_execution)
 workflow_action_execution_failure_notifier = publish_task_failure(workflow_action_execution)
 workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
+
+
+# @shared_task()
+def test_workflow_notification(account_id, workflow, message_type):
+    if message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
+        pe_logs = []
+        account = Account.objects.get(id=account_id)
+        time_range = { "time_lt": str(int(time.time())), "time_geq": str(int(time.time()) - 3600) }
+        tr: TimeRange = dict_to_proto(time_range, TimeRange)
+
+        playbook_id = workflow.playbooks[0].id.value
+        playbook = PlayBook.objects.get(id=playbook_id)
+        p_proto = playbook.proto
+
+        playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
+        try:
+            all_step_executions = {}
+            for step in list(playbook_steps):
+                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id, is_active=True)
+                playbook_task_definitions = playbook_task_definitions.order_by('created_at')
+                all_task_executions = []
+                for task in playbook_task_definitions:
+                    task_proto = task.proto
+                    task_result = execute_task(account_id, tr, task_proto)
+                    all_task_executions.append({
+                        'task': task,
+                        'task_result': proto_to_dict(task_result),
+                        'task_result_proto': task_result,
+                    })
+                all_step_executions[step] = all_task_executions
+            
+            for step, all_task_results in all_step_executions.items():
+                for result in all_task_results:
+                    playbook_execution_log = PlaybookExecutionLog(
+                        playbook=playbook,
+                        playbook_step=step,
+                        playbook_task_definition=result['task'].proto,
+                        playbook_task_result=result['task_result_proto'],
+                    )
+                    pe_logs.append(playbook_execution_log)
+
+        except Exception as exc:
+            logger.error(f"Error occurred while running playbook: {exc}")
+
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
+        action_executor(account, workflow.actions[0], execution_output)

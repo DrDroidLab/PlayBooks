@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
-import { playbookToSteps } from "../../../utils/playbookToSteps.ts";
+import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 
 const emptyStep = {
   modelType: "",

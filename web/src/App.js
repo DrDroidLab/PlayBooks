@@ -20,8 +20,24 @@ const ConnectorPage = React.lazy(() =>
 );
 const Integrations = React.lazy(() => import("./components/Integration"));
 const Playbooks = React.lazy(() => import("./components/Playbooks"));
+const Workflows = React.lazy(() => import("./components/Workflows"));
 const CreateWorkflow = React.lazy(() =>
-  import("./components/Playbooks/CreateWorkflow.jsx"),
+  import("./components/Workflows/create/CreateWorkflow.jsx"),
+);
+const WorkflowExecutionsList = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutionList.jsx"),
+);
+const WorkflowExecutionLogs = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutionLogs.jsx"),
+);
+const WorkflowExecutions = React.lazy(() =>
+  import("./components/Workflows/executions/WorkflowExecutions.jsx"),
+);
+const PlaybookExecutions = React.lazy(() =>
+  import("./components/Playbooks/executions/PlaybookExecutions.jsx"),
+);
+const PlaybookExecutionsList = React.lazy(() =>
+  import("./components/Playbooks/executions/PlaybookExecutionsList.jsx"),
 );
 const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
@@ -76,6 +92,10 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Playbooks />} />
           <Route path="/playbooks" element={<Playbooks />} />
+          <Route
+            path="/playbooks/executions/list"
+            element={<PlaybookExecutionsList />}
+          />
           <Route path="/playbooks/create" element={<CreatePlaybook />} />
           <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />
           <Route
@@ -83,12 +103,24 @@ const App = () => {
             element={<EditPlaybook />}
           />
           <Route
+            path="/playbooks/executions/:id"
+            element={<PlaybookExecutions />}
+          />
+          <Route
             path="/playbooks/logs/:playbook_run_id"
             element={<PlaybookLog />}
           />
+          <Route path="/workflows/create" element={<CreateWorkflow />} />
+          <Route exact path="/workflows" element={<Workflows />} />
+          <Route path="/workflows/:id" element={<CreateWorkflow />} />
           <Route
-            path="/playbooks/workflows/create"
-            element={<CreateWorkflow />}
+            path="/workflows/executions/:id"
+            element={<WorkflowExecutions />}
+          />
+          <Route path="/executions/list" element={<WorkflowExecutionsList />} />
+          <Route
+            path="/workflows/logs/:workflow_run_id"
+            element={<WorkflowExecutionLogs />}
           />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />

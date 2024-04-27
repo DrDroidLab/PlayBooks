@@ -1,11 +1,11 @@
-import { SOURCES, models } from "../constants/index.ts";
+import { SOURCES, models } from "../../../constants/index.ts";
 import {
   Playbook,
   PlaybookContract,
   PlaybookContractStep,
   PlaybookTask,
   Step,
-} from "../types.ts";
+} from "../../../types.ts";
 import { v4 as uuidv4 } from "uuid";
 
 export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {

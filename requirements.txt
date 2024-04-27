@@ -19,6 +19,7 @@ click-repl==0.3.0
 clickhouse-connect==0.7.8
 colorama==0.4.4
 cron-descriptor==1.4.3
+croniter==2.0.5
 cryptography==42.0.5
 datadog-api-client==2.24.0
 defusedxml==0.7.1

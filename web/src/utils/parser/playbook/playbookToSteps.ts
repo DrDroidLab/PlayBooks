@@ -1,5 +1,5 @@
-import { SOURCES, models } from "../constants/index.ts";
-import { Step } from "../types.ts";
+import { SOURCES, models } from "../../../constants/index.ts";
+import { Step } from "../../../types.ts";
 
 export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
   if (!(playbook.steps && playbook.steps.length > 0)) return [];
