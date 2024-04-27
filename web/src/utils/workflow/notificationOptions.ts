@@ -7,8 +7,7 @@ export const notificationOptions = [
         id: "reply-to-alert",
         type: "checkbox",
         group: "notification",
-        label:
-          "Get reply to the alert which triggered this workflow. (Only works if Trigger type is Slack)",
+        label: "Get reply to the alert which triggered this workflow",
       },
       {
         id: "slack-message",

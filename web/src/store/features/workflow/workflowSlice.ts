@@ -27,7 +27,8 @@ const workflowSlice = createSlice({
       state.currentWorkflow.errors[payload.key] = payload.value;
     },
     removeErrorKey(state, { payload }) {
-      delete state.currentWorkflow.errors[payload];
+      if (state.currentWorkflow.errors && state.currentWorkflow.errors[payload])
+        delete state.currentWorkflow.errors[payload];
     },
     resetWorkflowState(state) {
       state.currentWorkflow = initialState.currentWorkflow;

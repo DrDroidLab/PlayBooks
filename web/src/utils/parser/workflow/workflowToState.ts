@@ -20,6 +20,18 @@ export const workflowToState = (workflow) => {
     },
     playbookId:
       workflow?.playbooks?.length > 0 ? workflow?.playbooks[0].id : null,
+    notification:
+      workflow.actions.findIndex(
+        (e) => e.notification_config.slack_config.message_type === "MESSAGE",
+      ) !== -1
+        ? "slack-message"
+        : workflow.actions.findIndex(
+            (e) =>
+              e.notification_config.slack_config.message_type ===
+              "THREAD_REPLY",
+          ) !== -1
+        ? "reply-to-alert"
+        : undefined,
     "slack-message":
       workflow.actions.findIndex(
         (e) => e.notification_config.slack_config.message_type === "MESSAGE",

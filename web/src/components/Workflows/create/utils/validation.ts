@@ -53,18 +53,18 @@ export const validate = () => {
     } else {
       dispatch(removeErrorKey("source"));
     }
-    if (!(currentWorkflow.trigger as any)?.filterString) {
-      error = "Please enter a matching string";
-      dispatch(showSnackbar("A matching string is required"));
-      dispatch(
-        setErrorKey({
-          key: "filterString",
-          value: "Please enter a matching string",
-        }),
-      );
-    } else {
-      dispatch(removeErrorKey("filterString"));
-    }
+    // if (!(currentWorkflow.trigger as any)?.filterString) {
+    //   error = "Please enter a matching string";
+    //   dispatch(showSnackbar("A matching string is required"));
+    //   dispatch(
+    //     setErrorKey({
+    //       key: "filterString",
+    //       value: "Please enter a matching string",
+    //     }),
+    //   );
+    // } else {
+    //   dispatch(removeErrorKey("filterString"));
+    // }
   }
 
   if (currentWorkflow.schedule === "periodic") {
