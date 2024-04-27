@@ -11,6 +11,7 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
+from executor.workflows.tasks import test_workflow_notification
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
@@ -20,7 +21,7 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowActionSlackNotificationConfig, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -93,6 +94,32 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
                                       message=Message(title="Error", description=str(e)))
     return UpdateWorkflowResponse(success=BoolValue(value=True))
 
+
+@web_api(CreateWorkflowRequest)
+def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow: WorkflowProto = request_message.workflow
+
+    if not workflow.playbooks or workflow.playbooks == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select a playbook"))
+    
+    if not workflow.entry_points or workflow.entry_points == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select the trigger type"))
+    
+    if not workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select a slack channel"))
+    
+    if not workflow.actions or workflow.actions == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select a notification type"))
+    
+    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
+    return CreateWorkflowResponse(success=BoolValue(value=True))
+    
 
 @web_api(ExecuteWorkflowRequest)
 def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteWorkflowResponse, HttpResponse]:
