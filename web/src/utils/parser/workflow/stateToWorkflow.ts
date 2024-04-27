@@ -34,30 +34,32 @@ export const stateToWorkflow = () => {
     },
   };
 
-  if (workflow["slack-message"]) {
-    responseBody.workflow.actions.push({
-      type: "NOTIFY",
-      notification_config: {
-        type: "SLACK",
-        slack_config: {
-          message_type: "MESSAGE",
-          slack_channel_id: workflow.trigger?.channel?.channel_id,
+  if (workflow.notification) {
+    if (workflow.notification === "slack-message") {
+      responseBody.workflow.actions.push({
+        type: "NOTIFY",
+        notification_config: {
+          type: "SLACK",
+          slack_config: {
+            message_type: "MESSAGE",
+            slack_channel_id: workflow.trigger?.channel?.channel_id,
+          },
         },
-      },
-    });
-  }
+      });
+    }
 
-  if (workflow["reply-to-alert"]) {
-    responseBody.workflow.actions.push({
-      type: "NOTIFY",
-      notification_config: {
-        type: "SLACK",
-        slack_config: {
-          message_type: "THREAD_REPLY",
-          slack_channel_id: workflow.trigger?.channel?.channel_id,
+    if (workflow.notification === "reply-to-alert") {
+      responseBody.workflow.actions.push({
+        type: "NOTIFY",
+        notification_config: {
+          type: "SLACK",
+          slack_config: {
+            message_type: "THREAD_REPLY",
+            slack_channel_id: workflow.trigger?.channel?.channel_id,
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   switch (workflow.schedule) {
@@ -88,8 +90,6 @@ export const stateToWorkflow = () => {
     default:
       break;
   }
-
-  console.log("res", responseBody);
 
   return responseBody;
 };

@@ -8,12 +8,6 @@ export const getAccountUsersApi = apiSlice.injectEndpoints({
         url: GET_ACCOUNT_USERS,
         method: "POST",
       }),
-      transformResponse: (response: any) => {
-        return (
-          response?.metric_map?.ALERT_WEEKLY_DISTRIBUTION_BY_ALERT_TITLE
-            ?.metric_responses[0]?.data ?? []
-        );
-      },
     }),
   }),
 });

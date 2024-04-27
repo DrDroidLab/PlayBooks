@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Heading from "../Heading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useToggle from "../../hooks/useToggle";
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
@@ -10,13 +10,24 @@ import { useGetAccountUsersQuery } from "../../store/features/auth/api/index.ts"
 
 const InviteTeam = () => {
   const { isOpen: isActionOpen, toggle } = useToggle();
-  const [total] = useState(0);
-  const [pageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isLoading } = useGetAccountUsersQuery();
+  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
+  const { data, isLoading, isFetching, refetch } = useGetAccountUsersQuery();
+  const usersList = data?.users;
+  const total = data?.meta?.total_count;
 
   const handleInviteUsers = () => {
     toggle();
   };
+
+  useEffect(() => {
+    if (!isFetching) refetch(pageMeta);
+  }, [pageMeta]);
+
+  const pageUpdateCb = (page) => {
+    setPageMeta(page);
+  };
+
+  console.log(usersList);
 
   return (
     <div>
@@ -52,12 +63,13 @@ const InviteTeam = () => {
           Active Users
         </h1>
         <UserTable
-          userList={data}
-          total={total}
+          userList={usersList}
+          total={total ?? usersList?.length}
           pageSize={pageMeta ? pageMeta?.limit : 10}
           tableContainerStyles={
             data?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
-          }></UserTable>
+          }
+          pageUpdateCb={pageUpdateCb}></UserTable>
       </SuspenseLoader>
       <InviteUserOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </div>
