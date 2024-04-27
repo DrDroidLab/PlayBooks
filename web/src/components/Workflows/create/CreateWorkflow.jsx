@@ -16,6 +16,7 @@ import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts"
 import { useLazyGetWorkflowQuery } from "../../../store/features/workflow/api/getWorkflowApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/updateWorkflowApi.ts";
+import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/workflow/api/testWorkflowNotificationApi.ts"; 
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 import { validate } from "./utils/validation.ts";
 
@@ -28,6 +29,8 @@ function CreateTrigger() {
     useUpdateWorkflowMutation();
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
     useLazyGetWorkflowQuery();
+  const [triggerTestWorkflowNotification] =
+    useLazyTestWorkflowNotificationQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   const handleSave = async () => {
@@ -49,6 +52,11 @@ function CreateTrigger() {
     } catch (e) {
       dispatch(showSnackbar(e.toString()));
     }
+  };
+
+  const handleTestNotification = () => {
+    triggerTestWorkflowNotification();
+    dispatch(showSnackbar("Test Notification Sent"));
   };
 
   useEffect(() => {
@@ -89,6 +97,12 @@ function CreateTrigger() {
             type="submit">
             {workflowId ? "Update" : "Save"}
           </button>
+          {/* <button
+            onClick={handleTestNotification}
+            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
+            type="submit">
+            Test Run
+          </button> */}
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
         </div>
       </div>
