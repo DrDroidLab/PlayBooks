@@ -212,23 +212,49 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
       };
       break;
     case SOURCES.DATADOG:
-      task = {
-        ...task,
-        type: "METRIC",
-        metric_task: {
-          source: "DATADOG",
-          datadog_task: {
-            type: "SERVICE_METRIC_EXECUTION",
-            service_metric_execution_task: {
-              service_name: step.datadogService?.name,
-              environment_name: step?.datadogEnvironment ?? "",
-              metric: step.datadogMetric ?? "",
-              metric_family: step.datadogMetricFamily ?? "",
-              process_function: "timeseries",
+      switch (step.modelType) {
+        case models.DATADOG:
+          task = {
+            ...task,
+            type: "METRIC",
+            metric_task: {
+              source: "DATADOG",
+              datadog_task: {
+                type: "SERVICE_METRIC_EXECUTION",
+                service_metric_execution_task: {
+                  service_name: step.datadogService?.name,
+                  environment_name: step?.datadogEnvironment ?? "",
+                  metric: step.datadogMetric ?? "",
+                  metric_family: step.datadogMetricFamily ?? "",
+                  process_function: "timeseries",
+                },
+              },
             },
-          },
-        },
-      };
+          };
+
+          break;
+
+        case models.DATADOG_QUERY:
+          task = {
+            ...task,
+            type: "METRIC",
+            metric_task: {
+              source: "DATADOG",
+              datadog_task: {
+                type: "QUERY_METRIC_EXECUTION",
+                query_metric_execution_task: {
+                  queries: step.query2
+                    ? [step.query1!, step.query2]
+                    : [step.query1!],
+                  formula: step.formula!,
+                  process_function: "timeseries",
+                },
+              },
+            },
+          };
+
+          break;
+      }
       break;
 
     default:

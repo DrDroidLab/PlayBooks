@@ -56,6 +56,10 @@ export interface Step {
   showError: boolean;
   eksRegion?: string;
   eksNamespace?: string;
+  query1?: string;
+  query2?: string;
+  formula?: string;
+  requiresFormula?: boolean;
 }
 
 export interface GoldenMetric {
@@ -151,9 +155,16 @@ export interface ServiceMetricExecutionTask {
   process_function: string;
 }
 
+export interface QueryMetricExecutionTask {
+  process_function: string;
+  queries: string[];
+  formula: string;
+}
+
 export interface DatadogTask {
   type: string;
-  service_metric_execution_task: ServiceMetricExecutionTask;
+  service_metric_execution_task?: ServiceMetricExecutionTask;
+  query_metric_execution_task?: QueryMetricExecutionTask;
 }
 
 export interface MetricTask {
@@ -203,6 +214,7 @@ export interface Playbook {
   id?: string | null;
   name?: string;
   currentPlaybook?: any;
+  currentStepIndex?: string | null;
   steps: Step[];
   playbooks: any;
   meta: any;
@@ -242,6 +254,7 @@ export interface ConnectorsType {
   label: string;
   connector_type: string;
   model_type: string;
+  display_name: string;
 }
 
 export interface ConnectorTypesResponse {

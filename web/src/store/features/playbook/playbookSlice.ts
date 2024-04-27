@@ -26,6 +26,7 @@ const initialState: Playbook = {
   },
   isEditing: false,
   lastUpdatedAt: null,
+  currentStepIndex: null,
 };
 
 const playbookSlice = createSlice({
@@ -145,6 +146,32 @@ const playbookSlice = createSlice({
     setMeta(state, { payload }) {
       state.meta = payload;
     },
+    setCurrentStepIndex(state, { payload }) {
+      state.currentStepIndex = payload.toString();
+    },
+    createStepWithSource(state, { payload }) {
+      state.steps.forEach((step) => {
+        step.isOpen = false;
+      });
+      const index = state.steps.length;
+      state.steps.push({
+        ...{
+          source: payload.source,
+          modelType: payload.modelType,
+          selectedSource: payload.key,
+          description: state?.steps[index]?.description,
+          notes: state?.steps[index]?.notes,
+          assets: [],
+          isOpen: true,
+          isPlayground: false,
+          globalVariables: state.globalVariables ?? [],
+          showError: false,
+        },
+        globalVariables: state.globalVariables ?? [],
+      });
+
+      state.currentStepIndex = index.toString();
+    },
     addStep: (state) => {
       state.steps.forEach((step) => {
         step.isOpen = false;
@@ -159,6 +186,7 @@ const playbookSlice = createSlice({
     },
     deleteStep: (state, { payload }) => {
       state.steps.splice(payload, 1);
+      state.currentStepIndex = null;
     },
     updateStep: (state, { payload }) => {
       state.steps[payload.index][payload.key] = payload.value;
@@ -281,6 +309,18 @@ const playbookSlice = createSlice({
     setDbQuery(state, { payload }) {
       state.steps[payload.index].dbQuery = payload.query;
     },
+    setQuery1(state, { payload }) {
+      state.steps[payload.index].query1 = payload.query;
+    },
+    setQuery2(state, { payload }) {
+      state.steps[payload.index].query2 = payload.query;
+    },
+    setFormula(state, { payload }) {
+      state.steps[payload.index].formula = payload.formula;
+    },
+    setRequiresFormula(state, { payload }) {
+      state.steps[payload.index].requiresFormula = payload.requiresFormula;
+    },
     setCommand(state, { payload }) {
       state.steps[payload.index].command = payload.command;
     },
@@ -367,6 +407,8 @@ export const {
   updateGlobalVariable,
   setName,
   setMeta,
+  setCurrentStepIndex,
+  createStepWithSource,
   addStep,
   toggleStep,
   deleteStep,
@@ -411,6 +453,10 @@ export const {
   selectEksNamespace,
   selectEksRegion,
   selectCluster,
+  setRequiresFormula,
+  setQuery1,
+  setQuery2,
+  setFormula,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

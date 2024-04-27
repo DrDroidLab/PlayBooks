@@ -219,24 +219,34 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
 
       case SOURCES.DATADOG:
         stepSource = "DATADOG";
-        selected = "DATADOG Service";
-        modelType = "DATADOG_SERVICE";
+        const datadogStep = task?.metric_task?.datadog_task;
         additionalData = {
           ...additionalData,
           datadogService: {
-            name: task?.metric_task?.datadog_task?.service_metric_execution_task
-              ?.service_name,
+            name: datadogStep?.service_metric_execution_task?.service_name,
           },
           datadogMetricFamily:
-            task?.metric_task?.datadog_task?.service_metric_execution_task
-              ?.metric_family,
+            datadogStep?.service_metric_execution_task?.metric_family,
           datadogEnvironment:
-            task?.metric_task?.datadog_task?.service_metric_execution_task
-              ?.environment_name,
-          datadogMetric:
-            task?.metric_task?.datadog_task?.service_metric_execution_task
-              ?.metric,
+            datadogStep?.service_metric_execution_task?.environment_name,
+          datadogMetric: datadogStep?.service_metric_execution_task?.metric,
+          query1: datadogStep?.query_metric_execution_task?.queries[0],
+          query2: datadogStep?.query_metric_execution_task?.queries[1],
+          formula: datadogStep?.query_metric_execution_task?.formula,
+          requiresFormula: datadogStep?.query_metric_execution_task?.formula,
         };
+        switch (datadogStep.type) {
+          case "SERVICE_METRIC_EXECUTION":
+            selected = "DATADOG Service";
+            modelType = "DATADOG_SERVICE";
+            break;
+          case "QUERY_METRIC_EXECUTION":
+            selected = "DATADOG Custom Query";
+            modelType = "DATADOG_QUERY";
+            break;
+          default:
+            break;
+        }
         break;
       default:
         break;
