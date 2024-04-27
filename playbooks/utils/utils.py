@@ -29,7 +29,7 @@ def calculate_cron_times(rule, start_time=None, end_time=None):
         end_time = start_time + timedelta(days=1)
     cron = croniter.croniter(rule, start_time)
 
-    cron_times = []
+    cron_times = [start_time]
     current_time = start_time
     while current_time < end_time:
         next_cron = cron.get_next(datetime)
