@@ -99,6 +99,10 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
                 title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
             else:
                 title = f'Fetched `{metric_expression}` from `{metric_source}`'
+            notes = None
+            if task.notes.value:
+                notes = task.notes.value
+
             return InterpretationProto(
                 type=InterpretationProto.Type.IMAGE,
                 title=StringValue(value=title),

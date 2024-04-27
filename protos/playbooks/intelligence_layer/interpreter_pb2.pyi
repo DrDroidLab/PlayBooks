@@ -3,7 +3,9 @@
 isort:skip_file
 """
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
@@ -55,11 +57,32 @@ class Interpretation(google.protobuf.message.Message):
     IMAGE: Interpretation.Type.ValueType  # 1
     SUMMARY: Interpretation.Type.ValueType  # 2
 
+    @typing_extensions.final
+    class ExternalLink(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        NAME_FIELD_NUMBER: builtins.int
+        URL_FIELD_NUMBER: builtins.int
+        @property
+        def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["name", b"name", "url", b"url"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "url", b"url"]) -> None: ...
+
     TYPE_FIELD_NUMBER: builtins.int
     TITLE_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
     SUMMARY_FIELD_NUMBER: builtins.int
     IMAGE_URL_FIELD_NUMBER: builtins.int
+    NOTES_FIELD_NUMBER: builtins.int
+    EXTERNAL_LINKS_FIELD_NUMBER: builtins.int
     type: global___Interpretation.Type.ValueType
     @property
     def title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -69,6 +92,10 @@ class Interpretation(google.protobuf.message.Message):
     def summary(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def image_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def notes(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def external_links(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Interpretation.ExternalLink]: ...
     def __init__(
         self,
         *,
@@ -77,8 +104,10 @@ class Interpretation(google.protobuf.message.Message):
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
         summary: google.protobuf.wrappers_pb2.StringValue | None = ...,
         image_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        notes: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        external_links: collections.abc.Iterable[global___Interpretation.ExternalLink] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "image_url", b"image_url", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "image_url", b"image_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "image_url", b"image_url", "notes", b"notes", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "external_links", b"external_links", "image_url", b"image_url", "notes", b"notes", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
 
 global___Interpretation = Interpretation

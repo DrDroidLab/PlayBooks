@@ -283,6 +283,8 @@ class ConnectorKey(models.Model):
                              ConnectorKeyProto.KeyType.CLICKHOUSE_USER, ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD,
                              ConnectorKeyProto.KeyType.GCM_PROJECT_ID, ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
                              ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
+                             ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
+                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
                              ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY]:
             key_value = '*********' + self.key[-4:]
             return ConnectorKeyProto(key_type=self.key_type,

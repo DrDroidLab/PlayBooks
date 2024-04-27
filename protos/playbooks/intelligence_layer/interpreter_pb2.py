@@ -16,17 +16,19 @@ from protos import base_pb2 as protos_dot_base__pb2
 from protos.playbooks import playbook_pb2 as protos_dot_playbooks_dot_playbook__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n5protos/playbooks/intelligence_layer/interpreter.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\xb2\x02\n\x0eInterpretation\x12\x33\n\x04type\x18\x01 \x01(\x0e\x32%.protos.playbooks.Interpretation.Type\x12+\n\x05title\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07summary\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\timage_url\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"+\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05IMAGE\x10\x01\x12\x0b\n\x07SUMMARY\x10\x02*T\n\x0fInterpreterType\x12\r\n\tUNKNOWN_I\x10\x00\x12\x0b\n\x07\x42\x41SIC_I\x10\x01\x12\x11\n\rSTATISTICAL_I\x10\x02\x12\x12\n\x0eLLM_CHAT_GPT_I\x10\x03\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n5protos/playbooks/intelligence_layer/interpreter.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x8d\x04\n\x0eInterpretation\x12\x33\n\x04type\x18\x01 \x01(\x0e\x32%.protos.playbooks.Interpretation.Type\x12+\n\x05title\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07summary\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\timage_url\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05notes\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x45\n\x0e\x65xternal_links\x18\x07 \x03(\x0b\x32-.protos.playbooks.Interpretation.ExternalLink\x1a\x65\n\x0c\x45xternalLink\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12)\n\x03url\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"+\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05IMAGE\x10\x01\x12\x0b\n\x07SUMMARY\x10\x02*T\n\x0fInterpreterType\x12\r\n\tUNKNOWN_I\x10\x00\x12\x0b\n\x07\x42\x41SIC_I\x10\x01\x12\x11\n\rSTATISTICAL_I\x10\x02\x12\x12\n\x0eLLM_CHAT_GPT_I\x10\x03\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.intelligence_layer.interpreter_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _INTERPRETERTYPE._serialized_start=468
-  _INTERPRETERTYPE._serialized_end=552
+  _INTERPRETERTYPE._serialized_start=687
+  _INTERPRETERTYPE._serialized_end=771
   _INTERPRETATION._serialized_start=160
-  _INTERPRETATION._serialized_end=466
-  _INTERPRETATION_TYPE._serialized_start=423
-  _INTERPRETATION_TYPE._serialized_end=466
+  _INTERPRETATION._serialized_end=685
+  _INTERPRETATION_EXTERNALLINK._serialized_start=539
+  _INTERPRETATION_EXTERNALLINK._serialized_end=640
+  _INTERPRETATION_TYPE._serialized_start=642
+  _INTERPRETATION_TYPE._serialized_end=685
 # @@protoc_insertion_point(module_scope)

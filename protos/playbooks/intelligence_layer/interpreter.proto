@@ -21,9 +21,15 @@ message Interpretation {
     IMAGE = 1;
     SUMMARY = 2;
   }
+  message ExternalLink {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue url = 2;
+  }
   Type type = 1;
   google.protobuf.StringValue title = 2;
   google.protobuf.StringValue description = 3;
   google.protobuf.StringValue summary = 4;
   google.protobuf.StringValue image_url = 5;
+  google.protobuf.StringValue notes = 6;
+  repeated ExternalLink external_links = 7;
 }

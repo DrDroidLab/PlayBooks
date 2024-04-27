@@ -19,6 +19,9 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
         metric_task_result: PlaybookMetricTaskExecutionResultProto = task_result.metric_task_execution_result
         if interpreter_type == InterpreterType.BASIC_I:
             return basic_metric_task_result_interpreter(task, metric_task_result)
+    else:
+        notes = task.notes.value if task_result.notes else None
+        return InterpretationProto(type=InterpretationProto.Type.SUMMARY, notes=StringValue(value=notes))
 
 
 def playbook_execution_result_interpret(interpreter_type: InterpreterType, playbook: PlaybookProto,
