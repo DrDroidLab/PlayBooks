@@ -31,10 +31,9 @@ def calculate_cron_times(rule, start_time=None, end_time=None):
 
     cron_times = [start_time]
     current_time = start_time
-    while current_time < end_time:
+    while current_time <= end_time:
+        cron_times.append(current_time)
         next_cron = cron.get_next(datetime)
-        if next_cron < end_time:
-            cron_times.append(next_cron)
         current_time = next_cron
     return cron_times
 
