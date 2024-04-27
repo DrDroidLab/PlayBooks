@@ -23,6 +23,7 @@
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "reactflow": "^11.11.2",
     "rehype-sanitize": "^6.0.0"
   },
   "scripts": {

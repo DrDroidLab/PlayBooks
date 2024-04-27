@@ -49,6 +49,9 @@ const EditPlaybook = React.lazy(() =>
 const CreatePlaybook = React.lazy(() =>
   import("./components/Playbooks/CreatePlaybook"),
 );
+const CreatePlaybookBeta = React.lazy(() =>
+  import("./components/Playbooks/create/index.jsx"),
+);
 const PlaybookLog = React.lazy(() =>
   import("./components/Playbooks/logs/PlaybookLog"),
 );
@@ -86,6 +89,10 @@ const App = () => {
       <Route element={<BaseLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+      </Route>
+
+      <Route element={<RequireAuth />}>
+        <Route path="/playbooks/create/beta" element={<CreatePlaybookBeta />} />
       </Route>
 
       <Route element={<RequireAuth />}>

@@ -39,7 +39,9 @@
 }
 
 .output-box {
-  width: calc(100% - 5px); /* Each item takes up 50% of the width with a gap of 20px */
+  width: calc(
+    100% - 5px
+  ); /* Each item takes up 50% of the width with a gap of 20px */
   background-color: #fafafa;
   padding: 5px;
   box-sizing: border-box;

@@ -71,9 +71,12 @@ function TaskDetails({ task, data, stepIndex }) {
           key={index}
           style={{
             display: "flex",
-            marginTop: "5px",
-            gap: "5px",
-            alignItems: "center",
+            flexDirection: "column",
+            marginTop: "10px",
+            paddingTop: "20px",
+            borderTop: "0.5px solid gray",
+            gap: "10px",
+            alignItems: "flex-start",
             flexWrap: "wrap",
             justifyContent: "flex-start",
           }}>

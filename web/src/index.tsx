@@ -10,6 +10,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
 import Loading from "./components/common/Loading/index.tsx";
+import { ReactFlowProvider } from "reactflow";
 
 if (process.env.POSTHOG_ENABLED === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
@@ -21,22 +22,24 @@ if (process.env.POSTHOG_ENABLED === "true") {
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <PostHogProvider client={posthog}>
-    <Provider store={store}>
-      <BrowserRouter>
-        <TimeRangeProvider>
-          <Routes>
-            <Route
-              path={"/*"}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <App />
-                </React.Suspense>
-              }
-            />
-          </Routes>
-          <GlobalSnackbar />
-        </TimeRangeProvider>
-      </BrowserRouter>
-    </Provider>
+    <ReactFlowProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          <TimeRangeProvider>
+            <Routes>
+              <Route
+                path={"/*"}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <App />
+                  </React.Suspense>
+                }
+              />
+            </Routes>
+            <GlobalSnackbar />
+          </TimeRangeProvider>
+        </BrowserRouter>
+      </Provider>
+    </ReactFlowProvider>
   </PostHogProvider>,
 );

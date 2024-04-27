@@ -21,8 +21,8 @@ export const postgresBuilder = (task, index, options: any) => {
           handleChange: e => {
             store.dispatch(setDbQuery({ index, query: e.target.value }));
           },
-          value: task.dbQuery,
-          requires: ['database']
+          value: task.dbQuery
+          // requires: ['database']
         }
       ]
     ]

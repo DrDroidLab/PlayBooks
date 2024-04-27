@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
+import { integrationSentenceMap } from "../../../utils/integrationGroupList.ts";
 
 const emptyStep = {
   modelType: "",
@@ -147,7 +148,8 @@ const playbookSlice = createSlice({
       state.meta = payload;
     },
     setCurrentStepIndex(state, { payload }) {
-      state.currentStepIndex = payload.toString();
+      if (payload !== null) state.currentStepIndex = payload.toString();
+      else state.currentStepIndex = null;
     },
     createStepWithSource(state, { payload }) {
       state.steps.forEach((step) => {
@@ -159,7 +161,9 @@ const playbookSlice = createSlice({
           source: payload.source,
           modelType: payload.modelType,
           selectedSource: payload.key,
-          description: state?.steps[index]?.description,
+          description:
+            state?.steps[index]?.description ??
+            integrationSentenceMap[payload.modelType],
           notes: state?.steps[index]?.notes,
           assets: [],
           isOpen: true,
@@ -170,7 +174,7 @@ const playbookSlice = createSlice({
         globalVariables: state.globalVariables ?? [],
       });
 
-      state.currentStepIndex = index.toString();
+      // state.currentStepIndex = index.toString();
     },
     addStep: (state) => {
       state.steps.forEach((step) => {
@@ -195,6 +199,7 @@ const playbookSlice = createSlice({
       state.steps[payload.index].description = payload.description;
     },
     changeProgress: (state, { payload }) => {
+      console.log(payload);
       state.steps[payload.index].executioninprogress = payload.progress;
     },
     selectSourceAndModel: (
