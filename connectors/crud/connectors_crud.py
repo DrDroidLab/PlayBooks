@@ -13,6 +13,7 @@ from integrations_api_processors.datadog_api_processor import DatadogApiProcesso
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
+from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
@@ -39,6 +40,7 @@ connector_type_api_processor_map = {
     ConnectorType.NEW_RELIC: NewRelicGraphQlConnector,
     ConnectorType.POSTGRES: PostgresDBProcessor,
     ConnectorType.GRAFANA_VPC: VpcApiProcessor,
+    ConnectorType.SLACK: SlackApiProcessor,
 }
 
 
@@ -112,6 +114,10 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['user'] = conn_key.key.value
             elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
+    elif connector_type == ConnectorType.SLACK:
+        for conn_key in connector_keys:
+            if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:
+                credentials_dict['bot_auth_token'] = conn_key.key.value
     return credentials_dict
 
 
@@ -270,6 +276,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
         return False, f'Missing Required Connector Keys for Connector Type: ' \
                       f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
+    print('credentials_dict', credentials_dict)
     try:
         api_processor = connector_type_api_processor_map.get(connector_type)
         if not api_processor:
