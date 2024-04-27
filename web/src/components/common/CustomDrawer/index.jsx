@@ -42,7 +42,7 @@ const CustomDrawer = ({
         animate={isOpen ? "open" : "closed"}
         variants={drawerVariants}
         transition={{ type: "tween", stiffness: 260, damping: 20 }}
-        className={`${addtionalStyles} overflow-scroll fixed top-[${startFrom}px] ${
+        className={`${addtionalStyles} fixed top-[${startFrom}px] ${
           openFrom === "right" ? "right-0" : "left-0"
         } h-full bg-white shadow-lg z-[100] w-full lg:w-1/2`}>
         <div className={`flex ${openFrom === "left" ? "justify-end" : ""}`}>
