@@ -1,175 +1,35 @@
 {
     "name": "PostgreSQL Error Rate Increased",
+    "description": "This playbook is to investigate common reasons for PostgreSQL errors and identify potential Root cause",
     "steps": [
         {
             "description": "Check the Error Type that has started occurring",
-            "tasks": [
-                {
-                    "description": "Check the Error Type that has started occurring",
-                    "notes": "",
-                    "type": "METRIC",
-                    "metric_task": {
-                        "source": "CLOUDWATCH",
-                        "cloudwatch_task": {
-                            "type": "FILTER_LOG_EVENTS",
-                            "filter_log_events_task": {
-                                "region": "{aws-region}",
-                                "log_group_name": "{log_group_name}",
-                                "filter_query": "{fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20}"
-                            }
-                        }
-                    }
-                }
-            ]
+            "notes": "",
+            "filter_query": "{fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20}"
         },
         {
             "description": "Check Important Metrics",
-            "tasks": [
-                {
-                    "description": "Check Important Metrics",
-                    "notes": "Keep a check on this value during investigation.",
-                    "type": "METRIC",
-                    "metric_task": {
-                        "source": "CLOUDWATCH",
-                        "cloudwatch_task": {
-                            "type": "METRIC_EXECUTION",
-                            "metric_execution_task": {
-                                "namespace": "AWS/RDS",
-                                "region": "{aws-region}",
-                                "metric_name": [
-                                    "CPUUtilization",
-                                    "FreeableMemory",
-                                    "ReadIOPS",
-                                    "WriteIOPS",
-                                    "ReadLatency",
-                                    "WriteLatency",
-                                    "NetworkReceiveThroughput",
-                                    "NetworkTransmitThroughput"
-                                ],
-                                "dimensions": [
-                                    {
-                                        "name": "DBInstanceIdentifier",
-                                        "value": "{db_name}"
-                                    }
-                                ],
-                                "statistic": "Average",
-                                "process_function": "timeseries"
-                            }
-                        }
-                    }
-                }
-            ]
+            "notes": "For the PostgreSQL, check `CPUUtilization`,`FreeableMemory`,`ReadIOPS`,`WriteIOPS`,`ReadLatency`,`WriteLatency`,`NetworkReceiveThroughput`,`NetworkTransmitThroughput`"
         },
         {
             "description": "Check DB Connections",
-            "tasks": [
-                {
-                    "description": "Check DB Connections",
-                    "notes": "See if count of connections has increased.",
-                    "type": "METRIC",
-                    "metric_task": {
-                        "source": "CLOUDWATCH",
-                        "cloudwatch_task": {
-                            "type": "METRIC_EXECUTION",
-                            "metric_execution_task": {
-                                "namespace": "AWS/RDS",
-                                "region": "{aws-region}",
-                                "metric_name": [
-                                    "DatabaseConnections"
-                                ],
-                                "dimensions": [
-                                    {
-                                        "name": "DBInstanceIdentifier",
-                                        "value": "{db_name}"
-                                    }
-                                ],
-                                "statistic": "Average",
-                                "process_function": "timeseries"
-                            }
-                        }
-                    }
-                }
-            ]
+            "notes": "See if DatabaseConnections have increased."
         },
         {
             "description": "Check Current Sessions and Queries",
-            "tasks": [
-                {
-                    "description": "Check Current Sessions and Queries",
-                    "notes": "Check if there are any long running queries or queries that might be causing the errors.",
-                    "type": "DATA_FETCH",
-                    "data_fetch_task": {
-                        "source": "POSTGRES",
-                        "postgres_data_fetch_task": {
-                            "database": "{db_name}",
-                            "query": "SELECT * FROM pg_stat_activity;"
-                        }
-                    }
-                }
-            ]
+            "notes": "Check if there are any long running queries or queries that might be causing the errors. `SELECT * FROM pg_stat_activity;`"
         },
         {
             "description": "Recent Deployments",
-            "tasks": [
-                {
-                    "description": "Recent Deployments",
-                    "notes": "",
-                    "type": "DATA_FETCH",
-                    "data_fetch_task": {
-                        "source": "EKS",
-                        "eks_data_fetch_task": {
-                            "command_type": "GET_PODS",
-                            "description": "Get Pod Details",
-                            "region": "us-west-2",
-                            "cluster": "prod",
-                            "namespace": "deployment"
-                        }
-                    }
-                }
-            ]
+            "notes": "Check if there are any deployment changes that might have caused the errors."
         },
         {
             "description": "service_metric_deviation",
-            "tasks": [
-                {
-                    "description": "service_metric_deviation",
-                    "notes": "",
-                    "type": "METRIC",
-                    "metric_task": {
-                        "source": "DATADOG",
-                        "datadog_task": {
-                            "type": "SERVICE_METRIC_EXECUTION",
-                            "service_metric_execution_task": {
-                                "service_name": "{ingest}",
-                                "environment_name": "{prod}",
-                                "metric_family": "{trace}",
-                                "metric": [
-                                    "trace.django.request.duration.by_http_status",
-                                    "trace.django.request.hits"
-                                ],
-                                "process_function": "timeseries"
-                            }
-                        }
-                    }
-                }
-            ]
+            "notes": ""
         },
         {
             "description": "Replication Status",
-            "tasks": [
-                {
-                    "description": "Replication Status",
-                    "notes": "A significant lag in replication can cause errors because of stale data.",
-                    "type": "DATA_FETCH",
-                    "data_fetch_task": {
-                        "source": "POSTGRES",
-                        "postgres_data_fetch_task": {
-                            "database": "{db_name}",
-                            "query": "SELECT client_addr, state, sync_state, sent_lsn, write_lsn, flush_lsn, replay_lsn, write_lag, flush_lag, replay_lag FROM pg_stat_replication;"
-                        }
-                    }
-                }
-            ]
+            "notes": "A significant lag in replication can cause errors because of stale data. `SELECT client_addr, state, sync_state, sent_lsn, write_lsn, flush_lsn, replay_lsn, write_lag, flush_lag, replay_lag FROM pg_stat_replication;`"
         }
     ]
 }

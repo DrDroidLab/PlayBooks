@@ -1,92 +1,22 @@
 {
   "name": "Deployment Stability Tracker",
+  "description": "Playbook to evaluate critical metrics after a deployment in Production",
   "steps": [
     {
       "description": "service_metric_deviation",
-      "tasks": [
-        {
-          "description": "service_metric_deviation",
-          "notes": "",
-          "type": "METRIC",
-          "metric_task": {
-            "source": "DATADOG",
-            "datadog_task": {
-              "type": "SERVICE_METRIC_EXECUTION",
-              "service_metric_execution_task": {
-                "service_name": "{ingest}",
-                "environment_name": "{prod}",
-                "metric_family": "{trace}",
-                "metric": "{trace.django.request.duration.by_http_status}",
-                "process_function": "timeseries"
-              }
-            }
-          }
-        }
-      ]
+      "notes": "Check Golden Signals of the related services"
     },
     {
       "description": "Pod health",
-      "tasks": [
-        {
-          "description": "Pod health",
-          "notes": "",
-          "type": "DATA_FETCH",
-          "data_fetch_task": {
-            "source": "EKS",
-            "eks_data_fetch_task": {
-              "command_type": "GET_PODS",
-              "description": "Get Pod Details",
-              "region": "{us-west-2}",
-              "cluster": "{prod}",
-              "namespace": "{deployment}"
-            }
-          }
-        }
-      ]
+      "notes": "Track health of pods and identify if any of them are not running."
     },
     {
-      "description": "deviation in critical new alerts",
-      "tasks": [
-        {
-          "description": "deviation in critical new alerts",
-          "notes": "",
-          "type": "METRIC",
-          "metric_task": {
-            "source": "DATADOG",
-            "datadog_task": {
-              "type": "SERVICE_METRIC_EXECUTION",
-              "service_metric_execution_task": {
-                "service_name": "{prototype}",
-                "environment_name": "{prod}",
-                "metric_family": "{trace}",
-                "metric": "{trace.django.request.duration}",
-                "process_function": "timeseries"
-              }
-            }
-          }
-        }
-      ]
+      "description": "deviation in critical new metrics",
+      "notes": "Are any of your critical metrics impacted?"
     },
     {
       "description": "Cloudwatch error counts",
-      "tasks": [
-        {
-          "description": "Cloudwatch error counts",
-          "notes": "",
-          "type": "METRIC",
-          "metric_task": {
-            "source": "CLOUDWATCH",
-            "cloudwatch_task": {
-              "type": "FILTER_LOG_EVENTS",
-              "filter_log_events_task": {
-                "region": "{us-west-2}",
-                "log_group_name": "{/aws/containerinsights/prod/application}",
-                "filter_query": "{fields @timestamp, @message\\n| filter @message like /error/\\n| stats count() as ErrorCount by bin(1m)}"
-              }
-            }
-          }
-        }
-      ]
+      "notes": "Check if there are any recent errors that have come up since the last deployment? `{fields @timestamp, @message\\n| filter @message like /error/\\n| stats count() as ErrorCount by bin(1m)}`"
     }
   ]
 }
