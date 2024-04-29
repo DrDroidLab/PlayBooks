@@ -7,7 +7,7 @@ from protos.connectors.connector_pb2 import ConnectorType, ConnectorMetadataMode
 
 playbooks_supported_connectors = [ConnectorType.CLOUDWATCH, ConnectorType.GRAFANA, ConnectorType.GRAFANA_VPC,
                                   ConnectorType.CLICKHOUSE, ConnectorType.EKS, ConnectorType.NEW_RELIC,
-                                  ConnectorType.DATADOG, ConnectorType.POSTGRES]
+                                  ConnectorType.DATADOG, ConnectorType.POSTGRES, ConnectorType.SQL_DATABASE_CONNECTION]
 
 supported_connectors_model_maps = {
     ConnectorType.CLOUDWATCH: [ConnectorMetadataModelType.CLOUDWATCH_METRIC,
@@ -21,7 +21,8 @@ supported_connectors_model_maps = {
     ConnectorType.SLACK: [ConnectorMetadataModelType.SLACK_CHANNEL],
     ConnectorType.DATADOG: [ConnectorMetadataModelType.DATADOG_SERVICE, ConnectorMetadataModelType.DATADOG_QUERY],
     ConnectorType.POSTGRES: [ConnectorMetadataModelType.POSTGRES_DATABASE],
-    ConnectorType.EKS: [ConnectorMetadataModelType.EKS_CLUSTER]
+    ConnectorType.EKS: [ConnectorMetadataModelType.EKS_CLUSTER],
+    ConnectorType.SQL_DATABASE_CONNECTION: [ConnectorMetadataModelType.SQL_DATABASE_CONNECTION_RAW_QUERY],
 }
 
 model_type_display_name_maps = {
@@ -36,6 +37,7 @@ model_type_display_name_maps = {
     ConnectorMetadataModelType.DATADOG_QUERY: "Custom Query",
     ConnectorMetadataModelType.POSTGRES_DATABASE: "Database",
     ConnectorMetadataModelType.EKS_CLUSTER: "Cluster",
+    ConnectorMetadataModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
 }
 
 
@@ -64,6 +66,13 @@ def playbooks_builder_get_connector_sources_options(account: Account):
 
         if connector.connector_type == ConnectorType.DATADOG:
             model_type = ConnectorMetadataModelType.DATADOG_QUERY
+            display_name = model_type_display_name_maps.get(model_type, "")
+            model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
+                                                                                                  display_name=StringValue(
+                                                                                                      value=display_name)))
+
+        if connector.connector_type == ConnectorType.SQL_DATABASE_CONNECTION:
+            model_type = ConnectorMetadataModelType.SQL_DATABASE_CONNECTION_RAW_QUERY
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(

@@ -411,12 +411,18 @@ message PlaybookEksDataFetchTask {
   google.protobuf.StringValue namespace = 5;
 }
 
+
+message PlaybookSqlDatabaseConnectionDataFetchTask {
+  google.protobuf.StringValue query = 1;
+}
+
 message PlaybookDataFetchTaskDefinition {
   enum Source {
     UNKNOWN = 0;
     CLICKHOUSE = 1;
     POSTGRES = 2;
     EKS = 3;
+    SQL_DATABASE_CONNECTION = 4;
   }
   Source source = 1;
   google.protobuf.StringValue order_by_column = 2;
@@ -426,6 +432,7 @@ message PlaybookDataFetchTaskDefinition {
     PlaybookClickhouseDataFetchTask clickhouse_data_fetch_task = 5;
     PlaybookPostgresDataFetchTask postgres_data_fetch_task = 6;
     PlaybookEksDataFetchTask eks_data_fetch_task = 7;
+    PlaybookSqlDatabaseConnectionDataFetchTask sql_database_connection_data_fetch_task = 8;
   }
 }
 

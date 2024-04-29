@@ -4,6 +4,7 @@ from executor.data_fetch_task_executor.clickhouse_data_fetch_task_executor impor
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
 from executor.data_fetch_task_executor.eks_data_fetch_task_executor import EksDataFetchTaskExecutor
 from executor.data_fetch_task_executor.postgres_data_fetch_task_executor import PostgresDataFetchTaskExecutor
+from executor.data_fetch_task_executor.sql_database_data_fetch_task_executor import SqlDatabaseDataFetchTaskExecutor
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto
 
 
@@ -33,3 +34,5 @@ data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.PO
 data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.EKS, EksDataFetchTaskExecutor)
 data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.CLICKHOUSE,
                                   ClickhouseDataFetchTaskExecutor)
+data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.SQL_DATABASE_CONNECTION,
+                                  SqlDatabaseDataFetchTaskExecutor)

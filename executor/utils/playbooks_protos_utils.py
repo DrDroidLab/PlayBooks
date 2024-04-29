@@ -6,7 +6,8 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, Playbook
     ElseEvaluationTask, PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, \
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
-    PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto
+    PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
+    PlaybookSqlDatabaseConnectionDataFetchTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -118,6 +119,14 @@ def get_postgres_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
                                            postgres_data_fetch_task=postgres_data_fetch_task_proto)
 
 
+def get_sql_database_connection_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
+    sql_database_connection_data_fetch_task = task.get('sql_database_connection_data_fetch_task', {})
+    sql_database_connection_data_fetch_task_proto = dict_to_proto(sql_database_connection_data_fetch_task,
+                                                                  PlaybookSqlDatabaseConnectionDataFetchTask)
+    return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.SQL_DATABASE_CONNECTION,
+                                           sql_database_connection_data_fetch_task=sql_database_connection_data_fetch_task_proto)
+
+
 def get_eks_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     eks_data_fetch_task = task.get('eks_data_fetch_task', {})
     eks_data_fetch_task_proto = dict_to_proto(eks_data_fetch_task, PlaybookEksDataFetchTask)
@@ -200,6 +209,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             data_fetch_task_proto = get_postgres_task_execution_proto(task)
         elif source == 'EKS':
             data_fetch_task_proto = get_eks_task_execution_proto(task)
+        elif source == 'SQL_DATABASE_CONNECTION':
+            data_fetch_task_proto = get_sql_database_connection_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return PlaybookTaskDefinitionProto(

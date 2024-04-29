@@ -50,6 +50,7 @@ enum ConnectorType {
   AGENT_PROXY = 34;
   GRAFANA_VPC = 35;
   GITHUB_ACTIONS = 36;
+  SQL_DATABASE_CONNECTION = 37;
 }
 
 
@@ -102,6 +103,9 @@ enum ConnectorMetadataModelType {
 
   //EKS Models
   EKS_CLUSTER = 801;
+
+  //Sql Database Connection Models
+  SQL_DATABASE_CONNECTION_RAW_QUERY = 901;
 }
 
 enum TransformerType {
@@ -197,7 +201,7 @@ message ConnectorKey {
     POSTGRES_DATABASE = 37;
     POSTGRES_OPTIONS = 38;
 
-    DB_CONNECTION_STRING_URI = 39;
+    SQL_DATABASE_CONNECTION_STRING_URI = 39;
 
     PAGER_DUTY_API_KEY = 41;
     OPS_GENIE_API_KEY = 42;
