@@ -97,6 +97,10 @@ const App = () => {
           path="/playbooks/:playbook_id"
           element={<CreatePlaybookBeta />}
         />
+        <Route
+          path="/playbooks/logs/:playbook_run_id"
+          element={<PlaybookLog />}
+        />
       </Route>
 
       <Route element={<RequireAuth />}>
@@ -117,10 +121,10 @@ const App = () => {
             path="/playbooks/executions/:id"
             element={<PlaybookExecutions />}
           />
-          <Route
+          {/* <Route
             path="/playbooks/logs/:playbook_run_id"
             element={<PlaybookLog />}
-          />
+          /> */}
           <Route path="/workflows/create" element={<CreateWorkflow />} />
           <Route exact path="/workflows" element={<Workflows />} />
           <Route path="/workflows/:id" element={<CreateWorkflow />} />

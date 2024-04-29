@@ -107,7 +107,7 @@ function StepDetails() {
         </div>
       )}
 
-      <StepActions />
+      {!step?.isLog && <StepActions />}
     </div>
   );
 }
