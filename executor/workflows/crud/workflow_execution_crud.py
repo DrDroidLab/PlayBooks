@@ -119,19 +119,19 @@ def update_db_account_workflow_execution_status(account: Account, workflow_execu
     return False
 
 
-def update_db_account_workflow_execution_count_increment(account: Account, workflow_run_id: int):
+def update_db_account_workflow_execution_count_increment(account: Account, workflow_execution_id: int):
     try:
-        workflow_execution = account.workflowexecution_set.get(id=workflow_run_id)
+        workflow_execution = account.workflowexecution_set.get(id=workflow_execution_id)
         total_executions = workflow_execution.total_executions
         workflow_execution.total_executions = total_executions + 1
         workflow_execution.save(update_fields=['total_executions'])
         return True
     except WorkflowExecution.DoesNotExist:
         logger.error(f"Failed to get workflow execution for account_id: {account.id}, "
-                     f"workflow_run_id: {workflow_run_id}")
+                     f"workflow_execution_id: {workflow_execution_id}")
     except Exception as e:
         logger.error(f"Failed to update workflow execution status for account_id: {account.id}, "
-                     f"workflow_run_id: {workflow_run_id}, error: {e}")
+                     f"workflow_execution_id: {workflow_execution_id}, error: {e}")
     return False
 
 

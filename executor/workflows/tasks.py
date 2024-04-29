@@ -63,16 +63,19 @@ def workflow_scheduler():
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
-        wf_execution_logs = get_db_workflow_execution_logs(account, wf_execution.id)
-        if interval and wf_execution_logs:
-            latest_wf_execution_log = wf_execution_logs.first()
-            next_schedule = latest_wf_execution_log.created_at + timedelta(seconds=interval)
+        if interval:
+            next_schedule = current_time_utc
+            wf_execution_logs = get_db_workflow_execution_logs(account, wf_execution.id)
+            if wf_execution_logs.exists():
+                latest_wf_execution_log = wf_execution_logs.first()
+                next_schedule = latest_wf_execution_log.created_at + timedelta(seconds=interval)
             if current_time_utc < next_schedule:
-                logger.info(f"Workflow execution already scheduled for workflow_execution_id: {wf_execution.id}")
+                logger.info(f"Next Workflow execution interval not reached for workflow_execution_id: "
+                            f"{wf_execution.id}, workflow_id: {workflow_id} at {current_time}")
                 continue
             else:
-                update_time_range = TimeRange(time_geq=int(next_schedule.timestamp()) - 3600,
-                                              time_lt=int(next_schedule.timestamp()))
+                update_time_range = {'time_geq': int(next_schedule.timestamp()) - 3600,
+                                     'time_lt': int(next_schedule.timestamp())}
 
         update_db_account_workflow_execution_count_increment(account, wf_execution.id)
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
@@ -102,8 +105,10 @@ def workflow_scheduler():
                                                   account_id=account.id,
                                                   scheduled_at=datetime.fromtimestamp(float(current_time)))
             except Exception as e:
-                logger.error(f"Failed to create workflow execution:: workflow_id: {workflow_id}, workflow_execution_id:"
+                logger.error(f"Failed to create playbook execution:: workflow_id: {workflow_id}, workflow_execution_id:"
                              f" {wf_execution.id} playbook_id: {pb_id}, error: {e}")
+                update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+                                                            WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
         if not interval:
             logger.info(f"Workflow execution interval not set for workflow_execution_id, "
