@@ -117,7 +117,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select a notification type"))
     
-    test_workflow_notification.delay(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
+    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
     
 
