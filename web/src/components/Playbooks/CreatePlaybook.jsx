@@ -34,7 +34,7 @@ import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
 import { getTaskFromStep } from "../../utils/parser/playbook/stepsToplaybook.ts";
 
-const CreatePlaybook = ({ playbook, allowSave = true }) => {
+const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
@@ -182,8 +182,8 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
   useEffect(() => {
     dispatch(setPlaybookState());
     return () => {
-      if (!copied.current) dispatch(resetState());
-      dispatch(resetTimeRange());
+      if (!copied.current && showHeading) dispatch(resetState());
+      if (showHeading) dispatch(resetTimeRange());
     };
   }, [dispatch]);
 
@@ -200,22 +200,24 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Heading
-        heading={
-          playbook
-            ? `${isEditing ? "Editing" : ""} Playbook` +
-              (playbook.name ? " - " + playbook.name : "")
-            : "Untitled Playbook"
-        }
-        handleGlobalExecute={handleGlobalExecute}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-        showRunAll={steps?.length > 0}
-        showEditTitle={!playbook}
-        customTimeRange={true}
-        showCopy={!!playbook}
-        copyPlaybook={handleCopyPlaybook}
-      />
+      {showHeading && (
+        <Heading
+          heading={
+            playbook
+              ? `${isEditing ? "Editing" : ""} Playbook` +
+                (playbook.name ? " - " + playbook.name : "")
+              : "Untitled Playbook"
+          }
+          handleGlobalExecute={handleGlobalExecute}
+          onTimeRangeChangeCb={false}
+          onRefreshCb={false}
+          showRunAll={steps?.length > 0}
+          showEditTitle={!playbook}
+          customTimeRange={true}
+          showCopy={!!playbook}
+          copyPlaybook={handleCopyPlaybook}
+        />
+      )}
       <div className={styles["pb-container"]}>
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />

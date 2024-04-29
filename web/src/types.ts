@@ -221,6 +221,7 @@ export interface Playbook {
   globalVariables: GlobalVariable[] | null;
   isEditing?: boolean;
   lastUpdatedAt?: Date | null;
+  view: string;
 }
 
 export interface Playground {

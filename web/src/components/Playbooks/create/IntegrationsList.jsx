@@ -72,8 +72,12 @@ function IntegrationsList({ setIsOpen }) {
               {group.options.length === 0 && (
                 <p className="text-xs">No integrations yet.</p>
               )}
-              {group.options.map((option) => (
-                <IntegrationOption option={option} setIsOpen={setIsOpen} />
+              {group.options.map((option, index) => (
+                <IntegrationOption
+                  key={index}
+                  option={option}
+                  setIsOpen={setIsOpen}
+                />
               ))}
             </div>
           </div>

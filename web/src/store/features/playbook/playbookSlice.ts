@@ -28,6 +28,7 @@ const initialState: Playbook = {
   isEditing: false,
   lastUpdatedAt: null,
   currentStepIndex: null,
+  view: "builder",
 };
 
 const playbookSlice = createSlice({
@@ -40,6 +41,9 @@ const playbookSlice = createSlice({
       } else {
         state.playbooks = [...payload];
       }
+    },
+    toggleView(state) {
+      state.view = state.view === "builder" ? "step" : "builder";
     },
     setCurrentPlaybook(state, { payload }) {
       state.currentPlaybook = payload;
@@ -369,6 +373,7 @@ const playbookSlice = createSlice({
       state.isEditing = false;
       state.lastUpdatedAt = null;
       state.currentStepIndex = null;
+      state.view = initialState.view;
     },
     setSteps(state, { payload }) {
       state.steps = payload;
@@ -487,6 +492,7 @@ export const {
   setQuery1,
   setQuery2,
   setFormula,
+  toggleView,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
