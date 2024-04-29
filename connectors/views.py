@@ -293,7 +293,6 @@ oauth_config:
         - channels:history
         - chat:write
         - files:write
-        - incoming-webhook
         - conversations.connect:manage
         - conversations.connect:write
         - groups:write
