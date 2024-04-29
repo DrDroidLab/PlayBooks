@@ -65,7 +65,7 @@ function StepActions() {
   };
 
   return (
-    <div className="mb-10">
+    <div>
       <button
         className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
         onClick={handleSave}>

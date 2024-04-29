@@ -99,7 +99,6 @@ function PlaybookLog() {
       if (step) {
         step.showOutput = true;
         step.output = output;
-        step.isLog = true;
       }
     }
 

@@ -15,7 +15,6 @@ import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { handleExecute } from "../../../utils/execution/handleExecute.ts";
-import StepActions from "./StepActions.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -106,8 +105,6 @@ function StepDetails() {
           )}
         </div>
       )}
-
-      {!step?.isLog && <StepActions />}
     </div>
   );
 }
