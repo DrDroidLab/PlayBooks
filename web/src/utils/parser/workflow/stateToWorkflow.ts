@@ -67,12 +67,12 @@ export const stateToWorkflow = () => {
       responseBody.workflow.schedule.one_off = {};
       break;
     case "periodic":
-      if (workflow.cron) {
+      if (workflow?.cron) {
         responseBody.workflow.schedule.periodic = {
           type: "CRON",
           duration_in_seconds: workflow.duration,
           cron_rule: {
-            rule: workflow.cron,
+            rule: workflow?.cron,
             timezone: "UTC",
           },
         };

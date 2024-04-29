@@ -33,16 +33,17 @@ const CustomDrawer = ({
     <>
       {showOverlay && (
         <div
-          style={isOpen ? { display: "block" } : { display: "none" }}
-          className={`fixed top-[${startFrom}px] left-0 bg-black opacity-25 w-screen h-screen z-[91] transition-all`}
+          style={{ display: isOpen ? "block" : "none", top: `${startFrom}px` }}
+          className={`fixed left-0 bg-black opacity-25 w-screen h-screen z-[91] transition-all`}
         />
       )}
       <motion.div
         initial="closed"
         animate={isOpen ? "open" : "closed"}
         variants={drawerVariants}
+        style={{ top: `${startFrom}px` }}
         transition={{ type: "tween", stiffness: 260, damping: 20 }}
-        className={`${addtionalStyles} fixed top-[${startFrom}px] ${
+        className={`${addtionalStyles} fixed ${
           openFrom === "right" ? "right-0" : "left-0"
         } h-full bg-white shadow-lg z-[100] w-full lg:w-1/2`}>
         <div className={`flex ${openFrom === "left" ? "justify-end" : ""}`}>

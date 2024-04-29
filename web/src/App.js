@@ -93,6 +93,10 @@ const App = () => {
 
       <Route element={<RequireAuth />}>
         <Route path="/playbooks/create/beta" element={<CreatePlaybookBeta />} />
+        <Route
+          path="/playbooks/beta/:playbook_id"
+          element={<CreatePlaybookBeta />}
+        />
       </Route>
 
       <Route element={<RequireAuth />}>

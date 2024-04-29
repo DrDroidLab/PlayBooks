@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import CreateFlow from './CreateFlow';
-import Sidebar from './Sidebar';
-import Heading from '../../Heading';
-import StepDetails from './StepDetails';
-import CustomDrawer from '../../common/CustomDrawer';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import CreateFlow from "./CreateFlow";
+import Sidebar from "./Sidebar";
+import Heading from "../../Heading";
+import StepDetails from "./StepDetails";
+import CustomDrawer from "../../common/CustomDrawer";
+import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
-  setCurrentStepIndex
-} from '../../../store/features/playbook/playbookSlice.ts';
+  setPlaybookDataBeta,
+  setCurrentStepIndex,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
-  setPlaybookState
-} from '../../../store/features/timeRange/timeRangeSlice.ts';
-import GlobalVariables from '../../common/GlobalVariable/index.jsx';
+  setPlaybookState,
+} from "../../../store/features/timeRange/timeRangeSlice.ts";
+import GlobalVariables from "../../common/GlobalVariable/index.jsx";
+import { useParams } from "react-router-dom";
+import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
+import Loading from "../../common/Loading/index.tsx";
 
 function CreatePlaybookBeta() {
+  const { playbook_id: id } = useParams();
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const { currentStepIndex } = useSelector(playbookSelector);
   const dispatch = useDispatch();
@@ -29,10 +34,28 @@ function CreatePlaybookBeta() {
     };
   }, [dispatch]);
 
+  const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
+
+  const fetchPlaybook = async () => {
+    const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
+    dispatch(setPlaybookDataBeta(res));
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchPlaybook();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="h-screen overflow-hidden">
       <Heading
-        heading={'Playbook Builder'}
+        heading={"Playbook Builder"}
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
@@ -40,8 +63,7 @@ function CreatePlaybookBeta() {
       <main className="relative flex h-[calc(100%-80px)]">
         <button
           onClick={() => setAddDataDrawerOpen(true)}
-          className="absolute top-2 left-2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10"
-        >
+          className="absolute top-2 left-2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
           Add Data
         </button>
         <div className="absolute top-14 left-2 z-10 bg-white p-1 rounded w-48">
@@ -51,10 +73,9 @@ function CreatePlaybookBeta() {
           isOpen={addDataDrawerOpen}
           setIsOpen={setAddDataDrawerOpen}
           openFrom="left"
-          addtionalStyles={'lg:w-[20%]'}
+          addtionalStyles={"lg:w-[20%]"}
           showOverlay={false}
-          startFrom="80"
-        >
+          startFrom="80">
           <div className="flex-[0.4] border-r-[1px] border-r-gray-200 h-full">
             <Sidebar setIsOpen={setAddDataDrawerOpen} />
           </div>
@@ -65,10 +86,9 @@ function CreatePlaybookBeta() {
         <CustomDrawer
           isOpen={currentStepIndex}
           setIsOpen={() => dispatch(setCurrentStepIndex(null))}
-          addtionalStyles={'lg:w-[30%]'}
+          addtionalStyles={"lg:w-[30%]"}
           showOverlay={false}
-          startFrom="80"
-        >
+          startFrom="80">
           <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
             <StepDetails />
           </div>

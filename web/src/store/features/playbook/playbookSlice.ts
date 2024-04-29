@@ -63,6 +63,26 @@ const playbookSlice = createSlice({
         };
       });
     },
+    setPlaybookDataBeta(state, { payload }) {
+      state.name = payload.name;
+      state.globalVariables = Object.entries(
+        payload?.global_variable_set ?? {},
+      ).map((val) => {
+        return {
+          name: val[0] as string,
+          value: val[1] as string,
+        };
+      });
+      state.globalVariables = Object.entries(
+        payload?.global_variable_set ?? {},
+      ).map((val) => {
+        return {
+          name: val[0] as string,
+          value: val[1] as string,
+        };
+      });
+      state.steps = playbookToSteps(payload, true);
+    },
     copyPlaybook(state, { payload }) {
       state.currentPlaybook.name = payload.name;
       state.currentPlaybook.globalVariables = Object.entries(
@@ -406,6 +426,7 @@ export const {
   setPlaybookEditing,
   setPlaybookData,
   setCurrentPlaybook,
+  setPlaybookDataBeta,
   copyPlaybook,
   addGlobalVariable,
   deleteVariable,

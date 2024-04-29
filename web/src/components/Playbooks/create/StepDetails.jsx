@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   changeProgress,
@@ -8,15 +8,26 @@ import {
   stepsSelector,
   updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { Delete, PlayArrowRounded } from "@mui/icons-material";
+import { Delete, PlayArrowRounded, Save } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useLazyGetAssetModelOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import {
+  useCreatePlaybookMutation,
+  useLazyGetAssetModelOptionsQuery,
+  useUpdatePlaybookMutation,
+} from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
 import { getStepTitle } from "../utils.jsx";
 import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { getTaskFromStep } from "../../../utils/parser/playbook/stepsToplaybook.ts";
+import {
+  getTaskFromStep,
+  stepsToPlaybook,
+} from "../../../utils/parser/playbook/stepsToplaybook.ts";
 import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
+import ExternalLinks from "../steps/ExternalLinks.jsx";
+import Notes from "../steps/Notes.jsx";
+import { useNavigate } from "react-router-dom";
+import SavePlaybookOverlay from "../SavePlaybookOverlay.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -27,6 +38,18 @@ function StepDetails() {
   const step = steps[currentStepIndex];
   const timeRange = useSelector(rangeSelector);
   const [triggerExecutePlaybook] = useExecutePlaybookMutation();
+  const [links, setLinks] = useState(step?.externalLinks ?? []);
+  const [showExternalLinks, setShowExternalLinks] = useState(
+    step?.isPrefetched && step?.externalLinks,
+  );
+  const currentPlaybook = useSelector(playbookSelector);
+  const navigate = useNavigate();
+  const [isSavePlaybookOverlayOpen, setIsSavePlaybookOverlayOpen] =
+    useState(false);
+  const [triggerUpdatePlaybook, { isLoading: updateLoading }] =
+    useUpdatePlaybookMutation();
+  const [triggerCreatePlaybook, { isLoading: createLoading }] =
+    useCreatePlaybookMutation();
 
   const updateCardByIndex = (key, value) => {
     dispatch(
@@ -134,6 +157,34 @@ function StepDetails() {
     });
   };
 
+  const toggleExternalLinks = () => {
+    setShowExternalLinks(!showExternalLinks);
+  };
+
+  const handlePlaybookSave = async ({ pbName }) => {
+    setIsSavePlaybookOverlayOpen(false);
+
+    const playbook = stepsToPlaybook(currentPlaybook, steps);
+
+    const playbookObj = {
+      playbook: {
+        ...playbook,
+        name: pbName,
+      },
+    };
+
+    try {
+      const response = await triggerCreatePlaybook(playbookObj).unwrap();
+      navigate(`/playbooks/edit/${response.playbook?.id}`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSave = () => {
+    setIsSavePlaybookOverlayOpen(true);
+  };
+
   useEffect(() => {
     if (currentStepIndex !== null) {
       fetchData();
@@ -141,7 +192,7 @@ function StepDetails() {
   }, [currentStepIndex]);
 
   return (
-    <div className="p-2">
+    <div className="p-2 min-h-screen">
       <h2 className="font-bold mb-2 flex items-center gap-2 justify-between mr-2">
         Step Details {step?.outputLoading && <CircularProgress size={20} />}
         <button
@@ -156,7 +207,6 @@ function StepDetails() {
         <>
           <div className="flex items-center justify-between pr-2">
             <div className="w-full">
-              {/* <h2 className="font-bold text-gray-500 text-sm"> */}
               <input
                 className="border-gray-300 border rounded w-full p-1 text-sm font-bold text-gray-500"
                 value={step.description}
@@ -164,8 +214,6 @@ function StepDetails() {
                   updateCardByIndex("description", e.target.value)
                 }
               />
-              {/* </h2> */}
-              {/* <h3 className="font-semibold text-gray-500 text-lg">{step?.selectedSource}</h3> */}
             </div>
           </div>
           {isFetching && <CircularProgress size={20} />}
@@ -174,6 +222,7 @@ function StepDetails() {
             index={currentStepIndex}
             assetsList={step.assets}
           />
+          <Notes step={step} index={currentStepIndex} />
           <button
             onClick={handleExecute}
             className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
@@ -183,6 +232,43 @@ function StepDetails() {
           </button>
         </>
       )}
+      {!step?.isPrefetched && (
+        <div className="my-4">
+          <div
+            className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
+            onClick={toggleExternalLinks}>
+            <b className="ext_links">{showExternalLinks ? "-" : "+"}</b> Add
+            External Links
+          </div>
+
+          {showExternalLinks && (
+            <ExternalLinks links={links} setLinks={setLinks} />
+          )}
+        </div>
+      )}
+      <button
+        className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
+        onClick={handleSave}>
+        <Save style={{ fontSize: "medium" }} />
+        <span style={{ marginLeft: "2px" }} className="save_playbook">
+          Save
+        </span>
+      </button>
+      {(updateLoading || createLoading) && (
+        <CircularProgress
+          style={{
+            textAlign: "center",
+          }}
+          size={20}
+        />
+        // </div>
+      )}
+
+      <SavePlaybookOverlay
+        isOpen={isSavePlaybookOverlayOpen}
+        close={() => setIsSavePlaybookOverlayOpen(false)}
+        saveCallback={handlePlaybookSave}
+      />
     </div>
   );
 }
