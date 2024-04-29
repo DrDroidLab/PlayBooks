@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CreateFlow from "./CreateFlow";
 import Sidebar from "./Sidebar";
 import Heading from "../../Heading";
@@ -10,26 +10,30 @@ import {
   resetState,
   setPlaybookDataBeta,
   setCurrentStepIndex,
+  copyPlaybook,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
   setPlaybookState,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import GlobalVariables from "../../common/GlobalVariable/index.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 
 function CreatePlaybookBeta() {
+  const navigate = useNavigate();
   const { playbook_id: id } = useParams();
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const { currentStepIndex } = useSelector(playbookSelector);
   const dispatch = useDispatch();
+  const copied = useRef(false);
+  const playbookDataRef = useRef(null);
 
   useEffect(() => {
     dispatch(setPlaybookState());
     return () => {
-      dispatch(resetState());
+      if (!copied.current) dispatch(resetState());
       dispatch(resetTimeRange());
     };
   }, [dispatch]);
@@ -38,7 +42,17 @@ function CreatePlaybookBeta() {
 
   const fetchPlaybook = async () => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
+    playbookDataRef.current = res;
     dispatch(setPlaybookDataBeta(res));
+  };
+
+  const handleCopyPlaybook = async () => {
+    const res = playbookDataRef.current;
+    dispatch(copyPlaybook(res));
+    copied.current = true;
+    navigate("/playbooks/create", {
+      replace: true,
+    });
   };
 
   useEffect(() => {
@@ -59,6 +73,7 @@ function CreatePlaybookBeta() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
+        copyPlaybook={handleCopyPlaybook}
       />
       <main className="relative flex h-[calc(100%-80px)]">
         <button

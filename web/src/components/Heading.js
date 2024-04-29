@@ -113,7 +113,7 @@ const Heading = ({
                       <span style={{ marginLeft: "2px" }}>Run All</span>
                     </button>
                   )}
-                  {showCopy && (
+                  {(showCopy || playbook.isEditing) && (
                     <button
                       className={styles["pb-button"]}
                       onClick={copyPlaybook}>
