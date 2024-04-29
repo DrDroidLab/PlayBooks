@@ -114,6 +114,10 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['user'] = conn_key.key.value
             elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_DATABASE:
+                credentials_dict['database'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PORT:
+                credentials_dict['port'] = conn_key.key.value
     elif connector_type == ConnectorType.SLACK:
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:
