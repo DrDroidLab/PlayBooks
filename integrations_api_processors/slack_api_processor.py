@@ -84,5 +84,20 @@ class SlackApiProcessor:
             return True
         except SlackApiError as e:
             logger.error('Auth test failed:', e.response['error'])
-            raise(e)
+            raise e
 
+    def files_upload(self, channel_id, file_path, title='Report', initial_comment='Report', thread_ts=None):
+        try:
+            result = self.client.files_upload_v2(
+                channels=channel_id,
+                file=file_path,
+                title=title,
+                initial_comment=initial_comment,
+                thread_ts=thread_ts
+            )
+            if result and 'ok' in result and result['ok']:
+                return True
+            return False
+        except SlackApiError as e:
+            logger.error(f"Error posting slack message: {e}")
+            return False
