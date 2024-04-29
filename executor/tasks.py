@@ -17,9 +17,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range):
-    tr: TimeRange = dict_to_proto(time_range, TimeRange)
     logger.info(f"Running playbook:: account_id: {account_id}, playbook_id: {playbook_id}, "
-                f"playbook_execution_id: {playbook_execution_id}")
+                f"playbook_execution_id: {playbook_execution_id} time_range: {time_range}")
     try:
         account = Account.objects.get(id=account_id)
         pb = get_db_playbooks(account, playbook_id=playbook_id, is_active=True)
@@ -37,6 +36,10 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
     update_db_account_playbook_execution_status(account, playbook_execution_id, PlaybookExecutionStatusType.RUNNING)
     pb = pb.first()
     pb_execution = pb_execution.first()
+    if pb_execution.time_range:
+        tr: TimeRange = dict_to_proto(pb_execution.time_range, TimeRange)
+    else:
+        tr: TimeRange = dict_to_proto(time_range, TimeRange)
     playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
     try:
         all_step_executions = {}

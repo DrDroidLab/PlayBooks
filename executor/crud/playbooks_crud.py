@@ -20,15 +20,6 @@ def validate_playbook_request(playbook: PlaybookProto):
     return True, None
 
 
-def get_db_playbook_dict(db_name=None, requested_name=None, is_active=None):
-    db_playbook_default = {'name': db_name}
-    if requested_name:
-        db_playbook_default['name'] = requested_name
-    if is_active is not None:
-        db_playbook_default['is_active'] = is_active
-    return db_playbook_default
-
-
 def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None, playbook_ids=None):
     filters = {}
     if playbook_id:
