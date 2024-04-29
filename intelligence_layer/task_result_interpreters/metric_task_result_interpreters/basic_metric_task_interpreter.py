@@ -77,11 +77,6 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
             data = df[df['Label'] == label_val].sort_values(by='Timestamp')
             fig.add_trace(go.Scatter(x=data['Timestamp'], y=data['Value'], mode='lines', name=label_val,
                                      line=dict(color=color_map[label_val])))
-        # df.groupby('label')
-        # for label, data in df.groupby('Label'):
-        #     data = data.sort_values(by='Timestamp')
-        #     fig.add_trace(go.Scatter(x=data['Timestamp'], y=data['Value'], mode='lines', name=label,
-        #                              line=dict(color=color_map[label])))
         if unique_labels is None or (len(unique_labels) == 1 and '' in unique_labels):
             fig.update_layout(
                 xaxis_title='Timestamp',

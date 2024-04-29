@@ -151,6 +151,8 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.POSTGRES_HOST,
             ConnectorKeyProto.KeyType.POSTGRES_USER,
             ConnectorKeyProto.KeyType.POSTGRES_PASSWORD,
+            ConnectorKeyProto.KeyType.POSTGRES_PORT,
+            ConnectorKeyProto.KeyType.POSTGRES_DATABASE
         ]
     ],
     ConnectorType.EKS: [
@@ -206,6 +208,8 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.POSTGRES_HOST: 'Host',
     ConnectorKeyProto.KeyType.POSTGRES_USER: 'DB User',
     ConnectorKeyProto.KeyType.POSTGRES_PASSWORD: 'Password',
+    ConnectorKeyProto.KeyType.POSTGRES_PORT: 'Port',
+    ConnectorKeyProto.KeyType.POSTGRES_DATABASE: 'Database',
     ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
