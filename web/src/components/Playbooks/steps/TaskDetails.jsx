@@ -74,7 +74,7 @@ function TaskDetails({ task, data, stepIndex }) {
             flexDirection: "column",
             marginTop: "10px",
             paddingTop: "20px",
-            borderTop: "0.5px solid gray",
+            // borderTop: "0.5px solid gray",
             gap: "10px",
             alignItems: "flex-start",
             flexWrap: "wrap",

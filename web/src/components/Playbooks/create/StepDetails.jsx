@@ -53,7 +53,7 @@ function StepDetails() {
   return (
     <div className="p-2 min-h-screen mb-10">
       <h2 className="font-bold mb-2 flex items-center gap-2 justify-between mr-2">
-        Step Details {step?.outputLoading && <CircularProgress size={20} />}
+        Step Title {step?.outputLoading && <CircularProgress size={20} />}
         <button
           onClick={removeStep}
           className="text-violet-500 hover:text-white p-[1px] border-violet-500 border-[1px] rounded hover:bg-violet-500 transition-all">
@@ -75,13 +75,13 @@ function StepDetails() {
               />
             </div>
           </div>
+          <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
           <PlaybookStep
             card={step}
             index={currentStepIndex}
             assetsList={step.assets}
           />
-          <Notes step={step} index={currentStepIndex} />
           <button
             onClick={() => handleExecute(step)}
             className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">

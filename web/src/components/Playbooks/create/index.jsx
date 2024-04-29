@@ -11,7 +11,6 @@ import {
   setPlaybookDataBeta,
   setCurrentStepIndex,
   copyPlaybook,
-  setName,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
@@ -21,8 +20,6 @@ import GlobalVariables from "../../common/GlobalVariable/index.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
-import StepActions from "./StepActions.jsx";
-import ValueComponent from "../../ValueComponent/index.jsx";
 
 function CreatePlaybookBeta() {
   const navigate = useNavigate();
@@ -73,20 +70,20 @@ function CreatePlaybookBeta() {
   return (
     <div className="h-screen overflow-hidden">
       <Heading
-        heading={"Playbook Builder"}
+        heading={
+          playbook
+            ? `${playbook.isEditing ? "Editing" : ""} Playbook` +
+              (playbook.name ? " - " + playbook.name : "")
+            : "Untitled Playbook"
+        }
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
         copyPlaybook={handleCopyPlaybook}
+        showEditTitle={playbook}
       />
       <div className="flex flex-col h-[calc(100%-80px)]">
-        <div className="flex p-2 items-center justify-between">
-          {/* <input
-            placeholder="Enter Playbook Name"
-            value={playbook.name}
-            onChange={(e) => dispatch(setName(e.target.value))}
-            className="border-gray-300 border rounded p-1 text-sm font-bold text-gray-500"
-          /> */}
+        {/* <div className="flex p-2 items-center justify-between">
           <ValueComponent
             length={400}
             onValueChange={(val) => dispatch(setName(val))}
@@ -95,15 +92,14 @@ function CreatePlaybookBeta() {
             disabled={playbook.isEditing}
             valueType={"STRING"}
           />
-          <StepActions />
-        </div>
+        </div> */}
         <main className="relative flex flex-1">
           <button
             onClick={() => setAddDataDrawerOpen(true)}
-            className="absolute top-2 left-2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
+            className="absolute top-40 left-2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
             Add Data
           </button>
-          <div className="absolute top-14 left-2 z-10 bg-white p-1 rounded w-48">
+          <div className="absolute top-2 left-2 z-10 bg-white p-1 rounded w-48">
             <GlobalVariables />
           </div>
           <CustomDrawer
