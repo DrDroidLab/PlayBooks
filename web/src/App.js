@@ -43,12 +43,12 @@ const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
 const Support = React.lazy(() => import("./components/Support"));
 const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys"));
-const EditPlaybook = React.lazy(() =>
-  import("./components/Playbooks/EditPlaybook.jsx"),
-);
-const CreatePlaybook = React.lazy(() =>
-  import("./components/Playbooks/CreatePlaybook"),
-);
+// const EditPlaybook = React.lazy(() =>
+//   import("./components/Playbooks/EditPlaybook.jsx"),
+// );
+// const CreatePlaybook = React.lazy(() =>
+//   import("./components/Playbooks/CreatePlaybook"),
+// );
 const CreatePlaybookBeta = React.lazy(() =>
   import("./components/Playbooks/create/index.jsx"),
 );
@@ -92,9 +92,9 @@ const App = () => {
       </Route>
 
       <Route element={<RequireAuth />}>
-        <Route path="/playbooks/create/beta" element={<CreatePlaybookBeta />} />
+        <Route path="/playbooks/create" element={<CreatePlaybookBeta />} />
         <Route
-          path="/playbooks/beta/:playbook_id"
+          path="/playbooks/:playbook_id"
           element={<CreatePlaybookBeta />}
         />
       </Route>
@@ -107,12 +107,12 @@ const App = () => {
             path="/playbooks/executions/list"
             element={<PlaybookExecutionsList />}
           />
-          <Route path="/playbooks/create" element={<CreatePlaybook />} />
-          <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />
-          <Route
+          {/* <Route path="/playbooks/create" element={<CreatePlaybook />} /> */}
+          {/* <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} /> */}
+          {/* <Route
             path="/playbooks/edit/:playbook_id"
             element={<EditPlaybook />}
-          />
+          /> */}
           <Route
             path="/playbooks/executions/:id"
             element={<PlaybookExecutions />}

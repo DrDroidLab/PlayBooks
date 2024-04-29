@@ -367,6 +367,7 @@ const playbookSlice = createSlice({
       state.currentPlaybook = {};
       state.isEditing = false;
       state.lastUpdatedAt = null;
+      state.currentStepIndex = null;
     },
     setSteps(state, { payload }) {
       state.steps = payload;
