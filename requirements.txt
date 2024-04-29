@@ -19,6 +19,7 @@ click-repl==0.3.0
 clickhouse-connect==0.7.8
 colorama==0.4.4
 cron-descriptor==1.4.3
+croniter==2.0.5
 cryptography==42.0.5
 datadog-api-client==2.24.0
 defusedxml==0.7.1
@@ -49,6 +50,7 @@ grpcio-tools==1.51.1
 gunicorn==22.0.0
 idna==3.7
 jmespath==1.0.1
+kaleido==0.2.1
 kombu==5.3.7
 kubernetes==29.0.0
 lz4==4.3.3

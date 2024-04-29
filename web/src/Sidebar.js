@@ -9,7 +9,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
 import "../src/Layout.css";
-import { Key, Terminal } from "@mui/icons-material";
+import { Key, Layers, SlowMotionVideo, Terminal } from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 function Sidebar() {
@@ -68,7 +68,7 @@ function Sidebar() {
         </div>
 
         <List sx={{ padding: 0 }}>
-          <NavLink className={activeStyle} to="/playbooks">
+          <NavLink className={activeStyle} to="/">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 6)}>
@@ -77,6 +77,24 @@ function Sidebar() {
             <p style={{ fontSize: "14px" }} className="playbook_page">
               Playbooks
             </p>
+          </NavLink>
+          <NavLink className={activeStyle} to="/workflows">
+            <ListItemIcon
+              sx={{ minWidth: "44px" }}
+              onClick={(event) => handleListItemClick(event, 6)}>
+              <Layers />
+            </ListItemIcon>
+            <p style={{ fontSize: "14px" }} className="workflows_page">
+              Workflows
+            </p>
+          </NavLink>
+          <NavLink className={activeStyle} to="/executions/list">
+            <ListItemIcon
+              sx={{ minWidth: "44px" }}
+              onClick={(event) => handleListItemClick(event, 9)}>
+              <SlowMotionVideo />
+            </ListItemIcon>
+            <p style={{ fontSize: "14px" }}>All Executions</p>
           </NavLink>
           <NavLink className={activeStyle} to="/playgrounds">
             <ListItemIcon

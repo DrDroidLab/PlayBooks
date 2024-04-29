@@ -1,4 +1,4 @@
-import { models } from '../constants/index.ts';
+import { models } from "../constants/index.ts";
 import {
   clickhouseBuilder,
   cloudwatchLogGroupBuilder,
@@ -9,19 +9,29 @@ import {
   newRelicEntityDashboardBuilder,
   newRelicNRQLBuilder,
   postgresBuilder,
-  eksBuilder
-} from './builders/index.ts';
+  eksBuilder,
+  datadogRawQueryBuilder,
+} from "./builders/index.ts";
 
 export enum OptionType {
-  OPTIONS = 'options',
-  TEXT = 'text',
-  MULTILINE = 'multiline'
+  OPTIONS = "options",
+  TEXT = "text",
+  TEXT_ROW = "text-row",
+  MULTILINE = "multiline",
+  BUTTON = "button",
 }
 
 export const constructBuilder = (task: any, index) => {
   if (!(task?.modelTypeOptions?.length > 0)) {
-    if (task.modelType === models.NEW_RELIC_NRQL) {
-      return newRelicNRQLBuilder(task, index);
+    switch (task.modelType) {
+      case models.NEW_RELIC_NRQL:
+        return newRelicNRQLBuilder(task, index);
+
+      case models.DATADOG_QUERY:
+        return datadogRawQueryBuilder(task, index);
+
+      default:
+        break;
     }
     return [];
   }
@@ -43,7 +53,11 @@ export const constructBuilder = (task: any, index) => {
     case models.NEW_RELIC_NRQL:
       return newRelicNRQLBuilder(task, index);
     case models.NEW_RELIC_ENTITY_APPLICATION:
-      return newRelicEntityApplicationBuilder(task, index, ops?.application_names);
+      return newRelicEntityApplicationBuilder(
+        task,
+        index,
+        ops?.application_names,
+      );
     case models.NEW_RELIC_ENTITY_DASHBOARD:
       return newRelicEntityDashboardBuilder(task, index, ops?.dashboards);
     case models.POSTGRES_DATABASE:

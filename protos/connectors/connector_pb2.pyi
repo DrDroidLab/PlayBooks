@@ -130,6 +130,7 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     DATADOG_LIVE_INTEGRATION_CONFLUENT: _ConnectorMetadataModelType.ValueType  # 109
     DATADOG_SERVICE: _ConnectorMetadataModelType.ValueType  # 110
     DATADOG_METRIC: _ConnectorMetadataModelType.ValueType  # 111
+    DATADOG_QUERY: _ConnectorMetadataModelType.ValueType  # 112
     CLOUDWATCH_METRIC: _ConnectorMetadataModelType.ValueType  # 201
     """Cloudwatch Models"""
     CLOUDWATCH_LOG_GROUP: _ConnectorMetadataModelType.ValueType  # 202
@@ -170,6 +171,7 @@ DATADOG_LIVE_INTEGRATION_GCP: ConnectorMetadataModelType.ValueType  # 108
 DATADOG_LIVE_INTEGRATION_CONFLUENT: ConnectorMetadataModelType.ValueType  # 109
 DATADOG_SERVICE: ConnectorMetadataModelType.ValueType  # 110
 DATADOG_METRIC: ConnectorMetadataModelType.ValueType  # 111
+DATADOG_QUERY: ConnectorMetadataModelType.ValueType  # 112
 CLOUDWATCH_METRIC: ConnectorMetadataModelType.ValueType  # 201
 """Cloudwatch Models"""
 CLOUDWATCH_LOG_GROUP: ConnectorMetadataModelType.ValueType  # 202
@@ -243,6 +245,33 @@ UNKNOWN_RT: ReportType.ValueType  # 0
 INITIAL: ReportType.ValueType  # 1
 FINAL: ReportType.ValueType  # 2
 global___ReportType = ReportType
+
+@typing_extensions.final
+class PeriodicRunStatus(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _StatusType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _StatusTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PeriodicRunStatus._StatusType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: PeriodicRunStatus._StatusType.ValueType  # 0
+        STARTED: PeriodicRunStatus._StatusType.ValueType  # 1
+        FINISHED: PeriodicRunStatus._StatusType.ValueType  # 2
+        ERROR: PeriodicRunStatus._StatusType.ValueType  # 3
+
+    class StatusType(_StatusType, metaclass=_StatusTypeEnumTypeWrapper): ...
+    UNKNOWN: PeriodicRunStatus.StatusType.ValueType  # 0
+    STARTED: PeriodicRunStatus.StatusType.ValueType  # 1
+    FINISHED: PeriodicRunStatus.StatusType.ValueType  # 2
+    ERROR: PeriodicRunStatus.StatusType.ValueType  # 3
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___PeriodicRunStatus = PeriodicRunStatus
 
 @typing_extensions.final
 class Connector(google.protobuf.message.Message):
@@ -368,6 +397,7 @@ class ConnectorKey(google.protobuf.message.Message):
         AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 43
         AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 44
         GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
+        SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -416,6 +446,7 @@ class ConnectorKey(google.protobuf.message.Message):
     AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 43
     AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 44
     GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
+    SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int

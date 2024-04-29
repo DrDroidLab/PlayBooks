@@ -77,3 +77,12 @@ class SlackApiProcessor:
             return False
         except SlackApiError as e:
             logger.error(f"Error posting slack message: {e}")
+
+    def test_connection(self):
+        try:
+            self.client.auth_test()
+            return True
+        except SlackApiError as e:
+            logger.error('Auth test failed:', e.response['error'])
+            raise(e)
+

@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -7,23 +7,23 @@ services:
       - "POSTGRES_DB=db"
       - "POSTGRES_USER=user"
       - "POSTGRES_PASSWORD=pass"
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
     networks:
       - mynetwork
 
   redis:
-    image: 'redis:alpine'
+    image: "redis:alpine"
     ports:
-      - '6379:6379'
+      - "6379:6379"
     networks:
       - mynetwork
 
   setup_db:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./setup_db.sh
@@ -45,7 +45,7 @@ services:
 
   server:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-server.sh
@@ -68,7 +68,7 @@ services:
 
   celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -89,7 +89,7 @@ services:
 
   workflow_scheduler_celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -111,7 +111,7 @@ services:
 
   workflow_executor_celery_worker:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-worker.sh
@@ -131,9 +131,31 @@ services:
     networks:
       - mynetwork
 
+  workflow_action_execution_celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playbooks
+    command: ./start-celery-worker.sh
+    environment:
+      - "DJANGO_DEBUG=True"
+      - "POSTGRES_HOST=db"
+      - "CELERY_BROKER_URL=redis://redis:6379/0"
+      - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "POSTGRES_USER=user"
+      - "POSTGRES_PASSWORD=pass"
+      - "CELERY_QUEUE=workflow_action_execution"
+    depends_on:
+      - db
+      - redis
+      - setup_db
+    networks:
+      - mynetwork
+
   celery_beat:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     image: playbooks
     command: ./start-celery-beat.sh
@@ -154,13 +176,13 @@ services:
 
   web:
     build:
-      context: ../web
+      context: ./web
       dockerfile: Dockerfile
     image: web
     environment:
       - POSTHOG_ENABLED=true
     ports:
-      - '80:80'
+      - "80:80"
     depends_on:
       - server
     networks:

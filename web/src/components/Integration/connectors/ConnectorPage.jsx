@@ -15,7 +15,6 @@ import TabPanel from "./TabPanel.jsx";
 import Assets from "./Assets.jsx";
 import { connectorsWithoutAssets } from "../../../utils/connectorsWithoutAssets.ts";
 import { unsupportedConnectors } from "../../../utils/unsupportedConnectors.ts";
-import SlackIntegration from "./SlackIntegration.jsx";
 import {
   useLazyGetConnectorKeyOptionsQuery,
   useLazyGetConnectorKeysQuery,
@@ -79,8 +78,6 @@ function ConnectorPage() {
     currentConnector?.vpc?.status === "active";
 
   switch (id) {
-    case unsupportedConnectors.SLACK:
-      return <SlackIntegration />;
     case unsupportedConnectors.GOOGLE_CHAT:
       return <GoogleChatIntegration />;
     default:

@@ -74,14 +74,18 @@ class WorkflowsUpdateProcessor(UpdateProcessorMixin):
             for action_mapping in all_workflow_actions_mapping:
                 action_mapping.is_active = False
                 action_mapping.save(update_fields=['is_active'])
+            random_generated_str = str(uuid.uuid4())
+            elem.is_active = False
+            elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
+            elem.save(update_fields=['is_active', 'name'])
             updated_workflow = update_op.workflow
             updated_elem, err = create_db_workflow(elem.account, elem.created_by, updated_workflow)
             if err:
                 raise Exception(err)
+            return updated_elem
         except Exception as ex:
-            logger.exception(f"Error occurred updating workflow for {elem.name}")
-            raise Exception(f"Error occurred updating workflow status for {elem.name}")
-        return elem
+            logger.exception(f"Error occurred updating workflow for {elem.name}, {str(ex)}")
+            raise Exception(f"Error occurred updating workflow status for {elem.name}, {str(ex)}")
 
     @staticmethod
     def update_workflow_entry_point_status(elem: Workflow,

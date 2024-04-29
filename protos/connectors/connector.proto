@@ -3,6 +3,14 @@ import "google/protobuf/wrappers.proto";
 
 package protos.connectors;
 
+message PeriodicRunStatus {
+  enum StatusType {
+    UNKNOWN = 0;
+    STARTED = 1;
+    FINISHED = 2;
+    ERROR = 3;
+  }
+}
 
 enum ConnectorType {
   UNKNOWN = 0;
@@ -67,6 +75,7 @@ enum ConnectorMetadataModelType {
   DATADOG_LIVE_INTEGRATION_CONFLUENT = 109;
   DATADOG_SERVICE = 110;
   DATADOG_METRIC = 111;
+  DATADOG_QUERY = 112;
 
 
   //Cloudwatch Models
@@ -197,6 +206,8 @@ message ConnectorKey {
     AGENT_PROXY_API_KEY = 44;
 
     GITHUB_ACTIONS_TOKEN = 45;
+
+    SLACK_APP_ID = 46;
   }
   google.protobuf.UInt64Value id = 1;
   KeyType key_type = 2;

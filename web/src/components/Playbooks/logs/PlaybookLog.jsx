@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/index.ts";
 import Loading from "../../common/Loading/index.tsx";
 import Heading from "../../Heading.js";
-import { playbookToSteps } from "../../../utils/playbookToSteps.ts";
+import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -97,8 +97,10 @@ function PlaybookLog() {
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
       if (stepIndex === isNaN) continue;
       const step = pbData[stepIndex];
-      step.showOutput = true;
-      step.output = output;
+      if (step) {
+        step.showOutput = true;
+        step.output = output;
+      }
     }
 
     dispatch(setSteps(pbData));

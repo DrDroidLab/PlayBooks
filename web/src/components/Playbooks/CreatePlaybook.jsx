@@ -16,7 +16,7 @@ import {
   toggleStep,
   updateStep,
 } from "../../store/features/playbook/playbookSlice.ts";
-import { playbookToSteps } from "../../utils/playbookToSteps.ts";
+import { playbookToSteps } from "../../utils/parser/playbook/playbookToSteps.ts";
 import Step from "./steps/Step.jsx";
 import StepActions from "./StepActions.jsx";
 import { getStepTitle } from "./utils.jsx";
@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../common/Loading/index.tsx";
 import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
-import { getTaskFromStep } from "../../utils/stepsToplaybook.ts";
+import { getTaskFromStep } from "../../utils/parser/playbook/stepsToplaybook.ts";
 
 const CreatePlaybook = ({ playbook, allowSave = true }) => {
   const navigate = useNavigate();

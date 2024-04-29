@@ -13,7 +13,7 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-COPY docker/nginx.default /etc/nginx/sites-available/default
+COPY nginx.default /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
@@ -26,7 +26,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /code
 
 # Copy project
-COPY .. .
+COPY . /code
 RUN chown -R www-data:www-data /code
 
 # Install dependenciess

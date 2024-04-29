@@ -1,19 +1,19 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Playbook } from '../../../types.ts';
-import { playbookToSteps } from '../../../utils/playbookToSteps.ts';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Playbook } from "../../../types.ts";
+import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 
 const emptyStep = {
-  modelType: '',
-  source: '',
+  modelType: "",
+  source: "",
   assets: [],
   isOpen: true,
   isPlayground: false,
-  showError: false
+  showError: false,
 };
 
 const initialState: Playbook = {
   id: null,
-  name: '',
+  name: "",
   globalVariables: [],
   steps: [],
   playbooks: [],
@@ -21,15 +21,16 @@ const initialState: Playbook = {
   meta: {
     page: {
       limit: 10,
-      offset: 0
-    }
+      offset: 0,
+    },
   },
   isEditing: false,
-  lastUpdatedAt: null
+  lastUpdatedAt: null,
+  currentStepIndex: null,
 };
 
 const playbookSlice = createSlice({
-  name: 'playbook',
+  name: "playbook",
   initialState,
   reducers: {
     setPlaybooks(state, { payload }) {
@@ -45,34 +46,38 @@ const playbookSlice = createSlice({
     setPlaybookData(state, { payload }) {
       state.currentPlaybook.name = payload.name;
       state.currentPlaybook.globalVariables = Object.entries(
-        payload?.global_variable_set ?? {}
-      ).map(val => {
+        payload?.global_variable_set ?? {},
+      ).map((val) => {
         return {
           name: val[0] as string,
-          value: val[1] as string
+          value: val[1] as string,
         };
       });
-      state.globalVariables = Object.entries(payload?.global_variable_set ?? {}).map(val => {
+      state.globalVariables = Object.entries(
+        payload?.global_variable_set ?? {},
+      ).map((val) => {
         return {
           name: val[0] as string,
-          value: val[1] as string
+          value: val[1] as string,
         };
       });
     },
     copyPlaybook(state, { payload }) {
       state.currentPlaybook.name = payload.name;
-      state.currentPlaybook.globalVariables = Object.entries(payload.global_variable_set ?? {}).map(
-        val => {
-          return {
-            name: val[0] as string,
-            value: val[1] as string
-          };
-        }
-      );
-      state.globalVariables = Object.entries(payload.global_variable_set ?? {}).map(val => {
+      state.currentPlaybook.globalVariables = Object.entries(
+        payload.global_variable_set ?? {},
+      ).map((val) => {
         return {
           name: val[0] as string,
-          value: val[1] as string
+          value: val[1] as string,
+        };
+      });
+      state.globalVariables = Object.entries(
+        payload.global_variable_set ?? {},
+      ).map((val) => {
+        return {
+          name: val[0] as string,
+          value: val[1] as string,
         };
       });
       state.currentPlaybook.isCopied = true;
@@ -86,18 +91,20 @@ const playbookSlice = createSlice({
       state.currentPlaybook.id = payload.id;
       state.id = payload.id;
       state.name = payload.name;
-      state.currentPlaybook.globalVariables = Object.entries(payload.global_variable_set ?? {}).map(
-        val => {
-          return {
-            name: val[0] as string,
-            value: val[1] as string
-          };
-        }
-      );
-      state.globalVariables = Object.entries(payload.global_variable_set ?? {}).map(val => {
+      state.currentPlaybook.globalVariables = Object.entries(
+        payload.global_variable_set ?? {},
+      ).map((val) => {
         return {
           name: val[0] as string,
-          value: val[1] as string
+          value: val[1] as string,
+        };
+      });
+      state.globalVariables = Object.entries(
+        payload.global_variable_set ?? {},
+      ).map((val) => {
+        return {
+          name: val[0] as string,
+          value: val[1] as string,
         };
       });
       state.isEditing = true;
@@ -110,11 +117,11 @@ const playbookSlice = createSlice({
       const list = state.globalVariables ?? [];
       list?.push({
         name: payload.name,
-        value: payload.value
+        value: payload.value,
       });
       state.globalVariables = list;
 
-      state.steps.forEach(step => {
+      state.steps.forEach((step) => {
         step.globalVariables = list ?? [];
       });
     },
@@ -123,7 +130,7 @@ const playbookSlice = createSlice({
       list.splice(payload.index, 1);
       state.globalVariables = list;
 
-      state.steps.forEach(step => {
+      state.steps.forEach((step) => {
         step.globalVariables = list ?? [];
       });
     },
@@ -132,20 +139,46 @@ const playbookSlice = createSlice({
       list[payload.index].value = payload.value;
       state.globalVariables = list;
 
-      state.steps.forEach(step => {
+      state.steps.forEach((step) => {
         step.globalVariables = list ?? [];
       });
     },
     setMeta(state, { payload }) {
       state.meta = payload;
     },
-    addStep: state => {
-      state.steps.forEach(step => {
+    setCurrentStepIndex(state, { payload }) {
+      state.currentStepIndex = payload.toString();
+    },
+    createStepWithSource(state, { payload }) {
+      state.steps.forEach((step) => {
+        step.isOpen = false;
+      });
+      const index = state.steps.length;
+      state.steps.push({
+        ...{
+          source: payload.source,
+          modelType: payload.modelType,
+          selectedSource: payload.key,
+          description: state?.steps[index]?.description,
+          notes: state?.steps[index]?.notes,
+          assets: [],
+          isOpen: true,
+          isPlayground: false,
+          globalVariables: state.globalVariables ?? [],
+          showError: false,
+        },
+        globalVariables: state.globalVariables ?? [],
+      });
+
+      state.currentStepIndex = index.toString();
+    },
+    addStep: (state) => {
+      state.steps.forEach((step) => {
         step.isOpen = false;
       });
       state.steps.push({
         ...emptyStep,
-        globalVariables: state.globalVariables ?? []
+        globalVariables: state.globalVariables ?? [],
       });
     },
     toggleStep: (state, { payload }) => {
@@ -153,6 +186,7 @@ const playbookSlice = createSlice({
     },
     deleteStep: (state, { payload }) => {
       state.steps.splice(payload, 1);
+      state.currentStepIndex = null;
     },
     updateStep: (state, { payload }) => {
       state.steps[payload.index][payload.key] = payload.value;
@@ -165,7 +199,14 @@ const playbookSlice = createSlice({
     },
     selectSourceAndModel: (
       state,
-      { payload }: PayloadAction<{ index: number; source: string; modelType: string; key: string }>
+      {
+        payload,
+      }: PayloadAction<{
+        index: number;
+        source: string;
+        modelType: string;
+        key: string;
+      }>,
     ) => {
       state.steps[payload.index] = {
         source: payload.source,
@@ -175,7 +216,7 @@ const playbookSlice = createSlice({
         isOpen: true,
         isPlayground: false,
         globalVariables: state.globalVariables ?? [],
-        showError: false
+        showError: false,
       };
       state.steps[payload.index].source = payload.source;
       state.steps[payload.index].modelType = payload.modelType;
@@ -244,14 +285,16 @@ const playbookSlice = createSlice({
     setSelectedGrafanaOptions(state, { payload }) {
       state.steps[payload.index].selectedOptions = {
         ...state.steps[payload.index].selectedOptions,
-        [payload.option.option.variable]: payload.option.id
+        [payload.option.option.variable]: payload.option.id,
       };
     },
     setDimensionIndex(state, { payload }) {
       state.steps[payload.index].dimensionIndex = payload.dimensionIndex;
       state.steps[payload.index].dimension = payload.dimension;
-      state.steps[payload.index].dimensionName = payload.dimension.split(': ')[0];
-      state.steps[payload.index].dimensionValue = payload.dimension.split(': ')[1];
+      state.steps[payload.index].dimensionName =
+        payload.dimension.split(": ")[0];
+      state.steps[payload.index].dimensionValue =
+        payload.dimension.split(": ")[1];
       state.steps[payload.index].metric = undefined;
     },
     setMetric(state, { payload }) {
@@ -265,6 +308,18 @@ const playbookSlice = createSlice({
     },
     setDbQuery(state, { payload }) {
       state.steps[payload.index].dbQuery = payload.query;
+    },
+    setQuery1(state, { payload }) {
+      state.steps[payload.index].query1 = payload.query;
+    },
+    setQuery2(state, { payload }) {
+      state.steps[payload.index].query2 = payload.query;
+    },
+    setFormula(state, { payload }) {
+      state.steps[payload.index].formula = payload.formula;
+    },
+    setRequiresFormula(state, { payload }) {
+      state.steps[payload.index].requiresFormula = payload.requiresFormula;
     },
     setCommand(state, { payload }) {
       state.steps[payload.index].command = payload.command;
@@ -280,7 +335,7 @@ const playbookSlice = createSlice({
     },
     resetState(state) {
       state.steps = [];
-      state.name = '';
+      state.name = "";
       state.globalVariables = [];
       state.currentPlaybook = {};
       state.isEditing = false;
@@ -299,7 +354,7 @@ const playbookSlice = createSlice({
     setNRQLData(state, { payload }) {
       state.steps[payload.index].nrqlData = {
         ...state.steps[payload.index].nrqlData,
-        [payload.key]: payload.value
+        [payload.key]: payload.value,
       };
     },
     setDatadogService(state, { payload }) {
@@ -337,8 +392,8 @@ const playbookSlice = createSlice({
     selectEksNamespace(state, { payload }) {
       state.steps[payload.index].eksNamespace = payload.namespace;
       state.steps[payload.index].command = undefined;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -352,6 +407,8 @@ export const {
   updateGlobalVariable,
   setName,
   setMeta,
+  setCurrentStepIndex,
+  createStepWithSource,
   addStep,
   toggleStep,
   deleteStep,
@@ -395,12 +452,16 @@ export const {
   setErrors,
   selectEksNamespace,
   selectEksRegion,
-  selectCluster
+  selectCluster,
+  setRequiresFormula,
+  setQuery1,
+  setQuery2,
+  setFormula,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
 
-export const playbookSelector = state => state.playbook;
-export const stepsSelector = state => state.playbook?.steps ?? [];
-export const playbooksSelector = state => state.playbook.playbooks;
-export const metaSelector = state => state.playbook.meta;
+export const playbookSelector = (state) => state.playbook;
+export const stepsSelector = (state) => state.playbook?.steps ?? [];
+export const playbooksSelector = (state) => state.playbook.playbooks;
+export const metaSelector = (state) => state.playbook.meta;

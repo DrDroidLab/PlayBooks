@@ -25,7 +25,7 @@ def get_db_workflow_executions(account: Account, workflow_execution_id=None, wor
         filters['status'] = status
     try:
         db_we = account.workflowexecution_set.all()
-        db_we = db_we.order_by('workflow_run_id', 'scheduled_at')
+        db_we = db_we.order_by('-workflow_run_id', '-scheduled_at')
         if filters:
             db_we = db_we.filter(**filters)
         return db_we
@@ -74,7 +74,7 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
 
 
 def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id, scheduled_at,
-                              expiry_at, interval, created_by=None):
+                              expiry_at, interval, created_by=None, metadata={}):
     try:
         workflow_execution = WorkflowExecution.objects.create(
             account=account,
@@ -86,7 +86,8 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
             status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED,
             created_at=timezone.now(),
             time_range=proto_to_dict(time_range),
-            created_by=created_by
+            created_by=created_by,
+            metadata=metadata
         )
         return workflow_execution
     except Exception as e:

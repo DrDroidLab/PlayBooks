@@ -40,6 +40,10 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
     navigate("/playbooks/create");
   };
 
+  // const handleExecutionHistory = (id) => {
+  //   navigate(`/playbooks/executions/${id}`);
+  // };
+
   return (
     <>
       <Table stickyHeader>
@@ -47,6 +51,7 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
           <TableRow>
             <TableCell className={styles["tableTitle"]}>Name</TableCell>
             <TableCell className={styles["tableTitle"]}>Created At</TableCell>
+            <TableCell className={styles["tableTitle"]}>Created By</TableCell>
             {showDelete && (
               <TableCell className={styles["tableTitle"]}>Actions</TableCell>
             )}
@@ -59,16 +64,19 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
-              <TableCell component="th" scope="row">
+              <TableCell component="td" scope="row">
                 <Link to={`/playbooks/${item.id}`} className={styles["link"]}>
                   {item.name}
                 </Link>
               </TableCell>
-              <TableCell component="th" scope="row">
+              <TableCell component="td" scope="row">
                 {renderTimestamp(item.created_at)}
               </TableCell>
+              <TableCell component="td" scope="row">
+                {item.created_by}
+              </TableCell>
               {showDelete && (
-                <TableCell component="th" scope="row">
+                <TableCell component="td" scope="row">
                   <div className="flex gap-2">
                     <button
                       className={styles["pb-button"]}
@@ -84,6 +92,13 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
                         <DeleteIcon />
                       </Tooltip>
                     </button>
+                    {/* <button
+                      className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
+                      onClick={() => handleExecutionHistory(item.id)}>
+                      <Tooltip title="View execution history">
+                        <History />
+                      </Tooltip>
+                    </button> */}
                   </div>
                 </TableCell>
               )}

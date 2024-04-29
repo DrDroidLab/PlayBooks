@@ -36,4 +36,5 @@ done
 >&2 echo 'PostgreSQL is available'
 
 echo "Running migrations for new db"
+python manage.py makemigrations
 python manage.py migrate
