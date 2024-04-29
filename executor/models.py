@@ -83,7 +83,10 @@ class PlayBookStep(models.Model):
 
     @property
     def proto(self) -> PlaybookProto:
-        playbook_step_tasks = PlayBookTaskDefinition.objects.filter(playbook_step=self, is_active=True)
+        if self.is_active:
+            playbook_step_tasks = PlayBookTaskDefinition.objects.filter(playbook_step=self, is_active=True)
+        else:
+            playbook_step_tasks = PlayBookTaskDefinition.objects.filter(playbook_step=self)
         playbook_step_tasks = playbook_step_tasks.order_by('id')
         tasks = []
         for task in playbook_step_tasks:

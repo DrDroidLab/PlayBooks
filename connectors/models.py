@@ -36,6 +36,7 @@ integrations_connector_type_display_name_map = {
     ConnectorType.PAGER_DUTY: 'PAGERDUTY',
     ConnectorType.OPS_GENIE: 'OPS GENIE',
     ConnectorType.EKS: 'EKS KUBERNETES',
+    ConnectorType.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
 }
 
 integrations_connector_type_category_map = {
@@ -58,6 +59,7 @@ integrations_connector_type_category_map = {
     ConnectorType.PAGER_DUTY: 'Alert Channels',
     ConnectorType.OPS_GENIE: 'Alert Channels',
     ConnectorType.EKS: 'Cloud',
+    ConnectorType.SQL_DATABASE_CONNECTION: 'Database',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -173,6 +175,11 @@ integrations_connector_type_connector_keys_map = {
     #         ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
     #     ]
     # ],
+    ConnectorType.SQL_DATABASE_CONNECTION: [
+        [
+            ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,
+        ]
+    ]
 
 }
 
@@ -214,6 +221,7 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY: 'API Key',
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
+    ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI: 'Sql Database Connection URI',
 }
 
 

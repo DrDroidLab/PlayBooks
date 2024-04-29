@@ -1418,6 +1418,23 @@ class PlaybookEksDataFetchTask(google.protobuf.message.Message):
 global___PlaybookEksDataFetchTask = PlaybookEksDataFetchTask
 
 @typing_extensions.final
+class PlaybookSqlDatabaseConnectionDataFetchTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    QUERY_FIELD_NUMBER: builtins.int
+    @property
+    def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["query", b"query"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["query", b"query"]) -> None: ...
+
+global___PlaybookSqlDatabaseConnectionDataFetchTask = PlaybookSqlDatabaseConnectionDataFetchTask
+
+@typing_extensions.final
 class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1431,12 +1448,14 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
         CLICKHOUSE: PlaybookDataFetchTaskDefinition._Source.ValueType  # 1
         POSTGRES: PlaybookDataFetchTaskDefinition._Source.ValueType  # 2
         EKS: PlaybookDataFetchTaskDefinition._Source.ValueType  # 3
+        SQL_DATABASE_CONNECTION: PlaybookDataFetchTaskDefinition._Source.ValueType  # 4
 
     class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
     UNKNOWN: PlaybookDataFetchTaskDefinition.Source.ValueType  # 0
     CLICKHOUSE: PlaybookDataFetchTaskDefinition.Source.ValueType  # 1
     POSTGRES: PlaybookDataFetchTaskDefinition.Source.ValueType  # 2
     EKS: PlaybookDataFetchTaskDefinition.Source.ValueType  # 3
+    SQL_DATABASE_CONNECTION: PlaybookDataFetchTaskDefinition.Source.ValueType  # 4
 
     SOURCE_FIELD_NUMBER: builtins.int
     ORDER_BY_COLUMN_FIELD_NUMBER: builtins.int
@@ -1445,6 +1464,7 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     CLICKHOUSE_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     POSTGRES_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     EKS_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
+    SQL_DATABASE_CONNECTION_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     source: global___PlaybookDataFetchTaskDefinition.Source.ValueType
     @property
     def order_by_column(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -1458,6 +1478,8 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     def postgres_data_fetch_task(self) -> global___PlaybookPostgresDataFetchTask: ...
     @property
     def eks_data_fetch_task(self) -> global___PlaybookEksDataFetchTask: ...
+    @property
+    def sql_database_connection_data_fetch_task(self) -> global___PlaybookSqlDatabaseConnectionDataFetchTask: ...
     def __init__(
         self,
         *,
@@ -1468,10 +1490,11 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
         clickhouse_data_fetch_task: global___PlaybookClickhouseDataFetchTask | None = ...,
         postgres_data_fetch_task: global___PlaybookPostgresDataFetchTask | None = ...,
         eks_data_fetch_task: global___PlaybookEksDataFetchTask | None = ...,
+        sql_database_connection_data_fetch_task: global___PlaybookSqlDatabaseConnectionDataFetchTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "source", b"source", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["clickhouse_data_fetch_task", "postgres_data_fetch_task", "eks_data_fetch_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "source", b"source", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["clickhouse_data_fetch_task", "postgres_data_fetch_task", "eks_data_fetch_task", "sql_database_connection_data_fetch_task"] | None: ...
 
 global___PlaybookDataFetchTaskDefinition = PlaybookDataFetchTaskDefinition
 

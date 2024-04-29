@@ -10,6 +10,7 @@ from connectors.models import Connector, ConnectorKey, integrations_connector_ty
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
+from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
@@ -41,6 +42,7 @@ connector_type_api_processor_map = {
     ConnectorType.POSTGRES: PostgresDBProcessor,
     ConnectorType.GRAFANA_VPC: VpcApiProcessor,
     ConnectorType.SLACK: SlackApiProcessor,
+    ConnectorType.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor
 }
 
 
@@ -118,6 +120,10 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['database'] = conn_key.key.value
             elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PORT:
                 credentials_dict['port'] = conn_key.key.value
+    elif connector_type == ConnectorType.SQL_DATABASE_CONNECTION:
+        for conn_key in connector_keys:
+            if conn_key.key_type == ConnectorKeyProto.SQL_DATABASE_CONNECTION_STRING_URI:
+                credentials_dict['connection_string'] = conn_key.key.value
     elif connector_type == ConnectorType.SLACK:
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:

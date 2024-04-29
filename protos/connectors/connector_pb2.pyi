@@ -62,6 +62,7 @@ class _ConnectorTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AGENT_PROXY: _ConnectorType.ValueType  # 34
     GRAFANA_VPC: _ConnectorType.ValueType  # 35
     GITHUB_ACTIONS: _ConnectorType.ValueType  # 36
+    SQL_DATABASE_CONNECTION: _ConnectorType.ValueType  # 37
 
 class ConnectorType(_ConnectorType, metaclass=_ConnectorTypeEnumTypeWrapper): ...
 
@@ -102,6 +103,7 @@ EKS: ConnectorType.ValueType  # 33
 AGENT_PROXY: ConnectorType.ValueType  # 34
 GRAFANA_VPC: ConnectorType.ValueType  # 35
 GITHUB_ACTIONS: ConnectorType.ValueType  # 36
+SQL_DATABASE_CONNECTION: ConnectorType.ValueType  # 37
 global___ConnectorType = ConnectorType
 
 class _ConnectorMetadataModelType:
@@ -148,6 +150,8 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     """Postgres Models"""
     EKS_CLUSTER: _ConnectorMetadataModelType.ValueType  # 801
     """EKS Models"""
+    SQL_DATABASE_CONNECTION_RAW_QUERY: _ConnectorMetadataModelType.ValueType  # 901
+    """Sql Database Connection Models"""
 
 class ConnectorMetadataModelType(_ConnectorMetadataModelType, metaclass=_ConnectorMetadataModelTypeEnumTypeWrapper): ...
 
@@ -189,6 +193,8 @@ POSTGRES_DATABASE: ConnectorMetadataModelType.ValueType  # 701
 """Postgres Models"""
 EKS_CLUSTER: ConnectorMetadataModelType.ValueType  # 801
 """EKS Models"""
+SQL_DATABASE_CONNECTION_RAW_QUERY: ConnectorMetadataModelType.ValueType  # 901
+"""Sql Database Connection Models"""
 global___ConnectorMetadataModelType = ConnectorMetadataModelType
 
 class _TransformerType:
@@ -391,7 +397,7 @@ class ConnectorKey(google.protobuf.message.Message):
         POSTGRES_PORT: ConnectorKey._KeyType.ValueType  # 36
         POSTGRES_DATABASE: ConnectorKey._KeyType.ValueType  # 37
         POSTGRES_OPTIONS: ConnectorKey._KeyType.ValueType  # 38
-        DB_CONNECTION_STRING_URI: ConnectorKey._KeyType.ValueType  # 39
+        SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey._KeyType.ValueType  # 39
         PAGER_DUTY_API_KEY: ConnectorKey._KeyType.ValueType  # 41
         OPS_GENIE_API_KEY: ConnectorKey._KeyType.ValueType  # 42
         AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 43
@@ -440,7 +446,7 @@ class ConnectorKey(google.protobuf.message.Message):
     POSTGRES_PORT: ConnectorKey.KeyType.ValueType  # 36
     POSTGRES_DATABASE: ConnectorKey.KeyType.ValueType  # 37
     POSTGRES_OPTIONS: ConnectorKey.KeyType.ValueType  # 38
-    DB_CONNECTION_STRING_URI: ConnectorKey.KeyType.ValueType  # 39
+    SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey.KeyType.ValueType  # 39
     PAGER_DUTY_API_KEY: ConnectorKey.KeyType.ValueType  # 41
     OPS_GENIE_API_KEY: ConnectorKey.KeyType.ValueType  # 42
     AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 43

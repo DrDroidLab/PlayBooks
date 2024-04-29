@@ -1,5 +1,3 @@
-import base64
-import tempfile
 from datetime import datetime, timezone
 from operator import attrgetter
 from typing import Dict
