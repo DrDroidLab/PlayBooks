@@ -1,0 +1,30 @@
+{
+    "name": "Service Latency Investigation Strategy",
+    "description": "This playbook outlines the steps to investigate and identify potential causes of increased service latency.",
+    "steps": [
+        {
+            "description": "Check Current Service Metrics",
+            "notes": "Monitor the `throughput` metrics to identify any unusual spikes or sustained high usage."
+        },
+        {
+            "description": "Examine Upstream Service Metrics",
+            "notes": "Review the `throughput` metrics to determine if there is a bottleneck affecting the service performance."
+        },
+        {
+            "description": "Inspect Downstream Service Metrics",
+            "notes": "Check `latency` and `error rates` for downstream services to identify if delays or failures are contributing to the increased latency."
+        },
+        {
+            "description": "Verify Downstream Broker Metrics",
+            "notes": "Analyze `CPU`, `disk`, and `memory` utilization of downstream brokers to rule out resource constraints as a cause of latency."
+        },
+        {
+            "description": "Analyze Downstream Database Performance",
+            "notes": "Investigate `CPU`, `memory`, and `disk` usage in the downstream database to determine if database performance issues are impacting the service."
+        },
+        {
+            "description": "Review Downstream Redis Metrics",
+            "notes": "Evaluate `CPU` usage, `hit rate`, `memory`, and `disk` metrics in Redis to identify any performance bottlenecks."
+        }
+    ]
+}

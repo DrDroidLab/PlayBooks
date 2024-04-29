@@ -1,0 +1,34 @@
+{
+    "name": "Redis High Memory Usage Investigation Strategy",
+    "description": "This playbook is designed to guide the investigation of high memory usage alerts in Redis.",
+    "steps": [
+        {
+            "description": "Monitor Current Memory Usage",
+            "notes": "Check the `BytesUsedForCache` metric in CloudWatch. This reflects the total number of bytes Redis is using, helping to assess whether Redis is consuming an excessive amount of memory."
+        },
+        {
+            "description": "Check Upstream Traffic",
+            "notes": "Analyze the throughput and request patterns from upstream services. A sudden increase in traffic or poorly optimized queries can cause Redis to handle more data than usual, increasing memory usage."
+        },
+        {
+            "description": "Assess Downstream Response",
+            "notes": "Check downstream services to see if slow responses or timeouts are causing back-pressure on Redis, leading to accumulated data in memory."
+        },
+        {
+            "description": "Verify Memory Configuration Limits",
+            "notes": "Ensure the `maxmemory` configuration is set correctly in the AWS Management Console or via AWS CLI. This setting controls the maximum amount of memory Redis will utilize before it starts applying the configured eviction policy."
+        },
+        {
+            "description": "Assess Eviction Policies",
+            "notes": "Review the `Evictions` metric in CloudWatch. High numbers here indicate that the max memory limit is frequently reached, triggering key evictions based on the configured eviction policy."
+        },
+        {
+            "description": "Check for Memory Leaks",
+            "notes": "Monitor the `BytesUsedForCache` metric alongside workload indicators such as `NewConnections` or `CommandsProcessed` in CloudWatch. An increase in memory usage without a corresponding increase in workload metrics may indicate a memory leak."
+        },
+        {
+            "description": "Inspect Memory Fragmentation",
+            "notes": "Look at the `mem_fragmentation_ratio` via `INFO memory`. A high ratio (e.g., over 1.5) suggests that Redis is experiencing memory fragmentation, leading to poor memory utilization."
+        }
+    ]
+}
