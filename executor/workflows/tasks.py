@@ -1,15 +1,12 @@
 import logging
 from datetime import timedelta, datetime
 
-import time
-
 from celery import shared_task
 from django.conf import settings
 
 from accounts.models import Account
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
-from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions
-from executor.models import PlayBook
+from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
 from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor import action_executor
@@ -23,12 +20,12 @@ from intelligence_layer.task_result_interpreters.task_result_interpreter_facade 
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from playbooks.utils.utils import current_datetime
+from playbooks.utils.utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog, PlaybookTaskDefinition, PlaybookTaskExecutionResult
+from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowActionNotificationConfig, WorkflowActionSlackNotificationConfig
+    WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -41,23 +38,28 @@ def workflow_scheduler():
     all_scheduled_wf_executions = get_workflow_executions(
         status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
     for wf_execution in all_scheduled_wf_executions:
-        print('wf_execution', wf_execution)
         workflow_id = wf_execution.workflow_id
+        logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
+                    f"{workflow_id} at {current_time}")
         account = wf_execution.account
+        time_range = wf_execution.time_range
+        update_time_range = None
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
-            logger.info(
-                f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id} at {current_time}")
+            logger.info(f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id}, workflow_id: "
+                        f"{workflow_id} at {current_time}")
             continue
 
         scheduled_at = wf_execution.scheduled_at
         if current_time_utc < scheduled_at:
-            logger.info(f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution.id}")
+            logger.info(f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution.id}, "
+                        f"workflow_id: {workflow_id} at {current_time}")
             continue
 
         expiry_at = wf_execution.expiry_at
         interval = wf_execution.interval
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
-            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}")
+            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}, workflow_id: "
+                        f"{workflow_id} at {current_time}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
@@ -68,18 +70,23 @@ def workflow_scheduler():
             if current_time_utc < next_schedule:
                 logger.info(f"Workflow execution already scheduled for workflow_execution_id: {wf_execution.id}")
                 continue
+            else:
+                update_time_range = TimeRange(time_geq=int(next_schedule.timestamp()) - 3600,
+                                              time_lt=int(next_schedule.timestamp()))
 
         update_db_account_workflow_execution_count_increment(account, wf_execution.id)
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING)
-        time_range = wf_execution.time_range
         all_pbs = wf_execution.workflow.playbooks.filter(is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run'
-                time_range_proto = dict_to_proto(time_range, TimeRange)
+                if update_time_range:
+                    time_range_proto = dict_to_proto(update_time_range, TimeRange)
+                else:
+                    time_range_proto = dict_to_proto(time_range, TimeRange)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by)
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
@@ -95,13 +102,12 @@ def workflow_scheduler():
                                                   account_id=account.id,
                                                   scheduled_at=datetime.fromtimestamp(float(current_time)))
             except Exception as e:
-                logger.error(
-                    f"Failed to create workflow execution:: workflow_id: {workflow_id}, workflow_execution_id: "
-                    f"{wf_execution.id} playbook_id: {pb_id}, error: {e}")
+                logger.error(f"Failed to create workflow execution:: workflow_id: {workflow_id}, workflow_execution_id:"
+                             f" {wf_execution.id} playbook_id: {pb_id}, error: {e}")
                 continue
         if not interval:
-            logger.info(
-                f"Workflow execution interval not set for workflow_execution_id, marking complete: {wf_execution.id}")
+            logger.info(f"Workflow execution interval not set for workflow_execution_id, "
+                        f"marking complete: {wf_execution.id}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
@@ -205,20 +211,29 @@ workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_acti
 # @shared_task()
 def test_workflow_notification(account_id, workflow, message_type):
     if message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
-        pe_logs = []
-        account = Account.objects.get(id=account_id)
-        time_range = { "time_lt": str(int(time.time())), "time_geq": str(int(time.time()) - 3600) }
-        tr: TimeRange = dict_to_proto(time_range, TimeRange)
+        try:
+            account = Account.objects.get(id=account_id)
+        except Exception as e:
+            logger.error(f"Account not found for account_id: {account_id}, error: {e}")
+            return
+        current_epoch = current_epoch_timestamp()
+        tr: TimeRange = TimeRange(time_lt=current_epoch, time_geq=current_epoch - 3600)
 
         playbook_id = workflow.playbooks[0].id.value
-        playbook = PlayBook.objects.get(id=playbook_id)
+        playbooks = get_db_playbooks(account, playbook_id=playbook_id)
+        if not playbooks:
+            logger.error(f"Playbook not found for account_id: {account_id}, playbook_id: {playbook_id}")
+            return
+        playbook = playbooks.first()
         p_proto = playbook.proto
-
         playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
+
+        pe_logs = []
         try:
             all_step_executions = {}
             for step in list(playbook_steps):
-                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id, is_active=True)
+                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id,
+                                                                             is_active=True)
                 playbook_task_definitions = playbook_task_definitions.order_by('created_at')
                 all_task_executions = []
                 for task in playbook_task_definitions:
@@ -230,7 +245,7 @@ def test_workflow_notification(account_id, workflow, message_type):
                         'task_result_proto': task_result,
                     })
                 all_step_executions[step] = all_task_executions
-            
+
             for step, all_task_results in all_step_executions.items():
                 for result in all_task_results:
                     playbook_execution_log = PlaybookExecutionLog(
