@@ -101,6 +101,10 @@ const App = () => {
           path="/playbooks/logs/:playbook_run_id"
           element={<PlaybookLog />}
         />
+        <Route
+          path="/playbooks/edit/:playbook_id"
+          element={<CreatePlaybookBeta />}
+        />
       </Route>
 
       <Route element={<RequireAuth />}>

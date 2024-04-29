@@ -33,7 +33,7 @@ function CreatePlaybookBeta() {
   useEffect(() => {
     dispatch(setPlaybookState());
     return () => {
-      if (!copied.current) dispatch(resetState());
+      dispatch(resetState());
       dispatch(resetTimeRange());
     };
   }, [dispatch]);

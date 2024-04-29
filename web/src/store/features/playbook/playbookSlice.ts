@@ -86,7 +86,7 @@ const playbookSlice = createSlice({
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
-      state.currentPlaybook.name = payload.name;
+      state.name = "";
       state.currentPlaybook.globalVariables = Object.entries(
         payload.global_variable_set ?? {},
       ).map((val) => {
@@ -105,6 +105,7 @@ const playbookSlice = createSlice({
       });
       state.currentPlaybook.isCopied = true;
       state.steps = playbookToSteps(payload, true);
+      state.isEditing = false;
     },
     setErrors(state, { payload }) {
       state.steps[payload.index].errors = payload.errors;
