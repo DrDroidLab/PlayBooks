@@ -65,6 +65,7 @@ const playbookSlice = createSlice({
     },
     setPlaybookDataBeta(state, { payload }) {
       state.name = payload.name;
+      state.id = payload.id;
       state.globalVariables = Object.entries(
         payload?.global_variable_set ?? {},
       ).map((val) => {
@@ -82,6 +83,7 @@ const playbookSlice = createSlice({
         };
       });
       state.steps = playbookToSteps(payload, true);
+      state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
       state.currentPlaybook.name = payload.name;

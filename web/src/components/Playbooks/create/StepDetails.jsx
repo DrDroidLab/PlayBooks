@@ -2,32 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  changeProgress,
   deleteStep,
   playbookSelector,
   stepsSelector,
-  updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { Delete, PlayArrowRounded, Save } from "@mui/icons-material";
+import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import {
-  useCreatePlaybookMutation,
-  useLazyGetAssetModelOptionsQuery,
-  useUpdatePlaybookMutation,
-} from "../../../store/features/playbook/api/index.ts";
+import { useLazyGetAssetModelOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
-import { getStepTitle } from "../utils.jsx";
-import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import {
-  getTaskFromStep,
-  stepsToPlaybook,
-} from "../../../utils/parser/playbook/stepsToplaybook.ts";
-import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
-import { useNavigate } from "react-router-dom";
-import SavePlaybookOverlay from "../SavePlaybookOverlay.jsx";
+import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { handleExecute } from "../../../utils/execution/handleExecute.ts";
+import StepActions from "./StepActions.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -36,34 +24,10 @@ function StepDetails() {
     useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
-  const timeRange = useSelector(rangeSelector);
-  const [triggerExecutePlaybook] = useExecutePlaybookMutation();
   const [links, setLinks] = useState(step?.externalLinks ?? []);
   const [showExternalLinks, setShowExternalLinks] = useState(
     step?.isPrefetched && step?.externalLinks,
   );
-  const currentPlaybook = useSelector(playbookSelector);
-  const navigate = useNavigate();
-  const [isSavePlaybookOverlayOpen, setIsSavePlaybookOverlayOpen] =
-    useState(false);
-  const [triggerUpdatePlaybook, { isLoading: updateLoading }] =
-    useUpdatePlaybookMutation();
-  const [triggerCreatePlaybook, { isLoading: createLoading }] =
-    useCreatePlaybookMutation();
-
-  const updateCardByIndex = (key, value) => {
-    dispatch(
-      updateStep({
-        index: currentStepIndex,
-        key,
-        value,
-      }),
-    );
-  };
-
-  function changeCardExecutionProgressStatus(status) {
-    dispatch(changeProgress({ index: currentStepIndex, progress: status }));
-  }
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
@@ -77,112 +41,8 @@ function StepDetails() {
     });
   };
 
-  const queryForStepTask = async (step, cb) => {
-    if (Object.keys(step.errors ?? {}).length > 0) {
-      cb({}, false);
-      return;
-    }
-
-    let body = {
-      playbook_task_definition: getTaskFromStep(step),
-      meta: {
-        time_range: timeRange,
-      },
-    };
-
-    if (
-      Object.keys(body?.playbook_task_definition?.documentation_task ?? {})
-        .length > 0
-    ) {
-      cb(
-        {
-          step: step,
-          data: null,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-      return;
-    }
-
-    try {
-      const response = await triggerExecutePlaybook(body).unwrap();
-      cb(
-        {
-          step: step,
-          data: response,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-    } catch (e) {
-      updateCardByIndex("outputError", e.err);
-      console.error(e);
-      cb(
-        {
-          error: e.err,
-        },
-        false,
-      );
-    }
-  };
-
-  const handleExecute = () => {
-    dispatch(changeProgress({ index: currentStepIndex, progress: true }));
-
-    updateCardByIndex("outputLoading", true);
-    updateCardByIndex("showOutput", true);
-    updateCardByIndex("outputError", null);
-    updateCardByIndex("output", null);
-    updateCardByIndex("showError", false);
-
-    queryForStepTask(step, function (res) {
-      if (Object.keys(res ?? {}).length > 0) {
-        if (res.err) {
-          updateCardByIndex("showOutput", true);
-          updateCardByIndex("outputLoading", false);
-          return;
-        }
-        updateCardByIndex("showOutput", true);
-        updateCardByIndex("output", res);
-        updateCardByIndex("outputLoading", false);
-        changeCardExecutionProgressStatus(false);
-      } else {
-        updateCardByIndex("showError", true);
-        updateCardByIndex("showOutput", false);
-        updateCardByIndex("outputLoading", false);
-      }
-    });
-  };
-
   const toggleExternalLinks = () => {
     setShowExternalLinks(!showExternalLinks);
-  };
-
-  const handlePlaybookSave = async ({ pbName }) => {
-    setIsSavePlaybookOverlayOpen(false);
-
-    const playbook = stepsToPlaybook(currentPlaybook, steps);
-
-    const playbookObj = {
-      playbook: {
-        ...playbook,
-        name: pbName,
-      },
-    };
-
-    try {
-      const response = await triggerCreatePlaybook(playbookObj).unwrap();
-      navigate(`/playbooks/edit/${response.playbook?.id}`);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleSave = () => {
-    setIsSavePlaybookOverlayOpen(true);
   };
 
   useEffect(() => {
@@ -192,7 +52,7 @@ function StepDetails() {
   }, [currentStepIndex]);
 
   return (
-    <div className="p-2 min-h-screen">
+    <div className="p-2 min-h-screen mb-10">
       <h2 className="font-bold mb-2 flex items-center gap-2 justify-between mr-2">
         Step Details {step?.outputLoading && <CircularProgress size={20} />}
         <button
@@ -224,8 +84,8 @@ function StepDetails() {
           />
           <Notes step={step} index={currentStepIndex} />
           <button
-            onClick={handleExecute}
-            className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
+            onClick={() => handleExecute(step)}
+            className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
             <Tooltip title="Run this Step">
               Run <PlayArrowRounded />
             </Tooltip>
@@ -246,29 +106,8 @@ function StepDetails() {
           )}
         </div>
       )}
-      <button
-        className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
-        onClick={handleSave}>
-        <Save style={{ fontSize: "medium" }} />
-        <span style={{ marginLeft: "2px" }} className="save_playbook">
-          Save
-        </span>
-      </button>
-      {(updateLoading || createLoading) && (
-        <CircularProgress
-          style={{
-            textAlign: "center",
-          }}
-          size={20}
-        />
-        // </div>
-      )}
 
-      <SavePlaybookOverlay
-        isOpen={isSavePlaybookOverlayOpen}
-        close={() => setIsSavePlaybookOverlayOpen(false)}
-        saveCallback={handlePlaybookSave}
-      />
+      <StepActions />
     </div>
   );
 }

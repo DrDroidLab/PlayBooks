@@ -16,7 +16,7 @@ export default function CustomNode({ data }) {
       className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 w-[200px] h-48 cursor-pointer  transition-all hover:shadow-violet-500"
       onClick={handleClick}>
       <div className="flex flex-col items-center gap-4">
-        {/* <img
+        <img
           className="w-10 h-10"
           src={
             cardsData.find(
@@ -24,7 +24,7 @@ export default function CustomNode({ data }) {
             )?.url ?? ""
           }
           alt="logo"
-        /> */}
+        />
         <p className="text-lg font-bold text-center z-10">
           {data?.step?.description ||
             data?.step?.selectedSource ||
