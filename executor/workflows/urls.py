@@ -12,9 +12,13 @@ urlpatterns = [
     # Test Notification
     path('test_notification', workflow_views.test_workflows_notification),
 
-    # Workflow Execution APIs
+    # Workflows Execution APIs
     path('execute', workflow_views.workflows_execute),
     path('executions/get', workflow_views.workflows_execution_get),
     path('executions/list', workflow_views.workflows_execution_list),
+
+    # Workflows API based executions
+    path('api/execute', workflow_views.workflows_api_execute),
+    path('api/executions/get', workflow_views.workflows_execution_api_get),
 
 ]
