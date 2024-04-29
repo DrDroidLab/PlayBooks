@@ -49,17 +49,20 @@ class Interpretation(google.protobuf.message.Message):
         UNKNOWN: Interpretation._Type.ValueType  # 0
         IMAGE: Interpretation._Type.ValueType  # 1
         SUMMARY: Interpretation._Type.ValueType  # 2
+        CSV_FILE: Interpretation._Type.ValueType  # 3
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: Interpretation.Type.ValueType  # 0
     IMAGE: Interpretation.Type.ValueType  # 1
     SUMMARY: Interpretation.Type.ValueType  # 2
+    CSV_FILE: Interpretation.Type.ValueType  # 3
 
     TYPE_FIELD_NUMBER: builtins.int
     TITLE_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
     SUMMARY_FIELD_NUMBER: builtins.int
     IMAGE_URL_FIELD_NUMBER: builtins.int
+    FILE_PATH_FIELD_NUMBER: builtins.int
     type: global___Interpretation.Type.ValueType
     @property
     def title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -69,6 +72,8 @@ class Interpretation(google.protobuf.message.Message):
     def summary(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def image_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def file_path(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
@@ -77,8 +82,9 @@ class Interpretation(google.protobuf.message.Message):
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
         summary: google.protobuf.wrappers_pb2.StringValue | None = ...,
         image_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        file_path: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "image_url", b"image_url", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "image_url", b"image_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
 
 global___Interpretation = Interpretation

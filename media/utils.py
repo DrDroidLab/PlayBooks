@@ -31,6 +31,16 @@ def generate_local_image_path(image_data=None, image_name: str = None):
         return os.path.join(settings.MEDIA_ASSETS_ROOT, file_path)
 
 
+def generate_local_csv_path(file_name: str = None):
+    randon_name = str(uuid.uuid4())
+    if not file_name:
+        file_name = f'{current_milli_time()}_{randon_name}' + '.csv'
+    if not file_name.endswith('.csv'):
+        file_name += '.png'
+    file_path = os.path.join('files', file_name)
+    return os.path.join(settings.MEDIA_ASSETS_ROOT, file_path)
+
+
 def save_image_to_db(image_file_path, image_title: str = 'Untitled', image_description: str = None,
                      image_metadata: dict = None, remove_file_from_os=False) -> str:
     try:
@@ -45,7 +55,7 @@ def save_image_to_db(image_file_path, image_title: str = 'Untitled', image_descr
             protocol = site.protocol
         else:
             protocol = settings.MEDIA_STORAGE_SITE_HTTP_PROTOCOL
-            
+
         enabled = settings.MEDIA_STORAGE_USE_SITE
         object_url = build_absolute_uri(None, location, protocol, enabled)
         if remove_file_from_os:
