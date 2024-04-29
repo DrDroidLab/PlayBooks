@@ -35,7 +35,11 @@ export const HandleInputRender = ({ option }) => {
                 : handleInput(option.id, val)
             }
             disabled={disabled}
-            error={currentWorkflow ? currentWorkflow.errors[option.id] : false}
+            error={
+              currentWorkflow?.errors
+                ? currentWorkflow.errors[option.id]
+                : false
+            }
             {...option.additionalProps}
           />
         </div>
