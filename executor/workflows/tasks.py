@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta, datetime
 
 import time
+import traceback
 
 from celery import shared_task
 from django.conf import settings
@@ -234,14 +235,15 @@ def test_workflow_notification(account_id, workflow, message_type):
             for step, all_task_results in all_step_executions.items():
                 for result in all_task_results:
                     playbook_execution_log = PlaybookExecutionLog(
-                        playbook=playbook,
-                        playbook_step=step,
-                        playbook_task_definition=result['task'].proto,
-                        playbook_task_result=result['task_result_proto'],
+                        playbook=p_proto,
+                        step=step.proto,
+                        task=result['task'].proto,
+                        task_execution_result=result['task_result_proto'],
                     )
                     pe_logs.append(playbook_execution_log)
 
         except Exception as exc:
+            print(traceback.format_exc())
             logger.error(f"Error occurred while running playbook: {exc}")
 
         execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
