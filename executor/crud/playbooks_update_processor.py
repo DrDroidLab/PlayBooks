@@ -76,6 +76,10 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
             elem.save(update_fields=['is_active', 'name'])
             updated_playbook = update_op.playbook
             updated_elem, err = create_db_playbook(elem.account, elem.created_by, updated_playbook)
+            all_workflow_playbook_mappings = elem.workflowplaybookmapping_set.all()
+            for workflow_playbook_mapping in all_workflow_playbook_mappings:
+                workflow_playbook_mapping.playbook = updated_elem
+                workflow_playbook_mapping.save(update_fields=['playbook'])
             if err:
                 raise Exception(err)
             return updated_elem

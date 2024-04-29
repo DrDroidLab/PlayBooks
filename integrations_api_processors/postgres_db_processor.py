@@ -9,12 +9,13 @@ logger = logging.getLogger(__name__)
 class PostgresDBProcessor:
     client = None
 
-    def __init__(self, host, user, password, database=None):
+    def __init__(self, host, user, password, database, port='5432'):
         self.config = {
             'host': host,
             'user': user,
             'password': password,
-            'database': database
+            'database': database,
+            'port': port
         }
 
     def test_connection(self):
