@@ -1,0 +1,26 @@
+{
+    "name": "Error Rate Spike Investigation Strategy",
+    "description": "Leverage this investigation strategy in case of unexpected spike in error rates for a service.",
+    "steps": [
+        {
+            "description": "Inspect Downstream Service Metrics",
+            "notes": "Check for increased `errors` in downstream services to determine if they are the source or simply affected by upstream issues."
+        },
+        {
+            "description": "Review Upstream Broker Metrics",
+            "notes": "Analyze `topic_level_message_count` to evaluate upstream broker health."
+        },
+        {
+            "description": "Verify Downstream Broker Metrics",
+            "notes": "Assess `CPU`, `memory`, and `disk` utilization to evaluate broker health."
+        },
+        {
+            "description": "Analyze Downstream Database Performance",
+            "notes": "Examine `CPU`, `memory`, and `disk` usage metrics to check for Database performance."
+        },
+        {
+            "description": "Review Downstream Redis Metrics",
+            "notes": "Evaluate `CPU` usage, `hit rate`, `memory`, and `disk` metrics in Redis."
+        }
+    ]
+}

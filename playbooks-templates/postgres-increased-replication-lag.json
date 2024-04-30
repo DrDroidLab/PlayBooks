@@ -1,0 +1,26 @@
+{
+    "name": "PostgreSQL Increased Replication Lag",
+    "description": "Playbook to investigate increased replication lag in your PostgreSQL database",
+    "steps": [
+        {
+            "description": "Replication Status",
+            "notes": "A significant lag in replication can cause errors because of stale data. `SELECT client_addr, state, sync_state, sent_lsn, write_lsn, flush_lsn, replay_lsn, write_lag, flush_lag, replay_lag FROM pg_stat_replication;`"
+        },
+        {
+            "description": "Check Network Latency via PING",
+            "notes": "check network latency between primary and replica by pinging the replica server's IP"
+        },
+        {
+            "description": "Check Load on Primary DB",
+            "notes": "Keep a check on this value during investigation. DatabaseConnections, CPUUtilization, FreeableMemory, ReadIOPS, WriteIOPS, ReadLatency, WriteLatency"
+        },
+        {
+            "description": "Check Load on Replica DB",
+            "notes": "Keep a check on this value during investigation. CPUUtilization, FreeableMemory, ReadIOPS, WriteIOPS, ReadLatency, WriteLatency"
+        },
+        {
+            "description": "Check Configurations",
+            "notes": "Check if any of the critical configurations look off.  wal_keep_segments, max_wal_senders, max_standby_archive_delay and max_standby_streaming_delay `SELECT name AS parameter, setting, unit FROM pg_settings WHERE name IN ('wal_keep_segments', 'max_wal_senders', 'max_standby_archive_delay', 'max_standby_streaming_delay');`"
+        }
+    ]
+}
