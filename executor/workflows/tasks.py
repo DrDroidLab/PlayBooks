@@ -32,7 +32,7 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType,
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, ConnectorType
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -221,12 +221,14 @@ workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_acti
 
 
 def test_workflow_notification(account_id, workflow, message_type):
+
+    try:
+        account = Account.objects.get(id=account_id)
+    except Exception as e:
+        logger.error(f"Account not found for account_id: {account_id}, error: {e}")
+        return
+
     if message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
-        try:
-            account = Account.objects.get(id=account_id)
-        except Exception as e:
-            logger.error(f"Account not found for account_id: {account_id}, error: {e}")
-            return
         current_epoch = current_epoch_timestamp()
         tr: TimeRange = TimeRange(time_lt=current_epoch, time_geq=current_epoch - 3600)
 
@@ -277,16 +279,15 @@ def test_workflow_notification(account_id, workflow, message_type):
         # Sample alert message
         channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
 
-        slack_connectors = get_db_connectors(account_id, connector_type=ConnectorProto.ConnectorType.SLACK)
+        slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK)
         if not slack_connectors:
             return
-        bot_auth_token_slack_connector_keys = get_db_connector_keys(account_id, slack_connectors[0].id, key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
+        
+        bot_auth_token_slack_connector_keys = get_db_connector_keys(account, slack_connectors[0].id, key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
         if not bot_auth_token_slack_connector_keys:
             return
         
         bot_auth_token = bot_auth_token_slack_connector_keys[0].key
-        
-        ConnectorKey.objects.get(key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN, is_active=True).key
         message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id, 'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
 
         workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
