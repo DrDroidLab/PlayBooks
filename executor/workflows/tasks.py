@@ -1,14 +1,11 @@
 import logging
 from datetime import timedelta, datetime
 
-import traceback
-
 from celery import shared_task
 from django.conf import settings
 
 from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connectors
-from connectors.models import ConnectorKey
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
 from executor.task_executor import execute_task
@@ -31,7 +28,8 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType,
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
+    ConnectorType
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)

@@ -28,7 +28,7 @@ class SlackNotifier(Notifier):
         if not slack_bot_auth_token_keys:
             raise ValueError('Slack bot auth token is not configured for the account')
 
-        slack_bot_auth_token = slack_bot_auth_token_keys.first()
+        slack_bot_auth_token = slack_bot_auth_token_keys.first().key
         self.slack_api_processor = SlackApiProcessor(slack_bot_auth_token)
 
     def notify(self, config: WorkflowActionNotificationConfigProto, execution_output: [InterpretationProto]):

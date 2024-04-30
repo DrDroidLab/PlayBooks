@@ -3,9 +3,11 @@ import Overlay from "./components/Overlay";
 import styles from "./components/Playbooks/index.module.css";
 import { CircularProgress } from "@mui/material";
 import { useLazyRequestSlackConnectQuery } from "./store/features/alertInsights/api/index.ts";
+import { Link } from "react-router-dom";
 
 const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
   const [showSuccess, setShowSuccess] = useState(false);
+
   const [triggerRequestSlackConnect, { isLoading }] =
     useLazyRequestSlackConnectQuery();
 
@@ -15,11 +17,6 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
     onRefresh();
   };
 
-  const handleSuccess = async () => {
-    await triggerRequestSlackConnect();
-    toggleOverlay();
-  };
-
   return (
     <>
       {isOpen && (
@@ -27,12 +24,8 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
           {!showSuccess && (
             <div className={styles["actionOverlay"]}>
               <header className="text-gray-800" style={{ fontSize: "14px" }}>
-                Connect with Doctor Droid team on Slack?
+                Join the Doctor Droid Slack Community and connect with other users.
               </header>
-              <br></br>
-              <p className="text-gray-500" style={{ fontSize: "14px" }}>
-                We will be inviting you to a slack channel.
-              </p>
               <div className={styles["actions"]}>
                 <button
                   className={styles["submitButton"]}
@@ -42,8 +35,8 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
                 <button
                   className={styles["submitButtonRight"]}
                   sx={{ marginLeft: "5px" }}
-                  onClick={() => handleSuccess()}>
-                  Send me invite
+                  onClick={() => window.open('https://doctor-droid-public.slack.com/', '_blank', 'noopener')}>
+                    Join
                 </button>
                 {isLoading ? (
                   <CircularProgress
