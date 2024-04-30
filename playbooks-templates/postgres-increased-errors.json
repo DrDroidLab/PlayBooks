@@ -4,8 +4,7 @@
     "steps": [
         {
             "description": "Check the Error Type that has started occurring",
-            "notes": "",
-            "filter_query": "{fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20}"
+            "notes": "Sample query in case you're using Cloudwatch Logs `fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20`"
         },
         {
             "description": "Check Important Metrics",
