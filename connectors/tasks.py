@@ -140,9 +140,8 @@ def match_workflow_to_slack_alert(slack_alert):
             current_time_utc = current_datetime()
             workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
             schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
-            create_workflow_execution_util(workflow.schedule_type, schedule, slack_alert.account, None,
-                                           current_time_utc,
-                                           workflow.id, workflow_run_id,
+            create_workflow_execution_util(slack_alert.account, workflow.id, workflow.schedule_type, schedule,
+                                           current_time_utc, workflow_run_id, 'SLACK_ALERT',
                                            {'thread_ts': slack_alert.data.get('event').get('ts')})
 
 
