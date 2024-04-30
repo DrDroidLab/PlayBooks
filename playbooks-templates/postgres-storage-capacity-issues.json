@@ -1,0 +1,18 @@
+{
+    "name": "PostgreSQL Disk Space Usage Issue",
+    "description": "Playbook to investigate how you can reduce disk space usage by analysing database growt & unused index usage.",
+    "steps": [
+        {
+            "description": "Check the current disk usage",
+            "notes": "Check the value for FreeStorageSpace metric to see if the disk is running out of space."
+        },
+        {
+            "description": "Analyze Database Growth",
+            "notes": "- See the growth of the database over time. `SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;`\n-Check if there are any large objects or tables that might be causing the storage issues. `SELECT nspname AS schemaname, relname AS tablename, pg_size_pretty(pg_relation_size(C.oid)) AS size FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND C.relkind <> 'i' ORDER BY pg_relation_size(C.oid) DESC LIMIT 10;`"
+        },
+        {
+            "description": "Check for Unused Indexes",
+            "notes": "Check if there are any indexes that are not being used and can be removed to free up space. `SELECT indexrelid::regclass AS index, idx_scan, pg_size_pretty(pg_relation_size(indexrelid::regclass)) AS index_size FROM pg_stat_user_indexes JOIN pg_index USING (indexrelid) WHERE idx_scan < 50 AND pg_relation_size(indexrelid::regclass) > 50000000 order by index_size;`"
+        }
+    ]
+}
