@@ -9,3 +9,9 @@ Ready to use playbooks for common use-cases | Doctor Droid
     - Resource Saturation
     - Slow Queries
     - Storage Capacity Limit Reached
+3. Impact on Service Golden Signals:
+    - Error Rate Spike
+    - Latency Spike
+    - Throughput Spike
+4. Redis Troubleshooting playbooks: 
+    - High Memory
