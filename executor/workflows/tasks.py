@@ -8,7 +8,8 @@ from django.conf import settings
 
 from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connectors
-from connectors.models import ConnectorKey
+
+
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
 from executor.models import PlayBook
@@ -32,7 +33,9 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType,
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, ConnectorType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
+    ConnectorType
+
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -221,7 +224,6 @@ workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_acti
 
 
 def test_workflow_notification(account_id, workflow, message_type):
-
     try:
         account = Account.objects.get(id=account_id)
     except Exception as e:
@@ -271,7 +273,8 @@ def test_workflow_notification(account_id, workflow, message_type):
         except Exception as exc:
             logger.error(f"Error occurred while running playbook: {exc}")
 
-        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto, pe_logs)
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
         action_executor(account, workflow.actions[0], execution_output)
 
     if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
@@ -282,13 +285,15 @@ def test_workflow_notification(account_id, workflow, message_type):
         slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK)
         if not slack_connectors:
             return
-        
-        bot_auth_token_slack_connector_keys = get_db_connector_keys(account, slack_connectors[0].id, key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
+
+        bot_auth_token_slack_connector_keys = get_db_connector_keys(account, slack_connectors[0].id,
+                                                                    key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
         if not bot_auth_token_slack_connector_keys:
             return
-        
+
         bot_auth_token = bot_auth_token_slack_connector_keys[0].key
-        message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id, 'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
+        message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id,
+                                                                        'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
 
         workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
 
@@ -304,7 +309,8 @@ def test_workflow_notification(account_id, workflow, message_type):
         try:
             all_step_executions = {}
             for step in list(playbook_steps):
-                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id, is_active=True)
+                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id,
+                                                                             is_active=True)
                 playbook_task_definitions = playbook_task_definitions.order_by('created_at')
                 all_task_executions = []
                 for task in playbook_task_definitions:

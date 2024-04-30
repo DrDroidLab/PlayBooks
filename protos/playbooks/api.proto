@@ -146,6 +146,7 @@ message UpdateWorkflowResponse {
 message ExecuteWorkflowRequest {
   Meta meta = 1;
   google.protobuf.UInt64Value workflow_id = 2;
+  google.protobuf.StringValue workflow_name = 3;
 }
 
 message ExecuteWorkflowResponse {

@@ -46,6 +46,7 @@ LOCAL_APPS = [
     'executor.workflows.apps.WorkflowsConfig',
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
+    'connectors.handlers.apps.HandlersConfig',
 ]
 
 THIRD_PARTY_APPS = [

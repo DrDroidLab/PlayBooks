@@ -1,5 +1,6 @@
 from datetime import timezone
 from hashlib import md5
+from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 from utils.model_utils import generate_choices
 
@@ -294,9 +295,12 @@ class ConnectorKey(models.Model):
                              ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY,
                              ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
                              ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
+                             ConnectorKeyProto.KeyType.AWS_ASSUMED_ROLE_ARN,
                              ConnectorKeyProto.KeyType.CLICKHOUSE_USER, ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD,
                              ConnectorKeyProto.KeyType.GCM_PROJECT_ID, ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
                              ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
+                             ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
+                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
                              ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY]:
             key_value = '*********' + self.key[-4:]
             return ConnectorKeyProto(key_type=self.key_type,
@@ -402,3 +406,11 @@ class Site(models.Model):
     protocol = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, **kwargs):
+        if self.domain:
+            django_site = DjangoSite.objects.get_or_create(id=1)
+            django_site.domain = self.domain
+            django_site.name = self.name
+            django_site.save()
+        super().save(**kwargs)

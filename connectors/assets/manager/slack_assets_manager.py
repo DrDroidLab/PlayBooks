@@ -4,7 +4,7 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
-from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
+from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
 from protos.connectors.assets.slack_asset_pb2 import SlackChannelAssetOptions, SlackChannelAssetModel, SlackAssetModel, \
     SlackAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets
@@ -21,10 +21,13 @@ class SlackAssetManager(ConnectorAssetManager):
         which_one_of = filters.WhichOneof('filters')
 
         channel_protos = []
-        slack_connector = get_db_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
+        slack_connector = get_db_account_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
         for con in slack_connector:
-            slack_channel_models = get_db_connector_keys(account, connector_id=con.id,
-                                                         key_type=ConnectorKeyProto.KeyType.SLACK_CHANNEL)
+            try:
+                slack_channel_models = get_db_account_connector_keys(account, connector_id=con.id,
+                                                                     key_type=ConnectorKeyProto.KeyType.SLACK_CHANNEL)
+            except Exception as e:
+                slack_channel_models = []
             if model_type == ConnectorMetadataModelType.SLACK_CHANNEL and (
                     not which_one_of or which_one_of == 'slack_channel_model_filters'):
                 options: SlackChannelAssetOptions = filters.slack_channel_model_filters
