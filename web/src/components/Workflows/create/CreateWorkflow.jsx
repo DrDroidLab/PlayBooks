@@ -16,7 +16,7 @@ import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts"
 import { useLazyGetWorkflowQuery } from "../../../store/features/workflow/api/getWorkflowApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/updateWorkflowApi.ts";
-// import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/workflow/api/testWorkflowNotificationApi.ts";
+import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/workflow/api/testWorkflowNotificationApi.ts";
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 import { validate } from "./utils/validation.ts";
 
@@ -29,8 +29,8 @@ function CreateTrigger() {
     useUpdateWorkflowMutation();
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
     useLazyGetWorkflowQuery();
-  // const [triggerTestWorkflowNotification] =
-  //   useLazyTestWorkflowNotificationQuery();
+  const [triggerTestWorkflowNotification] =
+    useLazyTestWorkflowNotificationQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   const handleSave = async () => {
@@ -54,10 +54,10 @@ function CreateTrigger() {
     }
   };
 
-  // const handleTestNotification = () => {
-  //   triggerTestWorkflowNotification();
-  //   dispatch(showSnackbar("Test Notification Sent"));
-  // };
+  const handleTestNotification = () => {
+    triggerTestWorkflowNotification();
+    dispatch(showSnackbar("Test Notification Sent"));
+  };
 
   useEffect(() => {
     return () => {

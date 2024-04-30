@@ -27,7 +27,7 @@ function TemplatesList() {
         {templates?.map((template, index) => (
           <div
             key={index}
-            onClick={handleImportTemplate}
+            onClick={() => handleImportTemplate(template)}
             className="border rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-all">
             <h3 className="font-bold text-md">{template.name}</h3>
             <p className="text-sm text-gray-500">{template.description}</p>
