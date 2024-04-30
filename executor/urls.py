@@ -19,4 +19,7 @@ urlpatterns = [
     # Playbooks API based executions
     path('api/execute', executor_views.playbooks_api_execute),
     path('api/executions/get', executor_views.playbooks_api_execution_get),
+
+    # Templates
+    path("templates", executor_views.playbooks_templates)
 ]
