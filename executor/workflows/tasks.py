@@ -7,6 +7,7 @@ from celery import shared_task
 from django.conf import settings
 
 from accounts.models import Account
+from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connectors
 from connectors.models import ConnectorKey
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
@@ -218,14 +219,14 @@ workflow_action_execution_failure_notifier = publish_task_failure(workflow_actio
 workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
 
 
-@shared_task()
 def test_workflow_notification(account_id, workflow, message_type):
+    try:
+        account = Account.objects.get(id=account_id)
+    except Exception as e:
+        logger.error(f"Account not found for account_id: {account_id}, error: {e}")
+        return
+
     if message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
-        try:
-            account = Account.objects.get(id=account_id)
-        except Exception as e:
-            logger.error(f"Account not found for account_id: {account_id}, error: {e}")
-            return
         current_epoch = current_epoch_timestamp()
         tr: TimeRange = TimeRange(time_lt=current_epoch, time_geq=current_epoch - 3600)
 
@@ -239,6 +240,68 @@ def test_workflow_notification(account_id, workflow, message_type):
         playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
 
         pe_logs = []
+        try:
+            all_step_executions = {}
+            for step in list(playbook_steps):
+                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id,
+                                                                             is_active=True)
+                all_task_executions = []
+                for task in playbook_task_definitions:
+                    task_proto = task.proto
+                    task_result = execute_task(account_id, tr, task_proto)
+                    all_task_executions.append({
+                        'task': task_proto,
+                        'task_result': proto_to_dict(task_result),
+                        'task_result_proto': task_result,
+                    })
+                all_step_executions[step] = all_task_executions
+
+            for step, all_task_results in all_step_executions.items():
+                for result in all_task_results:
+                    playbook_execution_log = PlaybookExecutionLog(
+                        playbook=p_proto,
+                        step=step.proto,
+                        task=result['task'],
+                        task_execution_result=result['task_result_proto'],
+                    )
+                    pe_logs.append(playbook_execution_log)
+
+        except Exception as exc:
+            logger.error(f"Error occurred while running playbook: {exc}")
+
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
+        action_executor(account, workflow.actions[0], execution_output)
+
+    if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
+
+        # Sample alert message
+        channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
+
+        slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK)
+        if not slack_connectors:
+            return
+
+        bot_auth_token_slack_connector_keys = get_db_connector_keys(account, slack_connectors[0].id,
+                                                                    key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
+        if not bot_auth_token_slack_connector_keys:
+            return
+
+        bot_auth_token = bot_auth_token_slack_connector_keys[0].key
+        message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id,
+                                                                        'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
+
+        workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
+
+        pe_logs = []
+        account = Account.objects.get(id=account_id)
+        tr = TimeRange(time_lt=int(time.time()), time_geq=int(time.time()) - 3600)
+
+        playbook_id = workflow.playbooks[0].id.value
+        playbook = PlayBook.objects.get(id=playbook_id)
+        p_proto = playbook.proto
+
+        playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
         try:
             all_step_executions = {}
             for step in list(playbook_steps):
@@ -269,72 +332,6 @@ def test_workflow_notification(account_id, workflow, message_type):
         except Exception as exc:
             logger.error(f"Error occurred while running playbook: {exc}")
 
-<< << << < HEAD
-execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
-                                                                              pe_logs)
-action_executor(account, workflow.actions[0], execution_output)
-== == == =
-execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto, pe_logs)
-action_executor(account, workflow.actions[0], execution_output)
-
-if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
-
-    # Sample alert message
-    channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
-    bot_auth_token = ConnectorKey.objects.get(key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
-                                              is_active=True).key
-    message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id,
-                                                                    'Hello, this is a test alert message from to show how the enrichment works in reply to an alert.')
-
-    workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
-
-    time.sleep(2)
-
-    pe_logs = []
-    account = Account.objects.get(id=account_id)
-    time_range = {"time_lt": str(int(time.time())), "time_geq": str(int(time.time()) - 3600)}
-    tr: TimeRange = dict_to_proto(time_range, TimeRange)
-
-    playbook_id = workflow.playbooks[0].id.value
-    playbook = PlayBook.objects.get(id=playbook_id)
-    p_proto = playbook.proto
-
-    playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
-    try:
-        all_step_executions = {}
-        for step in list(playbook_steps):
-            playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id, is_active=True)
-            playbook_task_definitions = playbook_task_definitions.order_by('created_at')
-            all_task_executions = []
-            for task in playbook_task_definitions:
-                task_proto = task.proto
-                task_result = execute_task(account_id, tr, task_proto)
-                all_task_executions.append({
-                    'task': task,
-                    'task_result': proto_to_dict(task_result),
-                    'task_result_proto': task_result,
-                })
-            all_step_executions[step] = all_task_executions
-
-        for step, all_task_results in all_step_executions.items():
-            for result in all_task_results:
-                playbook_execution_log = PlaybookExecutionLog(
-                    playbook=p_proto,
-                    step=step.proto,
-                    task=result['task'].proto,
-                    task_execution_result=result['task_result_proto'],
-                )
-                pe_logs.append(playbook_execution_log)
-
-    except Exception as exc:
-        logger.error(f"Error occurred while running playbook: {exc}")
-
-    execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
-                                                                                  pe_logs)
-    action_executor(account, workflow.actions[0], execution_output)
->> >> >> > 478
-d6ed(Added
-thread
-reply
-test
-notification)
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
+        action_executor(account, workflow.actions[0], execution_output)
