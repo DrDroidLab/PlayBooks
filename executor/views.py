@@ -1,10 +1,15 @@
 import logging
+import os
+import json
 from typing import Union
 
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
+from django.views.decorators.csrf import csrf_exempt
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
+from rest_framework.decorators import api_view
+from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
@@ -14,7 +19,7 @@ from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.decorators import web_api, account_post_api, account_get_api
+from playbooks.utils.decorators import web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp, current_datetime
@@ -23,7 +28,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
-    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse
+    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse, PlaybookTemplatesGetResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
@@ -302,3 +307,30 @@ def playbooks_api_execution_get(request_message: HttpRequest) -> Union[Execution
     for pe in playbook_executions:
         pe_protos.append(pe.proto)
     return ExecutionPlaybookAPIGetResponse(success=BoolValue(value=True), playbook_executions=pe_protos)
+
+
+@csrf_exempt
+@api_view(['GET'])
+@get_proto_schema_validator()
+def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplatesGetResponse, HttpResponse]:
+    folder_path = 'playbooks-templates/'
+    s = Struct()
+    try:
+        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        if not json_files:
+            return PlaybookTemplatesGetResponse(success=BoolValue(value=False),
+                                                message=Message(title="Not Found", description="No JSON files found"))
+
+        json_contents = []
+        for json_file in json_files:
+            full_path = os.path.join(folder_path, json_file)
+            with open(full_path, 'r') as file:
+                data = json.load(file)
+                s.update(data)
+                json_contents.append(s)
+
+    except Exception as e:
+        return PlaybookTemplatesGetResponse(success=BoolValue(value=False),
+                                            message=Message(title="Internal Error", description=str(e)))
+
+    return PlaybookTemplatesGetResponse(success=BoolValue(value=True), data=json_contents)

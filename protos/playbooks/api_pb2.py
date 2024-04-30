@@ -12,74 +12,77 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
+from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 from protos import base_pb2 as protos_dot_base__pb2
 from protos.playbooks import playbook_pb2 as protos_dot_playbooks_dot_playbook__pb2
 from protos.playbooks import workflow_pb2 as protos_dot_playbooks_dot_workflow__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\x1a\x1fprotos/playbooks/workflow.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"u\n\x16RunPlaybookStepRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12?\n\rplaybook_step\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookStepDefinition\"\xb2\x02\n\x17RunPlaybookStepResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12*\n\x04name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\x16task_execution_results\x18\x06 \x03(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"G\n\x13GetPlaybooksRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cplaybook_ids\x18\x02 \x03(\x04\"a\n\x14GetPlaybooksResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12-\n\tplaybooks\x18\x02 \x03(\x0b\x32\x1a.protos.playbooks.Playbook\"S\n\x15\x43reatePlaybookRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x08playbook\x18\x02 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x95\x01\n\x16\x43reatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12,\n\x08playbook\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x8b\x01\n\x15UpdatePlaybookRequest\x12\x31\n\x0bplaybook_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x13update_playbook_ops\x18\x02 \x03(\x0b\x32\".protos.playbooks.UpdatePlaybookOp\"g\n\x16UpdatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"g\n\x16\x45xecutePlaybookRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x31\n\x0bplaybook_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\xbb\x01\n\x17\x45xecutePlaybookResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\x35\n\x0fplaybook_run_id\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"p\n\x1b\x45xecutionPlaybookGetRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x35\n\x0fplaybook_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xca\x01\n\x1c\x45xecutionPlaybookGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12?\n\x12playbook_execution\x18\x04 \x01(\x0b\x32#.protos.playbooks.PlaybookExecution\"\xce\x01\n\x1f\x45xecutionPlaybookAPIGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13playbook_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.PlaybookExecution\"R\n\x1e\x45xecutionsPlaybooksListRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cplaybook_ids\x18\x02 \x03(\t\"\xce\x01\n\x1f\x45xecutionsPlaybooksListResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13playbook_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.PlaybookExecution\"G\n\x13GetWorkflowsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cworkflow_ids\x18\x02 \x03(\x04\"a\n\x14GetWorkflowsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12-\n\tworkflows\x18\x02 \x03(\x0b\x32\x1a.protos.playbooks.Workflow\"S\n\x15\x43reateWorkflowRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x08workflow\x18\x02 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\"\x95\x01\n\x16\x43reateWorkflowResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12,\n\x08workflow\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\"\x8b\x01\n\x15UpdateWorkflowRequest\x12\x31\n\x0bworkflow_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x13update_workflow_ops\x18\x02 \x03(\x0b\x32\".protos.playbooks.UpdateWorkflowOp\"g\n\x16UpdateWorkflowResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"g\n\x16\x45xecuteWorkflowRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x31\n\x0bworkflow_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\xbb\x01\n\x17\x45xecuteWorkflowResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\x35\n\x0fworkflow_run_id\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"p\n\x1b\x45xecutionWorkflowGetRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x35\n\x0fworkflow_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xcb\x01\n\x1c\x45xecutionWorkflowGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13workflow_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.WorkflowExecution\"R\n\x1e\x45xecutionsWorkflowsListRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cworkflow_ids\x18\x02 \x03(\t\"\xce\x01\n\x1f\x45xecutionsWorkflowsListResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13workflow_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.WorkflowExecutionb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/playbooks/api.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x11protos/base.proto\x1a\x1fprotos/playbooks/playbook.proto\x1a\x1fprotos/playbooks/workflow.proto\"\x80\x01\n\x16RunPlaybookTaskRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12J\n\x18playbook_task_definition\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookTaskDefinition\"\xd2\x01\n\x17RunPlaybookTaskResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12L\n\x15task_execution_result\x18\x04 \x01(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"u\n\x16RunPlaybookStepRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12?\n\rplaybook_step\x18\x02 \x01(\x0b\x32(.protos.playbooks.PlaybookStepDefinition\"\xb2\x02\n\x17RunPlaybookStepResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12*\n\x04name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\x16task_execution_results\x18\x06 \x03(\x0b\x32-.protos.playbooks.PlaybookTaskExecutionResult\"G\n\x13GetPlaybooksRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cplaybook_ids\x18\x02 \x03(\x04\"a\n\x14GetPlaybooksResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12-\n\tplaybooks\x18\x02 \x03(\x0b\x32\x1a.protos.playbooks.Playbook\"S\n\x15\x43reatePlaybookRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x08playbook\x18\x02 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x95\x01\n\x16\x43reatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12,\n\x08playbook\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Playbook\"\x8b\x01\n\x15UpdatePlaybookRequest\x12\x31\n\x0bplaybook_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x13update_playbook_ops\x18\x02 \x03(\x0b\x32\".protos.playbooks.UpdatePlaybookOp\"g\n\x16UpdatePlaybookResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"g\n\x16\x45xecutePlaybookRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x31\n\x0bplaybook_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\xbb\x01\n\x17\x45xecutePlaybookResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\x35\n\x0fplaybook_run_id\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"p\n\x1b\x45xecutionPlaybookGetRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x35\n\x0fplaybook_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xca\x01\n\x1c\x45xecutionPlaybookGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12?\n\x12playbook_execution\x18\x04 \x01(\x0b\x32#.protos.playbooks.PlaybookExecution\"\xce\x01\n\x1f\x45xecutionPlaybookAPIGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13playbook_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.PlaybookExecution\"R\n\x1e\x45xecutionsPlaybooksListRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cplaybook_ids\x18\x02 \x03(\t\"\xce\x01\n\x1f\x45xecutionsPlaybooksListResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13playbook_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.PlaybookExecution\"\x94\x01\n\x1cPlaybookTemplatesGetResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12%\n\x04\x64\x61ta\x18\x03 \x03(\x0b\x32\x17.google.protobuf.Struct\"G\n\x13GetWorkflowsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cworkflow_ids\x18\x02 \x03(\x04\"a\n\x14GetWorkflowsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12-\n\tworkflows\x18\x02 \x03(\x0b\x32\x1a.protos.playbooks.Workflow\"S\n\x15\x43reateWorkflowRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x08workflow\x18\x02 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\"\x95\x01\n\x16\x43reateWorkflowResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\x12,\n\x08workflow\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\"\x8b\x01\n\x15UpdateWorkflowRequest\x12\x31\n\x0bworkflow_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x13update_workflow_ops\x18\x02 \x03(\x0b\x32\".protos.playbooks.UpdateWorkflowOp\"g\n\x16UpdateWorkflowResponse\x12+\n\x07success\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x02 \x01(\x0b\x32\x0f.protos.Message\"g\n\x16\x45xecuteWorkflowRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x31\n\x0bworkflow_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\xbb\x01\n\x17\x45xecuteWorkflowResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\x35\n\x0fworkflow_run_id\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"p\n\x1b\x45xecutionWorkflowGetRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x35\n\x0fworkflow_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xcb\x01\n\x1c\x45xecutionWorkflowGetResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13workflow_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.WorkflowExecution\"R\n\x1e\x45xecutionsWorkflowsListRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x14\n\x0cworkflow_ids\x18\x02 \x03(\t\"\xce\x01\n\x1f\x45xecutionsWorkflowsListResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x13workflow_executions\x18\x04 \x03(\x0b\x32#.protos.playbooks.WorkflowExecutionb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.api_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _RUNPLAYBOOKTASKREQUEST._serialized_start=166
-  _RUNPLAYBOOKTASKREQUEST._serialized_end=294
-  _RUNPLAYBOOKTASKRESPONSE._serialized_start=297
-  _RUNPLAYBOOKTASKRESPONSE._serialized_end=507
-  _RUNPLAYBOOKSTEPREQUEST._serialized_start=509
-  _RUNPLAYBOOKSTEPREQUEST._serialized_end=626
-  _RUNPLAYBOOKSTEPRESPONSE._serialized_start=629
-  _RUNPLAYBOOKSTEPRESPONSE._serialized_end=935
-  _GETPLAYBOOKSREQUEST._serialized_start=937
-  _GETPLAYBOOKSREQUEST._serialized_end=1008
-  _GETPLAYBOOKSRESPONSE._serialized_start=1010
-  _GETPLAYBOOKSRESPONSE._serialized_end=1107
-  _CREATEPLAYBOOKREQUEST._serialized_start=1109
-  _CREATEPLAYBOOKREQUEST._serialized_end=1192
-  _CREATEPLAYBOOKRESPONSE._serialized_start=1195
-  _CREATEPLAYBOOKRESPONSE._serialized_end=1344
-  _UPDATEPLAYBOOKREQUEST._serialized_start=1347
-  _UPDATEPLAYBOOKREQUEST._serialized_end=1486
-  _UPDATEPLAYBOOKRESPONSE._serialized_start=1488
-  _UPDATEPLAYBOOKRESPONSE._serialized_end=1591
-  _EXECUTEPLAYBOOKREQUEST._serialized_start=1593
-  _EXECUTEPLAYBOOKREQUEST._serialized_end=1696
-  _EXECUTEPLAYBOOKRESPONSE._serialized_start=1699
-  _EXECUTEPLAYBOOKRESPONSE._serialized_end=1886
-  _EXECUTIONPLAYBOOKGETREQUEST._serialized_start=1888
-  _EXECUTIONPLAYBOOKGETREQUEST._serialized_end=2000
-  _EXECUTIONPLAYBOOKGETRESPONSE._serialized_start=2003
-  _EXECUTIONPLAYBOOKGETRESPONSE._serialized_end=2205
-  _EXECUTIONPLAYBOOKAPIGETRESPONSE._serialized_start=2208
-  _EXECUTIONPLAYBOOKAPIGETRESPONSE._serialized_end=2414
-  _EXECUTIONSPLAYBOOKSLISTREQUEST._serialized_start=2416
-  _EXECUTIONSPLAYBOOKSLISTREQUEST._serialized_end=2498
-  _EXECUTIONSPLAYBOOKSLISTRESPONSE._serialized_start=2501
-  _EXECUTIONSPLAYBOOKSLISTRESPONSE._serialized_end=2707
-  _GETWORKFLOWSREQUEST._serialized_start=2709
-  _GETWORKFLOWSREQUEST._serialized_end=2780
-  _GETWORKFLOWSRESPONSE._serialized_start=2782
-  _GETWORKFLOWSRESPONSE._serialized_end=2879
-  _CREATEWORKFLOWREQUEST._serialized_start=2881
-  _CREATEWORKFLOWREQUEST._serialized_end=2964
-  _CREATEWORKFLOWRESPONSE._serialized_start=2967
-  _CREATEWORKFLOWRESPONSE._serialized_end=3116
-  _UPDATEWORKFLOWREQUEST._serialized_start=3119
-  _UPDATEWORKFLOWREQUEST._serialized_end=3258
-  _UPDATEWORKFLOWRESPONSE._serialized_start=3260
-  _UPDATEWORKFLOWRESPONSE._serialized_end=3363
-  _EXECUTEWORKFLOWREQUEST._serialized_start=3365
-  _EXECUTEWORKFLOWREQUEST._serialized_end=3468
-  _EXECUTEWORKFLOWRESPONSE._serialized_start=3471
-  _EXECUTEWORKFLOWRESPONSE._serialized_end=3658
-  _EXECUTIONWORKFLOWGETREQUEST._serialized_start=3660
-  _EXECUTIONWORKFLOWGETREQUEST._serialized_end=3772
-  _EXECUTIONWORKFLOWGETRESPONSE._serialized_start=3775
-  _EXECUTIONWORKFLOWGETRESPONSE._serialized_end=3978
-  _EXECUTIONSWORKFLOWSLISTREQUEST._serialized_start=3980
-  _EXECUTIONSWORKFLOWSLISTREQUEST._serialized_end=4062
-  _EXECUTIONSWORKFLOWSLISTRESPONSE._serialized_start=4065
-  _EXECUTIONSWORKFLOWSLISTRESPONSE._serialized_end=4271
+  _RUNPLAYBOOKTASKREQUEST._serialized_start=196
+  _RUNPLAYBOOKTASKREQUEST._serialized_end=324
+  _RUNPLAYBOOKTASKRESPONSE._serialized_start=327
+  _RUNPLAYBOOKTASKRESPONSE._serialized_end=537
+  _RUNPLAYBOOKSTEPREQUEST._serialized_start=539
+  _RUNPLAYBOOKSTEPREQUEST._serialized_end=656
+  _RUNPLAYBOOKSTEPRESPONSE._serialized_start=659
+  _RUNPLAYBOOKSTEPRESPONSE._serialized_end=965
+  _GETPLAYBOOKSREQUEST._serialized_start=967
+  _GETPLAYBOOKSREQUEST._serialized_end=1038
+  _GETPLAYBOOKSRESPONSE._serialized_start=1040
+  _GETPLAYBOOKSRESPONSE._serialized_end=1137
+  _CREATEPLAYBOOKREQUEST._serialized_start=1139
+  _CREATEPLAYBOOKREQUEST._serialized_end=1222
+  _CREATEPLAYBOOKRESPONSE._serialized_start=1225
+  _CREATEPLAYBOOKRESPONSE._serialized_end=1374
+  _UPDATEPLAYBOOKREQUEST._serialized_start=1377
+  _UPDATEPLAYBOOKREQUEST._serialized_end=1516
+  _UPDATEPLAYBOOKRESPONSE._serialized_start=1518
+  _UPDATEPLAYBOOKRESPONSE._serialized_end=1621
+  _EXECUTEPLAYBOOKREQUEST._serialized_start=1623
+  _EXECUTEPLAYBOOKREQUEST._serialized_end=1726
+  _EXECUTEPLAYBOOKRESPONSE._serialized_start=1729
+  _EXECUTEPLAYBOOKRESPONSE._serialized_end=1916
+  _EXECUTIONPLAYBOOKGETREQUEST._serialized_start=1918
+  _EXECUTIONPLAYBOOKGETREQUEST._serialized_end=2030
+  _EXECUTIONPLAYBOOKGETRESPONSE._serialized_start=2033
+  _EXECUTIONPLAYBOOKGETRESPONSE._serialized_end=2235
+  _EXECUTIONPLAYBOOKAPIGETRESPONSE._serialized_start=2238
+  _EXECUTIONPLAYBOOKAPIGETRESPONSE._serialized_end=2444
+  _EXECUTIONSPLAYBOOKSLISTREQUEST._serialized_start=2446
+  _EXECUTIONSPLAYBOOKSLISTREQUEST._serialized_end=2528
+  _EXECUTIONSPLAYBOOKSLISTRESPONSE._serialized_start=2531
+  _EXECUTIONSPLAYBOOKSLISTRESPONSE._serialized_end=2737
+  _PLAYBOOKTEMPLATESGETRESPONSE._serialized_start=2740
+  _PLAYBOOKTEMPLATESGETRESPONSE._serialized_end=2888
+  _GETWORKFLOWSREQUEST._serialized_start=2890
+  _GETWORKFLOWSREQUEST._serialized_end=2961
+  _GETWORKFLOWSRESPONSE._serialized_start=2963
+  _GETWORKFLOWSRESPONSE._serialized_end=3060
+  _CREATEWORKFLOWREQUEST._serialized_start=3062
+  _CREATEWORKFLOWREQUEST._serialized_end=3145
+  _CREATEWORKFLOWRESPONSE._serialized_start=3148
+  _CREATEWORKFLOWRESPONSE._serialized_end=3297
+  _UPDATEWORKFLOWREQUEST._serialized_start=3300
+  _UPDATEWORKFLOWREQUEST._serialized_end=3439
+  _UPDATEWORKFLOWRESPONSE._serialized_start=3441
+  _UPDATEWORKFLOWRESPONSE._serialized_end=3544
+  _EXECUTEWORKFLOWREQUEST._serialized_start=3546
+  _EXECUTEWORKFLOWREQUEST._serialized_end=3649
+  _EXECUTEWORKFLOWRESPONSE._serialized_start=3652
+  _EXECUTEWORKFLOWRESPONSE._serialized_end=3839
+  _EXECUTIONWORKFLOWGETREQUEST._serialized_start=3841
+  _EXECUTIONWORKFLOWGETREQUEST._serialized_end=3953
+  _EXECUTIONWORKFLOWGETRESPONSE._serialized_start=3956
+  _EXECUTIONWORKFLOWGETRESPONSE._serialized_end=4159
+  _EXECUTIONSWORKFLOWSLISTREQUEST._serialized_start=4161
+  _EXECUTIONSWORKFLOWSLISTREQUEST._serialized_end=4243
+  _EXECUTIONSWORKFLOWSLISTRESPONSE._serialized_start=4246
+  _EXECUTIONSWORKFLOWSLISTRESPONSE._serialized_end=4452
 # @@protoc_insertion_point(module_scope)
