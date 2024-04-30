@@ -49,7 +49,8 @@ class SlackApiProcessor:
                 method_params['text'] = text_message
             if reply_to:
                 method_params['thread_ts'] = reply_to
-            self.client.chat_postMessage(**method_params)
+            message_response = self.client.chat_postMessage(**method_params)
+            return message_response.get('ts')
         except SlackApiError as e:
             logger.error(f"Error posting slack message: {e}")
 
