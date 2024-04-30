@@ -316,7 +316,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                         is_triggered = entry_point_evaluator.evaluate(alert_config, alert_config.alert_type,
                                                                       slack_alert)
                         if is_triggered:
-                            trigger_slack_alert_entry_point_workflows(account_id, ep.id, event_ts)
+                            trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, event_ts)
             except Exception as e:
                 print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
                       f"for account: {account_id}")

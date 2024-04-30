@@ -27,12 +27,12 @@ def get_db_workflow_entry_point_mappings(account_id=None, entry_point_id=None, i
     filters = {}
     if account_id:
         filters['account_id'] = account_id
-    if type:
+    if entry_point_id:
         filters['entry_point_id'] = entry_point_id
     if is_active is not None:
         filters['is_active'] = is_active
     try:
         return WorkflowEntryPointMapping.objects.filter(**filters)
     except Exception as e:
-        logger.error(f"Failed to get workflow entry points with error: {str(e)}")
+        logger.error(f"Failed to get workflow entry point mappings with error: {str(e)}")
     return None

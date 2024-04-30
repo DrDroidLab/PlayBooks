@@ -274,7 +274,7 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
                 - im:read
         settings:
             event_subscriptions:
-                request_url: HOST_NAME/connectors/integrations/handlers/slack_bot/handle_callback_events
+                request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
                 bot_events:
                 - message.channels
             org_deploy_enabled: false

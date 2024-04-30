@@ -86,7 +86,7 @@ def handle_slack_event_callback(data: Dict):
                 logger.error(
                     f"Error while registering slack channel for connector: {team_id}: bot_auth_token not found")
                 return False
-            bot_auth_token = bot_auth_token.key
+            bot_auth_token = bot_auth_token.first().key
             slack_api_processor = SlackApiProcessor(bot_auth_token)
             channel_name = None
             channel_info = slack_api_processor.fetch_channel_info(channel_id)
@@ -99,25 +99,20 @@ def handle_slack_event_callback(data: Dict):
                                                                                          event_ts, channel_name,
                                                                                          inviter_id)
             if slack_channel_metadata:
-                if channel_name:
-                    task_channel_name = channel_name
-                else:
-                    task_channel_name = channel_id
                 if is_created:
                     event_datetime = datetime.fromtimestamp(float(event_ts))
                     start_timestamp = str((event_datetime - timedelta(days=7)).timestamp())
                     try:
                         current_time = current_datetime()
-                        saved_task = get_or_create_task(slack_bot_data_fetch_job.__name__,
-                                                        slack_connector.account_id, slack_connector.id, None,
-                                                        team_id, bot_auth_token, channel_id, task_channel_name,
-                                                        str(event_ts), start_timestamp, True)
+                        saved_task = get_or_create_task(slack_bot_data_fetch_job.__name__, slack_connector.account_id,
+                                                        slack_connector.id, slack_channel_metadata.id, team_id,
+                                                        bot_auth_token, channel_id, str(event_ts), start_timestamp)
                         if not saved_task:
                             logger.error("Failed to create task for slack bot data fetch job")
-                        task = slack_bot_data_fetch_job.delay(slack_connector.account_id, slack_connector.id,
-                                                              None, team_id, bot_auth_token, channel_id,
-                                                              task_channel_name, str(event_ts), start_timestamp,
-                                                              True)
+                        task = slack_bot_data_fetch_job.delay(slack_connector.account_id,
+                                                              slack_connector.id, slack_channel_metadata.id, team_id,
+                                                              bot_auth_token, channel_id, str(event_ts),
+                                                              start_timestamp)
                         task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                                           status=PeriodicTaskStatus.SCHEDULED,
                                                           account_id=slack_connector.account_id,

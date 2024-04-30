@@ -1,9 +1,80 @@
-from django.http import HttpRequest, JsonResponse
+from typing import Union
+
+from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 
+from accounts.models import get_request_account, Account
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
+from connectors.models import Site
+from playbooks.utils.decorators import web_api
 from playbooks.utils.utils import current_epoch_timestamp
+from protos.base_pb2 import Message
+from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
+
+
+@web_api(GetSlackAppManifestRequest)
+def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
+        Union[GetSlackAppManifestResponse, HttpResponse]:
+    account: Account = get_request_account()
+    host_name = request_message.host_name
+
+    if not host_name or not host_name.value:
+        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
+
+    # read sample_manifest file string
+    sample_manifest = """
+        display_information:
+            name: MyDroid
+            description: App for Automating Investigation & Actions
+            background_color: "#1f2126"
+        features:
+            bot_user:
+                display_name: MyDroid
+                always_online: true
+        oauth_config:
+            scopes:
+                bot:
+                - channels:history
+                - chat:write
+                - files:write
+                - conversations.connect:manage
+                - conversations.connect:write
+                - groups:write
+                - mpim:write
+                - im:write
+                - channels:manage
+                - channels:read
+                - groups:read
+                - mpim:read
+                - im:read
+        settings:
+            event_subscriptions:
+                request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
+                bot_events:
+                - message.channels
+            org_deploy_enabled: false
+            socket_mode_enabled: false
+            token_rotation_enabled: false
+    """
+
+    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+
+    site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
+    active_sites = Site.objects.filter(is_active=True)
+    http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
+
+    if active_sites:
+        site = active_sites.first()
+        site.domain = site_domain
+        site.name = 'MyDroid'
+        site.protocol = http_protocol
+        site.save()
+    else:
+        Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
+
+    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
 
 @csrf_exempt
