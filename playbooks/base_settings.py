@@ -328,3 +328,4 @@ MEDIA_STORAGE_LOCATION = env.str("MEDIA_STORAGE_LOCATION", default='/media/image
 MEDIA_STORAGE_SITE_HTTP_PROTOCOL = env.str("MEDIA_STORAGE_SITE_HTTP_PROTOCOL", default='https')
 MEDIA_STORAGE_USE_SITE = env.bool("MEDIA_STORAGE_USE_SITE", default=True)
 MEDIA_ASSETS_ROOT = os.path.join(BASE_DIR, 'media/assets')
+PLAYBOOK_TEMPLATE_PATH = "playbooks-templates/"

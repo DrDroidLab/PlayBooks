@@ -3,6 +3,7 @@ import os
 import json
 from typing import Union
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -313,7 +314,7 @@ def playbooks_api_execution_get(request_message: HttpRequest) -> Union[Execution
 @api_view(['GET'])
 @get_proto_schema_validator()
 def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplatesGetResponse, HttpResponse]:
-    folder_path = 'playbooks-templates/'
+    folder_path = settings.PLAYBOOK_TEMPLATE_PATH
     s = Struct()
     try:
         json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
