@@ -52,31 +52,14 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
         <Overlay visible={isOpen}>
           <div className={styles["actionOverlay"]}>
             <header className="text-gray-500">
-              Invite Users to your Account
+              Share the current URL with your team members to invite them. They will be able to access the dashboard with the same permissions as you.
             </header>
-            <div className={styles["actionOverlayContent"]}>
-              <div className={styles["actionOverlayContentText"]}>
-                <ValueComponent
-                  valueType={"STRING"}
-                  onValueChange={(val) => setEmails(val)}
-                  value={emails}
-                  placeHolder={"Enter emails separated by comma"}
-                  length={300}
-                />
-              </div>
-            </div>
 
             <div className={styles["actions"]}>
               <button
                 className={styles["submitButton"]}
                 onClick={toggleOverlay}>
-                Cancel
-              </button>
-              <button
-                className={styles["submitButtonRight"]}
-                sx={{ marginLeft: "5px" }}
-                onClick={() => handleSuccess()}>
-                Send Invite
+                Ok
               </button>
               {loading ? (
                 <CircularProgress
