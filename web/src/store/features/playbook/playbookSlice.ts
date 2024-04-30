@@ -42,8 +42,8 @@ const playbookSlice = createSlice({
         state.playbooks = [...payload];
       }
     },
-    toggleView(state) {
-      state.view = state.view === "builder" ? "step" : "builder";
+    setView(state, { payload }) {
+      state.view = payload;
     },
     setCurrentPlaybook(state, { payload }) {
       state.currentPlaybook = payload;
@@ -492,7 +492,7 @@ export const {
   setQuery1,
   setQuery2,
   setFormula,
-  toggleView,
+  setView,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

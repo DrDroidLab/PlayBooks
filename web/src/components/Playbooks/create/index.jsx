@@ -6,7 +6,7 @@ import {
   resetState,
   setPlaybookDataBeta,
   copyPlaybook,
-  toggleView,
+  setView,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
@@ -17,6 +17,18 @@ import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/ge
 import Loading from "../../common/Loading/index.tsx";
 import CreatePlaybook from "../CreatePlaybook.jsx";
 import Builder from "./Builder.jsx";
+import TabsComponent from "../../common/TabsComponent/index.tsx";
+
+const viewOptions = [
+  {
+    id: "builder",
+    label: "Builder",
+  },
+  {
+    id: "step",
+    label: "List",
+  },
+];
 
 function CreatePlaybookBeta() {
   const navigate = useNavigate();
@@ -51,6 +63,10 @@ function CreatePlaybookBeta() {
     });
   };
 
+  const handleSelect = (option) => {
+    dispatch(setView(option.id));
+  };
+
   useEffect(() => {
     if (id) {
       fetchPlaybook();
@@ -79,13 +95,20 @@ function CreatePlaybookBeta() {
       />
       <div className="flex flex-col h-[calc(100%-80px)]">
         <main className="relative flex flex-1">
-          <button
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
+            <TabsComponent
+              options={viewOptions}
+              handleSelect={handleSelect}
+              selectedId={playbook.view}
+            />
+          </div>
+          {/* <button
             onClick={() => dispatch(toggleView())}
             className="absolute top-2 left-1/2 -translate-x-1/2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
             Toggle View
-          </button>
+          </button> */}
           {playbook.view === "step" ? (
-            <div className="flex justify-center w-full absolute top-10 h-full">
+            <div className="flex justify-center w-full absolute top-14 h-full">
               <CreatePlaybook showHeading={false} />
             </div>
           ) : (
