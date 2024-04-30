@@ -1,0 +1,26 @@
+{
+    "name": "PostgreSQL Queries Latency Increase",
+    "description":"Playbook to investigate increase in latency of PostgreSQL queries by evaluating critical metrics, logs, query performance and database configs",
+    "steps": [
+        {
+            "description": "Check Important Metrics",
+            "notes": "Connect your data source and add `CPUUtilization`, `FreeableMemory`, `ReadIOPS`, `WriteIOPS`, `ReadLatency`, `WriteLatency`, `NetworkReceiveThroughput`, `NetworkTransmitThroughput` metrics from the list."
+        },
+        {
+            "description": "Check errors in logs",
+            "notes": "You can use this query for Cloudwatch `{fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20}`"
+        },
+        {
+            "description": "Analyze Query Performance for Slow Queries & analyse some of them",
+            "notes": "#### Query Performance analysis\n- If there are any long running queries from events table, save that variable and run explain analyse on it separately. `SELECT query, calls, total_time, rows, avg_time, min_time, max_time FROM pg_stat_statements WHERE dbid = (SELECT oid FROM pg_database WHERE datname = '{db_name}') ORDER BY total_time DESC LIMIT 10`. \n- This shows the explain plan for the slow query. Check for any missing indexes or any other issues. `EXPLAIN ANALYZE {your_slow_query_here};"
+        },
+        {
+            "description": "Check Database Configuration and Tuning",
+            "notes": "#### Common Configs: \n- `SHOW work_mem` A lower work_mem value can cause sorts to spill to disk, which can be slow. A higher value can cause memory pressure. \n- `SHOW shared_buffers` A lower shared_buffers value can cause more disk reads, which can be slow."
+        },
+        {
+            "description": "Assess Index Usage",
+            "notes": "Understand usage of index `SELECT relname, seq_scan, idx_scan, n_tup_ins, n_tup_upd, n_tup_del FROM pg_stat_all_tables WHERE schemaname = 'public';`"
+        }
+    ]
+}

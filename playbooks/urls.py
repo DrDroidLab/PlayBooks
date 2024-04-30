@@ -23,6 +23,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('connectors/', include('connectors.urls')),
     path('connectors/assets/', include('connectors.assets.urls')),
+    path('connectors/handlers/', include('connectors.handlers.urls')),
     path('executor/', include('executor.urls')),
     path('executor/workflows/', include('executor.workflows.urls')),
     path('pb/', include('executor.urls')),

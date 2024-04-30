@@ -1,0 +1,34 @@
+{
+    "name": "PostgreSQL Error Rate Increased",
+    "description": "This playbook is to investigate common reasons for PostgreSQL errors and identify potential Root cause",
+    "steps": [
+        {
+            "description": "Check the Error Type that has started occurring",
+            "notes": "Sample query in case you're using Cloudwatch Logs `fields @timestamp, @message | filter @message like /ERROR|SLOW QUERY|TIMEOUT/ | sort @timestamp desc | limit 20`"
+        },
+        {
+            "description": "Check Important Metrics",
+            "notes": "For the PostgreSQL, check `CPUUtilization`,`FreeableMemory`,`ReadIOPS`,`WriteIOPS`,`ReadLatency`,`WriteLatency`,`NetworkReceiveThroughput`,`NetworkTransmitThroughput`"
+        },
+        {
+            "description": "Check DB Connections",
+            "notes": "See if DatabaseConnections have increased."
+        },
+        {
+            "description": "Check Current Sessions and Queries",
+            "notes": "Check if there are any long running queries or queries that might be causing the errors. `SELECT * FROM pg_stat_activity;`"
+        },
+        {
+            "description": "Recent Deployments",
+            "notes": "Check if there are any deployment changes that might have caused the errors."
+        },
+        {
+            "description": "service_metric_deviation",
+            "notes": ""
+        },
+        {
+            "description": "Replication Status",
+            "notes": "A significant lag in replication can cause errors because of stale data. `SELECT client_addr, state, sync_state, sent_lsn, write_lsn, flush_lsn, replay_lsn, write_lag, flush_lag, replay_lag FROM pg_stat_replication;`"
+        }
+    ]
+}

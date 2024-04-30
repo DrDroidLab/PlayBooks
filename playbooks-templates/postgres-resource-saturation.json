@@ -1,0 +1,18 @@
+{
+    "name": "PostgreSQL High CPU Utilisation or Memory Utilisation",
+    "description": "Playbook to investigate high CPU or Memory Utilisation in PostgreSQL",
+    "steps": [
+        {
+            "description": "Check for Inefficient Queries",
+            "notes": "Check if there are any long running queries or queries that might be causing the errors. `SELECT * FROM pg_stat_activity;`"
+        },
+        {
+            "description": "Check Important DB Metrics",
+            "notes": "Keep a check on this value during investigation. Review: `DatabaseConnections`,`ReadIOPS`,`WriteIOPS`"
+        },
+        {
+            "description": "Throughput from upstream services",
+            "notes": "Select a list of related services that could impact this database"
+        }
+    ]
+}

@@ -5,8 +5,8 @@ from protos.connectors.connector_pb2 import ConnectorMetadataModelType as Connec
 
 class PostgresConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
-    def __init__(self, host, user, password, account_id=None, connector_id=None):
-        self.__pg_db_processor = PostgresDBProcessor(host, user, password)
+    def __init__(self, host, user, password, database, port=5432, account_id=None, connector_id=None):
+        self.__pg_db_processor = PostgresDBProcessor(host, user, password, database, port)
 
         super().__init__(account_id, connector_id, ConnectorType.POSTGRES)
 
