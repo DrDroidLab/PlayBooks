@@ -20,7 +20,7 @@ function TemplatesList() {
     <div className="w-full p-2">
       <h1 className="font-bold text-xl">View Templates</h1>
 
-      <div className="flex flex-wrap mt-4 gap-2">
+      <div className="flex flex-wrap mt-4 gap-2 mb-40 overflow-scroll">
         {(!templates || templates?.length === 0) && (
           <p className="text-sm text-gray-500">No templates found.</p>
         )}
