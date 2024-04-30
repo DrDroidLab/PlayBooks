@@ -97,12 +97,12 @@ function CreateTrigger() {
             type="submit">
             {workflowId ? "Update" : "Save"}
           </button>
-          {/* <button
+          <button
             onClick={handleTestNotification}
             className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
             type="submit">
             Test Run
-          </button> */}
+          </button>
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
         </div>
       </div>
