@@ -1,7 +1,8 @@
 import logging
+import os
 
 from accounts.models import Account
-from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
+from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
 from executor.workflows.action.notify_action_executor.notifier import Notifier
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey
@@ -18,17 +19,17 @@ class SlackNotifier(Notifier):
         self.type = WorkflowActionNotificationConfigProto.Type.SLACK
         self.account = account
 
-        slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
+        slack_connectors = get_db_account_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
         if not slack_connectors:
             raise ValueError('Slack connector is not configured for the account')
         slack_connector = slack_connectors.first()
-        slack_bot_auth_token_keys = get_db_connector_keys(account, slack_connector.id,
-                                                          ConnectorKey.KeyType.SLACK_BOT_AUTH_TOKEN)
+        slack_bot_auth_token_keys = get_db_account_connector_keys(account, slack_connector.id,
+                                                                  ConnectorKey.KeyType.SLACK_BOT_AUTH_TOKEN)
         if not slack_bot_auth_token_keys:
             raise ValueError('Slack bot auth token is not configured for the account')
 
-        slack_bot_auth_token = slack_bot_auth_token_keys.first()
-        self.slack_api_processor = SlackApiProcessor(slack_bot_auth_token.key)
+        slack_bot_auth_token = slack_bot_auth_token_keys.first().key
+        self.slack_api_processor = SlackApiProcessor(slack_bot_auth_token)
 
     def notify(self, config: WorkflowActionNotificationConfigProto, execution_output: [InterpretationProto]):
         slack_config: WorkflowActionSlackNotificationConfigProto = config.slack_config
@@ -37,6 +38,7 @@ class SlackNotifier(Notifier):
             raise ValueError('Slack channel id is not configured in the notification config')
         logger.info(f"Sending slack message to channel {channel_id} for account {self.account.id}")
         blocks = []
+        file_uploads = []
         for i, interpretation in enumerate(execution_output):
             if interpretation.type == InterpretationProto.Type.SUMMARY:
                 if interpretation.title.value.startswith('Hello team'):
@@ -68,11 +70,23 @@ class SlackNotifier(Notifier):
                     "image_url": interpretation.image_url.value,
                     "alt_text": 'metric evaluation'
                 })
+            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
+                                     'initial_comment': interpretation.title.value})
         message_params = {'blocks': blocks, 'channel_id': channel_id}
         if slack_config.message_type == WorkflowActionSlackNotificationConfigProto.MessageType.THREAD_REPLY:
             message_params['reply_to'] = slack_config.thread_ts.value
+            for file_upload in file_uploads:
+                file_upload['thread_ts'] = slack_config.thread_ts.value
         try:
             self.slack_api_processor.send_bot_message(**message_params)
+            for file_upload in file_uploads:
+                try:
+                    self.slack_api_processor.files_upload(**file_upload)
+                    os.remove(file_upload['file_path'])
+                except Exception as e:
+                    logger.error(f"Error uploading file to slack: {e}")
+                    continue
             return True
         except Exception as e:
             logger.error(f"Error sending slack message: {e}")

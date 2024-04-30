@@ -16,7 +16,7 @@ tl;dr Enrich your Slack alerts with contextual observability data, helping on-ca
 
 ## About PlayBooks
 PlayBooks are executable notebooks designed to *Automate Preliminary Investigations in Production* for engineers.
-{Demo Video}
+Watch [demo video](https://www.youtube.com/watch?v=xprnmBvF6rk).
 ### **Automating Playbook Executions**
 1. Define a playbook with your enrichment logic
 2. Configure the playbook to auto-trigger basis a Slack alert received in a channel

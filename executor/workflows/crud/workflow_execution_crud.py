@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_db_workflow_executions(account: Account, workflow_execution_id=None, workflow_run_id=None, workflow_ids=None,
-                               status: WorkflowExecutionStatusType = None):
+                               status: WorkflowExecutionStatusType = None, workflow_run_ids=None):
     filters = {}
     if workflow_execution_id:
         filters['id'] = workflow_execution_id
@@ -23,6 +23,8 @@ def get_db_workflow_executions(account: Account, workflow_execution_id=None, wor
         filters['workflow_id__in'] = workflow_ids
     if status:
         filters['status'] = status
+    if workflow_run_ids:
+        filters['workflow_run_id__in'] = workflow_run_ids
     try:
         db_we = account.workflowexecution_set.all()
         db_we = db_we.order_by('-workflow_run_id', '-scheduled_at')
@@ -74,7 +76,7 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
 
 
 def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id, scheduled_at,
-                              expiry_at, interval, created_by=None, metadata={}):
+                              expiry_at, interval, created_by=None, metadata=None):
     try:
         workflow_execution = WorkflowExecution.objects.create(
             account=account,

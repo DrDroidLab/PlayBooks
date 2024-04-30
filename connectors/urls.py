@@ -11,9 +11,6 @@ urlpatterns = [
     path('test_connection', connector_views.connectors_test_connection),
     path('playbooks/builder/sources/options', connector_views.playbooks_sources_options),
 
-    # Slack event subscription webhook
-    path('integrations/handlers/slack_bot/handle_callback_events', connector_views.slack_bot_handle_callback_events),
-
     # Slack alert trigger options
     path('slack_alert_trigger/options/get', connector_views.slack_alert_trigger_options_get),
     path('slack/alerts/search', connector_views.slack_alerts_search),

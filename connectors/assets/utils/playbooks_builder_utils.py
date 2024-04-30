@@ -1,8 +1,8 @@
 from google.protobuf.wrappers_pb2 import StringValue
 
 from accounts.models import Account
-from connectors.crud.connector_asset_model_crud import get_connector_metadata_models
-from connectors.crud.connectors_crud import get_db_connectors
+from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
+from connectors.crud.connectors_crud import get_db_account_connectors
 from protos.connectors.connector_pb2 import ConnectorType, ConnectorMetadataModelType, AccountActiveConnectorModelTypes
 
 playbooks_supported_connectors = [ConnectorType.CLOUDWATCH, ConnectorType.GRAFANA, ConnectorType.GRAFANA_VPC,
@@ -42,13 +42,13 @@ model_type_display_name_maps = {
 
 
 def playbooks_builder_get_connector_sources_options(account: Account):
-    active_account_connectors = get_db_connectors(account, connector_type_list=playbooks_supported_connectors,
-                                                  is_active=True)
+    active_account_connectors = get_db_account_connectors(account, connector_type_list=playbooks_supported_connectors,
+                                                          is_active=True)
     active_model_type: [AccountActiveConnectorModelTypes] = []
     for connector in active_account_connectors:
         supported_model_types = supported_connectors_model_maps[connector.connector_type]
-        active_model_types = get_connector_metadata_models(account, connector_type=connector.connector_type,
-                                                           is_active=True, model_types=supported_model_types)
+        active_model_types = get_db_account_connector_metadata_models(account, connector_type=connector.connector_type,
+                                                                      is_active=True, model_types=supported_model_types)
         active_model_types = active_model_types.values_list('model_type', flat=True).distinct()
 
         model_types_map: [AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap] = []

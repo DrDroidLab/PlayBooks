@@ -1,7 +1,7 @@
 from urllib.parse import urlsplit
 
 from django.conf import settings
-from django.contrib.sites.models import Site
+from connectors.models import Site
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -17,7 +17,13 @@ def build_absolute_uri(request, location, protocol=None, enabled=False):
         if not enabled:
             raise ImproperlyConfigured("Passing `request=None` requires `sites` to be enabled")
 
-        site = Site.objects.get_current()
+        sites = Site.objects.filter(is_active=True)
+        if sites:
+            site = sites.first()
+            protocol = site.protocol
+        else:
+            protocol = settings.SITE_DEFAULT_HTTP_PROTOCOL
+
         bits = urlsplit(location)
         if not (bits.scheme and bits.netloc):
             uri = "{protocol}://{domain}{url}".format(

@@ -144,7 +144,7 @@ function Sidebar() {
             />
           </ListItemIcon>
           <p style={{ fontSize: "14px", flex: "1", width: "100%" }}>
-            Connect on Slack
+            Join Slack Community
           </p>
         </ListItemButton>
 
@@ -161,7 +161,7 @@ function Sidebar() {
             <ListItemIcon sx={{ minWidth: "44px" }}>
               <GroupAddIcon />
             </ListItemIcon>
-            <p style={{ fontSize: "14px", width: "100%" }}>Invite Team</p>
+            <p style={{ fontSize: "14px", width: "100%" }}>Team</p>
           </ListItemButton>
         </NavLink>
 

@@ -1,0 +1,30 @@
+{
+    "name": "Throughput Spike Investigation Strategy",
+    "description": "This playbook guides the analysis of a sudden spike in service throughput, aiming to identify underlying causes and impacted areas.",
+    "steps": [
+        {
+            "description": "Check Current Service Metrics",
+            "notes": "Monitor the `errors` in current service metrics to see if the throughput spike is causing an increase in errors or if errors are unusually low, indicating anomalous behavior."
+        },
+        {
+            "description": "Examine Upstream Service Metrics",
+            "notes": "Review `throughput` metrics to determine if there is an unexpected increase and identify the source or triggers of this spike."
+        },
+        {
+            "description": "Review Upstream Broker Metrics",
+            "notes": "Analyze `topic level message count` to uncover any correlation between message processing rates and the throughput increase."
+        },
+        {
+            "description": "Verify Downstream Broker Metrics",
+            "notes": "Assess `CPU`, `memory`, and `disk` utilization of downstream brokers to ensure they are coping with the increased throughput without performance degradation."
+        },
+        {
+            "description": "Analyze Downstream Database Performance",
+            "notes": "Check `CPU`, `memory`, and `disk` usage in the downstream database to determine if the increased throughput is impacting database performance."
+        },
+        {
+            "description": "Review Downstream Redis Metrics",
+            "notes": "Evaluate `CPU` usage, `hit rate`, `memory`, and `disk` metrics in Redis to identify any signs of stress or bottlenecks that could be related to the throughput spike."
+        }
+    ]
+}

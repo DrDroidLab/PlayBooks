@@ -42,6 +42,15 @@ def metric_timeseries_result_to_df(result: PlaybookMetricTaskExecutionResultProt
     return pd.DataFrame(data)
 
 
+def table_result_to_df(table_result, task_name='Data Fetch Task'):
+    data = []
+    for row in table_result.rows:
+        columns = row.columns
+        data.append({col.name.value: col.value for col in columns})
+
+    return pd.DataFrame(data)
+
+
 def metric_table_result_to_df(table_result):
     column_names = [col.name.value for col in table_result.rows[0].columns]
 
@@ -108,3 +117,20 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
         except Exception as e:
             logger.error(f'Error writing image: {e}')
             raise e
+    elif result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TABLE_RESULT:
+        try:
+            table_result: PlaybookMetricTaskExecutionResultProto.Result.TableResult = result.table_result
+            df = table_result_to_df(table_result, metric_name)
+            df.to_csv(file_key, index=False)
+            title = f'Fetched `{metric_expression.value}` from `{metric_source}`.'
+            return InterpretationProto(
+                type=InterpretationProto.Type.CSV_FILE,
+                title=StringValue(value=title),
+                file_path=StringValue(value=file_key),
+            )
+        except Exception as e:
+            logger.error(f'Error interpreting data fetch task result: {e}')
+            raise e
+    else:
+        logger.error(f'Unsupported result type: {result_type}')
+        raise NotImplementedError(f'Unsupported result type: {result_type}')

@@ -2,6 +2,8 @@ import logging
 
 from google.protobuf.wrappers_pb2 import StringValue
 
+from intelligence_layer.task_result_interpreters.data_fetch_task_result_interpreters.basic_data_fetch_task_result_interpreter import \
+    basic_data_fetch_task_result_interpreter
 from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.basic_metric_task_interpreter import \
     basic_metric_task_result_interpreter
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
@@ -19,6 +21,10 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
         metric_task_result: PlaybookMetricTaskExecutionResultProto = task_result.metric_task_execution_result
         if interpreter_type == InterpreterType.BASIC_I:
             return basic_metric_task_result_interpreter(task, metric_task_result)
+    if which_one_of == 'data_fetch_task_execution_result':
+        data_fetch_task_result = task_result.data_fetch_task_execution_result
+        if interpreter_type == InterpreterType.BASIC_I:
+            return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
 
 
 def playbook_execution_result_interpret(interpreter_type: InterpreterType, playbook: PlaybookProto,

@@ -15,10 +15,14 @@ class SlackChannelAlertEntryPoint(AlertEntryPoint):
         slack_channel_alert_config: WorkflowEntryPointSlackChannelAlertConfig = alert_config.slack_channel_alert_config
         if not slack_channel_alert_config:
             return False
-        if slack_channel_alert_config.slack_alert_type.value != alert.get('alert_type', ''):
+        if slack_channel_alert_config.slack_channel_id.value != alert.get('channel_id', ''):
             return False
-        if slack_channel_alert_config.slack_channel_id.value != alert.get('slack_channel_id', ''):
+        if slack_channel_alert_config.slack_alert_type and \
+                slack_channel_alert_config.slack_alert_type.value and \
+                slack_channel_alert_config.slack_alert_type.value != alert.get('alert_type', ''):
             return False
-        if not i_contains(alert.get('text', ''), slack_channel_alert_config.slack_alert_filter_string.value):
+        if slack_channel_alert_config.slack_alert_filter_string and \
+                slack_channel_alert_config.slack_alert_filter_string.value and \
+                slack_channel_alert_config.slack_alert_filter_string.value not in alert.get('alert_text', ''):
             return False
         return True
