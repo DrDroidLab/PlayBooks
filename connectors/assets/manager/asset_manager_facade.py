@@ -10,7 +10,7 @@ from connectors.assets.manager.grafana_asset_manager import GrafanaAssetManager
 from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
 from connectors.assets.manager.slack_assets_manager import SlackAssetManager
-from connectors.crud.connector_asset_model_crud import get_connector_metadata_models
+from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto
 from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
@@ -31,8 +31,8 @@ class AssetManagerFacade:
     def get_asset_model_options(self, account: Account, connector_type: ConnectorTypeProto,
                                 model_type: ConnectorMetadataModelTypeProto):
         assets_options: [AccountConnectorAssetsModelOptions] = []
-        connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type,
-                                                                  model_type=model_type)
+        connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type,
+                                                                             model_type=model_type)
         models = connector_metadata_models.values_list('connector_type', 'model_type', 'model_uid', 'metadata',
                                                        named=True)
         connector_type_asset_type_model_map = {}
@@ -65,10 +65,10 @@ class AssetManagerFacade:
         if not manager:
             raise ValueError(f"No asset manager found for connector_type: {connector_type}")
         if not model_type:
-            connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type)
+            connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type)
         else:
-            connector_metadata_models = get_connector_metadata_models(account, connector_type=connector_type,
-                                                                      model_type=model_type)
+            connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type,
+                                                                                 model_type=model_type)
         assets = manager.get_asset_model_values(account, model_type, filters, connector_metadata_models)
         return [assets]
 

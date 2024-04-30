@@ -1,18 +1,14 @@
-import hashlib
-import hmac
-import time
 from typing import Union
+from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue, DoubleValue
+from django.http import HttpResponse
 
-from google.protobuf.wrappers_pb2 import BoolValue
 from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_connectors, create_connector, get_all_available_connectors, \
-    get_all_request_connectors, get_connector_keys_options, get_db_connector_keys, test_connection_connector
+from connectors.crud.connectors_crud import get_db_account_connectors, create_connector, get_all_available_connectors, \
+    get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
 from playbooks.utils.decorators import web_api
@@ -21,20 +17,17 @@ from playbooks.utils.queryset import filter_page
 from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
 from protos.base_pb2 import Message, Meta, Page, TimeRange
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
-    GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
+    GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
+    GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
+    UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
     GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorType
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
 
-from connectors.handlers.slack_bot_handler import handle_event_callback
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
-    CommAlertTag as CommAlertTagProto, SlackAlert as SlackAlertProto
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
+    SlackAlert as SlackAlertProto
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorType, \
+    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 @web_api(CreateConnectorRequest)
@@ -47,8 +40,8 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
 
     created_by = user.email
     if connector.type in [ConnectorType.GRAFANA_VPC]:
-        db_agent_proxy_connector = get_db_connectors(account=account, connector_type=ConnectorType.AGENT_PROXY,
-                                                     is_active=True)
+        db_agent_proxy_connector = get_db_account_connectors(account=account, connector_type=ConnectorType.AGENT_PROXY,
+                                                             is_active=True)
         if not db_agent_proxy_connector or not db_agent_proxy_connector.exists():
             agent_proxy_vpc_connector_proto = ConnectorProto(type=ConnectorType.AGENT_PROXY)
             db_agent_proxy_connector, err = create_connector(account, created_by, agent_proxy_vpc_connector_proto,
@@ -64,7 +57,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
 @web_api(GetConnectorsListRequest)
 def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConnectorsListResponse, HttpResponse]:
     account: Account = get_request_account()
-    all_active_connectors = get_db_connectors(account, is_active=True)
+    all_active_connectors = get_db_account_connectors(account, is_active=True)
     all_active_connector_protos = list(x.proto for x in all_active_connectors)
     all_available_connectors = get_all_available_connectors(all_active_connectors)
     all_request_connectors = get_all_request_connectors()
@@ -119,14 +112,14 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
     if not connector_id:
         return GetConnectorKeysResponse(success=BoolValue(value=False), message=Message(title='Connector ID not found'))
 
-    connector = get_db_connectors(account, connector_id=connector_id, is_active=True)
+    connector = get_db_account_connectors(account, connector_id=connector_id, is_active=True)
     if not connector:
         return GetConnectorKeysResponse(success=BoolValue(value=False),
                                         message=Message(title='Active Connector not found'))
     else:
         connector = connector.first()
     try:
-        connector_keys = get_db_connector_keys(account, connector_id)
+        connector_keys = get_db_account_connector_keys(account, connector_id)
     except Exception as e:
         return GetConnectorKeysResponse(success=BoolValue(value=False), message=Message(title=str(e)))
     connector_key_protos = list(x.get_proto for x in connector_keys)
@@ -151,31 +144,6 @@ def playbooks_sources_options(request_message: GetConnectorPlaybookSourceOptions
                                                      active_account_connectors=account_active_connector_types)
 
 
-@csrf_exempt
-@api_view(['POST'])
-def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonResponse:
-    timestamp = request_message.headers['X-Slack-Request-Timestamp']
-
-    # Discard messages older than 15 minutes
-    if int(time.time()) - int(timestamp) > 60 * 15:
-        return JsonResponse("Invalid Message Received", status=403)
-
-    data = request_message.data
-    if data:
-        if data.get('type', '') == 'url_verification':
-            return JsonResponse({'challenge': data.get('challenge', '')})
-        elif data.get('type', '') == 'event_callback':
-            response = handle_event_callback(data)
-            if response:
-                return JsonResponse({'success': True, 'message': 'Event Handling Successful'})
-            else:
-                return JsonResponse({'success': False, 'message': 'Event Handling failed'})
-        else:
-            print(f"Error while fetching bot OAuth token with response: {data}")
-            return JsonResponse({'success': False, 'message': 'Event Handling failed'})
-    return JsonResponse({'success': False, 'message': 'Event Handling failed'})
-
-
 @web_api(GetSlackAlertTriggerOptionsRequest)
 def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptionsRequest) -> \
         Union[GetSlackAlertTriggerOptionsResponse, HttpResponse]:
@@ -195,7 +163,8 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
         for connector in active_connectors:
             active_channels = []
             active_comm_channels = account.connectormetadatamodelstore_set.filter(connector=connector, is_active=True,
-                                                                   connector_type=ConnectorType.SLACK, model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL)
+                                                                                  connector_type=ConnectorType.SLACK,
+                                                                                  model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL)
             active_comm_channels_id = []
             for channel in active_comm_channels:
                 channel_name = None
@@ -226,7 +195,6 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
         alert_ops_options=AlertOpsOptions(comm_options=CommAlertOpsOptions(workspaces=comm_workspaces)))
 
 
-
 @web_api(GetSlackAlertsRequest)
 def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
         Union[GetSlackAlertsResponse, HttpResponse]:
@@ -249,7 +217,8 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
     qs = filter_dtr(qs, dtr, 'data_timestamp')
     total_count = qs.count()
     qs = filter_page(qs, page)
-    qs = qs.values('id', 'alert_type', 'title', 'text', 'data_timestamp', 'slack_channel_metadata_model__id', 'channel_id',
+    qs = qs.values('id', 'alert_type', 'title', 'text', 'data_timestamp', 'slack_channel_metadata_model__id',
+                   'channel_id',
                    'slack_channel_metadata_model__metadata__channel_name')
 
     slack_alerts = []
@@ -265,7 +234,7 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
                                                     value=a['slack_channel_metadata_model__metadata__channel_name'])),
                                             alert_timestamp=int(a['data_timestamp'].timestamp())))
     return GetSlackAlertsResponse(meta=get_meta(page=page, total_count=total_count),
-                                          slack_alerts=slack_alerts)
+                                  slack_alerts=slack_alerts)
 
 
 @web_api(GetSlackAppManifestRequest)
@@ -276,49 +245,49 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
 
     if not host_name or not host_name.value:
         return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
-    
+
     # read sample_manifest file string
     sample_manifest = """
-display_information:
-    name: MyDroid
-    description: App for Automating Investigation & Actions
-    background_color: "#1f2126"
-features:
-    bot_user:
-        display_name: MyDroid
-        always_online: true
-oauth_config:
-    scopes:
-        bot:
-        - channels:history
-        - chat:write
-        - files:write
-        - conversations.connect:manage
-        - conversations.connect:write
-        - groups:write
-        - mpim:write
-        - im:write
-        - channels:manage
-        - channels:read
-        - groups:read
-        - mpim:read
-        - im:read
-settings:
-    event_subscriptions:
-        request_url: HOST_NAME/connectors/integrations/handlers/slack_bot/handle_callback_events
-        bot_events:
-        - message.channels
-    org_deploy_enabled: false
-    socket_mode_enabled: false
-    token_rotation_enabled: false
-"""
-    
+        display_information:
+            name: MyDroid
+            description: App for Automating Investigation & Actions
+            background_color: "#1f2126"
+        features:
+            bot_user:
+                display_name: MyDroid
+                always_online: true
+        oauth_config:
+            scopes:
+                bot:
+                - channels:history
+                - chat:write
+                - files:write
+                - conversations.connect:manage
+                - conversations.connect:write
+                - groups:write
+                - mpim:write
+                - im:write
+                - channels:manage
+                - channels:read
+                - groups:read
+                - mpim:read
+                - im:read
+        settings:
+            event_subscriptions:
+                request_url: HOST_NAME/connectors/integrations/handlers/slack_bot/handle_callback_events
+                bot_events:
+                - message.channels
+            org_deploy_enabled: false
+            socket_mode_enabled: false
+            token_rotation_enabled: false
+    """
+
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
 
     site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
     active_sites = Site.objects.filter(is_active=True)
     http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
-    
+
     if active_sites:
         site = active_sites.first()
         site.domain = site_domain
@@ -329,4 +298,3 @@ settings:
         Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
-    

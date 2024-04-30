@@ -3,11 +3,29 @@ from datetime import timedelta
 from django.conf import settings
 
 from accounts.models import Account
+from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_point_mappings
 from executor.workflows.crud.workflow_execution_crud import create_workflow_execution
-from playbooks.utils.utils import calculate_cron_times
+from playbooks.utils.utils import calculate_cron_times, current_datetime
 from protos.base_pb2 import TaskCronRule, TimeRange
 from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto, \
     WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from utils.proto_utils import dict_to_proto
+
+
+def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread_ts) -> (bool, str):
+    try:
+        account = Account.objects.get(id=account_id)
+    except Account.DoesNotExist:
+        return False, f'Account with id: {account_id} not found'
+    current_time_utc = current_datetime()
+    all_wf_mappings = get_db_workflow_entry_point_mappings(account_id=account_id, entry_point_id=entry_point_id,
+                                                           is_active=True)
+    for wfm in all_wf_mappings:
+        workflow = wfm.workflow
+        workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
+        schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
+        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
+                                       current_time_utc, workflow_run_id, 'SLACK_ALERT', {'thread_ts': thread_ts})
 
 
 def create_workflow_execution_util(account: Account, workflow_id, schedule_type, schedule, scheduled_at,

@@ -10,6 +10,10 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ImproperlyConfigured
 
 
+def get_current_time():
+    return time.time()
+
+
 def current_milli_time():
     return round(time.time() * 1000)
 

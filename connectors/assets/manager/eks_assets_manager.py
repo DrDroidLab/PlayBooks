@@ -6,7 +6,7 @@ from kubernetes.client import V1NamespaceList
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
-from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
+from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
 from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksClusterAssetModel, EksAssetModel, \
     EksAssets, RegionCluster, Cluster, Command, Namespace
@@ -61,12 +61,15 @@ class EKSAssetManager(ConnectorAssetManager):
                         region_cluster_filters[fr.region.value] = [cluster.name.value for cluster in fr.clusters]
                 eks_models = eks_models.filter(model_uid__in=regions)
         eks_asset_protos = []
-        eks_connectors = get_db_connectors(account, connector_type=ConnectorType.EKS, is_active=True)
+        eks_connectors = get_db_account_connectors(account, connector_type=ConnectorType.EKS, is_active=True)
         if not eks_connectors:
             raise Exception("Active EKS connector not found for account: {}".format(account.id))
         eks_connector = eks_connectors.first()
 
-        eks_connector_keys = get_db_connector_keys(account, connector_id=eks_connector.id)
+        try:
+            eks_connector_keys = get_db_account_connector_keys(account, connector_id=eks_connector.id)
+        except Exception as e:
+            raise Exception("Error while fetching EKS connector keys for account: {} - {}".format(account.id, str(e)))
         if not eks_connector_keys:
             raise Exception("Active EKS connector keys not found for account: {}".format(account.id))
 

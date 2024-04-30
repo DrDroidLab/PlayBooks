@@ -385,17 +385,6 @@ class SlackConnectorDataReceived(models.Model):
     received_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
-class ConnectorPeriodicRunMetadata(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    metadata = models.JSONField()
-    task_run_id = models.CharField(max_length=255)
-    status = models.IntegerField(null=True, blank=True,
-                                 choices=generate_choices(PeriodicRunStatus.StatusType))
-    started_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
-
-
 class Site(models.Model):
     domain = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
