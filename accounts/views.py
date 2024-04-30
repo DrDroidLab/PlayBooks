@@ -21,11 +21,12 @@ from protos.accounts.api_pb2 import GetAccountApiTokensRequest, GetAccountApiTok
     GetCurrentAccountUsersResponse, InviteUsersResponse, InviteUsersRequest
 
 from playbooks.threadlocal import get_current_request
-from playbooks.utils.decorators import web_api, auth_web_api
+from playbooks.utils.decorators import api_blocked, web_api, auth_web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 
 
+@api_blocked
 @web_api(GetAccountApiTokensRequest)
 def get_account_api_tokens(request_message: GetAccountApiTokensRequest) -> \
         Union[GetAccountApiTokensResponse, HttpResponse]:
@@ -42,6 +43,7 @@ def get_account_api_tokens(request_message: GetAccountApiTokensRequest) -> \
         account_api_tokens=account_api_tokens)
 
 
+@api_blocked
 @web_api(CreateAccountApiTokenRequest)
 def create_account_api_token(request_message: CreateAccountApiTokenRequest) -> \
         Union[CreateAccountApiTokenResponse, HttpResponse]:
@@ -53,6 +55,7 @@ def create_account_api_token(request_message: CreateAccountApiTokenRequest) -> \
     return CreateAccountApiTokenResponse(success=BoolValue(value=True), account_api_token=api_token.proto)
 
 
+@api_blocked
 @web_api(DeleteAccountApiTokenRequest)
 def delete_account_api_token(request_message: DeleteAccountApiTokenRequest) -> \
         Union[DeleteAccountApiTokenResponse, HttpResponse]:
@@ -69,6 +72,7 @@ def delete_account_api_token(request_message: DeleteAccountApiTokenRequest) -> \
     return DeleteAccountApiTokenResponse(success=BoolValue(value=True))
 
 
+@api_blocked
 @csrf_exempt
 def confirm_email_link(request: HttpRequest, key):
     email_confirmation = EmailConfirmationHMAC.from_key(key)
@@ -134,6 +138,7 @@ def get_current_users(request_message: GetAccountApiTokensRequest) -> \
     return GetCurrentAccountUsersResponse(users=current_account_user_protos)
 
 
+@api_blocked
 @web_api(InviteUsersRequest)
 def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersResponse, HttpResponse]:
     user: User = get_request_user()

@@ -37,34 +37,13 @@ class MissingAccountException(ValueError):
 
 
 def get_request_account():
-    account: Account = get_current_request_account()
-    if account:
-        return account
-
-    user: User = get_request_user()
-
-    if user:
-        account: Account = user.account
-        set_current_request_account(account)
-    else:
-        raise MissingAccountException(f'Missing user info')
-
+    account = Account.objects.get(id=1)
+    set_current_request_account(account)
     return account
 
 
 def get_request_user():
-    user: User = get_current_request_user()
-    if user:
-        return user
-
-    request = get_current_request()
-
-    if request.user.is_authenticated:
-        user = request.user
-        set_current_request_user(user)
-    else:
-        raise MissingAccountException(f'User is unauthenticated. Missing user info')
-
+    user = User.objects.get(id=1)
     return user
 
 

@@ -12,7 +12,7 @@ from executor.workflows.crud.workflow_execution_utils import create_workflow_exe
 from executor.workflows.crud.workflows_crud import create_db_workflow
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from executor.workflows.tasks import test_workflow_notification
-from playbooks.utils.decorators import web_api, account_post_api, account_get_api
+from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_datetime
@@ -55,6 +55,7 @@ def workflows_get(request_message: GetWorkflowsRequest) -> Union[GetWorkflowsRes
     return GetWorkflowsResponse(meta=get_meta(page=page, total_count=total_count), workflows=workflow_list)
 
 
+@api_blocked
 @web_api(CreateWorkflowRequest)
 def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -69,6 +70,7 @@ def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWork
     return CreateWorkflowResponse(success=BoolValue(value=True), workflow=workflow.proto)
 
 
+@api_blocked
 @web_api(UpdateWorkflowRequest)
 def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWorkflowResponse, HttpResponse]:
     account: Account = get_request_account()

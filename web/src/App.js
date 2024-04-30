@@ -66,15 +66,6 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    if (!accessToken) {
-      navigate("/signup", {
-        replace: true,
-        state: { from: location.pathname },
-      });
-    }
-  }, [accessToken]);
-
-  useEffect(() => {
     const loader = document.querySelector(".loader-container");
     if (loader) {
       loader.style.display = "none";
@@ -83,52 +74,43 @@ const App = () => {
 
   return (
     <Routes>
-      <Route element={<BaseLayout />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Route>
 
-      <Route element={<RequireAuth />}>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Playbooks />} />
-          <Route path="/playbooks" element={<Playbooks />} />
-          <Route
-            path="/playbooks/executions/list"
-            element={<PlaybookExecutionsList />}
-          />
-          <Route path="/playbooks/create" element={<CreatePlaybook />} />
-          <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />
-          <Route
-            path="/playbooks/edit/:playbook_id"
-            element={<EditPlaybook />}
-          />
-          <Route
-            path="/playbooks/executions/:id"
-            element={<PlaybookExecutions />}
-          />
-          <Route
-            path="/playbooks/logs/:playbook_run_id"
-            element={<PlaybookLog />}
-          />
-          <Route path="/workflows/create" element={<CreateWorkflow />} />
-          <Route exact path="/workflows" element={<Workflows />} />
-          <Route path="/workflows/:id" element={<CreateWorkflow />} />
-          <Route
-            path="/workflows/executions/:id"
-            element={<WorkflowExecutions />}
-          />
-          <Route path="/executions/list" element={<WorkflowExecutionsList />} />
-          <Route
-            path="/workflows/logs/:workflow_run_id"
-            element={<WorkflowExecutionLogs />}
-          />
-          <Route path="/playgrounds" element={<Playground />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/integrations/:id" element={<ConnectorPage />} />
-          <Route path="/api-keys" element={<ApiTokens />} />
-          <Route path="/invite-team" element={<InviteTeam />} />
-          <Route path="/support" element={<Support />} />
-        </Route>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Playbooks />} />
+        <Route path="/playbooks" element={<Playbooks />} />
+        <Route
+          path="/playbooks/executions/list"
+          element={<PlaybookExecutionsList />}
+        />
+        <Route path="/playbooks/create" element={<CreatePlaybook />} />
+        <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} />
+        <Route
+          path="/playbooks/edit/:playbook_id"
+          element={<EditPlaybook />}
+        />
+        <Route
+          path="/playbooks/executions/:id"
+          element={<PlaybookExecutions />}
+        />
+        <Route
+          path="/playbooks/logs/:playbook_run_id"
+          element={<PlaybookLog />}
+        />
+        <Route path="/workflows/create" element={<CreateWorkflow />} />
+        <Route exact path="/workflows" element={<Workflows />} />
+        <Route path="/workflows/:id" element={<CreateWorkflow />} />
+        <Route
+          path="/workflows/executions/:id"
+          element={<WorkflowExecutions />}
+        />
+        <Route path="/executions/list" element={<WorkflowExecutionsList />} />
+        <Route
+          path="/workflows/logs/:workflow_run_id"
+          element={<WorkflowExecutionLogs />}
+        />
+        <Route path="/playgrounds" element={<Playground />} />
+        <Route path="/integrations" element={<Integrations />} />
+        <Route path="/integrations/:id" element={<ConnectorPage />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

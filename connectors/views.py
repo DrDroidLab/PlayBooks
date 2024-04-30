@@ -15,7 +15,7 @@ from connectors.crud.connectors_crud import get_db_connectors, create_connector,
     get_all_request_connectors, get_connector_keys_options, get_db_connector_keys, test_connection_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
-from playbooks.utils.decorators import web_api
+from playbooks.utils.decorators import api_blocked, web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
@@ -37,6 +37,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto, Connect
     ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
 
 
+@api_blocked
 @web_api(CreateConnectorRequest)
 def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateConnectorResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -74,6 +75,7 @@ def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConne
                                      connectors=all_active_connector_protos)
 
 
+@api_blocked
 @web_api(UpdateConnectorRequest)
 def connectors_update(request_message: UpdateConnectorRequest) -> Union[UpdateConnectorResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -134,6 +136,7 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
                                     connector_keys=connector_key_protos)
 
 
+@api_blocked
 @web_api(CreateConnectorRequest)
 def connectors_test_connection(request_message: CreateConnectorRequest) -> Union[CreateConnectorResponse, HttpResponse]:
     connector: ConnectorProto = request_message.connector
@@ -268,6 +271,7 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
                                           slack_alerts=slack_alerts)
 
 
+@api_blocked
 @web_api(GetSlackAppManifestRequest)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:

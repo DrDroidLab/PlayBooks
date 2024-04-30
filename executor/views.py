@@ -14,7 +14,7 @@ from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.decorators import web_api, account_post_api, account_get_api
+from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.utils import current_epoch_timestamp, current_datetime
@@ -97,6 +97,7 @@ def playbooks_get(request_message: GetPlaybooksRequest) -> Union[GetPlaybooksRes
     return GetPlaybooksResponse(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
 
 
+@api_blocked
 @web_api(CreatePlaybookRequest)
 def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -111,6 +112,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
 
 
+@api_blocked
 @web_api(UpdatePlaybookRequest)
 def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlaybookResponse, HttpResponse]:
     account: Account = get_request_account()
