@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from accounts.models import Account
 from executor.workflows.models import WorkflowExecution, WorkflowExecutionLog
-from playbooks.utils.utils import current_datetime
+from utils.time_utils import current_datetime
 from protos.base_pb2 import TimeRange
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType
 from utils.proto_utils import proto_to_dict

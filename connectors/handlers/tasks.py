@@ -18,7 +18,7 @@ from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from playbooks.utils.utils import get_current_time
+from utils.time_utils import get_current_time
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, ConnectorType, ConnectorMetadataModelType
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowEntryPointAlertConfig as WorkflowEntryPointAlertConfigProto

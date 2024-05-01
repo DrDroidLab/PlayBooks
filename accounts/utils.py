@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from accounts.cache import GLOBAL_ACCOUNT_CACHE
 from playbooks.threadlocal import get_current_request
-from utils.time import get_current_day_epoch
+from utils.time_utils import get_current_day_epoch
 from utils.uri_utils import build_absolute_uri
 
 _event_count_quota_key = 'event_count'
@@ -55,9 +55,9 @@ def create_random_password():
 
 
 def generate_reset_password_hyperlink(token, email):
-    location = settings.RESET_PASSWORD_PAGE_URL.format(token, email)
-    protocol = settings.ALERT_SITE_HTTP_PROTOCOL
-    enabled = settings.ALERT_USE_SITE
+    location = settings.RESET_PASSWORD_LOCATION.format(token, email)
+    protocol = settings.RESET_PASSWORD_SITE_HTTP_PROTOCOL
+    enabled = settings.RESET_PASSWORD_USE_SITE
     try:
         uri = build_absolute_uri(None, location, protocol, enabled)
     except ImproperlyConfigured:
