@@ -31,7 +31,7 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
 
 def playbook_execution_result_interpret(interpreter_type: InterpreterType, playbook: PlaybookProto,
                                         playbook_execution_logs: [PlaybookExecutionLog]) -> [InterpretationProto]:
-    location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook_id=playbook.id.value)
+    location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook.id.value)
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
     enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
     object_url = build_absolute_uri(None, location, protocol, enabled)
