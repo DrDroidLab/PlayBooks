@@ -19,6 +19,7 @@ from utils.proto_utils import dict_to_proto
 class PlayBook(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
     playbook = models.TextField()
 
     is_active = models.BooleanField(default=True)
@@ -50,6 +51,7 @@ class PlayBook(models.Model):
 
         return PlaybookProto(
             id=UInt64Value(value=self.id), name=StringValue(value=self.name), is_active=BoolValue(value=self.is_active),
+            description=StringValue(value=self.description),
             created_by=StringValue(value=self.created_by),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             global_variable_set=global_variable_set_proto,
@@ -72,6 +74,7 @@ class PlayBookStep(models.Model):
 
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     description = models.CharField(max_length=255, db_index=True)
+    notes = models.TextField(null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
 
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
@@ -104,6 +107,7 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
+            notes=StringValue(value=self.notes),
             tasks=tasks
         )
 
