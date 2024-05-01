@@ -2,12 +2,13 @@ import json
 import logging
 from typing import Union
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
-from accounts.models import Account, get_request_account, get_request_user
+from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import create_db_workflow, get_db_workflows
@@ -16,15 +17,15 @@ from executor.workflows.tasks import test_workflow_notification
 from playbooks.utils.decorators import web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from playbooks.utils.utils import current_datetime
+from utils.time_utils import current_datetime
 from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowActionSlackNotificationConfig, \
-    WorkflowSchedule as WorkflowScheduleProto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import dict_to_proto
+from utils.uri_utils import construct_curl, build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -95,32 +96,6 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
         return UpdateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Error", description=str(e)))
     return UpdateWorkflowResponse(success=BoolValue(value=True))
-
-
-@web_api(CreateWorkflowRequest)
-def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
-    account: Account = get_request_account()
-    user = get_request_user()
-    workflow: WorkflowProto = request_message.workflow
-
-    if not workflow.playbooks or workflow.playbooks == []:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request", description="Select a playbook"))
-
-    if not workflow.entry_points or workflow.entry_points == []:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request", description="Select the trigger type"))
-
-    if not workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request", description="Select a slack channel"))
-
-    if not workflow.actions or workflow.actions == []:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request",
-                                                      description="Select a notification type"))
-    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
-    return CreateWorkflowResponse(success=BoolValue(value=True))
 
 
 @web_api(ExecuteWorkflowRequest)
@@ -279,3 +254,61 @@ def workflows_execution_api_get(request_message: HttpRequest) -> Union[Execution
 
     workflow_execution_protos = [we.proto for we in workflow_executions]
     return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+
+
+@web_api(CreateWorkflowRequest)
+def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow: WorkflowProto = request_message.workflow
+
+    if not workflow.playbooks or workflow.playbooks == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select a playbook"))
+
+    if not workflow.entry_points or workflow.entry_points == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select the trigger type"))
+
+    if not workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request", description="Select a slack channel"))
+
+    if not workflow.actions or workflow.actions == []:
+        return CreateWorkflowResponse(success=BoolValue(value=False),
+                                      message=Message(title="Invalid Request",
+                                                      description="Select a notification type"))
+    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
+    return CreateWorkflowResponse(success=BoolValue(value=True))
+
+
+@web_api(ExecuteWorkflowRequest)
+def generate_curl(request_message: ExecuteWorkflowRequest) -> HttpResponse:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow_id = request_message.workflow_id.value
+    workflow_name = request_message.workflow_name.value
+    location = settings.WORKFLOW_EXECUTE_API_PATH
+    location = '/executor/workflows/' + location if not location.startswith('/') else location
+    protocol = settings.WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL
+    enabled = settings.WORKFLOW_EXECUTE_API_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    if workflow_id:
+        payload = {'workflow_id': workflow_id}
+    elif workflow_name:
+        payload = {'workflow_name': workflow_name}
+    else:
+        return HttpResponse('Request Workflow params not found.', status=400, content_type="text/plain")
+
+    qs = account.account_api_token.filter(created_by=user)
+    if qs:
+        account_api_token = qs.first()
+    else:
+        api_token = AccountApiToken(account=account, created_by=user)
+        api_token.save()
+        account_api_token = api_token
+
+    headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {account_api_token.key}'}
+    curl = construct_curl('POST', uri, headers=headers, payload=payload)
+    return HttpResponse(curl, content_type="text/plain", status=200)

@@ -5,7 +5,7 @@ from django.conf import settings
 from accounts.models import Account
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_point_mappings
 from executor.workflows.crud.workflow_execution_crud import create_workflow_execution
-from playbooks.utils.utils import calculate_cron_times, current_datetime
+from utils.time_utils import calculate_cron_times, current_datetime
 from protos.base_pb2 import TaskCronRule, TimeRange
 from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto, \
     WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto

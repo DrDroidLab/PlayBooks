@@ -27,13 +27,13 @@ from intelligence_layer.task_result_interpreters.task_result_interpreter_facade 
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from playbooks.utils.utils import current_datetime, current_epoch_timestamp
+from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
     ConnectorType
 
 from utils.proto_utils import dict_to_proto, proto_to_dict

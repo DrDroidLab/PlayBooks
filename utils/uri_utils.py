@@ -1,8 +1,19 @@
+import json
+import urllib
 from urllib.parse import urlsplit
 
+from django.contrib.sites.models import Site as DjangoSite
 from django.conf import settings
+
 from connectors.models import Site
 from django.core.exceptions import ImproperlyConfigured
+
+
+def get_db_site():
+    sites = Site.objects.filter(is_active=True)
+    if sites:
+        return sites.first()
+    return None
 
 
 def build_absolute_uri(request, location, protocol=None, enabled=False):
@@ -17,18 +28,20 @@ def build_absolute_uri(request, location, protocol=None, enabled=False):
         if not enabled:
             raise ImproperlyConfigured("Passing `request=None` requires `sites` to be enabled")
 
-        sites = Site.objects.filter(is_active=True)
-        if sites:
-            site = sites.first()
-            protocol = site.protocol
+        site = get_db_site()
+        if site:
+            if site.protocol:
+                protocol = site.protocol
+            domain = site.domain
         else:
-            protocol = settings.SITE_DEFAULT_HTTP_PROTOCOL
+            site = DjangoSite.objects.get_current()
+            domain = site.domain
 
         bits = urlsplit(location)
         if not (bits.scheme and bits.netloc):
             uri = "{protocol}://{domain}{url}".format(
                 protocol=protocol,
-                domain=site.domain,
+                domain=domain,
                 url=location,
             )
         else:
@@ -46,3 +59,26 @@ def build_absolute_uri(request, location, protocol=None, enabled=False):
     if protocol:
         uri = protocol + ":" + uri.partition(":")[2]
     return uri
+
+
+def construct_curl(method, uri, headers, params=None, payload=None):
+    curl_command = f"curl -X {method.upper()}"
+
+    # Add headers to the cURL command
+    for key, value in headers.items():
+        curl_command += f" -H '{key}: {value}'"
+
+    # Add request parameters to the URI
+    if params:
+        param_string = "&".join([f"{key}={value}" for key, value in params.items()])
+        uri += f"?{param_string}"
+
+    # Add payload to the cURL command (if applicable)
+    if payload and method.lower() in ["post", "put", "patch"]:
+        payload_string = json.dumps(payload)
+        curl_command += f" -d '{payload_string}'"
+
+    # Add the URI to the cURL command
+    curl_command += f" '{uri}'"
+
+    return curl_command
