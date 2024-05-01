@@ -5,7 +5,7 @@ import "protos/base.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
-//Task Executor Protos
+// Task Execution Result Protos
 message PlaybookMetricTaskExecutionResult {
 
   message Result {
@@ -150,6 +150,35 @@ message PlaybookDocumentationTaskExecutionResult {
   Result result = 3;
 }
 
+message PlaybookActionTaskExecutionResult {
+
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      API_RESPONSE = 1;
+    }
+
+    message ApiResponse {
+      google.protobuf.StringValue request_method = 1;
+      google.protobuf.StringValue request_url = 2;
+      google.protobuf.UInt64Value response_status = 3;
+      google.protobuf.Struct response_headers = 4;
+      google.protobuf.Struct response_body = 5;
+      google.protobuf.Struct error = 6;
+      google.protobuf.Struct metadata = 7;
+    }
+
+    Type type = 1;
+    oneof result {
+      ApiResponse api_response = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value action_task_id = 1;
+  google.protobuf.StringValue action_task_name = 2;
+  Result result = 3;
+}
+
 message PlaybookTaskExecutionResult  {
   google.protobuf.StringValue error = 1;
   oneof result {
@@ -157,9 +186,12 @@ message PlaybookTaskExecutionResult  {
     PlaybookDecisionTaskExecutionResult decision_task_execution_result = 3;
     PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 4;
     PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 5;
+    PlaybookActionTaskExecutionResult action_task_execution_result = 6;
   }
 }
 
+
+// Metric Task Execution Protos
 message PlaybookCloudwatchTask {
   enum TaskType {
     UNKNOWN = 0;
@@ -266,7 +298,6 @@ message PlaybookNewRelicTask {
   }
 }
 
-
 message PlaybookDatadogTask {
   enum TaskType {
     UNKNOWN = 0;
@@ -313,6 +344,8 @@ message PlaybookMetricTaskDefinition {
   }
 }
 
+
+// Decision Task Execution Protos
 enum EvaluationConditionFunction {
   UNKNOWN_ECF = 0;
   ECF_AVG = 1;
@@ -363,15 +396,6 @@ message ElseEvaluationTask {
   google.protobuf.StringValue next_task = 1;
 }
 
-message PlaybookDocumentationTaskDefinition {
-  enum Type {
-    UNKNOWN = 0;
-    MARKDOWN = 1;
-  }
-  Type type = 1;
-  google.protobuf.StringValue documentation = 2;
-}
-
 message PlaybookDecisionTaskDefinition {
   enum EvaluationType {
     UNKNOWN_ET = 0;
@@ -386,6 +410,19 @@ message PlaybookDecisionTaskDefinition {
   }
 }
 
+
+// Documentation Task Execution Protos
+message PlaybookDocumentationTaskDefinition {
+  enum Type {
+    UNKNOWN = 0;
+    MARKDOWN = 1;
+  }
+  Type type = 1;
+  google.protobuf.StringValue documentation = 2;
+}
+
+
+// Data Fetch Task Execution Protos
 message PlaybookClickhouseDataFetchTask {
   google.protobuf.StringValue database = 1;
   google.protobuf.StringValue query = 2;
@@ -411,7 +448,6 @@ message PlaybookEksDataFetchTask {
   google.protobuf.StringValue namespace = 5;
 }
 
-
 message PlaybookSqlDatabaseConnectionDataFetchTask {
   google.protobuf.StringValue query = 1;
 }
@@ -436,6 +472,41 @@ message PlaybookDataFetchTaskDefinition {
   }
 }
 
+
+// Playbook Action Task Execution Protos
+message PlaybookApiCallTask {
+  enum Method {
+    UNKNOWN = 0;
+    GET = 1;
+    POST = 2;
+    PUT = 3;
+    PATCH = 4;
+    DELETE = 5;
+  }
+  Method method = 1;
+  google.protobuf.StringValue url = 2;
+  google.protobuf.Struct headers = 3;
+  google.protobuf.Struct payload = 4;
+  google.protobuf.UInt64Value timeout = 5;
+  google.protobuf.Struct cookies = 6;
+}
+
+message PlaybookActionTaskDefinition {
+  enum Source {
+    UNKNOWN = 0;
+    API = 1;
+  }
+  Source source = 1;
+  google.protobuf.UInt64Value id = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.Struct metadata = 4;
+  oneof task {
+    PlaybookApiCallTask api_call_task = 5;
+  }
+}
+
+
+// Playbook Protos
 message PlaybookTaskDefinition {
 
   enum Type {
@@ -444,6 +515,7 @@ message PlaybookTaskDefinition {
     DECISION = 2;
     DATA_FETCH = 3;
     DOCUMENTATION = 4;
+    ACTION = 5;
   }
 
   google.protobuf.UInt64Value id = 1;
@@ -457,6 +529,7 @@ message PlaybookTaskDefinition {
     PlaybookDecisionTaskDefinition decision_task = 8;
     PlaybookDataFetchTaskDefinition data_fetch_task = 9;
     PlaybookDocumentationTaskDefinition documentation_task = 10;
+    PlaybookActionTaskDefinition action_task = 11;
   }
 }
 
@@ -468,8 +541,23 @@ message PlaybookStepDefinition {
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue name = 2;
   google.protobuf.StringValue description = 3;
-  repeated ExternalLink external_links = 4;
-  repeated PlaybookTaskDefinition tasks = 5;
+  google.protobuf.StringValue notes = 4;
+  repeated ExternalLink external_links = 5;
+  repeated PlaybookTaskDefinition tasks = 6;
+}
+
+message Playbook {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.BoolValue is_active = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  sfixed64 last_run_at = 7;
+  PlaybookExecutionStatusType status = 8;
+  repeated PlaybookStepDefinition steps = 9;
+  google.protobuf.Struct global_variable_set = 10;
+  google.protobuf.BoolValue has_triggers = 11;
 }
 
 
@@ -480,19 +568,6 @@ enum PlaybookExecutionStatusType {
   RUNNING = 2;
   FINISHED = 3;
   FAILED = 4;
-}
-
-message Playbook {
-  google.protobuf.UInt64Value id = 1;
-  google.protobuf.StringValue name = 2;
-  google.protobuf.BoolValue is_active = 3;
-  google.protobuf.StringValue created_by = 4;
-  sfixed64 created_at = 5;
-  sfixed64 last_run_at = 6;
-  PlaybookExecutionStatusType status = 7;
-  repeated PlaybookStepDefinition steps = 8;
-  google.protobuf.Struct global_variable_set = 9;
-  google.protobuf.BoolValue has_triggers = 10;
 }
 
 message PlaybookExecutionLog {

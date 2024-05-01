@@ -7,7 +7,7 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, Playbook
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
     PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
-    PlaybookSqlDatabaseConnectionDataFetchTask
+    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -134,6 +134,13 @@ def get_eks_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
                                            eks_data_fetch_task=eks_data_fetch_task_proto)
 
 
+def get_api_call_task_execution_proto(task) -> PlaybookActionTaskDefinition:
+    api_call_task = task.get('api_call_task', {})
+    api_call_task_proto = dict_to_proto(api_call_task, PlaybookApiCallTask)
+    return PlaybookActionTaskDefinition(source=PlaybookActionTaskDefinition.Source.API,
+                                        api_call_task=api_call_task_proto)
+
+
 def get_playbook_task_definition_proto(db_task_definition):
     task_type = db_task_definition.type
     task = db_task_definition.task
@@ -229,6 +236,20 @@ def get_playbook_task_definition_proto(db_task_definition):
             description=StringValue(value=db_task_definition.description),
             type=db_task_definition.type,
             documentation_task=documentation_task_proto,
+            notes=StringValue(value=db_task_definition.notes)
+        )
+    elif task_type == PlaybookTaskDefinitionProto.Type.ACTION:
+        source = task.get('source', None)
+        if source == 'API':
+            action_task_proto = get_api_call_task_execution_proto(task)
+        else:
+            raise ValueError(f"Invalid source: {source}")
+        return PlaybookTaskDefinitionProto(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=db_task_definition.type,
+            action_task=action_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
     else:
