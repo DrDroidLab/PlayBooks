@@ -623,7 +623,7 @@ class PlaybookActionTaskExecutionResult(google.protobuf.message.Message):
             @property
             def request_method(self) -> google.protobuf.wrappers_pb2.StringValue: ...
             @property
-            def request_url(self) -> google.protobuf.struct_pb2.Struct: ...
+            def request_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
             @property
             def response_status(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
             @property
@@ -638,7 +638,7 @@ class PlaybookActionTaskExecutionResult(google.protobuf.message.Message):
                 self,
                 *,
                 request_method: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                request_url: google.protobuf.struct_pb2.Struct | None = ...,
+                request_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
                 response_status: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
                 response_headers: google.protobuf.struct_pb2.Struct | None = ...,
                 response_body: google.protobuf.struct_pb2.Struct | None = ...,

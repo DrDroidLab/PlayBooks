@@ -160,7 +160,7 @@ message PlaybookActionTaskExecutionResult {
 
     message ApiResponse {
       google.protobuf.StringValue request_method = 1;
-      google.protobuf.Struct request_url = 2;
+      google.protobuf.StringValue request_url = 2;
       google.protobuf.UInt64Value response_status = 3;
       google.protobuf.Struct response_headers = 4;
       google.protobuf.Struct response_body = 5;

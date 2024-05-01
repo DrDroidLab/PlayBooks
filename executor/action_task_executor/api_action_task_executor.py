@@ -8,6 +8,7 @@ from executor.action_task_executor.action_task_executor import PlaybookActionTas
 from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
     PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto, \
     PlaybookApiCallTask as PlaybookApiCallTaskProto
+from utils.proto_utils import proto_to_dict
 
 method_proto_string_mapping = {
     PlaybookApiCallTaskProto.Method.GET: "GET",
@@ -33,10 +34,10 @@ class ApiActionTaskExecutor(PlaybookActionTaskExecutor):
             url = api_action_task.url.value
             for key, value in global_variable_set.items():
                 uri = uri.replace(f"{{{key}}}", value)
-            headers = api_action_task.headers
-            payload = api_action_task.payload
+            headers = proto_to_dict(api_action_task.headers) if api_action_task.headers else {}
+            payload = proto_to_dict(api_action_task.payload) if api_action_task.payload else {}
             timeout = api_action_task.timeout.value if api_action_task.timeout else 120
-            cookies = api_action_task.cookies
+            cookies = proto_to_dict(api_action_task.cookies) if api_action_task.cookies else {}
 
             request_method = method_proto_string_mapping.get(method)
             request_arguments = {
