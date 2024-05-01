@@ -2,6 +2,7 @@ syntax = "proto3";
 package protos.playbooks;
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
 
 import "protos/base.proto";
 import "protos/playbooks/playbook.proto";
@@ -110,6 +111,11 @@ message ExecutionsPlaybooksListResponse {
   repeated PlaybookExecution playbook_executions = 4;
 }
 
+message PlaybookTemplatesGetResponse  {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  repeated google.protobuf.Struct data = 3;
+}
 
 ///////////////////// Workflows APIs /////////////////////
 message GetWorkflowsRequest {
@@ -146,6 +152,7 @@ message UpdateWorkflowResponse {
 message ExecuteWorkflowRequest {
   Meta meta = 1;
   google.protobuf.UInt64Value workflow_id = 2;
+  google.protobuf.StringValue workflow_name = 3;
 }
 
 message ExecuteWorkflowResponse {

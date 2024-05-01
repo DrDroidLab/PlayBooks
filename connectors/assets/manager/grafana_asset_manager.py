@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
-from connectors.crud.connector_asset_model_crud import get_connector_metadata_models
+from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
 from protos.connectors.assets.grafana_asset_pb2 import GrafanaTargetMetricPromQlAssetOptions, \
     GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
@@ -127,10 +127,10 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     promql_metrics=promql_metrics)
                 panel_promql_map_list.append(panel_promql_map)
             connector_type = self.connector_type
-            dashboard_asset = get_connector_metadata_models(account, model_uid=dashboard,
-                                                            connector_type=connector_type,
-                                                            model_type=ConnectorMetadataModelType.GRAFANA_DASHBOARD,
-                                                            is_active=True).first()
+            dashboard_asset = get_db_account_connector_metadata_models(account, model_uid=dashboard,
+                                                                       connector_type=connector_type,
+                                                                       model_type=ConnectorMetadataModelType.GRAFANA_DASHBOARD,
+                                                                       is_active=True).first()
             grafana_asset_protos.append(GrafanaAssetModelProto(
                 id=UInt64Value(value=dashboard_asset.id),
                 connector_type=self.connector_type,

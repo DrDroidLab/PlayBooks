@@ -165,8 +165,8 @@ def get_connector_keys_options(connector_type):
     return connector_key_option_protos
 
 
-def get_db_connectors(account: Account, connector_id=None, connector_name=None, connector_type=None,
-                      connector_type_list=None, is_active=None):
+def get_db_account_connectors(account: Account, connector_id=None, connector_name=None, connector_type=None,
+                              connector_type_list=None, is_active=None):
     filters = {}
     if connector_id:
         filters['id'] = connector_id
@@ -187,12 +187,36 @@ def get_db_connectors(account: Account, connector_id=None, connector_name=None, 
         return None
 
 
-def get_db_connector_keys(account: Account, connector_id, key_type=None):
+def get_db_connectors(account_id=None, connector_id=None, connector_name=None, connector_type=None,
+                      connector_type_list=None, is_active=None):
+    filters = {}
+    if account_id:
+        filters['account_id'] = account_id
+    if connector_id:
+        filters['id'] = connector_id
+    if is_active is not None:
+        filters['is_active'] = is_active
+    if connector_name:
+        filters['name'] = connector_name
+    if connector_type:
+        filters['connector_type'] = connector_type
+    if connector_type_list:
+        filters['connector_type__in'] = connector_type_list
+    if not connector_type and not connector_type_list:
+        filters['connector_type__in'] = integrations_connector_type_connector_keys_map.keys()
+    try:
+        return Connector.objects.filter(**filters)
+    except Exception as e:
+        logger.error(f'Error fetching Connectors: {str(e)}')
+        return None
+
+
+def get_db_account_connector_keys(account: Account, connector_id, key_type=None):
     if not connector_id:
-        return None, 'Invalid Connector ID'
-    active_connector = get_db_connectors(account, connector_id=connector_id, is_active=True)
+        raise ConnectorCrudException('Invalid Connector ID')
+    active_connector = get_db_account_connectors(account, connector_id=connector_id, is_active=True)
     if not active_connector.exists():
-        return None, 'Active Connector not found for given ID'
+        raise ConnectorCrudException('Active Connector not found for given ID')
     connector_type = active_connector.first().connector_type
     if not key_type:
         connector_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
@@ -209,6 +233,28 @@ def get_db_connector_keys(account: Account, connector_id, key_type=None):
         raise ConnectorCrudException(f'Error fetching Connector Keys: {str(e)}')
 
 
+def get_db_connector_keys(account_id, connector_id, key_type=None):
+    if not account_id or not connector_id:
+        return None, 'Invalid Account/Connector ID'
+    active_connector = get_db_connectors(account_id=account_id, connector_id=connector_id, is_active=True)
+    if not active_connector.exists():
+        return None, 'Active Connector not found for given ID'
+    connector_type = active_connector.first().connector_type
+    if not key_type:
+        connector_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
+        all_key_types = []
+        for ckt in connector_key_types:
+            all_key_types.extend(ckt)
+        all_key_types = list(set(all_key_types))
+    else:
+        all_key_types = [key_type]
+    try:
+        return ConnectorKey.objects.filter(connector_id=connector_id, key_type__in=all_key_types, is_active=True)
+    except Exception as e:
+        logger.error(f'Error fetching Connector Keys: {str(e)}')
+        return None, f'Error fetching Connector Keys: {str(e)}'
+
+
 def create_connector(account: Account, created_by, connector_proto: ConnectorProto,
                      connector_keys: [ConnectorKeyProto]) -> (Connector, str):
     if not connector_proto.type:
@@ -220,7 +266,7 @@ def create_connector(account: Account, created_by, connector_proto: ConnectorPro
     if connector_type == ConnectorType.SENTRY:
         metadata = proto_to_dict(connector_proto.sentry_config)
     try:
-        db_connectors = get_db_connectors(account, connector_name=connector_name, connector_type=connector_type)
+        db_connectors = get_db_account_connectors(account, connector_name=connector_name, connector_type=connector_type)
         if db_connectors.exists():
             db_connector = db_connectors.first()
             if db_connector.is_active:
