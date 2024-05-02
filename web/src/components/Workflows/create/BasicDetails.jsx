@@ -5,8 +5,11 @@ import SelectComponent from "../../SelectComponent/index.jsx";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
-import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  currentWorkflowSelector,
+  setCurrentWorkflowKey,
+} from "../../../store/features/workflow/workflowSlice.ts";
 import { triggerOptions } from "../../../utils/workflow/triggerOptions.ts";
 import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import HandleWorkflowType from "./utils/HandleWorkflowType.tsx";
@@ -21,17 +24,23 @@ function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const [triggerGenerateCurl, { isLoading: generateCurlLoading }] =
     useGenerateCurlMutation();
+  const dispatch = useDispatch();
 
-  const handleGenerateCurl = async (name) => {
-    await triggerGenerateCurl(name);
+  const handleGenerateCurl = async () => {
+    if (!currentWorkflow.name) {
+      dispatch(
+        setCurrentWorkflowKey({
+          key: "curl",
+          value: undefined,
+        }),
+      );
+    }
+    await triggerGenerateCurl(currentWorkflow.name);
   };
 
   useEffect(() => {
-    if (
-      currentWorkflow.name &&
-      currentWorkflow?.workflowType === "api-trigger"
-    ) {
-      handleGenerateCurl(currentWorkflow.name);
+    if (currentWorkflow?.workflowType === "api-trigger") {
+      handleGenerateCurl();
     }
   }, [currentWorkflow.name, currentWorkflow?.workflowType]);
 
@@ -50,7 +59,6 @@ function BasicDetails() {
             value={currentWorkflow.name}
             onValueChange={(val) => {
               handleInput("name", val);
-              handleGenerateCurl();
             }}
             error={currentWorkflow?.errors?.name ?? false}
           />
