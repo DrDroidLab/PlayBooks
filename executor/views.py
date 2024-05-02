@@ -315,7 +315,6 @@ def playbooks_api_execution_get(request_message: HttpRequest) -> Union[Execution
 @get_proto_schema_validator()
 def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplatesGetResponse, HttpResponse]:
     folder_path = settings.PLAYBOOK_TEMPLATE_PATH
-    s = Struct()
     try:
         json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
         if not json_files:
@@ -326,6 +325,7 @@ def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplates
         for json_file in json_files:
             full_path = os.path.join(folder_path, json_file)
             with open(full_path, 'r') as file:
+                s = Struct()
                 data = json.load(file)
                 s.update(data)
                 json_contents.append(s)
