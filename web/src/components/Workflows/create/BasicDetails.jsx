@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import { RefreshRounded } from "@mui/icons-material";
@@ -21,10 +22,18 @@ function BasicDetails() {
   const [triggerGenerateCurl, { isLoading: generateCurlLoading }] =
     useGenerateCurlMutation();
 
-  const handleGenerateCurl = async () => {
-    if (!currentWorkflow.name) return;
-    await triggerGenerateCurl(currentWorkflow.name);
+  const handleGenerateCurl = async (name) => {
+    await triggerGenerateCurl(name);
   };
+
+  useEffect(() => {
+    if (
+      currentWorkflow.name &&
+      currentWorkflow?.workflowType === "api-trigger"
+    ) {
+      handleGenerateCurl(currentWorkflow.name);
+    }
+  }, [currentWorkflow.name, currentWorkflow?.workflowType]);
 
   return (
     <>
@@ -39,7 +48,10 @@ function BasicDetails() {
             valueType={"STRING"}
             placeHolder={"Enter workflow name"}
             value={currentWorkflow.name}
-            onValueChange={(val) => handleInput("name", val)}
+            onValueChange={(val) => {
+              handleInput("name", val);
+              handleGenerateCurl();
+            }}
             error={currentWorkflow?.errors?.name ?? false}
           />
         </div>
@@ -67,14 +79,16 @@ function BasicDetails() {
               searchable={true}
               error={currentWorkflow?.errors?.workflowType ?? false}
             />
-            {currentWorkflow?.workflowType === "api-trigger" && (
-              <button
-                className="border p-1 rounded transition-all text-xs text-violet-500 border-violet-500 hover:bg-violet-500 hover:text-white cursor-pointer disabled:bg-gray-100 disabled:text-gray-300 disabled:border-gray-300 disabled:cursor-not-allowed"
-                onClick={handleGenerateCurl}
-                disabled={!currentWorkflow.name || generateCurlLoading}>
-                Generate Curl
-              </button>
-            )}
+            {currentWorkflow?.workflowType === "api-trigger" &&
+              !currentWorkflow?.name && (
+                // <button
+                //   className="border p-1 rounded transition-all text-xs text-violet-500 border-violet-500 hover:bg-violet-500 hover:text-white cursor-pointer disabled:bg-gray-100 disabled:text-gray-300 disabled:border-gray-300 disabled:cursor-not-allowed"
+                //   onClick={handleGenerateCurl}
+                //   disabled={!currentWorkflow.name || generateCurlLoading}>
+                //   Generate Curl
+                // </button>
+                <p className="text-sm">(Enter workflow name to see the curl)</p>
+              )}
             {generateCurlLoading && <CircularProgress size={20} />}
           </div>
         </div>

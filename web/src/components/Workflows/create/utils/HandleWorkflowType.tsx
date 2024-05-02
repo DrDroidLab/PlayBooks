@@ -14,25 +14,20 @@ function HandleWorkflowType() {
     case "api-trigger":
       if (currentWorkflow.curl)
         return (
-          <CopyCode
-            title={"API Trigger curl"}
-            subtitle={"You can use this curl to trigger this workflow"}
-            content={currentWorkflow.curl}
-            language={"curl"}
-            help={
-              <>
-                Convert this curl into any language of your choice using{" "}
-                <a
-                  className="underline text-violet-500"
-                  href="https://curlconverter.com/"
-                  target="_blank"
-                  rel="noreferrer">
-                  https://curlconverter.com/
-                </a>
-                .
-              </>
-            }
-          />
+          <div className="flex flex-col gap-2 lg:w-1/2">
+            <CopyCode content={currentWorkflow.curl} language={"curl"} />
+            <p className="text-sm p-2 border border-violet-500 bg-violet-50 rounded">
+              Convert this curl into any language of your choice using{" "}
+              <a
+                className="underline text-violet-500"
+                href="https://curlconverter.com/"
+                target="_blank"
+                rel="noreferrer">
+                https://curlconverter.com/
+              </a>
+              .
+            </p>
+          </div>
         );
       else return <></>;
 
