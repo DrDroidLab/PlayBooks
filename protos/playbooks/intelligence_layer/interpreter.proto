@@ -10,7 +10,7 @@ enum InterpreterType {
   UNKNOWN_I = 0;
   BASIC_I = 1;
   STATISTICAL_I = 2;
-  LLM_GPT_VISION_I = 3;
+  LLM_CHAT_GPT_VISION_I = 3;
 }
 
 
