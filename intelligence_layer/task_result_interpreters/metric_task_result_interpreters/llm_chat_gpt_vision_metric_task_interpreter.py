@@ -128,8 +128,8 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
         raise ValueError('No inference returned from chat gpt')
 
     title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
-    description = f'Description: {inference["description"]}'
-    summary = f'Anomaly Detected: {inference["anomaly_detected"]}'
+    description = f'`Description`: {inference["description"]}'
+    summary = f'`Anomaly Detected`: {inference["anomaly_detected"]}'
 
     return InterpretationProto(
         type=InterpretationProto.Type.IMAGE,
