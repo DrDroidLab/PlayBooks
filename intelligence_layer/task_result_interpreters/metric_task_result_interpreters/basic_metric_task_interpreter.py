@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from google.protobuf.wrappers_pb2 import StringValue
 
+from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.utils import \
+    metric_source_displace_name_map
 from intelligence_layer.utils import generate_color_map
 from media.utils import save_image_to_db, generate_local_image_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
@@ -13,14 +15,6 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as P
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto
 
 logger = logging.getLogger(__name__)
-
-metric_source_displace_name_map = {
-    PlaybookMetricTaskDefinitionProto.Source.CLOUDWATCH: 'Cloudwatch',
-    PlaybookMetricTaskDefinitionProto.Source.GRAFANA: 'Grafana',
-    PlaybookMetricTaskDefinitionProto.Source.GRAFANA_VPC: 'Grafana',
-    PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC: 'New Relic',
-    PlaybookMetricTaskDefinitionProto.Source.DATADOG: 'Datadog'
-}
 
 
 def metric_timeseries_result_to_df(result: PlaybookMetricTaskExecutionResultProto.Result.Timeseries):

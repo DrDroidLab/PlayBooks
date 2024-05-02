@@ -26,14 +26,14 @@ class _InterpreterTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     UNKNOWN_I: _InterpreterType.ValueType  # 0
     BASIC_I: _InterpreterType.ValueType  # 1
     STATISTICAL_I: _InterpreterType.ValueType  # 2
-    LLM_CHAT_GPT_I: _InterpreterType.ValueType  # 3
+    LLM_GPT_VISION_I: _InterpreterType.ValueType  # 3
 
 class InterpreterType(_InterpreterType, metaclass=_InterpreterTypeEnumTypeWrapper): ...
 
 UNKNOWN_I: InterpreterType.ValueType  # 0
 BASIC_I: InterpreterType.ValueType  # 1
 STATISTICAL_I: InterpreterType.ValueType  # 2
-LLM_CHAT_GPT_I: InterpreterType.ValueType  # 3
+LLM_GPT_VISION_I: InterpreterType.ValueType  # 3
 global___InterpreterType = InterpreterType
 
 @typing_extensions.final
