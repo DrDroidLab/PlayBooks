@@ -7,7 +7,7 @@ import { useGenerateManifestMutation } from "../../../store/features/integration
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { CircularProgress } from "@mui/material";
 import "highlight.js/styles/default.css";
-import CopyCode from "../../common/CopyCode/index.jsx";
+import CopyCodeDrawer from "../../common/CopyCode/CopyCodeDrawer.jsx";
 
 function SlackManifestGenerator() {
   const [host, setHost] = useState("");
@@ -50,7 +50,7 @@ function SlackManifestGenerator() {
       </form>
 
       {currentConnector.manifest && (
-        <CopyCode
+        <CopyCodeDrawer
           title={"Slack manifest"}
           subtitle={"Copy the manifest and use it to create an application"}
           help={
