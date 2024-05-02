@@ -256,6 +256,22 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
           break;
       }
       break;
+    case SOURCES.API:
+      task = {
+        ...task,
+        type: "ACTION",
+        action_task: {
+          source: step.source.toUpperCase(),
+          api_call_task: {
+            method: step.action.method,
+            url: step.action.url,
+            headers: JSON.parse(step.action.headers),
+            payload: JSON.parse(step.action.payload),
+            timeout: step.action.timeout,
+          },
+        },
+      };
+      break;
 
     default:
       task = {

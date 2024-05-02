@@ -3,7 +3,6 @@ import { Tooltip } from "@mui/material";
 import styles from "../playbooks.module.css";
 import { Launch } from "@mui/icons-material";
 import Notes from "./Notes.jsx";
-import Query from "./Query.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +17,7 @@ import { getStepTitle } from "../utils.jsx";
 import ExternalLinks from "./ExternalLinks.jsx";
 import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
+import Query from "./Query.jsx";
 
 function Step({ step, index }) {
   const [addQuery, setAddQuery] = useState(step?.isPrefetched ?? false);
@@ -166,6 +166,13 @@ function Step({ step, index }) {
         <div className={styles["step-section"]}>
           <div className={styles["step-info"]}>
             <div>
+              {/* <SelectOne
+                options={options}
+                selected={step.stepType}
+                onChange={(id) => {
+                  dispatch(setStepType({ index, stepType: id }));
+                }}
+              /> */}
               <div
                 className={styles["addConditionStyle"]}
                 onClick={() => setAddQuery(true)}>
@@ -173,6 +180,11 @@ function Step({ step, index }) {
               </div>
 
               {addQuery && <Query step={step} index={index} />}
+              {/* <HandleSelectedType
+                selectedId={step.stepType}
+                step={step}
+                index={index}
+              /> */}
             </div>
           </div>
           <Notes step={step} index={index} />
