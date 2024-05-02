@@ -1,18 +1,13 @@
 import json
 import logging
 
-import pandas as pd
-import pyecharts.options as opts
 from django.conf import settings
-from pyecharts.render import make_snapshot
-from pyecharts.charts import Line
 from openai import OpenAI
 from google.protobuf.wrappers_pb2 import StringValue
-from snapshot_selenium import snapshot as driver
 
 from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.utils import \
-    metric_source_displace_name_map
-from media.utils import save_image_to_db, generate_local_image_path
+    metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
+from media.utils import generate_local_image_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto
@@ -25,67 +20,6 @@ def get_task_result_data_type(task_result: PlaybookMetricTaskExecutionResultProt
         return 'metric'
     else:
         return None
-
-
-def transform_playbook_task_result_to_dataframe(task_result: PlaybookMetricTaskExecutionResultProto):
-    try:
-        table_df = pd.DataFrame()
-        rows = []
-        output_df = None
-        if task_result.result.type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
-            metric_result = task_result.result.timeseries
-            if metric_result.labeled_metric_timeseries:
-                for series in metric_result.labeled_metric_timeseries:
-
-                    # Build the name from all label-value pairs in metric_label_values
-                    if series.metric_label_values:
-                        metric_name = ' '.join(
-                            [f"{label.name.value} {label.value.value}" for label in series.metric_label_values])
-                    else:
-                        metric_name = task_result.metric_name.value + " " + task_result.metric_expression.value
-
-                    # Loop through each datapoint and use the constructed name
-                    for datapoint in series.datapoints:
-                        timestamp = datapoint.timestamp
-                        value = datapoint.value.value
-                        rows.append({'name': metric_name, 'timestamp': timestamp, 'value': value})
-                output_df = pd.DataFrame(rows, columns=['name', 'timestamp', 'value'])
-        elif task_result.result.type == PlaybookMetricTaskExecutionResultProto.Result.Type.TABLE_RESULT:
-            table_rows = task_result.result.table_result.rows
-            table_df_row = pd.DataFrame()
-            for row in table_rows:
-                temp_data = row.columns
-                temp_dict = {}
-                for data in temp_data:
-                    temp_dict[data.name.value] = data.value.value
-                table_df_row = pd.DataFrame([temp_dict])
-            output_df = pd.concat([table_df, table_df_row], axis=0)
-        else:
-            logger.error(f'Unsupported result type: {task_result.result.type}')
-            raise NotImplementedError(f'Unsupported result type: {task_result.result.type}')
-        return output_df
-    except Exception as e:
-        logger.error(f'Error transforming playbook task result to dataframe: {e}')
-        raise e
-
-
-def generate_graph_using_data(df: pd.DataFrame, file_key: str, task_name: str = 'Untitled'):
-    line_chart = Line(init_opts=opts.InitOpts(bg_color="#fafafa"))
-    line_chart.add_xaxis(df['timestamp'].tolist())
-    line_chart.add_yaxis("Value", df['value'].tolist())
-
-    # Set chart title and axis labels
-    line_chart.set_global_opts(
-        title_opts=opts.TitleOpts(title="Graph"),
-        xaxis_opts=opts.AxisOpts(name="Timestamp"),
-        yaxis_opts=opts.AxisOpts(name="Value"))
-
-    # Render the chart
-    line_chart.render('render.html')
-
-    make_snapshot(driver, 'render.html', file_key)
-    object_url = save_image_to_db(file_key, task_name, remove_file_from_os=True)
-    return object_url
 
 
 def gpt_metric_inference(generated_image_url: str):
@@ -168,31 +102,30 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
     if not settings.OPENAI_API_KEY:
         raise ValueError('OpenAI API key is not set.')
     file_key = generate_local_image_path()
+    metric_expression = task_result.metric_expression.value
+    metric_expression = metric_expression.replace('`', '')
+    metric_name = task_result.metric_name.value
+    metric_source = metric_source_displace_name_map.get(task_result.metric_source)
+    result = task_result.result
+    result_type = result.type
+    data_type = get_task_result_data_type(task_result)
+    if not data_type:
+        raise NotImplementedError('Chat GPT Vision interpreter not supported for task result')
+    if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
+        try:
+            image_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+        except Exception as e:
+            logger.error(f'Error generating graph using metric timeseries data: {e}')
+            raise e
+    else:
+        raise NotImplementedError(f'Unsupported result type: {result_type}')
     try:
-        transformed_df = transform_playbook_task_result_to_dataframe(task_result)
-    except Exception as e:
-        logger.error(f'Error transforming playbook task result to dataframe: {e}')
-        raise e
-    if transformed_df.empty or transformed_df is None:
-        raise ValueError('Empty dataframe returned from transformed data')
-    try:
-        image_url = generate_graph_using_data(transformed_df, file_key, task.name.value)
-        if not image_url:
-            raise ValueError('Failed to generate image for result data')
-        data_type = get_task_result_data_type(task_result)
-        if not data_type:
-            raise NotImplementedError('Chat GPT Vision interpreter not supported for task result')
         inference = vision_api_evaluation_function(data_type, image_url)
     except Exception as e:
         logger.error(f'Error evaluating task: {e}')
         raise e
     if not inference or inference is None:
         raise ValueError('No inference returned from chat gpt')
-
-    metric_expression = task_result.metric_expression.value
-    metric_expression = metric_expression.replace('`', '')
-    metric_name = task_result.metric_name.value
-    metric_source = metric_source_displace_name_map.get(task_result.metric_source)
 
     title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
     description = f'Description: {inference["description"]}'
