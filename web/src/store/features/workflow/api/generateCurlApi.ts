@@ -15,6 +15,12 @@ export const generateCurlApi = apiSlice.injectEndpoints({
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
+          dispatch(
+            setCurrentWorkflowKey({
+              key: "curl",
+              value: undefined,
+            }),
+          );
           const { data } = await queryFulfilled;
           dispatch(
             setCurrentWorkflowKey({
