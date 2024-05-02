@@ -50,7 +50,24 @@ function SlackManifestGenerator() {
       </form>
 
       {currentConnector.manifest && (
-        <CopyCode content={currentConnector.manifest} language={"yaml"} />
+        <CopyCode
+          title={"Slack manifest"}
+          subtitle={"Copy the manifest and use it to create an application"}
+          help={
+            <>
+              Read more in our{" "}
+              <a
+                className="underline text-violet-500"
+                href="https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks#setup-your-slack-integration"
+                target="_blank"
+                rel="noreferrer">
+                Docs
+              </a>
+            </>
+          }
+          content={currentConnector.manifest}
+          language={"yaml"}
+        />
       )}
 
       <hr />
