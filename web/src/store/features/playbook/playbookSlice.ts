@@ -48,10 +48,11 @@ const playbookSlice = createSlice({
       state.view = payload;
     },
     setCurrentPlaybook(state, { payload }) {
-      state.currentPlaybook = payload;
+      state.currentPlaybook = { ...payload, isPrefetched: true };
     },
     setPlaybookData(state, { payload }) {
       state.currentPlaybook.name = payload.name;
+      state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
         payload?.global_variable_set ?? {},
       ).map((val) => {
@@ -384,6 +385,7 @@ const playbookSlice = createSlice({
     resetState(state) {
       state.steps = [];
       state.name = "";
+      state.description = "";
       state.globalVariables = [];
       state.currentPlaybook = {};
       state.isEditing = false;
@@ -448,6 +450,9 @@ const playbookSlice = createSlice({
     },
     setActionKey(state, { payload }) {
       state.steps[payload.index].action[payload.key] = payload.value;
+    },
+    setPlaybookKey(state, { payload }) {
+      state[payload.key] = payload.value;
     },
   },
 });
@@ -518,6 +523,7 @@ export const {
   toggleExternalLinkVisibility,
   setStepType,
   setActionKey,
+  setPlaybookKey,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

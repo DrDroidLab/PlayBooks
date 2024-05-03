@@ -294,10 +294,12 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
       description: step.description || `Step - ${(i ?? 0) + 1}`,
       external_links: step.externalLinks ?? [],
       tasks: [getTaskFromStep(step, i)],
+      notes: step.notes ?? "",
     };
   });
   let playbook: PlaybookContract = {
     name: playbookVal.name,
+    description: playbookVal.description,
     global_variable_set: playbookVal.globalVariables?.reduce((acc, curr) => {
       acc[curr.name] = curr.value;
       return acc;

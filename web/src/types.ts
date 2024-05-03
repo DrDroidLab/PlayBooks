@@ -229,6 +229,7 @@ export interface GlobalVariable {
 export interface Playbook {
   id?: string | null;
   name?: string;
+  description?: string;
   currentPlaybook?: any;
   currentStepIndex?: string | null;
   steps: Step[];
@@ -261,6 +262,7 @@ export interface PlaybookContractStep {
 
 export interface PlaybookContract {
   name?: string;
+  description?: string;
   global_variable_set: any;
   steps: PlaybookContractStep[];
 }
