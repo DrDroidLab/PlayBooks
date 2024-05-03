@@ -69,8 +69,8 @@ export const eksBuilder = (task: Step, index, options: any) => {
             store.dispatch(selectEksNamespace({ index, namespace: val.label }));
           },
           value: task.eksNamespace,
-          selected: task.eksNamespace,
-          requires: ['cluster']
+          selected: task.eksNamespace
+          // requires: ['cluster']
         },
         {
           key: 'command',
@@ -83,8 +83,8 @@ export const eksBuilder = (task: Step, index, options: any) => {
             store.dispatch(setCommand({ index, command: val.command }));
           },
           value: task.command?.type,
-          selected: task.command?.type,
-          requires: ['eksNamespace']
+          selected: task.command?.type
+          // requires: ['eksNamespace']
         }
       ]
     ]

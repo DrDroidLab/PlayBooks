@@ -55,7 +55,7 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
                 page
               };
             }),
-          requires: ['dashboard'],
+          // requires: ['dashboard'],
           selected: task?.page?.page_guid,
           handleChange: (_, val) => {
             store.dispatch(setPage({ index, page: val.page }));
@@ -86,8 +86,8 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
           label: 'Selected Query',
           type: OptionType.MULTILINE,
           value: task?.widget?.widget_nrql_expression,
-          disabled: true,
-          requires: ['widget']
+          disabled: true
+          // requires: ['widget']
         }
       ]
     ]

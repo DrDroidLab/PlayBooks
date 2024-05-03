@@ -37,17 +37,27 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     case "options":
       if (!(data.options?.length > 0)) return;
       return (
-        <SelectComponent
-          key={data.key}
-          data={data.options}
-          placeholder={`Select ${data.label}`}
-          onSelectionChange={handleChange}
-          selected={data.selected ?? task[`${data.key}`]}
-          searchable={true}
-          disabled={data.disabled}
-          error={error}
-          {...data.additionalProps}
-        />
+        <div className={`flex flex-col`}>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#676666",
+            }}>
+            <b>{data.label}</b>
+          </p>
+          <SelectComponent
+            key={data.key}
+            data={data.options ?? []}
+            placeholder={`Select ${data.label}`}
+            onSelectionChange={handleChange}
+            selected={data.selected ?? task[`${data.key}`]}
+            searchable={true}
+            disabled={data.disabled}
+            error={error}
+            containerClassName={"w-56"}
+            {...data.additionalProps}
+          />
+        </div>
       );
     case "text-row":
     case "text":

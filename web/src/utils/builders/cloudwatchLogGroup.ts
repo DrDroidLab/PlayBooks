@@ -45,7 +45,7 @@ export const cloudwatchLogGroupBuilder = (task, index, options: any) => {
               label: e
             };
           }),
-          requires: ['region'],
+          // requires: ['region'],
           handleChange: (_, val) => {
             store.dispatch(setLogGroup({ index, logGroup: val.label }));
           },
@@ -59,8 +59,8 @@ export const cloudwatchLogGroupBuilder = (task, index, options: any) => {
           type: OptionType.MULTILINE,
           handleChange: e => {
             store.dispatch(setLogQuery({ index, logQuery: e.target.value }));
-          },
-          requires: ['logGroup']
+          }
+          // requires: ['logGroup']
         }
       ]
     ]

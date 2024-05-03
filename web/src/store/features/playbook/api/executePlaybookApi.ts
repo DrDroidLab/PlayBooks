@@ -13,4 +13,7 @@ export const executePlaybookApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useExecutePlaybookMutation } = executePlaybookApi;
+export const {
+  useExecutePlaybookMutation,
+  endpoints: { executePlaybook },
+} = executePlaybookApi;

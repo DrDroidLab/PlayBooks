@@ -21,8 +21,8 @@ export const clickhouseBuilder = (task: any, index: number, options: any) => {
           handleChange: e => {
             store.dispatch(setDbQuery({ index, query: e.target.value }));
           },
-          value: task.dbQuery,
-          requires: ['database']
+          value: task.dbQuery
+          // requires: ['database']
         }
       ]
     ]

@@ -60,6 +60,7 @@ export interface Step {
   query2?: string;
   formula?: string;
   requiresFormula?: boolean;
+  showExternalLinks?: boolean;
   stepType: string | null;
   action: any;
 }
@@ -236,6 +237,7 @@ export interface Playbook {
   globalVariables: GlobalVariable[] | null;
   isEditing?: boolean;
   lastUpdatedAt?: Date | null;
+  view: string;
 }
 
 export interface Playground {

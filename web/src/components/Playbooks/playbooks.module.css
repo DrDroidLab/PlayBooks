@@ -683,6 +683,7 @@ div.ruleBox {
   border-radius: 5px;
   background: #fff;
   overflow: scroll;
+  height: 70%;
 }
 
 .global-variables-pane {

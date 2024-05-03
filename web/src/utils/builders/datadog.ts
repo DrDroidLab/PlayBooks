@@ -43,7 +43,7 @@ export const datadogBuilder = (task, index, options) => {
           options: options
             ?.find(e => e.name === task?.datadogService?.name)
             ?.metric_families?.map(x => ({ id: x, label: x })),
-          requires: ['datadogService'],
+          // requires: ['datadogService'],
           selected: task.datadogMetricFamily,
           handleChange: (_, val) => {
             store.dispatch(setDatadogMetricFamily({ index, metric: val.id }));
@@ -59,7 +59,7 @@ export const datadogBuilder = (task, index, options) => {
               label: e
             };
           }),
-          requires: ['datadogMetricFamily'],
+          // requires: ['datadogMetricFamily'],
           selected: task?.datadogEnvironment,
           handleChange: (_, val) => {
             store.dispatch(setDataDogEnvironment({ index, environment: val.id }));
@@ -77,7 +77,7 @@ export const datadogBuilder = (task, index, options) => {
                 label: e.metric
               };
             }),
-          requires: ['datadogEnvironment'],
+          // requires: ['datadogEnvironment'],
           selected: task?.datadogMetric,
           handleChange: (_, val) => {
             store.dispatch(setDatadogMetric({ index, metric: val.id }));

@@ -87,7 +87,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 panel: panel
               };
             }),
-          requires: ['dashboard'],
+          // requires: ['dashboard'],
           selected: task?.panel?.panel_id,
           handleChange: (_, val) => {
             store.dispatch(setPanel({ index, panel: val.panel }));
@@ -110,8 +110,8 @@ export const grafanaBuilder = (task, index, options: any) => {
                   };
                 })
               : [],
-          requires: ['panel'],
-          selected: task?.grafanaQuery?.expression,
+          // requires: ['panel'],
+          selected: task?.grafanaQuery?.originalExpression,
           handleChange: (_, val) => {
             store.dispatch(setGrafanaQuery({ index, query: val.query }));
             setOptions(val.query, index);
@@ -122,11 +122,11 @@ export const grafanaBuilder = (task, index, options: any) => {
         {
           label: 'Selected Query',
           type: OptionType.MULTILINE,
-          value: task?.grafanaQuery?.originalExpression,
+          value: task?.grafanaQuery?.expression,
           handleChange: e => {
             store.dispatch(setGrafanaExpression({ index, expression: e.target.value }));
-          },
-          requires: ['grafanaQuery']
+          }
+          // requires: ['grafanaQuery']
         }
       ]
     ]
