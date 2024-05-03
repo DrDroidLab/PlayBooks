@@ -113,7 +113,6 @@ function Step({ step, index }) {
     updateCardByIndex("showError", false);
 
     queryForStepTask(step, function (res) {
-      console.log("wooo", res);
       if (Object.keys(res ?? {}).length > 0) {
         if (res.err) {
           updateCardByIndex("showOutput", true);
