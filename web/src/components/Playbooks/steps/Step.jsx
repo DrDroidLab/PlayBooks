@@ -92,7 +92,7 @@ function Step({ step, index }) {
         true,
       );
     } catch (e) {
-      updateCardByIndex("outputError", e.err);
+      updateCardByIndex("outputError", e.err ?? e.message);
       console.error(e);
       cb(
         {
@@ -113,6 +113,7 @@ function Step({ step, index }) {
     updateCardByIndex("showError", false);
 
     queryForStepTask(step, function (res) {
+      console.log("wooo", res);
       if (Object.keys(res ?? {}).length > 0) {
         if (res.err) {
           updateCardByIndex("showOutput", true);

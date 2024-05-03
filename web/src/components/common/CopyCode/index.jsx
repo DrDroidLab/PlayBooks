@@ -2,10 +2,12 @@ import { ContentCopy } from "@mui/icons-material";
 import React from "react";
 import hljs from "highlight.js/lib/core";
 import yaml from "highlight.js/lib/languages/yaml";
+import json from "highlight.js/lib/languages/json";
 import curl from "highlight.js/lib/languages/bash";
 
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("curl", curl);
+hljs.registerLanguage("json", json);
 
 function CopyCode({ content, language }) {
   const handleCopy = () => {

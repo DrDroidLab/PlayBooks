@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import CopyCode from "../common/CopyCode/index.jsx";
 
 const options = [
   {
@@ -19,7 +20,7 @@ const options = [
   },
 ];
 
-function PlaybookAPIActionOutput({ result, step, timestamp }) {
+function PlaybookAPIActionOutput({ step }) {
   const [selected, setSelected] = useState("body");
 
   const handleChange = (option) => {
@@ -52,7 +53,7 @@ const HandleSelectedRender = ({ selectedId, step }) => {
             className={
               "my-2 bg-white rounded-lg border resize-none p-2 text-sm overflow-scroll h-32"
             }>
-            <pre>{step?.action?.payload}</pre>
+            <CopyCode content={step?.action?.payload} language={"json"} />
           </div>
         </div>
       );
