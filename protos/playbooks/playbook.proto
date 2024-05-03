@@ -580,7 +580,7 @@ message PlaybookExecutionLog {
   PlaybookTaskExecutionResult task_execution_result = 7;
 }
 
-message PlaybookStepExecutionLogs {
+message PlaybookStepExecutionLog {
   PlaybookStepDefinition step = 1;
   repeated PlaybookExecutionLog logs = 2;
 }
@@ -596,7 +596,7 @@ message PlaybookExecution {
   TimeRange time_range = 8;
   google.protobuf.StringValue created_by = 9;
   repeated PlaybookExecutionLog logs = 10;
-  repeated PlaybookStepExecutionLogs step_execution_logs = 11;
+  repeated PlaybookStepExecutionLog step_execution_logs = 11;
 }
 
 // Crud Protos
