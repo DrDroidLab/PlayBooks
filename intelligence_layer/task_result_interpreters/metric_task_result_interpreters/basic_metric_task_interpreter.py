@@ -52,7 +52,7 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
             table_result: PlaybookMetricTaskExecutionResultProto.Result.TableResult = result.table_result
             df = table_result_to_df(table_result, metric_name)
             df.to_csv(file_key, index=False)
-            title = f'Fetched `{metric_expression.value}` from `{metric_source}`.'
+            title = f'Fetched `{metric_expression}` from `{metric_source}`.'
             return InterpretationProto(
                 type=InterpretationProto.Type.CSV_FILE,
                 title=StringValue(value=title),

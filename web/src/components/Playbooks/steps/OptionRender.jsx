@@ -35,7 +35,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
 
   switch (data.type) {
     case "options":
-      // if (!(data.options?.length > 0)) return;
+      if (!(data.options?.length > 0)) return;
       return (
         <div className={`flex flex-col`}>
           <p
@@ -67,7 +67,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             data.type === "text"
               ? "flex-col"
               : "flex-row items-center justify-center gap-2"
-          } w-`}>
+          }`}>
           <p
             style={{
               marginTop: data.type === "text" ? "10px" : "",
@@ -98,7 +98,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
           <textarea
             className={styles["notes"]}
             rows={4}
-            value={data.value ?? task[`${data.key}`]}
+            value={data.value ?? data.selected ?? task[`${data.key}`]}
             onChange={handleTextAreaChange}
             disabled={data.disabled}
             style={error ? { borderColor: "red" } : {}}

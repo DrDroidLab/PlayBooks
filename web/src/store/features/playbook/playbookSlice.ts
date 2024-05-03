@@ -10,6 +10,8 @@ const emptyStep = {
   isOpen: true,
   isPlayground: false,
   showError: false,
+  stepType: null,
+  action: {},
 };
 
 const initialState: Playbook = {
@@ -197,6 +199,8 @@ const playbookSlice = createSlice({
           isPlayground: false,
           globalVariables: state.globalVariables ?? [],
           showError: false,
+          stepType: "data",
+          action: {},
         },
         globalVariables: state.globalVariables ?? [],
       });
@@ -255,6 +259,8 @@ const playbookSlice = createSlice({
         isPlayground: false,
         globalVariables: state.globalVariables ?? [],
         showError: false,
+        stepType: "data",
+        action: {},
       };
       state.steps[payload.index].source = payload.source;
       state.steps[payload.index].modelType = payload.modelType;
@@ -437,6 +443,12 @@ const playbookSlice = createSlice({
       state.steps[payload.index].eksNamespace = payload.namespace;
       state.steps[payload.index].command = undefined;
     },
+    setStepType(state, { payload }) {
+      state.steps[payload.index].stepType = payload.stepType;
+    },
+    setActionKey(state, { payload }) {
+      state.steps[payload.index].action[payload.key] = payload.value;
+    },
   },
 });
 
@@ -504,6 +516,8 @@ export const {
   setFormula,
   setView,
   toggleExternalLinkVisibility,
+  setStepType,
+  setActionKey,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

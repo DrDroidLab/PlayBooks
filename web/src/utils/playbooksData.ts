@@ -11,6 +11,7 @@ import {
   postgresBuilder,
   eksBuilder,
   datadogRawQueryBuilder,
+  apiBuilder,
 } from "./builders/index.ts";
 
 export enum OptionType {
@@ -19,6 +20,7 @@ export enum OptionType {
   TEXT_ROW = "text-row",
   MULTILINE = "multiline",
   BUTTON = "button",
+  MULTI_OPTIONS = "multi-options",
 }
 
 export const constructBuilder = (task: any, index) => {
@@ -29,6 +31,9 @@ export const constructBuilder = (task: any, index) => {
 
       case models.DATADOG_QUERY:
         return datadogRawQueryBuilder(task, index);
+
+      case models.API:
+        return apiBuilder(task, index);
 
       default:
         break;

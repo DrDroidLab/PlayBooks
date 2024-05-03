@@ -12,6 +12,13 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: ConnectorTypesResponse, meta, arg) => {
         const options: ConnectorsType[] = [];
+        options.push({
+          id: "API",
+          label: "API",
+          connector_type: "API",
+          model_type: "API",
+          display_name: "API",
+        });
         for (let connector of response.active_account_connectors) {
           for (let k = 0; k < connector.model_types_map?.length; k++) {
             options.push({
@@ -23,6 +30,7 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
             });
           }
         }
+
         return options;
       },
     }),

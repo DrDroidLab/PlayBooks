@@ -110,13 +110,19 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
 
     try {
       const response = await triggerExecutePlaybook(body).unwrap();
-      if (!response?.success) {
+      if (!response?.success || response?.task_execution_result?.error) {
         dispatch(
           showSnackbar(
             response?.task_execution_result?.error || "There was an error",
           ),
         );
-        cb({}, false);
+        cb(
+          {
+            error:
+              response?.task_execution_result?.error || "There was an error",
+          },
+          false,
+        );
         return;
       }
       cb(
@@ -132,7 +138,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
       console.error(e);
       cb(
         {
-          error: e.err,
+          error: e.err ?? e.message,
         },
         false,
       );
