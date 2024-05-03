@@ -11,7 +11,7 @@ function PlaybookDescription() {
 
   const handleDescription = (e) => {
     const value = e.target.value;
-    if (currentPlaybook.isPrefetched) return;
+    if (currentPlaybook.isPrefetched && !currentPlaybook.isCopied) return;
     dispatch(setPlaybookKey({ key: "description", value: value }));
   };
   return (
@@ -25,7 +25,7 @@ function PlaybookDescription() {
         }
         className="p-1 w-full rounded border text-sm h-32 resize-none"
         onChange={handleDescription}
-        disabled={currentPlaybook.isPrefetched}
+        disabled={currentPlaybook.isPrefetched && !currentPlaybook.isCopied}
         value={description}
       />
     </div>
