@@ -11,7 +11,9 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
     let stepSource = step.tasks
       ? step?.tasks[0].metric_task
         ? step.tasks[0].metric_task.source
-        : step.tasks[0].data_fetch_task?.source ?? step?.tasks[0].type
+        : step.tasks[0].data_fetch_task
+        ? step.tasks[0].data_fetch_task.source
+        : step.tasks[0].action_task?.source ?? step?.tasks[0].type
       : "";
     let selected = "";
     let modelType = "";
@@ -247,6 +249,22 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
           default:
             break;
         }
+        break;
+
+      case SOURCES.API:
+        stepSource = "API";
+        modelType = "API";
+        selected = "API";
+        additionalData = {
+          ...additionalData,
+          action: {
+            method: task?.action_task?.api_call_task?.method,
+            url: task?.action_task?.api_call_task?.url,
+            headers: JSON.stringify(task?.action_task?.api_call_task?.headers),
+            timeout: task?.action_task?.api_call_task?.timeout,
+            payload: JSON.stringify(task?.action_task?.api_call_task?.payload),
+          },
+        };
         break;
       default:
         break;

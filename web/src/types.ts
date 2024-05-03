@@ -60,6 +60,8 @@ export interface Step {
   query2?: string;
   formula?: string;
   requiresFormula?: boolean;
+  stepType: string | null;
+  action: any;
 }
 
 export interface GoldenMetric {
@@ -147,6 +149,18 @@ export interface DocumentationTask {
   documentation: any;
 }
 
+export interface ApiCallTask {
+  method: string;
+  headers: string;
+  url: string;
+  payload: string;
+  timeout: string;
+}
+export interface ActionTask {
+  source: string;
+  api_call_task: ApiCallTask;
+}
+
 export interface ServiceMetricExecutionTask {
   service_name: string;
   environment_name: string;
@@ -202,6 +216,7 @@ export interface PlaybookTask {
   metric_task?: MetricTask;
   data_fetch_task?: DataFetchTask;
   documentation_task?: DocumentationTask;
+  action_task?: ActionTask;
   global_variable_set?: any;
 }
 
