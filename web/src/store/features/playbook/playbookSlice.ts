@@ -90,7 +90,7 @@ const playbookSlice = createSlice({
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
-      state.name = "";
+      state.name = payload.name;
       state.currentPlaybook.globalVariables = Object.entries(
         payload.global_variable_set ?? {},
       ).map((val) => {
