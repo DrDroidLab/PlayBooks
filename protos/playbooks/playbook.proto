@@ -561,7 +561,7 @@ message Playbook {
 }
 
 
-// Crud Protos
+// Playbook Execution Proto
 enum PlaybookExecutionStatusType {
   UNKNOWN_STATUS = 0;
   CREATED = 1;
@@ -572,12 +572,17 @@ enum PlaybookExecutionStatusType {
 
 message PlaybookExecutionLog {
   google.protobuf.UInt64Value id = 1;
-  sfixed64 timestamp = 3;
-  google.protobuf.StringValue playbook_run_id = 4;
-  Playbook playbook = 5;
-  PlaybookStepDefinition step = 6;
-  PlaybookTaskDefinition task = 7;
-  PlaybookTaskExecutionResult task_execution_result = 8;
+  sfixed64 timestamp = 2;
+  google.protobuf.StringValue playbook_run_id = 3;
+  Playbook playbook = 4;
+  PlaybookStepDefinition step = 5;
+  PlaybookTaskDefinition task = 6;
+  PlaybookTaskExecutionResult task_execution_result = 7;
+}
+
+message PlaybookStepExecutionLogs {
+  PlaybookStepDefinition step = 1;
+  repeated PlaybookExecutionLog logs = 2;
 }
 
 message PlaybookExecution {
@@ -591,8 +596,10 @@ message PlaybookExecution {
   TimeRange time_range = 8;
   google.protobuf.StringValue created_by = 9;
   repeated PlaybookExecutionLog logs = 10;
+  repeated PlaybookStepExecutionLogs step_execution_logs = 11;
 }
 
+// Crud Protos
 message UpdatePlaybookOp {
   enum Op {
     UNKNOWN = 0;
