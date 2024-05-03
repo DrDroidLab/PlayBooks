@@ -5,11 +5,15 @@ import {
   currentWorkflowSelector,
   setCurrentWorkflowKey,
 } from "../../../store/features/workflow/workflowSlice.ts";
-import { handleSelect } from "../utils/handleInputs.ts";
+import { handleInput, handleSelect } from "../utils/handleInputs.ts";
+import SelectComponent from "../../SelectComponent/index.jsx";
+import { useGetTriggerOptionsQuery } from "../../../store/features/triggers/api/getTriggerOptionsApi.ts";
+import { CircularProgress } from "@mui/material";
 // import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
 function NotificationDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
+  const { data: options, isFetching } = useGetTriggerOptionsQuery();
   const dispatch = useDispatch();
 
   return (
@@ -24,7 +28,7 @@ function NotificationDetails() {
       {notificationOptions[0].options.map((option) =>
         currentWorkflow.workflowType !== "slack" &&
         option.id === "reply-to-alert" ? (
-          <></>
+          <div key={option.id}></div>
         ) : (
           <button
             key={option.id}
@@ -49,6 +53,31 @@ function NotificationDetails() {
             {option.label}
           </button>
         ),
+      )}
+
+      {currentWorkflow.notification === "slack-message" && (
+        <div className="flex items-center gap-2 mt-2">
+          {isFetching && <CircularProgress size={20} />}
+          <SelectComponent
+            data={options?.active_channels?.map((e) => {
+              return {
+                id: e.channel_id,
+                label: e.channel_name,
+                channel: e,
+              };
+            })}
+            placeholder="Select Channel"
+            onSelectionChange={(_, val) => {
+              handleInput("channel", val.channel);
+            }}
+            selected={
+              currentWorkflow?.channel?.channel_id ||
+              currentWorkflow?.trigger?.channel?.channel_id ||
+              ""
+            }
+            searchable={true}
+          />
+        </div>
       )}
     </div>
   );

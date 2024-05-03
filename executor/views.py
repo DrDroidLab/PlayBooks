@@ -23,7 +23,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from playbooks.utils.utils import current_epoch_timestamp, current_datetime
+from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
@@ -317,7 +317,6 @@ def playbooks_api_execution_get(request_message: HttpRequest) -> Union[Execution
 @get_proto_schema_validator()
 def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplatesGetResponse, HttpResponse]:
     folder_path = settings.PLAYBOOK_TEMPLATE_PATH
-    s = Struct()
     try:
         json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
         if not json_files:
@@ -328,6 +327,7 @@ def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplates
         for json_file in json_files:
             full_path = os.path.join(folder_path, json_file)
             with open(full_path, 'r') as file:
+                s = Struct()
                 data = json.load(file)
                 s.update(data)
                 json_contents.append(s)

@@ -21,7 +21,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
     ConnectorType
-from playbooks.utils.utils import current_milli_time, current_datetime
+from utils.time_utils import current_milli_time, current_datetime
 from connectors.tasks import populate_connector_metadata
 from utils.proto_utils import proto_to_dict
 

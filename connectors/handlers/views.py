@@ -9,7 +9,7 @@ from accounts.models import get_request_account, Account
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
-from playbooks.utils.utils import current_epoch_timestamp
+from utils.time_utils import current_epoch_timestamp
 from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
 

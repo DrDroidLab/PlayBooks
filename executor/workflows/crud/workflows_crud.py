@@ -2,12 +2,12 @@ import logging
 
 from django.db import transaction as dj_transaction
 
-from accounts.models import Account, User
+from accounts.models import Account
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowAction, WorkflowEntryPointMapping, \
     WorkflowActionMapping, WorkflowPlayBookMapping
 
-from playbooks.utils.utils import current_milli_time
+from utils.time_utils import current_milli_time
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto
