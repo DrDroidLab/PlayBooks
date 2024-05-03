@@ -11,7 +11,7 @@ function PlaybookDescription() {
 
   const handleDescription = (e) => {
     const value = e.target.value;
-    if (!currentPlaybook.isPrefetched) return;
+    if (currentPlaybook.isPrefetched) return;
     dispatch(setPlaybookKey({ key: "description", value: value }));
   };
   return (
@@ -26,7 +26,6 @@ function PlaybookDescription() {
         className="p-1 w-full rounded border text-sm h-32 resize-none"
         onChange={handleDescription}
         disabled={currentPlaybook.isPrefetched}
-        defaultValue={currentPlaybook.description}
         value={description}
       />
     </div>

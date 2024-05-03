@@ -35,7 +35,7 @@ function ExternalLinks({ links, setLinks }) {
 
   const handleAdd = () => {
     setLinks([
-      ...links,
+      ...(links ?? []),
       {
         url: formData.url.trim(),
         name: formData.name.trim(),

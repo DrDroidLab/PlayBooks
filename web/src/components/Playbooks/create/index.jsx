@@ -108,7 +108,7 @@ function CreatePlaybookBeta() {
             Toggle View
           </button> */}
           {playbook.view === "step" ? (
-            <div className="flex justify-center w-full absolute top-14 h-full">
+            <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
               <CreatePlaybook showHeading={false} />
             </div>
           ) : (

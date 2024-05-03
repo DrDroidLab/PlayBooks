@@ -62,7 +62,7 @@ function StepDetails() {
   };
 
   return (
-    <div className="p-2 min-h-screen mb-10">
+    <div className="p-2 min-h-screen mb-16">
       <h2 className="font-bold mb-2 flex items-center gap-2 justify-between mr-2">
         Step Title {step?.outputLoading && <CircularProgress size={20} />}
         <button

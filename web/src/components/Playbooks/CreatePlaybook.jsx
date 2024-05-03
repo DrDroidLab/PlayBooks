@@ -206,7 +206,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full">
       {showHeading && (
         <Heading
           heading={
@@ -226,14 +226,14 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
         />
       )}
       <div className={styles["pb-container"]}>
-        <div className={styles["global-variables-pane"]}>
+        <div className="border p-1 rounded m-2">
           <PlaybookDescription />
         </div>
 
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
         </div>
-        <div className={styles["step-cards-pane"]}>
+        <div className="flex-1 p-1 bg-white border rounded m-2 overflow-scroll">
           <div className={styles.steps}>
             {steps?.map((step, index) => (
               <Accordion

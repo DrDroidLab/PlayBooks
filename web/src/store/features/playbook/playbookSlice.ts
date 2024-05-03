@@ -94,6 +94,7 @@ const playbookSlice = createSlice({
     },
     copyPlaybook(state, { payload }) {
       state.name = payload.name;
+      state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
         payload.global_variable_set ?? {},
       ).map((val) => {
