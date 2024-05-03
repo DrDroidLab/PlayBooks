@@ -240,17 +240,14 @@ def test_workflow_notification(account_id, workflow, message_type):
             return
         playbook = playbooks.first()
         p_proto = playbook.proto
-        playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
-
+        playbook_steps = p_proto.steps
         pe_logs = []
         try:
             all_step_executions = {}
-            for step in list(playbook_steps):
-                playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id,
-                                                                             is_active=True)
+            for step in playbook_steps:
+                tasks = step.tasks
                 all_task_executions = []
-                for task in playbook_task_definitions:
-                    task_proto = task.proto
+                for task_proto in tasks:
                     task_result = execute_task(account_id, tr, task_proto)
                     all_task_executions.append({
                         'task': task_proto,
@@ -263,7 +260,7 @@ def test_workflow_notification(account_id, workflow, message_type):
                 for result in all_task_results:
                     playbook_execution_log = PlaybookExecutionLog(
                         playbook=p_proto,
-                        step=step.proto,
+                        step=step,
                         task=result['task'],
                         task_execution_result=result['task_result_proto'],
                     )

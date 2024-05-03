@@ -1941,7 +1941,7 @@ class PlaybookExecutionLog(google.protobuf.message.Message):
 global___PlaybookExecutionLog = PlaybookExecutionLog
 
 @typing_extensions.final
-class PlaybookStepExecutionLogs(google.protobuf.message.Message):
+class PlaybookStepExecutionLog(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     STEP_FIELD_NUMBER: builtins.int
@@ -1959,7 +1959,7 @@ class PlaybookStepExecutionLogs(google.protobuf.message.Message):
     def HasField(self, field_name: typing_extensions.Literal["step", b"step"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["logs", b"logs", "step", b"step"]) -> None: ...
 
-global___PlaybookStepExecutionLogs = PlaybookStepExecutionLogs
+global___PlaybookStepExecutionLog = PlaybookStepExecutionLog
 
 @typing_extensions.final
 class PlaybookExecution(google.protobuf.message.Message):
@@ -1993,7 +1993,7 @@ class PlaybookExecution(google.protobuf.message.Message):
     @property
     def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
     @property
-    def step_execution_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepExecutionLogs]: ...
+    def step_execution_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepExecutionLog]: ...
     def __init__(
         self,
         *,
@@ -2007,7 +2007,7 @@ class PlaybookExecution(google.protobuf.message.Message):
         time_range: protos.base_pb2.TimeRange | None = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
-        step_execution_logs: collections.abc.Iterable[global___PlaybookStepExecutionLogs] | None = ...,
+        step_execution_logs: collections.abc.Iterable[global___PlaybookStepExecutionLog] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "time_range", b"time_range"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "finished_at", b"finished_at", "id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status", "step_execution_logs", b"step_execution_logs", "time_range", b"time_range"]) -> None: ...

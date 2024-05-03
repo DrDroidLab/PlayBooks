@@ -40,21 +40,22 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(pb_execution.time_range, TimeRange)
     else:
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
-    playbook_steps = get_db_playbook_step(account, playbook_id, is_active=True)
+    pb_proto = pb.proto
     try:
+        steps = pb_proto.steps
         all_step_executions = {}
-        for step in list(playbook_steps):
-            playbook_task_definitions = get_db_playbook_task_definitions(account, playbook_id, step.id, is_active=True)
-            playbook_task_definitions = playbook_task_definitions.order_by('created_at')
+        for step in list(steps):
+            tasks = step.tasks
             all_task_executions = []
-            for task in playbook_task_definitions:
-                task_proto = task.proto
+            for task_proto in tasks:
+                if pb_proto.global_variable_set:
+                    task_proto.global_variable_set.update(pb_proto.global_variable_set)
                 task_result = execute_task(account_id, tr, task_proto)
                 all_task_executions.append({
-                    'task': task,
+                    'task_id': task_proto.id.value,
                     'task_result': proto_to_dict(task_result),
                 })
-            all_step_executions[step] = all_task_executions
+            all_step_executions[step.id.value] = all_task_executions
         bulk_create_playbook_execution_log(account, pb, pb_execution, all_step_executions)
         update_db_account_playbook_execution_status(account, playbook_execution_id,
                                                     PlaybookExecutionStatusType.FINISHED)
