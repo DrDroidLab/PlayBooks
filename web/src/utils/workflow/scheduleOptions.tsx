@@ -34,7 +34,7 @@ export const scheduleOptions = [
           },
           {
             id: "interval",
-            label: "Interval",
+            label: "Interval (in seconds)",
             valueType: "LONG",
             type: "string",
             placeholder: "Enter Interval in seconds",
@@ -44,7 +44,7 @@ export const scheduleOptions = [
       },
       {
         id: "duration",
-        label: "Stop after",
+        label: "Stop after (in seconds)",
         type: "string",
         placeholder: "Enter Duration (in seconds)",
         valueType: "LONG",

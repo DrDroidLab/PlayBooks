@@ -79,6 +79,18 @@ export const validate = () => {
     }
   }
 
+  if ((currentWorkflow as any).notification === "slack-message") {
+    if (!(currentWorkflow as any).channel) {
+      error = "Please select a channel";
+      dispatch(showSnackbar("Channel is required"));
+      dispatch(
+        setErrorKey({ key: "channel", value: "Please select a channel" }),
+      );
+    } else {
+      dispatch(removeErrorKey("channel"));
+    }
+  }
+
   if (error) {
     return false;
   } else {
