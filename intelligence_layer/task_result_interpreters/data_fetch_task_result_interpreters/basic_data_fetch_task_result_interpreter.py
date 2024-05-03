@@ -1,11 +1,8 @@
 import logging
 
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
 from google.protobuf.wrappers_pb2 import StringValue
 
-from intelligence_layer.utils import generate_color_map
 from media.utils import generate_local_csv_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \

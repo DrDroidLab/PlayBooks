@@ -7,6 +7,8 @@ from intelligence_layer.task_result_interpreters.data_fetch_task_result_interpre
     basic_data_fetch_task_result_interpreter
 from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.basic_metric_task_interpreter import \
     basic_metric_task_result_interpreter
+from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.llm_chat_gpt_vision_metric_task_interpreter import \
+    llm_chat_gpt_vision_metric_task_result_interpreter
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
@@ -23,6 +25,8 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
         metric_task_result: PlaybookMetricTaskExecutionResultProto = task_result.metric_task_execution_result
         if interpreter_type == InterpreterType.BASIC_I:
             return basic_metric_task_result_interpreter(task, metric_task_result)
+        if interpreter_type == InterpreterType.LLM_CHAT_GPT_VISION_I:
+            return llm_chat_gpt_vision_metric_task_result_interpreter(task, metric_task_result)
     if which_one_of == 'data_fetch_task_execution_result':
         data_fetch_task_result = task_result.data_fetch_task_execution_result
         if interpreter_type == InterpreterType.BASIC_I:

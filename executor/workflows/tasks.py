@@ -9,7 +9,6 @@ from django.conf import settings
 from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connectors
 
-
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
 from executor.models import PlayBook
@@ -322,7 +321,7 @@ def test_workflow_notification(account_id, workflow, message_type):
                         'task_result_proto': task_result,
                     })
                 all_step_executions[step] = all_task_executions
-            
+
             for step, all_task_results in all_step_executions.items():
                 for result in all_task_results:
                     playbook_execution_log = PlaybookExecutionLog(
@@ -336,5 +335,6 @@ def test_workflow_notification(account_id, workflow, message_type):
         except Exception as exc:
             logger.error(f"Error occurred while running playbook: {exc}")
 
-        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto, pe_logs)
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
         action_executor(account, workflow.actions[0], execution_output)
