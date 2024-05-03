@@ -81,7 +81,7 @@ class _PlaybookExecutionStatusTypeEnumTypeWrapper(google.protobuf.internal.enum_
     FAILED: _PlaybookExecutionStatusType.ValueType  # 4
 
 class PlaybookExecutionStatusType(_PlaybookExecutionStatusType, metaclass=_PlaybookExecutionStatusTypeEnumTypeWrapper):
-    """Crud Protos"""
+    """Playbook Execution Proto"""
 
 UNKNOWN_STATUS: PlaybookExecutionStatusType.ValueType  # 0
 CREATED: PlaybookExecutionStatusType.ValueType  # 1
@@ -1941,6 +1941,27 @@ class PlaybookExecutionLog(google.protobuf.message.Message):
 global___PlaybookExecutionLog = PlaybookExecutionLog
 
 @typing_extensions.final
+class PlaybookStepExecutionLogs(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    STEP_FIELD_NUMBER: builtins.int
+    LOGS_FIELD_NUMBER: builtins.int
+    @property
+    def step(self) -> global___PlaybookStepDefinition: ...
+    @property
+    def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
+    def __init__(
+        self,
+        *,
+        step: global___PlaybookStepDefinition | None = ...,
+        logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["step", b"step"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["logs", b"logs", "step", b"step"]) -> None: ...
+
+global___PlaybookStepExecutionLogs = PlaybookStepExecutionLogs
+
+@typing_extensions.final
 class PlaybookExecution(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1954,6 +1975,7 @@ class PlaybookExecution(google.protobuf.message.Message):
     TIME_RANGE_FIELD_NUMBER: builtins.int
     CREATED_BY_FIELD_NUMBER: builtins.int
     LOGS_FIELD_NUMBER: builtins.int
+    STEP_EXECUTION_LOGS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -1970,6 +1992,8 @@ class PlaybookExecution(google.protobuf.message.Message):
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
+    @property
+    def step_execution_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepExecutionLogs]: ...
     def __init__(
         self,
         *,
@@ -1983,14 +2007,17 @@ class PlaybookExecution(google.protobuf.message.Message):
         time_range: protos.base_pb2.TimeRange | None = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
+        step_execution_logs: collections.abc.Iterable[global___PlaybookStepExecutionLogs] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "time_range", b"time_range"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "finished_at", b"finished_at", "id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status", "time_range", b"time_range"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "finished_at", b"finished_at", "id", b"id", "logs", b"logs", "playbook", b"playbook", "playbook_run_id", b"playbook_run_id", "started_at", b"started_at", "status", b"status", "step_execution_logs", b"step_execution_logs", "time_range", b"time_range"]) -> None: ...
 
 global___PlaybookExecution = PlaybookExecution
 
 @typing_extensions.final
 class UpdatePlaybookOp(google.protobuf.message.Message):
+    """Crud Protos"""
+
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _Op:
