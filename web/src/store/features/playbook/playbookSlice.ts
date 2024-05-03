@@ -371,6 +371,10 @@ const playbookSlice = createSlice({
     addExternalLinks(state, { payload }) {
       state.steps[payload.index].externalLinks = payload.externalLinks;
     },
+    toggleExternalLinkVisibility(state, { payload }) {
+      state.steps[payload.index].showExternalLinks =
+        !state.steps[payload.index].showExternalLinks;
+    },
     resetState(state) {
       state.steps = [];
       state.name = "";
@@ -499,6 +503,7 @@ export const {
   setQuery2,
   setFormula,
   setView,
+  toggleExternalLinkVisibility,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

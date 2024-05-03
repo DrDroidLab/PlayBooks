@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState } from "react";
 import { Tooltip } from "@mui/material";
 import styles from "../playbooks.module.css";
 import { Launch } from "@mui/icons-material";
@@ -11,6 +12,7 @@ import {
   addExternalLinks,
   changeProgress,
   deleteStep,
+  toggleExternalLinkVisibility,
   updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { getTaskFromStep } from "../../../utils/parser/playbook/stepsToplaybook.ts";
@@ -20,22 +22,13 @@ import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.
 import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
 
 function Step({ step, index }) {
-  const [addQuery, setAddQuery] = useState(step?.isPrefetched ?? false);
+  const [addQuery, setAddQuery] = useState(
+    step?.isPrefetched ?? step.source ?? false,
+  );
   const [outputs, setOutputs] = useState([]);
   const dispatch = useDispatch();
-  const [links, setLinks] = useState(step.externalLinks ?? []);
-  const [showExternalLinks, setShowExternalLinks] = useState(
-    step.isPrefetched && step.externalLinks,
-  );
   const timeRange = useSelector(rangeSelector);
   const [triggerExecutePlaybook] = useExecutePlaybookMutation();
-
-  useEffect(() => {
-    if (links?.length > 0) {
-      dispatch(addExternalLinks({ index, externalLinks: links }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [links]);
 
   const updateCardByIndex = (key, value) => {
     dispatch(
@@ -137,7 +130,11 @@ function Step({ step, index }) {
   }
 
   const toggleExternalLinks = () => {
-    setShowExternalLinks(!showExternalLinks);
+    dispatch(toggleExternalLinkVisibility({ index }));
+  };
+
+  const setLinks = (links) => {
+    dispatch(addExternalLinks({ index, externalLinks: links }));
   };
 
   return (
@@ -202,12 +199,17 @@ function Step({ step, index }) {
                 <div
                   className={styles["addConditionStyle"]}
                   onClick={toggleExternalLinks}>
-                  <b className="ext_links">{showExternalLinks ? "-" : "+"}</b>{" "}
+                  <b className="ext_links">
+                    {step.showExternalLinks ? "-" : "+"}
+                  </b>{" "}
                   Add External Links
                 </div>
 
-                {showExternalLinks && (
-                  <ExternalLinks links={links} setLinks={setLinks} />
+                {step.showExternalLinks && (
+                  <ExternalLinks
+                    links={step.externalLinks}
+                    setLinks={setLinks}
+                  />
                 )}
               </div>
             </div>

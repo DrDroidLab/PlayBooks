@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
+  addExternalLinks,
   deleteStep,
   playbookSelector,
   stepsSelector,
+  toggleExternalLinkVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -24,10 +26,6 @@ function StepDetails() {
     useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
-  const [links, setLinks] = useState(step?.externalLinks ?? []);
-  const [showExternalLinks, setShowExternalLinks] = useState(
-    step?.isPrefetched && step?.externalLinks,
-  );
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
@@ -41,10 +39,6 @@ function StepDetails() {
     });
   };
 
-  const toggleExternalLinks = () => {
-    setShowExternalLinks(!showExternalLinks);
-  };
-
   useEffect(() => {
     if (currentStepIndex !== null && step?.source && step?.modelType) {
       fetchData();
@@ -56,6 +50,16 @@ function StepDetails() {
       fetchData();
     }
   }, [step?.source, step?.modelType]);
+
+  const toggleExternalLinks = () => {
+    dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
+  };
+
+  const setLinks = (links) => {
+    dispatch(
+      addExternalLinks({ index: currentStepIndex, externalLinks: links }),
+    );
+  };
 
   return (
     <div className="p-2 min-h-screen mb-10">
@@ -100,12 +104,12 @@ function StepDetails() {
           <div
             className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
             onClick={toggleExternalLinks}>
-            <b className="ext_links">{showExternalLinks ? "-" : "+"}</b> Add
-            External Links
+            <b className="ext_links">{step?.showExternalLinks ? "-" : "+"}</b>{" "}
+            Add External Links
           </div>
 
-          {showExternalLinks && (
-            <ExternalLinks links={links} setLinks={setLinks} />
+          {step?.showExternalLinks && (
+            <ExternalLinks links={step?.externalLinks} setLinks={setLinks} />
           )}
         </div>
       )}

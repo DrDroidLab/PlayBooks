@@ -60,6 +60,7 @@ export interface Step {
   query2?: string;
   formula?: string;
   requiresFormula?: boolean;
+  showExternalLinks?: boolean;
 }
 
 export interface GoldenMetric {
