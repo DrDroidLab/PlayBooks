@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/index.ts";
@@ -10,24 +11,19 @@ import IntegrationOption from "./IntegrationOption.jsx";
 function IntegrationsList({ setIsOpen }) {
   const { data: connectorData, isFetching: connectorLoading } =
     useGetConnectorTypesQuery();
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState(connectorData || []);
 
-  useEffect(() => {
-    setItems(connectorData || []);
-  }, [connectorData]);
-
   const search = (e) => {
-    const query = e.target.value.toLowerCase();
-    const filteredItems = query
-      ? connectorData?.filter(
-          (item) =>
-            item?.connector_type?.toLowerCase().includes(query) ||
-            item?.display_name?.toLowerCase().includes(query) ||
-            integrationSentenceMap[item.model_type]
-              .toLowerCase()
-              .includes(query),
-        )
-      : connectorData;
+    if (!query) {
+      setItems([]);
+    }
+    const filteredItems = connectorData?.filter(
+      (item) =>
+        item?.connector_type?.toLowerCase().includes(query) ||
+        item?.display_name?.toLowerCase().includes(query) ||
+        integrationSentenceMap[item.model_type].toLowerCase().includes(query),
+    );
     setItems(filteredItems || []);
   };
 
@@ -35,7 +31,9 @@ function IntegrationsList({ setIsOpen }) {
     ...group,
     options: group.options
       .map((modelType) => {
-        const item = items.find((item) => item.model_type === modelType);
+        const item = connectorData?.find(
+          (item) => item.model_type === modelType,
+        );
         return item
           ? {
               ...item,
@@ -47,6 +45,12 @@ function IntegrationsList({ setIsOpen }) {
       .filter((option) => option !== null),
   }));
 
+  useEffect(() => {
+    if (query) {
+      search();
+    }
+  }, [query]);
+
   return (
     <div>
       <div className="sticky top-0 bg-white">
@@ -55,7 +59,8 @@ function IntegrationsList({ setIsOpen }) {
           type="search"
           className="w-full p-2 border-[1px] border-gray-200 rounded text-sm my-2 outline-violet-500"
           placeholder="Search for integrations..."
-          onChange={search}
+          onChange={(event) => setQuery(event.target.value)}
+          value={query}
         />
       </div>
       {connectorLoading && (
@@ -65,23 +70,37 @@ function IntegrationsList({ setIsOpen }) {
         </div>
       )}
       <div className="flex flex-col gap-4 overflow-scroll h-screen">
-        {integrationGroups.map((group) => (
-          <div key={group.id}>
-            <p className="font-bold text-sm mb-1">{group.label}</p>
-            <div className="flex flex-col gap-2">
-              {group.options.length === 0 && (
-                <p className="text-xs">No integrations yet.</p>
-              )}
-              {group.options.map((option, index) => (
-                <IntegrationOption
-                  key={index}
-                  option={option}
-                  setIsOpen={setIsOpen}
-                />
-              ))}
+        {query ? (
+          items.length === 0 ? (
+            <p className="text-sm">No integrations found.</p>
+          ) : (
+            items.map((option, index) => (
+              <IntegrationOption
+                key={index}
+                option={option}
+                setIsOpen={setIsOpen}
+              />
+            ))
+          )
+        ) : (
+          integrationGroups.map((group) => (
+            <div key={group.id}>
+              <p className="font-bold text-sm mb-1">{group.label}</p>
+              <div className="flex flex-col gap-2">
+                {group.options.length === 0 && (
+                  <p className="text-xs">No integrations yet.</p>
+                )}
+                {group.options.map((option, index) => (
+                  <IntegrationOption
+                    key={index}
+                    option={option}
+                    setIsOpen={setIsOpen}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
