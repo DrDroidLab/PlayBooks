@@ -19,6 +19,7 @@ import {
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
+import StepActions from "./Playbooks/create/StepActions.jsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -136,7 +137,10 @@ const Heading = ({
             </div>
           </div>
         </div>
-        <div className="flex">
+        <div className="flex gap-2 items-center">
+          {playbook.view === "builder" && playbook.steps.length > 0 && (
+            <StepActions />
+          )}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

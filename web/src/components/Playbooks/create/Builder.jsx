@@ -10,6 +10,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import GlobalVariables from "../../common/GlobalVariable";
 import TemplatesList from "./TemplatesList.jsx";
+import PlaybookDescription from "../../PlaybookDescription/index.jsx";
 
 function Builder() {
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
@@ -20,7 +21,10 @@ function Builder() {
   return (
     <div className="h-full w-full">
       <div className="absolute top-2 left-2 flex flex-col gap-4">
-        <div className="z-10 bg-white p-1 rounded w-48">
+        <div className="z-10 bg-white p-1 rounded w-64">
+          <PlaybookDescription />
+        </div>
+        <div className="z-10 bg-white p-1 rounded w-64">
           <GlobalVariables />
         </div>
         <button

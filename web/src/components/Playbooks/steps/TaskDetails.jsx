@@ -85,27 +85,15 @@ function TaskDetails({ task, data, stepIndex }) {
             justifyContent: "flex-start",
             maxWidth: "600px",
           }}>
-          {step.map((value, index) => {
-            let flag = true;
-            for (let val of value?.requires ?? []) {
-              if (!task[val]) {
-                flag = false;
-                break;
-              }
-            }
-
-            if (flag)
-              return (
-                <OptionRender
-                  key={index}
-                  data={value}
-                  removeErrors={removeErrors}
-                  stepIndex={stepIndex}
-                  task={task}
-                />
-              );
-            else return <></>;
-          })}
+          {step.map((value, index) => (
+            <OptionRender
+              key={index}
+              data={value}
+              removeErrors={removeErrors}
+              stepIndex={stepIndex}
+              task={task}
+            />
+          ))}
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}

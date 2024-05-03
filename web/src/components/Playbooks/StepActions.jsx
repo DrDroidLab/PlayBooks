@@ -82,7 +82,7 @@ function StepActions({ allowSave }) {
       </button>
       {steps && steps?.length > 0 && (
         <>
-          {allowSave && (
+          {allowSave && !isEditing && (
             <button className={styles["pb-button"]} onClick={handleSave}>
               <SaveIcon style={{ fontSize: "medium" }} />
               <span style={{ marginLeft: "2px" }} className="save_playbook">
