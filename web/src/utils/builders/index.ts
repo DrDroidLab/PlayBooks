@@ -9,3 +9,4 @@ export * from "./newRelicEntityDashboard.ts";
 export * from "./newRelicNRQL.ts";
 export * from "./postgres.ts";
 export * from "./eks.ts";
+export * from "./apiBuilder.ts";

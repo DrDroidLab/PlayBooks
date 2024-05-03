@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState } from "react";
 import { Tooltip } from "@mui/material";
 import styles from "../playbooks.module.css";
 import { Launch } from "@mui/icons-material";
 import Notes from "./Notes.jsx";
-import Query from "./Query.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import {
   addExternalLinks,
   changeProgress,
   deleteStep,
+  toggleExternalLinkVisibility,
   updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { getTaskFromStep } from "../../../utils/parser/playbook/stepsToplaybook.ts";
@@ -18,24 +19,16 @@ import { getStepTitle } from "../utils.jsx";
 import ExternalLinks from "./ExternalLinks.jsx";
 import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
+import Query from "./Query.jsx";
 
 function Step({ step, index }) {
-  const [addQuery, setAddQuery] = useState(step?.isPrefetched ?? false);
+  const [addQuery, setAddQuery] = useState(
+    step?.isPrefetched ?? step.source ?? false,
+  );
   const [outputs, setOutputs] = useState([]);
   const dispatch = useDispatch();
-  const [links, setLinks] = useState(step.externalLinks ?? []);
-  const [showExternalLinks, setShowExternalLinks] = useState(
-    step.isPrefetched && step.externalLinks,
-  );
   const timeRange = useSelector(rangeSelector);
   const [triggerExecutePlaybook] = useExecutePlaybookMutation();
-
-  useEffect(() => {
-    if (links?.length > 0) {
-      dispatch(addExternalLinks({ index, externalLinks: links }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [links]);
 
   const updateCardByIndex = (key, value) => {
     dispatch(
@@ -92,7 +85,7 @@ function Step({ step, index }) {
         true,
       );
     } catch (e) {
-      updateCardByIndex("outputError", e.err);
+      updateCardByIndex("outputError", e.err ?? e.message);
       console.error(e);
       cb(
         {
@@ -137,7 +130,11 @@ function Step({ step, index }) {
   }
 
   const toggleExternalLinks = () => {
-    setShowExternalLinks(!showExternalLinks);
+    dispatch(toggleExternalLinkVisibility({ index }));
+  };
+
+  const setLinks = (links) => {
+    dispatch(addExternalLinks({ index, externalLinks: links }));
   };
 
   return (
@@ -166,6 +163,13 @@ function Step({ step, index }) {
         <div className={styles["step-section"]}>
           <div className={styles["step-info"]}>
             <div>
+              {/* <SelectOne
+                options={options}
+                selected={step.stepType}
+                onChange={(id) => {
+                  dispatch(setStepType({ index, stepType: id }));
+                }}
+              /> */}
               <div
                 className={styles["addConditionStyle"]}
                 onClick={() => setAddQuery(true)}>
@@ -173,6 +177,11 @@ function Step({ step, index }) {
               </div>
 
               {addQuery && <Query step={step} index={index} />}
+              {/* <HandleSelectedType
+                selectedId={step.stepType}
+                step={step}
+                index={index}
+              /> */}
             </div>
           </div>
           <Notes step={step} index={index} />
@@ -202,12 +211,17 @@ function Step({ step, index }) {
                 <div
                   className={styles["addConditionStyle"]}
                   onClick={toggleExternalLinks}>
-                  <b className="ext_links">{showExternalLinks ? "-" : "+"}</b>{" "}
+                  <b className="ext_links">
+                    {step.showExternalLinks ? "-" : "+"}
+                  </b>{" "}
                   Add External Links
                 </div>
 
-                {showExternalLinks && (
-                  <ExternalLinks links={links} setLinks={setLinks} />
+                {step.showExternalLinks && (
+                  <ExternalLinks
+                    links={step.externalLinks}
+                    setLinks={setLinks}
+                  />
                 )}
               </div>
             </div>

@@ -48,7 +48,7 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
           handleChange: (_, val) => {
             store.dispatch(setGoldenMetric({ index, metric: val.metric }));
           },
-          requires: ['application_name'],
+          // requires: ['application_name'],
           selected: task?.golden_metric?.golden_metric_name
         },
         {
@@ -60,7 +60,7 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
               label: task.golden_metric?.golden_metric_unit
             }
           ],
-          requires: ['golden_metric'],
+          // requires: ['golden_metric'],
           disabled: true,
           selected: task?.golden_metric?.golden_metric_unit
         }
@@ -70,7 +70,7 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
           label: 'Selected Query',
           type: OptionType.MULTILINE,
           value: task?.golden_metric?.golden_metric_nrql_expression,
-          requires: ['golden_metric'],
+          // requires: ['golden_metric'],
           disabled: true
         }
       ]

@@ -10,5 +10,6 @@ export const apiSlice = createApi({
     "Triggers",
     "API_Tokens",
     "Workflows",
+    "Templates",
   ],
 });

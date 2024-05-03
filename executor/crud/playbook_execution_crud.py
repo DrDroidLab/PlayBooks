@@ -101,14 +101,14 @@ def create_db_playbook_execution_log(account, playbook, playbook_execution, play
 
 def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results):
     all_db_playbook_execution_logs = []
-    for step, all_task_results in all_step_results.items():
+    for step_id, all_task_results in all_step_results.items():
         for result in all_task_results:
             playbook_execution_log = PlayBookExecutionLog(
                 account=account,
                 playbook=playbook,
                 playbook_execution=playbook_execution,
-                playbook_step=step,
-                playbook_task_definition=result['task'],
+                playbook_step_id=step_id,
+                playbook_task_definition_id=result['task_id'],
                 playbook_task_result=result['task_result']
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)

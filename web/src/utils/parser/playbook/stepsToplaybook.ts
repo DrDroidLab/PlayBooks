@@ -256,6 +256,22 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
           break;
       }
       break;
+    case SOURCES.API:
+      task = {
+        ...task,
+        type: "ACTION",
+        action_task: {
+          source: step.source.toUpperCase(),
+          api_call_task: {
+            method: step.action?.method?.toUpperCase(),
+            url: step.action?.url,
+            headers: JSON.parse(step.action?.headers ?? {}),
+            payload: JSON.parse(step.action?.payload ?? {}),
+            timeout: step.action?.timeout,
+          },
+        },
+      };
+      break;
 
     default:
       task = {
@@ -278,10 +294,12 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
       description: step.description || `Step - ${(i ?? 0) + 1}`,
       external_links: step.externalLinks ?? [],
       tasks: [getTaskFromStep(step, i)],
+      notes: step.notes ?? "",
     };
   });
   let playbook: PlaybookContract = {
     name: playbookVal.name,
+    description: playbookVal.description,
     global_variable_set: playbookVal.globalVariables?.reduce((acc, curr) => {
       acc[curr.name] = curr.value;
       return acc;

@@ -57,6 +57,7 @@ function NotificationDetails() {
 
       {currentWorkflow.notification === "slack-message" && (
         <div className="flex items-center gap-2 mt-2">
+          <p className="text-xs font-bold text-gray-500">Select Channel</p>
           {isFetching && <CircularProgress size={20} />}
           <SelectComponent
             data={options?.active_channels?.map((e) => {
@@ -75,6 +76,7 @@ function NotificationDetails() {
               currentWorkflow?.trigger?.channel?.channel_id ||
               ""
             }
+            error={currentWorkflow?.errors?.channel ?? false}
             searchable={true}
           />
         </div>

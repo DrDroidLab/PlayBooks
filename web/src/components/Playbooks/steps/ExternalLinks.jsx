@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import styles from './index.module.css';
+import { useEffect, useState } from "react";
+import styles from "./index.module.css";
 
 function ExternalLinks({ links, setLinks }) {
   const [formData, setFormData] = useState({
-    name: '',
-    url: ''
+    name: "",
+    url: "",
   });
   const [currentIndex, setCurrentIndex] = useState(null);
 
@@ -18,8 +18,8 @@ function ExternalLinks({ links, setLinks }) {
 
   const resetForm = () => {
     setFormData({
-      url: '',
-      name: ''
+      url: "",
+      name: "",
     });
     setCurrentIndex(null);
   };
@@ -28,24 +28,22 @@ function ExternalLinks({ links, setLinks }) {
     const temp = structuredClone(links);
     temp[currentIndex] = {
       url: formData.url.trim(),
-      name: formData.name.trim()
+      name: formData.name.trim(),
     };
     setLinks(temp);
   };
 
   const handleAdd = () => {
-    setLinks(prev => {
-      return [
-        ...prev,
-        {
-          url: formData.url.trim(),
-          name: formData.name.trim()
-        }
-      ];
-    });
+    setLinks([
+      ...(links ?? []),
+      {
+        url: formData.url.trim(),
+        name: formData.name.trim(),
+      },
+    ]);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -57,22 +55,22 @@ function ExternalLinks({ links, setLinks }) {
     resetForm();
   };
 
-  const handleChange = e => {
-    setFormData(prev => {
+  const handleChange = (e) => {
+    setFormData((prev) => {
       return {
         ...prev,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       };
     });
   };
 
-  const handleDelete = index => {
+  const handleDelete = (index) => {
     const temp = structuredClone(links);
     temp.splice(index, 1);
     setLinks(temp);
   };
 
-  const selectCurrentLink = index => {
+  const selectCurrentLink = (index) => {
     setCurrentIndex(index);
   };
 
@@ -80,7 +78,7 @@ function ExternalLinks({ links, setLinks }) {
     if (currentIndex != null) {
       setFormData({
         url: links[currentIndex].url,
-        name: links[currentIndex].name
+        name: links[currentIndex].name,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,7 +115,9 @@ function ExternalLinks({ links, setLinks }) {
             placeholder="Enter the URL here"
           />
         </div>
-        <button className={styles.btn}>{currentIndex !== null ? 'Edit' : 'Add'}</button>
+        <button className={styles.btn}>
+          {currentIndex !== null ? "Edit" : "Add"}
+        </button>
       </form>
 
       {links?.length > 0 && (
@@ -136,12 +136,16 @@ function ExternalLinks({ links, setLinks }) {
                 <td>{e.name}</td>
                 <td>{e.url}</td>
                 <td>
-                  <button onClick={() => selectCurrentLink(i)} className={styles.btn}>
+                  <button
+                    onClick={() => selectCurrentLink(i)}
+                    className={styles.btn}>
                     Edit
                   </button>
                 </td>
                 <td>
-                  <button onClick={() => handleDelete(i)} className={styles.btn}>
+                  <button
+                    onClick={() => handleDelete(i)}
+                    className={styles.btn}>
                     Delete
                   </button>
                 </td>

@@ -10,7 +10,7 @@ from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
     PlaybookExecution as PlaybookExecutionProto, PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto, \
-    PlaybookStepExecutionLogs as PlaybookStepExecutionLogsProto
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
@@ -127,6 +127,7 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
+            notes=StringValue(value=self.notes)
         )
 
 
@@ -190,7 +191,7 @@ class PlayBookExecution(models.Model):
     def proto(self) -> PlaybookExecutionProto:
         playbook_execution_logs = self.playbookexecutionlog_set.all()
         logs = [pel.proto_partial for pel in playbook_execution_logs]
-        step_execution_logs: [PlaybookStepExecutionLogsProto] = []
+        step_execution_logs: [PlaybookStepExecutionLogProto] = []
         step_task_executions_map = {}
         step_definition_map = {}
         for log in logs:
@@ -203,7 +204,7 @@ class PlayBookExecution(models.Model):
             step_task_executions_map[log.step.id.value] = execution_logs
         for step_id, logs in step_task_executions_map.items():
             step = step_definition_map[step_id]
-            step_execution_logs.append(PlaybookStepExecutionLogsProto(
+            step_execution_logs.append(PlaybookStepExecutionLogProto(
                 step=step,
                 logs=logs
             ))

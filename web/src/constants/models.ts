@@ -11,4 +11,5 @@ export const models = {
   TEXT: "MARKDOWN",
   POSTGRES_DATABASE: "POSTGRES_DATABASE",
   EKS_CLUSTER: "EKS_CLUSTER",
+  API: "API",
 };

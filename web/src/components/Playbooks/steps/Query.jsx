@@ -25,6 +25,7 @@ function Query({ step, index }) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const fetchData = (val) => {
+    if (val?.connector_type === "API") return;
     triggerGetAssetModelOptions({
       connector_type: val?.connector_type || step.source,
       model_type: val?.model_type || step.modelType,

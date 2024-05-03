@@ -33,8 +33,9 @@ import Loading from "../common/Loading/index.tsx";
 import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
 import { getTaskFromStep } from "../../utils/parser/playbook/stepsToplaybook.ts";
+import PlaybookDescription from "../PlaybookDescription/index.jsx";
 
-const CreatePlaybook = ({ playbook, allowSave = true }) => {
+const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
@@ -110,13 +111,19 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
 
     try {
       const response = await triggerExecutePlaybook(body).unwrap();
-      if (!response?.success) {
+      if (!response?.success || response?.task_execution_result?.error) {
         dispatch(
           showSnackbar(
             response?.task_execution_result?.error || "There was an error",
           ),
         );
-        cb({}, false);
+        cb(
+          {
+            error:
+              response?.task_execution_result?.error || "There was an error",
+          },
+          false,
+        );
         return;
       }
       cb(
@@ -132,7 +139,7 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
       console.error(e);
       cb(
         {
-          error: e.err,
+          error: e.err ?? e.message,
         },
         false,
       );
@@ -182,8 +189,8 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
   useEffect(() => {
     dispatch(setPlaybookState());
     return () => {
-      if (!copied.current) dispatch(resetState());
-      dispatch(resetTimeRange());
+      if (!copied.current && showHeading) dispatch(resetState());
+      if (showHeading) dispatch(resetTimeRange());
     };
   }, [dispatch]);
 
@@ -199,28 +206,34 @@ const CreatePlaybook = ({ playbook, allowSave = true }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <Heading
-        heading={
-          playbook
-            ? `${isEditing ? "Editing" : ""} Playbook` +
-              (playbook.name ? " - " + playbook.name : "")
-            : "Untitled Playbook"
-        }
-        handleGlobalExecute={handleGlobalExecute}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-        showRunAll={steps?.length > 0}
-        showEditTitle={!playbook}
-        customTimeRange={true}
-        showCopy={!!playbook}
-        copyPlaybook={handleCopyPlaybook}
-      />
+    <div className="flex flex-col h-full">
+      {showHeading && (
+        <Heading
+          heading={
+            playbook
+              ? `${isEditing ? "Editing" : ""} Playbook` +
+                (playbook.name ? " - " + playbook.name : "")
+              : "Untitled Playbook"
+          }
+          handleGlobalExecute={handleGlobalExecute}
+          onTimeRangeChangeCb={false}
+          onRefreshCb={false}
+          showRunAll={steps?.length > 0}
+          showEditTitle={!playbook}
+          customTimeRange={true}
+          showCopy={!!playbook}
+          copyPlaybook={handleCopyPlaybook}
+        />
+      )}
       <div className={styles["pb-container"]}>
+        <div className="border p-1 rounded m-2">
+          <PlaybookDescription />
+        </div>
+
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
         </div>
-        <div className={styles["step-cards-pane"]}>
+        <div className="flex-1 p-1 bg-white border rounded m-2 overflow-scroll">
           <div className={styles.steps}>
             {steps?.map((step, index) => (
               <Accordion

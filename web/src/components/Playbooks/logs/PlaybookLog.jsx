@@ -10,28 +10,27 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
+  setCurrentStepIndex,
   setSteps,
-  toggleStep,
-  updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import PlaybookTitle from "../../common/PlaybookTitle.jsx";
-import { ArrowDropDown } from "@mui/icons-material";
 import GlobalVariables from "../../common/GlobalVariable/index.jsx";
-import styles from "./playbooks.module.css";
-import Step from "./Step.jsx";
 import {
   resetTimeRange,
   setPlaybookState,
+  updateCustomTimeRange,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
+import CustomDrawer from "../../common/CustomDrawer/index.jsx";
+import CreateFlow from "../create/CreateFlow.jsx";
+import StepDetails from "../create/StepDetails.jsx";
 
 function PlaybookLog() {
   const { playbook_run_id } = useParams();
   const dispatch = useDispatch();
   const [triggerGetPlaybookLog, { data, isLoading }] =
     useLazyGetPlaybookExecutionQuery();
-  const { steps } = useSelector(playbookSelector);
+  const { currentStepIndex } = useSelector(playbookSelector);
   const playbook = data?.playbook_execution?.playbook;
+  const timeRange = data?.playbook_execution?.time_range;
   const outputs = data?.playbook_execution?.logs;
 
   useEffect(() => {
@@ -43,6 +42,13 @@ function PlaybookLog() {
   useEffect(() => {
     if (playbook && Object.keys(playbook).length > 0) {
       populateData();
+      dispatch(
+        updateCustomTimeRange({
+          value: "Custom",
+          startTime: timeRange.time_geq,
+          endTime: timeRange.time_geq,
+        }),
+      );
     }
   }, [playbook]);
 
@@ -61,16 +67,6 @@ function PlaybookLog() {
   if (!data) {
     return <></>;
   }
-
-  const updateCardByIndex = (index, key, value) => {
-    dispatch(
-      updateStep({
-        index,
-        key,
-        value,
-      }),
-    );
-  };
 
   const populateData = () => {
     const pbData = playbookToSteps(playbook);
@@ -97,11 +93,14 @@ function PlaybookLog() {
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
       if (stepIndex === isNaN) continue;
       const step = pbData[stepIndex];
+      console.log("step", step);
       if (step) {
         step.showOutput = true;
         step.output = output;
       }
     }
+
+    console.log(pbData);
 
     dispatch(setSteps(pbData));
   };
@@ -109,38 +108,24 @@ function PlaybookLog() {
   return (
     <div className="flex flex-col h-screen">
       <Heading heading={playbook.name} customTimeRange={true} />
-      <div className={styles["pb-container"]}>
-        <div className={styles["global-variables-pane"]}>
+      <main className="relative flex h-[calc(100%-80px)]">
+        <div className="absolute top-2 left-2 z-10 bg-white p-1 rounded w-48">
           <GlobalVariables />
         </div>
-        <div className={styles["step-cards-pane"]}>
-          <div className={styles.steps}>
-            {steps?.map((step, index) => (
-              <Accordion
-                style={{ borderRadius: "5px" }}
-                className="collapsible_option"
-                defaultExpanded={step.isPrefetched ? false : true}
-                expanded={step.isOpen}
-                onChange={() => dispatch(toggleStep({ index }))}>
-                <AccordionSummary
-                  expandIcon={<ArrowDropDown />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                  style={{ borderRadius: "5px", backgroundColor: "#f5f5f5" }}>
-                  <PlaybookTitle
-                    step={step}
-                    index={index}
-                    updateCardByIndex={updateCardByIndex}
-                  />
-                </AccordionSummary>
-                <AccordionDetails sx={{ padding: "0" }}>
-                  <Step key={index} step={step} index={index} />
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </div>
+        <div className="flex-[1] h-full">
+          <CreateFlow />
         </div>
-      </div>
+        <CustomDrawer
+          isOpen={currentStepIndex}
+          setIsOpen={() => dispatch(setCurrentStepIndex(null))}
+          addtionalStyles={"lg:w-[30%]"}
+          showOverlay={false}
+          startFrom="80">
+          <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
+            <StepDetails />
+          </div>
+        </CustomDrawer>
+      </main>
     </div>
   );
 }

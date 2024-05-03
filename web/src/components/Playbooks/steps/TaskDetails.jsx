@@ -2,8 +2,11 @@
 import { CircularProgress } from "@mui/material";
 import { useLazyGetAssetsQuery } from "../../../store/features/playbook/api/index.ts";
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { setErrors } from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  playbookSelector,
+  setErrors,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import OptionRender from "./OptionRender.jsx";
 import VariablesBox from "./VariablesBox.jsx";
 
@@ -11,6 +14,7 @@ function TaskDetails({ task, data, stepIndex }) {
   const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
   const dispatch = useDispatch();
   const prevError = useRef(null);
+  const { view } = useSelector(playbookSelector);
 
   const getAssets = () => {
     triggerGetAssets({
@@ -71,32 +75,25 @@ function TaskDetails({ task, data, stepIndex }) {
           key={index}
           style={{
             display: "flex",
-            marginTop: "5px",
-            gap: "5px",
-            alignItems: "center",
+            flexDirection: view === "builder" ? "column" : "row",
+            marginTop: "10px",
+            paddingTop: "20px",
+            // borderTop: "0.5px solid gray",
+            gap: "10px",
+            alignItems: "flex-start",
             flexWrap: "wrap",
             justifyContent: "flex-start",
+            maxWidth: "600px",
           }}>
-          {step.map((value) => {
-            let flag = true;
-            for (let val of value?.requires ?? []) {
-              if (!task[val]) {
-                flag = false;
-                break;
-              }
-            }
-
-            if (flag)
-              return (
-                <OptionRender
-                  data={value}
-                  removeErrors={removeErrors}
-                  stepIndex={stepIndex}
-                  task={task}
-                />
-              );
-            else return <></>;
-          })}
+          {step.map((value, index) => (
+            <OptionRender
+              key={index}
+              data={value}
+              removeErrors={removeErrors}
+              stepIndex={stepIndex}
+              task={task}
+            />
+          ))}
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}

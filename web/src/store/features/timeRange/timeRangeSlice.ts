@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   defaultTimeRangeOptions,
-  playbooksTimeRangeOptions
-} from '../../../utils/timeRangeOptions.ts';
+  playbooksTimeRangeOptions,
+} from "../../../utils/timeRangeOptions.ts";
 
 type InitialStateType = {
   timeRange: string;
@@ -12,26 +12,26 @@ type InitialStateType = {
 };
 
 enum OptionType {
-  default = 'default',
-  playbooks = 'playbooks'
+  default = "default",
+  playbooks = "playbooks",
 }
 
 const initialState: InitialStateType = {
-  timeRange: '2 weeks',
+  timeRange: "2 weeks",
   startTime: null,
   endTime: null,
-  options: OptionType.default
+  options: OptionType.default,
 };
 
 const timeRangeSlice = createSlice({
-  name: 'timeRange',
+  name: "timeRange",
   initialState,
   reducers: {
     updateTimeRange: (state, { payload }) => {
       state.timeRange = payload;
     },
     updateCustomTillNowTimeRange: (state, { payload }) => {
-      state.timeRange = 'CustomTillNow';
+      state.timeRange = "CustomTillNow";
       state.startTime = payload;
     },
     updateCustomTimeRange: (state, { payload }) => {
@@ -42,19 +42,19 @@ const timeRangeSlice = createSlice({
     updateProperty: (state, { payload }) => {
       state[payload.key] = payload.value;
     },
-    setPlaybookState: state => {
-      state.timeRange = 'CustomTillNow';
+    setPlaybookState: (state) => {
+      state.timeRange = "CustomTillNow";
       state.endTime = Date.now() / 1000;
       state.startTime = (Date.now() - 1 * 60 * 60 * 1000) / 1000;
       state.options = OptionType.playbooks;
     },
-    resetTimeRange: state => {
-      state.timeRange = '2 weeks';
+    resetTimeRange: (state) => {
+      state.timeRange = "2 weeks";
       state.startTime = null;
       state.endTime = null;
       state.options = OptionType.default;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -63,29 +63,39 @@ export const {
   updateProperty,
   updateCustomTillNowTimeRange,
   setPlaybookState,
-  resetTimeRange
+  resetTimeRange,
 } = timeRangeSlice.actions;
 
 export default timeRangeSlice.reducer;
 
-export const timeRangeSelector = state => state.timeRange;
-export const rangeSelector = state => {
+export const timeRangeSelector = (state) => state.timeRange;
+export const rangeSelector = (state) => {
   const timeRange = state.timeRange;
   switch (timeRange.timeRange) {
-    case 'Custom':
-      return { time_geq: Math.round(timeRange.startTime), time_lt: Math.round(timeRange.endTime) };
-    case 'CustomTillNow':
-      return { time_geq: Math.round(timeRange.startTime), time_lt: Math.round(Date.now() / 1000) };
+    case "Custom":
+      return {
+        time_geq: Math.round(timeRange.startTime),
+        time_lt: Math.round(timeRange.endTime),
+      };
+    case "CustomTillNow":
+      return {
+        time_geq: Math.round(timeRange.startTime),
+        time_lt: Math.round(Date.now() / 1000),
+      };
     default:
       switch (state.options) {
         case OptionType.default:
-          return defaultTimeRangeOptions[timeRange.timeRange.replaceAll(/\s/g, '')]?.getTimeRange();
+          return defaultTimeRangeOptions[
+            timeRange.timeRange.replaceAll(/\s/g, "")
+          ]?.getTimeRange();
         case OptionType.playbooks:
           return playbooksTimeRangeOptions[
-            timeRange.timeRange.replaceAll(/\s/g, '')
+            timeRange.timeRange.replaceAll(/\s/g, "")
           ]?.getTimeRange();
         default:
-          return defaultTimeRangeOptions[timeRange.timeRange.replaceAll(/\s/g, '')]?.getTimeRange();
+          return defaultTimeRangeOptions[
+            timeRange.timeRange.replaceAll(/\s/g, "")
+          ]?.getTimeRange();
       }
   }
 };

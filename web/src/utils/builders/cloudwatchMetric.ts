@@ -75,15 +75,15 @@ export const cloudwatchMetricBuilder = (task, index, options) => {
           }),
           handleChange: (_, val) => {
             store.dispatch(setRegion({ index, region: val.label }));
-          },
-          requires: ['namespaceName']
+          }
+          // requires: ['namespaceName']
         },
         {
           key: 'dimensionName',
           label: 'Dimension',
           type: OptionType.OPTIONS,
           options: getDimensions(task),
-          requires: ['region'],
+          // requires: ['region'],
           handleChange: (_, value) => {
             store.dispatch(
               setDimensionIndex({
@@ -100,7 +100,7 @@ export const cloudwatchMetricBuilder = (task, index, options) => {
           label: 'Metric',
           type: OptionType.OPTIONS,
           options: getMetrics(task),
-          requires: ['dimensionName'],
+          // requires: ['dimensionName'],
           selected: task?.metric?.id
         }
       ]
