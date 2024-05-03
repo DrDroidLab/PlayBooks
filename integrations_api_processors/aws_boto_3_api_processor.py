@@ -7,7 +7,7 @@ import boto3
 import kubernetes
 from awscli.customizations.eks.get_token import TokenGenerator, TOKEN_EXPIRATION_MINS, STSClientFactory
 
-from playbooks.utils.utils import current_milli_time
+from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
 

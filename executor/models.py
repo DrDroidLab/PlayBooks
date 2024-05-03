@@ -9,7 +9,8 @@ from protos.base_pb2 import TimeRange
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
-    PlaybookExecution as PlaybookExecutionProto, PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto
+    PlaybookExecution as PlaybookExecutionProto, PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto, \
+    PlaybookStepExecutionLogs as PlaybookStepExecutionLogsProto
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
@@ -19,6 +20,7 @@ from utils.proto_utils import dict_to_proto
 class PlayBook(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
     playbook = models.TextField()
 
     is_active = models.BooleanField(default=True)
@@ -50,6 +52,7 @@ class PlayBook(models.Model):
 
         return PlaybookProto(
             id=UInt64Value(value=self.id), name=StringValue(value=self.name), is_active=BoolValue(value=self.is_active),
+            description=StringValue(value=self.description),
             created_by=StringValue(value=self.created_by),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             global_variable_set=global_variable_set_proto,
@@ -72,6 +75,7 @@ class PlayBookStep(models.Model):
 
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     description = models.CharField(max_length=255, db_index=True)
+    notes = models.TextField(null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
 
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
@@ -104,6 +108,7 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
+            notes=StringValue(value=self.notes),
             tasks=tasks
         )
 
@@ -185,6 +190,23 @@ class PlayBookExecution(models.Model):
     def proto(self) -> PlaybookExecutionProto:
         playbook_execution_logs = self.playbookexecutionlog_set.all()
         logs = [pel.proto_partial for pel in playbook_execution_logs]
+        step_execution_logs: [PlaybookStepExecutionLogsProto] = []
+        step_task_executions_map = {}
+        step_definition_map = {}
+        for log in logs:
+            if log.step.id.value not in step_definition_map:
+                step_definition_map[log.step.id.value] = log.step
+            if log.step.id.value not in step_task_executions_map:
+                step_task_executions_map[log.step.id.value] = []
+            execution_logs = step_task_executions_map[log.step.id.value]
+            execution_logs.append(log)
+            step_task_executions_map[log.step.id.value] = execution_logs
+        for step_id, logs in step_task_executions_map.items():
+            step = step_definition_map[step_id]
+            step_execution_logs.append(PlaybookStepExecutionLogsProto(
+                step=step,
+                logs=logs
+            ))
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
@@ -196,7 +218,8 @@ class PlayBookExecution(models.Model):
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
             time_range=time_range_proto,
-            logs=logs
+            logs=logs,
+            step_execution_logs=step_execution_logs
         )
 
     @property
@@ -228,19 +251,21 @@ class PlayBookExecutionLog(models.Model):
     def proto(self) -> PlaybookExecutionLogProto:
         playbook_proto = self.playbook.proto_partial
         task = self.playbook_task_definition.proto
+        step = self.playbook_step.proto
         return PlaybookExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             playbook_run_id=StringValue(value=self.playbook_execution.playbook_run_id),
             playbook=playbook_proto,
             task=task,
+            step=step,
             task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
         )
 
     @property
     def proto_partial(self) -> PlaybookExecutionLogProto:
-        step = PlaybookStepDefinitionProto(id=UInt64Value(value=self.playbook_step.id))
-        task = PlaybookTaskDefinitionProto(id=UInt64Value(value=self.playbook_task_definition.id))
+        step = self.playbook_step.proto_partial
+        task = self.playbook_task_definition.proto_partial
         return PlaybookExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),

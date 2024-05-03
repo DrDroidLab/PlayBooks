@@ -3,7 +3,7 @@ import logging
 from celery.signals import task_prerun, task_postrun, task_failure
 
 from management.models import TaskRun, PeriodicTaskStatus, PeriodicTaskResult
-from playbooks.utils.utils import current_datetime
+from utils.time_utils import current_datetime
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from playbooks.utils.utils import current_datetime
+from utils.time_utils import current_datetime
 
 from connectors.models import integrations_connector_type_display_name_map
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor

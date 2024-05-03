@@ -9,7 +9,7 @@ from connectors.handlers.tasks import slack_bot_data_fetch_job, slack_bot_handle
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.utils import current_datetime
+from utils.time_utils import current_datetime
 from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, \
     ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 

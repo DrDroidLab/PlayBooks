@@ -9,7 +9,6 @@ from django.conf import settings
 from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connectors
 
-
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbook_step, get_db_playbook_task_definitions, get_db_playbooks
 from executor.models import PlayBook
@@ -27,13 +26,13 @@ from intelligence_layer.task_result_interpreters.task_result_interpreter_facade 
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from playbooks.utils.utils import current_datetime, current_epoch_timestamp
+from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
     ConnectorType
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
@@ -322,7 +321,7 @@ def test_workflow_notification(account_id, workflow, message_type):
                         'task_result_proto': task_result,
                     })
                 all_step_executions[step] = all_task_executions
-            
+
             for step, all_task_results in all_step_executions.items():
                 for result in all_task_results:
                     playbook_execution_log = PlaybookExecutionLog(
@@ -336,5 +335,6 @@ def test_workflow_notification(account_id, workflow, message_type):
         except Exception as exc:
             logger.error(f"Error occurred while running playbook: {exc}")
 
-        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto, pe_logs)
+        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
+                                                                                      pe_logs)
         action_executor(account, workflow.actions[0], execution_output)

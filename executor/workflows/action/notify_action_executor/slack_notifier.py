@@ -50,19 +50,35 @@ class SlackNotifier(Notifier):
                         }
                     })
                 else:
+                    title = f'Step {i + 1}: {interpretation.title.value}'
+                    description = interpretation.description.value
+                    summary = interpretation.summary.value
+                    block_text = title
+                    if description:
+                        block_text += f'\n{description}'
+                    if summary:
+                        block_text += f'\n{summary}'
                     blocks.append({
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f'Step {i + 1}: {interpretation.title.value}'
+                            "text": block_text
                         }
                     })
             elif interpretation.type == InterpretationProto.Type.IMAGE:
+                title = f'Step {i + 1}: {interpretation.title.value}'
+                description = interpretation.description.value
+                summary = interpretation.summary.value
+                block_text = title
+                if description:
+                    block_text += f'\n{description}'
+                if summary:
+                    block_text += f'\n{summary}'
                 blocks.append({
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f'Step {i + 1}: {interpretation.title.value}'
+                        "text": block_text
                     }
                 })
                 blocks.append({

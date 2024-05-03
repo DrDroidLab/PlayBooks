@@ -17,17 +17,20 @@ export const stateToWorkflow = () => {
       ],
       entry_points: [
         {
-          type: "ALERT",
-          alert_config: {
-            alert_type: "SLACK_CHANNEL_ALERT",
-            slack_channel_alert_config: {
-              slack_channel_asset_id: 1,
-              slack_channel_id: workflow.trigger?.channel?.channel_id,
-              slack_channel_name: workflow.trigger?.channel?.channel_name,
-              slack_alert_type: workflow.trigger?.source,
-              slack_alert_filter_string: workflow.trigger?.filterString,
-            },
-          },
+          type: workflow.workflowType === "api-trigger" ? "API" : "ALERT",
+          alert_config:
+            workflow.workflowType === "api-trigger"
+              ? undefined
+              : {
+                  alert_type: "SLACK_CHANNEL_ALERT",
+                  slack_channel_alert_config: {
+                    slack_channel_asset_id: 1,
+                    slack_channel_id: workflow.trigger?.channel?.channel_id,
+                    slack_channel_name: workflow.trigger?.channel?.channel_name,
+                    slack_alert_type: workflow.trigger?.source,
+                    slack_alert_filter_string: workflow.trigger?.filterString,
+                  },
+                },
         },
       ],
       actions: [],
@@ -42,7 +45,9 @@ export const stateToWorkflow = () => {
           type: "SLACK",
           slack_config: {
             message_type: "MESSAGE",
-            slack_channel_id: workflow.trigger?.channel?.channel_id,
+            slack_channel_id:
+              workflow?.channel?.channel_id ??
+              workflow.trigger?.channel?.channel_id,
           },
         },
       });

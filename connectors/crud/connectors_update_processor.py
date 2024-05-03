@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import create_connector
 from connectors.models import Connector, integrations_connector_type_connector_keys_map
-from playbooks.utils.utils import current_milli_time
+from utils.time_utils import current_milli_time
 from protos.connectors.connector_pb2 import UpdateConnectorOp
 from utils.update_processor_mixin import UpdateProcessorMixin
 from protos.connectors.connector_pb2 import Connector as ConnectorProto

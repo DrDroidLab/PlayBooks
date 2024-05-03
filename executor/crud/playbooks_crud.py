@@ -146,6 +146,8 @@ def create_or_update_db_playbook_task_definition(scope: Account, playbook_id, pl
         task = playbook_task_definition.data_fetch_task
     elif playbook_task_definition.type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
         task = playbook_task_definition.documentation_task
+    elif playbook_task_definition.type == PlaybookTaskDefinitionProto.Type.ACTION:
+        task = playbook_task_definition.action_task
     else:
         return None, f"Invalid Task Type Received: {playbook_task_definition.type}"
     try:

@@ -1,50 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import Overlay from "../Overlay";
 import styles from "./index.module.css";
-import { CircularProgress } from "@mui/material";
-import ValueComponent from "../ValueComponent";
-import { useInviteUsersMutation } from "../../store/features/auth/api/index.ts";
 
-function convertStringToArray(inputString) {
-  let stringArray = inputString.split(",");
+// function convertStringToArray(inputString) {
+//   let stringArray = inputString.split(",");
 
-  for (let i = 0; i < stringArray.length; i++) {
-    let trimmedString = stringArray[i].trim();
+//   for (let i = 0; i < stringArray.length; i++) {
+//     let trimmedString = stringArray[i].trim();
 
-    if (trimmedString.indexOf("@") === -1) {
-      return false;
-    }
+//     if (trimmedString.indexOf("@") === -1) {
+//       return false;
+//     }
 
-    stringArray[i] = trimmedString;
-  }
+//     stringArray[i] = trimmedString;
+//   }
 
-  return stringArray;
-}
+//   return stringArray;
+// }
 
 const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
-  const [loading, setLoading] = useState(false);
-  const [emails, setEmails] = useState("");
-  const [triggerInviteUsers] = useInviteUsersMutation();
+  // const [loading, setLoading] = useState(false);
+  // const [emails, setEmails] = useState("");
+  // const [triggerInviteUsers] = useInviteUsersMutation();
 
-  const handleSuccess = async () => {
-    setLoading(true);
+  // const handleSuccess = async () => {
+  //   setLoading(true);
 
-    const emailList = convertStringToArray(emails);
-    if (!emailList) {
-      alert("Please enter valid emails separated by comma");
-      setLoading(false);
-      return;
-    }
+  //   const emailList = convertStringToArray(emails);
+  //   if (!emailList) {
+  //     alert("Please enter valid emails separated by comma");
+  //     setLoading(false);
+  //     return;
+  //   }
 
-    try {
-      const response = await triggerInviteUsers({ emailList }).unwrap();
-      alert(response.message.title);
-    } catch (e) {
-      console.log(e);
-    }
+  //   try {
+  //     const response = await triggerInviteUsers({ emailList }).unwrap();
+  //     alert(response.message.title);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
 
-    toggleOverlay();
-  };
+  //   toggleOverlay();
+  // };
 
   return (
     <>
@@ -52,7 +49,9 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
         <Overlay visible={isOpen}>
           <div className={styles["actionOverlay"]}>
             <header className="text-gray-500">
-              Share the current URL with your team members to invite them. They will be able to access the dashboard with the same permissions as you.
+              Share the current URL with your team members to invite them. They
+              will be able to access the dashboard with the same permissions as
+              you.
             </header>
 
             <div className={styles["actions"]}>
@@ -61,7 +60,7 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
                 onClick={toggleOverlay}>
                 Ok
               </button>
-              {loading ? (
+              {/* {loading ? (
                 <CircularProgress
                   style={{
                     marginLeft: "12px",
@@ -71,7 +70,7 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
                 />
               ) : (
                 ""
-              )}
+              )} */}
             </div>
           </div>
         </Overlay>

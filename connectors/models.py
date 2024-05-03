@@ -409,7 +409,7 @@ class Site(models.Model):
 
     def save(self, **kwargs):
         if self.domain:
-            django_site = DjangoSite.objects.get_or_create(id=1)
+            django_site, _ = DjangoSite.objects.get_or_create(id=1)
             django_site.domain = self.domain
             django_site.name = self.name
             django_site.save()
