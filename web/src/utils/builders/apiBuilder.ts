@@ -21,6 +21,17 @@ export const apiBuilder = (task, index) => {
       ],
       [
         {
+          key: "url",
+          label: "URL",
+          type: OptionType.TEXT_ROW,
+          selected: task.action?.url,
+          handleChange: (val) => {
+            store.dispatch(setActionKey({ index, key: "url", value: val }));
+          },
+        },
+      ],
+      [
+        {
           label: "Headers (Enter JSON)",
           type: OptionType.MULTILINE,
           selected: task.action?.headers,
@@ -28,17 +39,6 @@ export const apiBuilder = (task, index) => {
             store.dispatch(
               setActionKey({ index, key: "headers", value: e.target.value }),
             );
-          },
-        },
-      ],
-      [
-        {
-          key: "url",
-          label: "URL",
-          type: OptionType.TEXT_ROW,
-          selected: task.action?.url,
-          handleChange: (val) => {
-            store.dispatch(setActionKey({ index, key: "url", value: val }));
           },
         },
       ],
@@ -57,7 +57,7 @@ export const apiBuilder = (task, index) => {
       [
         {
           key: "timeout",
-          label: "Timeout",
+          label: "Timeout (in seconds)",
           type: OptionType.TEXT_ROW,
           selected: task.action?.timeout,
           handleChange: (val) => {
