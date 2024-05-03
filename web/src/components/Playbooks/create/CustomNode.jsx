@@ -40,16 +40,18 @@ export default function CustomNode({ data }) {
       </div>
 
       <div className="flex flex-col items-center gap-4">
-        <img
-          className="w-10 h-10"
-          src={
-            cardsData.find(
-              (e) => e.enum === data?.step?.source.replace("_VPC", ""),
-            )?.url ?? ""
-          }
-          alt="logo"
-        />
-        <p className="text-lg font-bold text-center z-10">
+        {data?.step?.source && (
+          <img
+            className="w-10 h-10"
+            src={
+              cardsData.find(
+                (e) => e.enum === data?.step?.source.replace("_VPC", ""),
+              )?.url ?? ""
+            }
+            alt="logo"
+          />
+        )}
+        <p className="text-lg font-bold text-center z-10 break-all">
           {data?.step?.description ||
             data?.step?.selectedSource ||
             `Step - ${data?.index + 1}`}

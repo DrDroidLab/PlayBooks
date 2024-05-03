@@ -15,6 +15,7 @@ import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { handleExecute } from "../../../utils/execution/handleExecute.ts";
+import AddSource from "../steps/AddSource.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -45,10 +46,16 @@ function StepDetails() {
   };
 
   useEffect(() => {
-    if (currentStepIndex !== null) {
+    if (currentStepIndex !== null && step?.source && step?.modelType) {
       fetchData();
     }
   }, [currentStepIndex]);
+
+  useEffect(() => {
+    if (step?.source && step?.modelType) {
+      fetchData();
+    }
+  }, [step?.source, step?.modelType]);
 
   return (
     <div className="p-2 min-h-screen mb-10">
@@ -77,11 +84,8 @@ function StepDetails() {
           </div>
           <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
-          <PlaybookStep
-            card={step}
-            index={currentStepIndex}
-            assetsList={step.assets}
-          />
+          <AddSource step={step} isDataFetching={isFetching} />
+          <PlaybookStep card={step} index={currentStepIndex} />
           <button
             onClick={() => handleExecute(step)}
             className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">

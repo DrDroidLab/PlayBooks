@@ -240,6 +240,12 @@ const playbookSlice = createSlice({
         key: string;
       }>,
     ) => {
+      const currentStep = state.steps[payload.index];
+      if (
+        currentStep.source === payload.source &&
+        currentStep.modelType === payload.modelType
+      )
+        return;
       state.steps[payload.index] = {
         source: payload.source,
         description: state?.steps[payload.index]?.description,

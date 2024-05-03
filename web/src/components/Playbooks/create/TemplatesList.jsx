@@ -4,12 +4,13 @@ import Loading from "../../common/Loading/index.tsx";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../../store/features/playbook/playbookSlice.ts";
 
-function TemplatesList() {
+function TemplatesList({ setImportFromTemplatesOpen }) {
   const { data: templates, isLoading } = useGetTemplatesQuery();
   const dispatch = useDispatch();
 
   const handleImportTemplate = (template) => {
     dispatch(copyPlaybook(template));
+    setImportFromTemplatesOpen(false);
   };
 
   if (isLoading) {
@@ -28,7 +29,7 @@ function TemplatesList() {
           <div
             key={index}
             onClick={() => handleImportTemplate(template)}
-            className="border rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-all">
+            className="border rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-all w-full">
             <h3 className="font-bold text-md">{template.name}</h3>
             <p className="text-sm text-gray-500">{template.description}</p>
           </div>

@@ -53,7 +53,9 @@ function Builder() {
         showOverlay={false}
         startFrom="80">
         <div className="flex-[0.4] border-r-[1px] border-r-gray-200 h-full">
-          <TemplatesList />
+          <TemplatesList
+            setImportFromTemplatesOpen={setImportFromTemplatesOpen}
+          />
         </div>
       </CustomDrawer>
       <div className="flex-[1] h-full">

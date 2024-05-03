@@ -2,7 +2,6 @@ import React from "react";
 import { cardsData } from "../../../utils/cardsData";
 import { useDispatch } from "react-redux";
 import { createStepWithSource } from "../../../store/features/playbook/playbookSlice.ts";
-import { integrationSentenceMap } from "../../../utils/integrationGroupList.ts";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
@@ -13,7 +12,7 @@ function IntegrationOption({ option, setIsOpen }) {
         createStepWithSource({
           source: item.connector_type,
           modelType: item.model_type,
-          key: integrationSentenceMap[item.model_type],
+          key: item.id,
         }),
       );
       setIsOpen(false);
