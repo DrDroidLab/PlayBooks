@@ -13,7 +13,7 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
       transformResponse: (response: ConnectorTypesResponse, meta, arg) => {
         const options: ConnectorsType[] = [];
         options.push({
-          id: "api",
+          id: "API",
           label: "API",
           connector_type: "API",
           model_type: "API",
