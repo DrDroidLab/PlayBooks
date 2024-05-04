@@ -301,7 +301,13 @@ class ConnectorKey(models.Model):
                              ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
                              ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
                              ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
-                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY]:
+                             ConnectorKeyProto.KeyType.GRAFANA_HOST,
+                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
+                             ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
+                             ConnectorKeyProto.KeyType.POSTGRES_HOST,
+                             ConnectorKeyProto.KeyType.CLICKHOUSE_HOST,
+                             ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,
+                             ConnectorKeyProto.KeyType.SLACK_APP_ID]:
             key_value = '*********' + self.key[-4:]
             return ConnectorKeyProto(key_type=self.key_type,
                                      key=StringValue(value=key_value),
