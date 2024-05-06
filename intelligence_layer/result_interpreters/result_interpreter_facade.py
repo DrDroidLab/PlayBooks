@@ -34,8 +34,7 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
             return llm_chat_gpt_vision_metric_task_result_interpreter(task, metric_task_result)
     if which_one_of == 'data_fetch_task_execution_result':
         data_fetch_task_result = task_result.data_fetch_task_execution_result
-        if interpreter_type == InterpreterType.BASIC_I:
-            return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
+        return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
 
 
 def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStepDefinitionProto,

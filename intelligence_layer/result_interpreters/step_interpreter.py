@@ -18,6 +18,8 @@ def basic_step_summariser(step: PlaybookStepDefinitionProto,
 
 def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
                                  task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
+    if len(task_interpretations) <= 1:
+        return task_interpretations
     try:
         keys = """
                 anomaly_detected:boolean
@@ -46,12 +48,12 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
                     prompt += f' {summary}'
                 image_url = ti.image_url.value
 
-                gpt_prompt.append({
+                gpt_prompt.append(
                     {
                         "type": "text",
                         "text": f"This image describes {prompt}"
-                    },
-                })
+                    }
+                )
                 gpt_prompt.append({
                     "type": "image_url",
                     "image_url": {
