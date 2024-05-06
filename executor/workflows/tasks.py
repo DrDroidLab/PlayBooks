@@ -18,15 +18,15 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
     update_db_account_workflow_execution_count_increment
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
-from intelligence_layer.task_result_interpreters.task_result_interpreter_facade import \
-    playbook_execution_result_interpret
+from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog
+from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog, \
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
@@ -190,10 +190,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
 
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecutionProto = playbook_execution.proto
-        pe_logs = pe_proto.logs
         p_proto = pe_proto.playbook
-        execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, p_proto,
-                                                                                      pe_logs)
+        step_execution_logs = pe_proto.step_execution_logs
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(InterpreterType.BASIC_I,
+                                                                                           p_proto,
+                                                                                           step_execution_logs)
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
@@ -259,10 +260,11 @@ def test_workflow_notification(account_id, workflow, message_type):
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
-    pe_logs = []
+    step_execution_logs: [PlaybookStepExecutionLogProto] = []
     try:
         for step in playbook_steps:
             tasks = step.tasks
+            pe_logs = []
             for task_proto in tasks:
                 if pb_proto.global_variable_set:
                     task_proto.global_variable_set.update(pb_proto.global_variable_set)
@@ -274,9 +276,12 @@ def test_workflow_notification(account_id, workflow, message_type):
                     task_execution_result=task_result,
                 )
                 pe_logs.append(playbook_execution_log)
+            step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs)
+            step_execution_logs.append(step_execution_log)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
 
-    execution_output: [InterpretationProto] = playbook_execution_result_interpret(InterpreterType.BASIC_I, pb_proto,
-                                                                                  pe_logs)
+    execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(InterpreterType.BASIC_I,
+                                                                                       pb_proto,
+                                                                                       step_execution_logs)
     action_executor(account, workflow.actions[0], execution_output)

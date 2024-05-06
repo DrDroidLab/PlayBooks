@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from google.protobuf.wrappers_pb2 import StringValue
 
-from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.utils import \
+from intelligence_layer.result_interpreters.metric_task_result_interpreters.utils import \
     metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
 from media.utils import generate_local_image_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
