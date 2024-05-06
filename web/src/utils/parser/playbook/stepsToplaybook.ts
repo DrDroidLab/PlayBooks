@@ -8,7 +8,11 @@ import {
 } from "../../../types.ts";
 import { v4 as uuidv4 } from "uuid";
 
-export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
+export const getTaskFromStep = (
+  step: Step,
+  i?: number,
+): PlaybookTask | PlaybookTask[] => {
+  const taskList: any = [];
   const variables = step.globalVariables?.reduce((acc, curr) => {
     acc[curr.name] = curr.value;
     return acc;
@@ -26,6 +30,38 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
     case SOURCES.CLOUDWATCH:
       let metric_task;
       if (step.modelType === models.CLOUDWATCH_METRIC) {
+        if (step.metric.length > 0) {
+          const tasks = step.metric.map((e) => {
+            metric_task = {
+              source: "CLOUDWATCH",
+              cloudwatch_task: {
+                type: "METRIC_EXECUTION",
+                metric_execution_task: {
+                  namespace: step.namespaceName ?? step.namespace!,
+                  metric_name: e.id!,
+                  region: step.region!,
+                  process_function: "timeseries",
+                  statistic: "Average",
+                  dimensions: [
+                    {
+                      name: step.dimensionName!,
+                      value: step.dimensionValue!,
+                    },
+                  ],
+                },
+              },
+            };
+
+            return metric_task;
+          });
+          tasks.map((metric_task) =>
+            taskList.push({
+              ...task,
+              type: "METRIC",
+              metric_task,
+            }),
+          );
+        }
         metric_task = {
           source: "CLOUDWATCH",
           cloudwatch_task: {
@@ -171,19 +207,54 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
           break;
 
         case models.NEW_RELIC_ENTITY_APPLICATION:
-          new_relic_task = {
-            ...new_relic_task,
-            type: "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION",
-            entity_application_golden_metric_execution_task: {
-              application_entity_guid: step?.assets?.application_entity_guid,
-              application_entity_name: step?.assets?.application_name,
-              golden_metric_name: step.golden_metric?.golden_metric_name,
-              golden_metric_unit: step.golden_metric?.golden_metric_unit,
-              golden_metric_nrql_expression:
-                step.golden_metric?.golden_metric_nrql_expression,
-              process_function: "timeseries",
-            },
-          };
+          if (
+            !step.golden_metric &&
+            step.golden_metrics &&
+            step.golden_metrics.length > 0
+          ) {
+            const tasks = (step.golden_metrics ?? []).map((golden_metric) => {
+              new_relic_task = {
+                ...new_relic_task,
+                type: "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION",
+                entity_application_golden_metric_execution_task: {
+                  application_entity_guid:
+                    step?.assets?.application_entity_guid,
+                  application_entity_name: step?.assets?.application_name,
+                  golden_metric_name: golden_metric.metric?.golden_metric_name,
+                  golden_metric_unit: golden_metric.metric?.golden_metric_unit,
+                  golden_metric_nrql_expression:
+                    golden_metric.metric?.golden_metric_nrql_expression,
+                  process_function: "timeseries",
+                },
+              };
+
+              return new_relic_task;
+            });
+            tasks.map((new_relic_task) =>
+              taskList.push({
+                ...task,
+                type: "METRIC",
+                metric_task: {
+                  source: step.source,
+                  new_relic_task,
+                },
+              }),
+            );
+          } else {
+            new_relic_task = {
+              ...new_relic_task,
+              type: "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION",
+              entity_application_golden_metric_execution_task: {
+                application_entity_guid: step?.assets?.application_entity_guid,
+                application_entity_name: step?.assets?.application_name,
+                golden_metric_name: step.golden_metric?.golden_metric_name,
+                golden_metric_unit: step.golden_metric?.golden_metric_unit,
+                golden_metric_nrql_expression:
+                  step.golden_metric?.golden_metric_nrql_expression,
+                process_function: "timeseries",
+              },
+            };
+          }
           break;
 
         case models.NEW_RELIC_NRQL:
@@ -284,16 +355,36 @@ export const getTaskFromStep = (step: Step, i?: number): PlaybookTask => {
       };
   }
 
-  return task;
+  return taskList.length > 0 ? taskList : task;
 };
 
 export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
   const playbookContractSteps: PlaybookContractStep[] = steps.map((step, i) => {
+    let tasksList: any = [];
+    if (step.metric && step.metric?.length > 0) {
+      step.metric.forEach((metric) => {
+        tasksList.push({
+          ...step,
+          metric: metric.id,
+        });
+      });
+    } else {
+      if (step.golden_metrics && step.golden_metrics.length > 0) {
+        step.golden_metrics.forEach((metric) => {
+          tasksList.push({
+            ...step,
+            golden_metric: metric?.metric,
+          });
+        });
+      } else {
+        tasksList = [step];
+      }
+    }
     return {
       name: step.name!,
       description: step.description || `Step - ${(i ?? 0) + 1}`,
       external_links: step.externalLinks ?? [],
-      tasks: [getTaskFromStep(step, i)],
+      tasks: tasksList.map((step) => getTaskFromStep(step, i)),
       notes: step.notes ?? "",
     };
   });

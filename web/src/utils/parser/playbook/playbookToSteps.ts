@@ -19,6 +19,8 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
     let modelType = "";
     const task = step.tasks ? step.tasks[0] : null;
 
+    const tasks = step.tasks;
+
     switch (stepSource) {
       case SOURCES.CLOUDWATCH:
         const cloudwatchStep = task?.metric_task?.cloudwatch_task;
@@ -32,7 +34,13 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
             cloudwatchStep?.metric_execution_task?.dimensions[0].name,
           dimensionValue:
             cloudwatchStep?.metric_execution_task?.dimensions[0].value,
-          metric: cloudwatchStep?.metric_execution_task?.metric_name,
+          metric: tasks.map((task) => {
+            const cloudwatchStepInTask = task?.metric_task?.cloudwatch_task;
+            return {
+              id: cloudwatchStepInTask?.metric_execution_task?.metric_name,
+              label: cloudwatchStepInTask?.metric_execution_task?.metric_name,
+            };
+          }),
           logGroup: cloudwatchStep?.filter_log_events_task?.log_group_name,
           cw_log_query: cloudwatchStep?.filter_log_events_task?.filter_query,
         };
@@ -152,17 +160,21 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
               newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
                 ?.dashboard_name,
           },
-          golden_metric: {
-            golden_metric_name:
-              newRelicStep?.entity_application_golden_metric_execution_task
-                ?.golden_metric_name,
-            golden_metric_unit:
-              newRelicStep?.entity_application_golden_metric_execution_task
-                ?.golden_metric_unit,
-            golden_metric_nrql_expression:
-              newRelicStep?.entity_application_golden_metric_execution_task
-                ?.golden_metric_nrql_expression,
-          },
+          golden_metrics: tasks.map((nrTask) => {
+            const nrAppTask =
+              nrTask?.metric_task?.new_relic_task
+                ?.entity_application_golden_metric_execution_task;
+            return {
+              id: nrAppTask.golden_metric_name,
+              label: nrAppTask.golden_metric_name,
+              metric: {
+                golden_metric_name: nrAppTask?.golden_metric_name,
+                golden_metric_unit: nrAppTask?.golden_metric_unit,
+                golden_metric_nrql_expression:
+                  nrAppTask?.golden_metric_nrql_expression,
+              },
+            };
+          }),
           application_name:
             newRelicStep.entity_application_golden_metric_execution_task
               ?.application_entity_name,

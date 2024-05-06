@@ -3,10 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Heading from "../../components/Heading";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import styles from "./playbooks.module.css";
-import {
-  getAssetModelOptions,
-  useExecutePlaybookMutation,
-} from "../../store/features/playbook/api/index.ts";
+import { getAssetModelOptions } from "../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   copyPlaybook,
@@ -19,21 +16,18 @@ import {
 import { playbookToSteps } from "../../utils/parser/playbook/playbookToSteps.ts";
 import Step from "./steps/Step.jsx";
 import StepActions from "./StepActions.jsx";
-import { getStepTitle } from "./utils.jsx";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PlaybookTitle from "../common/PlaybookTitle.jsx";
 import GlobalVariables from "../common/GlobalVariable/index.jsx";
 import {
-  rangeSelector,
   resetTimeRange,
   setPlaybookState,
 } from "../../store/features/timeRange/timeRangeSlice.ts";
 import { useNavigate } from "react-router-dom";
 import Loading from "../common/Loading/index.tsx";
-import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
-import { getTaskFromStep } from "../../utils/parser/playbook/stepsToplaybook.ts";
 import PlaybookDescription from "../PlaybookDescription/index.jsx";
+import { queryForStepTask } from "../../utils/execution/queryForStepTask.ts";
 
 const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const navigate = useNavigate();
@@ -41,9 +35,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
     useLazyGetPlaybookQuery();
   const { steps, isEditing } = useSelector(playbookSelector);
-  const [triggerExecutePlaybook] = useExecutePlaybookMutation();
   const [outputs, setOutputs] = useState([]);
-  const timeRange = useSelector(rangeSelector);
   const copied = useRef(false);
 
   const populateData = () => {
@@ -78,72 +70,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
         value,
       }),
     );
-  };
-
-  const queryForStepTask = async (step, cb) => {
-    if (Object.keys(step.errors ?? {}).length > 0) {
-      cb({}, false);
-      return;
-    }
-
-    let body = {
-      playbook_task_definition: getTaskFromStep(step),
-      meta: {
-        time_range: timeRange,
-      },
-    };
-
-    if (
-      Object.keys(body?.playbook_task_definition?.documentation_task ?? {})
-        .length > 0
-    ) {
-      cb(
-        {
-          step: step,
-          data: null,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-      return;
-    }
-
-    try {
-      const response = await triggerExecutePlaybook(body).unwrap();
-      if (!response?.success || response?.task_execution_result?.error) {
-        dispatch(
-          showSnackbar(
-            response?.task_execution_result?.error || "There was an error",
-          ),
-        );
-        cb(
-          {
-            error:
-              response?.task_execution_result?.error || "There was an error",
-          },
-          false,
-        );
-        return;
-      }
-      cb(
-        {
-          step: step,
-          data: response,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-    } catch (e) {
-      console.error(e);
-      cb(
-        {
-          error: e.err ?? e.message,
-        },
-        false,
-      );
-    }
   };
 
   const handleGlobalExecute = () => {
@@ -206,7 +132,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full lg:w-1/2 m-auto">
       {showHeading && (
         <Heading
           heading={

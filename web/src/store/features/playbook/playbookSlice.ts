@@ -232,7 +232,6 @@ const playbookSlice = createSlice({
       state.steps[payload.index].description = payload.description;
     },
     changeProgress: (state, { payload }) => {
-      console.log(payload);
       state.steps[payload.index].executioninprogress = payload.progress;
     },
     selectSourceAndModel: (
@@ -310,6 +309,9 @@ const playbookSlice = createSlice({
     },
     setGoldenMetric(state, { payload }) {
       state.steps[payload.index].golden_metric = payload.metric;
+    },
+    setGoldenMetrics(state, { payload }) {
+      state.steps[payload.index].golden_metrics = payload.metric;
     },
     setPanel(state, { payload }) {
       state.steps[payload.index].panel = payload.panel;
@@ -504,6 +506,7 @@ export const {
   setWidget,
   setApplicationName,
   setGoldenMetric,
+  setGoldenMetrics,
   setNRQLData,
   setDatadogService,
   setDatadogMetricFamily,

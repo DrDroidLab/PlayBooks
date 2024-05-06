@@ -6,127 +6,24 @@ import { Launch } from "@mui/icons-material";
 import Notes from "./Notes.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   addExternalLinks,
-  changeProgress,
   deleteStep,
   toggleExternalLinkVisibility,
-  updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { getTaskFromStep } from "../../../utils/parser/playbook/stepsToplaybook.ts";
-import { getStepTitle } from "../utils.jsx";
 import ExternalLinks from "./ExternalLinks.jsx";
-import { rangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { useExecutePlaybookMutation } from "../../../store/features/playbook/api/index.ts";
 import Query from "./Query.jsx";
+import { handleExecute } from "../../../utils/execution/handleExecute.ts";
 
 function Step({ step, index }) {
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
-  const [outputs, setOutputs] = useState([]);
   const dispatch = useDispatch();
-  const timeRange = useSelector(rangeSelector);
-  const [triggerExecutePlaybook] = useExecutePlaybookMutation();
-
-  const updateCardByIndex = (key, value) => {
-    dispatch(
-      updateStep({
-        index,
-        key,
-        value,
-      }),
-    );
-  };
 
   function handleDeleteClick(index) {
     dispatch(deleteStep(index));
-  }
-
-  const queryForStepTask = async (step, cb) => {
-    if (Object.keys(step.errors ?? {}).length > 0) {
-      cb({}, false);
-      return;
-    }
-
-    let body = {
-      playbook_task_definition: getTaskFromStep(step),
-      meta: {
-        time_range: timeRange,
-      },
-    };
-
-    if (
-      Object.keys(body?.playbook_task_definition?.documentation_task ?? {})
-        .length > 0
-    ) {
-      cb(
-        {
-          step: step,
-          data: null,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-      return;
-    }
-
-    try {
-      const response = await triggerExecutePlaybook(body).unwrap();
-      cb(
-        {
-          step: step,
-          data: response,
-          timestamp: new Date().toTimeString(),
-          title: getStepTitle(step),
-        },
-        true,
-      );
-    } catch (e) {
-      updateCardByIndex("outputError", e.err ?? e.message);
-      console.error(e);
-      cb(
-        {
-          error: e.err,
-        },
-        false,
-      );
-    }
-  };
-
-  const handleExecute = () => {
-    dispatch(changeProgress({ index: index, progress: true }));
-
-    updateCardByIndex("outputLoading", true);
-    updateCardByIndex("showOutput", true);
-    updateCardByIndex("outputError", null);
-    updateCardByIndex("output", null);
-    updateCardByIndex("showError", false);
-
-    queryForStepTask(step, function (res) {
-      if (Object.keys(res ?? {}).length > 0) {
-        if (res.err) {
-          updateCardByIndex("showOutput", true);
-          updateCardByIndex("outputLoading", false);
-          return;
-        }
-        setOutputs([res, ...outputs]);
-        updateCardByIndex("showOutput", true);
-        updateCardByIndex("output", res);
-        updateCardByIndex("outputLoading", false);
-        changeCardExecutionProgressStatus(false);
-      } else {
-        updateCardByIndex("showError", true);
-        updateCardByIndex("showOutput", false);
-        updateCardByIndex("outputLoading", false);
-      }
-    });
-  };
-
-  function changeCardExecutionProgressStatus(status) {
-    dispatch(changeProgress({ index, status }));
   }
 
   const toggleExternalLinks = () => {
@@ -189,7 +86,7 @@ function Step({ step, index }) {
             {step.source && (
               <button
                 className={styles["pb-button"]}
-                onClick={() => handleExecute(index)}>
+                onClick={() => handleExecute(step)}>
                 <Tooltip title="Run this Step">
                   <>
                     Run <PlayArrowIcon />

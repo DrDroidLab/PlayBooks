@@ -18,7 +18,7 @@ export interface Step {
   dimensionName?: string;
   dimensionValue?: string;
   dimensionIndex?: number;
-  metric?: string;
+  metric?: any;
   executioninprogress?: string;
   outputLoading?: boolean;
   showOutput?: boolean;
@@ -41,6 +41,7 @@ export interface Step {
   widget?: any;
   application_name?: string;
   golden_metric?: GoldenMetric;
+  golden_metrics?: any[];
   nrqlData?: any;
   datadogService?: any;
   datadogMetricFamily?: string;

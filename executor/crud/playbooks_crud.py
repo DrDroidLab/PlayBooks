@@ -76,13 +76,17 @@ def create_db_playbook(account: Account, created_by, playbook: PlaybookProto, is
             global_variable_set = None
             if playbook.global_variable_set:
                 global_variable_set = proto_to_dict(playbook.global_variable_set)
+            description = None
+            if playbook.description.value:
+                description = playbook.description.value
             db_playbook = PlayBook(account=account,
                                    name=playbook_name,
                                    playbook=playbook,
                                    created_by=created_by,
                                    is_active=True,
                                    global_variable_set=global_variable_set,
-                                   is_generated=is_generated)
+                                   is_generated=is_generated,
+                                   description=description)
             db_playbook.save()
         except IntegrityError:
             return None, f"Integrity Error: Playbook with name {playbook_name} already exists"

@@ -8,20 +8,22 @@ export const handleExecute = (step) => {
   store.dispatch(changeProgress({ index: currentStepIndex, progress: true }));
 
   updateCardByIndex("outputLoading", true);
-  updateCardByIndex("showOutput", true);
+  updateCardByIndex("showOutput", false);
   updateCardByIndex("outputError", null);
-  updateCardByIndex("output", null);
+  updateCardByIndex("outputs", null);
   updateCardByIndex("showError", false);
 
   queryForStepTask(step, function (res) {
     if (Object.keys(res ?? {}).length > 0) {
-      if (res.err) {
+      if (res.error) {
         updateCardByIndex("showOutput", true);
         updateCardByIndex("outputLoading", false);
+        updateCardByIndex("showError", true);
+        updateCardByIndex("outputError", res.error);
         return;
       }
       updateCardByIndex("showOutput", true);
-      updateCardByIndex("output", res);
+      updateCardByIndex("outputs", res);
       updateCardByIndex("outputLoading", false);
       store.dispatch(
         changeProgress({ index: currentStepIndex, progress: false }),
