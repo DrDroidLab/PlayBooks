@@ -59,3 +59,6 @@ docker-compose -f playbooks.docker-compose.yaml up -d
 
 ## Have feedback or queries?
 Asks questions in the [Slack Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ) or write to us at founders [at] drdroid [dot] io
+
+## Want to contribute?
+Read our [contribution guidelines](/CONTRIBUTION.md)
