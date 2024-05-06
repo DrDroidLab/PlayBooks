@@ -103,7 +103,7 @@ function TaskDetails({ task, data, stepIndex }) {
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
-      <VariablesBox />
+      <VariablesBox task={task} />
     </div>
   );
 }
