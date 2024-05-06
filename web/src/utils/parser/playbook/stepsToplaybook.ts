@@ -190,6 +190,36 @@ export const getTaskFromStep = (
       let new_relic_task = {};
       switch (step.modelType) {
         case models.NEW_RELIC_ENTITY_DASHBOARD:
+          if (step.widget?.length > 0) {
+            const tasks = (step.widget ?? []).map((w) => {
+              new_relic_task = {
+                ...new_relic_task,
+                type: "ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION",
+                entity_dashboard_widget_nrql_metric_execution_task: {
+                  dashboard_guid: step.dashboard?.id,
+                  dashboard_name: step.dashboard.label,
+                  page_guid: step.page.page_guid,
+                  page_name: step.page.page_name,
+                  widget_id: w.widget_id,
+                  widget_title: w.widget_title,
+                  widget_nrql_expression: w.widget_nrql_expression,
+                  process_function: "timeseries",
+                },
+              };
+
+              return new_relic_task;
+            });
+            tasks.map((new_relic_task) =>
+              taskList.push({
+                ...task,
+                type: "METRIC",
+                metric_task: {
+                  source: step.source,
+                  new_relic_task,
+                },
+              }),
+            );
+          }
           new_relic_task = {
             ...new_relic_task,
             type: "ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION",
@@ -377,7 +407,16 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
           });
         });
       } else {
-        tasksList = [step];
+        if (step.widget && step.widget.length > 0) {
+          step.widget.forEach((w) => {
+            tasksList.push({
+              ...step,
+              widget: w,
+            });
+          });
+        } else {
+          tasksList = [step];
+        }
       }
     }
     return {

@@ -165,8 +165,8 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
               nrTask?.metric_task?.new_relic_task
                 ?.entity_application_golden_metric_execution_task;
             return {
-              id: nrAppTask.golden_metric_name,
-              label: nrAppTask.golden_metric_name,
+              id: nrAppTask?.golden_metric_name,
+              label: nrAppTask?.golden_metric_name,
               metric: {
                 golden_metric_name: nrAppTask?.golden_metric_name,
                 golden_metric_unit: nrAppTask?.golden_metric_unit,
@@ -194,17 +194,20 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
               newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
                 ?.page_name,
           },
-          widget: {
-            widget_id:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.widget_id,
-            widget_title:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.widget_title,
-            widget_nrql_expression:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.widget_nrql_expression,
-          },
+          widget: tasks.map((nrTask) => {
+            const nrDashboardTask =
+              nrTask?.metric_task?.new_relic_task
+                ?.entity_dashboard_widget_nrql_metric_execution_task;
+            return {
+              id: nrDashboardTask?.widget_id,
+              label: nrDashboardTask?.widget_title,
+              widget: {
+                widget_id: nrDashboardTask?.widget_id,
+                widget_title: nrDashboardTask?.widget_title,
+                widget_nrql_expression: nrDashboardTask?.widget_nrql_expression,
+              },
+            };
+          }),
           nrqlData: {
             metric_name: newRelicStep?.nrql_metric_execution_task?.metric_name,
             unit: newRelicStep?.nrql_metric_execution_task?.unit,
