@@ -51,7 +51,7 @@ export default function CustomNode({ data }) {
             alt="logo"
           />
         )}
-        <p className="text-lg font-bold text-center z-10 break-word">
+        <p className="text-lg font-bold text-center z-10 break-word line-clamp-4">
           {data?.step?.description ||
             data?.step?.selectedSource ||
             `Step - ${data?.index + 1}`}
