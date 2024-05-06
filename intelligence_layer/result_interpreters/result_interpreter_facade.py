@@ -1,4 +1,5 @@
 import logging
+import re
 
 from django.conf import settings
 from google.protobuf.wrappers_pb2 import StringValue
@@ -10,7 +11,7 @@ from intelligence_layer.result_interpreters.metric_task_result_interpreters.basi
 from intelligence_layer.result_interpreters.metric_task_result_interpreters.llm_chat_gpt_vision_metric_task_interpreter import \
     llm_chat_gpt_vision_metric_task_result_interpreter
 from intelligence_layer.result_interpreters.step_interpreter import basic_step_summariser, \
-    llm_chat_gpt_vision_step_summariser
+    llm_chat_gpt_step_summariser
 
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
@@ -47,7 +48,7 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStepD
     if interpreter_type == InterpreterType.BASIC_I:
         return basic_step_summariser(step, task_interpretations)
     elif interpreter_type == InterpreterType.LLM_CHAT_GPT_VISION_I:
-        return llm_chat_gpt_vision_step_summariser(step, task_interpretations)
+        return llm_chat_gpt_step_summariser(step, task_interpretations)
 
 
 def playbook_step_execution_result_interpret(interpreter: InterpreterType, playbook: PlaybookProto,
@@ -66,9 +67,15 @@ def playbook_step_execution_result_interpret(interpreter: InterpreterType, playb
 
             interpretation_result = step_result_interpret(interpreter, step_log.step, step_log.logs)
             if interpretation_result:
+                step_name = step_log.step.name.value
+                if not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
+                    title = StringValue(value=f'Step {i + 1}: {step_name}')
+                else:
+                    title = StringValue(value=f'Step {i + 1}')
+
                 base_step_interpretation = InterpretationProto(
                     type=InterpretationProto.Type.SUMMARY,
-                    title=StringValue(value=f'Step {i + 1}: {step_log.step.name.value}'),
+                    title=title,
                 )
                 interpretations.append(base_step_interpretation)
                 interpretations.extend(interpretation_result)

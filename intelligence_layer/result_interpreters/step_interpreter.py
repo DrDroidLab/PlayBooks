@@ -7,6 +7,6 @@ def basic_step_summariser(step: PlaybookStepDefinitionProto,
     return task_interpretations
 
 
-def llm_chat_gpt_vision_step_summariser(step: PlaybookStepDefinitionProto,
-                                        task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
+def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
+                                 task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
     return task_interpretations
