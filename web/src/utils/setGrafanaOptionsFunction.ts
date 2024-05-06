@@ -4,6 +4,7 @@ import { setGrafanaOptions } from "../store/features/playbook/playbookSlice.ts";
 export const setGrafanaOptionsFunction = (index) => {
   const options: any = [];
   const task = store.getState().playbook.steps[index];
+  if (!task) return;
   const assets = task.assets;
   const promqlMetrics = assets.panel_promql_map.find(
     (e) => e.panel_id === task.panel.panel_id,
