@@ -5,7 +5,7 @@ from django.conf import settings
 from openai import OpenAI
 from google.protobuf.wrappers_pb2 import StringValue
 
-from intelligence_layer.task_result_interpreters.metric_task_result_interpreters.utils import \
+from intelligence_layer.result_interpreters.metric_task_result_interpreters.utils import \
     metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
 from media.utils import generate_local_image_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
@@ -22,7 +22,7 @@ def get_task_result_data_type(task_result: PlaybookMetricTaskExecutionResultProt
         return None
 
 
-def gpt_metric_inference(generated_image_url: str):
+def gpt_metric_task_inference(generated_image_url: str):
     keys = """
         anomaly_detected:boolean
         description:string
@@ -75,7 +75,7 @@ def gpt_metric_inference(generated_image_url: str):
 def vision_api_evaluation_function(data_type, image_url: str):
     if data_type == 'metric':
         try:
-            gpt_response = gpt_metric_inference(image_url)
+            gpt_response = gpt_metric_task_inference(image_url)
         except Exception as e:
             logger.error(f'Error getting GPT response: {e}')
             raise e
@@ -102,10 +102,10 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
     if not settings.OPENAI_API_KEY:
         raise ValueError('OpenAI API key is not set.')
     file_key = generate_local_image_path()
-    metric_expression = task_result.metric_expression.value
-    metric_expression = metric_expression.replace('`', '')
-    metric_name = task_result.metric_name.value
-    metric_source = metric_source_displace_name_map.get(task_result.metric_source)
+    metric_expression = task_result.metric_expression.value if task_result.metric_expression else ''
+    metric_expression = metric_expression.replace('`', '') if metric_expression else ''
+    metric_name = task_result.metric_name.value if task_result.metric_name else ''
+    metric_source = metric_source_displace_name_map.get(task_result.metric_source) if task_result.metric_source else ''
     result = task_result.result
     result_type = result.type
     data_type = get_task_result_data_type(task_result)

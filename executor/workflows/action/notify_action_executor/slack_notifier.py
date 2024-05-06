@@ -40,47 +40,22 @@ class SlackNotifier(Notifier):
         blocks = []
         file_uploads = []
         for i, interpretation in enumerate(execution_output):
-            if interpretation.type == InterpretationProto.Type.SUMMARY:
-                if interpretation.title.value.startswith('Hello team'):
-                    blocks.append({
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": interpretation.title.value
-                        }
-                    })
-                else:
-                    title = f'Step {i + 1}: {interpretation.title.value}'
-                    description = interpretation.description.value
-                    summary = interpretation.summary.value
-                    block_text = title
-                    if description:
-                        block_text += f'\n{description}'
-                    if summary:
-                        block_text += f'\n{summary}'
-                    blocks.append({
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": block_text
-                        }
-                    })
-            elif interpretation.type == InterpretationProto.Type.IMAGE:
-                title = f'Step {i + 1}: {interpretation.title.value}'
-                description = interpretation.description.value
-                summary = interpretation.summary.value
-                block_text = title
-                if description:
-                    block_text += f'\n{description}'
-                if summary:
-                    block_text += f'\n{summary}'
-                blocks.append({
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": block_text
-                    }
-                })
+            title = f'{interpretation.title.value}'
+            description = interpretation.description.value
+            summary = interpretation.summary.value
+            block_text = title
+            if description:
+                block_text += f'\n{description}'
+            if summary:
+                block_text += f'\n{summary}'
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": block_text
+                }
+            })
+            if interpretation.type == InterpretationProto.Type.IMAGE:
                 blocks.append({
                     "type": "image",
                     "image_url": interpretation.image_url.value,
