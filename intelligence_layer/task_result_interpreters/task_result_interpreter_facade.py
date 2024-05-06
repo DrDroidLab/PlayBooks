@@ -12,10 +12,54 @@ from intelligence_layer.task_result_interpreters.metric_task_result_interpreters
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto, PlaybookExecutionLog, Playbook as PlaybookProto
+    PlaybookTaskExecutionResult as PlaybookTaskExecutionResultProto, PlaybookExecutionLog, Playbook as PlaybookProto, \
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, PlaybookStepDefinition as PlaybookStepDefinitionProto
 from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
+
+
+def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStepDefinitionProto,
+                          task_logs: [PlaybookExecutionLog]) -> InterpretationProto:
+    all_timeseries_result = []
+    all_table_results = []
+    for log in task_logs:
+        task_execution_result = log.task_execution_result
+        which_one_of = task_execution_result.WhichOneof('result')
+        if which_one_of == 'metric_task_execution_result':
+            metric_task_execution_result = task_execution_result.metric_task_execution_result
+            metric_result = metric_task_execution_result.result
+            if metric_result.type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
+                all_timeseries_result.append(metric_task_execution_result)
+            elif metric_result.type == PlaybookMetricTaskExecutionResultProto.Result.Type.TABLE_RESULT:
+                all_table_results.append(metric_task_execution_result)
+            else:
+                logger.error(f'Unsupported metric result type: {metric_result.type}')
+                continue
+        elif which_one_of == 'data_fetch_task_execution_result':
+            all_table_results.append(task_execution_result.data_fetch_task_execution_result)
+
+    combined_metric_task_result: PlaybookMetricTaskExecutionResultProto
+    for mtr in all_timeseries_result:
+        result = mtr.result
+        timeseries = result.timeseries
+        labeled_metric_timeseries = timeseries.labeled_metric_timeseries
+        metric_label_values = labeled_metric_timeseries[0].metric_label_values
+
+    for log in step_task_execution_logs:
+        task = log.task
+        task_result = log.task_execution_result
+        which_one_of = task_result.WhichOneof('result')
+        if which_one_of == 'metric_task_execution_result':
+            metric_task_result: PlaybookMetricTaskExecutionResultProto = task_result.metric_task_execution_result
+            if interpreter_type == InterpreterType.BASIC_I:
+                return basic_metric_task_result_interpreter(task, metric_task_result)
+            if interpreter_type == InterpreterType.LLM_CHAT_GPT_VISION_I:
+                return llm_chat_gpt_vision_metric_task_result_interpreter(task, metric_task_result)
+        if which_one_of == 'data_fetch_task_execution_result':
+            data_fetch_task_result = task_result.data_fetch_task_execution_result
+            if interpreter_type == InterpreterType.BASIC_I:
+                return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
 
 
 def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskDefinitionProto,
@@ -47,6 +91,28 @@ def playbook_execution_result_interpret(interpreter_type: InterpreterType, playb
     for log in playbook_execution_logs:
         try:
             interpretation_result = task_result_interpret(interpreter_type, log.task, log.task_execution_result)
+            if interpretation_result:
+                interpretations.append(interpretation_result)
+        except Exception as e:
+            logger.error(f"Failed to interpret playbook execution log with error: {e}")
+            continue
+    return interpretations
+
+
+def playbook_step_execution_result_interpret(interpreter: InterpreterType, playbook: PlaybookProto,
+                                             step_logs: [PlaybookStepExecutionLogProto]) -> [InterpretationProto]:
+    location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook.id.value)
+    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
+    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
+    object_url = build_absolute_uri(None, location, protocol, enabled)
+    base_title = f'Hello team, here is snapshot of playbook <{object_url}|{playbook.name.value}> ' \
+                 f'that is configured for this alert'
+    interpretations: [InterpretationProto] = [
+        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=base_title))
+    ]
+    for step_log in step_logs:
+        try:
+            interpretation_result = step_result_interpret(interpreter, step_log.step, step_log.logs)
             if interpretation_result:
                 interpretations.append(interpretation_result)
         except Exception as e:
