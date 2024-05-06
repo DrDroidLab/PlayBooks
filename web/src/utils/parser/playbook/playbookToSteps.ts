@@ -86,14 +86,18 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
               task?.metric_task?.grafana_task?.promql_metric_execution_task
                 ?.panel_title,
           },
-          grafanaQuery: {
-            expression:
-              task?.metric_task?.grafana_task?.promql_metric_execution_task
-                ?.promql_expression,
-            originalExpression:
-              task?.metric_task?.grafana_task?.promql_metric_execution_task
-                ?.panel_promql_expression,
-          },
+          grafanaQuery: tasks.map((task) => {
+            const grafanaTask =
+              task?.metric_task?.grafana_task?.promql_metric_execution_task;
+            return {
+              id: grafanaTask?.panel_promql_expression,
+              label: grafanaTask?.panel_promql_expression,
+              query: {
+                expression: grafanaTask?.promql_expression,
+                originalExpression: grafanaTask?.panel_promql_expression,
+              },
+            };
+          }),
           datasource_uid: task?.metric_task?.grafana_task?.datasource_uid,
           selectedOptions: options,
         };

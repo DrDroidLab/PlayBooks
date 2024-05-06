@@ -3,10 +3,14 @@ import {
   setGrafanaExpression,
   setGrafanaQuery,
   setPanel,
+  updateStep,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
 import { OptionType } from "../playbooksData.ts";
-import { setGrafanaOptionsFunction } from "../setGrafanaOptionsFunction.ts";
+import {
+  grafanaOptionsList,
+  setGrafanaOptionsFunction,
+} from "../setGrafanaOptionsFunction.ts";
 
 export const grafanaBuilder = (task, index, options: any) => {
   return {
@@ -69,7 +73,7 @@ export const grafanaBuilder = (task, index, options: any) => {
         {
           key: "grafanaQuery",
           label: "Query",
-          type: OptionType.OPTIONS,
+          type: OptionType.MULTI_SELECT,
           options:
             task.assets?.panel_promql_map?.length > 0
               ? task.assets?.panel_promql_map[0]?.promql_metrics?.map((e) => {
@@ -84,10 +88,31 @@ export const grafanaBuilder = (task, index, options: any) => {
                 })
               : [],
           // requires: ['panel'],
-          selected: task?.grafanaQuery?.originalExpression,
-          handleChange: (_, val) => {
-            store.dispatch(setGrafanaQuery({ index, query: val.query }));
-            setGrafanaOptionsFunction(index);
+          selected: task?.grafanaQuery,
+          handleChange: (val) => {
+            if (task?.grafanaQuery?.length > 0) {
+              const options = grafanaOptionsList(index);
+              if (options?.length === 0) {
+                store.dispatch(
+                  setGrafanaQuery({ index, query: val.map((e) => e.query) }),
+                );
+                setGrafanaOptionsFunction(index);
+              } else {
+                store.dispatch(
+                  updateStep({
+                    index,
+                    key: "message",
+                    value:
+                      "This query contains a varible. You cannot select multiple of these queries.",
+                  }),
+                );
+              }
+            } else {
+              store.dispatch(
+                setGrafanaQuery({ index, query: val.map((e) => e.query) }),
+              );
+              setGrafanaOptionsFunction(index);
+            }
           },
         },
       ],
@@ -95,12 +120,16 @@ export const grafanaBuilder = (task, index, options: any) => {
         {
           label: "Selected Query",
           type: OptionType.MULTILINE,
-          value: task?.grafanaQuery?.expression,
+          value:
+            task?.grafanaQuery?.length > 0
+              ? task?.grafanaQuery[0]?.expression
+              : "",
           handleChange: (e) => {
             store.dispatch(
               setGrafanaExpression({ index, expression: e.target.value }),
             );
           },
+          condition: !task?.grafanaQuery || task?.grafanaQuery?.length < 2,
           // requires: ['grafanaQuery']
         },
       ],

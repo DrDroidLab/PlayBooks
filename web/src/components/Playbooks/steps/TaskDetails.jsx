@@ -9,6 +9,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import OptionRender from "./OptionRender.jsx";
 import VariablesBox from "./VariablesBox.jsx";
+import { InfoOutlined } from "@mui/icons-material";
 
 function TaskDetails({ task, data, stepIndex }) {
   const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
@@ -103,6 +104,12 @@ function TaskDetails({ task, data, stepIndex }) {
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
+      {task.message && (
+        <div className="flex gap-1 items-center my-2 bg-gray-100 rounded p-2 text-sm text-blue-500">
+          <InfoOutlined fontSize="small" />
+          {task.message}
+        </div>
+      )}
       <VariablesBox task={task} />
     </div>
   );
