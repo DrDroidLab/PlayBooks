@@ -1,0 +1,7 @@
+contact_links:
+  - name: 🤔 Questions and Help
+    url: https://doctor-droid-public.slack.com
+    about: Join our Slack community.
+  - name: 📞 Dedicated Support
+    url: https://mail.google.com/mail/u/0/?view=cm&fs=1&to=support@drdroid.io&tf=1
+    about: Write to us if you'd like dedicated support
