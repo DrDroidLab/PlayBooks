@@ -46,7 +46,7 @@ export interface Step {
   datadogService?: any;
   datadogMetricFamily?: string;
   datadogEnvironment?: string;
-  datadogMetric?: string;
+  datadogMetric?: any;
   command?: any;
   cluster?: string;
   isOpen: boolean;

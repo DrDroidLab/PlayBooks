@@ -315,23 +315,54 @@ export const getTaskFromStep = (
     case SOURCES.DATADOG:
       switch (step.modelType) {
         case models.DATADOG:
-          task = {
-            ...task,
-            type: "METRIC",
-            metric_task: {
-              source: "DATADOG",
-              datadog_task: {
+          if (
+            step.datadogMetric &&
+            step.datadogMetric?.length > 0 &&
+            typeof step.datadogMetric != "string"
+          ) {
+            const tasks = (step.datadogMetric ?? []).map((metric) => {
+              let datadog_task = {
                 type: "SERVICE_METRIC_EXECUTION",
                 service_metric_execution_task: {
                   service_name: step.datadogService?.name,
                   environment_name: step?.datadogEnvironment ?? "",
-                  metric: step.datadogMetric ?? "",
+                  metric: metric ?? "",
                   metric_family: step.datadogMetricFamily ?? "",
                   process_function: "timeseries",
                 },
+              };
+
+              return datadog_task;
+            });
+            tasks.map((datadog_task) =>
+              taskList.push({
+                ...task,
+                type: "METRIC",
+                metric_task: {
+                  source: step.source,
+                  datadog_task,
+                },
+              }),
+            );
+          } else {
+            task = {
+              ...task,
+              type: "METRIC",
+              metric_task: {
+                source: "DATADOG",
+                datadog_task: {
+                  type: "SERVICE_METRIC_EXECUTION",
+                  service_metric_execution_task: {
+                    service_name: step.datadogService?.name,
+                    environment_name: step?.datadogEnvironment ?? "",
+                    metric: step.datadogMetric ?? "",
+                    metric_family: step.datadogMetricFamily ?? "",
+                    process_function: "timeseries",
+                  },
+                },
               },
-            },
-          };
+            };
+          }
 
           break;
 
@@ -415,7 +446,16 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
             });
           });
         } else {
-          tasksList = [step];
+          if (step.datadogMetric && step.datadogMetric.length > 0) {
+            step.datadogMetric.forEach((metric) => {
+              tasksList.push({
+                ...step,
+                datadogMetric: metric,
+              });
+            });
+          } else {
+            tasksList = [step];
+          }
         }
       }
     }

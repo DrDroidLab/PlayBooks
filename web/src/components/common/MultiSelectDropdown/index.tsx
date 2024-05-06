@@ -44,6 +44,11 @@ function MultiSelectDropdown({
     multiSelectChange(selected);
   }, [selected]);
 
+  useEffect(() => {
+    if (selected.length !== task[selectedValuesKey]?.length)
+      setSelected(task[selectedValuesKey] ?? []);
+  }, [task[selectedValuesKey]]);
+
   return (
     <div className={`flex flex-col`}>
       <p
@@ -64,7 +69,7 @@ function MultiSelectDropdown({
         containerClassName={"w-56"}
         {...additionalProps}
       />
-      <div className="flex mt-2 gap-1 items-center">
+      <div className="flex mt-2 gap-1 items-center flex-wrap">
         {selected?.map((e) => (
           <div className="flex items-center text-xs rounded p-1 bg-gray-100 cursor-pointer font-semibold">
             <span>{e[selectedDisplayKey]}</span>

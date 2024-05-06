@@ -6,7 +6,6 @@ import TaskDetails from "./TaskDetails.jsx";
 
 const PlaybookStep = ({ card, index }) => {
   const showOutput = card.showOutput;
-  console.log(card.output);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>

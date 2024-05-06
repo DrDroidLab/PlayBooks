@@ -246,7 +246,13 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
             datadogStep?.service_metric_execution_task?.metric_family,
           datadogEnvironment:
             datadogStep?.service_metric_execution_task?.environment_name,
-          datadogMetric: datadogStep?.service_metric_execution_task?.metric,
+          datadogMetric: tasks.map((ddTask) => {
+            const datadogTask = ddTask?.metric_task?.datadog_task;
+            return {
+              id: datadogTask?.service_metric_execution_task?.metric,
+              label: datadogTask?.service_metric_execution_task?.metric,
+            };
+          }),
           query1: datadogStep?.query_metric_execution_task?.queries[0],
           query2: datadogStep?.query_metric_execution_task?.queries[1],
           formula: datadogStep?.query_metric_execution_task?.formula,
