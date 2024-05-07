@@ -31,7 +31,7 @@ defusedxml==0.7.1
 distro==1.9.0
 dj-email-url==1.0.6
 dj-rest-auth==2.2.7
-Django==4.1.4
+Django==4.1.13
 django-allauth==0.52.0
 django-appconf==1.0.6
 django-celery-beat==2.4.0
