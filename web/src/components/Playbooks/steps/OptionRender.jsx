@@ -5,9 +5,11 @@ import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import styles from "./index.module.css";
 import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 export default function OptionRender({ data, removeErrors, task, stepIndex }) {
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (...args) => {
     if (data.handleChange) {
@@ -63,7 +65,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             onSelectionChange={handleChange}
             selected={data.selected ?? task[`${data.key}`]}
             searchable={true}
-            disabled={data.disabled}
+            disabled={isPrefetched || data.disabled}
             error={error}
             containerClassName={"w-56"}
             {...data.additionalProps}
@@ -94,6 +96,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             onValueChange={handleChange}
             value={data.selected || task[`${data.key}`]}
             error={error}
+            disabled={isPrefetched}
             {...data.additionalProps}
           />
         </div>
@@ -111,7 +114,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             rows={4}
             value={data.value ?? data.selected ?? task[`${data.key}`]}
             onChange={handleTextAreaChange}
-            disabled={data.disabled}
+            disabled={isPrefetched || data.disabled}
             style={error ? { borderColor: "red" } : {}}
           />
         </div>
@@ -134,7 +137,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             label={data.label}
             options={data.options}
             error={data.error}
-            disabled={data.disabled}
+            disabled={isPrefetched || data.disabled}
             additionalProps={data.additionalProps}
             placeholder={data.placeholder}
             selectedDisplayKey={data.selectedDisplayKey}

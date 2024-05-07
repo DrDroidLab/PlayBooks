@@ -21,29 +21,27 @@ const PlaybookStep = ({ card, index }) => {
             <p className={styles["notesHeading"]}>
               <b>Output</b>
             </p>
-            {
-              <div
-                className={
-                  card.output?.data?.task_execution_result
-                    ?.data_fetch_task_execution_result?.result?.table_result ||
-                  card.output?.data?.task_execution_result
-                    ?.metric_task_execution_result?.result?.table_result
-                    ? styles["output-grid-table"]
-                    : styles["output-grid"]
-                }>
-                {[card.output].map((output, index) => {
-                  return (
-                    <div className={styles["output-box"]}>
-                      <PlaybookStepOutput
-                        key={index}
-                        error={card.outputError}
-                        stepOutput={output}
-                      />
-                    </div>
-                  );
-                })}
+            {(!card.outputs || card.outputs?.data?.length === 0) && (
+              <div className={styles["output-box"]}>
+                <PlaybookStepOutput
+                  key={index}
+                  error={card.outputError}
+                  stepOutput={null}
+                />
               </div>
-            }
+            )}
+            {(card.outputs?.data ?? [])?.map((output, index) => {
+              return (
+                <div className={styles["output-box"]}>
+                  <PlaybookStepOutput
+                    key={index}
+                    error={card.outputError}
+                    stepOutput={output}
+                    step={card}
+                  />
+                </div>
+              );
+            })}
           </>
         )}
       </div>

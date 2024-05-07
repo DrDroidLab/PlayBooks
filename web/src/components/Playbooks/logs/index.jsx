@@ -1,34 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/index.ts";
-import Loading from "../../common/Loading/index.tsx";
-import Heading from "../../Heading.js";
-import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
-import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
+import Heading from "../../Heading";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
-  setCurrentStepIndex,
+  setPlaybookData,
   setSteps,
+  setView,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import GlobalVariables from "../../common/GlobalVariable/index.jsx";
 import {
   resetTimeRange,
   setPlaybookState,
   updateCustomTimeRange,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import CustomDrawer from "../../common/CustomDrawer/index.jsx";
-import CreateFlow from "../create/CreateFlow.jsx";
-import StepDetails from "../create/StepDetails.jsx";
+import { useParams } from "react-router-dom";
+import Loading from "../../common/Loading/index.tsx";
+import CreatePlaybook from "../CreatePlaybook.jsx";
+import Builder from "./Builder.jsx";
+import TabsComponent from "../../common/TabsComponent/index.tsx";
+import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
+import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
+import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
+import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 
-function PlaybookLog() {
+const viewOptions = [
+  {
+    id: "builder",
+    label: "Builder",
+  },
+  {
+    id: "step",
+    label: "List",
+  },
+];
+
+function PlaybookLogs() {
   const { playbook_run_id } = useParams();
   const dispatch = useDispatch();
   const [triggerGetPlaybookLog, { data, isLoading }] =
     useLazyGetPlaybookExecutionQuery();
-  const { currentStepIndex } = useSelector(playbookSelector);
+  const { view } = useSelector(playbookSelector);
   const playbook = data?.playbook_execution?.playbook;
   const timeRange = data?.playbook_execution?.time_range;
   const outputs = data?.playbook_execution?.logs;
@@ -42,6 +54,7 @@ function PlaybookLog() {
   useEffect(() => {
     if (playbook && Object.keys(playbook).length > 0) {
       populateData();
+      dispatch(setPlaybookData(playbook));
       dispatch(
         updateCustomTimeRange({
           value: "Custom",
@@ -70,6 +83,7 @@ function PlaybookLog() {
 
   const populateData = () => {
     const pbData = playbookToSteps(playbook);
+    dispatch(setSteps(pbData));
     const assetModelPromises = pbData.map((el, i) =>
       dispatch(
         getAssetModelOptions.initiate(
@@ -89,42 +103,57 @@ function PlaybookLog() {
       console.log("Error: ", err);
     });
 
+    console.log("outputs", outputs);
     for (let output of outputs) {
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
       if (stepIndex === isNaN) continue;
       const step = pbData[stepIndex];
       if (step) {
-        step.showOutput = true;
-        step.output = output;
+        updateCardByIndex("showOutput", true, stepIndex);
+        updateCardByIndex(
+          "outputs",
+          {
+            data: [output],
+          },
+          stepIndex,
+        );
       }
     }
+  };
 
-    dispatch(setSteps(pbData));
+  const handleSelect = (option) => {
+    dispatch(setView(option.id));
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <Heading heading={playbook.name} customTimeRange={true} />
-      <main className="relative flex h-[calc(100%-80px)]">
-        <div className="absolute top-2 left-2 z-10 bg-white p-1 rounded w-48">
-          <GlobalVariables />
-        </div>
-        <div className="flex-[1] h-full">
-          <CreateFlow />
-        </div>
-        <CustomDrawer
-          isOpen={currentStepIndex}
-          setIsOpen={() => dispatch(setCurrentStepIndex(null))}
-          addtionalStyles={"lg:w-[30%]"}
-          showOverlay={false}
-          startFrom="80">
-          <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
-            <StepDetails />
+    <div className="h-screen overflow-hidden">
+      <Heading
+        heading={playbook.name}
+        onTimeRangeChangeCb={false}
+        onRefreshCb={false}
+        customTimeRange={true}
+        showEditTitle={playbook}
+      />
+      <div className="flex flex-col h-[calc(100%-80px)]">
+        <main className="relative flex flex-1">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
+            <TabsComponent
+              options={viewOptions}
+              handleSelect={handleSelect}
+              selectedId={view}
+            />
           </div>
-        </CustomDrawer>
-      </main>
+          {view === "step" ? (
+            <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
+              <CreatePlaybook showHeading={false} />
+            </div>
+          ) : (
+            <Builder />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
 
-export default PlaybookLog;
+export default PlaybookLogs;

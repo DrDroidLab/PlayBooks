@@ -28,15 +28,17 @@ import Loading from "../common/Loading/index.tsx";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
 import PlaybookDescription from "../PlaybookDescription/index.jsx";
 import { queryForStepTask } from "../../utils/execution/queryForStepTask.ts";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
     useLazyGetPlaybookQuery();
-  const { steps, isEditing } = useSelector(playbookSelector);
+  const { steps, isEditing, currentStepIndex } = useSelector(playbookSelector);
   const [outputs, setOutputs] = useState([]);
   const copied = useRef(false);
+  const isPrefetched = useIsPrefetched();
 
   const populateData = () => {
     const data = playbookToSteps(playbook);
@@ -166,7 +168,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 key={index}
                 style={{ borderRadius: "5px" }}
                 className="collapsible_option"
-                defaultExpanded={step.isPrefetched ? false : true}
+                defaultExpanded={index === currentStepIndex ? false : true}
                 expanded={step.isOpen}
                 onChange={() => dispatch(toggleStep({ index }))}>
                 <AccordionSummary
@@ -185,7 +187,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 </AccordionDetails>
               </Accordion>
             ))}
-            <StepActions allowSave={allowSave} />
+            {!isPrefetched && <StepActions allowSave={allowSave} />}
           </div>
         </div>
       </div>

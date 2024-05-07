@@ -33,7 +33,7 @@ export default function CustomNode({ data }) {
         {!data.step.outputError &&
           !data.step.outputLoading &&
           data.step.showOutput &&
-          data.step.output &&
+          data.step.outputs?.data?.length > 0 &&
           !data.step.showError && (
             <CheckCircleOutline color="success" size={20} />
           )}

@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import SelectComponent from "../../SelectComponent/index.jsx";
-import styles from "./index.module.css";
 import { CircularProgress } from "@mui/material";
 import { useLazyGetAssetsQuery } from "../../../store/features/playbook/api/index.ts";
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  playbookSelector,
   setErrors,
-  setSelectedGrafanaOptions,
-  updateStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import ValueComponent from "../../ValueComponent/index.jsx";
+import OptionRender from "./OptionRender.jsx";
+import VariablesBox from "./VariablesBox.jsx";
+import { InfoOutlined } from "@mui/icons-material";
 
 function TaskDetails({ task, data, stepIndex }) {
   const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
   const dispatch = useDispatch();
   const prevError = useRef(null);
+  const { view } = useSelector(playbookSelector);
 
   const getAssets = () => {
     triggerGetAssets({
@@ -28,6 +28,7 @@ function TaskDetails({ task, data, stepIndex }) {
     const errors = {};
     for (let step of data.builder) {
       for (let value of step) {
+        if (value.isOptional) continue;
         if (!value.key || value.selected) {
           break;
         }
@@ -68,172 +69,49 @@ function TaskDetails({ task, data, stepIndex }) {
     }
   }, [task]);
 
-  function handleOption(data, index) {
-    const handleChange = (...args) => {
-      if (data.handleChange) {
-        data.handleChange(...args);
-      } else {
-        dispatch(
-          updateStep({ index: stepIndex, key: data.key, value: args[0] }),
-        );
-      }
-
-      removeErrors(data.key);
-    };
-
-    const handleTextAreaChange = (e) => {
-      const val = e.target.value;
-      if (data.handleChange) {
-        data.handleChange(e);
-      } else {
-        dispatch(updateStep({ index: stepIndex, key: data.key, value: val }));
-      }
-
-      removeErrors(data.key);
-    };
-
-    const error = data.key
-      ? task.showError && !data.selected && !task[`${data.key}`]
-      : false;
-
-    switch (data.type) {
-      case "options":
-        if (!(data.options?.length > 0)) return;
-        return (
-          <SelectComponent
-            key={index}
-            data={data.options}
-            placeholder={`Select ${data.label}`}
-            onSelectionChange={handleChange}
-            selected={data.selected ?? task[`${data.key}`]}
-            searchable={true}
-            disabled={true}
-            error={error}
-          />
-        );
-      case "text":
-        return (
-          <div key={index} className="flex flex-col">
-            <p
-              style={{ marginTop: "10px", fontSize: "13px", color: "#676666" }}>
-              <b>{data.label}</b>
-            </p>
-            <ValueComponent
-              placeHolder={`Enter ${data?.label}`}
-              valueType={"STRING"}
-              onValueChange={handleChange}
-              value={data.selected || task[`${data.key}`]}
-              error={error}
-              disabled={true}
-            />
-          </div>
-        );
-      case "multiline":
-        return (
-          <div
-            key={index}
-            style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-            <p
-              style={{ marginTop: "10px", fontSize: "13px", color: "#676666" }}>
-              <b>{data.label}</b>
-            </p>
-            <textarea
-              className={styles["notes"]}
-              rows={4}
-              value={data.value ?? task[`${data.key}`]}
-              onChange={handleTextAreaChange}
-              disabled={data.disabled}
-              style={error ? { borderColor: "red" } : {}}
-            />
-          </div>
-        );
-      default:
-        return;
-    }
-  }
-
-  const handleVariableChange = (_, val) => {
-    dispatch(setSelectedGrafanaOptions({ index: stepIndex, option: val }));
-  };
-
   return (
-    <>
-      {data?.builder?.map((step, index) => (
+    <div className="mt-2">
+      {data?.builder?.map((step) => (
         <div
-          key={index}
-          style={{
-            display: "flex",
-            marginTop: "5px",
-            gap: "5px",
-            alignItems: "center",
-          }}>
-          {step.map((value, i) => {
-            let flag = true;
-            for (let val of value?.requires ?? []) {
-              if (!task[val]) {
-                flag = false;
-                break;
-              }
-            }
-
-            if (flag) return handleOption(value, i);
-            else return <></>;
-          })}
+          className={`flex gap-2 flex-wrap ${
+            view === "builder" ? "flex-col" : "flex-row"
+          }`}>
+          {step.map((value, index) =>
+            value.condition ?? true ? (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  flexDirection: view === "builder" ? "column" : "row",
+                  // borderTop: "0.5px solid gray",
+                  gap: "10px",
+                  alignItems: "flex-start",
+                  flexWrap: "wrap",
+                  justifyContent: "flex-start",
+                  maxWidth: "600px",
+                }}>
+                <OptionRender
+                  data={value}
+                  removeErrors={removeErrors}
+                  stepIndex={stepIndex}
+                  task={task}
+                />
+              </div>
+            ) : (
+              <></>
+            ),
+          )}
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
-      <div className={styles["variables-box"]}>
-        {task?.options && task?.options?.length > 0 && (
-          <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
-            <p
-              style={{ fontSize: "12px", color: "darkgray", marginTop: "5px" }}>
-              Variables
-            </p>
-            {task?.options.map((option, i) => {
-              return (
-                <div key={i} style={{ display: "flex", gap: "5px" }}>
-                  {option?.values?.length > 0 ? (
-                    <SelectComponent
-                      data={option?.values.map((e, i) => {
-                        return {
-                          id: e,
-                          label: e,
-                          option,
-                        };
-                      })}
-                      placeholder={`Select ${option?.label?.label}`}
-                      onSelectionChange={handleVariableChange}
-                      selected={
-                        task?.selectedOptions
-                          ? task?.selectedOptions[option?.variable]
-                          : ""
-                      }
-                      searchable={true}
-                    />
-                  ) : (
-                    <ValueComponent
-                      placeHolder={`Enter ${option?.variable}`}
-                      valueType={"STRING"}
-                      onValueChange={(val) =>
-                        handleVariableChange({
-                          id: val,
-                          label: option.variable,
-                        })
-                      }
-                      value={
-                        task?.selectedOptions
-                          ? task?.selectedOptions[option?.variable]
-                          : ""
-                      }
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </>
+      {task.message && (
+        <div className="flex gap-1 items-center my-2 bg-gray-100 rounded p-2 text-sm text-blue-500">
+          <InfoOutlined fontSize="small" />
+          {task.message}
+        </div>
+      )}
+      <VariablesBox task={task} />
+    </div>
   );
 }
 

@@ -15,8 +15,10 @@ import {
 import ExternalLinks from "./ExternalLinks.jsx";
 import Query from "./Query.jsx";
 import { handleExecute } from "../../../utils/execution/handleExecute.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function Step({ step, index }) {
+  const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
@@ -82,26 +84,28 @@ function Step({ step, index }) {
             </div>
           </div>
           <Notes step={step} index={index} />
-          <div className={styles["step-buttons"]}>
-            {step.source && (
+          {!isPrefetched && (
+            <div className={styles["step-buttons"]}>
+              {step.source && (
+                <button
+                  className={styles["pb-button"]}
+                  onClick={() => handleExecute(step)}>
+                  <Tooltip title="Run this Step">
+                    <>
+                      Run <PlayArrowIcon />
+                    </>
+                  </Tooltip>
+                </button>
+              )}
               <button
                 className={styles["pb-button"]}
-                onClick={() => handleExecute(step)}>
-                <Tooltip title="Run this Step">
-                  <>
-                    Run <PlayArrowIcon />
-                  </>
+                onClick={() => handleDeleteClick(index)}>
+                <Tooltip title="Remove this Step">
+                  <DeleteIcon />
                 </Tooltip>
               </button>
-            )}
-            <button
-              className={styles["pb-button"]}
-              onClick={() => handleDeleteClick(index)}>
-              <Tooltip title="Remove this Step">
-                <DeleteIcon />
-              </Tooltip>
-            </button>
-          </div>
+            </div>
+          )}
           {!step.isPrefetched && (
             <div>
               <div>

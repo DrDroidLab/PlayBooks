@@ -58,24 +58,28 @@ function MultiSelectDropdown({
         }}>
         <b>{label}</b>
       </p>
-      <SelectComponent
-        data={options ?? []}
-        placeholder={placeholder || `Select ${label}`}
-        onSelectionChange={handleSelectChange}
-        selected={null}
-        searchable={true}
-        disabled={disabled}
-        error={error}
-        containerClassName={"w-56"}
-        {...additionalProps}
-      />
+      {!disabled && (
+        <SelectComponent
+          data={options ?? []}
+          placeholder={placeholder || `Select ${label}`}
+          onSelectionChange={handleSelectChange}
+          selected={null}
+          searchable={true}
+          disabled={disabled}
+          error={error}
+          containerClassName={"w-56"}
+          {...additionalProps}
+        />
+      )}
       <div className="flex mt-2 gap-1 items-center flex-wrap">
         {selected?.map((e) => (
           <div className="flex items-center text-xs rounded p-1 bg-gray-100 cursor-pointer font-semibold">
             <span>{e[selectedDisplayKey]}</span>
-            <div onClick={() => handleDelete(e)}>
-              <CloseRounded fontSize="small" />
-            </div>
+            {!disabled && (
+              <div onClick={() => handleDelete(e)}>
+                <CloseRounded fontSize="small" />
+              </div>
+            )}
           </div>
         ))}
       </div>

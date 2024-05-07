@@ -20,6 +20,7 @@ import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx"
 import { useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
+import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -44,6 +45,7 @@ const Heading = ({
   copyPlaybook,
   showCopy,
   isPlayground = false,
+  showSave = true,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,6 +53,7 @@ const Heading = ({
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
+  const isPrefetched = useIsPrefetched();
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -99,7 +102,7 @@ const Heading = ({
                       {playbook.name || heading}
                     </div>
                   )}
-                  {showEditTitle && (
+                  {showEditTitle && !isPrefetched && (
                     <div
                       className="icon"
                       onClick={() => setShowEdit(!showEdit)}>
@@ -138,9 +141,10 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {playbook.view === "builder" && playbook.steps.length > 0 && (
-            <StepActions />
-          )}
+          {playbook.view === "builder" &&
+            playbook.steps.length > 0 &&
+            showSave &&
+            !isPrefetched && <StepActions />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker
