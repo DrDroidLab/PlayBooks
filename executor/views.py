@@ -148,9 +148,9 @@ def step_run_v2(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookSte
             )
             pe_logs.append(playbook_execution_log)
 
-    step_interpretations: [InterpretationProto] = step_result_interpret(interpreter_type, step, task_interpretations)
+    step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
     step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
-                                                       step_interpretations=step_interpretations)
+                                                       step_interpretation=step_interpretation)
 
     return RunPlaybookStepResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                      step_execution_log=step_execution_log)
@@ -193,10 +193,10 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
                 )
                 pe_logs.append(playbook_execution_log)
 
-        step_interpretations: [InterpretationProto] = step_result_interpret(interpreter_type, step,
-                                                                            task_interpretations)
+        step_interpretations: InterpretationProto = step_result_interpret(interpreter_type, step,
+                                                                          task_interpretations)
         step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
-                                                           step_interpretations=step_interpretations)
+                                                           step_interpretation=step_interpretations)
         step_execution_logs.append(step_execution_log)
     playbook_execution = PlaybookExecutionProto(playbook=playbook, time_range=time_range,
                                                 step_execution_logs=step_execution_logs)
