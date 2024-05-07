@@ -9,7 +9,6 @@ from protos.connectors.assets.postgres_asset_pb2 import PostgresDatabaseAssetOpt
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
     AccountConnectorAssets
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType, ConnectorType
-from utils.proto_utils import dict_to_proto
 
 
 class PostgresAssetManager(ConnectorAssetManager):
@@ -41,21 +40,10 @@ class PostgresAssetManager(ConnectorAssetManager):
         postgres_asset_protos = []
         for asset in pg_models:
             if asset.model_type == ConnectorMetadataModelType.POSTGRES_DATABASE:
-                table_column_map = asset.metadata
-                tables: [PostgresDatabaseAssetModel.PostgresTable] = []
-                for table, columns in table_column_map.items():
-                    column_protos: [PostgresDatabaseAssetModel.PostgresTable.PostgresColumn] = []
-                    for c in columns:
-                        column_protos.append(
-                            dict_to_proto(c, PostgresDatabaseAssetModel.PostgresTable.PostgresColumn))
-                    tables.append(
-                        PostgresDatabaseAssetModel.PostgresTable(name=StringValue(value=table), columns=column_protos))
                 postgres_asset_protos.append(PostgresAssetModel(
                     id=UInt64Value(value=asset.id), connector_type=asset.connector_type,
                     type=asset.model_type,
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
-                    postgres_database=PostgresDatabaseAssetModel(
-                        database=StringValue(value=asset.model_uid),
-                        tables=tables)))
+                    postgres_database=PostgresDatabaseAssetModel(database=StringValue(value=asset.model_uid))))
         return AccountConnectorAssets(postgres=PostgresAssets(assets=postgres_asset_protos))
