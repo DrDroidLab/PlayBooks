@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 def basic_step_summariser(step: PlaybookStepDefinitionProto,
-                          task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
-    return task_interpretations
+                          task_interpretations: [InterpretationProto]) -> InterpretationProto:
+    return InterpretationProto()
 
 
 def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
-                                 task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
+                                 task_interpretations: [InterpretationProto]) -> InterpretationProto:
     if len(task_interpretations) <= 1:
-        return task_interpretations
+        return InterpretationProto()
     try:
         keys = """
                 anomaly_detected:boolean
@@ -101,11 +101,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
             description=StringValue(value=description),
             summary=StringValue(value=summary),
         )
-
-        step_interpretations = [step_summary]
-        step_interpretations.extend(task_interpretations)
-
-        return step_interpretations
+        return step_summary
     except Exception as e:
         logger.error(f'Error summarising step: {e}')
-        return task_interpretations
+        return InterpretationProto()

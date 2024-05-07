@@ -1955,24 +1955,31 @@ global___PlaybookExecutionLog = PlaybookExecutionLog
 class PlaybookStepExecutionLog(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    ID_FIELD_NUMBER: builtins.int
+    TIMESTAMP_FIELD_NUMBER: builtins.int
     STEP_FIELD_NUMBER: builtins.int
     LOGS_FIELD_NUMBER: builtins.int
-    STEP_INTERPRETATIONS_FIELD_NUMBER: builtins.int
+    STEP_INTERPRETATION_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    timestamp: builtins.int
     @property
     def step(self) -> global___PlaybookStepDefinition: ...
     @property
     def logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookExecutionLog]: ...
     @property
-    def step_interpretations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation]: ...
+    def step_interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
     def __init__(
         self,
         *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        timestamp: builtins.int = ...,
         step: global___PlaybookStepDefinition | None = ...,
         logs: collections.abc.Iterable[global___PlaybookExecutionLog] | None = ...,
-        step_interpretations: collections.abc.Iterable[protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation] | None = ...,
+        step_interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["step", b"step"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["logs", b"logs", "step", b"step", "step_interpretations", b"step_interpretations"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "step", b"step", "step_interpretation", b"step_interpretation"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "logs", b"logs", "step", b"step", "step_interpretation", b"step_interpretation", "timestamp", b"timestamp"]) -> None: ...
 
 global___PlaybookStepExecutionLog = PlaybookStepExecutionLog
 

@@ -3,7 +3,7 @@ import logging
 from django.utils import timezone
 
 from accounts.models import Account
-from executor.models import PlayBookExecution, PlayBookExecutionLog
+from executor.models import PlayBookExecution, PlayBookExecutionLog, PlayBookStepExecutionLog
 from protos.base_pb2 import TimeRange
 from protos.playbooks.playbook_pb2 import PlaybookExecutionStatusType
 from utils.proto_utils import proto_to_dict
@@ -101,15 +101,32 @@ def create_db_playbook_execution_log(account, playbook, playbook_execution, play
 
 def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results):
     all_db_playbook_execution_logs = []
-    for step_id, all_task_results in all_step_results.items():
-        for result in all_task_results:
+    for step_id, all_results in all_step_results.items():
+        step_interpretation = all_results['step_interpretation']
+        all_task_executions = all_results['all_task_executions']
+
+        try:
+            playbook_step_execution_log = PlayBookStepExecutionLog.objects.create(
+                account=account,
+                playbook=playbook,
+                playbook_execution=playbook_execution,
+                playbook_step_id=step_id,
+                interpretation=step_interpretation
+            )
+        except Exception as e:
+            logger.error(f"Failed to create playbook step execution log with error: {e}")
+            raise e
+
+        for result in all_task_executions:
             playbook_execution_log = PlayBookExecutionLog(
                 account=account,
                 playbook=playbook,
                 playbook_execution=playbook_execution,
                 playbook_step_id=step_id,
                 playbook_task_definition_id=result['task_id'],
-                playbook_task_result=result['task_result']
+                playbook_step_execution_log=playbook_step_execution_log,
+                playbook_task_result=result['task_result'],
+                interpretation=result['task_interpretation']
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)
     try:
