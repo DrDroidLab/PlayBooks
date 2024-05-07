@@ -6,6 +6,7 @@ Join the [Slack community](https://doctor-droid-public.slack.com/)
 
 ## How to get started?
 Every new code that goes in is linked to a Github issue. So, if you have something on your mind, create an issue and then share it on the `#issues-community` channel in Slack. One of the authors will assign you the issue and share with you relevant details on getting started.
+For first time contributors, check out [these issues](https://github.com/DrDroidLab/PlayBooks/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
 ## Code Documentation
 WIP

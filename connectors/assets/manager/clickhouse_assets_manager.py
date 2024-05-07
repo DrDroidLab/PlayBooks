@@ -11,7 +11,6 @@ from protos.connectors.assets.clickhouse_asset_pb2 import ClickhouseDatabaseAsse
     ClickhouseAssetModel, ClickhouseAssets
 from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
     ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
-from utils.proto_utils import dict_to_proto
 
 
 class ClickhouseAssetManager(ConnectorAssetManager):
@@ -43,22 +42,10 @@ class ClickhouseAssetManager(ConnectorAssetManager):
         clickhouse_asset_protos = []
         for asset in clickhouse_models:
             if asset.model_type == ConnectorMetadataModelTypeProto.CLICKHOUSE_DATABASE:
-                table_column_map = asset.metadata
-                tables: [ClickhouseDatabaseAssetModel.ClickhouseTable] = []
-                for table, columns in table_column_map.items():
-                    column_protos: [ClickhouseDatabaseAssetModel.ClickhouseTable.ClickhouseColumn] = []
-                    for c in columns:
-                        column_protos.append(
-                            dict_to_proto(c, ClickhouseDatabaseAssetModel.ClickhouseTable.ClickhouseColumn))
-                    tables.append(
-                        ClickhouseDatabaseAssetModel.ClickhouseTable(name=StringValue(value=table),
-                                                                     columns=column_protos))
                 clickhouse_asset_protos.append(ClickhouseAssetModel(
                     id=UInt64Value(value=asset.id), connector_type=asset.connector_type,
                     type=asset.model_type,
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
-                    clickhouse_database=ClickhouseDatabaseAssetModel(
-                        database=StringValue(value=asset.model_uid),
-                        tables=tables)))
+                    clickhouse_database=ClickhouseDatabaseAssetModel(database=StringValue(value=asset.model_uid))))
         return AccountConnectorAssets(clickhouse=ClickhouseAssets(assets=clickhouse_asset_protos))

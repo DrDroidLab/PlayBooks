@@ -26,7 +26,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import Loading from "../common/Loading/index.tsx";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
-import PlaybookDescription from "../PlaybookDescription/index.jsx";
 import { queryForStepTask } from "../../utils/execution/queryForStepTask.ts";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
@@ -154,10 +153,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
         />
       )}
       <div className={styles["pb-container"]}>
-        <div className="border p-1 rounded m-2">
-          <PlaybookDescription />
-        </div>
-
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
         </div>

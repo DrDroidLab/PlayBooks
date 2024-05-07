@@ -34,24 +34,18 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTaskD
             return llm_chat_gpt_vision_metric_task_result_interpreter(task, metric_task_result)
     if which_one_of == 'data_fetch_task_execution_result':
         data_fetch_task_result = task_result.data_fetch_task_execution_result
-        if interpreter_type == InterpreterType.BASIC_I:
-            return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
+        return basic_data_fetch_task_result_interpreter(task, data_fetch_task_result)
 
 
 def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStepDefinitionProto,
-                          task_logs: [PlaybookExecutionLog]) -> [InterpretationProto]:
-    task_interpretations = []
-    for log in task_logs:
-        task = log.task
-        task_result = log.task_execution_result
-        task_interpretations.append(task_result_interpret(interpreter_type, task, task_result))
+                          task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
     if interpreter_type == InterpreterType.BASIC_I:
         return basic_step_summariser(step, task_interpretations)
     elif interpreter_type == InterpreterType.LLM_CHAT_GPT_VISION_I:
         return llm_chat_gpt_step_summariser(step, task_interpretations)
 
 
-def playbook_step_execution_result_interpret(interpreter: InterpreterType, playbook: PlaybookProto,
+def playbook_step_execution_result_interpret(playbook: PlaybookProto,
                                              step_logs: [PlaybookStepExecutionLogProto]) -> [InterpretationProto]:
     location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook.id.value)
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
@@ -64,8 +58,14 @@ def playbook_step_execution_result_interpret(interpreter: InterpreterType, playb
     ]
     for i, step_log in enumerate(step_logs):
         try:
-
-            interpretation_result = step_result_interpret(interpreter, step_log.step, step_log.logs)
+            step = step_log.step
+            interpreter_type = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
+            task_interpretations = []
+            for log in step_log.logs:
+                task = log.task
+                task_result = log.task_execution_result
+                task_interpretations.append(task_result_interpret(interpreter_type, task, task_result))
+            interpretation_result = step_result_interpret(interpreter_type, step_log.step, step_log.logs)
             if interpretation_result:
                 step_name = step_log.step.name.value
                 if not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
