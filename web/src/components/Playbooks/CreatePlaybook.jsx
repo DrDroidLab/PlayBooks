@@ -33,7 +33,6 @@ import Loading from "../common/Loading/index.tsx";
 import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
 import { getTaskFromStep } from "../../utils/parser/playbook/stepsToplaybook.ts";
-import PlaybookDescription from "../PlaybookDescription/index.jsx";
 
 const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const navigate = useNavigate();
@@ -226,10 +225,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
         />
       )}
       <div className={styles["pb-container"]}>
-        <div className="border p-1 rounded m-2">
-          <PlaybookDescription />
-        </div>
-
         <div className={styles["global-variables-pane"]}>
           <GlobalVariables />
         </div>
