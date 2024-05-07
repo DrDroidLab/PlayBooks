@@ -1,6 +1,6 @@
 ---
 name: New Integration
-about: Suggest a new integration that you require
+about: Suggest a new data source integration
 title: ''
 labels: 'new integration'
 assignees: ''

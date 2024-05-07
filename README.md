@@ -41,12 +41,17 @@ Watch [demo video](https://www.youtube.com/watch?v=xprnmBvF6rk).
 - **More integrations**: Find something missing? Request [here](https://github.com/DrDroidLab/PlayBooks/issues/new).
 
 
-
 ## Getting Started with alert enrichment
 #### Self-hosting:
 **Step 1:** We currently support setup using docker.
 Run the below command and signup on [localhost](http://localhost:80) to start creating playbooks.
 
+**Use latest docker images**
+```
+docker-compose -f deploy.docker-compose.yaml up -d
+```
+
+or **Build from source**
 ```
 git clone git@github.com:DrDroidLab/PlayBooks.git
 ```
