@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   setName,
+  setPlaybookKey,
 } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +59,11 @@ const Heading = ({
 
   const goBack = () => {
     navigate(-1);
+  };
+
+  const handleDescription = (e) => {
+    const value = e.target.value;
+    dispatch(setPlaybookKey({ key: "description", value: value }));
   };
 
   return (
@@ -124,6 +130,15 @@ const Heading = ({
                     </button>
                   )}
                 </div>
+                {(Object.keys(playbook.currentPlaybook).length > 0 ||
+                  showEditTitle) && (
+                  <input
+                    className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
+                    placeholder="+ Add Description..."
+                    value={playbook.description}
+                    onChange={handleDescription}
+                  />
+                )}
                 {!!subHeadingLink && !!subHeading ? (
                   <a
                     style={{ color: "blue", fontSize: "15px" }}
