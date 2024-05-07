@@ -10,6 +10,7 @@ import google.protobuf.message
 import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
+import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_pb2
 import protos.playbooks.workflow_pb2
 import sys
@@ -858,3 +859,67 @@ class ExecutionsWorkflowsListResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_executions", b"workflow_executions"]) -> None: ...
 
 global___ExecutionsWorkflowsListResponse = ExecutionsWorkflowsListResponse
+
+@typing_extensions.final
+class PlaybooksBuilderOptionsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> None: ...
+
+global___PlaybooksBuilderOptionsRequest = PlaybooksBuilderOptionsRequest
+
+@typing_extensions.final
+class PlaybooksBuilderOptionsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class InterpreterTypeOption(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        TYPE_FIELD_NUMBER: builtins.int
+        DISPLAY_NAME_FIELD_NUMBER: builtins.int
+        type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType
+        @property
+        def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType = ...,
+            display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["display_name", b"display_name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["display_name", b"display_name", "type", b"type"]) -> None: ...
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    INTERPRETER_TYPES_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def interpreter_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybooksBuilderOptionsResponse.InterpreterTypeOption]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        interpreter_types: collections.abc.Iterable[global___PlaybooksBuilderOptionsResponse.InterpreterTypeOption] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["interpreter_types", b"interpreter_types", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
+
+global___PlaybooksBuilderOptionsResponse = PlaybooksBuilderOptionsResponse

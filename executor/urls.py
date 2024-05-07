@@ -25,5 +25,8 @@ urlpatterns = [
     path('api/executions/get', executor_views.playbooks_api_execution_get),
 
     # Templates
-    path("templates", executor_views.playbooks_templates)
+    path("templates", executor_views.playbooks_templates),
+
+    # Options
+    path('builder/options', executor_views.playbooks_builder_options),
 ]

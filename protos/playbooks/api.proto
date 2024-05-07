@@ -213,3 +213,18 @@ message ExecutionsWorkflowsListResponse {
   Message message = 3;
   repeated WorkflowExecution workflow_executions = 4;
 }
+
+message PlaybooksBuilderOptionsRequest {
+  Meta meta = 1;
+}
+
+message PlaybooksBuilderOptionsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  message InterpreterTypeOption {
+    InterpreterType type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+  repeated InterpreterTypeOption interpreter_types = 4;
+}

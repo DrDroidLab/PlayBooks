@@ -33,7 +33,8 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
     ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse, PlaybookTemplatesGetResponse, \
-    RunPlaybookTaskResponseV2, RunPlaybookStepResponseV2, RunPlaybookRequest, RunPlaybookResponse
+    RunPlaybookTaskResponseV2, RunPlaybookStepResponseV2, RunPlaybookRequest, RunPlaybookResponse, \
+    PlaybooksBuilderOptionsRequest, PlaybooksBuilderOptionsResponse
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto, \
     PlaybookExecutionLog as PlaybookExecutionLogProto, PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, \
     PlaybookExecution as PlaybookExecutionProto
@@ -461,3 +462,23 @@ def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplates
                                             message=Message(title="Internal Error", description=str(e)))
 
     return PlaybookTemplatesGetResponse(success=BoolValue(value=True), data=json_contents)
+
+
+@web_api(PlaybooksBuilderOptionsRequest)
+def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -> \
+        Union[PlaybooksBuilderOptionsResponse, HttpResponse]:
+    try:
+        interpreter_type_options = [PlaybooksBuilderOptionsResponse.InterpreterTypeOption(type=InterpreterType.BASIC_I,
+                                                                                          display_name=StringValue(
+                                                                                              value="Default Interpreter"))]
+        if settings.OPENAI_API_KEY is not None and settings.OPENAI_API_KEY != "":
+            interpreter_type_options.append(
+                PlaybooksBuilderOptionsResponse.InterpreterTypeOption(type=InterpreterType.LLM_CHAT_GPT_VISION_I,
+                                                                      display_name=StringValue(
+                                                                          value="OpenAi Vision Interpreter")))
+
+        return PlaybooksBuilderOptionsResponse(success=BoolValue(value=True),
+                                               interpreter_types=interpreter_type_options)
+    except Exception as e:
+        return PlaybooksBuilderOptionsResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
