@@ -220,6 +220,7 @@ const playbookSlice = createSlice({
     },
     toggleStep: (state, { payload }) => {
       state.steps[payload.index].isOpen = !state.steps[payload.index].isOpen;
+      state.currentStepIndex = payload.index.toString();
     },
     deleteStep: (state, { payload }) => {
       state.steps.splice(payload, 1);
@@ -328,7 +329,8 @@ const playbookSlice = createSlice({
       state.steps[payload.index].grafanaQuery.expression = payload.expression;
     },
     setGrafanaOptions(state, { payload }) {
-      state.steps[payload.index].options = payload.options;
+      if (payload.options && payload.index)
+        state.steps[payload.index].options = payload.options;
     },
     setSelectedGrafanaOptions(state, { payload }) {
       state.steps[payload.index].selectedOptions = {

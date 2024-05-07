@@ -14,7 +14,7 @@ export const grafanaOptionsList = (index) => {
   let selectedQuery: any = null;
   for (let metric of promqlMetrics) {
     for (let query of task?.grafanaQuery ?? []) {
-      if (metric.expression === query.originalExpression) {
+      if (metric.expression === query?.originalExpression) {
         selectedQuery = metric;
         break;
       }

@@ -14,9 +14,10 @@ function VariablesBox({ task }) {
   const { currentStepIndex } = useSelector(playbookSelector);
   const dispatch = useDispatch();
   const handleVariableChange = (_, val) => {
-    dispatch(
-      setSelectedGrafanaOptions({ index: currentStepIndex, option: val }),
-    );
+    if (val)
+      dispatch(
+        setSelectedGrafanaOptions({ index: currentStepIndex, option: val }),
+      );
   };
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function VariablesBox({ task }) {
           <p style={{ fontSize: "12px", color: "darkgray", marginTop: "5px" }}>
             Variables
           </p>
-          {task?.options.map((option, i) => {
+          {task?.options?.map((option, i) => {
             return (
               <div
                 key={currentStepIndex}

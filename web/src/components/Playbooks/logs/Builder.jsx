@@ -4,7 +4,6 @@ import {
   playbookSelector,
   setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import PlaybookDescription from "../../PlaybookDescription";
 import GlobalVariables from "../../common/GlobalVariable";
 import CustomDrawer from "../../common/CustomDrawer";
 import Sidebar from "../create/Sidebar";
@@ -21,10 +20,7 @@ function Builder() {
   return (
     <div className="h-full w-full">
       <div className="absolute top-2 left-2 flex flex-col gap-4">
-        <div className="z-10 bg-white p-1 rounded w-64">
-          <PlaybookDescription />
-        </div>
-        <div className="z-10 bg-white p-1 rounded w-64">
+        <div className="z-10 bg-white p-1 rounded w-[300px]">
           <GlobalVariables />
         </div>
       </div>
