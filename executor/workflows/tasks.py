@@ -192,8 +192,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         pe_proto: PlaybookExecutionProto = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
-        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(InterpreterType.BASIC_I,
-                                                                                           p_proto,
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
                                                                                            step_execution_logs)
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
@@ -281,7 +280,6 @@ def test_workflow_notification(account_id, workflow, message_type):
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
 
-    execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(InterpreterType.BASIC_I,
-                                                                                       pb_proto,
+    execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(pb_proto,
                                                                                        step_execution_logs)
     action_executor(account, workflow.actions[0], execution_output)

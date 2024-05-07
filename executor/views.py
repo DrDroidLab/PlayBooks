@@ -18,19 +18,25 @@ from executor.crud.playbooks_crud import create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
+from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
+    step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
     RunPlaybookStepResponse, CreatePlaybookRequest, CreatePlaybookResponse, GetPlaybooksRequest, GetPlaybooksResponse, \
     UpdatePlaybookRequest, UpdatePlaybookResponse, ExecutePlaybookRequest, ExecutePlaybookResponse, \
     ExecutionPlaybookGetRequest, ExecutionPlaybookGetResponse, ExecutionsPlaybooksListResponse, \
-    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse, PlaybookTemplatesGetResponse
-from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto
+    ExecutionsPlaybooksListRequest, ExecutionPlaybookAPIGetResponse, PlaybookTemplatesGetResponse, \
+    RunPlaybookTaskResponseV2, RunPlaybookStepResponseV2, RunPlaybookRequest, RunPlaybookResponse
+from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto, \
+    PlaybookExecutionLog as PlaybookExecutionLogProto, PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, \
+    PlaybookExecution as PlaybookExecutionProto
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -55,6 +61,36 @@ def task_run(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTaskRe
                                    task_execution_result=task_execution_result)
 
 
+@web_api(RunPlaybookTaskRequest)
+def task_run_v2(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTaskResponseV2, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    if not time_range.time_lt or not time_range.time_geq:
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+
+    task = request_message.playbook_task_definition
+    interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
+    try:
+        task_execution_result = execute_task(account.id, time_range, task)
+        interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_execution_result)
+    except Exception as e:
+        playbook_execution_log = PlaybookExecutionLogProto(
+            task=task,
+            task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+        )
+        return RunPlaybookTaskResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                         task_execution_log=playbook_execution_log)
+    playbook_execution_log = PlaybookExecutionLogProto(
+        task=task,
+        task_execution_result=task_execution_result,
+        task_interpretation=interpretation
+    )
+    return RunPlaybookTaskResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                     task_execution_log=playbook_execution_log)
+
+
 @web_api(RunPlaybookStepRequest)
 def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -75,6 +111,96 @@ def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepRe
 
     return RunPlaybookStepResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True), name=step.name,
                                    description=step.description, task_execution_results=task_execution_results)
+
+
+@web_api(RunPlaybookStepRequest)
+def step_run_v2(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepResponseV2, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    if not time_range.time_lt or not time_range.time_geq:
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+
+    step = request_message.playbook_step
+    tasks = step.tasks
+    interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
+
+    pe_logs = []
+    task_interpretations = []
+    for task in tasks:
+        try:
+            task_execution_result = execute_task(account.id, time_range, task)
+            interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_execution_result)
+            playbook_execution_log = PlaybookExecutionLogProto(
+                step=step,
+                task=task,
+                task_execution_result=task_execution_result,
+                task_interpretation=interpretation
+            )
+            pe_logs.append(playbook_execution_log)
+            task_interpretations.append(interpretation)
+        except Exception as e:
+            playbook_execution_log = PlaybookExecutionLogProto(
+                task=task,
+                task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+            )
+            pe_logs.append(playbook_execution_log)
+
+    step_interpretations: [InterpretationProto] = step_result_interpret(interpreter_type, step, task_interpretations)
+    step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
+                                                       step_interpretations=step_interpretations)
+
+    return RunPlaybookStepResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                     step_execution_log=step_execution_log)
+
+
+@web_api(RunPlaybookRequest)
+def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    if not time_range.time_lt or not time_range.time_geq:
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+
+    playbook = request_message.playbook
+    steps = playbook.steps
+    step_execution_logs = []
+    for step in steps:
+        tasks = step.tasks
+        interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
+        pe_logs = []
+        task_interpretations = []
+        for task in tasks:
+            try:
+                task_execution_result = execute_task(account.id, time_range, task)
+                interpretation: InterpretationProto = task_result_interpret(interpreter_type, task,
+                                                                            task_execution_result)
+                playbook_execution_log = PlaybookExecutionLogProto(
+                    step=step,
+                    task=task,
+                    task_execution_result=task_execution_result,
+                    task_interpretation=interpretation
+                )
+                pe_logs.append(playbook_execution_log)
+                task_interpretations.append(interpretation)
+            except Exception as e:
+                playbook_execution_log = PlaybookExecutionLogProto(
+                    task=task,
+                    task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+                )
+                pe_logs.append(playbook_execution_log)
+
+        step_interpretations: [InterpretationProto] = step_result_interpret(interpreter_type, step,
+                                                                            task_interpretations)
+        step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
+                                                           step_interpretations=step_interpretations)
+        step_execution_logs.append(step_execution_log)
+    playbook_execution = PlaybookExecutionProto(playbook=playbook, time_range=time_range,
+                                                step_execution_logs=step_execution_logs)
+    return RunPlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                               playbook_execution=playbook_execution)
 
 
 @web_api(GetPlaybooksRequest)
