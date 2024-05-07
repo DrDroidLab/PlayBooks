@@ -3,12 +3,12 @@ from django.urls import path
 from . import views as executor_views
 
 urlpatterns = [
-    # Playbooks Run APIs
+    # Executor Run APIs
     path('task/run', executor_views.task_run),
     path('task/run/v2', executor_views.task_run_v2),
     path('step/run', executor_views.step_run),
     path('step/run/v2', executor_views.step_run_v2),
-    path('run', executor_views.playbook_run),
+    path('playbook/run', executor_views.playbook_run),
 
     # Playbooks CRUD
     path('get', executor_views.playbooks_get),

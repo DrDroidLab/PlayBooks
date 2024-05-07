@@ -112,6 +112,7 @@ class PlayBookStep(models.Model):
             external_links=el_list_proto,
             description=StringValue(value=self.description),
             notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type,
             tasks=tasks
         )
 
@@ -130,7 +131,8 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
 
@@ -167,7 +169,8 @@ class PlayBookTaskDefinition(models.Model):
             name=StringValue(value=self.name),
             description=StringValue(value=self.description),
             type=self.type,
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
     def save(self, **kwargs):
