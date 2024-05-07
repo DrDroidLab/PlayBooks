@@ -1,4 +1,5 @@
 from typing import Union
+import logging
 
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +14,7 @@ from utils.time_utils import current_epoch_timestamp
 from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
 
+logger = logging.getLogger(__name__)
 
 @web_api(GetSlackAppManifestRequest)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
@@ -109,7 +111,8 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
                 else:
                     return JsonResponse({'success': False, 'message': 'Slack Event Callback Handling failed'})
             except Exception as e:
-                return JsonResponse({'success': False, 'message': f"Slack Event Callback Handling failed: {str(e)}"},
+                logger.error(f"Error updating playbook: {str(e)}")
+                return JsonResponse({'success': False, 'message': f"Slack Event Callback Handling failed"},
                                     status=500)
 
         else:
