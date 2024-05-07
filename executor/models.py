@@ -6,6 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
 from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
 from protos.base_pb2 import TimeRange
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
@@ -79,6 +80,8 @@ class PlayBookStep(models.Model):
     metadata = models.JSONField(null=True, blank=True)
 
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    interpreter_type = models.IntegerField(choices=generate_choices(InterpreterType), db_index=True,
+                                           default=InterpreterType.BASIC_I)
 
     is_active = models.BooleanField(default=True)
 
@@ -109,6 +112,7 @@ class PlayBookStep(models.Model):
             external_links=el_list_proto,
             description=StringValue(value=self.description),
             notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type,
             tasks=tasks
         )
 
@@ -127,7 +131,8 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
 
@@ -143,6 +148,8 @@ class PlayBookTaskDefinition(models.Model):
     type = models.IntegerField(choices=generate_choices(PlaybookTaskDefinitionProto.Type), db_index=True)
     task = models.JSONField()
     task_md5 = models.CharField(max_length=256, db_index=True)
+    interpreter_type = models.IntegerField(choices=generate_choices(InterpreterType), db_index=True,
+                                           default=InterpreterType.BASIC_I)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -162,7 +169,8 @@ class PlayBookTaskDefinition(models.Model):
             name=StringValue(value=self.name),
             description=StringValue(value=self.description),
             type=self.type,
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
     def save(self, **kwargs):

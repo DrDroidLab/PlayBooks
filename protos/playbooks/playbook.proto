@@ -4,6 +4,7 @@ package protos.playbooks;
 import "protos/base.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
+import "protos/playbooks/intelligence_layer/interpreter.proto";
 
 // Task Execution Result Protos
 message PlaybookMetricTaskExecutionResult {
@@ -524,12 +525,13 @@ message PlaybookTaskDefinition {
   google.protobuf.StringValue notes = 4;
   google.protobuf.Struct global_variable_set = 5;
   Type type = 6;
+  InterpreterType interpreter_type = 7;
   oneof task {
-    PlaybookMetricTaskDefinition metric_task = 7;
-    PlaybookDecisionTaskDefinition decision_task = 8;
-    PlaybookDataFetchTaskDefinition data_fetch_task = 9;
-    PlaybookDocumentationTaskDefinition documentation_task = 10;
-    PlaybookActionTaskDefinition action_task = 11;
+    PlaybookMetricTaskDefinition metric_task = 8;
+    PlaybookDecisionTaskDefinition decision_task = 9;
+    PlaybookDataFetchTaskDefinition data_fetch_task = 10;
+    PlaybookDocumentationTaskDefinition documentation_task = 11;
+    PlaybookActionTaskDefinition action_task = 12;
   }
 }
 
@@ -543,7 +545,8 @@ message PlaybookStepDefinition {
   google.protobuf.StringValue description = 3;
   google.protobuf.StringValue notes = 4;
   repeated ExternalLink external_links = 5;
-  repeated PlaybookTaskDefinition tasks = 6;
+  InterpreterType interpreter_type = 6;
+  repeated PlaybookTaskDefinition tasks = 7;
 }
 
 message Playbook {
@@ -578,11 +581,13 @@ message PlaybookExecutionLog {
   PlaybookStepDefinition step = 5;
   PlaybookTaskDefinition task = 6;
   PlaybookTaskExecutionResult task_execution_result = 7;
+  Interpretation task_interpretation = 8;
 }
 
 message PlaybookStepExecutionLog {
   PlaybookStepDefinition step = 1;
   repeated PlaybookExecutionLog logs = 2;
+  repeated Interpretation step_interpretations = 3;
 }
 
 message PlaybookExecution {
