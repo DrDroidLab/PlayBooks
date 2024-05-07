@@ -1,326 +1,37 @@
-import { SOURCES, models } from "../../../constants/index.ts";
-import { Step } from "../../../types.ts";
+import { GlobalVariable, Step } from "../../../types.ts";
+import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
 export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
   if (!(playbook.steps && playbook.steps.length > 0)) return [];
   const list: Step[] = [];
   for (let [i, step] of playbook.steps.entries()) {
-    let additionalData: any = {
+    let data: any = handleStepSourceExtractor(step);
+
+    const stepData: Step = {
+      name: step?.name,
       description: step.description ?? `Step - ${i}`,
-    };
-    let stepSource = step.tasks
-      ? step?.tasks[0].metric_task
-        ? step.tasks[0].metric_task.source
-        : step.tasks[0].data_fetch_task
-        ? step.tasks[0].data_fetch_task.source
-        : step.tasks[0].action_task?.source ?? step?.tasks[0].type
-      : "";
-    let selected = "";
-    let modelType = "";
-    const task = step.tasks ? step.tasks[0] : null;
-
-    const tasks = step.tasks;
-
-    switch (stepSource) {
-      case SOURCES.CLOUDWATCH:
-        const cloudwatchStep = task?.metric_task?.cloudwatch_task;
-        additionalData = {
-          ...additionalData,
-          namespaceName: cloudwatchStep?.metric_execution_task?.namespace,
-          region:
-            cloudwatchStep?.metric_execution_task?.region ??
-            cloudwatchStep?.filter_log_events_task?.region,
-          dimensionName:
-            cloudwatchStep?.metric_execution_task?.dimensions[0].name,
-          dimensionValue:
-            cloudwatchStep?.metric_execution_task?.dimensions[0].value,
-          metric: tasks.map((task) => {
-            const cloudwatchStepInTask = task?.metric_task?.cloudwatch_task;
-            return {
-              id: cloudwatchStepInTask?.metric_execution_task?.metric_name,
-              label: cloudwatchStepInTask?.metric_execution_task?.metric_name,
-            };
-          }),
-          logGroup: cloudwatchStep?.filter_log_events_task?.log_group_name,
-          cw_log_query: cloudwatchStep?.filter_log_events_task?.filter_query,
-        };
-        if (cloudwatchStep?.type === "FILTER_LOG_EVENTS") {
-          stepSource = "CLOUDWATCH";
-          selected = "CLOUDWATCH Log Group";
-          modelType = "CLOUDWATCH_LOG_GROUP";
-        } else {
-          stepSource = "CLOUDWATCH";
-          selected = "CLOUDWATCH Metric";
-          modelType = "CLOUDWATCH_METRIC";
-        }
-        break;
-
-      case SOURCES.GRAFANA_VPC:
-      case SOURCES.GRAFANA:
-        const options = {};
-        for (let { name, value } of task?.metric_task?.grafana_task
-          ?.promql_metric_execution_task?.promql_label_option_values ?? []) {
-          options[name] = value;
-        }
-        stepSource = "GRAFANA";
-        selected =
-          stepSource === SOURCES.GRAFANA_VPC
-            ? "GRAFANA_VPC PromQL"
-            : "GRAFANA PromQL";
-        modelType = "GRAFANA_TARGET_METRIC_PROMQL";
-        additionalData = {
-          ...additionalData,
-          type: task?.type ?? "METRIC",
-          dashboard: {
-            id: task?.metric_task?.grafana_task?.promql_metric_execution_task
-              ?.dashboard_uid,
-            title:
-              task?.metric_task?.grafana_task?.promql_metric_execution_task
-                ?.dashboard_title,
-          },
-          panel: {
-            panel_id:
-              task?.metric_task?.grafana_task?.promql_metric_execution_task
-                ?.panel_id,
-            panel_title:
-              task?.metric_task?.grafana_task?.promql_metric_execution_task
-                ?.panel_title,
-          },
-          grafanaQuery: tasks.map((task) => {
-            const grafanaTask =
-              task?.metric_task?.grafana_task?.promql_metric_execution_task;
-            return {
-              id: grafanaTask?.panel_promql_expression,
-              label: grafanaTask?.panel_promql_expression,
-              query: {
-                expression: grafanaTask?.promql_expression,
-                originalExpression: grafanaTask?.panel_promql_expression,
-              },
-            };
-          }),
-          datasource_uid: task?.metric_task?.grafana_task?.datasource_uid,
-          selectedOptions: options,
-        };
-        break;
-
-      case SOURCES.CLICKHOUSE:
-        stepSource = "CLICKHOUSE";
-        modelType = "CLICKHOUSE_DATABASE";
-        selected = "CLICKHOUSE Database";
-        additionalData = {
-          ...additionalData,
-          database: task?.data_fetch_task?.clickhouse_data_fetch_task?.database,
-          dbQuery: task?.data_fetch_task?.clickhouse_data_fetch_task?.query,
-        };
-        break;
-
-      case SOURCES.POSTGRES:
-        stepSource = "POSTGRES";
-        modelType = "POSTGRES_DATABASE";
-        selected = "POSTGRES Database";
-        additionalData = {
-          ...additionalData,
-          database: task?.data_fetch_task?.postgres_data_fetch_task?.database,
-          dbQuery: task?.data_fetch_task?.postgres_data_fetch_task?.query,
-        };
-        break;
-
-      case SOURCES.EKS:
-        stepSource = "EKS";
-        modelType = "EKS_CLUSTER";
-        selected = "EKS Cluster";
-        additionalData = {
-          ...additionalData,
-          eksRegion: task?.data_fetch_task?.eks_data_fetch_task?.region,
-          cluster: task?.data_fetch_task?.eks_data_fetch_task?.cluster,
-          eksNamespace: task?.data_fetch_task?.eks_data_fetch_task?.namespace,
-          command: {
-            type: task?.data_fetch_task?.eks_data_fetch_task?.command_type,
-            description:
-              task?.data_fetch_task?.eks_data_fetch_task?.description,
-          },
-        };
-        break;
-
-      case SOURCES.TEXT:
-        stepSource = "";
-        selected = "";
-        modelType = "";
-        // additionalData = {
-        // ...additionalData
-        // textNotes: task?.documentation_task?.documentation
-        // };
-        break;
-
-      case SOURCES.NEW_RELIC:
-        stepSource = "NEW_RELIC";
-        const newRelicStep = task?.metric_task?.new_relic_task;
-        additionalData = {
-          ...additionalData,
-          dashboard: {
-            id: newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-              ?.dashboard_guid,
-            title:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.dashboard_name,
-          },
-          golden_metrics: tasks.map((nrTask) => {
-            const nrAppTask =
-              nrTask?.metric_task?.new_relic_task
-                ?.entity_application_golden_metric_execution_task;
-            return {
-              id: nrAppTask?.golden_metric_name,
-              label: nrAppTask?.golden_metric_name,
-              metric: {
-                golden_metric_name: nrAppTask?.golden_metric_name,
-                golden_metric_unit: nrAppTask?.golden_metric_unit,
-                golden_metric_nrql_expression:
-                  nrAppTask?.golden_metric_nrql_expression,
-              },
-            };
-          }),
-          application_name:
-            newRelicStep.entity_application_golden_metric_execution_task
-              ?.application_entity_name,
-          assets: {
-            application_entity_guid:
-              newRelicStep.entity_application_golden_metric_execution_task
-                ?.application_entity_guid,
-            application_name:
-              newRelicStep.entity_application_golden_metric_execution_task
-                ?.application_entity_name,
-          },
-          page: {
-            page_guid:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.page_guid,
-            page_name:
-              newRelicStep?.entity_dashboard_widget_nrql_metric_execution_task
-                ?.page_name,
-          },
-          widget: tasks.map((nrTask) => {
-            const nrDashboardTask =
-              nrTask?.metric_task?.new_relic_task
-                ?.entity_dashboard_widget_nrql_metric_execution_task;
-            return {
-              id: nrDashboardTask?.widget_id,
-              label: nrDashboardTask?.widget_title,
-              widget: {
-                widget_id: nrDashboardTask?.widget_id,
-                widget_title: nrDashboardTask?.widget_title,
-                widget_nrql_expression: nrDashboardTask?.widget_nrql_expression,
-              },
-            };
-          }),
-          nrqlData: {
-            metric_name: newRelicStep?.nrql_metric_execution_task?.metric_name,
-            unit: newRelicStep?.nrql_metric_execution_task?.unit,
-            nrql_expression:
-              newRelicStep?.nrql_metric_execution_task?.nrql_expression,
-          },
-        };
-
-        switch (newRelicStep.type) {
-          case "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION":
-            selected = "NEW_RELIC Entity Application";
-            modelType = models.NEW_RELIC_ENTITY_APPLICATION;
-            break;
-          case "ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION":
-            selected = "NEW_RELIC Entity Dashboard";
-            modelType = models.NEW_RELIC_ENTITY_DASHBOARD;
-            break;
-          case "NRQL_METRIC_EXECUTION":
-            selected = "NEW_RELIC Raw NRQL";
-            modelType = models.NEW_RELIC_NRQL;
-            break;
-          default:
-            break;
-        }
-        break;
-
-      case SOURCES.DATADOG:
-        stepSource = "DATADOG";
-        const datadogStep = task?.metric_task?.datadog_task;
-        additionalData = {
-          ...additionalData,
-          datadogService: {
-            name: datadogStep?.service_metric_execution_task?.service_name,
-          },
-          datadogMetricFamily:
-            datadogStep?.service_metric_execution_task?.metric_family,
-          datadogEnvironment:
-            datadogStep?.service_metric_execution_task?.environment_name,
-          datadogMetric: tasks.map((ddTask) => {
-            const datadogTask = ddTask?.metric_task?.datadog_task;
-            return {
-              id: datadogTask?.service_metric_execution_task?.metric,
-              label: datadogTask?.service_metric_execution_task?.metric,
-            };
-          }),
-          query1: datadogStep?.query_metric_execution_task?.queries[0],
-          query2: datadogStep?.query_metric_execution_task?.queries[1],
-          formula: datadogStep?.query_metric_execution_task?.formula,
-          requiresFormula: datadogStep?.query_metric_execution_task?.formula,
-        };
-        switch (datadogStep.type) {
-          case "SERVICE_METRIC_EXECUTION":
-            selected = "DATADOG Service";
-            modelType = "DATADOG_SERVICE";
-            break;
-          case "QUERY_METRIC_EXECUTION":
-            selected = "DATADOG Custom Query";
-            modelType = "DATADOG_QUERY";
-            break;
-          default:
-            break;
-        }
-        break;
-
-      case SOURCES.API:
-        stepSource = "API";
-        modelType = "API";
-        selected = "API";
-        additionalData = {
-          ...additionalData,
-          action: {
-            method: task?.action_task?.api_call_task?.method,
-            url: task?.action_task?.api_call_task?.url,
-            headers: JSON.stringify(task?.action_task?.api_call_task?.headers),
-            timeout: task?.action_task?.api_call_task?.timeout,
-            payload: JSON.stringify(task?.action_task?.api_call_task?.payload),
-          },
-        };
-        break;
-      default:
-        break;
-    }
-
-    const data = {
-      name: task?.name,
-      description: step.description,
-      id: step.id ?? task?.id,
-      notes: step?.tasks?.length > 0 ? step?.tasks[0].notes : "",
-      modelType,
-      source: stepSource,
-      selectedSource: selected,
-      connector_type: stepSource,
-      model_type: modelType,
+      id: step.id,
+      notes: step?.notes,
       externalLinks: step.external_links,
       isPrefetched: true,
       isCopied: isCopied,
       isOpen: false,
       globalVariables: Object.entries(playbook.global_variable_set ?? {}).map(
-        (val) => {
+        (val): GlobalVariable => {
           return {
             name: val[0],
-            value: val[1],
+            value: val[1] as string,
           };
         },
       ),
-      ...additionalData,
+      showError: false,
+      isPlayground: false,
+      stepType: "",
+      action: "",
+      ...data,
     };
 
-    list.push(data);
+    list.push(stepData);
   }
   return list;
 };
