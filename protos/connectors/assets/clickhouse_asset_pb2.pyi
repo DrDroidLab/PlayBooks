@@ -52,122 +52,16 @@ global___ClickhouseAsset = ClickhouseAsset
 class ClickhouseDatabaseAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    @typing_extensions.final
-    class ClickhouseTable(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        @typing_extensions.final
-        class ClickhouseColumn(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            NAME_FIELD_NUMBER: builtins.int
-            TYPE_FIELD_NUMBER: builtins.int
-            COMMENT_FIELD_NUMBER: builtins.int
-            DEFAULT_TYPE_FIELD_NUMBER: builtins.int
-            TTL_EXPRESSION_FIELD_NUMBER: builtins.int
-            CODEC_EXPRESSION_FIELD_NUMBER: builtins.int
-            DEFAULT_EXPRESSION_FIELD_NUMBER: builtins.int
-            @property
-            def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def comment(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def default_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def ttl_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def codec_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def default_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            def __init__(
-                self,
-                *,
-                name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                comment: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                default_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                ttl_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                codec_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                default_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["codec_expression", b"codec_expression", "comment", b"comment", "default_expression", b"default_expression", "default_type", b"default_type", "name", b"name", "ttl_expression", b"ttl_expression", "type", b"type"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["codec_expression", b"codec_expression", "comment", b"comment", "default_expression", b"default_expression", "default_type", b"default_type", "name", b"name", "ttl_expression", b"ttl_expression", "type", b"type"]) -> None: ...
-
-        NAME_FIELD_NUMBER: builtins.int
-        ENGINE_FIELD_NUMBER: builtins.int
-        PARTITION_KEY_FIELD_NUMBER: builtins.int
-        PARTITION_TYPE_FIELD_NUMBER: builtins.int
-        PARTITION_EXPRESSION_FIELD_NUMBER: builtins.int
-        ORDER_BY_FIELD_NUMBER: builtins.int
-        SAMPLE_BY_FIELD_NUMBER: builtins.int
-        PRIMARY_KEY_FIELD_NUMBER: builtins.int
-        SAMPLE_FIELD_NUMBER: builtins.int
-        TTL_FIELD_NUMBER: builtins.int
-        SETTINGS_FIELD_NUMBER: builtins.int
-        TIMESTAMP_COLUMN_FIELD_NUMBER: builtins.int
-        COLUMNS_FIELD_NUMBER: builtins.int
-        @property
-        def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def engine(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def partition_key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def partition_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def partition_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def order_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def sample_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def primary_key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def sample(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def ttl(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def settings(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def timestamp_column(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def columns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ClickhouseDatabaseAssetModel.ClickhouseTable.ClickhouseColumn]: ...
-        def __init__(
-            self,
-            *,
-            name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            engine: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            partition_key: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            partition_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            partition_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            order_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            sample_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            primary_key: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            sample: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            ttl: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            settings: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            timestamp_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            columns: collections.abc.Iterable[global___ClickhouseDatabaseAssetModel.ClickhouseTable.ClickhouseColumn] | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["engine", b"engine", "name", b"name", "order_by", b"order_by", "partition_expression", b"partition_expression", "partition_key", b"partition_key", "partition_type", b"partition_type", "primary_key", b"primary_key", "sample", b"sample", "sample_by", b"sample_by", "settings", b"settings", "timestamp_column", b"timestamp_column", "ttl", b"ttl"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["columns", b"columns", "engine", b"engine", "name", b"name", "order_by", b"order_by", "partition_expression", b"partition_expression", "partition_key", b"partition_key", "partition_type", b"partition_type", "primary_key", b"primary_key", "sample", b"sample", "sample_by", b"sample_by", "settings", b"settings", "timestamp_column", b"timestamp_column", "ttl", b"ttl"]) -> None: ...
-
     DATABASE_FIELD_NUMBER: builtins.int
-    TABLES_FIELD_NUMBER: builtins.int
     @property
     def database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def tables(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ClickhouseDatabaseAssetModel.ClickhouseTable]: ...
     def __init__(
         self,
         *,
         database: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        tables: collections.abc.Iterable[global___ClickhouseDatabaseAssetModel.ClickhouseTable] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["database", b"database"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "tables", b"tables"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["database", b"database"]) -> None: ...
 
 global___ClickhouseDatabaseAssetModel = ClickhouseDatabaseAssetModel
 

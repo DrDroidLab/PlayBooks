@@ -15,12 +15,9 @@ class PostgresConnectorMetadataExtractor(ConnectorMetadataExtractor):
         databases = self.__pg_db_processor.fetch_databases()
         if not databases:
             return
-        database_table_metadata = self.__pg_db_processor.fetch_tables(databases)
-        if not database_table_metadata:
-            return
         model_data = {}
-        for db, metadata in database_table_metadata.items():
-            model_data[db] = metadata
+        for db in databases:
+            model_data[db] = {}
             if save_to_db:
-                self.create_or_update_model_metadata(model_type, db, metadata)
+                self.create_or_update_model_metadata(model_type, db, {})
         return model_data

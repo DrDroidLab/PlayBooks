@@ -2,8 +2,9 @@ import logging
 
 from django.db.utils import IntegrityError
 
-from accounts.models import Account, User
+from accounts.models import Account
 from executor.models import PlayBook, PlayBookTaskDefinition, PlayBookStep
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     Playbook as PlaybookProto, PlaybookStepDefinition
 from utils.proto_utils import proto_to_dict
@@ -120,6 +121,7 @@ def create_or_update_playbook_step(scope: Account, playbook_id, playbook_step: P
                                                                              name=playbook_step.name.value,
                                                                              metadata=metadata,
                                                                              description=playbook_step.description.value,
+                                                                             interpreter_type=playbook_step.interpreter_type if playbook_step.interpreter_type else InterpreterType.BASIC_I,
                                                                              defaults={'is_active': True})
     except Exception as e:
         return None, f"Error: Exception occurred while retrieving PlaybookStep with " \
@@ -158,6 +160,7 @@ def create_or_update_db_playbook_task_definition(scope: Account, playbook_id, pl
                                                                                                   description=playbook_task_definition.description.value,
                                                                                                   notes=playbook_task_definition.notes.value,
                                                                                                   type=playbook_task_definition.type,
+                                                                                                  interpreter_type=playbook_task_definition.interpreter_type if playbook_task_definition.interpreter_type else InterpreterType.BASIC_I,
                                                                                                   defaults={
                                                                                                       'is_active': True,
                                                                                                       'task': proto_to_dict(

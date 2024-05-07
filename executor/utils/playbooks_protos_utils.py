@@ -159,7 +159,8 @@ def get_playbook_task_definition_proto(db_task_definition):
                 description=StringValue(value=db_task_definition.description),
                 type=db_task_definition.type,
                 decision_task=decision_task_proto,
-                notes=StringValue(value=db_task_definition.notes)
+                notes=StringValue(value=db_task_definition.notes),
+                interpreter_type=db_task_definition.interpreter_type
             )
         elif decision_task.get('evaluation_type', None) == 'TIMESERIES':
             timeseries_evaluation_task = decision_task.get('timeseries_evaluation_task', {})
@@ -182,7 +183,8 @@ def get_playbook_task_definition_proto(db_task_definition):
                     name=StringValue(value=db_task_definition.name),
                     description=StringValue(value=db_task_definition.description),
                     notes=StringValue(value=db_task_definition.notes),
-                    type=db_task_definition.type, decision_task=decision_task_proto
+                    type=db_task_definition.type, decision_task=decision_task_proto,
+                    interpreter_type=db_task_definition.interpreter_type
                 )
             else:
                 raise ValueError(f"Invalid input type: {timeseries_evaluation_task.get('input_type', None)}")
@@ -206,7 +208,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             description=StringValue(value=db_task_definition.description),
             type=db_task_definition.type,
             metric_task=metric_task_proto,
-            notes=StringValue(value=db_task_definition.notes)
+            notes=StringValue(value=db_task_definition.notes),
+            interpreter_type=db_task_definition.interpreter_type
         )
     elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
         source = task.get('source', None)
@@ -226,7 +229,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             description=StringValue(value=db_task_definition.description),
             type=db_task_definition.type,
             data_fetch_task=data_fetch_task_proto,
-            notes=StringValue(value=db_task_definition.notes)
+            notes=StringValue(value=db_task_definition.notes),
+            interpreter_type=db_task_definition.interpreter_type
         )
     elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
         documentation_task_proto = dict_to_proto(db_task_definition.task, PlaybookDocumentationTaskDefinitionProto)
@@ -236,7 +240,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             description=StringValue(value=db_task_definition.description),
             type=db_task_definition.type,
             documentation_task=documentation_task_proto,
-            notes=StringValue(value=db_task_definition.notes)
+            notes=StringValue(value=db_task_definition.notes),
+            interpreter_type=db_task_definition.interpreter_type
         )
     elif task_type == PlaybookTaskDefinitionProto.Type.ACTION:
         source = task.get('source', None)
@@ -250,7 +255,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             description=StringValue(value=db_task_definition.description),
             type=db_task_definition.type,
             action_task=action_task_proto,
-            notes=StringValue(value=db_task_definition.notes)
+            notes=StringValue(value=db_task_definition.notes),
+            interpreter_type=db_task_definition.interpreter_type
         )
     else:
         raise ValueError(f"Invalid type: {task_type}")

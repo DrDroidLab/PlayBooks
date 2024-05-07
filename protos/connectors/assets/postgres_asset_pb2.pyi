@@ -22,62 +22,16 @@ DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 class PostgresDatabaseAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    @typing_extensions.final
-    class PostgresTable(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        @typing_extensions.final
-        class PostgresColumn(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            COLUMN_NAME_FIELD_NUMBER: builtins.int
-            DATA_TYPE_FIELD_NUMBER: builtins.int
-            @property
-            def column_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def data_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            def __init__(
-                self,
-                *,
-                column_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                data_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["column_name", b"column_name", "data_type", b"data_type"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["column_name", b"column_name", "data_type", b"data_type"]) -> None: ...
-
-        NAME_FIELD_NUMBER: builtins.int
-        TIMESTAMP_COLUMN_FIELD_NUMBER: builtins.int
-        COLUMNS_FIELD_NUMBER: builtins.int
-        @property
-        def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def timestamp_column(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def columns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PostgresDatabaseAssetModel.PostgresTable.PostgresColumn]: ...
-        def __init__(
-            self,
-            *,
-            name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            timestamp_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            columns: collections.abc.Iterable[global___PostgresDatabaseAssetModel.PostgresTable.PostgresColumn] | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["name", b"name", "timestamp_column", b"timestamp_column"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["columns", b"columns", "name", b"name", "timestamp_column", b"timestamp_column"]) -> None: ...
-
     DATABASE_FIELD_NUMBER: builtins.int
-    TABLES_FIELD_NUMBER: builtins.int
     @property
     def database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def tables(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PostgresDatabaseAssetModel.PostgresTable]: ...
     def __init__(
         self,
         *,
         database: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        tables: collections.abc.Iterable[global___PostgresDatabaseAssetModel.PostgresTable] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["database", b"database"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "tables", b"tables"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["database", b"database"]) -> None: ...
 
 global___PostgresDatabaseAssetModel = PostgresDatabaseAssetModel
 

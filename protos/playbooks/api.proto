@@ -7,7 +7,10 @@ import "google/protobuf/struct.proto";
 import "protos/base.proto";
 import "protos/playbooks/playbook.proto";
 import "protos/playbooks/workflow.proto";
+import "protos/playbooks/intelligence_layer/interpreter.proto";
 
+
+///////////////////// PlayBooks Run APIs /////////////////////
 message RunPlaybookTaskRequest {
   Meta meta = 1;
   PlaybookTaskDefinition playbook_task_definition = 2;
@@ -18,6 +21,13 @@ message RunPlaybookTaskResponse {
   google.protobuf.BoolValue success = 2;
   Message message = 3;
   PlaybookTaskExecutionResult task_execution_result = 4;
+}
+
+message RunPlaybookTaskResponseV2 {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookExecutionLog task_execution_log = 4;
 }
 
 message RunPlaybookStepRequest {
@@ -34,6 +44,24 @@ message RunPlaybookStepResponse {
   repeated PlaybookTaskExecutionResult task_execution_results = 6;
 }
 
+message RunPlaybookStepResponseV2 {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookStepExecutionLog step_execution_log = 4;
+}
+
+message RunPlaybookRequest {
+  Meta meta = 1;
+  Playbook playbook = 2;
+}
+
+message RunPlaybookResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  PlaybookExecution playbook_execution = 4;
+}
 
 ///////////////////// PlayBooks CRUD APIs /////////////////////
 message GetPlaybooksRequest {
@@ -184,4 +212,19 @@ message ExecutionsWorkflowsListResponse {
   google.protobuf.BoolValue success = 2;
   Message message = 3;
   repeated WorkflowExecution workflow_executions = 4;
+}
+
+message PlaybooksBuilderOptionsRequest {
+  Meta meta = 1;
+}
+
+message PlaybooksBuilderOptionsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  message InterpreterTypeOption {
+    InterpreterType type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+  repeated InterpreterTypeOption interpreter_types = 4;
 }

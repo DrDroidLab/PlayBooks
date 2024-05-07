@@ -6,6 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
 from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
 from protos.base_pb2 import TimeRange
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, \
     PlaybookStepDefinition as PlaybookStepDefinitionProto, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     PlaybookExecutionStatusType, PlaybookExecutionLog as PlaybookExecutionLogProto, \
@@ -79,6 +80,8 @@ class PlayBookStep(models.Model):
     metadata = models.JSONField(null=True, blank=True)
 
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    interpreter_type = models.IntegerField(choices=generate_choices(InterpreterType), db_index=True,
+                                           default=InterpreterType.BASIC_I)
 
     is_active = models.BooleanField(default=True)
 
@@ -109,6 +112,7 @@ class PlayBookStep(models.Model):
             external_links=el_list_proto,
             description=StringValue(value=self.description),
             notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type,
             tasks=tasks
         )
 
@@ -127,7 +131,8 @@ class PlayBookStep(models.Model):
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
 
@@ -143,6 +148,8 @@ class PlayBookTaskDefinition(models.Model):
     type = models.IntegerField(choices=generate_choices(PlaybookTaskDefinitionProto.Type), db_index=True)
     task = models.JSONField()
     task_md5 = models.CharField(max_length=256, db_index=True)
+    interpreter_type = models.IntegerField(choices=generate_choices(InterpreterType), db_index=True,
+                                           default=InterpreterType.BASIC_I)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -162,7 +169,8 @@ class PlayBookTaskDefinition(models.Model):
             name=StringValue(value=self.name),
             description=StringValue(value=self.description),
             type=self.type,
-            notes=StringValue(value=self.notes)
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type
         )
 
     def save(self, **kwargs):
@@ -191,23 +199,27 @@ class PlayBookExecution(models.Model):
     def proto(self) -> PlaybookExecutionProto:
         playbook_execution_logs = self.playbookexecutionlog_set.all()
         logs = [pel.proto_partial for pel in playbook_execution_logs]
-        step_execution_logs: [PlaybookStepExecutionLogProto] = []
-        step_task_executions_map = {}
-        step_definition_map = {}
-        for log in logs:
-            if log.step.id.value not in step_definition_map:
-                step_definition_map[log.step.id.value] = log.step
-            if log.step.id.value not in step_task_executions_map:
-                step_task_executions_map[log.step.id.value] = []
-            execution_logs = step_task_executions_map[log.step.id.value]
-            execution_logs.append(log)
-            step_task_executions_map[log.step.id.value] = execution_logs
-        for step_id, logs in step_task_executions_map.items():
-            step = step_definition_map[step_id]
-            step_execution_logs.append(PlaybookStepExecutionLogProto(
-                step=step,
-                logs=logs
-            ))
+        playbook_step_execution_logs = self.playbookstepexecutionlog_set.all()
+        if not playbook_step_execution_logs:
+            step_execution_logs: [PlaybookStepExecutionLogProto] = []
+            step_task_executions_map = {}
+            step_definition_map = {}
+            for log in logs:
+                if log.step.id.value not in step_definition_map:
+                    step_definition_map[log.step.id.value] = log.step
+                if log.step.id.value not in step_task_executions_map:
+                    step_task_executions_map[log.step.id.value] = []
+                execution_logs = step_task_executions_map[log.step.id.value]
+                execution_logs.append(log)
+                step_task_executions_map[log.step.id.value] = execution_logs
+            for step_id, logs in step_task_executions_map.items():
+                step = step_definition_map[step_id]
+                step_execution_logs.append(PlaybookStepExecutionLogProto(
+                    step=step,
+                    logs=logs
+                ))
+        else:
+            step_execution_logs = [pel.proto for pel in playbook_step_execution_logs]
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
@@ -239,13 +251,51 @@ class PlayBookExecution(models.Model):
         )
 
 
+class PlayBookStepExecutionLog(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
+    playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
+    interpretation = models.JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    @property
+    def proto(self) -> PlaybookStepExecutionLogProto:
+        logs = self.playbookexecutionlog_set.all()
+        log_protos = [pel.proto_partial for pel in logs]
+        step = self.playbook_step.proto_partial
+        return PlaybookStepExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            step=step,
+            logs=log_protos,
+            step_interpretation=dict_to_proto(self.interpretation,
+                                              InterpretationProto) if self.interpretation else InterpretationProto()
+        )
+
+    @property
+    def proto_partial(self) -> PlaybookStepExecutionLogProto:
+        step = self.playbook_step.proto_partial
+        return PlaybookStepExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            step=step,
+            step_interpretation=dict_to_proto(self.interpretation,
+                                              InterpretationProto) if self.interpretation else InterpretationProto()
+        )
+
+
 class PlayBookExecutionLog(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
     playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     playbook_task_definition = models.ForeignKey(PlayBookTaskDefinition, on_delete=models.CASCADE, db_index=True)
+    playbook_step_execution_log = models.ForeignKey(PlayBookStepExecutionLog, on_delete=models.CASCADE, db_index=True,
+                                                    null=True, blank=True)
+
     playbook_task_result = models.JSONField()
+    interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     @property
@@ -260,7 +310,9 @@ class PlayBookExecutionLog(models.Model):
             playbook=playbook_proto,
             task=task,
             step=step,
-            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
+            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto),
+            task_interpretation=dict_to_proto(self.interpretation,
+                                              InterpretationProto) if self.interpretation else InterpretationProto()
         )
 
     @property
@@ -272,5 +324,7 @@ class PlayBookExecutionLog(models.Model):
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             step=step,
             task=task,
-            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto)
+            task_execution_result=dict_to_proto(self.playbook_task_result, PlaybookTaskExecutionResultProto),
+            task_interpretation=dict_to_proto(self.interpretation,
+                                              InterpretationProto) if self.interpretation else InterpretationProto()
         )

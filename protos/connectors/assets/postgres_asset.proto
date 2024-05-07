@@ -6,17 +6,7 @@ import "protos/connectors/connector.proto";
 
 
 message PostgresDatabaseAssetModel {
-  message PostgresTable {
-    message PostgresColumn {
-      google.protobuf.StringValue column_name = 1;
-      google.protobuf.StringValue data_type = 2;
-    }
-    google.protobuf.StringValue name = 1;
-    google.protobuf.StringValue timestamp_column = 2;
-    repeated PostgresColumn columns = 3;
-  }
   google.protobuf.StringValue database = 1;
-  repeated PostgresTable tables = 2;
 }
 
 message PostgresDatabaseAssetOptions {
