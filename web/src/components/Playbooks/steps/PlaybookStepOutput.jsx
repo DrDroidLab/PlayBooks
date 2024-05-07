@@ -5,8 +5,6 @@ import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput";
 const PlaybookStepOutput = ({ stepOutput, error, step }) => {
   const out = stepOutput;
 
-  console.log("out", out);
-
   return (
     <div style={{ marginTop: "5px" }}>
       {out?.task_execution_result?.metric_task_execution_result?.result

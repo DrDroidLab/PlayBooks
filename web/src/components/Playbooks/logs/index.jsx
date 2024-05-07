@@ -43,7 +43,7 @@ function PlaybookLogs() {
   const { view } = useSelector(playbookSelector);
   const playbook = data?.playbook_execution?.playbook;
   const timeRange = data?.playbook_execution?.time_range;
-  const outputs = data?.playbook_execution?.logs;
+  const outputs = data?.playbook_execution?.step_execution_logs;
 
   useEffect(() => {
     if (playbook_run_id) {
@@ -104,19 +104,20 @@ function PlaybookLogs() {
     });
 
     for (let output of outputs) {
+      const outputList = [];
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
-      if (stepIndex === isNaN) continue;
-      const step = pbData[stepIndex];
-      if (step) {
-        updateCardByIndex("showOutput", true, stepIndex);
-        updateCardByIndex(
-          "outputs",
-          {
-            data: [output],
-          },
-          stepIndex,
-        );
+      if (stepIndex === isNaN || stepIndex === -1) continue;
+      for (let outputData of output.logs) {
+        outputList.push(outputData);
       }
+      updateCardByIndex("showOutput", true, stepIndex);
+      updateCardByIndex(
+        "outputs",
+        {
+          data: outputList,
+        },
+        stepIndex,
+      );
     }
   };
 

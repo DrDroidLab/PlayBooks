@@ -30,7 +30,7 @@ export const getTaskFromStep = (
     case SOURCES.CLOUDWATCH:
       let metric_task;
       if (step.modelType === models.CLOUDWATCH_METRIC) {
-        if (step.metric.length > 0) {
+        if (step.metric.length > 0 && typeof step.metric != "string") {
           const tasks = step.metric.map((e) => {
             metric_task = {
               source: "CLOUDWATCH",
@@ -111,7 +111,10 @@ export const getTaskFromStep = (
           });
         }
       }
-      if (step.grafanaQuery?.length > 0) {
+      if (
+        step.grafanaQuery?.length > 0 &&
+        typeof step.grafanaQuery != "string"
+      ) {
         const tasks = step.grafanaQuery?.map((e) => {
           let metric_task = {
             source: step.source.toUpperCase(),
@@ -222,7 +225,10 @@ export const getTaskFromStep = (
       let new_relic_task = {};
       switch (step.modelType) {
         case models.NEW_RELIC_ENTITY_DASHBOARD:
-          if (step.widget?.length > 0) {
+          if (
+            step.widget?.length > 0 &&
+            typeof step.datadogMetric != "string"
+          ) {
             const tasks = (step.widget ?? []).map((w) => {
               new_relic_task = {
                 ...new_relic_task,

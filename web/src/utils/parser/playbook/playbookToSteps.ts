@@ -298,7 +298,7 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
     const data = {
       name: task?.name,
       description: step.description,
-      id: task?.id ?? step.id,
+      id: step.id ?? task?.id,
       notes: step?.tasks?.length > 0 ? step?.tasks[0].notes : "",
       modelType,
       source: stepSource,
