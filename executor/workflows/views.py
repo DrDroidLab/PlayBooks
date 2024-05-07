@@ -224,7 +224,7 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         return HttpResponse(json.dumps({'success': True, 'workflow_run_id': workflow_run_uuid}), status=200,
                             content_type='application/json')
     except Exception as e:
-        logger.error(f"Error updating playbook: {str(e)}")
+        logger.error(f'Error executing workflow: {str(e)}')
         return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
                             content_type='application/json')
 

@@ -111,7 +111,7 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
                 else:
                     return JsonResponse({'success': False, 'message': 'Slack Event Callback Handling failed'})
             except Exception as e:
-                logger.error(f"Error updating playbook: {str(e)}")
+                logger.error(f'Error handling slack event callback: {str(e)}')
                 return JsonResponse({'success': False, 'message': f"Slack Event Callback Handling failed"},
                                     status=500)
 
