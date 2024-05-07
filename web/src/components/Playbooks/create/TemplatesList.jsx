@@ -19,7 +19,9 @@ function TemplatesList({ setImportFromTemplatesOpen }) {
 
   return (
     <div className="w-full p-2">
-      <h1 className="font-bold text-xl">View Templates</h1>
+      <h1 className="font-bold text-xl sticky top-0 bg-white z-10 p-2">
+        View Templates
+      </h1>
 
       <div className="flex flex-wrap mt-4 gap-2 mb-40 overflow-scroll">
         {(!templates || templates?.length === 0) && (
@@ -29,7 +31,7 @@ function TemplatesList({ setImportFromTemplatesOpen }) {
           <div
             key={index}
             onClick={() => handleImportTemplate(template)}
-            className="border rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-all w-full">
+            className="border rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-all">
             <h3 className="font-bold text-md">{template.name}</h3>
             <p className="text-sm text-gray-500">{template.description}</p>
           </div>

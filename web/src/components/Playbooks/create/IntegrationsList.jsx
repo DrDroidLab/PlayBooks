@@ -22,7 +22,7 @@ function IntegrationsList({ setIsOpen }) {
       (item) =>
         item?.connector_type?.toLowerCase().includes(query) ||
         item?.display_name?.toLowerCase().includes(query) ||
-        integrationSentenceMap[item.model_type].toLowerCase().includes(query),
+        integrationSentenceMap[item.model_type]?.toLowerCase().includes(query),
     );
     setItems(filteredItems || []);
   };
@@ -53,7 +53,7 @@ function IntegrationsList({ setIsOpen }) {
 
   return (
     <div>
-      <div className="sticky top-0 bg-white">
+      <div className="sticky top-0 bg-white z-10">
         <h2 className="mt-4 font-bold text-sm">Add Data</h2>
         <input
           type="search"
@@ -69,7 +69,7 @@ function IntegrationsList({ setIsOpen }) {
           Looking for integrations...
         </div>
       )}
-      <div className="flex flex-col gap-4 overflow-scroll h-screen">
+      <div className="flex flex-col gap-4 h-screen">
         {query ? (
           items.length === 0 ? (
             <p className="text-sm">No integrations found.</p>
