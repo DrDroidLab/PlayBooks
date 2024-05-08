@@ -221,6 +221,7 @@ export interface PlaybookTask {
   documentation_task?: DocumentationTask;
   action_task?: ActionTask;
   global_variable_set?: any;
+  interpreter_type?: string;
 }
 
 export interface GlobalVariable {

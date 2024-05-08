@@ -7,3 +7,4 @@ export * from "./deletePlaybookApi.ts";
 export * from "./options/getAssetModelOptions.ts";
 export * from "./options/getAssets.ts";
 export * from "./options/getConnectorTypesApi.ts";
+export * from "./executePlaybookStepApi.ts";

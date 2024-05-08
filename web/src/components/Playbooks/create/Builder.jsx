@@ -64,8 +64,8 @@ function Builder() {
       <CustomDrawer
         isOpen={currentStepIndex}
         setIsOpen={() => dispatch(setCurrentStepIndex(null))}
-        addtionalStyles={"lg:w-[30%]"}
-        showOverlay={false}
+        addtionalStyles={"lg:w-[50%]"}
+        showOverlay={true}
         startFrom="80">
         <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
           <StepDetails />

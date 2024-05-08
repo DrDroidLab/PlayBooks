@@ -16,9 +16,9 @@ import PlaybookStep from "../steps/PlaybookStep.jsx";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
-import { handleExecute } from "../../../utils/execution/handleExecute.ts";
 import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import { executeStep } from "../../../utils/execution/executeStep.ts";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -97,7 +97,7 @@ function StepDetails() {
           <PlaybookStep card={step} index={currentStepIndex} />
           {!isPrefetched && (
             <button
-              onClick={() => handleExecute(step)}
+              onClick={() => executeStep(step)}
               className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
               <Tooltip title="Run this Step">
                 Run <PlayArrowRounded />
