@@ -1,13 +1,14 @@
 import json
 import logging
 
-from django.conf import settings
-from openai import OpenAI
 from google.protobuf.wrappers_pb2 import StringValue
 
+from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
+from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
 from intelligence_layer.result_interpreters.metric_task_result_interpreters.utils import \
     metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
 from media.utils import generate_local_image_path
+from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto
@@ -22,7 +23,7 @@ def get_task_result_data_type(task_result: PlaybookMetricTaskExecutionResultProt
         return None
 
 
-def gpt_metric_task_inference(generated_image_url: str):
+def gpt_metric_task_prompts(generated_image_url: str):
     keys = """
         anomaly_detected:boolean
         description:string
@@ -51,36 +52,16 @@ def gpt_metric_task_inference(generated_image_url: str):
             },
         },
     ]
-
-    open_ai_key = settings.OPENAI_API_KEY
-    if not open_ai_key:
-        raise ValueError('OpenAI API key is not set.')
-    client = OpenAI(api_key=open_ai_key)
-
-    response = client.chat.completions.create(
-        model="gpt-4-turbo",
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": gpt_prompt}
-        ]
-    )
-
-    logger.info(response.choices[0])
-    logger.info(response.choices[0].message.content)
-
-    return response.choices[0].message.content
+    return system_prompt, gpt_prompt
 
 
-def vision_api_evaluation_function(data_type, image_url: str):
+def vision_api_evaluation_function(open_ai_api_key, data_type, image_url: str):
     if data_type == 'metric':
         try:
-            gpt_response = gpt_metric_task_inference(image_url)
+            system_prompt, gpt_prompt = gpt_metric_task_prompts(image_url)
         except Exception as e:
             logger.error(f'Error getting GPT response: {e}')
             raise e
-        gpt_response = json.loads(gpt_response)
-        return {'anomaly_detected': gpt_response['anomaly_detected'], 'description': gpt_response['description']}
     # elif data_type == 'logs':
     #     inference_df = pd.DataFrame(columns=['anomaly_detected', 'description', 'additional_data'])
     #
@@ -95,12 +76,33 @@ def vision_api_evaluation_function(data_type, image_url: str):
     else:
         logger.error(f'Unsupported data type: {data_type}')
         raise NotImplementedError(f'Unsupported data type: {data_type}')
+    open_ai_processor = OpenAiApiProcessor(open_ai_api_key=open_ai_api_key)
+    gpt_response = open_ai_processor.chat_completions_create(
+        model="gpt-4-turbo",
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": gpt_prompt}
+        ]
+    )
+    logger.info(gpt_response.choices[0])
+    logger.info(gpt_response.choices[0].message.content)
+    gpt_response = gpt_response.choices[0].message.content
+    gpt_response = json.loads(gpt_response)
+    return {'anomaly_detected': gpt_response['anomaly_detected'], 'description': gpt_response['description']}
 
 
 def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
                                                        task_result: PlaybookMetricTaskExecutionResultProto) -> InterpretationProto:
-    if not settings.OPENAI_API_KEY:
+    open_ai_integration = get_db_connectors(connector_type=ConnectorType.OPEN_AI, is_active=True)
+    if not open_ai_integration:
+        raise ValueError('OpenAI integration is not set.')
+    open_ai_integration = open_ai_integration.first()
+    open_ai_api_key = get_db_account_connector_keys(open_ai_integration.account, open_ai_integration.id,
+                                                    key_type=ConnectorKeyProto.KeyType.OPEN_AI_API_KEY)
+    if not open_ai_api_key:
         raise ValueError('OpenAI API key is not set.')
+    open_ai_api_key = open_ai_api_key.first().key
     file_key = generate_local_image_path()
     metric_expression = task_result.metric_expression.value if task_result.metric_expression else ''
     metric_expression = metric_expression.replace('`', '') if metric_expression else ''
@@ -120,7 +122,9 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
     else:
         raise NotImplementedError(f'Unsupported result type: {result_type}')
     try:
-        inference = vision_api_evaluation_function(data_type, image_url)
+        inference = vision_api_evaluation_function(open_ai_api_key, data_type, image_url)
+        if not inference:
+            raise ValueError('No inference returned from chat gpt')
     except Exception as e:
         logger.error(f'Error evaluating task: {e}')
         raise e

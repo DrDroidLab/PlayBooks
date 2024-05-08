@@ -585,9 +585,11 @@ message PlaybookExecutionLog {
 }
 
 message PlaybookStepExecutionLog {
-  PlaybookStepDefinition step = 1;
-  repeated PlaybookExecutionLog logs = 2;
-  repeated Interpretation step_interpretations = 3;
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  PlaybookStepDefinition step = 3;
+  repeated PlaybookExecutionLog logs = 4;
+  Interpretation step_interpretation = 5;
 }
 
 message PlaybookExecution {

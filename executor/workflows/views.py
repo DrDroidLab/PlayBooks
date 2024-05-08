@@ -2,6 +2,8 @@ import json
 import logging
 from typing import Union
 
+import traceback
+
 from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
@@ -200,8 +202,8 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                                 content_type='application/json')
         account_workflow = account_workflows.first()
     except Exception as e:
-        logger.error(f"Error fetching workflow: {e}")
-        return HttpResponse(json.dumps({'success': False, 'error_message': str(e)}), status=500,
+        logger.error(f"Error fetching workflow: {str(e)}")
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
                             content_type='application/json')
     try:
         schedule_type = account_workflow.schedule_type
@@ -222,8 +224,8 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         return HttpResponse(json.dumps({'success': True, 'workflow_run_id': workflow_run_uuid}), status=200,
                             content_type='application/json')
     except Exception as e:
-        logger.error(f"Error updating playbook: {e}")
-        return HttpResponse(json.dumps({'success': False, 'error_message': str(e)}), status=500,
+        logger.error(f'Error executing workflow: {str(e)}')
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
                             content_type='application/json')
 
 
@@ -249,7 +251,8 @@ def workflows_execution_api_get(request_message: HttpRequest) -> Union[Execution
             return HttpResponse(json.dumps({'success': False, 'error_message': 'Workflow Executions not found.'}),
                                 status=404, content_type='application/json')
     except Exception as e:
-        return HttpResponse(json.dumps({'success': False, 'error_message': str(e)}), status=500,
+        logger.error(traceback.format_exc())
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
                             content_type='application/json')
 
     workflow_execution_protos = [we.proto for we in workflow_executions]

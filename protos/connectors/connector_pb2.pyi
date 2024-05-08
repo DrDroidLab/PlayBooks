@@ -63,6 +63,7 @@ class _ConnectorTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GRAFANA_VPC: _ConnectorType.ValueType  # 35
     GITHUB_ACTIONS: _ConnectorType.ValueType  # 36
     SQL_DATABASE_CONNECTION: _ConnectorType.ValueType  # 37
+    OPEN_AI: _ConnectorType.ValueType  # 38
 
 class ConnectorType(_ConnectorType, metaclass=_ConnectorTypeEnumTypeWrapper): ...
 
@@ -104,6 +105,7 @@ AGENT_PROXY: ConnectorType.ValueType  # 34
 GRAFANA_VPC: ConnectorType.ValueType  # 35
 GITHUB_ACTIONS: ConnectorType.ValueType  # 36
 SQL_DATABASE_CONNECTION: ConnectorType.ValueType  # 37
+OPEN_AI: ConnectorType.ValueType  # 38
 global___ConnectorType = ConnectorType
 
 class _ConnectorMetadataModelType:
@@ -404,6 +406,7 @@ class ConnectorKey(google.protobuf.message.Message):
         AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 44
         GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
         SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
+        OPEN_AI_API_KEY: ConnectorKey._KeyType.ValueType  # 47
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -453,6 +456,7 @@ class ConnectorKey(google.protobuf.message.Message):
     AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 44
     GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
     SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
+    OPEN_AI_API_KEY: ConnectorKey.KeyType.ValueType  # 47
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int

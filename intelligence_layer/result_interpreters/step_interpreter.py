@@ -1,10 +1,11 @@
 import json
 import logging
 
-from django.conf import settings
 from google.protobuf.wrappers_pb2 import StringValue
-from openai import OpenAI
 
+from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
+from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
+from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookStepDefinition as PlaybookStepDefinitionProto
 
@@ -12,14 +13,25 @@ logger = logging.getLogger(__name__)
 
 
 def basic_step_summariser(step: PlaybookStepDefinitionProto,
-                          task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
-    return task_interpretations
+                          task_interpretations: [InterpretationProto]) -> InterpretationProto:
+    return InterpretationProto()
 
 
 def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
-                                 task_interpretations: [InterpretationProto]) -> [InterpretationProto]:
+                                 task_interpretations: [InterpretationProto]) -> InterpretationProto:
     if len(task_interpretations) <= 1:
-        return task_interpretations
+        return InterpretationProto()
+    open_ai_integration = get_db_connectors(connector_type=ConnectorType.OPEN_AI, is_active=True)
+    if not open_ai_integration:
+        logger.error('Aborting LLM step summariser. OpenAI integration is not set.')
+        return InterpretationProto()
+    open_ai_integration = open_ai_integration.first()
+    open_ai_api_key = get_db_account_connector_keys(open_ai_integration.account, open_ai_integration.id,
+                                                    key_type=ConnectorKeyProto.KeyType.OPEN_AI_API_KEY)
+    if not open_ai_api_key:
+        logger.error('Aborting LLM step summariser. OpenAI API key is not set.')
+        return InterpretationProto()
+    open_ai_api_key = open_ai_api_key.first().key
     try:
         keys = """
                 anomaly_detected:boolean
@@ -71,12 +83,8 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
                     "do not respond with empty strings or N/A or 'No Data' as key values."
         })
 
-        open_ai_key = settings.OPENAI_API_KEY
-        if not open_ai_key:
-            raise ValueError('OpenAI API key is not set.')
-        client = OpenAI(api_key=open_ai_key)
-
-        gpt_response = client.chat.completions.create(
+        open_ai_client = OpenAiApiProcessor(open_ai_api_key=open_ai_api_key)
+        gpt_response = open_ai_client.chat_completions_create(
             model="gpt-4-turbo",
             response_format={"type": "json_object"},
             messages=[
@@ -87,7 +95,6 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
         logger.info(gpt_response.choices[0])
         logger.info(gpt_response.choices[0].message.content)
         gpt_response = gpt_response.choices[0].message.content
-
         gpt_response = json.loads(gpt_response)
         inference = {'anomaly_detected': gpt_response['anomaly_detected'], 'description': gpt_response['description']}
 
@@ -101,11 +108,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
             description=StringValue(value=description),
             summary=StringValue(value=summary),
         )
-
-        step_interpretations = [step_summary]
-        step_interpretations.extend(task_interpretations)
-
-        return step_interpretations
+        return step_summary
     except Exception as e:
         logger.error(f'Error summarising step: {e}')
-        return task_interpretations
+        return InterpretationProto()
