@@ -18,6 +18,7 @@ Below are some items from our roadmap for the next few quarters.
 
 ### Others
 - Google SSO
+- Create multiple connections of same kind
 
 ## JAS 2024
 ### Data Sources
@@ -29,7 +30,7 @@ Below are some items from our roadmap for the next few quarters.
 - Inject context into PlayBooks from triggers
 
 ### Others
-- Role Based Access Control
+- Role Based Access Control (Admin, Editor & Executor roles)
 
 ## OND 2024
 ### Data Sources
