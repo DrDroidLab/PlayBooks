@@ -51,6 +51,7 @@ enum ConnectorType {
   GRAFANA_VPC = 35;
   GITHUB_ACTIONS = 36;
   SQL_DATABASE_CONNECTION = 37;
+  OPEN_AI = 38;
 }
 
 
@@ -212,6 +213,8 @@ message ConnectorKey {
     GITHUB_ACTIONS_TOKEN = 45;
 
     SLACK_APP_ID = 46;
+
+    OPEN_AI_API_KEY = 47;
   }
   google.protobuf.UInt64Value id = 1;
   KeyType key_type = 2;

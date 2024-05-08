@@ -2,8 +2,9 @@ import logging
 
 from django.db.utils import IntegrityError
 
-from accounts.models import Account, User
+from accounts.models import Account
 from executor.models import PlayBook, PlayBookTaskDefinition, PlayBookStep
+from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     Playbook as PlaybookProto, PlaybookStepDefinition
 from utils.proto_utils import proto_to_dict
@@ -76,13 +77,17 @@ def create_db_playbook(account: Account, created_by, playbook: PlaybookProto, is
             global_variable_set = None
             if playbook.global_variable_set:
                 global_variable_set = proto_to_dict(playbook.global_variable_set)
+            description = None
+            if playbook.description.value:
+                description = playbook.description.value
             db_playbook = PlayBook(account=account,
                                    name=playbook_name,
                                    playbook=playbook,
                                    created_by=created_by,
                                    is_active=True,
                                    global_variable_set=global_variable_set,
-                                   is_generated=is_generated)
+                                   is_generated=is_generated,
+                                   description=description)
             db_playbook.save()
         except IntegrityError:
             return None, f"Integrity Error: Playbook with name {playbook_name} already exists"
@@ -120,6 +125,7 @@ def create_or_update_playbook_step(scope: Account, playbook_id, playbook_step: P
                                                                              name=playbook_step.name.value,
                                                                              metadata=metadata,
                                                                              description=playbook_step.description.value,
+                                                                             interpreter_type=playbook_step.interpreter_type if playbook_step.interpreter_type else InterpreterType.BASIC_I,
                                                                              defaults={'is_active': True})
     except Exception as e:
         return None, f"Error: Exception occurred while retrieving PlaybookStep with " \
@@ -158,6 +164,7 @@ def create_or_update_db_playbook_task_definition(scope: Account, playbook_id, pl
                                                                                                   description=playbook_task_definition.description.value,
                                                                                                   notes=playbook_task_definition.notes.value,
                                                                                                   type=playbook_task_definition.type,
+                                                                                                  interpreter_type=playbook_task_definition.interpreter_type if playbook_task_definition.interpreter_type else InterpreterType.BASIC_I,
                                                                                                   defaults={
                                                                                                       'is_active': True,
                                                                                                       'task': proto_to_dict(

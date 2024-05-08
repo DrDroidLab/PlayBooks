@@ -8,6 +8,7 @@ import SeeMoreText from "./SeeMoreText";
 
 import dayjs from "dayjs";
 import useKeyPressed from "../../hooks/useKeyPressed";
+import { renderTimestamp } from "../../utils/DateUtils";
 
 const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const [chartOptions, setChartOptions] = useState({});
@@ -16,9 +17,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const keyPressed = useKeyPressed();
 
   let tsData = useMemo(() => {
-    return result?.timeseries?.labeled_metric_timeseries
-      ? result?.timeseries?.labeled_metric_timeseries
-      : null;
+    return result?.timeseries?.labeled_metric_timeseries;
   }, [result]);
 
   let unit = result?.timeseries?.labeled_metric_timeseries
@@ -178,12 +177,12 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
 
       {!showGraph && timestamp && (
         <p className={styles["graph-ts-error"]}>
-          <i>Updated at: {timestamp}</i>
+          <i>Updated at: {renderTimestamp(timestamp)}</i>
         </p>
       )}
       {showGraph && timestamp && (
         <p className={styles["graph-ts"]}>
-          <i>Updated at: {timestamp}</i>
+          <i>Updated at: {renderTimestamp(timestamp)}</i>
         </p>
       )}
     </div>

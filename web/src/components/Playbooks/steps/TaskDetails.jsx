@@ -9,6 +9,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import OptionRender from "./OptionRender.jsx";
 import VariablesBox from "./VariablesBox.jsx";
+import { InfoOutlined } from "@mui/icons-material";
 
 function TaskDetails({ task, data, stepIndex }) {
   const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
@@ -69,36 +70,48 @@ function TaskDetails({ task, data, stepIndex }) {
   }, [task]);
 
   return (
-    <>
-      {data?.builder?.map((step, index) => (
+    <div className="mt-2">
+      {data?.builder?.map((step) => (
         <div
-          key={index}
-          style={{
-            display: "flex",
-            flexDirection: view === "builder" ? "column" : "row",
-            marginTop: "10px",
-            paddingTop: "20px",
-            // borderTop: "0.5px solid gray",
-            gap: "10px",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            maxWidth: "600px",
-          }}>
-          {step.map((value, index) => (
-            <OptionRender
-              key={index}
-              data={value}
-              removeErrors={removeErrors}
-              stepIndex={stepIndex}
-              task={task}
-            />
-          ))}
+          className={`flex gap-2 flex-wrap ${
+            view === "builder" ? "flex-col" : "flex-row"
+          }`}>
+          {step.map((value, index) =>
+            value.condition ?? true ? (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  flexDirection: view === "builder" ? "column" : "row",
+                  // borderTop: "0.5px solid gray",
+                  gap: "10px",
+                  alignItems: "flex-start",
+                  flexWrap: "wrap",
+                  justifyContent: "flex-start",
+                  maxWidth: "600px",
+                }}>
+                <OptionRender
+                  data={value}
+                  removeErrors={removeErrors}
+                  stepIndex={stepIndex}
+                  task={task}
+                />
+              </div>
+            ) : (
+              <></>
+            ),
+          )}
           {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
-      <VariablesBox />
-    </>
+      {task.message && (
+        <div className="flex gap-1 items-center my-2 bg-gray-100 rounded p-2 text-sm text-blue-500">
+          <InfoOutlined fontSize="small" />
+          {task.message}
+        </div>
+      )}
+      <VariablesBox task={task} />
+    </div>
   );
 }
 

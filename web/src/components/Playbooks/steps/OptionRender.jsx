@@ -4,9 +4,12 @@ import { updateStep } from "../../../store/features/playbook/playbookSlice.ts";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import styles from "./index.module.css";
+import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 export default function OptionRender({ data, removeErrors, task, stepIndex }) {
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (...args) => {
     if (data.handleChange) {
@@ -29,13 +32,23 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     removeErrors(data.key);
   };
 
+  const multiSelectChange = (...args) => {
+    if (data.handleChange) {
+      data.handleChange(...args);
+    } else {
+      dispatch(updateStep({ index: stepIndex, key: data.key, value: args[0] }));
+    }
+
+    removeErrors(data.key);
+  };
+
   const error = data.key
     ? task.showError && !data.selected && !task[`${data.key}`]
     : false;
 
   switch (data.type) {
     case "options":
-      if (!(data.options?.length > 0)) return;
+      // if (!(data.options?.length > 0)) return;
       return (
         <div className={`flex flex-col`}>
           <p
@@ -52,7 +65,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             onSelectionChange={handleChange}
             selected={data.selected ?? task[`${data.key}`]}
             searchable={true}
-            disabled={data.disabled}
+            disabled={isPrefetched || data.disabled}
             error={error}
             containerClassName={"w-56"}
             {...data.additionalProps}
@@ -83,6 +96,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             onValueChange={handleChange}
             value={data.selected || task[`${data.key}`]}
             error={error}
+            disabled={isPrefetched}
             {...data.additionalProps}
           />
         </div>
@@ -100,7 +114,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             rows={4}
             value={data.value ?? data.selected ?? task[`${data.key}`]}
             onChange={handleTextAreaChange}
-            disabled={data.disabled}
+            disabled={isPrefetched || data.disabled}
             style={error ? { borderColor: "red" } : {}}
           />
         </div>
@@ -113,6 +127,25 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
           onClick={data.handleClick}>
           {data.label}
         </button>
+      );
+
+    case "multi-select":
+      // if (!(data.options?.length > 0)) return;
+      return (
+        <div key={data.id}>
+          <MultiSelectDropdown
+            label={data.label}
+            options={data.options}
+            error={data.error}
+            disabled={isPrefetched || data.disabled}
+            additionalProps={data.additionalProps}
+            placeholder={data.placeholder}
+            selectedDisplayKey={data.selectedDisplayKey}
+            multiSelectChange={multiSelectChange}
+            selectedValuesKey={data.selectedValuesKey ?? data.key}
+            task={task}
+          />
+        </div>
       );
     default:
       return;

@@ -2,8 +2,9 @@ import { getStepTitle } from "../../components/Playbooks/utils";
 import { store } from "../../store/index.ts";
 import { executePlaybook } from "../../store/features/playbook/api/index.ts";
 import { rangeSelector } from "../../store/features/timeRange/timeRangeSlice.ts";
-import { getTaskFromStep } from "../parser/playbook/stepsToplaybook.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { isPlaybookTaskArray } from "../isPlaybookArray.ts";
+import stepToTasks from "../parser/playbook/stepToTasks.ts";
 
 export const queryForStepTask = async (step, cb) => {
   if (Object.keys(step.errors ?? {}).length > 0) {
@@ -11,37 +12,38 @@ export const queryForStepTask = async (step, cb) => {
     return;
   }
 
-  let body = {
-    playbook_task_definition: getTaskFromStep(step),
-    meta: {
-      time_range: rangeSelector(store.getState()),
-    },
-  };
+  const tasks = stepToTasks(step);
+  let bodies: any[] = [];
 
-  if (
-    Object.keys(body?.playbook_task_definition?.documentation_task ?? {})
-      .length > 0
-  ) {
-    cb(
-      {
-        step: step,
-        data: null,
-        timestamp: new Date().toTimeString(),
-        title: getStepTitle(step),
+  if (isPlaybookTaskArray(tasks)) {
+    bodies = (tasks as []).map((task) => {
+      let body = {
+        playbook_task_definition: task,
+        meta: {
+          time_range: rangeSelector(store.getState()),
+        },
+      };
+      return body;
+    });
+  } else {
+    bodies.push({
+      playbook_task_definition: tasks,
+      meta: {
+        time_range: rangeSelector(store.getState()),
       },
-      true,
-    );
-    return;
+    });
   }
 
   try {
-    const response = await store
-      .dispatch(executePlaybook.initiate(body))
-      .unwrap();
+    const promises = bodies.map((body) =>
+      store.dispatch(executePlaybook.initiate(body)).unwrap(),
+    );
+
+    const responses = await Promise.all(promises);
     cb(
       {
         step: step,
-        data: response,
+        data: responses,
         timestamp: new Date().toTimeString(),
         title: getStepTitle(step),
       },
@@ -52,7 +54,7 @@ export const queryForStepTask = async (step, cb) => {
     console.error(e);
     cb(
       {
-        error: e.err,
+        error: e.message,
       },
       false,
     );

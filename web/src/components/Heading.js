@@ -15,11 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   setName,
+  setPlaybookKey,
 } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
+import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -44,6 +46,7 @@ const Heading = ({
   copyPlaybook,
   showCopy,
   isPlayground = false,
+  showSave = true,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,6 +54,7 @@ const Heading = ({
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
+  const isPrefetched = useIsPrefetched();
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -58,6 +62,11 @@ const Heading = ({
 
   const goBack = () => {
     navigate(-1);
+  };
+
+  const handleDescription = (e) => {
+    const value = e.target.value;
+    dispatch(setPlaybookKey({ key: "description", value: value }));
   };
 
   return (
@@ -99,7 +108,7 @@ const Heading = ({
                       {playbook.name || heading}
                     </div>
                   )}
-                  {showEditTitle && (
+                  {showEditTitle && !isPrefetched && (
                     <div
                       className="icon"
                       onClick={() => setShowEdit(!showEdit)}>
@@ -124,6 +133,15 @@ const Heading = ({
                     </button>
                   )}
                 </div>
+                {(Object.keys(playbook.currentPlaybook).length > 0 ||
+                  showEditTitle) && (
+                  <input
+                    className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
+                    placeholder="+ Add Description..."
+                    value={playbook.description}
+                    onChange={handleDescription}
+                  />
+                )}
                 {!!subHeadingLink && !!subHeading ? (
                   <a
                     style={{ color: "blue", fontSize: "15px" }}
@@ -138,9 +156,10 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {playbook.view === "builder" && playbook.steps.length > 0 && (
-            <StepActions />
-          )}
+          {playbook.view === "builder" &&
+            playbook.steps.length > 0 &&
+            showSave &&
+            !isPrefetched && <StepActions />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

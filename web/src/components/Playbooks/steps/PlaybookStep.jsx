@@ -21,13 +21,23 @@ const PlaybookStep = ({ card, index }) => {
             <p className={styles["notesHeading"]}>
               <b>Output</b>
             </p>
-            {[card.output].map((output, index) => {
+            {(!card.outputs || card.outputs?.data?.length === 0) && (
+              <div className={styles["output-box"]}>
+                <PlaybookStepOutput
+                  key={index}
+                  error={card.outputError}
+                  stepOutput={null}
+                />
+              </div>
+            )}
+            {(card.outputs?.data ?? [])?.map((output, index) => {
               return (
                 <div className={styles["output-box"]}>
                   <PlaybookStepOutput
                     key={index}
                     error={card.outputError}
                     stepOutput={output}
+                    step={card}
                   />
                 </div>
               );

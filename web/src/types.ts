@@ -18,7 +18,7 @@ export interface Step {
   dimensionName?: string;
   dimensionValue?: string;
   dimensionIndex?: number;
-  metric?: string;
+  metric?: any;
   executioninprogress?: string;
   outputLoading?: boolean;
   showOutput?: boolean;
@@ -41,11 +41,12 @@ export interface Step {
   widget?: any;
   application_name?: string;
   golden_metric?: GoldenMetric;
+  golden_metrics?: any[];
   nrqlData?: any;
   datadogService?: any;
   datadogMetricFamily?: string;
   datadogEnvironment?: string;
-  datadogMetric?: string;
+  datadogMetric?: any;
   command?: any;
   cluster?: string;
   isOpen: boolean;
@@ -63,6 +64,8 @@ export interface Step {
   showExternalLinks?: boolean;
   stepType: string | null;
   action: any;
+  connector_type?: any;
+  model_type?: any;
 }
 
 export interface GoldenMetric {
@@ -213,7 +216,6 @@ export interface PlaybookTask {
   id?: string;
   type: string;
   description: string;
-  notes: string;
   metric_task?: MetricTask;
   data_fetch_task?: DataFetchTask;
   documentation_task?: DocumentationTask;

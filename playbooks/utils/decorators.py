@@ -60,7 +60,7 @@ def post_proto_schema_validator(request_schema):
                     request_message = request_schema()
             except Exception as e:
                 logger.error("Error while deserializing the proto msg", exc_info=True)
-                return JsonResponse(error_dict('Error while deserializing the proto msg', e), status=400,
+                return JsonResponse({'message': 'Error while processing the request'}, status=400,
                                     content_type='application/json')
 
             try:
@@ -73,7 +73,7 @@ def post_proto_schema_validator(request_schema):
                     return response
             except Exception as e:
                 logger.error("Error while processing the request", exc_info=True)
-                return JsonResponse(error_dict('Error while processing the request', e), status=500,
+                return JsonResponse({'message': 'Error while processing the request'}, status=500,
                                     content_type='application/json')
 
         return wrapper
@@ -95,7 +95,7 @@ def get_proto_schema_validator():
                     return response
             except Exception as e:
                 logger.error("Error while processing the request", exc_info=True)
-                return JsonResponse(error_dict('Error while processing the request', e), status=500,
+                return JsonResponse({'message': 'Error while processing the request'}, status=500,
                                     content_type='application/json')
 
         return wrapper

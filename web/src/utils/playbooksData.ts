@@ -21,6 +21,7 @@ export enum OptionType {
   MULTILINE = "multiline",
   BUTTON = "button",
   MULTI_OPTIONS = "multi-options",
+  MULTI_SELECT = "multi-select",
 }
 
 export const constructBuilder = (task: any, index) => {
