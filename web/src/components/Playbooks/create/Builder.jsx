@@ -30,7 +30,7 @@ function Builder() {
           className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
           Import from templates
         </button>
-        <div className="z-10 bg-white p-1 rounded w-64">
+        <div className="z-10 bg-white p-1 rounded w-[300px]">
           <GlobalVariables />
         </div>
       </div>

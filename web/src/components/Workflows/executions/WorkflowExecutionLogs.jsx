@@ -25,7 +25,6 @@ const WorkflowExecutionLogs = () => {
     if (!isFetching) refetch(pageMeta);
   }, [pageMeta]);
 
-  console.log(data);
   const playbooksList =
     data?.workflow_executions?.length > 0
       ? data?.workflow_executions[0].workflow_logs

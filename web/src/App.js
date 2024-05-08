@@ -53,7 +53,7 @@ const CreatePlaybookBeta = React.lazy(() =>
   import("./components/Playbooks/create/index.jsx"),
 );
 const PlaybookLog = React.lazy(() =>
-  import("./components/Playbooks/logs/PlaybookLog"),
+  import("./components/Playbooks/logs/index.jsx"),
 );
 
 const App = () => {

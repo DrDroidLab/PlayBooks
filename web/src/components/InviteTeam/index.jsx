@@ -27,8 +27,6 @@ const InviteTeam = () => {
     setPageMeta(page);
   };
 
-  console.log(usersList);
-
   return (
     <div>
       <Heading

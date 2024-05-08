@@ -3,8 +3,10 @@ import ValueComponent from "../ValueComponent";
 import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 function PlaybookTitle({ step, index, updateCardByIndex }) {
+  const isPrefetched = useIsPrefetched();
   const editCardTitle = (e, index) => {
     e.stopPropagation();
     updateCardByIndex(index, "editTitle", true);
@@ -33,7 +35,7 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
         {!step.outputError &&
           !step.outputLoading &&
           step.showOutput &&
-          step.output &&
+          step.outputs?.data?.length > 0 &&
           !step.showError && <CheckCircleOutline color="success" size={20} />}
 
         {!step.editTitle && (
@@ -41,13 +43,15 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
             <b>
               {index + 1}: {step.description || `Step - ${index + 1}`}
             </b>
-            <button>
-              <EditIcon
-                sx={{ zIndex: "10" }}
-                fontSize={"small"}
-                style={{ marginLeft: "5px" }}
-              />
-            </button>
+            {!isPrefetched && (
+              <button>
+                <EditIcon
+                  sx={{ zIndex: "10" }}
+                  fontSize={"small"}
+                  style={{ marginLeft: "5px" }}
+                />
+              </button>
+            )}
           </div>
         )}
       </div>{" "}

@@ -38,6 +38,7 @@ integrations_connector_type_display_name_map = {
     ConnectorType.OPS_GENIE: 'OPS GENIE',
     ConnectorType.EKS: 'EKS KUBERNETES',
     ConnectorType.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
+    ConnectorType.OPEN_AI: 'OPEN AI'
 }
 
 integrations_connector_type_category_map = {
@@ -61,6 +62,7 @@ integrations_connector_type_category_map = {
     ConnectorType.OPS_GENIE: 'Alert Channels',
     ConnectorType.EKS: 'Cloud',
     ConnectorType.SQL_DATABASE_CONNECTION: 'Database',
+    ConnectorType.OPEN_AI: 'LLM Tools'
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -180,8 +182,12 @@ integrations_connector_type_connector_keys_map = {
         [
             ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,
         ]
+    ],
+    ConnectorType.OPEN_AI: [
+        [
+            ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
+        ]
     ]
-
 }
 
 integrations_connector_key_display_name_map = {
@@ -223,6 +229,7 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
     ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI: 'Sql Database Connection URI',
+    ConnectorKeyProto.KeyType.OPEN_AI_API_KEY: 'API Key'
 }
 
 

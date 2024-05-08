@@ -13,6 +13,7 @@ from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
+from connectors.crud.connectors_crud import get_db_account_connectors
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
@@ -25,6 +26,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
+from protos.connectors.connector_pb2 import ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
@@ -470,10 +472,12 @@ def playbooks_templates(request_message: HttpRequest) -> Union[PlaybookTemplates
 def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -> \
         Union[PlaybooksBuilderOptionsResponse, HttpResponse]:
     try:
+        account: Account = get_request_account()
         interpreter_type_options = [PlaybooksBuilderOptionsResponse.InterpreterTypeOption(type=InterpreterType.BASIC_I,
                                                                                           display_name=StringValue(
                                                                                               value="Default Interpreter"))]
-        if settings.OPENAI_API_KEY is not None and settings.OPENAI_API_KEY != "":
+        open_ai_connector = get_db_account_connectors(account, connector_type=ConnectorType.OPEN_AI, is_active=True)
+        if open_ai_connector.exists():
             interpreter_type_options.append(
                 PlaybooksBuilderOptionsResponse.InterpreterTypeOption(type=InterpreterType.LLM_CHAT_GPT_VISION_I,
                                                                       display_name=StringValue(
