@@ -156,7 +156,7 @@ services:
   web:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
     environment:
-      - POSTHOG_ENABLED=true
+      - REACT_APP_POSTHOG_ENABLED=true
     ports:
       - "80:80"
     depends_on:
