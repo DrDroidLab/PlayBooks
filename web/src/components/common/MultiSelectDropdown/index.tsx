@@ -31,18 +31,19 @@ function MultiSelectDropdown({
   const [selected, setSelected] = useState<any>(task[selectedValuesKey] ?? []);
   const handleSelectChange = (id, val) => {
     const element = selected.findIndex((el) => el.id === id);
+    let selectedList: any = [...selected];
     if (element === -1) {
-      setSelected([...selected, val]);
+      selectedList = [...selected, val];
+      setSelected(selectedList);
     }
+    multiSelectChange(selectedList);
   };
 
   const handleDelete = (val) => {
-    setSelected(selected.filter((el) => el.id !== val.id));
+    let selectedList = selected.filter((el) => el.id !== val.id);
+    setSelected(selectedList);
+    multiSelectChange(selectedList);
   };
-
-  useEffect(() => {
-    multiSelectChange(selected);
-  }, [selected]);
 
   useEffect(() => {
     if (selected.length !== task[selectedValuesKey]?.length)

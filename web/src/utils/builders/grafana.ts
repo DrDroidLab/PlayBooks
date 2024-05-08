@@ -94,7 +94,10 @@ export const grafanaBuilder = (task, index, options: any) => {
               const options = grafanaOptionsList(index);
               if (options?.length === 0) {
                 store.dispatch(
-                  setGrafanaQuery({ index, query: val.map((e) => e.query) }),
+                  setGrafanaQuery({
+                    index,
+                    query: val.map((e) => e.query ?? e),
+                  }),
                 );
                 setGrafanaOptionsFunction(index);
               } else {
