@@ -18,6 +18,7 @@ import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { handleExecute } from "../../../utils/execution/handleExecute.ts";
 import AddSource from "../steps/AddSource.jsx";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -26,6 +27,7 @@ function StepDetails() {
     useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
+  const isPrefetched = useIsPrefetched();
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
@@ -65,11 +67,13 @@ function StepDetails() {
     <div className="p-2 min-h-screen mb-16">
       <h2 className="font-bold mb-2 flex items-center gap-2 justify-between mr-2">
         Step Title {step?.outputLoading && <CircularProgress size={20} />}
-        <button
-          onClick={removeStep}
-          className="text-violet-500 hover:text-white p-[1px] border-violet-500 border-[1px] rounded hover:bg-violet-500 transition-all">
-          <Delete />
-        </button>
+        {!isPrefetched && (
+          <button
+            onClick={removeStep}
+            className="text-violet-500 hover:text-white p-[1px] border-violet-500 border-[1px] rounded hover:bg-violet-500 transition-all">
+            <Delete />
+          </button>
+        )}
       </h2>
       {!currentStepIndex ? (
         <p className="text-sm">No step selected yet</p>
@@ -83,6 +87,7 @@ function StepDetails() {
                 onChange={(e) =>
                   updateCardByIndex("description", e.target.value)
                 }
+                disabled={isPrefetched}
               />
             </div>
           </div>
@@ -90,13 +95,15 @@ function StepDetails() {
           {isFetching && <CircularProgress size={20} />}
           <AddSource step={step} isDataFetching={isFetching} />
           <PlaybookStep card={step} index={currentStepIndex} />
-          <button
-            onClick={() => handleExecute(step)}
-            className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
-            <Tooltip title="Run this Step">
-              Run <PlayArrowRounded />
-            </Tooltip>
-          </button>
+          {!isPrefetched && (
+            <button
+              onClick={() => handleExecute(step)}
+              className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
+              <Tooltip title="Run this Step">
+                Run <PlayArrowRounded />
+              </Tooltip>
+            </button>
+          )}
         </>
       )}
       {!step?.isPrefetched && (

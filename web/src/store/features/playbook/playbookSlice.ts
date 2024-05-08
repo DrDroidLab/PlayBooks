@@ -220,6 +220,7 @@ const playbookSlice = createSlice({
     },
     toggleStep: (state, { payload }) => {
       state.steps[payload.index].isOpen = !state.steps[payload.index].isOpen;
+      state.currentStepIndex = payload.index.toString();
     },
     deleteStep: (state, { payload }) => {
       state.steps.splice(payload, 1);
@@ -232,7 +233,6 @@ const playbookSlice = createSlice({
       state.steps[payload.index].description = payload.description;
     },
     changeProgress: (state, { payload }) => {
-      console.log(payload);
       state.steps[payload.index].executioninprogress = payload.progress;
     },
     selectSourceAndModel: (
@@ -311,6 +311,9 @@ const playbookSlice = createSlice({
     setGoldenMetric(state, { payload }) {
       state.steps[payload.index].golden_metric = payload.metric;
     },
+    setGoldenMetrics(state, { payload }) {
+      state.steps[payload.index].golden_metrics = payload.metric;
+    },
     setPanel(state, { payload }) {
       state.steps[payload.index].panel = payload.panel;
       state.steps[payload.index].grafanaQuery = null;
@@ -326,7 +329,8 @@ const playbookSlice = createSlice({
       state.steps[payload.index].grafanaQuery.expression = payload.expression;
     },
     setGrafanaOptions(state, { payload }) {
-      state.steps[payload.index].options = payload.options;
+      if (payload.options && payload.index)
+        state.steps[payload.index].options = payload.options;
     },
     setSelectedGrafanaOptions(state, { payload }) {
       state.steps[payload.index].selectedOptions = {
@@ -504,6 +508,7 @@ export const {
   setWidget,
   setApplicationName,
   setGoldenMetric,
+  setGoldenMetrics,
   setNRQLData,
   setDatadogService,
   setDatadogMetricFamily,

@@ -1,10 +1,12 @@
 import { store } from "../../store/index.ts";
 import { updateStep } from "../../store/features/playbook/playbookSlice.ts";
 
-export function updateCardByIndex(key, value) {
+export function updateCardByIndex(key, value, index = null) {
+  const stepIndex =
+    index != null ? index : store.getState().playbook.currentStepIndex;
   store.dispatch(
     updateStep({
-      index: store.getState().playbook.currentStepIndex,
+      index: stepIndex,
       key,
       value,
     }),

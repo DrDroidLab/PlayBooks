@@ -8,6 +8,7 @@ import {
   selectSourceAndModel,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { RefreshRounded } from "@mui/icons-material";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function AddSource({ step, isDataFetching }) {
   const {
@@ -18,6 +19,7 @@ function AddSource({ step, isDataFetching }) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
+  const isPrefetched = useIsPrefetched();
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -56,13 +58,15 @@ function AddSource({ step, isDataFetching }) {
           onSelectionChange={(key, value) => handleSourceChange(key, value)}
           selected={step.selectedSource}
           searchable={true}
-          disabled={step.isPrefetched && !step.isCopied && step.source}
+          disabled={isPrefetched}
         />
-        <button onClick={refetch}>
-          <RefreshRounded
-            className={`text-gray-400 hover:text-gray-600 transition-all`}
-          />
-        </button>
+        {!isPrefetched && (
+          <button onClick={refetch}>
+            <RefreshRounded
+              className={`text-gray-400 hover:text-gray-600 transition-all`}
+            />
+          </button>
+        )}
         {(!connectorData || connectorData?.length === 0) && (
           <button
             href="/playbooks/create"

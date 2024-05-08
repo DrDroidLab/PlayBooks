@@ -43,7 +43,8 @@ function PlaybookAPIActionOutput({ step }) {
 export default PlaybookAPIActionOutput;
 
 const HandleSelectedRender = ({ selectedId, step }) => {
-  const headers = JSON.parse(step.action.headers);
+  const headersString = step?.action?.headers || "{}";
+  const headers = JSON.parse(headersString);
   switch (selectedId) {
     case "body":
       return (
