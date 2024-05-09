@@ -40,7 +40,7 @@ function StepActions() {
 
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
-      navigate(`/playbooks/edit/${response.playbook?.id}`);
+      navigate(`/playbooks/edit/${response.playbook?.id}`, { replace: true });
     } catch (e) {
       console.error(e);
     }
