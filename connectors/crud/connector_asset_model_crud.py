@@ -53,7 +53,7 @@ def get_db_connector_metadata_models(account_id=None, connector_id=None, connect
     if model_uid:
         filters['model_uid'] = model_uid
     try:
-        ConnectorMetadataModelStore.objects.filter(**filters)
+        return ConnectorMetadataModelStore.objects.filter(**filters)
     except Exception as e:
         logger.error(f"Error fetching Connector Models: {str(e)}")
     return None
