@@ -23,6 +23,8 @@ import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import Interpretation from "../steps/Interpretation.jsx";
+import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
+import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -96,12 +98,13 @@ function StepDetails() {
               />
             </div>
           </div>
+          <ExternalLinksList />
           <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
           <AddSource step={step} isDataFetching={isFetching} />
           {data?.length > 0 && <Interpretation />}
           <PlaybookStep card={step} index={currentStepIndex} />
-          {!isPrefetched && (
+          {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}
               className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">

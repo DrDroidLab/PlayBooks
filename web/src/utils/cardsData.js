@@ -354,10 +354,16 @@ export const cardsData = [
     enum: "API",
   },
   {
+    id: 41,
     url: "/integrations/open-ai-logo.png",
     title: "OPEN AI",
     enum: "OPEN_AI",
     desc: "Save OpenAI API key",
     buttonTitle: "Save key",
+  },
+  {
+    id: 42,
+    url: "/integrations/markdown_logo.svg",
+    enum: "DOCUMENTATION",
   },
 ];
