@@ -14,9 +14,15 @@ export const integrationSentenceMap = {
   [models.POSTGRES_DATABASE]: "Query a PostgreSQL Database",
   [models.EKS_CLUSTER]: "Query Events from your EKS Cluster",
   [models.API]: "Trigger an API",
+  [models.TEXT]: "Write documentation",
 };
 
 export const integrations = [
+  {
+    id: "documentation",
+    label: "Documentation",
+    options: [models.TEXT],
+  },
   {
     id: "actions",
     label: "Actions",

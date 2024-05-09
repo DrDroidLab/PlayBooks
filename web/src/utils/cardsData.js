@@ -353,4 +353,9 @@ export const cardsData = [
     url: "/integrations/code.png",
     enum: "API",
   },
+  {
+    id: 41,
+    url: "/integrations/markdown_logo.svg",
+    enum: "DOCUMENTATION",
+  },
 ];

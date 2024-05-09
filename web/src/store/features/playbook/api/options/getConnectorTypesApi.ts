@@ -1,5 +1,6 @@
 import { GET_CONNECTORS } from "../../../../../constants/index.ts";
 import { ConnectorTypesResponse, ConnectorsType } from "../../../../../types";
+import { connectorTypeOptions } from "../../../../../utils/connectorTypeOptions.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 
 export const getConnectorTypesApi = apiSlice.injectEndpoints({
@@ -12,13 +13,7 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: ConnectorTypesResponse, meta, arg) => {
         const options: ConnectorsType[] = [];
-        options.push({
-          id: "API",
-          label: "API",
-          connector_type: "API",
-          model_type: "API",
-          display_name: "API",
-        });
+        options.push(...connectorTypeOptions);
         for (let connector of response.active_account_connectors) {
           for (let k = 0; k < connector.model_types_map?.length; k++) {
             options.push({
