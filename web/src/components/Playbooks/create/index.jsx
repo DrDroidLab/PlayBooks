@@ -92,6 +92,7 @@ function CreatePlaybookBeta() {
         customTimeRange={true}
         copyPlaybook={handleCopyPlaybook}
         showEditTitle={playbook}
+        showRunAll={true}
       />
       <div className="flex flex-col h-[calc(100%-80px)]">
         <main className="relative flex flex-1">

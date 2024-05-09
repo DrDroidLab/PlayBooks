@@ -11,6 +11,7 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
     return stateToStep(step, i);
   });
   let playbook: PlaybookContract = {
+    id: playbookVal.id,
     name: playbookVal.name,
     description: playbookVal.description,
     global_variable_set: playbookVal.globalVariables?.reduce((acc, curr) => {
