@@ -12,4 +12,5 @@ export const connectors = {
   EKS: "EKS",
   AGENT_PROXY: "AGENT_PROXY",
   GOOGLE_CHAT: "GOOGLE_CHAT",
+  OPENAI: "OPEN_AI",
 };

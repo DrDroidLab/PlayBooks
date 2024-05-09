@@ -1,3 +1,8 @@
-import { connectors } from '../constants/connectors.ts';
+import { connectors } from "../constants/connectors.ts";
 
-export const connectorsWithoutAssets = [connectors.GCM, connectors.SENTRY, connectors.SLACK];
+export const connectorsWithoutAssets = [
+  connectors.GCM,
+  connectors.SENTRY,
+  connectors.SLACK,
+  connectors.OPENAI,
+];

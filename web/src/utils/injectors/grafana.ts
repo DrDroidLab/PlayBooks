@@ -19,7 +19,9 @@ export const injectGrafanaTasks = (
       grafana_task: {
         type: "PROMQL_METRIC_EXECUTION",
         datasource_uid:
-          step.assets.panel_promql_map[0].promql_metrics[0].datasource_uid,
+          step.assets?.panel_promql_map?.length > 0
+            ? step.assets.panel_promql_map[0].promql_metrics[0].datasource_uid
+            : "",
         promql_metric_execution_task: {
           promql_expression: e.expression,
           panel_promql_expression: e?.originalExpression,

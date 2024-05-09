@@ -42,7 +42,7 @@ function IntegrationCard({ data }) {
           href={
             data?.status === "request"
               ? "https://github.com/DrDroidLab/PlayBooks/issues/new"
-              : data.buttonLink
+              : data.buttonLink || `/integrations/${data.enum.toLowerCase()}`
           }
           target={data?.status === "request" ? "_blank" : "_self"}
           rel="noreferrer">

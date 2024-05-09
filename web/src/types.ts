@@ -66,6 +66,7 @@ export interface Step {
   action: any;
   connector_type?: any;
   model_type?: any;
+  interpreter?: any;
 }
 
 export interface GoldenMetric {
@@ -221,6 +222,7 @@ export interface PlaybookTask {
   documentation_task?: DocumentationTask;
   action_task?: ActionTask;
   global_variable_set?: any;
+  interpreter_type?: string;
 }
 
 export interface GlobalVariable {
@@ -241,6 +243,7 @@ export interface Playbook {
   isEditing?: boolean;
   lastUpdatedAt?: Date | null;
   view: string;
+  interpreterTypes: any[];
 }
 
 export interface Playground {
@@ -263,6 +266,7 @@ export interface PlaybookContractStep {
 }
 
 export interface PlaybookContract {
+  id?: string | null;
   name?: string;
   description?: string;
   global_variable_set: any;
