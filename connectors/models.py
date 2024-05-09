@@ -38,7 +38,8 @@ integrations_connector_type_display_name_map = {
     ConnectorType.OPS_GENIE: 'OPS GENIE',
     ConnectorType.EKS: 'EKS KUBERNETES',
     ConnectorType.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
-    ConnectorType.OPEN_AI: 'OPEN AI'
+    ConnectorType.OPEN_AI: 'OPEN AI',
+    ConnectorType.REMOTE_SERVER: 'REMOTE SERVER',
 }
 
 integrations_connector_type_category_map = {
@@ -62,7 +63,8 @@ integrations_connector_type_category_map = {
     ConnectorType.OPS_GENIE: 'Alert Channels',
     ConnectorType.EKS: 'Cloud',
     ConnectorType.SQL_DATABASE_CONNECTION: 'Database',
-    ConnectorType.OPEN_AI: 'LLM Tools'
+    ConnectorType.OPEN_AI: 'LLM Tools',
+    ConnectorType.REMOTE_SERVER: 'Remote Server',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -187,6 +189,28 @@ integrations_connector_type_connector_keys_map = {
         [
             ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
         ]
+    ],
+    ConnectorType.REMOTE_SERVER: [
+        [
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM
+        ],
+        [
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
+        ],
+        [
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM
+        ],
+        [
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD
+        ]
     ]
 }
 
@@ -229,7 +253,11 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
     ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI: 'Sql Database Connection URI',
-    ConnectorKeyProto.KeyType.OPEN_AI_API_KEY: 'API Key'
+    ConnectorKeyProto.KeyType.OPEN_AI_API_KEY: 'API Key',
+    ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM: 'PEM',
+    ConnectorKeyProto.KeyType.REMOTE_SERVER_USER: 'User',
+    ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST: 'Host',
+    ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD: 'Password'
 }
 
 
@@ -250,7 +278,7 @@ class Connector(models.Model):
         unique_together = [['account', 'name', 'connector_type', 'metadata_md5']]
 
     def __str__(self):
-        return f'{self.account}:{self.connector_type}'
+        return f'{self.account}:{self.connector_type}:{self.name}'
 
     def save(self, **kwargs):
         if self.metadata:
@@ -308,6 +336,10 @@ class ConnectorKey(models.Model):
                              ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
                              ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
                              ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
+                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
+                             ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
+                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
+                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM,
                              ConnectorKeyProto.KeyType.GRAFANA_HOST,
                              ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
                              ConnectorKeyProto.KeyType.EKS_ROLE_ARN,

@@ -9,6 +9,7 @@ from connectors.assets.manager.eks_assets_manager import EKSAssetManager
 from connectors.assets.manager.grafana_asset_manager import GrafanaAssetManager
 from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
+from connectors.assets.manager.remote_server_assets_manager import RemoteServetAssetManager
 from connectors.assets.manager.slack_assets_manager import SlackAssetManager
 from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
@@ -82,3 +83,4 @@ asset_manager_facade.register(ConnectorTypeProto.GRAFANA, GrafanaAssetManager())
 asset_manager_facade.register(ConnectorTypeProto.NEW_RELIC, NewRelicAssetManager())
 asset_manager_facade.register(ConnectorTypeProto.POSTGRES, PostgresAssetManager())
 asset_manager_facade.register(ConnectorTypeProto.SLACK, SlackAssetManager())
+asset_manager_facade.register(ConnectorTypeProto.REMOTE_SERVER, RemoteServetAssetManager())

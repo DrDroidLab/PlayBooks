@@ -7,6 +7,7 @@ from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVp
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from connectors.assets.extractor.newrelic_metadata_extractor import NewrelicConnectorMetadataExtractor
 from connectors.assets.extractor.postgres_metadata_extractor import PostgresConnectorMetadataExtractor
+from connectors.assets.extractor.remote_server_metadata_extractor import RemoteServerConnectorMetadataExtractor
 from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto
 
 
@@ -34,3 +35,4 @@ connector_metadata_extractor_facade.register(ConnectorTypeProto.GRAFANA_VPC, Gra
 connector_metadata_extractor_facade.register(ConnectorTypeProto.CLICKHOUSE, ClickhouseConnectorMetadataExtractor)
 connector_metadata_extractor_facade.register(ConnectorTypeProto.POSTGRES, PostgresConnectorMetadataExtractor)
 connector_metadata_extractor_facade.register(ConnectorTypeProto.EKS, EksConnectorMetadataExtractor)
+connector_metadata_extractor_facade.register(ConnectorTypeProto.REMOTE_SERVER, RemoteServerConnectorMetadataExtractor)
