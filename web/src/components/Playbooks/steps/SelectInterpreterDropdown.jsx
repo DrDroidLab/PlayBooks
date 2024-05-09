@@ -1,12 +1,13 @@
 import { useSelector } from "react-redux";
 import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import SelectComponent from "../../SelectComponent";
+import SelectComponent from "../../SelectComponent/index.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { CircularProgress } from "@mui/material";
+import { useEffect } from "react";
 
-function SelectInterpreter() {
+function SelectInterpreterDropdown() {
   const { data, isFetching } = useGetBuilderOptionsQuery();
   const { steps, currentStepIndex } = useSelector(playbookSelector);
   const step = steps[currentStepIndex];
@@ -16,8 +17,14 @@ function SelectInterpreter() {
     updateCardByIndex("interpreter", value.interpreter);
   };
 
+  useEffect(() => {
+    return () => {
+      updateCardByIndex("interpreter", undefined);
+    };
+  }, []);
+
   return (
-    <div>
+    <div className="relative flex my-2">
       {isFetching && (
         <CircularProgress
           style={{
@@ -32,7 +39,7 @@ function SelectInterpreter() {
           label: interpreter.display_name,
           interpreter,
         }))}
-        placeholder="Select Interpreter"
+        placeholder="Select Insights Source"
         onSelectionChange={(_, value) => handleInterpreterChange(value)}
         selected={step?.interpreter?.type ?? ""}
         searchable={true}
@@ -42,4 +49,4 @@ function SelectInterpreter() {
   );
 }
 
-export default SelectInterpreter;
+export default SelectInterpreterDropdown;

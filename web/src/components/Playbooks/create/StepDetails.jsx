@@ -11,7 +11,10 @@ import {
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useLazyGetAssetModelOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import {
+  useGetBuilderOptionsQuery,
+  useLazyGetAssetModelOptionsQuery,
+} from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
@@ -19,6 +22,7 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
+import Interpretation from "../steps/Interpretation.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -28,6 +32,7 @@ function StepDetails() {
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
+  const { data } = useGetBuilderOptionsQuery();
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
@@ -94,6 +99,7 @@ function StepDetails() {
           <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
           <AddSource step={step} isDataFetching={isFetching} />
+          {data?.length > 0 && <Interpretation />}
           <PlaybookStep card={step} index={currentStepIndex} />
           {!isPrefetched && (
             <button

@@ -11,6 +11,7 @@ export async function executeStep(step: Step) {
 
   const stepData = stateToStep(step);
   updateCardByIndex("outputLoading", true);
+  updateCardByIndex("showOutput", false);
 
   try {
     const res = await store

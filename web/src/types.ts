@@ -66,6 +66,7 @@ export interface Step {
   action: any;
   connector_type?: any;
   model_type?: any;
+  interpreter?: any;
 }
 
 export interface GoldenMetric {

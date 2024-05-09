@@ -9,7 +9,6 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { RefreshRounded } from "@mui/icons-material";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import SelectInterpreter from "./SelectInterpreter.jsx";
 
 function AddSource({ step, isDataFetching }) {
   const {
@@ -61,7 +60,6 @@ function AddSource({ step, isDataFetching }) {
           searchable={true}
           disabled={isPrefetched}
         />
-        <SelectInterpreter />
         {!isPrefetched && (
           <button onClick={refetch}>
             <RefreshRounded

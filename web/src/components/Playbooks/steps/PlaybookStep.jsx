@@ -41,13 +41,17 @@ const PlaybookStep = ({ card, index }) => {
             <p className={styles["notesHeading"]}>
               <b>Output</b>
             </p>
-            {Object.keys(card?.outputs?.stepInterpretation ?? {}).length >
-              0 && (
-              <Interpretation
-                title="Step"
-                interpretation={card?.outputs?.stepInterpretation?.title}
-              />
-            )}
+            <div className="my-2">
+              {Object.keys(card?.outputs?.stepInterpretation ?? {}).length >
+                0 && (
+                <Interpretation
+                  type="Step"
+                  title={card?.outputs?.stepInterpretation?.title}
+                  description={card?.outputs?.stepInterpretation?.description}
+                  summary={card?.outputs?.stepInterpretation?.summary}
+                />
+              )}
+            </div>
             {(!card.outputs || card.outputs?.data?.length === 0) && (
               <div className={styles["output-box"]}>
                 <PlaybookStepOutput
@@ -70,7 +74,9 @@ const PlaybookStep = ({ card, index }) => {
                     />
                   </div>
                   <Interpretation
-                    interpretation={output?.task_interpretation?.title}
+                    title={output?.task_interpretation?.title}
+                    description={output?.task_interpretation?.description}
+                    summary={output?.task_interpretation?.summary}
                   />
                 </div>
               );
