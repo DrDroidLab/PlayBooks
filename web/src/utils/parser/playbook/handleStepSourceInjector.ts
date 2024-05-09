@@ -9,6 +9,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     id: step.id ?? "0",
     type: "METRIC",
     description: step.description ?? "",
+    interpreter_type: step.interpreter?.type,
   };
 
   let tasks: PlaybookTask[] = [];

@@ -1,6 +1,6 @@
 import { getStepTitle } from "../../components/Playbooks/utils";
 import { store } from "../../store/index.ts";
-import { executePlaybook } from "../../store/features/playbook/api/index.ts";
+import { executePlaybookTask } from "../../store/features/playbook/api/index.ts";
 import { rangeSelector } from "../../store/features/timeRange/timeRangeSlice.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
 import { isPlaybookTaskArray } from "../isPlaybookArray.ts";
@@ -36,7 +36,7 @@ export const queryForStepTask = async (step, cb) => {
 
   try {
     const promises = bodies.map((body) =>
-      store.dispatch(executePlaybook.initiate(body)).unwrap(),
+      store.dispatch(executePlaybookTask.initiate(body)).unwrap(),
     );
 
     const responses = await Promise.all(promises);
