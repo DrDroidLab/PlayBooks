@@ -192,12 +192,13 @@ message PlaybookActionTaskExecutionResult {
 
 message PlaybookTaskExecutionResult  {
   google.protobuf.StringValue error = 1;
+  google.protobuf.StringValue message = 2;
   oneof result {
-    PlaybookMetricTaskExecutionResult metric_task_execution_result = 2;
-    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 3;
-    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 4;
-    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 5;
-    PlaybookActionTaskExecutionResult action_task_execution_result = 6;
+    PlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
+    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 4;
+    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 5;
+    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 6;
+    PlaybookActionTaskExecutionResult action_task_execution_result = 7;
   }
 }
 
