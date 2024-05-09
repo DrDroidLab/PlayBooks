@@ -3,9 +3,8 @@ import styles from "./index.module.css";
 import { SOURCES } from "../../../constants/index.ts";
 import { constructBuilder } from "../../../utils/playbooksData.ts";
 import TaskDetails from "./TaskDetails.jsx";
-import { TipsAndUpdatesRounded } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import Markdown from "react-markdown";
+import Interpretation from "../../common/Interpretation/index.tsx";
 
 const PlaybookStep = ({ card, index }) => {
   const showOutput = card.showOutput;
@@ -42,6 +41,13 @@ const PlaybookStep = ({ card, index }) => {
             <p className={styles["notesHeading"]}>
               <b>Output</b>
             </p>
+            {Object.keys(card?.outputs?.stepInterpretation ?? {}).length >
+              0 && (
+              <Interpretation
+                title="Step"
+                interpretation={card?.outputs?.stepInterpretation?.title}
+              />
+            )}
             {(!card.outputs || card.outputs?.data?.length === 0) && (
               <div className={styles["output-box"]}>
                 <PlaybookStepOutput
@@ -63,18 +69,9 @@ const PlaybookStep = ({ card, index }) => {
                       step={card}
                     />
                   </div>
-                  <div className="flex-[0.4] bg-pink-50 m-1 rounded ml-0 p-2 flex flex-col gap-2 overflow-scroll">
-                    <h1 className="font-bold lg:text-lg text-violet-600 flex gap-2 items-center">
-                      <TipsAndUpdatesRounded /> Task Insights
-                    </h1>
-                    <hr className="border-t-violet-500 border-t-[0.5px] flex-grow-0" />
-                    <p className="line-clamp-[18] text-xs">
-                      <Markdown>
-                        {output?.task_interpretation?.title ??
-                          "No interpretation found."}
-                      </Markdown>
-                    </p>
-                  </div>
+                  <Interpretation
+                    interpretation={output?.task_interpretation?.title}
+                  />
                 </div>
               );
             })}

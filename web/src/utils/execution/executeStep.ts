@@ -24,6 +24,7 @@ export async function executeStep(step: Step) {
     updateCardByIndex("showOutput", true);
     updateCardByIndex("outputs", {
       data: outputList,
+      stepInterpretation: output.step_interpretation,
     });
   } catch (e) {
     updateCardByIndex("showError", true);
