@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Heading from "../../components/Heading";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import styles from "./playbooks.module.css";
@@ -26,7 +26,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import Loading from "../common/Loading/index.tsx";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
-import { queryForStepTask } from "../../utils/execution/queryForStepTask.ts";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
@@ -35,7 +34,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
     useLazyGetPlaybookQuery();
   const { steps, isEditing, currentStepIndex } = useSelector(playbookSelector);
-  const [outputs, setOutputs] = useState([]);
   const copied = useRef(false);
   const isPrefetched = useIsPrefetched();
 
@@ -71,37 +69,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
         value,
       }),
     );
-  };
-
-  const handleGlobalExecute = () => {
-    const promises = steps.map((card, i) => {
-      return new Promise((resolve, reject) => {
-        updateCardByIndex(i, "outputLoading", true);
-        updateCardByIndex(i, "showOutput", false);
-        updateCardByIndex(i, "outputError", null);
-        updateCardByIndex(i, "output", null);
-        updateCardByIndex(i, "showError", false);
-
-        queryForStepTask(card, function (res) {
-          if (Object.keys(res ?? {}).length > 0) {
-            updateCardByIndex(i, "outputError", res.error);
-            updateCardByIndex(i, "showOutput", true);
-            updateCardByIndex(i, "output", res);
-            updateCardByIndex(i, "outputLoading", false);
-            resolve(res);
-          } else {
-            updateCardByIndex(i, "showError", true);
-            updateCardByIndex(i, "showOutput", false);
-            updateCardByIndex(i, "outputLoading", false);
-            reject();
-          }
-        });
-      });
-    });
-
-    Promise.all(promises).then((responses) => {
-      setOutputs(responses.concat(outputs));
-    });
   };
 
   const handleCopyPlaybook = async () => {
@@ -142,7 +109,6 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 (playbook.name ? " - " + playbook.name : "")
               : "Untitled Playbook"
           }
-          handleGlobalExecute={handleGlobalExecute}
           onTimeRangeChangeCb={false}
           onRefreshCb={false}
           showRunAll={steps?.length > 0}

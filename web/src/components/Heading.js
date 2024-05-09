@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
+import handleGlobalExecute from "../utils/execution/handleGlobalExecute.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -39,7 +40,6 @@ const Heading = ({
   defaultTimeRange,
   defaultCustomTimeRange,
   defaultCustomTillNowTimeRange,
-  handleGlobalExecute,
   showRunAll = false,
   showEditTitle = false,
   customTimeRange = false,
@@ -115,14 +115,6 @@ const Heading = ({
                       {showEdit ? <Check /> : <Edit />}
                     </div>
                   )}
-                  {showRunAll && (
-                    <button
-                      className={`${styles["pb-button"]} run_all`}
-                      onClick={handleGlobalExecute}>
-                      <PlayArrowIcon style={{ fontSize: "medium" }} />
-                      <span style={{ marginLeft: "2px" }}>Run All</span>
-                    </button>
-                  )}
                   {(showCopy || playbook.isEditing) && (
                     <button
                       className={styles["pb-button"]}
@@ -156,6 +148,14 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
+          {showRunAll && playbook.steps?.length > 0 && (
+            <button
+              className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
+              onClick={handleGlobalExecute}>
+              <PlayArrowIcon style={{ fontSize: "medium" }} />
+              <span style={{ marginLeft: "2px" }}>Run All</span>
+            </button>
+          )}
           {playbook.view === "builder" &&
             playbook.steps.length > 0 &&
             showSave &&
