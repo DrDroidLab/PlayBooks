@@ -6,29 +6,47 @@ import {
 import { stepsToPlaybook } from "../parser/playbook/stepsToplaybook.ts";
 import { executePlaybook } from "../../store/features/playbook/api/executePlaybookApi.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { Step } from "../../types.ts";
 
 export default async function handleGlobalExecute() {
   const state = store.getState();
   const playbook = playbookSelector(state);
-  const steps = stepsSelector(state);
+  const steps: Step[] = stepsSelector(state);
   const playbookData = stepsToPlaybook(playbook, steps);
   try {
+    steps.forEach((_, i) => {
+      updateCardByIndex("outputLoading", true, i);
+    });
     const res = await store
       .dispatch(executePlaybook.initiate(playbookData))
       .unwrap();
 
-    const outputList: any = [];
-    const output = res?.step_execution_log;
-    for (let outputData of output.logs) {
-      outputList.push(outputData);
-    }
-    updateCardByIndex("showOutput", true);
-    updateCardByIndex("outputs", {
-      data: outputList,
-      stepInterpretation: output.step_interpretation,
-    });
+    const outputs = res?.playbook_execution.step_execution_logs;
+    for (let stepOutput of outputs) {
+      const stepFromReq = stepOutput.step;
+      const logs = stepOutput.logs;
+      const interpretation = stepOutput.step_interpretation;
+      const stepIndex = steps.findIndex((step) => step.id === stepFromReq.id);
 
-    console.log("res: ", res);
+      for (let log of logs) {
+        const error = log.task_execution_result?.error;
+        if (error) {
+          updateCardByIndex("outputError", error, stepIndex);
+          break;
+        }
+      }
+
+      updateCardByIndex("outputLoading", false, stepIndex);
+      updateCardByIndex("showOutput", true, stepIndex);
+      updateCardByIndex(
+        "outputs",
+        {
+          data: logs,
+          stepInterpretation: interpretation,
+        },
+        stepIndex,
+      );
+    }
   } catch (e) {
     console.log("Error: ", e);
   }

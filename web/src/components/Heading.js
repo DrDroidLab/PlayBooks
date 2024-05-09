@@ -115,14 +115,6 @@ const Heading = ({
                       {showEdit ? <Check /> : <Edit />}
                     </div>
                   )}
-                  {showRunAll && (
-                    <button
-                      className={`${styles["pb-button"]} run_all`}
-                      onClick={handleGlobalExecute}>
-                      <PlayArrowIcon style={{ fontSize: "medium" }} />
-                      <span style={{ marginLeft: "2px" }}>Run All</span>
-                    </button>
-                  )}
                   {(showCopy || playbook.isEditing) && (
                     <button
                       className={styles["pb-button"]}
@@ -156,6 +148,14 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
+          {showRunAll && (
+            <button
+              className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
+              onClick={handleGlobalExecute}>
+              <PlayArrowIcon style={{ fontSize: "medium" }} />
+              <span style={{ marginLeft: "2px" }}>Run All</span>
+            </button>
+          )}
           {playbook.view === "builder" &&
             playbook.steps.length > 0 &&
             showSave &&
