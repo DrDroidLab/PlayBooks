@@ -18,6 +18,7 @@ const initialState: Playbook = {
   id: null,
   name: "",
   globalVariables: [],
+  interpreterTypes: [],
   steps: [],
   playbooks: [],
   currentPlaybook: {},

@@ -242,6 +242,7 @@ export interface Playbook {
   isEditing?: boolean;
   lastUpdatedAt?: Date | null;
   view: string;
+  interpreterTypes: any[];
 }
 
 export interface Playground {

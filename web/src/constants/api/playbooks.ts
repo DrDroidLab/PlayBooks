@@ -8,6 +8,7 @@ export const EXECUTE_PLAYBOOK = "/executor/playbook/run";
 export const GET_CONNECTORS = "/connectors/playbooks/builder/sources/options";
 export const GET_ASSET_MODEL_OPTIONS = "/connectors/assets/models/options";
 export const GET_ASSETS = "/connectors/assets/models/get";
+export const GET_BUILDER_OPTIONS = "/pb/builder/options";
 
 export const DELETE_PLAYBOOK = "/pb/update";
 
