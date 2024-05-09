@@ -13,7 +13,13 @@ from management.utils.celery_task_signal_utils import publish_task_failure, publ
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def populate_connector_metadata(account_id, connector_id, connector_type, connector_credentials_dict):
-    extractor_class = connector_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
+    try:
+        extractor_class = connector_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
+    except Exception as e:
+        print(
+            f"Exception occurred while fetching extractor class for account: {account_id}, connector: {connector_id}, "
+            f"connector_type: {integrations_connector_type_display_name_map.get(connector_type)}", str(e))
+        return False
     extractor = extractor_class(**connector_credentials_dict, account_id=account_id, connector_id=connector_id)
     extractor_methods = [method for method in dir(extractor) if
                          callable(getattr(extractor, method)) and method not in dir(ConnectorMetadataExtractor)]

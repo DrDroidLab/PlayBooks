@@ -157,6 +157,7 @@ message PlaybookActionTaskExecutionResult {
     enum Type {
       UNKNOWN = 0;
       API_RESPONSE = 1;
+      BASH_COMMAND_OUTPUT = 2;
     }
 
     message ApiResponse {
@@ -169,9 +170,18 @@ message PlaybookActionTaskExecutionResult {
       google.protobuf.Struct metadata = 7;
     }
 
+    message BashCommandOutput {
+      message CommandOutput {
+        google.protobuf.StringValue command = 1;
+        google.protobuf.StringValue output = 2;
+      }
+      repeated CommandOutput command_outputs = 1;
+    }
+
     Type type = 1;
     oneof result {
       ApiResponse api_response = 2;
+      BashCommandOutput bash_command_output = 3;
     }
   }
 
@@ -182,12 +192,13 @@ message PlaybookActionTaskExecutionResult {
 
 message PlaybookTaskExecutionResult  {
   google.protobuf.StringValue error = 1;
+  google.protobuf.StringValue message = 2;
   oneof result {
-    PlaybookMetricTaskExecutionResult metric_task_execution_result = 2;
-    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 3;
-    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 4;
-    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 5;
-    PlaybookActionTaskExecutionResult action_task_execution_result = 6;
+    PlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
+    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 4;
+    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 5;
+    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 6;
+    PlaybookActionTaskExecutionResult action_task_execution_result = 7;
   }
 }
 
@@ -492,10 +503,16 @@ message PlaybookApiCallTask {
   google.protobuf.Struct cookies = 6;
 }
 
+message PlaybookBashCommandTask {
+  google.protobuf.StringValue command = 1;
+  google.protobuf.StringValue remote_server = 2;
+}
+
 message PlaybookActionTaskDefinition {
   enum Source {
     UNKNOWN = 0;
     API = 1;
+    BASH = 2;
   }
   Source source = 1;
   google.protobuf.UInt64Value id = 2;
@@ -503,6 +520,7 @@ message PlaybookActionTaskDefinition {
   google.protobuf.Struct metadata = 4;
   oneof task {
     PlaybookApiCallTask api_call_task = 5;
+    PlaybookBashCommandTask bash_command_task = 6;
   }
 }
 

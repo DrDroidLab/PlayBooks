@@ -1,3 +1,5 @@
+from google.protobuf.wrappers_pb2 import StringValue
+
 from executor.action_task_executor.action_task_executor_facade import action_task_executor
 from executor.data_fetch_task_executor.data_fetch_task_executor_facade import data_fetch_task_executor
 from executor.decision_task_executor.decision_task_executor_facade import decision_task_evaluator
@@ -45,6 +47,8 @@ def execute_task(account_id, time_range, playbook_task: PlaybookTaskDefinitionPr
                   flush=True)
             action_task_result = action_task_executor.execute_action_task(account_id, global_variable_set, action_task)
             return PlaybookTaskExecutionResult(action_task_execution_result=action_task_result)
+        elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
+            return PlaybookTaskExecutionResult(message=StringValue(value="Documentation task executed successfully"))
         else:
             raise ValueError(f'No executor found for task type: {task_type}')
     except Exception as e:

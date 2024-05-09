@@ -2,12 +2,14 @@ from typing import Dict
 
 from executor.action_task_executor.action_task_executor import PlaybookActionTaskExecutor
 from executor.action_task_executor.api_action_task_executor import ApiActionTaskExecutor
+from executor.action_task_executor.bash_command_action_task_executor import BashCommandActionTaskExecutor
 from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
     PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto
 
 action_source_display_name_mapping = {
     PlaybookActionTaskDefinitionProto.Source.UNKNOWN: "Unknown",
     PlaybookActionTaskDefinitionProto.Source.API: "Api Call",
+    PlaybookActionTaskDefinitionProto.Source.BASH: "Bash Command",
 }
 
 
@@ -35,3 +37,4 @@ class PlaybookActionTaskExecutorFacade:
 
 action_task_executor = PlaybookActionTaskExecutorFacade()
 action_task_executor.register(PlaybookActionTaskDefinitionProto.Source.API, ApiActionTaskExecutor)
+action_task_executor.register(PlaybookActionTaskDefinitionProto.Source.BASH, BashCommandActionTaskExecutor)

@@ -128,6 +128,22 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:
                 credentials_dict['bot_auth_token'] = conn_key.key.value
+    elif connector_type == ConnectorType.REMOTE_SERVER:
+        for conn_key in connector_keys:
+            if conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_HOST:
+                credentials_dict['remote_host'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_USER:
+                credentials_dict['remote_user'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_PEM:
+                credentials_dict['remote_pem'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_PASSWORD:
+                credentials_dict['remote_password'] = conn_key.key.value
+            if 'remote_pem' not in credentials_dict:
+                credentials_dict['remote_pem'] = None
+            if 'remote_password' not in credentials_dict:
+                credentials_dict['remote_password'] = None
+    else:
+        return None
     return credentials_dict
 
 
@@ -261,6 +277,8 @@ def create_connector(account: Account, created_by, connector_proto: ConnectorPro
         return None, 'Received invalid Connector Config'
 
     connector_name: str = connector_proto.name.value
+    # if not connector_name:
+    #     connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}'
     connector_type: ConnectorType = connector_proto.type
     metadata = {'connector_type': connector_type}
     if connector_type == ConnectorType.SENTRY:

@@ -11,6 +11,7 @@ import "protos/connectors/assets/newrelic_asset.proto";
 import "protos/connectors/assets/datadog_asset.proto";
 import "protos/connectors/assets/postgres_asset.proto";
 import "protos/connectors/assets/eks_asset.proto";
+import "protos/connectors/assets/remote_server_asset.proto";
 
 
 message AccountConnectorAssetsModelOptions {
@@ -27,6 +28,7 @@ message AccountConnectorAssetsModelOptions {
       DatadogServiceAssetOptions datadog_service_model_options = 9;
       PostgresDatabaseAssetOptions postgres_database_model_options = 10;
       EksClusterAssetOptions eks_cluster_model_options = 11;
+      SshServerAssetOptions ssh_server_model_options = 12;
     }
   }
   ConnectorType connector_type = 1;
@@ -43,6 +45,7 @@ message AccountConnectorAssets {
     DatadogAssets datadog = 6;
     PostgresAssets postgres = 7;
     EksAssets eks = 8;
+    RemoteServerAssets remote_server = 9;
   }
 }
 
@@ -58,5 +61,6 @@ message AccountConnectorAssetsModelFilters {
     DatadogServiceAssetOptions datadog_service_model_filters = 8;
     PostgresDatabaseAssetOptions postgres_database_model_filters = 9;
     EksClusterAssetOptions eks_cluster_model_filters = 10;
+    SshServerAssetOptions ssh_server_model_filters = 11;
   }
 }
