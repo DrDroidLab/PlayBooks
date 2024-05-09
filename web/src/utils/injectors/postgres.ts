@@ -6,12 +6,9 @@ export const injectPostgresTasks = (
 ): PlaybookTask[] => {
   let data_fetch_task = {
     source: step.source.toUpperCase(),
-    data_fetch_task: {
-      source: step.source.toUpperCase(),
-      postgres_data_fetch_task: {
-        database: step.database!,
-        query: step.dbQuery!,
-      },
+    postgres_data_fetch_task: {
+      database: step.database!,
+      query: step.dbQuery!,
     },
   };
 
