@@ -102,7 +102,9 @@ function StepDetails() {
           <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
           <AddSource step={step} isDataFetching={isFetching} />
-          {data?.length > 0 && <Interpretation />}
+          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
+            <Interpretation />
+          )}
           <PlaybookStep card={step} index={currentStepIndex} />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button

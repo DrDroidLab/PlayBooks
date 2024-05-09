@@ -7,6 +7,7 @@ import { stepsToPlaybook } from "../parser/playbook/stepsToplaybook.ts";
 import { executePlaybook } from "../../store/features/playbook/api/executePlaybookApi.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
 import { Step } from "../../types.ts";
+import { unsupportedRunners } from "../unsupportedRunners.ts";
 
 export default async function handleGlobalExecute() {
   const state = store.getState();
@@ -14,8 +15,9 @@ export default async function handleGlobalExecute() {
   const steps: Step[] = stepsSelector(state);
   const playbookData = stepsToPlaybook(playbook, steps);
   try {
-    steps.forEach((_, i) => {
-      updateCardByIndex("outputLoading", true, i);
+    steps.forEach((step, i) => {
+      if (!unsupportedRunners.includes(step.source))
+        updateCardByIndex("outputLoading", true, i);
     });
     const res = await store
       .dispatch(executePlaybook.initiate(playbookData))
