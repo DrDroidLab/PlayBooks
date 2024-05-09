@@ -37,6 +37,9 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.API:
       data = Extractor.extractApiTasks(step);
       break;
+    case SOURCES.TEXT:
+      data = Extractor.extractTextTasks(step);
+      break;
     default:
       break;
   }

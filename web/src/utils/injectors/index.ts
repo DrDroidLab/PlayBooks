@@ -6,3 +6,4 @@ export * from "./eks.ts";
 export * from "./newRelic.ts";
 export * from "./datadog.ts";
 export * from "./api.ts";
+export * from "./text.ts";

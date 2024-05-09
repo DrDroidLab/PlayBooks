@@ -19,6 +19,8 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import { handleExecute } from "../../../utils/execution/handleExecute.ts";
 import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
+import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -91,11 +93,12 @@ function StepDetails() {
               />
             </div>
           </div>
+          <ExternalLinksList />
           <Notes step={step} index={currentStepIndex} />
           {isFetching && <CircularProgress size={20} />}
           <AddSource step={step} isDataFetching={isFetching} />
           <PlaybookStep card={step} index={currentStepIndex} />
-          {!isPrefetched && (
+          {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => handleExecute(step)}
               className="text-violet-500 mr-2 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2">
