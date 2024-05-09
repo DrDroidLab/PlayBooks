@@ -67,3 +67,6 @@ Asks questions in the [Slack Community](https://join.slack.com/t/doctor-droid-de
 
 ## Want to contribute?
 Read our [contribution guidelines](/CONTRIBUTION.md)
+
+## Roadmap
+Read our roadmap [here](/ROADMAP.md)
