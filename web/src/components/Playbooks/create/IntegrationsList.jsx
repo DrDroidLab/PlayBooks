@@ -52,7 +52,7 @@ function IntegrationsList({ setIsOpen }) {
   }, [query]);
 
   return (
-    <div className="mb-24">
+    <div>
       <div className="sticky top-0 bg-white z-10">
         <h2 className="mt-4 font-bold text-sm">Add Data</h2>
         <input
