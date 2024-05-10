@@ -7,7 +7,7 @@ class AzureConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
     def __init__(self, subscription_id, tenant_id, client_id, client_secret, account_id=None, connector_id=None):
         self.__client = AzureApiProcessor(subscription_id, tenant_id, client_id, client_secret)
-        super().__init__(account_id, connector_id, ConnectorType.CLICKHOUSE)
+        super().__init__(account_id, connector_id, ConnectorType.AZURE)
 
     def extract_workspaces(self, save_to_db=False):
         model_type = ConnectorMetadataModelTypeProto.AZURE_WORKSPACE
