@@ -39,29 +39,31 @@ integrations_connector_type_display_name_map = {
     ConnectorType.EKS: 'EKS KUBERNETES',
     ConnectorType.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
     ConnectorType.OPEN_AI: 'OPEN AI',
+    ConnectorType.AZURE: 'AZURE',
     ConnectorType.REMOTE_SERVER: 'REMOTE SERVER',
 }
 
 integrations_connector_type_category_map = {
     ConnectorType.SLACK: 'Alert Channels',
     ConnectorType.GOOGLE_CHAT: 'Alert Channels',
+    ConnectorType.OPS_GENIE: 'Alert Channels',
     ConnectorType.SENTRY: 'APM Tools',
+    ConnectorType.PAGER_DUTY: 'Alert Channels',
     ConnectorType.NEW_RELIC: 'APM Tools',
     ConnectorType.DATADOG: 'APM Tools',
     ConnectorType.DATADOG_OAUTH: 'APM Tools',
     ConnectorType.GRAFANA: 'APM Tools',
     ConnectorType.GRAFANA_VPC: 'APM Tools',
-    ConnectorType.GITHUB_ACTIONS: 'CI/CD',
     ConnectorType.ELASTIC_APM: 'APM Tools',
     ConnectorType.VICTORIA_METRICS: 'APM Tools',
     ConnectorType.PROMETHEUS: 'APM Tools',
+    ConnectorType.GITHUB_ACTIONS: 'CI/CD',
     ConnectorType.CLOUDWATCH: 'Cloud',
     ConnectorType.GCM: 'Cloud',
+    ConnectorType.AZURE: 'Cloud',
+    ConnectorType.EKS: 'Cloud',
     ConnectorType.CLICKHOUSE: 'Database',
     ConnectorType.POSTGRES: 'Database',
-    ConnectorType.PAGER_DUTY: 'Alert Channels',
-    ConnectorType.OPS_GENIE: 'Alert Channels',
-    ConnectorType.EKS: 'Cloud',
     ConnectorType.SQL_DATABASE_CONNECTION: 'Database',
     ConnectorType.OPEN_AI: 'LLM Tools',
     ConnectorType.REMOTE_SERVER: 'Remote Server',
@@ -210,6 +212,14 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
             ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
             ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD
+        ]
+    ],
+    ConnectorType.AZURE: [
+        [
+            ConnectorKeyProto.KeyType.AZURE_CLIENT_ID,
+            ConnectorKeyProto.KeyType.AZURE_CLIENT_SECRET,
+            ConnectorKeyProto.KeyType.AZURE_TENANT_ID,
+            ConnectorKeyProto.KeyType.AZURE_SUBSCRIPTION_ID,
         ]
     ]
 }

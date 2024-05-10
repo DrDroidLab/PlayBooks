@@ -338,6 +338,24 @@ message PlaybookDatadogTask {
   }
 }
 
+message PlaybookAzureTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    FILTER_LOG_EVENTS = 1;
+  }
+
+  message AzureLogAnalyticsFilterLogEventsTask {
+    google.protobuf.StringValue workspace_id = 1;
+    google.protobuf.StringValue filter_query = 2;
+    google.protobuf.StringValue timespan = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    AzureLogAnalyticsFilterLogEventsTask filter_log_events_task = 2;
+  }
+}
+
 message PlaybookMetricTaskDefinition {
   enum Source {
     UNKNOWN = 0;
@@ -346,6 +364,7 @@ message PlaybookMetricTaskDefinition {
     NEW_RELIC = 3;
     DATADOG = 4;
     GRAFANA_VPC = 5;
+    AZURE = 6;
   }
   Source source = 1;
   oneof task {
@@ -353,6 +372,7 @@ message PlaybookMetricTaskDefinition {
     PlaybookGrafanaTask grafana_task = 7;
     PlaybookNewRelicTask new_relic_task = 8;
     PlaybookDatadogTask datadog_task = 9;
+    PlaybookAzureTask azure_task = 10;
   }
 }
 

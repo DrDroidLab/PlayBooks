@@ -1239,6 +1239,63 @@ class PlaybookDatadogTask(google.protobuf.message.Message):
 global___PlaybookDatadogTask = PlaybookDatadogTask
 
 @typing_extensions.final
+class PlaybookAzureTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookAzureTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: PlaybookAzureTask._TaskType.ValueType  # 0
+        FILTER_LOG_EVENTS: PlaybookAzureTask._TaskType.ValueType  # 1
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: PlaybookAzureTask.TaskType.ValueType  # 0
+    FILTER_LOG_EVENTS: PlaybookAzureTask.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class AzureLogAnalyticsFilterLogEventsTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        WORKSPACE_ID_FIELD_NUMBER: builtins.int
+        FILTER_QUERY_FIELD_NUMBER: builtins.int
+        TIMESPAN_FIELD_NUMBER: builtins.int
+        @property
+        def workspace_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timespan(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            workspace_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timespan: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "timespan", b"timespan", "workspace_id", b"workspace_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "timespan", b"timespan", "workspace_id", b"workspace_id"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    FILTER_LOG_EVENTS_TASK_FIELD_NUMBER: builtins.int
+    type: global___PlaybookAzureTask.TaskType.ValueType
+    @property
+    def filter_log_events_task(self) -> global___PlaybookAzureTask.AzureLogAnalyticsFilterLogEventsTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___PlaybookAzureTask.TaskType.ValueType = ...,
+        filter_log_events_task: global___PlaybookAzureTask.AzureLogAnalyticsFilterLogEventsTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["filter_log_events_task"] | None: ...
+
+global___PlaybookAzureTask = PlaybookAzureTask
+
+@typing_extensions.final
 class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1254,6 +1311,7 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
         NEW_RELIC: PlaybookMetricTaskDefinition._Source.ValueType  # 3
         DATADOG: PlaybookMetricTaskDefinition._Source.ValueType  # 4
         GRAFANA_VPC: PlaybookMetricTaskDefinition._Source.ValueType  # 5
+        AZURE: PlaybookMetricTaskDefinition._Source.ValueType  # 6
 
     class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
     UNKNOWN: PlaybookMetricTaskDefinition.Source.ValueType  # 0
@@ -1262,12 +1320,14 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     NEW_RELIC: PlaybookMetricTaskDefinition.Source.ValueType  # 3
     DATADOG: PlaybookMetricTaskDefinition.Source.ValueType  # 4
     GRAFANA_VPC: PlaybookMetricTaskDefinition.Source.ValueType  # 5
+    AZURE: PlaybookMetricTaskDefinition.Source.ValueType  # 6
 
     SOURCE_FIELD_NUMBER: builtins.int
     CLOUDWATCH_TASK_FIELD_NUMBER: builtins.int
     GRAFANA_TASK_FIELD_NUMBER: builtins.int
     NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
     DATADOG_TASK_FIELD_NUMBER: builtins.int
+    AZURE_TASK_FIELD_NUMBER: builtins.int
     source: global___PlaybookMetricTaskDefinition.Source.ValueType
     @property
     def cloudwatch_task(self) -> global___PlaybookCloudwatchTask: ...
@@ -1277,6 +1337,8 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def new_relic_task(self) -> global___PlaybookNewRelicTask: ...
     @property
     def datadog_task(self) -> global___PlaybookDatadogTask: ...
+    @property
+    def azure_task(self) -> global___PlaybookAzureTask: ...
     def __init__(
         self,
         *,
@@ -1285,10 +1347,11 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
         grafana_task: global___PlaybookGrafanaTask | None = ...,
         new_relic_task: global___PlaybookNewRelicTask | None = ...,
         datadog_task: global___PlaybookDatadogTask | None = ...,
+        azure_task: global___PlaybookAzureTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["azure_task", b"azure_task", "cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["azure_task", b"azure_task", "cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "azure_task"] | None: ...
 
 global___PlaybookMetricTaskDefinition = PlaybookMetricTaskDefinition
 

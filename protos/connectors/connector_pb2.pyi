@@ -64,7 +64,8 @@ class _ConnectorTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GITHUB_ACTIONS: _ConnectorType.ValueType  # 36
     SQL_DATABASE_CONNECTION: _ConnectorType.ValueType  # 37
     OPEN_AI: _ConnectorType.ValueType  # 38
-    REMOTE_SERVER: _ConnectorType.ValueType  # 39
+    AZURE: _ConnectorType.ValueType  # 39
+    REMOTE_SERVER: _ConnectorType.ValueType  # 40
 
 class ConnectorType(_ConnectorType, metaclass=_ConnectorTypeEnumTypeWrapper): ...
 
@@ -107,7 +108,8 @@ GRAFANA_VPC: ConnectorType.ValueType  # 35
 GITHUB_ACTIONS: ConnectorType.ValueType  # 36
 SQL_DATABASE_CONNECTION: ConnectorType.ValueType  # 37
 OPEN_AI: ConnectorType.ValueType  # 38
-REMOTE_SERVER: ConnectorType.ValueType  # 39
+AZURE: ConnectorType.ValueType  # 39
+REMOTE_SERVER: ConnectorType.ValueType  # 40
 global___ConnectorType = ConnectorType
 
 class _ConnectorMetadataModelType:
@@ -156,6 +158,8 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     """EKS Models"""
     SQL_DATABASE_CONNECTION_RAW_QUERY: _ConnectorMetadataModelType.ValueType  # 901
     """Sql Database Connection Models"""
+    AZURE_WORKSPACE: _ConnectorMetadataModelType.ValueType  # 1001
+    """Azure Models"""
     SSH_SERVER: _ConnectorMetadataModelType.ValueType  # 1100
     """Remote Server Models"""
 
@@ -201,6 +205,8 @@ EKS_CLUSTER: ConnectorMetadataModelType.ValueType  # 801
 """EKS Models"""
 SQL_DATABASE_CONNECTION_RAW_QUERY: ConnectorMetadataModelType.ValueType  # 901
 """Sql Database Connection Models"""
+AZURE_WORKSPACE: ConnectorMetadataModelType.ValueType  # 1001
+"""Azure Models"""
 SSH_SERVER: ConnectorMetadataModelType.ValueType  # 1100
 """Remote Server Models"""
 global___ConnectorMetadataModelType = ConnectorMetadataModelType
@@ -413,10 +419,14 @@ class ConnectorKey(google.protobuf.message.Message):
         GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
         SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
         OPEN_AI_API_KEY: ConnectorKey._KeyType.ValueType  # 47
-        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 49
-        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 50
-        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
-        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
+        AZURE_SUBSCRIPTION_ID: ConnectorKey._KeyType.ValueType  # 48
+        AZURE_TENANT_ID: ConnectorKey._KeyType.ValueType  # 49
+        AZURE_CLIENT_ID: ConnectorKey._KeyType.ValueType  # 50
+        AZURE_CLIENT_SECRET: ConnectorKey._KeyType.ValueType  # 51
+        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 52
+        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 53
+        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 54
+        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 55
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -467,10 +477,14 @@ class ConnectorKey(google.protobuf.message.Message):
     GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
     SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
     OPEN_AI_API_KEY: ConnectorKey.KeyType.ValueType  # 47
-    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 49
-    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 50
-    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
-    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
+    AZURE_SUBSCRIPTION_ID: ConnectorKey.KeyType.ValueType  # 48
+    AZURE_TENANT_ID: ConnectorKey.KeyType.ValueType  # 49
+    AZURE_CLIENT_ID: ConnectorKey.KeyType.ValueType  # 50
+    AZURE_CLIENT_SECRET: ConnectorKey.KeyType.ValueType  # 51
+    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 52
+    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 53
+    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 54
+    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 55
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int
