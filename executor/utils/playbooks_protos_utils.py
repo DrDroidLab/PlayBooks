@@ -7,7 +7,8 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, Playbook
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
     PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
-    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask
+    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask, \
+    PlaybookBashCommandTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -143,7 +144,7 @@ def get_api_call_task_execution_proto(task) -> PlaybookActionTaskDefinition:
 
 def get_bash_command_task_execution_proto(task) -> PlaybookActionTaskDefinition:
     bash_command_task = task.get('bash_command_task', {})
-    bash_command_task_proto = dict_to_proto(bash_command_task, PlaybookApiCallTask)
+    bash_command_task_proto = dict_to_proto(bash_command_task, PlaybookBashCommandTask)
     return PlaybookActionTaskDefinition(source=PlaybookActionTaskDefinition.Source.BASH,
                                         bash_command_task=bash_command_task_proto)
 
