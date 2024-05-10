@@ -20,7 +20,7 @@ class AzureConnectorMetadataExtractor(ConnectorMetadataExtractor):
             return
         model_data = {}
         for w in workspaces:
-            workspace_id = w.get('customerId', '')
+            workspace_id = w.get('customer_id', '')
             model_data[workspace_id] = w
             if save_to_db:
                 self.create_or_update_model_metadata(model_type, workspace_id, w)
