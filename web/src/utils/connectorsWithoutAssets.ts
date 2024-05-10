@@ -6,4 +6,5 @@ export const connectorsWithoutAssets = [
   connectors.SLACK,
   connectors.OPENAI,
   connectors.SQL_DATABASE_CONNECTION,
+  connectors.REMOTE_SERVER,
 ];
