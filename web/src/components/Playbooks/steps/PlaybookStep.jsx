@@ -64,7 +64,7 @@ const PlaybookStep = ({ card, index }) => {
             {(card.outputs?.data ?? [])?.map((output, index) => {
               return (
                 <div
-                  className={`${styles["output-box"]} flex flex-col lg:flex-row w-full gap-4`}>
+                  className={`${styles["output-box"]} flex flex-col lg:flex-row w-full gap-4 max-w-full`}>
                   <div className="flex-1">
                     <PlaybookStepOutput
                       key={index}
@@ -73,11 +73,13 @@ const PlaybookStep = ({ card, index }) => {
                       step={card}
                     />
                   </div>
-                  <Interpretation
-                    title={output?.task_interpretation?.title}
-                    description={output?.task_interpretation?.description}
-                    summary={output?.task_interpretation?.summary}
-                  />
+                  <div className="shrink-0">
+                    <Interpretation
+                      title={output?.task_interpretation?.title}
+                      description={output?.task_interpretation?.description}
+                      summary={output?.task_interpretation?.summary}
+                    />
+                  </div>
                 </div>
               );
             })}

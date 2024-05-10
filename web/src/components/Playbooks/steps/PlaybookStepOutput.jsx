@@ -1,6 +1,6 @@
 import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph";
 import PlayBookRunDataTable from "../PlayBookRunDataTable";
-import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput";
+import PlaybookActionOutput from "../PlaybookActionOutput";
 
 const PlaybookStepOutput = ({ stepOutput, error, step }) => {
   const out = stepOutput;
@@ -39,14 +39,11 @@ const PlaybookStepOutput = ({ stepOutput, error, step }) => {
           step={step}
         />
       )}
-      {out?.task_execution_result?.action_task_execution_result?.result
-        ?.api_response && (
-        <PlaybookAPIActionOutput
+      {out?.task_execution_result?.action_task_execution_result?.result && (
+        <PlaybookActionOutput
           result={
             out?.task_execution_result?.action_task_execution_result?.result
           }
-          timestamp={out.timestamp}
-          step={step}
         />
       )}
       {(!out ||
@@ -56,8 +53,8 @@ const PlaybookStepOutput = ({ stepOutput, error, step }) => {
             ?.table_result?.rows &&
           !out?.task_execution_result?.data_fetch_task_execution_result?.result
             ?.table_result?.rows &&
-          !out?.task_execution_result?.action_task_execution_result?.result
-            ?.api_response)) && (
+          !out?.task_execution_result?.action_task_execution_result
+            ?.result)) && (
         <PlayBookRunMetricGraph
           error={error}
           title={
