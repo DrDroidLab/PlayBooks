@@ -46,6 +46,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.BASH:
       tasks = Injector.injectBashTasks(step, baseTask);
       break;
+    case SOURCES.SQL_DATABASE_CONNECTION:
+      tasks = Injector.injectSqlRawQueryTasks(step, baseTask);
+      break;
     default:
       break;
   }

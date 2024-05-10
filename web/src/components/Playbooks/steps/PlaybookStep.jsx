@@ -73,7 +73,7 @@ const PlaybookStep = ({ card, index }) => {
                       step={card}
                     />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 h-full">
                     <Interpretation
                       title={output?.task_interpretation?.title}
                       description={output?.task_interpretation?.description}

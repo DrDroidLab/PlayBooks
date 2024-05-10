@@ -1,6 +1,7 @@
 export interface Step {
   name?: string;
   id?: string;
+  query?: string;
   dimension?: string;
   namespace?: string;
   description?: string;
