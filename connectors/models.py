@@ -353,7 +353,8 @@ class ConnectorKey(models.Model):
                              ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
                              ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
                              ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
-                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM]:
+                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM,
+                             ConnectorKeyProto.KeyType.AZURE_CLIENT_SECRET]:
             key_value = '*********' + self.key[-4:]
             return ConnectorKeyProto(key_type=self.key_type,
                                      key=StringValue(value=key_value),
