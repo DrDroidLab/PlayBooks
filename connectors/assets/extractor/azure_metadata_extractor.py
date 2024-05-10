@@ -1,12 +1,12 @@
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from integrations_api_processors.azure_rest_api_processor import AzureRestApiProcessorProcessor
+from integrations_api_processors.azure_api_processor import AzureApiProcessorProcessor
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, ConnectorType
 
 
-class AzureRestConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class AzureConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
     def __init__(self, subscription_id, tenant_id, client_id, client_secret, account_id=None, connector_id=None):
-        self.__azure_rest_client = AzureRestApiProcessorProcessor(subscription_id, tenant_id, client_id, client_secret)
+        self.__azure_rest_client = AzureApiProcessorProcessor(subscription_id, tenant_id, client_id, client_secret)
         super().__init__(account_id, connector_id, ConnectorType.CLICKHOUSE)
 
     def extract_workspaces(self, save_to_db=False):
