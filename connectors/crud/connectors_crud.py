@@ -142,6 +142,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['remote_pem'] = None
             if 'remote_password' not in credentials_dict:
                 credentials_dict['remote_password'] = None
+    elif connector_type == ConnectorType.AZURE:
+        for conn_key in connector_keys:
+            if conn_key.key_type == ConnectorKeyProto.AZURE_CLIENT_ID:
+                credentials_dict['client_id'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.AZURE_CLIENT_SECRET:
+                credentials_dict['client_secret'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.AZURE_TENANT_ID:
+                credentials_dict['tenant_id'] = conn_key.key.value
+            elif conn_key.key_type == ConnectorKeyProto.AZURE_SUBSCRIPTION_ID:
+                credentials_dict['subscription_id'] = conn_key.key.value
     else:
         return None
     return credentials_dict
