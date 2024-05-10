@@ -2,6 +2,7 @@ import { store } from "../store/index.ts";
 import { getAssetModelOptions } from "../store/features/playbook/api/index.ts";
 import {
   playbookSelector,
+  setModelTypeOptions,
   stepsSelector,
 } from "../store/features/playbook/playbookSlice.ts";
 
@@ -32,15 +33,21 @@ export const getAssetModelOptionsFunction = async (
   stepIndex,
 ) => {
   try {
-    await store
-      .dispatch(
-        getAssetModelOptions.initiate({
-          connector_type,
-          model_type,
-          stepIndex,
+    const res = await store.dispatch(
+      getAssetModelOptions.initiate({
+        connector_type,
+        model_type,
+        stepIndex,
+      }),
+    );
+    const data = res.data;
+    if ((data?.asset_model_options?.length ?? 0) > 0)
+      store.dispatch(
+        setModelTypeOptions({
+          options: data?.asset_model_options,
+          index: stepIndex,
         }),
-      )
-      .unwrap();
+      );
   } catch (e) {
     console.log("There was an error:", e);
   }

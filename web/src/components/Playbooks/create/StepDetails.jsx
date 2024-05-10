@@ -40,13 +40,7 @@ function StepDetails() {
     if (currentStepIndex !== null && step?.source && step?.modelType) {
       fetchData();
     }
-  }, [currentStepIndex]);
-
-  useEffect(() => {
-    if (step?.source && step?.modelType) {
-      fetchData();
-    }
-  }, [step?.source, step?.modelType]);
+  }, [currentStepIndex, step?.source, step?.modelType]);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
