@@ -6,7 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
-from integrations_api_processors.azure_api_processor import AzureApiProcessorProcessor
+from integrations_api_processors.azure_api_processor import AzureApiProcessor
 from protos.base_pb2 import TimeRange
 from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
@@ -81,8 +81,8 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
         for key, value in global_variable_set.items():
             query_pattern = query_pattern.replace(key, str(value))
 
-        azure_api_processor = AzureApiProcessorProcessor(self.__azure_subscription_id, self.__azure_client_id,
-                                                         self.__azure_client_secret, self.__azure_tenant_id)
+        azure_api_processor = AzureApiProcessor(self.__azure_subscription_id, self.__azure_tenant_id,
+                                                self.__azure_client_id, self.__azure_client_secret)
 
         logger.info(f"Querying Azure Log Analytics workspace: {workspace_id} with query: {query_pattern}")
 

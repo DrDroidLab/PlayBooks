@@ -24,10 +24,10 @@ def query_response_to_dict(response):
     return result
 
 
-class AzureApiProcessorProcessor:
+class AzureApiProcessor:
     client = None
 
-    def __init__(self, subscription_id, client_id, client_secret, tenant_id):
+    def __init__(self, subscription_id, tenant_id, client_id, client_secret):
         self.__subscription_id = subscription_id
         self.__client_id = client_id
         self.__client_secret = client_secret
