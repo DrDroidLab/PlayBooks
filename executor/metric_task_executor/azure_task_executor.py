@@ -76,7 +76,8 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
         task = azure_task.filter_log_events_task
         workspace_id = task.workspace_id.value
         timespan_delta = task.timespan.value
-        timespan = timedelta(seconds=timespan_delta) if timespan_delta else timedelta(hours=4)
+        timespan = timedelta(seconds=int(timespan_delta)) if timespan_delta else timedelta(
+            seconds=end_time - start_time)
         query_pattern = task.filter_query.value
         for key, value in global_variable_set.items():
             query_pattern = query_pattern.replace(key, str(value))
