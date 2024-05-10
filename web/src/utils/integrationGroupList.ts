@@ -15,6 +15,7 @@ export const integrationSentenceMap = {
   [models.EKS_CLUSTER]: "Query Events from your EKS Cluster",
   [models.API]: "Trigger an API",
   [models.TEXT]: "Write documentation",
+  [models.GRAFANA_MIMIR_PROMQL]: "Query Metrics from Mimir",
 };
 
 export const integrations = [
@@ -44,6 +45,7 @@ export const integrations = [
       models.DATADOG_QUERY,
       models.CLOUDWATCH_METRIC,
       models.GRAFANA,
+      models.GRAFANA_MIMIR_PROMQL
     ],
   },
   {

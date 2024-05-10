@@ -14,6 +14,8 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
 
   let tasks: PlaybookTask[] = [];
 
+  console.log(step.source);
+
   switch (step.source) {
     case SOURCES.CLOUDWATCH:
       tasks = Injector.injectCloudwatchTasks(step, baseTask);
@@ -21,6 +23,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.GRAFANA_VPC:
     case SOURCES.GRAFANA:
       tasks = Injector.injectGrafanaTasks(step, baseTask);
+      break;
+    case SOURCES.GRAFANA_MIMIR:
+      tasks = Injector.injectMimirTasks(step, baseTask);
       break;
     case SOURCES.CLICKHOUSE:
       tasks = Injector.injectClickhouseTasks(step, baseTask);

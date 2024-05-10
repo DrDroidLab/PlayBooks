@@ -65,6 +65,7 @@ class _ConnectorTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     SQL_DATABASE_CONNECTION: _ConnectorType.ValueType  # 37
     OPEN_AI: _ConnectorType.ValueType  # 38
     REMOTE_SERVER: _ConnectorType.ValueType  # 39
+    GRAFANA_MIMIR: _ConnectorType.ValueType  # 40
 
 class ConnectorType(_ConnectorType, metaclass=_ConnectorTypeEnumTypeWrapper): ...
 
@@ -108,6 +109,7 @@ GITHUB_ACTIONS: ConnectorType.ValueType  # 36
 SQL_DATABASE_CONNECTION: ConnectorType.ValueType  # 37
 OPEN_AI: ConnectorType.ValueType  # 38
 REMOTE_SERVER: ConnectorType.ValueType  # 39
+GRAFANA_MIMIR: ConnectorType.ValueType  # 40
 global___ConnectorType = ConnectorType
 
 class _ConnectorMetadataModelType:
@@ -158,6 +160,8 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     """Sql Database Connection Models"""
     SSH_SERVER: _ConnectorMetadataModelType.ValueType  # 1100
     """Remote Server Models"""
+    GRAFANA_MIMIR_PROMQL: _ConnectorMetadataModelType.ValueType  # 1201
+    """Mimir Server Models"""
 
 class ConnectorMetadataModelType(_ConnectorMetadataModelType, metaclass=_ConnectorMetadataModelTypeEnumTypeWrapper): ...
 
@@ -203,6 +207,8 @@ SQL_DATABASE_CONNECTION_RAW_QUERY: ConnectorMetadataModelType.ValueType  # 901
 """Sql Database Connection Models"""
 SSH_SERVER: ConnectorMetadataModelType.ValueType  # 1100
 """Remote Server Models"""
+GRAFANA_MIMIR_PROMQL: ConnectorMetadataModelType.ValueType  # 1201
+"""Mimir Server Models"""
 global___ConnectorMetadataModelType = ConnectorMetadataModelType
 
 class _TransformerType:
@@ -417,6 +423,7 @@ class ConnectorKey(google.protobuf.message.Message):
         REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 50
         REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
         REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
+        MIMIR_HOST: ConnectorKey._KeyType.ValueType  # 53
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -471,6 +478,7 @@ class ConnectorKey(google.protobuf.message.Message):
     REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 50
     REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
     REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
+    MIMIR_HOST: ConnectorKey.KeyType.ValueType  # 53
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int

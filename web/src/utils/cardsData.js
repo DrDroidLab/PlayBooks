@@ -366,4 +366,12 @@ export const cardsData = [
     url: "/integrations/markdown_logo.svg",
     enum: "DOCUMENTATION",
   },
+  {
+    id: 43,
+    url: "/integrations/mimir_logo.png",
+    title: "GRAFANA MIMIR",
+    enum: "GRAFANA_MIMIR",
+    desc: "Connect Metrics from Grafana Mimir",
+    buttonTitle: "Connect",
+  }
 ];

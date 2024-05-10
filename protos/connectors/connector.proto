@@ -53,6 +53,7 @@ enum ConnectorType {
   SQL_DATABASE_CONNECTION = 37;
   OPEN_AI = 38;
   REMOTE_SERVER = 39;
+  GRAFANA_MIMIR = 40;
 }
 
 
@@ -112,6 +113,9 @@ enum ConnectorMetadataModelType {
 
   //Remote Server Models
   SSH_SERVER = 1100;
+
+  // Mimir Server Models
+  GRAFANA_MIMIR_PROMQL = 1201;
 }
 
 enum TransformerType {
@@ -225,6 +229,8 @@ message ConnectorKey {
     REMOTE_SERVER_USER = 50;
     REMOTE_SERVER_HOST = 51;
     REMOTE_SERVER_PASSWORD = 52;
+
+    MIMIR_HOST = 53;
   }
   google.protobuf.UInt64Value id = 1;
   KeyType key_type = 2;

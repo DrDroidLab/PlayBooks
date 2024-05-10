@@ -13,4 +13,5 @@ export const connectors = {
   AGENT_PROXY: "AGENT_PROXY",
   GOOGLE_CHAT: "GOOGLE_CHAT",
   OPENAI: "OPEN_AI",
+  GRAFANA_MIMIR: "GRAFANA_MIMIR",
 };

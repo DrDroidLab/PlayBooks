@@ -34,9 +34,11 @@ function IntegrationOption({ option, setIsOpen }) {
         src={
           cardsData.find(
             (e) =>
-              e.enum === option?.connector_type?.replace("_VPC", "") ||
-              option?.model_type?.includes(e.enum),
-          )?.url ?? ""
+              e.enum === option?.connector_type?.replace("_VPC", "")
+          )?.url ?? cardsData.find(
+            (e) =>
+              option?.model_type?.includes(e.enum)
+          )?.url
         }
         alt="logo"
       />

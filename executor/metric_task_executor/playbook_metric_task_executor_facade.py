@@ -2,6 +2,7 @@ from typing import Dict
 
 from executor.metric_task_executor.cloudwatch_task_executor import CloudwatchMetricTaskExecutor
 from executor.metric_task_executor.datadog_task_executor import DatadogMetricTaskExecutor
+from executor.metric_task_executor.mimir_task_executor import MimirMetricTaskExecutor
 from executor.metric_task_executor.newrelic_task_executor import NewRelicMetricTaskExecutor
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from executor.metric_task_executor.grafana_executor import GrafanaMetricTaskExecutor
@@ -37,3 +38,4 @@ metric_task_executor.register(PlaybookMetricTaskDefinitionProto.Source.GRAFANA, 
 metric_task_executor.register(PlaybookMetricTaskDefinitionProto.Source.GRAFANA_VPC, GrafanaVpcMetricTaskExecutor)
 metric_task_executor.register(PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC, NewRelicMetricTaskExecutor)
 metric_task_executor.register(PlaybookMetricTaskDefinitionProto.Source.DATADOG, DatadogMetricTaskExecutor)
+metric_task_executor.register(PlaybookMetricTaskDefinitionProto.Source.GRAFANA_MIMIR, MimirMetricTaskExecutor)

@@ -12,6 +12,7 @@ import {
   eksBuilder,
   datadogRawQueryBuilder,
   apiBuilder,
+  mimirBuilder
 } from "./builders/index.ts";
 
 export enum OptionType {
@@ -35,6 +36,9 @@ export const constructBuilder = (task: any, index) => {
 
       case models.API:
         return apiBuilder(task, index);
+
+      case models.GRAFANA_MIMIR_PROMQL:
+        return mimirBuilder(task, index);
 
       default:
         break;

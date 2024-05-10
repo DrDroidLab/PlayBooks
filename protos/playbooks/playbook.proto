@@ -338,6 +338,23 @@ message PlaybookDatadogTask {
   }
 }
 
+message PlaybookPromQLTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    PROMQL_METRIC_EXECUTION = 1;
+  }
+
+  message PromQlMetricExecutionTask {
+    google.protobuf.StringValue promql_expression = 1;
+    google.protobuf.StringValue process_function = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    PromQlMetricExecutionTask promql_metric_execution_task = 3;
+  }
+}
+
 message PlaybookMetricTaskDefinition {
   enum Source {
     UNKNOWN = 0;
@@ -346,6 +363,7 @@ message PlaybookMetricTaskDefinition {
     NEW_RELIC = 3;
     DATADOG = 4;
     GRAFANA_VPC = 5;
+    GRAFANA_MIMIR = 6;
   }
   Source source = 1;
   oneof task {
@@ -353,6 +371,7 @@ message PlaybookMetricTaskDefinition {
     PlaybookGrafanaTask grafana_task = 7;
     PlaybookNewRelicTask new_relic_task = 8;
     PlaybookDatadogTask datadog_task = 9;
+    PlaybookPromQLTask mimir_task = 10;
   }
 }
 

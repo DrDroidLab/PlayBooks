@@ -12,6 +12,7 @@ from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProc
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
+from integrations_api_processors.mimir_api_processor import MimirApiProcessor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
@@ -42,7 +43,8 @@ connector_type_api_processor_map = {
     ConnectorType.POSTGRES: PostgresDBProcessor,
     ConnectorType.GRAFANA_VPC: VpcApiProcessor,
     ConnectorType.SLACK: SlackApiProcessor,
-    ConnectorType.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor
+    ConnectorType.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
+    ConnectorType.GRAFANA_MIMIR: MimirApiProcessor
 }
 
 
@@ -128,6 +130,10 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:
                 credentials_dict['bot_auth_token'] = conn_key.key.value
+    elif connector_type == ConnectorType.GRAFANA_MIMIR:
+        for conn_key in connector_keys:
+            if conn_key.key_type == ConnectorKeyProto.MIMIR_HOST:
+                credentials_dict['mimir_host'] = conn_key.key.value
     elif connector_type == ConnectorType.REMOTE_SERVER:
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_HOST:

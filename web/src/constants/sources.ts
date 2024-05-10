@@ -10,4 +10,5 @@ export const SOURCES = {
   POSTGRES: "POSTGRES",
   EKS: "EKS",
   API: "API",
+  GRAFANA_MIMIR: "GRAFANA_MIMIR",
 };

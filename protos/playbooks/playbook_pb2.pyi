@@ -1239,6 +1239,59 @@ class PlaybookDatadogTask(google.protobuf.message.Message):
 global___PlaybookDatadogTask = PlaybookDatadogTask
 
 @typing_extensions.final
+class PlaybookPromQLTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookPromQLTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: PlaybookPromQLTask._TaskType.ValueType  # 0
+        PROMQL_METRIC_EXECUTION: PlaybookPromQLTask._TaskType.ValueType  # 1
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: PlaybookPromQLTask.TaskType.ValueType  # 0
+    PROMQL_METRIC_EXECUTION: PlaybookPromQLTask.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class PromQlMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    PROMQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    type: global___PlaybookPromQLTask.TaskType.ValueType
+    @property
+    def promql_metric_execution_task(self) -> global___PlaybookPromQLTask.PromQlMetricExecutionTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___PlaybookPromQLTask.TaskType.ValueType = ...,
+        promql_metric_execution_task: global___PlaybookPromQLTask.PromQlMetricExecutionTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task"] | None: ...
+
+global___PlaybookPromQLTask = PlaybookPromQLTask
+
+@typing_extensions.final
 class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1254,6 +1307,7 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
         NEW_RELIC: PlaybookMetricTaskDefinition._Source.ValueType  # 3
         DATADOG: PlaybookMetricTaskDefinition._Source.ValueType  # 4
         GRAFANA_VPC: PlaybookMetricTaskDefinition._Source.ValueType  # 5
+        GRAFANA_MIMIR: PlaybookMetricTaskDefinition._Source.ValueType  # 6
 
     class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
     UNKNOWN: PlaybookMetricTaskDefinition.Source.ValueType  # 0
@@ -1262,12 +1316,14 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     NEW_RELIC: PlaybookMetricTaskDefinition.Source.ValueType  # 3
     DATADOG: PlaybookMetricTaskDefinition.Source.ValueType  # 4
     GRAFANA_VPC: PlaybookMetricTaskDefinition.Source.ValueType  # 5
+    GRAFANA_MIMIR: PlaybookMetricTaskDefinition.Source.ValueType  # 6
 
     SOURCE_FIELD_NUMBER: builtins.int
     CLOUDWATCH_TASK_FIELD_NUMBER: builtins.int
     GRAFANA_TASK_FIELD_NUMBER: builtins.int
     NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
     DATADOG_TASK_FIELD_NUMBER: builtins.int
+    MIMIR_TASK_FIELD_NUMBER: builtins.int
     source: global___PlaybookMetricTaskDefinition.Source.ValueType
     @property
     def cloudwatch_task(self) -> global___PlaybookCloudwatchTask: ...
@@ -1277,6 +1333,8 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def new_relic_task(self) -> global___PlaybookNewRelicTask: ...
     @property
     def datadog_task(self) -> global___PlaybookDatadogTask: ...
+    @property
+    def mimir_task(self) -> global___PlaybookPromQLTask: ...
     def __init__(
         self,
         *,
@@ -1285,10 +1343,11 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
         grafana_task: global___PlaybookGrafanaTask | None = ...,
         new_relic_task: global___PlaybookNewRelicTask | None = ...,
         datadog_task: global___PlaybookDatadogTask | None = ...,
+        mimir_task: global___PlaybookPromQLTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "mimir_task"] | None: ...
 
 global___PlaybookMetricTaskDefinition = PlaybookMetricTaskDefinition
 

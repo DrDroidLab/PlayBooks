@@ -7,6 +7,7 @@ from connectors.assets.manager.cloudwatch_asset_manager import CloudwatchAssetMa
 from connectors.assets.manager.dd_asset_manager import DatadogAssetManager
 from connectors.assets.manager.eks_assets_manager import EKSAssetManager
 from connectors.assets.manager.grafana_asset_manager import GrafanaAssetManager
+from connectors.assets.manager.mimir_assets_manager import MimirAssetManager
 from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
 from connectors.assets.manager.remote_server_assets_manager import RemoteServetAssetManager
@@ -84,3 +85,4 @@ asset_manager_facade.register(ConnectorTypeProto.NEW_RELIC, NewRelicAssetManager
 asset_manager_facade.register(ConnectorTypeProto.POSTGRES, PostgresAssetManager())
 asset_manager_facade.register(ConnectorTypeProto.SLACK, SlackAssetManager())
 asset_manager_facade.register(ConnectorTypeProto.REMOTE_SERVER, RemoteServetAssetManager())
+asset_manager_facade.register(ConnectorTypeProto.GRAFANA_MIMIR, MimirAssetManager())
