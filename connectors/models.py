@@ -267,7 +267,11 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM: 'PEM',
     ConnectorKeyProto.KeyType.REMOTE_SERVER_USER: 'User',
     ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST: 'Host',
-    ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD: 'Password'
+    ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD: 'Password',
+    ConnectorKeyProto.KeyType.AZURE_CLIENT_ID: 'Client ID',
+    ConnectorKeyProto.KeyType.AZURE_CLIENT_SECRET: 'Client Secret',
+    ConnectorKeyProto.KeyType.AZURE_TENANT_ID: 'Tenant ID',
+    ConnectorKeyProto.KeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
 }
 
 
