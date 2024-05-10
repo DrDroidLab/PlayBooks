@@ -13,10 +13,12 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import Query from "./Query.jsx";
-import { handleExecute } from "../../../utils/execution/handleExecute.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
+import { executeStep } from "../../../utils/execution/executeStep.ts";
+import Interpretation from "./Interpretation.jsx";
+import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 
 function Step({ step, index }) {
   const isPrefetched = useIsPrefetched();
@@ -24,6 +26,7 @@ function Step({ step, index }) {
     step?.isPrefetched ?? step.source ?? false,
   );
   const dispatch = useDispatch();
+  const { data } = useGetBuilderOptionsQuery();
 
   function handleDeleteClick(index) {
     dispatch(deleteStep(index));
@@ -52,13 +55,6 @@ function Step({ step, index }) {
         <div className={styles["step-section"]}>
           <div className={styles["step-info"]}>
             <div>
-              {/* <SelectOne
-                options={options}
-                selected={step.stepType}
-                onChange={(id) => {
-                  dispatch(setStepType({ index, stepType: id }));
-                }}
-              /> */}
               <div
                 className={styles["addConditionStyle"]}
                 onClick={() => setAddQuery(true)}>
@@ -66,20 +62,18 @@ function Step({ step, index }) {
               </div>
 
               {addQuery && <Query step={step} index={index} />}
-              {/* <HandleSelectedType
-                selectedId={step.stepType}
-                step={step}
-                index={index}
-              /> */}
             </div>
           </div>
           <Notes step={step} index={index} />
+          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
+            <Interpretation />
+          )}
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
               {step.source && !unsupportedRunners.includes(step.source) && (
                 <button
                   className={styles["pb-button"]}
-                  onClick={() => handleExecute(step)}>
+                  onClick={() => executeStep(step)}>
                   <Tooltip title="Run this Step">
                     <>
                       Run <PlayArrowIcon />

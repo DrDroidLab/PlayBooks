@@ -234,7 +234,8 @@ const playbookSlice = createSlice({
       state.steps[payload.index].description = payload.description;
     },
     changeProgress: (state, { payload }) => {
-      state.steps[payload.index].executioninprogress = payload.progress;
+      if (state.steps[payload.index])
+        state.steps[payload.index].executioninprogress = payload.progress;
     },
     selectSourceAndModel: (
       state,
