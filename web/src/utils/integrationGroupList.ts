@@ -15,6 +15,7 @@ export const integrationSentenceMap = {
   [models.EKS_CLUSTER]: "Query Events from your EKS Cluster",
   [models.API]: "Trigger an API",
   [models.TEXT]: "Write documentation",
+  [models.BASH]: "Execute a BASH command",
 };
 
 export const integrations = [
@@ -26,7 +27,7 @@ export const integrations = [
   {
     id: "actions",
     label: "Actions",
-    options: [models.API],
+    options: [models.API, models.BASH],
   },
   {
     id: "logs",

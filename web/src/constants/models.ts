@@ -12,4 +12,5 @@ export const models = {
   POSTGRES_DATABASE: "POSTGRES_DATABASE",
   EKS_CLUSTER: "EKS_CLUSTER",
   API: "API",
+  BASH: "BASH",
 };

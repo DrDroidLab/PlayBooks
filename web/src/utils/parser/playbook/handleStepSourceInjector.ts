@@ -40,9 +40,11 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.API:
       tasks = Injector.injectApiTasks(step, baseTask);
       break;
-
     case SOURCES.TEXT:
       tasks = Injector.injectTextTasks(step, baseTask);
+      break;
+    case SOURCES.BASH:
+      tasks = Injector.injectBashTasks(step, baseTask);
       break;
     default:
       break;

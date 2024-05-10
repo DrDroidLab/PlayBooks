@@ -11,10 +11,7 @@ import {
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import {
-  useGetBuilderOptionsQuery,
-  useLazyGetAssetModelOptionsQuery,
-} from "../../../store/features/playbook/api/index.ts";
+import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
@@ -25,12 +22,11 @@ import { executeStep } from "../../../utils/execution/executeStep.ts";
 import Interpretation from "../steps/Interpretation.jsx";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
   const { currentStepIndex } = useSelector(playbookSelector);
-  const [triggerGetAssetModelOptions, { isFetching }] =
-    useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
@@ -38,14 +34,6 @@ function StepDetails() {
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
-  };
-
-  const fetchData = () => {
-    triggerGetAssetModelOptions({
-      connector_type: steps[currentStepIndex].source,
-      model_type: steps[currentStepIndex].modelType,
-      stepIndex: currentStepIndex,
-    });
   };
 
   useEffect(() => {
@@ -100,8 +88,7 @@ function StepDetails() {
           </div>
           <ExternalLinksList />
           <Notes step={step} index={currentStepIndex} />
-          {isFetching && <CircularProgress size={20} />}
-          <AddSource step={step} isDataFetching={isFetching} />
+          <AddSource step={step} />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation />
           )}

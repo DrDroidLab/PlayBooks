@@ -40,6 +40,10 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.TEXT:
       data = Extractor.extractTextTasks(step);
       break;
+
+    case SOURCES.BASH:
+      data = Extractor.extractBashTasks(step);
+      break;
     default:
       break;
   }

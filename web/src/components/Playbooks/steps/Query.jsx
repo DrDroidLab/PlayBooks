@@ -3,15 +3,13 @@ import { useEffect, useState } from "react";
 import SelectComponent from "../../SelectComponent";
 import PlaybookStep from "./PlaybookStep";
 import styles from "../playbooks.module.css";
-import {
-  useGetConnectorTypesQuery,
-  useLazyGetAssetModelOptionsQuery,
-} from "../../../store/features/playbook/api/index.ts";
+import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/index.ts";
 import { selectSourceAndModel } from "../../../store/features/playbook/playbookSlice.ts";
 import { useDispatch } from "react-redux";
 import { CircularProgress } from "@mui/material";
 import { RefreshRounded } from "@mui/icons-material";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 
 function Query({ step, index }) {
   const {
@@ -19,19 +17,8 @@ function Query({ step, index }) {
     isFetching: connectorLoading,
     refetch,
   } = useGetConnectorTypesQuery();
-  const [triggerGetAssetModelOptions, { isFetching }] =
-    useLazyGetAssetModelOptionsQuery();
   const dispatch = useDispatch();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-  const fetchData = (val) => {
-    if (val?.connector_type === "API") return;
-    triggerGetAssetModelOptions({
-      connector_type: val?.connector_type || step.source,
-      model_type: val?.model_type || step.modelType,
-      stepIndex: index,
-    });
-  };
 
   function handleSourceChange(key, val) {
     dispatch(
@@ -65,7 +52,7 @@ function Query({ step, index }) {
           position: "relative",
         }}>
         <div className="flex items-center gap-2">
-          {(isFetching || connectorLoading) && (
+          {connectorLoading && (
             <CircularProgress
               style={{
                 marginRight: "12px",

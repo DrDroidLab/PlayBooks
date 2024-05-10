@@ -10,4 +10,5 @@ export const SOURCES = {
   POSTGRES: "POSTGRES",
   EKS: "EKS",
   API: "API",
+  BASH: "BASH",
 };
