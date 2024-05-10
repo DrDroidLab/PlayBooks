@@ -6,24 +6,24 @@ import {
   stepsSelector,
 } from "../store/features/playbook/playbookSlice.ts";
 
-export const fetchData = async () => {
+export const fetchData = async (val: any = undefined) => {
   const steps = stepsSelector(store.getState());
   const { currentStepIndex } = playbookSelector(store.getState());
-  const step = steps[currentStepIndex];
+  const step = steps[val.index ?? currentStepIndex];
 
-  if (step.source === "API") return;
-  if (step.source === "BASH") {
+  if (step?.source === "API" || val?.connector_type === "API") return;
+  if (step?.source === "BASH" || val?.connector_type === "BASH") {
     await getAssetModelOptionsFunction(
       "REMOTE_SERVER",
       "SSH_SERVER",
-      currentStepIndex,
+      val?.index ?? currentStepIndex,
     );
     return;
   }
   await getAssetModelOptionsFunction(
-    step.source,
-    step.modelType,
-    currentStepIndex,
+    val?.connector_type ?? step?.source,
+    val?.model_type ?? step?.modelType,
+    val?.index ?? currentStepIndex,
   );
 };
 

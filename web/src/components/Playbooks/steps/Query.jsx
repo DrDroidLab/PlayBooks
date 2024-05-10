@@ -30,12 +30,12 @@ function Query({ step, index }) {
       }),
     );
 
-    fetchData(val);
+    fetchData({ ...val, index });
   }
 
   useEffect(() => {
     if (step.isPrefetched) {
-      fetchData();
+      fetchData({ index });
     }
   }, [step.isPrefetched]);
 
