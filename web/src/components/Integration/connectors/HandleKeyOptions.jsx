@@ -6,7 +6,7 @@ import {
   setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 
-function HandleKeyOptions({ option, connectorActive }) {
+function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
   const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
 
@@ -15,11 +15,15 @@ function HandleKeyOptions({ option, connectorActive }) {
       return (
         <textarea
           disabled={connectorActive}
-          value={currentConnector[option.key_type]}
+          value={value ?? currentConnector[option.key_type]}
           placeHolder={`Enter ${option.display_name}`}
-          onChange={(e) =>
-            dispatch(setKey({ key: option.key_type, value: e.target.value }))
-          }
+          onChange={(e) => {
+            if (onValueChange) {
+              onValueChange(e.target.value);
+              return;
+            }
+            dispatch(setKey({ key: option.key_type, value: e.target.value }));
+          }}
           className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[500px] resize-none text-xs outline-none"
         />
       );
@@ -28,10 +32,14 @@ function HandleKeyOptions({ option, connectorActive }) {
         <ValueComponent
           valueType={"STRING"}
           onValueChange={(val) => {
+            if (onValueChange) {
+              onValueChange(val);
+              return;
+            }
             dispatch(setKey({ key: option.key_type, value: val }));
           }}
           disabled={connectorActive}
-          value={currentConnector[option.key_type]}
+          value={value ?? currentConnector[option.key_type]}
           placeHolder={option.display_name}
           length={500}
         />
