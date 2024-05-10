@@ -7,7 +7,7 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, Playbook
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
     PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
-    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask
+    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask, PlaybookAzureTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -103,6 +103,21 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     return PlaybookMetricTaskDefinition(
         source=PlaybookMetricTaskDefinition.Source.DATADOG,
         datadog_task=dd_task_proto)
+
+
+def get_azure_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+    az_task = task.get('azure_task', {})
+    if az_task.get('type', None) == 'FILTER_LOG_EVENTS':
+        filter_log_events_task_proto = dict_to_proto(az_task.get('filter_log_events_task', {}),
+                                                     PlaybookAzureTask.AzureLogAnalyticsFilterLogEventsTask)
+        az_task_proto = PlaybookAzureTask(
+            type=PlaybookAzureTask.TaskType.FILTER_LOG_EVENTS,
+            filter_log_events_task=filter_log_events_task_proto)
+    else:
+        raise Exception(f"Task type {az_task.get('type', None)} not supported")
+    return PlaybookMetricTaskDefinition(
+        source=PlaybookMetricTaskDefinition.Source.AZURE,
+        azure_task=az_task_proto)
 
 
 def get_clickhouse_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
@@ -207,6 +222,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_new_relic_task_execution_proto(task)
         elif source == 'DATADOG':
             metric_task_proto = get_datadog_task_execution_proto(task)
+        elif source == 'AZURE':
+            metric_task_proto = get_azure_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return PlaybookTaskDefinitionProto(
