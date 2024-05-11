@@ -424,6 +424,7 @@ class ConnectorKey(google.protobuf.message.Message):
         REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
         REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
         MIMIR_HOST: ConnectorKey._KeyType.ValueType  # 53
+        X_SCOPE_ORG_ID: ConnectorKey._KeyType.ValueType  # 54
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -479,6 +480,7 @@ class ConnectorKey(google.protobuf.message.Message):
     REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
     REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
     MIMIR_HOST: ConnectorKey.KeyType.ValueType  # 53
+    X_SCOPE_ORG_ID: ConnectorKey.KeyType.ValueType  # 54
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int

@@ -231,6 +231,7 @@ message ConnectorKey {
     REMOTE_SERVER_PASSWORD = 52;
 
     MIMIR_HOST = 53;
+    X_SCOPE_ORG_ID = 54;
   }
   google.protobuf.UInt64Value id = 1;
   KeyType key_type = 2;

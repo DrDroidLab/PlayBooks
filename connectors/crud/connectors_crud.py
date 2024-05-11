@@ -134,6 +134,8 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.MIMIR_HOST:
                 credentials_dict['mimir_host'] = conn_key.key.value
+            if conn_key.key_type == ConnectorKeyProto.X_SCOPE_ORG_ID:
+                credentials_dict['x_scope_org_id'] = conn_key.key.value
     elif connector_type == ConnectorType.REMOTE_SERVER:
         for conn_key in connector_keys:
             if conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_HOST:

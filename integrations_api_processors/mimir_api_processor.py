@@ -6,9 +6,9 @@ logger = logging.getLogger(__name__)
 class MimirApiProcessor:
     client = None
 
-    def __init__(self, mimir_host):
+    def __init__(self, mimir_host, x_scope_org_id='anonymous'):
         self.__host = mimir_host
-        self.headers = {}
+        self.headers = {'X-Scope-OrgID': x_scope_org_id}
 
     def test_connection(self):
         try:
@@ -50,8 +50,10 @@ class MimirApiProcessor:
 
     def fetch_promql_metric_timeseries(self, query, start, end, step):
         try:
-            url = '{}/api/v1/query?query={}&start={}&end={}&step={}'.format(
+            url = '{}/prometheus/api/v1/query?query={}&start={}&end={}&step={}'.format(
                 self.__host, query, start, end, step)
+            print('url', url)
+            print('self.headers', self.headers)
             response = requests.get(url, headers=self.headers)
             if response and response.status_code == 200:
                 return response.json()

@@ -8,8 +8,8 @@ from protos.connectors.connector_pb2 import ConnectorMetadataModelType as Connec
 
 class MimirConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
-    def __init__(self, mimir_host, account_id=None, connector_id=None):
-        self.__mimir_api_processor = MimirApiProcessor(mimir_host)
+    def __init__(self, mimir_host, x_scope_org_id, account_id=None, connector_id=None):
+        self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id)
 
         super().__init__(account_id, connector_id, ConnectorType.GRAFANA_MIMIR)
 

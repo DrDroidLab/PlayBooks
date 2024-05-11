@@ -195,6 +195,7 @@ integrations_connector_type_connector_keys_map = {
     ConnectorType.GRAFANA_MIMIR: [
         [
             ConnectorKeyProto.KeyType.MIMIR_HOST,
+            ConnectorKeyProto.KeyType.X_SCOPE_ORG_ID,
         ]
     ],
     ConnectorType.REMOTE_SERVER: [
@@ -266,6 +267,7 @@ integrations_connector_key_display_name_map = {
     ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST: 'Host',
     ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD: 'Password',
     ConnectorKeyProto.KeyType.MIMIR_HOST: 'Host',
+    ConnectorKeyProto.KeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
 }
 
 

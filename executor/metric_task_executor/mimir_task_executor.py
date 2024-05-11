@@ -41,9 +41,11 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
         for key in mimir_connector_keys:
             if key.key_type == ConnectorKeyProto.KeyType.MIMIR_HOST:
                 self.__mimir_host = key.key
+            if key.key_type == ConnectorKeyProto.KeyType.X_SCOPE_ORG_ID:
+                self.__x_scope_org_id = key.key
 
-        if not self.__mimir_host:
-            raise Exception("Mimir host not found for account: {}".format(account_id))
+        if not self.__mimir_host or not self.__x_scope_org_id:
+            raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict,
                 task: PlaybookMetricTaskDefinitionProto) -> PlaybookMetricTaskExecutionResult:
@@ -80,7 +82,7 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        mimir_api_processor = MimirApiProcessor(self.__mimir_host)
+        mimir_api_processor = MimirApiProcessor(self.__mimir_host, self.__x_scope_org_id)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "
@@ -94,6 +96,7 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("No data returned from Mimir")
 
         if process_function == 'timeseries':
+            print('response', response)
             if 'data' in response and 'result' in response['data']:
                 labeled_metric_timeseries_list = []
                 for item in response['data']['result']:
