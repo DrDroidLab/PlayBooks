@@ -16,6 +16,7 @@ if (process.env.REACT_APP_POSTHOG_ENABLED === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
     api_host: "https://pumpkins.drdroid.io",
     ui_host: "https://app.posthog.com",
+    disable_session_recording: true,
   });
 }
 

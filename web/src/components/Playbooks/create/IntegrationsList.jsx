@@ -5,7 +5,7 @@ import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/
 import {
   integrationSentenceMap,
   integrations,
-} from "../../../utils/integrationGroupList.ts";
+} from "../../../utils/integrationOptions/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
 function IntegrationsList({ setIsOpen }) {

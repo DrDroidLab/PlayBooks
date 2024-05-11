@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from "react-redux";
 import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
@@ -14,12 +15,12 @@ function SelectInterpreterDropdown() {
   const isPrefetched = useIsPrefetched();
 
   const handleInterpreterChange = (value) => {
-    updateCardByIndex("interpreter", value.interpreter);
+    updateCardByIndex("interpreter", value?.interpreter);
   };
 
   useEffect(() => {
     return () => {
-      updateCardByIndex("interpreter", undefined);
+      updateCardByIndex("interpreter", undefined, currentStepIndex);
     };
   }, []);
 
