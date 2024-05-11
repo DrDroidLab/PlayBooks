@@ -1,0 +1,8 @@
+# Create on 2024-05-11T15:17:00+05:30
+# Katenary command line: katenary convert -c deploy.docker-compose.yaml -o ./charts
+apiVersion: v2
+appVersion: main-725bb88
+description: A helm chart for PlayBooks
+name: PlayBooks
+type: application
+version: 0.1.0

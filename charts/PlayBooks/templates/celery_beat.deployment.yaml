@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-celery_beat'
+  labels:
+    katenary.io/component: celery_beat
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: celery_beat
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: celery_beat
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      initContainers:
+        - name: check-db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking db port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-db 5432 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+        - name: check-redis
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking redis port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-redis 6379 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+        - name: check-setup_db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking setup_db port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-setup_db 8081 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+      containers:
+        - name: celery_beat
+          image: '{{ .Values.celery_beat.repository.image }}{{ if ne .Values.celery_beat.repository.tag "" }}:{{ .Values.celery_beat.repository.tag }}{{ end }}'
+          env:
+            - name: POSTGRES_USER
+              value: '{{ tpl .Values.celery_beat.environment.POSTGRES_USER . }}'
+            - name: POSTGRES_PASSWORD
+              value: '{{ tpl .Values.celery_beat.environment.POSTGRES_PASSWORD . }}'
+            - name: DJANGO_DEBUG
+              value: '{{ tpl .Values.celery_beat.environment.DJANGO_DEBUG . }}'
+            - name: POSTGRES_HOST
+              value: '{{ tpl .Values.celery_beat.environment.POSTGRES_HOST . }}'
+            - name: CELERY_BROKER_URL
+              value: '{{ tpl .Values.celery_beat.environment.CELERY_BROKER_URL . }}'
+            - name: CELERY_RESULT_BACKEND
+              value: '{{ tpl .Values.celery_beat.environment.CELERY_RESULT_BACKEND . }}'
+            - name: REDIS_URL
+              value: '{{ tpl .Values.celery_beat.environment.REDIS_URL . }}'
+          command:
+            - ./start-celery-beat.sh
+

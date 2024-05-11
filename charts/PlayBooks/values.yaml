@@ -1,0 +1,111 @@
+celery_beat:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+celery_worker:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+db:
+  environment:
+    POSTGRES_DB: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+  persistence:
+    postgres_data:
+      capacity: 1Gi
+      enabled: false
+  repository:
+    image: postgres
+    tag: "11"
+redis:
+  repository:
+    image: redis
+    tag: alpine
+server:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+setup_db:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_DB: db
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_PORT: "5432"
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+web:
+  environment:
+    REACT_APP_POSTHOG_ENABLED: "true"
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web
+    tag: latest
+workflow_action_execution_celery_worker:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_QUEUE: workflow_action_execution
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+workflow_executor_celery_worker:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_QUEUE: workflow_executor
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
+workflow_scheduler_celery_worker:
+  environment:
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_QUEUE: workflow_scheduler
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+    DJANGO_DEBUG: "True"
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: pass
+    POSTGRES_USER: user
+    REDIS_URL: redis://redis:6379/0
+  repository:
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend
+    tag: latest
