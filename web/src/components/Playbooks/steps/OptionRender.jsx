@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { updateStep } from "../../../store/features/playbook/playbookSlice.ts";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
-import styles from "./index.module.css";
 import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
@@ -103,14 +102,14 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
       );
     case "multiline":
       return (
-        <div
-          key={data.key}
-          style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          <p style={{ marginTop: "10px", fontSize: "13px", color: "#676666" }}>
+        <div key={data.key} className="flex flex-col w-full">
+          <p className="mt-2 text-sm text-gray-500">
             <b>{data.label}</b>
           </p>
           <textarea
-            className={styles["notes"]}
+            className={
+              "w-full border border-gray-300 p-1 rounded mt-1 text-sm resize-none text-[#676666] h-32"
+            }
             rows={4}
             value={data.value ?? data.selected ?? task[`${data.key}`]}
             onChange={handleTextAreaChange}
