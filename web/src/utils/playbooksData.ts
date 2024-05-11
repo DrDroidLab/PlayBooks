@@ -27,6 +27,9 @@ export const constructBuilder = (task: any, index) => {
       case models.SQL_DATABASE_CONNECTION:
         return Builders.sqlRawQueryBuilder(task, index);
 
+      case models.BASH:
+        return Builders.bashBuilder(task, index);
+
       default:
         break;
     }
