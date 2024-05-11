@@ -110,12 +110,12 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     try:
         db_playbook, _ = PlayBook.objects.update_or_create(account=account,
                                                            name=playbook_name,
-                                                           description=description,
-                                                           global_variable_set=global_variable_set,
-                                                           is_active=True,
-                                                           created_by=created_by)
-    except IntegrityError:
-        return None, f"Integrity Error: Playbook with name {playbook_name} already exists"
+                                                           created_by=created_by,
+                                                           defaults={'is_active': True,
+                                                                     'global_variable_set': global_variable_set,
+                                                                     'description': description
+                                                                     }
+                                                           )
     except Exception as e:
         return None, f"Failed to create playbook with error: {e}"
 
