@@ -79,7 +79,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             data.type === "text"
               ? "flex-col"
               : "flex-row items-center justify-center gap-2"
-          }`}>
+          } ${data.type === "text" ? "" : "mt-2"}`}>
           <p
             style={{
               marginTop: data.type === "text" ? "10px" : "",
