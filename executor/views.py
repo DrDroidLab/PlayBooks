@@ -219,7 +219,7 @@ def playbooks_get(request_message: GetPlaybooksRequest) -> Union[GetPlaybooksRes
         qs = qs.filter(id__in=request_message.playbook_ids)
         list_all = False
     elif not show_inactive or not show_inactive.value:
-        qs = qs.filter(is_active=True, is_generated=False)
+        qs = qs.filter(is_active=True)
 
     total_count = qs.count()
     qs = qs.order_by('-created_at')

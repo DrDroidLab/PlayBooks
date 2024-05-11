@@ -1,5 +1,4 @@
 from datetime import timezone
-from hashlib import md5
 from django.db import models
 from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -50,11 +49,6 @@ class PlayBookTaskDefinition(models.Model):
             type=self.type,
             notes=StringValue(value=self.notes)
         )
-
-    def save(self, **kwargs):
-        if self.task:
-            self.task_md5 = md5(str(self.task).encode('utf-8')).hexdigest()
-        super().save(**kwargs)
 
 
 class PlayBookStep(models.Model):

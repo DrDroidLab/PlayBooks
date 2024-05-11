@@ -108,14 +108,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     if playbook.description.value:
         description = playbook.description.value
     try:
-        db_playbook = PlayBook.objects.update_or_create(account=account,
-                                                        name=playbook_name,
-                                                        description=description,
-                                                        global_variable_set=global_variable_set,
-                                                        is_active=True,
-                                                        created_by=created_by)
-    except IntegrityError:
-        return None, f"Integrity Error: Playbook with name {playbook_name} already exists"
+        db_playbook, _ = PlayBook.objects.update_or_create(account=account,
+                                                           name=playbook_name,
+                                                           created_by=created_by,
+                                                           defaults={'is_active': True,
+                                                                     'global_variable_set': global_variable_set,
+                                                                     'description': description
+                                                                     }
+                                                           )
     except Exception as e:
         return None, f"Failed to create playbook with error: {e}"
 
@@ -189,8 +189,9 @@ def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTask
         task = task_proto.action_task
     else:
         return None, f"Invalid Task Type Received: {task_type_display}"
+    task_dict = proto_to_dict(task)
+    task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
-        task_md5 = md5(str(task).encode('utf-8')).hexdigest()
         db_task, _ = PlayBookTaskDefinition.objects.get_or_create(account=account,
                                                                   name=task_proto.name.value,
                                                                   description=task_proto.description.value,
@@ -198,10 +199,11 @@ def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTask
                                                                   type=task_type,
                                                                   task_md5=task_md5,
                                                                   created_by=created_by,
-                                                                  defaults={
-                                                                      'task': proto_to_dict(
-                                                                          task)}
-                                                                  )
+                                                                  defaults={'task': task_dict})
+        return db_task, None
+    except IntegrityError:
+        db_task = PlayBookTaskDefinition.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
+                                                     created_by=created_by)
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task type {task_type_display} with error {e}")
