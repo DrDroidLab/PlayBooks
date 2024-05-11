@@ -357,7 +357,7 @@ div.ruleBox {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 48px;
+  margin-top: 24px;
 }
 
 .mr-3 {

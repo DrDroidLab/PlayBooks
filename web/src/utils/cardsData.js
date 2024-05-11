@@ -368,6 +368,19 @@ export const cardsData = [
   },
   {
     id: 43,
+    url: "/integrations/remote_server_logo.png",
+    title: "REMOTE SERVER",
+    enum: "REMOTE_SERVER",
+    desc: "Connect Remote Server",
+    buttonTitle: "Connect",
+  },
+  {
+    id: 44,
+    url: "/integrations/bash_logo.svg",
+    enum: "BASH",
+  },
+  {
+    id: 45,
     url: "/integrations/mimir_logo.png",
     title: "GRAFANA MIMIR",
     enum: "GRAFANA_MIMIR",

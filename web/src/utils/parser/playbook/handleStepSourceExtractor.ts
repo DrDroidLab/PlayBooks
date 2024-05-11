@@ -42,6 +42,12 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.GRAFANA_MIMIR:
       data = Extractor.extractMimirTasks(step);
       break;
+    case SOURCES.BASH:
+      data = Extractor.extractBashTasks(step);
+      break;
+    case SOURCES.SQL_DATABASE_CONNECTION:
+      data = Extractor.extractSqlRawQueryTasks(step);
+      break;
     default:
       break;
   }

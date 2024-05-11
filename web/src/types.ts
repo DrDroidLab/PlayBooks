@@ -1,6 +1,7 @@
 export interface Step {
   name?: string;
   id?: string;
+  query?: string;
   dimension?: string;
   namespace?: string;
   description?: string;
@@ -68,6 +69,7 @@ export interface Step {
   model_type?: any;
   interpreter?: any;
   promql_expression?: string;
+  remote_server?: string;
 }
 
 export interface GoldenMetric {
@@ -162,9 +164,16 @@ export interface ApiCallTask {
   payload: string;
   timeout: string;
 }
+
+export interface BashCommandTask {
+  command: string;
+  remote_server?: string;
+}
+
 export interface ActionTask {
   source: string;
-  api_call_task: ApiCallTask;
+  api_call_task?: ApiCallTask;
+  bash_command_task?: BashCommandTask;
 }
 
 export interface ServiceMetricExecutionTask {

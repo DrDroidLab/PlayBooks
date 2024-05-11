@@ -13,4 +13,11 @@ export const connectorTypeOptions = [
     model_type: "MARKDOWN",
     display_name: "Documentation",
   },
+  {
+    id: "BASH",
+    label: "Bash",
+    connector_type: "BASH",
+    model_type: "BASH",
+    display_name: "Bash Command",
+  },
 ];

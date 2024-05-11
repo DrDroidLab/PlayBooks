@@ -8,3 +8,5 @@ export * from "./datadog.ts";
 export * from "./api.ts";
 export * from "./text.ts";
 export * from "./mimir.ts";
+export * from "./bash.ts";
+export * from "./sqlRawQuery.ts";

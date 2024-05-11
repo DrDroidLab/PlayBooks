@@ -7,7 +7,8 @@ from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, Playbook
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
     PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
-    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask
+    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask, \
+    PlaybookBashCommandTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -156,6 +157,13 @@ def get_api_call_task_execution_proto(task) -> PlaybookActionTaskDefinition:
                                         api_call_task=api_call_task_proto)
 
 
+def get_bash_command_task_execution_proto(task) -> PlaybookActionTaskDefinition:
+    bash_command_task = task.get('bash_command_task', {})
+    bash_command_task_proto = dict_to_proto(bash_command_task, PlaybookBashCommandTask)
+    return PlaybookActionTaskDefinition(source=PlaybookActionTaskDefinition.Source.BASH,
+                                        bash_command_task=bash_command_task_proto)
+
+
 def get_playbook_task_definition_proto(db_task_definition):
     task_type = db_task_definition.type
     task = db_task_definition.task
@@ -264,6 +272,8 @@ def get_playbook_task_definition_proto(db_task_definition):
         source = task.get('source', None)
         if source == 'API':
             action_task_proto = get_api_call_task_execution_proto(task)
+        elif source == 'BASH':
+            action_task_proto = get_bash_command_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return PlaybookTaskDefinitionProto(
