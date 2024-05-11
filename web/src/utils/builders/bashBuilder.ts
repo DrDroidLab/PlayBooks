@@ -2,7 +2,7 @@ import { store } from "../../store/index.ts";
 import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const bashBuilder = (task: any, index: number, options: any) => {
+export const bashBuilder = (task: any, index: number, options?: any) => {
   return {
     builder: [
       [
