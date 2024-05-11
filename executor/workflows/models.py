@@ -152,7 +152,7 @@ class Workflow(models.Model):
 
     @property
     def proto_partial(self) -> WorkflowProto:
-        all_pbs = self.playbooks.filter(is_active=True)
+        all_pbs = self.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_ob_protos = [pb.proto_partial for pb in all_pbs]
 
         latest_workflow_execution = None
