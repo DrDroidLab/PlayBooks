@@ -9,9 +9,9 @@ import {
   connectorSelector,
   keyOptionsSelector,
 } from "../../../store/features/integrations/integrationsSlice.ts";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import Overlay from "../../Overlay/index.jsx";
 import { CloseRounded } from "@mui/icons-material";
+import HandleKeyOptions from "./HandleKeyOptions.jsx";
 
 const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
   const [updateConnector, { isLoading }] = useUpdateConnectorMutation();
@@ -84,8 +84,9 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
                     style={{ fontSize: "12px", marginLeft: "2px" }}>
                     {option.display_name}
                   </div>
-                  <ValueComponent
-                    valueType={"STRING"}
+                  <HandleKeyOptions
+                    connectorActive={false}
+                    option={option}
                     onValueChange={(val) => {
                       setFormData((prev) => {
                         return {
@@ -95,8 +96,6 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
                       });
                     }}
                     value={formData[option.key_type]}
-                    placeHolder={option.display_name}
-                    length={500}
                   />
                 </div>
               ),

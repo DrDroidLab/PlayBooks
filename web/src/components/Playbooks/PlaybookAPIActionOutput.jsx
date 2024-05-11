@@ -20,7 +20,7 @@ const options = [
   },
 ];
 
-function PlaybookAPIActionOutput({ step }) {
+function PlaybookAPIActionOutput({ output }) {
   const [selected, setSelected] = useState("body");
 
   const handleChange = (option) => {
@@ -35,26 +35,27 @@ function PlaybookAPIActionOutput({ step }) {
         handleSelect={handleChange}
       />
 
-      <HandleSelectedRender step={step} selectedId={selected} />
+      <HandleSelectedRender output={output} selectedId={selected} />
     </div>
   );
 }
 
 export default PlaybookAPIActionOutput;
 
-const HandleSelectedRender = ({ selectedId, step }) => {
-  const headersString = step?.action?.headers || "{}";
-  const headers = JSON.parse(headersString);
+const HandleSelectedRender = ({ selectedId, output }) => {
+  const headers = output.response_headers;
   switch (selectedId) {
     case "body":
       return (
-        <div
-          style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             className={
-              "my-2 bg-white rounded-lg border resize-none p-2 text-sm overflow-scroll h-32"
+              "my-2 bg-white max-w-xl rounded-lg border resize-none p-2 text-sm overflow-scroll h-48"
             }>
-            <CopyCode content={step?.action?.payload} language={"json"} />
+            <CopyCode
+              content={JSON.stringify(output.response_body, null, 2) ?? ""}
+              language={"json"}
+            />
           </div>
         </div>
       );
