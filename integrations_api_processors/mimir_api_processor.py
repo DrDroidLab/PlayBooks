@@ -50,11 +50,12 @@ class MimirApiProcessor:
 
     def fetch_promql_metric_timeseries(self, query, start, end, step):
         try:
-            url = '{}/prometheus/api/v1/query?query={}&start={}&end={}&step={}'.format(
+            url = '{}/prometheus/api/v1/query_range?query={}&start={}&end={}&step={}'.format(
                 self.__host, query, start, end, step)
             print('url', url)
             print('self.headers', self.headers)
             response = requests.get(url, headers=self.headers)
+            print('response', response.text)
             if response and response.status_code == 200:
                 return response.json()
         except Exception as e:
