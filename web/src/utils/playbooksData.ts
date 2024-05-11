@@ -29,6 +29,9 @@ export const constructBuilder = (task: any, index) => {
 
       case models.GRAFANA_MIMIR_PROMQL:
         return Builders.mimirBuilder(task, index);
+        
+      case models.BASH:
+        return Builders.bashBuilder(task, index);
 
       default:
         break;
