@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
-import { integrationSentenceMap } from "../../../utils/integrationGroupList.ts";
+import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 
 const emptyStep = {
   modelType: "",
@@ -234,7 +234,8 @@ const playbookSlice = createSlice({
       state.steps[payload.index].description = payload.description;
     },
     changeProgress: (state, { payload }) => {
-      state.steps[payload.index].executioninprogress = payload.progress;
+      if (state.steps[payload.index])
+        state.steps[payload.index].executioninprogress = payload.progress;
     },
     selectSourceAndModel: (
       state,
