@@ -1937,7 +1937,6 @@ class Playbook(google.protobuf.message.Message):
     STATUS_FIELD_NUMBER: builtins.int
     STEPS_FIELD_NUMBER: builtins.int
     GLOBAL_VARIABLE_SET_FIELD_NUMBER: builtins.int
-    HAS_TRIGGERS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -1955,8 +1954,6 @@ class Playbook(google.protobuf.message.Message):
     def steps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepDefinition]: ...
     @property
     def global_variable_set(self) -> google.protobuf.struct_pb2.Struct: ...
-    @property
-    def has_triggers(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     def __init__(
         self,
         *,
@@ -1970,10 +1967,9 @@ class Playbook(google.protobuf.message.Message):
         status: global___PlaybookExecutionStatusType.ValueType = ...,
         steps: collections.abc.Iterable[global___PlaybookStepDefinition] | None = ...,
         global_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
-        has_triggers: google.protobuf.wrappers_pb2.BoolValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "has_triggers", b"has_triggers", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "has_triggers", b"has_triggers", "id", b"id", "is_active", b"is_active", "last_run_at", b"last_run_at", "name", b"name", "status", b"status", "steps", b"steps"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "id", b"id", "is_active", b"is_active", "last_run_at", b"last_run_at", "name", b"name", "status", b"status", "steps", b"steps"]) -> None: ...
 
 global___Playbook = Playbook
 
@@ -2122,14 +2118,12 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         UPDATE_PLAYBOOK_NAME: UpdatePlaybookOp._Op.ValueType  # 1
         UPDATE_PLAYBOOK_STATUS: UpdatePlaybookOp._Op.ValueType  # 2
         UPDATE_PLAYBOOK: UpdatePlaybookOp._Op.ValueType  # 3
-        UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS: UpdatePlaybookOp._Op.ValueType  # 4
 
     class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
     UNKNOWN: UpdatePlaybookOp.Op.ValueType  # 0
     UPDATE_PLAYBOOK_NAME: UpdatePlaybookOp.Op.ValueType  # 1
     UPDATE_PLAYBOOK_STATUS: UpdatePlaybookOp.Op.ValueType  # 2
     UPDATE_PLAYBOOK: UpdatePlaybookOp.Op.ValueType  # 3
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS: UpdatePlaybookOp.Op.ValueType  # 4
 
     @typing_extensions.final
     class UpdatePlaybookName(google.protobuf.message.Message):
@@ -2176,30 +2170,10 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["playbook", b"playbook"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["playbook", b"playbook"]) -> None: ...
 
-    @typing_extensions.final
-    class UpdatePlaybookAlertOpsTriggerStatus(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        ALERT_OPS_TRIGGER_ID_FIELD_NUMBER: builtins.int
-        IS_ACTIVE_FIELD_NUMBER: builtins.int
-        @property
-        def alert_ops_trigger_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-        @property
-        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-        def __init__(
-            self,
-            *,
-            alert_ops_trigger_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["alert_ops_trigger_id", b"alert_ops_trigger_id", "is_active", b"is_active"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["alert_ops_trigger_id", b"alert_ops_trigger_id", "is_active", b"is_active"]) -> None: ...
-
     OP_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_NAME_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_STATUS_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_FIELD_NUMBER: builtins.int
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS_FIELD_NUMBER: builtins.int
     op: global___UpdatePlaybookOp.Op.ValueType
     @property
     def update_playbook_name(self) -> global___UpdatePlaybookOp.UpdatePlaybookName: ...
@@ -2207,8 +2181,6 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
     def update_playbook_status(self) -> global___UpdatePlaybookOp.UpdatePlaybookStatus: ...
     @property
     def update_playbook(self) -> global___UpdatePlaybookOp.UpdatePlaybook: ...
-    @property
-    def update_playbook_alert_ops_trigger_status(self) -> global___UpdatePlaybookOp.UpdatePlaybookAlertOpsTriggerStatus: ...
     def __init__(
         self,
         *,
@@ -2216,10 +2188,9 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         update_playbook_name: global___UpdatePlaybookOp.UpdatePlaybookName | None = ...,
         update_playbook_status: global___UpdatePlaybookOp.UpdatePlaybookStatus | None = ...,
         update_playbook: global___UpdatePlaybookOp.UpdatePlaybook | None = ...,
-        update_playbook_alert_ops_trigger_status: global___UpdatePlaybookOp.UpdatePlaybookAlertOpsTriggerStatus | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["update", b"update", "update_playbook", b"update_playbook", "update_playbook_alert_ops_trigger_status", b"update_playbook_alert_ops_trigger_status", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "update", b"update", "update_playbook", b"update_playbook", "update_playbook_alert_ops_trigger_status", b"update_playbook_alert_ops_trigger_status", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_playbook_name", "update_playbook_status", "update_playbook", "update_playbook_alert_ops_trigger_status"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["update", b"update", "update_playbook", b"update_playbook", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "update", b"update", "update_playbook", b"update_playbook", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_playbook_name", "update_playbook_status", "update_playbook"] | None: ...
 
 global___UpdatePlaybookOp = UpdatePlaybookOp

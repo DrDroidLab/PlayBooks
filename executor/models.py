@@ -29,10 +29,10 @@ class PlayBookTaskDefinition(models.Model):
     task = models.JSONField()
     task_md5 = models.CharField(max_length=256, db_index=True)
 
-    is_active = models.BooleanField(default=True)
+    created_by = models.TextField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
-    created_by = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = [['account', 'name', 'task_md5', 'created_by']]
@@ -70,8 +70,6 @@ class PlayBookStep(models.Model):
     tasks = models.ManyToManyField(PlayBookTaskDefinition, through='PlayBookStepTaskDefinitionMapping',
                                    related_name='step_tasks')
 
-    is_active = models.BooleanField(default=True)
-
     created_by = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
@@ -79,9 +77,8 @@ class PlayBookStep(models.Model):
     @property
     def proto(self) -> PlaybookStepDefinitionProto:
         all_tasks = self.tasks.all().order_by('playbooksteptaskdefinitionmapping__id')
-        if self.is_active:
-            all_tasks = all_tasks.filter(is_active=True)
         tasks = [pbt.proto for pbt in all_tasks]
+
         metadata = self.metadata if self.metadata else {}
         el_list_proto: [PlaybookStepDefinitionProto.ExternalLink] = []
         if 'external_links' in metadata:
@@ -123,29 +120,27 @@ class PlayBookStep(models.Model):
 
 class PlayBook(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True, blank=True)
-    playbook = models.TextField()
-
     global_variable_set = models.JSONField(null=True, blank=True)
 
     steps = models.ManyToManyField(PlayBookStep, through='PlayBookStepMapping', related_name='playbook_steps')
 
     is_active = models.BooleanField(default=True)
-    is_generated = models.BooleanField(default=False)
-
     created_by = models.TextField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
-        unique_together = [['account', 'name']]
+        unique_together = [['account', 'name', 'created_by']]
 
     @property
     def proto(self) -> PlaybookProto:
         all_steps = self.steps.all().order_by('playbookstepmapping__id')
         if self.is_active:
-            all_steps = all_steps.filter(is_active=True)
+            all_steps = all_steps.filter(playbookstepmapping__is_active=True)
         steps = [pbs.proto for pbs in all_steps]
 
         global_variable_set_proto = Struct()
@@ -180,11 +175,7 @@ class PlayBookStepTaskDefinitionMapping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     playbook_task_definition = models.ForeignKey(PlayBookTaskDefinition, on_delete=models.CASCADE, db_index=True)
-    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
-
-    class Meta:
-        unique_together = [['account', 'playbook_step', 'playbook_task_definition']]
 
 
 class PlayBookStepMapping(models.Model):
@@ -193,9 +184,6 @@ class PlayBookStepMapping(models.Model):
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
-
-    class Meta:
-        unique_together = [['account', 'playbook', 'playbook_step']]
 
 
 class PlayBookExecution(models.Model):

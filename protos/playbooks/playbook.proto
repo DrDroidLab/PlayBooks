@@ -578,7 +578,6 @@ message Playbook {
   PlaybookExecutionStatusType status = 8;
   repeated PlaybookStepDefinition steps = 9;
   google.protobuf.Struct global_variable_set = 10;
-  google.protobuf.BoolValue has_triggers = 11;
 }
 
 
@@ -631,7 +630,6 @@ message UpdatePlaybookOp {
     UPDATE_PLAYBOOK_NAME = 1;
     UPDATE_PLAYBOOK_STATUS = 2;
     UPDATE_PLAYBOOK = 3;
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS = 4;
   }
 
   message UpdatePlaybookName {
@@ -646,16 +644,10 @@ message UpdatePlaybookOp {
     Playbook playbook = 1;
   }
 
-  message UpdatePlaybookAlertOpsTriggerStatus {
-    google.protobuf.UInt64Value alert_ops_trigger_id = 1;
-    google.protobuf.BoolValue is_active = 2;
-  }
-
   Op op = 1;
   oneof update {
     UpdatePlaybookName update_playbook_name = 2;
     UpdatePlaybookStatus update_playbook_status = 3;
     UpdatePlaybook update_playbook = 4;
-    UpdatePlaybookAlertOpsTriggerStatus update_playbook_alert_ops_trigger_status = 5;
   }
 }

@@ -15,7 +15,7 @@ from google.protobuf.struct_pb2 import Struct
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
-from executor.crud.playbooks_crud import create_db_playbook
+from executor.crud.playbooks_crud import update_or_create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
@@ -240,7 +240,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     if not playbook or not playbook.name:
         return CreatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/playbook"))
-    playbook, error = create_db_playbook(account, user.email, playbook)
+    playbook, error = update_or_create_db_playbook(account, user.email, playbook)
     if error:
         return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
