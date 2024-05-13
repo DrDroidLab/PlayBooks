@@ -4,6 +4,7 @@ import {
   PlaybookContractStep,
   Step,
 } from "../../../types.ts";
+import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 import { stateToStep } from "./stateToStep.ts";
 
 export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
@@ -14,10 +15,7 @@ export const stepsToPlaybook = (playbookVal: Playbook, steps: Step[]) => {
     id: playbookVal.id,
     name: playbookVal.name,
     description: playbookVal.description,
-    global_variable_set: playbookVal.globalVariables?.reduce((acc, curr) => {
-      acc[curr.name] = curr.value;
-      return acc;
-    }, {}),
+    global_variable_set: stateToGlobalVariable(playbookVal.globalVariables),
     steps: playbookContractSteps,
   };
 
