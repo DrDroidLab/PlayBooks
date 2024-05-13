@@ -117,6 +117,8 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
     if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
         try:
             image_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+            if not image_url:
+                return InterpretationProto()
         except Exception as e:
             logger.error(f'Error generating graph using metric timeseries data: {e}')
             raise e
