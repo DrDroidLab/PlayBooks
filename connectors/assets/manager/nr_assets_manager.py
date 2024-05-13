@@ -9,7 +9,8 @@ from protos.connectors.assets.newrelic_asset_pb2 import NewRelicApplicationEntit
     NewRelicDashboardEntityAssetOptions
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
     AccountConnectorAssets
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType, ConnectorType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class NewRelicAssetManager(ConnectorAssetManager):
@@ -17,15 +18,15 @@ class NewRelicAssetManager(ConnectorAssetManager):
     def __init__(self):
         self.connector_type = ConnectorType.NEW_RELIC
 
-    def get_asset_model_options(self, model_type: ConnectorMetadataModelType, model_uid_metadata_list):
-        if model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_APPLICATION:
+    def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
+        if model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION:
             all_application_entities = []
             for item in model_uid_metadata_list:
                 all_application_entities.append(item['metadata']['name'])
             options = NewRelicApplicationEntityAssetOptions(application_names=all_application_entities)
             return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
                                                                       new_relic_entity_application_model_options=options)
-        elif model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_DASHBOARD:
+        elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD:
             all_dashboards = {}
             for item in model_uid_metadata_list:
                 dashboard = all_dashboards.get(item['metadata']['guid'], {})
@@ -52,27 +53,27 @@ class NewRelicAssetManager(ConnectorAssetManager):
             return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
                                                                       new_relic_entity_dashboard_model_options=NewRelicDashboardEntityAssetOptions(
                                                                           dashboards=dashboard_options))
-        elif model_type == ConnectorMetadataModelType.NEW_RELIC_NRQL:
+        elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL:
             return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type)
         else:
             return None
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelType,
+    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
                                filters: AccountConnectorAssetsModelFilters, nr_models):
         which_one_of = filters.WhichOneof('filters')
 
         dashboard_page_filters = {}
-        if model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_APPLICATION and (
+        if model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION and (
                 not which_one_of or which_one_of == 'new_relic_entity_application_model_filters'):
             options: NewRelicApplicationEntityAssetOptions = filters.new_relic_entity_application_model_filters
             filter_applications = options.application_names
-            nr_models = nr_models.filter(model_type=ConnectorMetadataModelType.NEW_RELIC_ENTITY_APPLICATION)
+            nr_models = nr_models.filter(model_type=ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION)
             if filter_applications:
                 nr_models = nr_models.filter(metadata__name__in=filter_applications)
-        elif model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_DASHBOARD and (
+        elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD and (
                 not which_one_of or which_one_of == 'new_relic_entity_dashboard_model_filters'):
             options: NewRelicDashboardEntityAssetOptions = filters.new_relic_entity_dashboard_model_filters
-            nr_models = nr_models.filter(model_type=ConnectorMetadataModelType.NEW_RELIC_ENTITY_DASHBOARD)
+            nr_models = nr_models.filter(model_type=ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD)
             filter_dashboards = options.dashboards
             if filter_dashboards:
                 all_dashboard_guids = [x.dashboard_guid.value for x in filter_dashboards]
@@ -81,11 +82,11 @@ class NewRelicAssetManager(ConnectorAssetManager):
                 filter_page_options: NewRelicDashboardEntityAssetOptions.DashboardOptions.DashboardPageOptions = db.page_options
                 if filter_page_options:
                     dashboard_page_filters[db.dashboard_guid.value] = [x.page_guid.value for x in filter_page_options]
-        elif model_type == ConnectorMetadataModelType.NEW_RELIC_NRQL:
+        elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL:
             nr_models = []
         nr_asset_protos = []
         for asset in nr_models:
-            if asset.model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_APPLICATION:
+            if asset.model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION:
                 asset_golden_metrics: [NewRelicApplicationEntityAssetModel.GoldenMetric] = []
                 asset_metadata = asset.metadata
                 golden_metrics = asset_metadata.get('goldenMetrics', {}).get('metrics', [])
@@ -107,7 +108,7 @@ class NewRelicAssetManager(ConnectorAssetManager):
                         application_name=StringValue(value=asset.metadata.get('name')),
                         golden_metrics=asset_golden_metrics
                     )))
-            elif asset.model_type == ConnectorMetadataModelType.NEW_RELIC_ENTITY_DASHBOARD:
+            elif asset.model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD:
                 metadata = asset.metadata
                 asset_pages = metadata.get('pages', [])
                 pages: [NewRelicDashboardEntityAssetModel.DashboardPage] = []

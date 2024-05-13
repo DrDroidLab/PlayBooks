@@ -1,11 +1,12 @@
 from typing import Dict
 
+from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
     PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto
 
 
 class PlaybookActionTaskExecutor:
-    source: PlaybookActionTaskDefinitionProto.Source = PlaybookActionTaskDefinitionProto.Source.UNKNOWN
+    source: Source = Source.UNKNOWN
     task_type_callable_map = {}
 
     @classmethod

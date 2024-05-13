@@ -2,6 +2,7 @@ syntax = "proto3";
 package protos.connectors.assets;
 
 import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
 import "protos/connectors/connector.proto";
 import "protos/connectors/assets/cloudwatch_asset.proto";
 import "protos/connectors/assets/grafana_asset.proto";
@@ -12,7 +13,6 @@ import "protos/connectors/assets/datadog_asset.proto";
 import "protos/connectors/assets/postgres_asset.proto";
 import "protos/connectors/assets/eks_asset.proto";
 import "protos/connectors/assets/remote_server_asset.proto";
-
 
 message AccountConnectorAssetsModelOptions {
   message ModelTypeOption {
@@ -31,7 +31,7 @@ message AccountConnectorAssetsModelOptions {
       SshServerAssetOptions ssh_server_model_options = 12;
     }
   }
-  ConnectorType connector_type = 1;
+  Source connector_type = 1;
   repeated ModelTypeOption model_types_options = 2;
 }
 

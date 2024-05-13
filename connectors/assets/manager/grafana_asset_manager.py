@@ -10,7 +10,8 @@ from protos.connectors.assets.grafana_asset_pb2 import GrafanaTargetMetricPromQl
     GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
     AccountConnectorAssets
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType, ConnectorType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class GrafanaAssetManager(ConnectorAssetManager):
@@ -18,8 +19,8 @@ class GrafanaAssetManager(ConnectorAssetManager):
     def __init__(self):
         self.connector_type = ConnectorType.GRAFANA
 
-    def get_asset_model_options(self, model_type: ConnectorMetadataModelType, model_uid_metadata_list):
-        if model_type == ConnectorMetadataModelType.GRAFANA_TARGET_METRIC_PROMQL:
+    def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
+        if model_type == ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL:
             all_dashboards = {}
             for item in model_uid_metadata_list:
                 dashboard = all_dashboards.get(item['metadata']['dashboard_id'], {})
@@ -50,11 +51,11 @@ class GrafanaAssetManager(ConnectorAssetManager):
         else:
             return None
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelType,
+    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
                                filters: AccountConnectorAssetsModelFilters, grafana_models):
         which_one_of = filters.WhichOneof('filters')
 
-        if model_type == ConnectorMetadataModelType.GRAFANA_TARGET_METRIC_PROMQL and (
+        if model_type == ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL and (
                 not which_one_of or which_one_of == 'grafana_target_metric_promql_model_filters'):
             options: GrafanaTargetMetricPromQlAssetOptions = filters.grafana_target_metric_promql_model_filters
             filter_dashboards = options.dashboards
@@ -68,7 +69,8 @@ class GrafanaAssetManager(ConnectorAssetManager):
                 else:
                     filter_model_uids.append(filter_str)
 
-            grafana_models = grafana_models.filter(model_type=ConnectorMetadataModelType.GRAFANA_TARGET_METRIC_PROMQL)
+            grafana_models = grafana_models.filter(
+                model_type=ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL)
             if filter_model_uids:
                 startswith_conditions = Q()
                 for string in filter_model_uids:
@@ -78,7 +80,7 @@ class GrafanaAssetManager(ConnectorAssetManager):
         grafana_asset_protos = []
         target_metric_promql_dashboard_panel_map = {}
         for asset in grafana_models:
-            if asset.model_type == ConnectorMetadataModelType.GRAFANA_TARGET_METRIC_PROMQL:
+            if asset.model_type == ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL:
                 dashboards = target_metric_promql_dashboard_panel_map.get(asset.metadata.get('dashboard_id'), {})
                 panel_dict = dashboards.get('panels', {})
                 panel_id = asset.metadata.get('panel_id')
@@ -129,12 +131,12 @@ class GrafanaAssetManager(ConnectorAssetManager):
             connector_type = self.connector_type
             dashboard_asset = get_db_account_connector_metadata_models(account, model_uid=dashboard,
                                                                        connector_type=connector_type,
-                                                                       model_type=ConnectorMetadataModelType.GRAFANA_DASHBOARD,
+                                                                       model_type=ConnectorMetadataModelTypeProto.GRAFANA_DASHBOARD,
                                                                        is_active=True).first()
             grafana_asset_protos.append(GrafanaAssetModelProto(
                 id=UInt64Value(value=dashboard_asset.id),
                 connector_type=self.connector_type,
-                type=ConnectorMetadataModelType.GRAFANA_TARGET_METRIC_PROMQL,
+                type=ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL,
                 last_updated=int(dashboard_asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                     dashboard_asset.updated_at) else None,
                 grafana_target_metric_promql=GrafanaTargetMetricPromQlAssetModel(

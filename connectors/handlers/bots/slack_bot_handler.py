@@ -10,7 +10,8 @@ from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from utils.time_utils import current_datetime
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto, \
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
     ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 logger = logging.getLogger(__name__)

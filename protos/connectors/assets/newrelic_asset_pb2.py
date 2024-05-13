@@ -12,38 +12,37 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
+from protos import base_pb2 as protos_dot_base__pb2
 from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connector__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n-protos/connectors/assets/newrelic_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a!protos/connectors/connector.proto\"\xc7\x01\n\rNewRelicAsset\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x38\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32 .protos.connectors.ConnectorType\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x0b\n\x03uid\x18\x04 \x01(\t\x12\x14\n\x0clast_updated\x18\x05 \x01(\x04\x12\x10\n\x08metadata\x18\x06 \x01(\t\"\xca\x03\n#NewRelicApplicationEntityAssetModel\x12=\n\x17\x61pplication_entity_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10\x61pplication_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x62\n\x0egolden_metrics\x18\x03 \x03(\x0b\x32J.protos.connectors.assets.NewRelicApplicationEntityAssetModel.GoldenMetric\x1a\xc7\x01\n\x0cGoldenMetric\x12\x38\n\x12golden_metric_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_unit\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x43\n\x1dgolden_metric_nrql_expression\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"B\n%NewRelicApplicationEntityAssetOptions\x12\x19\n\x11\x61pplication_names\x18\x01 \x03(\t\"\x9b\x05\n!NewRelicDashboardEntityAssetModel\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12X\n\x05pages\x18\x03 \x03(\x0b\x32I.protos.connectors.assets.NewRelicDashboardEntityAssetModel.DashboardPage\x1a\xe2\x01\n\nPageWidget\x12/\n\twidget_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cwidget_title\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bwidget_type\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12<\n\x16widget_nrql_expression\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xca\x01\n\rDashboardPage\x12/\n\tpage_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12W\n\x07widgets\x18\x03 \x03(\x0b\x32\x46.protos.connectors.assets.NewRelicDashboardEntityAssetModel.PageWidget\"\xff\x03\n#NewRelicDashboardEntityAssetOptions\x12\x62\n\ndashboards\x18\x01 \x03(\x0b\x32N.protos.connectors.assets.NewRelicDashboardEntityAssetOptions.DashboardOptions\x1a\xf3\x02\n\x10\x44\x61shboardOptions\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12y\n\x0cpage_options\x18\x04 \x03(\x0b\x32\x63.protos.connectors.assets.NewRelicDashboardEntityAssetOptions.DashboardOptions.DashboardPageOptions\x1ax\n\x14\x44\x61shboardPageOptions\x12/\n\tpage_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\x9e\x03\n\x12NewRelicAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x38\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32 .protos.connectors.ConnectorType\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12\x65\n\x1cnew_relic_entity_application\x18\x05 \x01(\x0b\x32=.protos.connectors.assets.NewRelicApplicationEntityAssetModelH\x00\x12\x61\n\x1anew_relic_entity_dashboard\x18\x06 \x01(\x0b\x32;.protos.connectors.assets.NewRelicDashboardEntityAssetModelH\x00\x42\x07\n\x05\x61sset\"N\n\x0eNewRelicAssets\x12<\n\x06\x61ssets\x18\x01 \x03(\x0b\x32,.protos.connectors.assets.NewRelicAssetModelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n-protos/connectors/assets/newrelic_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"\xca\x03\n#NewRelicApplicationEntityAssetModel\x12=\n\x17\x61pplication_entity_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10\x61pplication_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x62\n\x0egolden_metrics\x18\x03 \x03(\x0b\x32J.protos.connectors.assets.NewRelicApplicationEntityAssetModel.GoldenMetric\x1a\xc7\x01\n\x0cGoldenMetric\x12\x38\n\x12golden_metric_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_unit\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x43\n\x1dgolden_metric_nrql_expression\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"B\n%NewRelicApplicationEntityAssetOptions\x12\x19\n\x11\x61pplication_names\x18\x01 \x03(\t\"\x9b\x05\n!NewRelicDashboardEntityAssetModel\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12X\n\x05pages\x18\x03 \x03(\x0b\x32I.protos.connectors.assets.NewRelicDashboardEntityAssetModel.DashboardPage\x1a\xe2\x01\n\nPageWidget\x12/\n\twidget_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cwidget_title\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bwidget_type\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12<\n\x16widget_nrql_expression\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xca\x01\n\rDashboardPage\x12/\n\tpage_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12W\n\x07widgets\x18\x03 \x03(\x0b\x32\x46.protos.connectors.assets.NewRelicDashboardEntityAssetModel.PageWidget\"\xff\x03\n#NewRelicDashboardEntityAssetOptions\x12\x62\n\ndashboards\x18\x01 \x03(\x0b\x32N.protos.connectors.assets.NewRelicDashboardEntityAssetOptions.DashboardOptions\x1a\xf3\x02\n\x10\x44\x61shboardOptions\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12y\n\x0cpage_options\x18\x04 \x03(\x0b\x32\x63.protos.connectors.assets.NewRelicDashboardEntityAssetOptions.DashboardOptions.DashboardPageOptions\x1ax\n\x14\x44\x61shboardPageOptions\x12/\n\tpage_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\x8c\x03\n\x12NewRelicAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12\x65\n\x1cnew_relic_entity_application\x18\x05 \x01(\x0b\x32=.protos.connectors.assets.NewRelicApplicationEntityAssetModelH\x00\x12\x61\n\x1anew_relic_entity_dashboard\x18\x06 \x01(\x0b\x32;.protos.connectors.assets.NewRelicDashboardEntityAssetModelH\x00\x42\x07\n\x05\x61sset\"N\n\x0eNewRelicAssets\x12<\n\x06\x61ssets\x18\x01 \x03(\x0b\x32,.protos.connectors.assets.NewRelicAssetModelb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.assets.newrelic_asset_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _NEWRELICASSET._serialized_start=143
-  _NEWRELICASSET._serialized_end=342
-  _NEWRELICAPPLICATIONENTITYASSETMODEL._serialized_start=345
-  _NEWRELICAPPLICATIONENTITYASSETMODEL._serialized_end=803
-  _NEWRELICAPPLICATIONENTITYASSETMODEL_GOLDENMETRIC._serialized_start=604
-  _NEWRELICAPPLICATIONENTITYASSETMODEL_GOLDENMETRIC._serialized_end=803
-  _NEWRELICAPPLICATIONENTITYASSETOPTIONS._serialized_start=805
-  _NEWRELICAPPLICATIONENTITYASSETOPTIONS._serialized_end=871
-  _NEWRELICDASHBOARDENTITYASSETMODEL._serialized_start=874
-  _NEWRELICDASHBOARDENTITYASSETMODEL._serialized_end=1541
-  _NEWRELICDASHBOARDENTITYASSETMODEL_PAGEWIDGET._serialized_start=1110
-  _NEWRELICDASHBOARDENTITYASSETMODEL_PAGEWIDGET._serialized_end=1336
-  _NEWRELICDASHBOARDENTITYASSETMODEL_DASHBOARDPAGE._serialized_start=1339
-  _NEWRELICDASHBOARDENTITYASSETMODEL_DASHBOARDPAGE._serialized_end=1541
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS._serialized_start=1544
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS._serialized_end=2055
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS._serialized_start=1684
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS._serialized_end=2055
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS_DASHBOARDPAGEOPTIONS._serialized_start=1935
-  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS_DASHBOARDPAGEOPTIONS._serialized_end=2055
-  _NEWRELICASSETMODEL._serialized_start=2058
-  _NEWRELICASSETMODEL._serialized_end=2472
-  _NEWRELICASSETS._serialized_start=2474
-  _NEWRELICASSETS._serialized_end=2552
+  _NEWRELICAPPLICATIONENTITYASSETMODEL._serialized_start=162
+  _NEWRELICAPPLICATIONENTITYASSETMODEL._serialized_end=620
+  _NEWRELICAPPLICATIONENTITYASSETMODEL_GOLDENMETRIC._serialized_start=421
+  _NEWRELICAPPLICATIONENTITYASSETMODEL_GOLDENMETRIC._serialized_end=620
+  _NEWRELICAPPLICATIONENTITYASSETOPTIONS._serialized_start=622
+  _NEWRELICAPPLICATIONENTITYASSETOPTIONS._serialized_end=688
+  _NEWRELICDASHBOARDENTITYASSETMODEL._serialized_start=691
+  _NEWRELICDASHBOARDENTITYASSETMODEL._serialized_end=1358
+  _NEWRELICDASHBOARDENTITYASSETMODEL_PAGEWIDGET._serialized_start=927
+  _NEWRELICDASHBOARDENTITYASSETMODEL_PAGEWIDGET._serialized_end=1153
+  _NEWRELICDASHBOARDENTITYASSETMODEL_DASHBOARDPAGE._serialized_start=1156
+  _NEWRELICDASHBOARDENTITYASSETMODEL_DASHBOARDPAGE._serialized_end=1358
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS._serialized_start=1361
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS._serialized_end=1872
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS._serialized_start=1501
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS._serialized_end=1872
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS_DASHBOARDPAGEOPTIONS._serialized_start=1752
+  _NEWRELICDASHBOARDENTITYASSETOPTIONS_DASHBOARDOPTIONS_DASHBOARDPAGEOPTIONS._serialized_end=1872
+  _NEWRELICASSETMODEL._serialized_start=1875
+  _NEWRELICASSETMODEL._serialized_end=2271
+  _NEWRELICASSETS._serialized_start=2273
+  _NEWRELICASSETS._serialized_end=2351
 # @@protoc_insertion_point(module_scope)

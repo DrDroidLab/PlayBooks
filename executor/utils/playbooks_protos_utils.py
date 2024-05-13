@@ -1,5 +1,6 @@
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
+from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookCloudwatchTask, PlaybookGrafanaTask, \
     PlaybookNewRelicTask, PlaybookDatadogTask, PlaybookDataFetchTaskDefinition, PlaybookClickhouseDataFetchTask, \
     PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
@@ -20,9 +21,6 @@ def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
         cloudwatch_task_proto = PlaybookCloudwatchTask(
             type=PlaybookCloudwatchTask.TaskType.METRIC_EXECUTION,
             metric_execution_task=metric_execution_task_proto)
-        return PlaybookMetricTaskDefinition(
-            source=PlaybookMetricTaskDefinition.Source.CLOUDWATCH,
-            cloudwatch_task=cloudwatch_task_proto)
     elif cloudwatch_task.get('type', None) == 'FILTER_LOG_EVENTS':
         filter_log_events_task_proto = dict_to_proto(cloudwatch_task.get('filter_log_events_task', {}),
                                                      PlaybookCloudwatchTask.CloudwatchFilterLogEventsTask)
@@ -31,9 +29,7 @@ def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             filter_log_events_task=filter_log_events_task_proto)
     else:
         raise Exception(f"Task type {cloudwatch_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
-        source=PlaybookMetricTaskDefinition.Source.CLOUDWATCH,
-        cloudwatch_task=cloudwatch_task_proto)
+    return PlaybookMetricTaskDefinition(source=Source.CLOUDWATCH, cloudwatch_task=cloudwatch_task_proto)
 
 
 def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
@@ -48,9 +44,7 @@ def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
                                                  promql_metric_execution_task=promql_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
-        source=PlaybookMetricTaskDefinition.Source.GRAFANA,
-        grafana_task=grafana_task_proto)
+    return PlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
 
 
 def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
@@ -78,9 +72,7 @@ def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             nrql_metric_execution_task=nrql_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {nr_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
-        source=PlaybookMetricTaskDefinition.Source.NEW_RELIC,
-        new_relic_task=nr_task_proto)
+    return PlaybookMetricTaskDefinition(source=Source.NEW_RELIC, new_relic_task=nr_task_proto)
 
 
 def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
@@ -101,22 +93,20 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             query_metric_execution_task=query_metric_execution_task)
     else:
         raise Exception(f"Task type {dd_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
-        source=PlaybookMetricTaskDefinition.Source.DATADOG,
-        datadog_task=dd_task_proto)
+    return PlaybookMetricTaskDefinition(source=Source.DATADOG, datadog_task=dd_task_proto)
 
 
 def get_clickhouse_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
     clickhouse_data_fetch_task_proto = dict_to_proto(clickhouse_data_fetch_task, PlaybookClickhouseDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.CLICKHOUSE,
+    return PlaybookDataFetchTaskDefinition(source=Source.CLICKHOUSE,
                                            clickhouse_data_fetch_task=clickhouse_data_fetch_task_proto)
 
 
 def get_postgres_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     postgres_data_fetch_task = task.get('postgres_data_fetch_task', {})
     postgres_data_fetch_task_proto = dict_to_proto(postgres_data_fetch_task, PlaybookPostgresDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.POSTGRES,
+    return PlaybookDataFetchTaskDefinition(source=Source.POSTGRES,
                                            postgres_data_fetch_task=postgres_data_fetch_task_proto)
 
 
@@ -124,29 +114,26 @@ def get_sql_database_connection_task_execution_proto(task) -> PlaybookDataFetchT
     sql_database_connection_data_fetch_task = task.get('sql_database_connection_data_fetch_task', {})
     sql_database_connection_data_fetch_task_proto = dict_to_proto(sql_database_connection_data_fetch_task,
                                                                   PlaybookSqlDatabaseConnectionDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.SQL_DATABASE_CONNECTION,
+    return PlaybookDataFetchTaskDefinition(source=Source.SQL_DATABASE_CONNECTION,
                                            sql_database_connection_data_fetch_task=sql_database_connection_data_fetch_task_proto)
 
 
 def get_eks_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     eks_data_fetch_task = task.get('eks_data_fetch_task', {})
     eks_data_fetch_task_proto = dict_to_proto(eks_data_fetch_task, PlaybookEksDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=PlaybookDataFetchTaskDefinition.Source.EKS,
-                                           eks_data_fetch_task=eks_data_fetch_task_proto)
+    return PlaybookDataFetchTaskDefinition(source=Source.EKS, eks_data_fetch_task=eks_data_fetch_task_proto)
 
 
 def get_api_call_task_execution_proto(task) -> PlaybookActionTaskDefinition:
     api_call_task = task.get('api_call_task', {})
     api_call_task_proto = dict_to_proto(api_call_task, PlaybookApiCallTask)
-    return PlaybookActionTaskDefinition(source=PlaybookActionTaskDefinition.Source.API,
-                                        api_call_task=api_call_task_proto)
+    return PlaybookActionTaskDefinition(source=Source.API, api_call_task=api_call_task_proto)
 
 
 def get_bash_command_task_execution_proto(task) -> PlaybookActionTaskDefinition:
     bash_command_task = task.get('bash_command_task', {})
     bash_command_task_proto = dict_to_proto(bash_command_task, PlaybookBashCommandTask)
-    return PlaybookActionTaskDefinition(source=PlaybookActionTaskDefinition.Source.BASH,
-                                        bash_command_task=bash_command_task_proto)
+    return PlaybookActionTaskDefinition(source=Source.BASH, bash_command_task=bash_command_task_proto)
 
 
 def get_playbook_task_definition_proto(db_task_definition):

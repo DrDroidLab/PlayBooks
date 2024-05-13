@@ -39,7 +39,7 @@ message UpdateConnectorResponse {
 }
 
 message GetConnectorKeysOptionsRequest {
-  ConnectorType connector_type = 1;
+  Source connector_type = 1;
 }
 
 message GetConnectorKeysOptionsResponse {
@@ -50,7 +50,7 @@ message GetConnectorKeysOptionsResponse {
 
 message GetConnectorKeysRequest {
   google.protobuf.UInt64Value connector_id = 1;
-  ConnectorType connector_type = 2;
+  Source connector_type = 2;
 }
 
 message GetConnectorKeysResponse {
@@ -72,7 +72,7 @@ message GetConnectorPlaybookSourceOptionsResponse {
 
 message GetSlackAlertTriggerOptionsRequest {
   message ConnectorTypeRequest {
-    ConnectorType connector_type = 1;
+    Source connector_type = 1;
     repeated string filter_channels = 2;
     repeated string filter_alert_types = 3;
     repeated string filter_alert_tags = 4;

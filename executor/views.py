@@ -26,7 +26,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from protos.connectors.connector_pb2 import ConnectorType
+from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
