@@ -9,14 +9,14 @@ from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssets
 from protos.connectors.assets.clickhouse_asset_pb2 import ClickhouseDatabaseAssetOptions, ClickhouseDatabaseAssetModel, \
     ClickhouseAssetModel, ClickhouseAssets
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class ClickhouseAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.connector_type = ConnectorTypeProto.CLICKHOUSE
+        self.connector_type = ConnectorType.CLICKHOUSE
 
     def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
         if model_type == ConnectorMetadataModelTypeProto.CLICKHOUSE_DATABASE:

@@ -4,21 +4,22 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
-    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto
+    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, TableResult as TableResultProto
 
 
 class SqlDatabaseDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookDataFetchTaskDefinitionProto.Source.SQL_DATABASE_CONNECTION
+        self.source = C.SQL_DATABASE_CONNECTION
 
         self.__account_id = account_id
 
         try:
             sql_database_connector = Connector.objects.get(account_id=account_id,
-                                                           connector_type=ConnectorTypeProto.SQL_DATABASE_CONNECTION,
+                                                           connector_type=Source.SQL_DATABASE_CONNECTION,
                                                            is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Active SQL Database connector not found for account: {}".format(account_id))
@@ -74,20 +75,19 @@ class SqlDatabaseDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
             query_result = self.client.get_query_result(query).fetchall()
 
-            table_rows: [PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableRow] = []
+            table_rows: [TableResultProto.TableRow] = []
             col_names = list(self.client.get_query_result(query).keys())
             for row in query_result:
                 table_columns = []
                 for i, value in enumerate(row):
-                    table_column = PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableColumn(
-                        name=StringValue(value=col_names[i]), value=StringValue(value=str(value)))
+                    table_column = TableResultProto.TableColumn(name=StringValue(value=col_names[i]),
+                                                                value=StringValue(value=str(value)))
                     table_columns.append(table_column)
-                table_rows.append(
-                    PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableRow(columns=table_columns))
+                table_rows.append(TableResultProto.TableRow(columns=table_columns))
             return PlaybookDataFetchTaskExecutionResultProto(data_source=task.source,
                                                              result=PlaybookDataFetchTaskExecutionResultProto.Result(
                                                                  type=PlaybookDataFetchTaskExecutionResultProto.Result.Type.TABLE_RESULT,
-                                                                 table_result=PlaybookDataFetchTaskExecutionResultProto.Result.TableResult(
+                                                                 table_result=TableResultProto(
                                                                      raw_query=sql_database_connection_data_fetch_task.query,
                                                                      total_count=UInt64Value(value=int(count_result)),
                                                                      limit=UInt64Value(value=limit),

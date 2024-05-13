@@ -1,6 +1,7 @@
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, ConnectorType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
