@@ -34,6 +34,8 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
     if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
         try:
             object_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+            if not object_url:
+                return InterpretationProto()
             if metric_name:
                 metric_name = metric_name.replace('`', '')
                 title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'

@@ -44,6 +44,8 @@ def generate_graph_for_metric_timeseries_result(result: PlaybookMetricTaskExecut
                                                 file_key, image_title='Untitled') -> str:
     timeseries = result.timeseries
     df = metric_timeseries_result_to_df(timeseries)
+    if df.empty:
+        return ''
     unique_labels = df['Label'].unique()
     color_map = generate_color_map(unique_labels)
     fig = go.Figure()
