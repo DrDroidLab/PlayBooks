@@ -10,7 +10,7 @@ from integrations_api_processors.azure_api_processor import AzureApiProcessor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookAzureTask as PlaybookAzureTaskProto, PlaybookMetricTaskExecutionResult
+    PlaybookAzureTask as PlaybookAzureTaskProto, PlaybookMetricTaskExecutionResult, TableResult as TableResultProto
 
 logger = logging.getLogger(__name__)
 
@@ -91,24 +91,24 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
         if not response:
             raise Exception("No data returned from Cloudwatch Logs")
 
-        table_rows: [PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow] = []
+        table_rows: [TableResultProto.TableRow] = []
         for table, rows in response.items():
-            table_columns: [PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow.TableColumn] = []
+            table_columns: [TableResultProto.TableRow.TableColumn] = []
             for i in rows:
                 for key, value in i.items():
                     table_column_name = f'{table}.{key}'
-                    table_column = PlaybookMetricTaskExecutionResult.Result.TableResult.TableColumn(
+                    table_column = TableResultProto.TableColumn(
                         name=StringValue(value=table_column_name), value=StringValue(value=str(value)))
                     table_columns.append(table_column)
-            table_row = PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow(columns=table_columns)
+            table_row = TableResultProto.TableRow(columns=table_columns)
             table_rows.append(table_row)
 
         result = PlaybookMetricTaskExecutionResult.Result(
             type=PlaybookMetricTaskExecutionResult.Result.Type.TABLE_RESULT,
-            table_result=PlaybookMetricTaskExecutionResult.Result.TableResult(rows=table_rows))
+            table_result=TableResultProto(rows=table_rows))
 
         task_execution_result = PlaybookMetricTaskExecutionResult(
-            metric_source=PlaybookMetricTaskDefinitionProto.Source.AZURE,
+            metric_source=Source.AZURE,
             metric_expression=StringValue(value=query_pattern),
             metric_name=StringValue(value='log_analytics_events'),
             result=result)
