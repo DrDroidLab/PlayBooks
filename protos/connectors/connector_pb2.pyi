@@ -250,14 +250,14 @@ class ConnectorKey(google.protobuf.message.Message):
         GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
         SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
         OPEN_AI_API_KEY: ConnectorKey._KeyType.ValueType  # 47
-        AZURE_SUBSCRIPTION_ID: ConnectorKey._KeyType.ValueType  # 48
-        AZURE_TENANT_ID: ConnectorKey._KeyType.ValueType  # 49
-        AZURE_CLIENT_ID: ConnectorKey._KeyType.ValueType  # 50
-        AZURE_CLIENT_SECRET: ConnectorKey._KeyType.ValueType  # 51
-        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 52
-        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 53
-        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 54
-        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 55
+        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 49
+        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 50
+        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
+        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
+        AZURE_SUBSCRIPTION_ID: ConnectorKey._KeyType.ValueType  # 53
+        AZURE_TENANT_ID: ConnectorKey._KeyType.ValueType  # 54
+        AZURE_CLIENT_ID: ConnectorKey._KeyType.ValueType  # 55
+        AZURE_CLIENT_SECRET: ConnectorKey._KeyType.ValueType  # 56
 
     class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
     UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
@@ -308,14 +308,14 @@ class ConnectorKey(google.protobuf.message.Message):
     GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
     SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
     OPEN_AI_API_KEY: ConnectorKey.KeyType.ValueType  # 47
-    AZURE_SUBSCRIPTION_ID: ConnectorKey.KeyType.ValueType  # 48
-    AZURE_TENANT_ID: ConnectorKey.KeyType.ValueType  # 49
-    AZURE_CLIENT_ID: ConnectorKey.KeyType.ValueType  # 50
-    AZURE_CLIENT_SECRET: ConnectorKey.KeyType.ValueType  # 51
-    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 52
-    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 53
-    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 54
-    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 55
+    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 49
+    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 50
+    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
+    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
+    AZURE_SUBSCRIPTION_ID: ConnectorKey.KeyType.ValueType  # 53
+    AZURE_TENANT_ID: ConnectorKey.KeyType.ValueType  # 54
+    AZURE_CLIENT_ID: ConnectorKey.KeyType.ValueType  # 55
+    AZURE_CLIENT_SECRET: ConnectorKey.KeyType.ValueType  # 56
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int
