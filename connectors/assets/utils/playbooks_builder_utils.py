@@ -8,7 +8,7 @@ from protos.connectors.connector_pb2 import ConnectorMetadataModelType as Connec
     AccountActiveConnectorModelTypes
 
 playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA_VPC,
-                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC,
+                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC, Source.AZURE,
                                Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION]
 
 supported_connectors_model_maps = {
@@ -26,6 +26,7 @@ supported_connectors_model_maps = {
     Source.POSTGRES: [ConnectorMetadataModelTypeProto.POSTGRES_DATABASE],
     Source.EKS: [ConnectorMetadataModelTypeProto.EKS_CLUSTER],
     Source.SQL_DATABASE_CONNECTION: [ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY],
+    Source.AZURE: [ConnectorMetadataModelTypeProto.AZURE_WORKSPACE],
 }
 
 model_type_display_name_maps = {
@@ -41,6 +42,7 @@ model_type_display_name_maps = {
     ConnectorMetadataModelTypeProto.POSTGRES_DATABASE: "Database",
     ConnectorMetadataModelTypeProto.EKS_CLUSTER: "Cluster",
     ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
+    ConnectorMetadataModelTypeProto.AZURE_WORKSPACE: "Log Analytics Workspace",
 }
 
 
