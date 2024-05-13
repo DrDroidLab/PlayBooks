@@ -13,7 +13,7 @@ from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
-from executor.workflows.crud.workflows_crud import create_db_workflow, get_db_workflows
+from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from executor.workflows.tasks import test_workflow_notification
 from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api
@@ -68,7 +68,7 @@ def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWork
     if not workflow or not workflow.name:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/workflow"))
-    workflow, error = create_db_workflow(account, user.email, workflow)
+    workflow, error = update_or_create_db_workflow(account, user.email, workflow)
     if error:
         return CreateWorkflowResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreateWorkflowResponse(success=BoolValue(value=True), workflow=workflow.proto)

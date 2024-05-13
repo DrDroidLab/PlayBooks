@@ -154,11 +154,11 @@ class GetConnectorKeysOptionsRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     def __init__(
         self,
         *,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type"]) -> None: ...
 
@@ -197,12 +197,12 @@ class GetConnectorKeysRequest(google.protobuf.message.Message):
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
     @property
     def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     def __init__(
         self,
         *,
         connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "connector_type", b"connector_type"]) -> None: ...
@@ -292,7 +292,7 @@ class GetSlackAlertTriggerOptionsRequest(google.protobuf.message.Message):
         FILTER_CHANNELS_FIELD_NUMBER: builtins.int
         FILTER_ALERT_TYPES_FIELD_NUMBER: builtins.int
         FILTER_ALERT_TAGS_FIELD_NUMBER: builtins.int
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+        connector_type: protos.base_pb2.Source.ValueType
         @property
         def filter_channels(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         @property
@@ -302,7 +302,7 @@ class GetSlackAlertTriggerOptionsRequest(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+            connector_type: protos.base_pb2.Source.ValueType = ...,
             filter_channels: collections.abc.Iterable[builtins.str] | None = ...,
             filter_alert_types: collections.abc.Iterable[builtins.str] | None = ...,
             filter_alert_tags: collections.abc.Iterable[builtins.str] | None = ...,

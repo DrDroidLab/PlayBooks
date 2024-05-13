@@ -7,7 +7,8 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from executor.action_task_executor.action_task_executor import PlaybookActionTaskExecutor
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
     PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto, \
     PlaybookBashCommandTask as PlaybookBashCommandTaskProto
@@ -99,7 +100,7 @@ def execute_remote_command_using_password(remote_host, remote_user, password, co
 class BashCommandActionTaskExecutor(PlaybookActionTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookActionTaskDefinitionProto.Source.BASH
+        self.source = Source.BASH
 
         self.__account_id = account_id
 
@@ -112,7 +113,7 @@ class BashCommandActionTaskExecutor(PlaybookActionTaskExecutor):
             password = None
             if remote_server_str:
                 ssh_server_asset = get_db_connector_metadata_models(self.__account_id,
-                                                                    model_type=ConnectorMetadataModelType.SSH_SERVER,
+                                                                    model_type=ConnectorMetadataModelTypeProto.SSH_SERVER,
                                                                     model_uid=remote_server_str)
                 if not ssh_server_asset:
                     raise Exception("No remote servers assets found")

@@ -19,7 +19,9 @@ from management.crud.task_crud import check_scheduled_or_running_task_run_for_ta
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import get_current_time
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, ConnectorType, ConnectorMetadataModelType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
+    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowEntryPointAlertConfig as WorkflowEntryPointAlertConfigProto
 
@@ -288,7 +290,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                     slack_received_msg.channel_id = channel_id
                     slack_channel_metadata = get_db_connector_metadata_models(account_id=account_id,
                                                                               connector_type=ConnectorType.SLACK,
-                                                                              model_type=ConnectorMetadataModelType.SLACK_CHANNEL,
+                                                                              model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
                                                                               model_uid=channel_id,
                                                                               is_active=True)
                     if slack_channel_metadata:

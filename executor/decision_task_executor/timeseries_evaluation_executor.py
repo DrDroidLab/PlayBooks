@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, BoolValue
 from executor.decision_task_executor.decision_task_executor import PlaybookDecisionTaskEvaluator
 from protos.playbooks.playbook_pb2 import PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, \
     TimeseriesEvaluationTask, PlaybookDecisionTaskExecutionResult, PlaybookMetricTaskExecutionResult, \
-    EvaluationConditionFunction, EvaluationConditionOperator
+    EvaluationConditionFunction, EvaluationConditionOperator, TimeseriesResult as TimeseriesResultProto
 
 
 def sample_data_function_evaluator(function, sample_data):
@@ -39,8 +39,7 @@ def function_result_operator_threshold(function_result, operator, threshold):
 
 
 def timeseries_rolling_window_function_operator(function, operator, window, threshold,
-                                                datapoints: [
-                                                    PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint]):
+                                                datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint]):
     for idx, dp in enumerate(datapoints):
         sampled_data_points = []
         max_timestamp = dp.timestamp + window * 1000

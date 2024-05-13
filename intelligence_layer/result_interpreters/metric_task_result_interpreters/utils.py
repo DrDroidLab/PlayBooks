@@ -6,21 +6,22 @@ import plotly.io as pio
 
 from intelligence_layer.utils import generate_color_map
 from media.utils import save_image_to_db
-from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto
+from protos.base_pb2 import Source
+from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
+    TimeseriesResult as TimeseriesResultProto
 
 logger = logging.getLogger(__name__)
 
 metric_source_displace_name_map = {
-    PlaybookMetricTaskDefinitionProto.Source.CLOUDWATCH: 'Cloudwatch',
-    PlaybookMetricTaskDefinitionProto.Source.GRAFANA: 'Grafana',
-    PlaybookMetricTaskDefinitionProto.Source.GRAFANA_VPC: 'Grafana',
-    PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC: 'New Relic',
-    PlaybookMetricTaskDefinitionProto.Source.DATADOG: 'Datadog'
+    Source.CLOUDWATCH: 'Cloudwatch',
+    Source.GRAFANA: 'Grafana',
+    Source.GRAFANA_VPC: 'Grafana',
+    Source.NEW_RELIC: 'New Relic',
+    Source.DATADOG: 'Datadog'
 }
 
 
-def metric_timeseries_result_to_df(result: PlaybookMetricTaskExecutionResultProto.Result.Timeseries):
+def metric_timeseries_result_to_df(result: TimeseriesResultProto):
     data = []
     for timeseries in result.labeled_metric_timeseries:
         legend_label = ''
