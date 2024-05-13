@@ -4,16 +4,113 @@ isort:skip_file
 """
 import builtins
 import google.protobuf.descriptor
+import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import sys
+import typing
 
-if sys.version_info >= (3, 8):
+if sys.version_info >= (3, 10):
     import typing as typing_extensions
 else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+
+class _Source:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Source.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN: _Source.ValueType  # 0
+    SENTRY: _Source.ValueType  # 1
+    SEGMENT: _Source.ValueType  # 2
+    ELASTIC_SEARCH: _Source.ValueType  # 3
+    AMPLITUDE: _Source.ValueType  # 4
+    AWS_KINESIS: _Source.ValueType  # 5
+    CLOUDWATCH: _Source.ValueType  # 6
+    CLEVERTAP: _Source.ValueType  # 7
+    RUDDERSTACK: _Source.ValueType  # 8
+    MOENGAGE: _Source.ValueType  # 9
+    CRIBL: _Source.ValueType  # 10
+    KAFKA: _Source.ValueType  # 11
+    DATADOG: _Source.ValueType  # 12
+    FILEBEAT: _Source.ValueType  # 13
+    LOGSTASH: _Source.ValueType  # 14
+    FLUENTD: _Source.ValueType  # 15
+    FLUENTBIT: _Source.ValueType  # 16
+    PAGER_DUTY: _Source.ValueType  # 17
+    NEW_RELIC: _Source.ValueType  # 18
+    SLACK: _Source.ValueType  # 19
+    HONEYBADGER: _Source.ValueType  # 20
+    GOOGLE_CHAT: _Source.ValueType  # 21
+    DATADOG_OAUTH: _Source.ValueType  # 22
+    GCM: _Source.ValueType  # 23
+    PROMETHEUS: _Source.ValueType  # 24
+    ELASTIC_APM: _Source.ValueType  # 25
+    VICTORIA_METRICS: _Source.ValueType  # 26
+    SLACK_CONNECT: _Source.ValueType  # 27
+    GRAFANA: _Source.ValueType  # 28
+    CLICKHOUSE: _Source.ValueType  # 29
+    DOCUMENTATION: _Source.ValueType  # 30
+    POSTGRES: _Source.ValueType  # 31
+    OPS_GENIE: _Source.ValueType  # 32
+    EKS: _Source.ValueType  # 33
+    AGENT_PROXY: _Source.ValueType  # 34
+    GRAFANA_VPC: _Source.ValueType  # 35
+    GITHUB_ACTIONS: _Source.ValueType  # 36
+    SQL_DATABASE_CONNECTION: _Source.ValueType  # 37
+    OPEN_AI: _Source.ValueType  # 38
+    REMOTE_SERVER: _Source.ValueType  # 39
+    API: _Source.ValueType  # 40
+    BASH: _Source.ValueType  # 41
+
+class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
+
+UNKNOWN: Source.ValueType  # 0
+SENTRY: Source.ValueType  # 1
+SEGMENT: Source.ValueType  # 2
+ELASTIC_SEARCH: Source.ValueType  # 3
+AMPLITUDE: Source.ValueType  # 4
+AWS_KINESIS: Source.ValueType  # 5
+CLOUDWATCH: Source.ValueType  # 6
+CLEVERTAP: Source.ValueType  # 7
+RUDDERSTACK: Source.ValueType  # 8
+MOENGAGE: Source.ValueType  # 9
+CRIBL: Source.ValueType  # 10
+KAFKA: Source.ValueType  # 11
+DATADOG: Source.ValueType  # 12
+FILEBEAT: Source.ValueType  # 13
+LOGSTASH: Source.ValueType  # 14
+FLUENTD: Source.ValueType  # 15
+FLUENTBIT: Source.ValueType  # 16
+PAGER_DUTY: Source.ValueType  # 17
+NEW_RELIC: Source.ValueType  # 18
+SLACK: Source.ValueType  # 19
+HONEYBADGER: Source.ValueType  # 20
+GOOGLE_CHAT: Source.ValueType  # 21
+DATADOG_OAUTH: Source.ValueType  # 22
+GCM: Source.ValueType  # 23
+PROMETHEUS: Source.ValueType  # 24
+ELASTIC_APM: Source.ValueType  # 25
+VICTORIA_METRICS: Source.ValueType  # 26
+SLACK_CONNECT: Source.ValueType  # 27
+GRAFANA: Source.ValueType  # 28
+CLICKHOUSE: Source.ValueType  # 29
+DOCUMENTATION: Source.ValueType  # 30
+POSTGRES: Source.ValueType  # 31
+OPS_GENIE: Source.ValueType  # 32
+EKS: Source.ValueType  # 33
+AGENT_PROXY: Source.ValueType  # 34
+GRAFANA_VPC: Source.ValueType  # 35
+GITHUB_ACTIONS: Source.ValueType  # 36
+SQL_DATABASE_CONNECTION: Source.ValueType  # 37
+OPEN_AI: Source.ValueType  # 38
+REMOTE_SERVER: Source.ValueType  # 39
+API: Source.ValueType  # 40
+BASH: Source.ValueType  # 41
+global___Source = Source
 
 @typing_extensions.final
 class TimeRange(google.protobuf.message.Message):

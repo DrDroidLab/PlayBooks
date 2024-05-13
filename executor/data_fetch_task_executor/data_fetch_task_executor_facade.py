@@ -5,6 +5,7 @@ from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookD
 from executor.data_fetch_task_executor.eks_data_fetch_task_executor import EksDataFetchTaskExecutor
 from executor.data_fetch_task_executor.postgres_data_fetch_task_executor import PostgresDataFetchTaskExecutor
 from executor.data_fetch_task_executor.sql_database_data_fetch_task_executor import SqlDatabaseDataFetchTaskExecutor
+from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto
 
 
@@ -13,8 +14,7 @@ class PlaybookDataFetchTaskExecutorFacade:
     def __init__(self):
         self._map = {}
 
-    def register(self, evaluation_type: PlaybookDataFetchTaskDefinitionProto.Source,
-                 executor: PlaybookDataFetchTaskExecutor.__class__):
+    def register(self, evaluation_type: Source, executor: PlaybookDataFetchTaskExecutor.__class__):
         self._map[evaluation_type] = executor
 
     def execute_data_fetch_task(self, account_id, global_variable_set: Dict,
@@ -30,9 +30,7 @@ class PlaybookDataFetchTaskExecutorFacade:
 
 
 data_fetch_task_executor = PlaybookDataFetchTaskExecutorFacade()
-data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.POSTGRES, PostgresDataFetchTaskExecutor)
-data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.EKS, EksDataFetchTaskExecutor)
-data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.CLICKHOUSE,
-                                  ClickhouseDataFetchTaskExecutor)
-data_fetch_task_executor.register(PlaybookDataFetchTaskDefinitionProto.Source.SQL_DATABASE_CONNECTION,
-                                  SqlDatabaseDataFetchTaskExecutor)
+data_fetch_task_executor.register(Source.POSTGRES, PostgresDataFetchTaskExecutor)
+data_fetch_task_executor.register(Source.EKS, EksDataFetchTaskExecutor)
+data_fetch_task_executor.register(Source.CLICKHOUSE, ClickhouseDataFetchTaskExecutor)
+data_fetch_task_executor.register(Source.SQL_DATABASE_CONNECTION, SqlDatabaseDataFetchTaskExecutor)

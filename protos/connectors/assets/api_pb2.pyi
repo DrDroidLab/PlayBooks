@@ -29,13 +29,13 @@ class GetConnectorsAssetsModelsOptionsRequest(google.protobuf.message.Message):
     MODEL_TYPE_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     def __init__(
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
@@ -82,7 +82,7 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
     FILTERS_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     @property
     def filters(self) -> protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters: ...
@@ -90,7 +90,7 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
         filters: protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters | None = ...,
     ) -> None: ...

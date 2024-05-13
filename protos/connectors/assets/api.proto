@@ -8,7 +8,7 @@ import "protos/connectors/assets/asset.proto";
 
 message GetConnectorsAssetsModelsOptionsRequest {
   Meta meta = 1;
-  ConnectorType connector_type = 2;
+  Source connector_type = 2;
   ConnectorMetadataModelType model_type = 3;
 }
 
@@ -21,7 +21,7 @@ message GetConnectorsAssetsModelsOptionsResponse {
 
 message GetConnectorsAssetsModelsRequest {
   Meta meta = 1;
-  ConnectorType connector_type = 2;
+  Source connector_type = 2;
   ConnectorMetadataModelType type = 3;
   AccountConnectorAssetsModelFilters filters = 4;
 }

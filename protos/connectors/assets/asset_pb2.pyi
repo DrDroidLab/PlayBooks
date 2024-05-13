@@ -7,6 +7,7 @@ import collections.abc
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
+import protos.base_pb2
 import protos.connectors.assets.clickhouse_asset_pb2
 import protos.connectors.assets.cloudwatch_asset_pb2
 import protos.connectors.assets.datadog_asset_pb2
@@ -91,13 +92,13 @@ class AccountConnectorAssetsModelOptions(google.protobuf.message.Message):
 
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
     MODEL_TYPES_OPTIONS_FIELD_NUMBER: builtins.int
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     @property
     def model_types_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AccountConnectorAssetsModelOptions.ModelTypeOption]: ...
     def __init__(
         self,
         *,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         model_types_options: collections.abc.Iterable[global___AccountConnectorAssetsModelOptions.ModelTypeOption] | None = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "model_types_options", b"model_types_options"]) -> None: ...

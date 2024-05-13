@@ -29,8 +29,8 @@ from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecution
     PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
-    ConnectorType
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
@@ -238,7 +238,7 @@ def test_workflow_notification(account_id, workflow, message_type):
     if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
         logger.info("Sending test thread reply message")
         channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
-        slack_connectors = get_db_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
+        slack_connectors = get_db_connectors(account, connector_type=Source.SLACK, is_active=True)
         if not slack_connectors:
             logger.error(f"Active Slack connector not found for account_id: {account_id}")
             return

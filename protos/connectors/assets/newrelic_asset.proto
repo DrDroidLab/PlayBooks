@@ -2,17 +2,8 @@ syntax = "proto3";
 package protos.connectors.assets;
 
 import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
 import "protos/connectors/connector.proto";
-
-
-message NewRelicAsset {
-  uint64 id = 1;
-  ConnectorType connector_type = 2;
-  ConnectorMetadataModelType type = 3;
-  string uid = 4;
-  uint64 last_updated = 5;
-  string metadata = 6;
-}
 
 message NewRelicApplicationEntityAssetModel {
   message GoldenMetric {
@@ -29,7 +20,6 @@ message NewRelicApplicationEntityAssetModel {
 message NewRelicApplicationEntityAssetOptions {
   repeated string application_names = 1;
 }
-
 
 message NewRelicDashboardEntityAssetModel {
   message PageWidget {
@@ -63,10 +53,9 @@ message NewRelicDashboardEntityAssetOptions {
   repeated DashboardOptions dashboards = 1;
 }
 
-
 message NewRelicAssetModel {
   google.protobuf.UInt64Value id = 1;
-  ConnectorType connector_type = 2;
+  Source connector_type = 2;
   ConnectorMetadataModelType type = 3;
   sfixed64 last_updated = 4;
 

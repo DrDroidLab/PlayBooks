@@ -11,7 +11,7 @@ import {
 import GlobalVariables from "../../common/GlobalVariable";
 import TemplatesList from "./TemplatesList.jsx";
 
-function Builder() {
+function Builder({ isLog = false }) {
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const [importFromTemplatesOpen, setImportFromTemplatesOpen] = useState(false);
   const { currentStepIndex } = useSelector(playbookSelector);
@@ -20,16 +20,20 @@ function Builder() {
   return (
     <div className="h-full w-full">
       <div className="absolute top-2 left-2 flex flex-col items-start gap-4">
-        <button
-          onClick={() => setAddDataDrawerOpen(true)}
-          className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
-          Add Data
-        </button>
-        <button
-          onClick={() => setImportFromTemplatesOpen(true)}
-          className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
-          Import from templates
-        </button>
+        {!isLog && (
+          <>
+            <button
+              onClick={() => setAddDataDrawerOpen(true)}
+              className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
+              Add Data
+            </button>
+            <button
+              onClick={() => setImportFromTemplatesOpen(true)}
+              className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
+              Import from templates
+            </button>
+          </>
+        )}
         <div className="z-10 bg-white p-1 rounded w-[300px]">
           <GlobalVariables />
         </div>
