@@ -33,7 +33,7 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
     result_type = result.type
     if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
         try:
-            object_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+            object_url = generate_graph_for_metric_timeseries_result(result, file_key, metric_expression)
             if not object_url:
                 return InterpretationProto()
             if metric_name:
