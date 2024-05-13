@@ -26,7 +26,8 @@ from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorRes
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
     SlackAlert as SlackAlertProto
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorType, \
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, \
     ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 

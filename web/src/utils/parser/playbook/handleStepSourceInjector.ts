@@ -2,6 +2,7 @@ import { SOURCES } from "../../../constants/index.ts";
 import { PlaybookTask } from "../../../types.ts";
 import * as Injector from "../../injectors/index.ts";
 import { v4 as uuidv4 } from "uuid";
+import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 
 export const handleStepSourceInjector = (step): PlaybookTask[] => {
   let baseTask: PlaybookTask = {
@@ -10,6 +11,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     type: "METRIC",
     description: step.description ?? "",
     interpreter_type: step.interpreter?.type,
+    global_variable_set: stateToGlobalVariable(step.globalVariables),
   };
 
   let tasks: PlaybookTask[] = [];

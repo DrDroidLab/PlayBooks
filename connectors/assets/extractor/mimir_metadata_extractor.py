@@ -4,14 +4,16 @@ import time
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
 from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, ConnectorType
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+
 
 class MimirConnectorMetadataExtractor(ConnectorMetadataExtractor):
 
     def __init__(self, mimir_host, x_scope_org_id, account_id=None, connector_id=None):
         self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id)
 
-        super().__init__(account_id, connector_id, ConnectorType.GRAFANA_MIMIR)
+        super().__init__(account_id, connector_id, Source.GRAFANA_MIMIR)
 
     def extract_data_source(self, save_to_db=False):
         model_type = ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL

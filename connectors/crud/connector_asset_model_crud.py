@@ -2,8 +2,8 @@ import logging
 
 from accounts.models import Account
 from connectors.models import ConnectorMetadataModelStore
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source as ConnectorTypeProto
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 logger = logging.getLogger(__name__)
 

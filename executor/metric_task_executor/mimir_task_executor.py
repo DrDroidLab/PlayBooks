@@ -5,18 +5,19 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
-from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
 from integrations_api_processors.mimir_api_processor import MimirApiProcessor
 from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookGrafanaTask as PlaybookGrafanaTaskProto, PlaybookMetricTaskExecutionResult, PlaybookPromQLTask
+    PlaybookMetricTaskExecutionResult, PlaybookPromQLTask, TimeseriesResult as TimeseriesResultProto, \
+    LabelValuePair as LabelValuePairProto
 
 
 class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.GRAFANA_MIMIR
+        self.source = Source.GRAFANA_MIMIR
         self.task_type_callable_map = {
             PlaybookPromQLTask.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution_task
         }
@@ -25,16 +26,16 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             mimir_connector = Connector.objects.get(account_id=account_id,
-                                                      connector_type=ConnectorTypeProto.GRAFANA_MIMIR,
-                                                      is_active=True)
+                                                    connector_type=Source.GRAFANA_MIMIR,
+                                                    is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Active Mimir connector not found for account: {}".format(account_id))
         if not mimir_connector:
             raise Exception("Active Mimir connector not found for account: {}".format(account_id))
 
         mimir_connector_keys = ConnectorKey.objects.filter(connector_id=mimir_connector.id,
-                                                             account_id=account_id,
-                                                             is_active=True)
+                                                           account_id=account_id,
+                                                           is_active=True)
         if not mimir_connector_keys:
             raise Exception("Active Mimir connector keys not found for account: {}".format(account_id))
 
@@ -91,7 +92,7 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
             ), flush=True)
 
         response = mimir_api_processor.fetch_promql_metric_timeseries(promql_metric_query,
-                                                                        start_time, end_time, period)
+                                                                      start_time, end_time, period)
         if not response:
             raise Exception("No data returned from Mimir")
 
@@ -100,38 +101,30 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
             if 'data' in response and 'result' in response['data']:
                 labeled_metric_timeseries_list = []
                 for item in response['data']['result']:
-                    metric_datapoints: [
-                        PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+                    metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
                     for value in item['values']:
                         utc_timestamp = value[0]
                         utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
                         val = value[1]
-                        datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(utc_datetime.timestamp() * 1000),
-                            value=DoubleValue(value=float(val))
-                        )
+                        datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
                         metric_datapoints.append(datapoint)
                     item_metrics = item['metric']
                     metric_label_values = []
                     for key, value in item_metrics.items():
-                        metric_label_values.append(PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                            name=StringValue(value=key),
-                            value=StringValue(value=value)
-                        ))
-                    labeled_metric_timeseries = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_label_values,
-                        unit=StringValue(value=""),
-                        datapoints=metric_datapoints
-                    )
+                        metric_label_values.append(
+                            LabelValuePairProto(name=StringValue(value=key), value=StringValue(value=value)))
+                    labeled_metric_timeseries = TimeseriesResultProto.LabeledMetricTimeseries(
+                        metric_label_values=metric_label_values, unit=StringValue(value=""),
+                        datapoints=metric_datapoints)
                     labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
                 result = PlaybookMetricTaskExecutionResult.Result(
                     type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                    timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                        labeled_metric_timeseries=labeled_metric_timeseries_list))
+                    timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries_list))
 
                 task_execution_result = PlaybookMetricTaskExecutionResult(
-                    metric_source=PlaybookMetricTaskDefinitionProto.Source.GRAFANA_MIMIR,
+                    metric_source=Source.GRAFANA_MIMIR,
                     metric_expression=StringValue(value=promql_metric_query),
                     result=result)
 

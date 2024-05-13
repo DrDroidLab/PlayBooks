@@ -8,6 +8,7 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
+import protos.base_pb2
 import protos.connectors.connector_pb2
 import sys
 
@@ -62,7 +63,7 @@ class RemoteServerAssetModel(google.protobuf.message.Message):
     SSH_SERVER_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     last_updated: builtins.int
     @property
@@ -71,7 +72,7 @@ class RemoteServerAssetModel(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
         last_updated: builtins.int = ...,
         ssh_server: global___SshServerAssetModel | None = ...,

@@ -120,13 +120,13 @@ class Workflow(models.Model):
 
     @property
     def proto(self) -> WorkflowProto:
-        all_pbs = self.playbooks.filter(is_active=True)
+        all_pbs = self.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_ob_protos = [pb.proto_partial for pb in all_pbs]
 
-        all_eps = self.entry_points.filter(is_active=True)
+        all_eps = self.entry_points.filter(workflowentrypointmapping__is_active=True)
         all_ep_protos = [ep.proto for ep in all_eps]
 
-        all_actions = self.actions.filter(is_active=True)
+        all_actions = self.actions.filter(workflowactionmapping__is_active=True)
         all_action_protos = [action.proto for action in all_actions]
 
         latest_workflow_execution = None
@@ -152,7 +152,7 @@ class Workflow(models.Model):
 
     @property
     def proto_partial(self) -> WorkflowProto:
-        all_pbs = self.playbooks.filter(is_active=True)
+        all_pbs = self.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_ob_protos = [pb.proto_partial for pb in all_pbs]
 
         latest_workflow_execution = None
