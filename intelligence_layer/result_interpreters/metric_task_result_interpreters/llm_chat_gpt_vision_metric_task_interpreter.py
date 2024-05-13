@@ -8,7 +8,8 @@ from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
 from intelligence_layer.result_interpreters.metric_task_result_interpreters.utils import \
     metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
 from media.utils import generate_local_image_path
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto

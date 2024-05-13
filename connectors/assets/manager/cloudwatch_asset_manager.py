@@ -9,13 +9,13 @@ from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOption
 from protos.connectors.assets.cloudwatch_asset_pb2 import CloudwatchLogGroupAssetOptions, CloudwatchMetricAssetOptions, \
     CloudwatchAssets, CloudwatchMetricAssetModel as CloudwatchMetricAssetProto, \
     CloudwatchAssetModel as CloudwatchAssetModelProto, CloudwatchLogGroupAssetModel as CloudwatchLogGroupAssetModelProto
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, ConnectorMetadataModelType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class CloudwatchAssetManager(ConnectorAssetManager):
     def __init__(self):
-        self.connector_type = ConnectorTypeProto.CLICKHOUSE
+        self.connector_type = ConnectorType.CLICKHOUSE
 
     def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
         if model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP:
@@ -38,23 +38,24 @@ class CloudwatchAssetManager(ConnectorAssetManager):
     def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
                                filters: AccountConnectorAssetsModelFiltersProto, cloudwatch_models):
         which_one_of = filters.WhichOneof('filters')
-        if model_type == ConnectorMetadataModelType.CLOUDWATCH_LOG_GROUP and (
+        if model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP and (
                 not which_one_of or which_one_of == 'cloudwatch_log_group_model_filters'):
             options: CloudwatchLogGroupAssetOptions = filters.cloudwatch_log_group_model_filters
             filter_regions = options.regions
-            cloudwatch_models = cloudwatch_models.filter(model_type=ConnectorMetadataModelType.CLOUDWATCH_LOG_GROUP)
+            cloudwatch_models = cloudwatch_models.filter(
+                model_type=ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP)
             if filter_regions:
                 cloudwatch_models = cloudwatch_models.filter(model_uid__in=filter_regions)
-        elif model_type == ConnectorMetadataModelType.CLOUDWATCH_METRIC and (
+        elif model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC and (
                 not which_one_of or which_one_of == 'cloudwatch_metric_model_filters'):
             options: CloudwatchMetricAssetOptions = filters.cloudwatch_metric_model_filters
             namespaces = options.namespaces
-            cloudwatch_models = cloudwatch_models.filter(model_type=ConnectorMetadataModelType.CLOUDWATCH_METRIC)
+            cloudwatch_models = cloudwatch_models.filter(model_type=ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC)
             if namespaces:
                 cloudwatch_models = cloudwatch_models.filter(model_uid__in=namespaces)
         cw_asset_protos = []
         for asset in cloudwatch_models:
-            if asset.model_type == ConnectorMetadataModelType.CLOUDWATCH_METRIC:
+            if asset.model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC:
                 all_metrics = []
                 all_region_dimension_map: [CloudwatchMetricAssetProto.RegionDimensionMap] = []
                 for region, metric_dict in asset.metadata.items():
@@ -91,7 +92,7 @@ class CloudwatchAssetManager(ConnectorAssetManager):
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
                     cloudwatch_metric=cloudwatch_metric_proto))
-            elif asset.model_type == ConnectorMetadataModelType.CLOUDWATCH_LOG_GROUP:
+            elif asset.model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP:
                 for region, log_groups in asset.metadata.items():
                     cw_asset_protos.append(CloudwatchAssetModelProto(
                         id=UInt64Value(value=asset.id), connector_type=asset.connector_type,

@@ -6,204 +6,44 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 
-// Task Execution Result Protos
-message PlaybookMetricTaskExecutionResult {
-
-  message Result {
-    enum Type {
-      UNKNOWN = 0;
-      TIMESERIES = 1;
-      TABLE_RESULT = 2;
-    }
-
-    message GroupByLabelValue {
-      google.protobuf.StringValue name = 1;
-      google.protobuf.StringValue value = 2;
-    }
-
-    message Timeseries {
-      message LabeledMetricTimeseries {
-        message Datapoint {
-          sfixed64 timestamp = 1;
-          google.protobuf.DoubleValue value = 2;
-        }
-        repeated GroupByLabelValue metric_label_values = 1;
-        google.protobuf.StringValue unit = 2;
-        repeated Datapoint datapoints = 3;
-      }
-      repeated LabeledMetricTimeseries labeled_metric_timeseries = 3;
-    }
-
-    message TableResult {
-      message TableColumn {
-        google.protobuf.StringValue name = 1;
-        google.protobuf.StringValue type = 2;
-        google.protobuf.StringValue value = 3;
-      }
-      message TableRow {
-        repeated TableColumn columns = 1;
-      }
-      repeated TableRow rows = 1;
-    }
-
-    Type type = 1;
-    oneof result {
-      Timeseries timeseries = 2;
-      TableResult table_result = 3;
-    }
-  }
-
-  PlaybookMetricTaskDefinition.Source metric_source = 1;
-  google.protobuf.StringValue metric_name = 2;
-  google.protobuf.StringValue metric_expression = 3;
-  Result result = 5;
+message LabelValuePair {
+  google.protobuf.StringValue name = 1;
+  google.protobuf.StringValue value = 2;
 }
 
-message PlaybookDecisionTaskExecutionResult {
-
-  message Result {
-    enum Type {
-      UNKNOWN = 0;
-      ELSE_EVALUATION_CONDITION = 1;
-      TIMESERIES_EVALUATION_CONDITION = 2;
+message TimeseriesResult {
+  message LabeledMetricTimeseries {
+    message Datapoint {
+      sfixed64 timestamp = 1;
+      google.protobuf.DoubleValue value = 2;
     }
-
-    message ElseEvaluation {
-      google.protobuf.BoolValue evaluation = 1;
-    }
-
-    message TimeseriesEvaluation {
-      google.protobuf.BoolValue evaluation = 1;
-      TimeseriesEvaluationTask.Rule rule = 2;
-      google.protobuf.DoubleValue value = 3;
-    }
-
-    Type type = 1;
-    google.protobuf.StringValue next_task = 2;
-    oneof result {
-      ElseEvaluation else_evaluation_condition = 3;
-      TimeseriesEvaluation timeseries_evaluation_condition = 4;
-    }
+    repeated LabelValuePair metric_label_values = 1;
+    google.protobuf.StringValue unit = 2;
+    repeated Datapoint datapoints = 3;
   }
-
-  google.protobuf.UInt64Value decision_task_id = 1;
-  google.protobuf.StringValue decision_task_name = 2;
-  Result result = 3;
+  repeated LabeledMetricTimeseries labeled_metric_timeseries = 3;
 }
 
-message PlaybookDataFetchTaskExecutionResult {
-
-  message Result {
-    enum Type {
-      UNKNOWN = 0;
-      TABLE_RESULT = 1;
-    }
-
-
-    message TableResult {
-      message TableColumn {
-        google.protobuf.StringValue name = 1;
-        google.protobuf.StringValue type = 2;
-        google.protobuf.StringValue value = 3;
-      }
-      message TableRow {
-        repeated TableColumn columns = 1;
-      }
-      google.protobuf.StringValue raw_query = 1;
-      google.protobuf.UInt64Value total_count = 2;
-      google.protobuf.UInt64Value limit = 3;
-      google.protobuf.UInt64Value offset = 4;
-      repeated TableRow rows = 5;
-    }
-
-    Type type = 1;
-    oneof result {
-      TableResult table_result = 2;
-    }
+message TableResult {
+  message TableColumn {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue type = 2;
+    google.protobuf.StringValue value = 3;
   }
 
-  google.protobuf.UInt64Value data_fetch_task_id = 1;
-  google.protobuf.StringValue data_fetch_task_name = 2;
-  PlaybookDataFetchTaskDefinition.Source data_source = 3;
-  Result result = 4;
-}
-
-message PlaybookDocumentationTaskExecutionResult {
-
-  message Result {
-    enum Type {
-      UNKNOWN = 0;
-      MARKDOWN = 1;
-    }
-
-    message MarkdownResult {
-      google.protobuf.Struct text = 1;
-    }
-
-    Type type = 1;
-    oneof result {
-      MarkdownResult markdown_result = 2;
-    }
+  message TableRow {
+    repeated TableColumn columns = 1;
   }
 
-  google.protobuf.UInt64Value documentation_task_id = 1;
-  google.protobuf.StringValue documentation_task_name = 2;
-  Result result = 3;
+  google.protobuf.StringValue raw_query = 1;
+  google.protobuf.UInt64Value total_count = 2;
+  google.protobuf.UInt64Value limit = 3;
+  google.protobuf.UInt64Value offset = 4;
+  repeated TableRow rows = 5;
 }
 
-message PlaybookActionTaskExecutionResult {
-
-  message Result {
-    enum Type {
-      UNKNOWN = 0;
-      API_RESPONSE = 1;
-      BASH_COMMAND_OUTPUT = 2;
-    }
-
-    message ApiResponse {
-      google.protobuf.StringValue request_method = 1;
-      google.protobuf.StringValue request_url = 2;
-      google.protobuf.UInt64Value response_status = 3;
-      google.protobuf.Struct response_headers = 4;
-      google.protobuf.Struct response_body = 5;
-      google.protobuf.Struct error = 6;
-      google.protobuf.Struct metadata = 7;
-    }
-
-    message BashCommandOutput {
-      message CommandOutput {
-        google.protobuf.StringValue command = 1;
-        google.protobuf.StringValue output = 2;
-      }
-      repeated CommandOutput command_outputs = 1;
-    }
-
-    Type type = 1;
-    oneof result {
-      ApiResponse api_response = 2;
-      BashCommandOutput bash_command_output = 3;
-    }
-  }
-
-  google.protobuf.UInt64Value action_task_id = 1;
-  google.protobuf.StringValue action_task_name = 2;
-  Result result = 3;
-}
-
-message PlaybookTaskExecutionResult  {
-  google.protobuf.StringValue error = 1;
-  google.protobuf.StringValue message = 2;
-  oneof result {
-    PlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
-    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 4;
-    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 5;
-    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 6;
-    PlaybookActionTaskExecutionResult action_task_execution_result = 7;
-  }
-}
-
-
-// Metric Task Execution Protos
+//////////////// Playbook Metric Task Execution Protos ////////////////
+// Metric Task Definition Protos //
 message PlaybookCloudwatchTask {
   enum TaskType {
     UNKNOWN = 0;
@@ -339,14 +179,6 @@ message PlaybookDatadogTask {
 }
 
 message PlaybookMetricTaskDefinition {
-  enum Source {
-    UNKNOWN = 0;
-    CLOUDWATCH = 1;
-    GRAFANA = 2;
-    NEW_RELIC = 3;
-    DATADOG = 4;
-    GRAFANA_VPC = 5;
-  }
   Source source = 1;
   oneof task {
     PlaybookCloudwatchTask cloudwatch_task = 6;
@@ -356,8 +188,31 @@ message PlaybookMetricTaskDefinition {
   }
 }
 
+// Metric Task Result Protos //
+message PlaybookMetricTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TIMESERIES = 1;
+      TABLE_RESULT = 2;
+    }
 
-// Decision Task Execution Protos
+    Type type = 1;
+    oneof result {
+      TimeseriesResult timeseries = 2;
+      TableResult table_result = 3;
+    }
+  }
+
+  Source metric_source = 1;
+  google.protobuf.StringValue metric_name = 2;
+  google.protobuf.StringValue metric_expression = 3;
+  Result result = 5;
+}
+
+
+//////////////// Playbook Decision Task Execution Protos ////////////////
+// Decision Task Definition Protos
 enum EvaluationConditionFunction {
   UNKNOWN_ECF = 0;
   ECF_AVG = 1;
@@ -393,7 +248,7 @@ message TimeseriesEvaluationTask {
     google.protobuf.DoubleValue window = 4;
     google.protobuf.DoubleValue threshold = 5;
     google.protobuf.StringValue next_task = 6;
-    repeated PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue label_values = 7;
+    repeated LabelValuePair label_values = 7;
   }
 
   repeated Rule rules = 1;
@@ -422,8 +277,42 @@ message PlaybookDecisionTaskDefinition {
   }
 }
 
+// Decision Task Result Protos //
+message PlaybookDecisionTaskExecutionResult {
 
-// Documentation Task Execution Protos
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      ELSE_EVALUATION_CONDITION = 1;
+      TIMESERIES_EVALUATION_CONDITION = 2;
+    }
+
+    message ElseEvaluation {
+      google.protobuf.BoolValue evaluation = 1;
+    }
+
+    message TimeseriesEvaluation {
+      google.protobuf.BoolValue evaluation = 1;
+      TimeseriesEvaluationTask.Rule rule = 2;
+      google.protobuf.DoubleValue value = 3;
+    }
+
+    Type type = 1;
+    google.protobuf.StringValue next_task = 2;
+    oneof result {
+      ElseEvaluation else_evaluation_condition = 3;
+      TimeseriesEvaluation timeseries_evaluation_condition = 4;
+    }
+  }
+
+  google.protobuf.UInt64Value decision_task_id = 1;
+  google.protobuf.StringValue decision_task_name = 2;
+  Result result = 3;
+}
+
+
+//////////////// Playbook Documentation Task Execution Protos ////////////////
+// Documentation Task Definition Protos //
 message PlaybookDocumentationTaskDefinition {
   enum Type {
     UNKNOWN = 0;
@@ -433,8 +322,33 @@ message PlaybookDocumentationTaskDefinition {
   google.protobuf.StringValue documentation = 2;
 }
 
+// Documentation Task Result Protos //
+message PlaybookDocumentationTaskExecutionResult {
 
-// Data Fetch Task Execution Protos
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      MARKDOWN = 1;
+    }
+
+    message MarkdownResult {
+      google.protobuf.Struct text = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      MarkdownResult markdown_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value documentation_task_id = 1;
+  google.protobuf.StringValue documentation_task_name = 2;
+  Result result = 3;
+}
+
+
+//////////////// Playbook Data Fetch Task Execution Protos ////////////////
+// Data Fetch Task Definition Protos //
 message PlaybookClickhouseDataFetchTask {
   google.protobuf.StringValue database = 1;
   google.protobuf.StringValue query = 2;
@@ -465,13 +379,6 @@ message PlaybookSqlDatabaseConnectionDataFetchTask {
 }
 
 message PlaybookDataFetchTaskDefinition {
-  enum Source {
-    UNKNOWN = 0;
-    CLICKHOUSE = 1;
-    POSTGRES = 2;
-    EKS = 3;
-    SQL_DATABASE_CONNECTION = 4;
-  }
   Source source = 1;
   google.protobuf.StringValue order_by_column = 2;
   google.protobuf.UInt64Value limit = 3;
@@ -484,8 +391,29 @@ message PlaybookDataFetchTaskDefinition {
   }
 }
 
+// Data Fetch Task Result Protos //
+message PlaybookDataFetchTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TABLE_RESULT = 1;
+    }
 
-// Playbook Action Task Execution Protos
+    Type type = 1;
+    oneof result {
+      TableResult table_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value data_fetch_task_id = 1;
+  google.protobuf.StringValue data_fetch_task_name = 2;
+  Source data_source = 3;
+  Result result = 4;
+}
+
+
+//////////////// Playbook Action Task Execution Protos ////////////////
+// Action Task Definition Proto //
 message PlaybookApiCallTask {
   enum Method {
     UNKNOWN = 0;
@@ -509,11 +437,6 @@ message PlaybookBashCommandTask {
 }
 
 message PlaybookActionTaskDefinition {
-  enum Source {
-    UNKNOWN = 0;
-    API = 1;
-    BASH = 2;
-  }
   Source source = 1;
   google.protobuf.UInt64Value id = 2;
   google.protobuf.StringValue name = 3;
@@ -522,6 +445,46 @@ message PlaybookActionTaskDefinition {
     PlaybookApiCallTask api_call_task = 5;
     PlaybookBashCommandTask bash_command_task = 6;
   }
+}
+
+// Action Task Result Proto //
+message PlaybookActionTaskExecutionResult {
+
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      API_RESPONSE = 1;
+      BASH_COMMAND_OUTPUT = 2;
+    }
+
+    message ApiResponse {
+      google.protobuf.StringValue request_method = 1;
+      google.protobuf.StringValue request_url = 2;
+      google.protobuf.UInt64Value response_status = 3;
+      google.protobuf.Struct response_headers = 4;
+      google.protobuf.Struct response_body = 5;
+      google.protobuf.Struct error = 6;
+      google.protobuf.Struct metadata = 7;
+    }
+
+    message BashCommandOutput {
+      message CommandOutput {
+        google.protobuf.StringValue command = 1;
+        google.protobuf.StringValue output = 2;
+      }
+      repeated CommandOutput command_outputs = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      ApiResponse api_response = 2;
+      BashCommandOutput bash_command_output = 3;
+    }
+  }
+
+  google.protobuf.UInt64Value action_task_id = 1;
+  google.protobuf.StringValue action_task_name = 2;
+  Result result = 3;
 }
 
 
@@ -553,6 +516,18 @@ message PlaybookTaskDefinition {
   }
 }
 
+message PlaybookTaskExecutionResult  {
+  google.protobuf.StringValue error = 1;
+  google.protobuf.StringValue message = 2;
+  oneof result {
+    PlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
+    PlaybookDecisionTaskExecutionResult decision_task_execution_result = 4;
+    PlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 5;
+    PlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 6;
+    PlaybookActionTaskExecutionResult action_task_execution_result = 7;
+  }
+}
+
 message PlaybookStepDefinition {
   message ExternalLink {
     google.protobuf.StringValue name = 1;
@@ -578,7 +553,6 @@ message Playbook {
   PlaybookExecutionStatusType status = 8;
   repeated PlaybookStepDefinition steps = 9;
   google.protobuf.Struct global_variable_set = 10;
-  google.protobuf.BoolValue has_triggers = 11;
 }
 
 
@@ -631,7 +605,6 @@ message UpdatePlaybookOp {
     UPDATE_PLAYBOOK_NAME = 1;
     UPDATE_PLAYBOOK_STATUS = 2;
     UPDATE_PLAYBOOK = 3;
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS = 4;
   }
 
   message UpdatePlaybookName {
@@ -646,16 +619,10 @@ message UpdatePlaybookOp {
     Playbook playbook = 1;
   }
 
-  message UpdatePlaybookAlertOpsTriggerStatus {
-    google.protobuf.UInt64Value alert_ops_trigger_id = 1;
-    google.protobuf.BoolValue is_active = 2;
-  }
-
   Op op = 1;
   oneof update {
     UpdatePlaybookName update_playbook_name = 2;
     UpdatePlaybookStatus update_playbook_status = 3;
     UpdatePlaybook update_playbook = 4;
-    UpdatePlaybookAlertOpsTriggerStatus update_playbook_alert_ops_trigger_status = 5;
   }
 }
