@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+import math
 
 from intelligence_layer.utils import generate_color_map
 from media.utils import save_image_to_db
@@ -41,31 +42,49 @@ def metric_timeseries_result_to_df(result: PlaybookMetricTaskExecutionResultProt
 
 def generate_graph_for_metric_timeseries_result(result: PlaybookMetricTaskExecutionResultProto.Result,
                                                 file_key, image_title='Untitled') -> str:
+    max_items_per_row = 5
     timeseries = result.timeseries
     df = metric_timeseries_result_to_df(timeseries)
     unique_labels = df['Label'].unique()
     color_map = generate_color_map(unique_labels)
     fig = go.Figure()
     unit = df['Unit'].iloc[0] if 'Unit' in df and df['Unit'].iloc[0] else ''
-    for label_val in df['Label'].unique():
+
+    for label_val in unique_labels:
         data = df[df['Label'] == label_val].sort_values(by='Timestamp')
         fig.add_trace(go.Scatter(x=data['Timestamp'], y=data['Value'], mode='lines', name=label_val,
                                  line=dict(color=color_map[label_val])))
-    if unique_labels is None or (len(unique_labels) == 1 and '' in unique_labels):
-        fig.update_layout(
-            xaxis_title='Timestamp',
-            yaxis_title='Values' if not unit else unit,
-            title_x=0.5,
-            title_y=0.9
-        )
-    else:
-        fig.update_layout(
-            xaxis_title='Timestamp',
-            yaxis_title='Values' if not unit else unit,
-            legend_title_text='Labels',
-            title_x=0.5,
-            title_y=0.9
-        )
+
+    num_legend_rows = math.ceil(len(unique_labels) / max_items_per_row)
+
+    base_height = 400
+    extra_height_per_row = 100
+    total_height = base_height + (num_legend_rows * extra_height_per_row)
+
+    # Calculate y position for the legend based on the number of legend rows
+    legend_y = -0.05 * num_legend_rows if num_legend_rows > 10 else -0.1 * num_legend_rows
+
+    fig.update_layout(
+        title={'text': image_title, 'x': 0.5, 'y': 0.95},
+        xaxis_title='Timestamp',
+        yaxis_title='Values' if not unit else unit,
+        legend=dict(
+            x=0.5,
+            y=legend_y,
+            orientation='h',
+            bordercolor='Black',
+            borderwidth=1,
+            tracegroupgap=5,
+            xanchor='center',
+            yanchor='top',
+            font=dict(
+                size=12
+            ),
+            itemsizing='constant'
+        ),
+        width=800,
+        height=total_height
+    )
 
     try:
         pio.write_image(fig, file_key)
