@@ -12,22 +12,23 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
+from protos import base_pb2 as protos_dot_base__pb2
 from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connector__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n*protos/connectors/assets/azure_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a!protos/connectors/connector.proto\"w\n\x18\x41zureWorkspaceAssetModel\x12/\n\tworkspace\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"0\n\x1a\x41zureWorkspaceAssetOptions\x12\x12\n\nworkspaces\x18\x01 \x03(\t\"\xa0\x02\n\x0f\x41zureAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x38\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32 .protos.connectors.ConnectorType\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12M\n\x0f\x61zure_workspace\x18\x05 \x01(\x0b\x32\x32.protos.connectors.assets.AzureWorkspaceAssetModelH\x00\x42\x07\n\x05\x61sset\"H\n\x0b\x41zureAssets\x12\x39\n\x06\x61ssets\x18\x01 \x03(\x0b\x32).protos.connectors.assets.AzureAssetModelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n*protos/connectors/assets/azure_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"w\n\x18\x41zureWorkspaceAssetModel\x12/\n\tworkspace\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"0\n\x1a\x41zureWorkspaceAssetOptions\x12\x12\n\nworkspaces\x18\x01 \x03(\t\"\x8e\x02\n\x0f\x41zureAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12M\n\x0f\x61zure_workspace\x18\x05 \x01(\x0b\x32\x32.protos.connectors.assets.AzureWorkspaceAssetModelH\x00\x42\x07\n\x05\x61sset\"H\n\x0b\x41zureAssets\x12\x39\n\x06\x61ssets\x18\x01 \x03(\x0b\x32).protos.connectors.assets.AzureAssetModelb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.assets.azure_asset_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _AZUREWORKSPACEASSETMODEL._serialized_start=139
-  _AZUREWORKSPACEASSETMODEL._serialized_end=258
-  _AZUREWORKSPACEASSETOPTIONS._serialized_start=260
-  _AZUREWORKSPACEASSETOPTIONS._serialized_end=308
-  _AZUREASSETMODEL._serialized_start=311
-  _AZUREASSETMODEL._serialized_end=599
-  _AZUREASSETS._serialized_start=601
-  _AZUREASSETS._serialized_end=673
+  _AZUREWORKSPACEASSETMODEL._serialized_start=158
+  _AZUREWORKSPACEASSETMODEL._serialized_end=277
+  _AZUREWORKSPACEASSETOPTIONS._serialized_start=279
+  _AZUREWORKSPACEASSETOPTIONS._serialized_end=327
+  _AZUREASSETMODEL._serialized_start=330
+  _AZUREASSETMODEL._serialized_end=600
+  _AZUREASSETS._serialized_start=602
+  _AZUREASSETS._serialized_end=674
 # @@protoc_insertion_point(module_scope)

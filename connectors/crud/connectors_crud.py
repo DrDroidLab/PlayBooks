@@ -6,7 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 from accounts.models import Account
 from connectors.models import Connector, ConnectorKey, integrations_connector_type_connector_keys_map, \
     integrations_connector_type_display_name_map, integrations_connector_type_category_map, \
-    integrations_request_connectors, integrations_connector_key_display_name_map
+    integrations_connector_key_display_name_map
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
@@ -18,9 +18,9 @@ from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
+from protos.base_pb2 import Source as ConnectorType
 
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto
 from utils.time_utils import current_milli_time, current_datetime
 from connectors.tasks import populate_connector_metadata
 from utils.proto_utils import proto_to_dict
@@ -158,12 +158,7 @@ def generate_credentials_dict(connector_type, connector_keys):
 
 
 def get_all_request_connectors():
-    all_request_connectors = []
-    for c in integrations_request_connectors:
-        all_request_connectors.append(
-            ConnectorProto(type=c, display_name=StringValue(value=integrations_connector_type_display_name_map.get(c)),
-                           category=StringValue(value=integrations_connector_type_category_map.get(c))))
-    return all_request_connectors
+    return []
 
 
 def get_all_available_connectors(all_active_connectors):

@@ -8,6 +8,7 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
+import protos.base_pb2
 import protos.connectors.connector_pb2
 import sys
 
@@ -66,7 +67,7 @@ class AzureAssetModel(google.protobuf.message.Message):
     AZURE_WORKSPACE_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     last_updated: builtins.int
     @property
@@ -75,7 +76,7 @@ class AzureAssetModel(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
         last_updated: builtins.int = ...,
         azure_workspace: global___AzureWorkspaceAssetModel | None = ...,

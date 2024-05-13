@@ -87,8 +87,9 @@ function TaskDetails({ task, data, stepIndex }) {
                   gap: "10px",
                   alignItems: "flex-start",
                   flexWrap: "wrap",
+                  width: "100%",
                   justifyContent: "flex-start",
-                  maxWidth: "600px",
+                  maxWidth: view === "builder" ? "600px" : "",
                 }}>
                 <OptionRender
                   data={value}

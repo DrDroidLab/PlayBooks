@@ -15,8 +15,8 @@ from connectors.assets.manager.slack_assets_manager import SlackAssetManager
 from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,11 @@ class AssetManagerFacade:
     def __init__(self):
         self._map = {}
 
-    def register(self, connector_type: ConnectorTypeProto,
+    def register(self, connector_type: ConnectorType,
                  manager: ConnectorAssetManager):
         self._map[connector_type] = manager
 
-    def get_asset_model_options(self, account: Account, connector_type: ConnectorTypeProto,
+    def get_asset_model_options(self, account: Account, connector_type: ConnectorType,
                                 model_type: ConnectorMetadataModelTypeProto):
         assets_options: [AccountConnectorAssetsModelOptions] = []
         connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type,
@@ -58,7 +58,7 @@ class AssetManagerFacade:
                                                                      model_types_options=model_type_options))
         return assets_options
 
-    def get_asset_model_values(self, account: Account, connector_type: ConnectorTypeProto,
+    def get_asset_model_values(self, account: Account, connector_type: ConnectorType,
                                model_type: ConnectorMetadataModelTypeProto,
                                filters: AccountConnectorAssetsModelFiltersProto):
         if not connector_type:
@@ -76,13 +76,13 @@ class AssetManagerFacade:
 
 
 asset_manager_facade = AssetManagerFacade()
-asset_manager_facade.register(ConnectorTypeProto.CLICKHOUSE, ClickhouseAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.CLOUDWATCH, CloudwatchAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.DATADOG, DatadogAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.EKS, EKSAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.GRAFANA, GrafanaAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.NEW_RELIC, NewRelicAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.POSTGRES, PostgresAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.SLACK, SlackAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.AZURE, AzureAssetManager())
-asset_manager_facade.register(ConnectorTypeProto.REMOTE_SERVER, RemoteServetAssetManager())
+asset_manager_facade.register(ConnectorType.CLICKHOUSE, ClickhouseAssetManager())
+asset_manager_facade.register(ConnectorType.CLOUDWATCH, CloudwatchAssetManager())
+asset_manager_facade.register(ConnectorType.DATADOG, DatadogAssetManager())
+asset_manager_facade.register(ConnectorType.EKS, EKSAssetManager())
+asset_manager_facade.register(ConnectorType.GRAFANA, GrafanaAssetManager())
+asset_manager_facade.register(ConnectorType.NEW_RELIC, NewRelicAssetManager())
+asset_manager_facade.register(ConnectorType.POSTGRES, PostgresAssetManager())
+asset_manager_facade.register(ConnectorType.SLACK, SlackAssetManager())
+asset_manager_facade.register(ConnectorType.REMOTE_SERVER, RemoteServetAssetManager())
+asset_manager_facade.register(ConnectorType.AZURE, AzureAssetManager())

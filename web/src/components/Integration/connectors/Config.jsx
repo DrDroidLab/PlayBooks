@@ -2,21 +2,19 @@ import styles from "./index.module.css";
 import ConnectorUpdateOverlay from "./ConnectorUpdateOverlay";
 import ConnectorDeleteOverlay from "./ConnectorDeleteOverlay";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   agentProxySelector,
   connectorSelector,
-  setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
-import ValueComponent from "../../ValueComponent";
 import { useCreateConnectorMutation } from "../../../store/features/integrations/api/index.ts";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import AgentProxy from "./AgentProxy.jsx";
 import { useLazyTestConnectionQuery } from "../../../store/features/integrations/api/testConnectionApi.ts";
 import SlackManifestGenerator from "./SlackManifestGenerator.jsx";
+import HandleKeyOptions from "./HandleKeyOptions.jsx";
 
 function Config({ keyOptions }) {
-  const dispatch = useDispatch();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const currentConnector = useSelector(connectorSelector);
@@ -132,15 +130,9 @@ function Config({ keyOptions }) {
               <div className={styles["content"]}>
                 {option?.display_name || option?.key_type}
               </div>
-              <ValueComponent
-                valueType={"STRING"}
-                onValueChange={(val) => {
-                  dispatch(setKey({ key: option.key_type, value: val }));
-                }}
-                disabled={connectorActive}
-                value={currentConnector[option.key_type]}
-                placeHolder={option.display_name}
-                length={500}
+              <HandleKeyOptions
+                connectorActive={connectorActive}
+                option={option}
               />
             </div>
           ))}

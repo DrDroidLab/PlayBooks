@@ -15,7 +15,7 @@ from google.protobuf.struct_pb2 import Struct
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
-from executor.crud.playbooks_crud import create_db_playbook
+from executor.crud.playbooks_crud import update_or_create_db_playbook
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.task_executor import execute_task
 from executor.tasks import execute_playbook
@@ -26,7 +26,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from playbooks.utils.decorators import web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from protos.connectors.connector_pb2 import ConnectorType
+from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
@@ -219,7 +219,7 @@ def playbooks_get(request_message: GetPlaybooksRequest) -> Union[GetPlaybooksRes
         qs = qs.filter(id__in=request_message.playbook_ids)
         list_all = False
     elif not show_inactive or not show_inactive.value:
-        qs = qs.filter(is_active=True, is_generated=False)
+        qs = qs.filter(is_active=True)
 
     total_count = qs.count()
     qs = qs.order_by('-created_at')
@@ -240,7 +240,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     if not playbook or not playbook.name:
         return CreatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/playbook"))
-    playbook, error = create_db_playbook(account, user.email, playbook)
+    playbook, error = update_or_create_db_playbook(account, user.email, playbook)
     if error:
         return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)

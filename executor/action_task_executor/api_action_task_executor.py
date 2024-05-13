@@ -5,6 +5,7 @@ from google.protobuf.struct_pb2 import Struct
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from executor.action_task_executor.action_task_executor import PlaybookActionTaskExecutor
+from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
     PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto, \
     PlaybookApiCallTask as PlaybookApiCallTaskProto
@@ -22,7 +23,7 @@ method_proto_string_mapping = {
 class ApiActionTaskExecutor(PlaybookActionTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookActionTaskDefinitionProto.Source.API
+        self.source = Source.API
 
         self.__account_id = account_id
 
@@ -33,7 +34,7 @@ class ApiActionTaskExecutor(PlaybookActionTaskExecutor):
             method = api_action_task.method
             url = api_action_task.url.value
             for key, value in global_variable_set.items():
-                uri = uri.replace(f"{{{key}}}", value)
+                url = url.replace(f"{{{key}}}", value)
             headers = proto_to_dict(api_action_task.headers) if api_action_task.headers else {}
             payload = proto_to_dict(api_action_task.payload) if api_action_task.payload else {}
             timeout = api_action_task.timeout.value if api_action_task.timeout else 120

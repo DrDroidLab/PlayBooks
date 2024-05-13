@@ -366,4 +366,17 @@ export const cardsData = [
     url: "/integrations/markdown_logo.svg",
     enum: "DOCUMENTATION",
   },
+  {
+    id: 43,
+    url: "/integrations/remote_server_logo.png",
+    title: "REMOTE SERVER",
+    enum: "REMOTE_SERVER",
+    desc: "Connect Remote Server",
+    buttonTitle: "Connect",
+  },
+  {
+    id: 44,
+    url: "/integrations/bash_logo.svg",
+    enum: "BASH",
+  },
 ];

@@ -2,6 +2,8 @@ from datetime import timezone
 from hashlib import md5
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
+
+from protos.base_pb2 import Source as ConnectorType
 from utils.model_utils import generate_choices
 
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -9,13 +11,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorType, ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
-
-integrations_request_connectors = [
-    # ConnectorType.ELASTIC_APM,
-    # ConnectorType.VICTORIA_METRICS,
-    # ConnectorType.PROMETHEUS
-]
+    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
 
 integrations_connector_type_display_name_map = {
     ConnectorType.SLACK: 'SLACK',
@@ -76,17 +72,6 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.SLACK_APP_ID
         ]
     ],
-    # ConnectorType.GOOGLE_CHAT: [
-    #     [
-    #         ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
-    #     ]
-    # ],
-    # ConnectorType.SENTRY: [
-    #     [
-    #         ConnectorKeyProto.KeyType.SENTRY_API_KEY,
-    #         ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG
-    #     ]
-    # ],
     ConnectorType.NEW_RELIC: [
         [
             ConnectorKeyProto.KeyType.NEWRELIC_API_KEY,
@@ -120,11 +105,6 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY
         ]
     ],
-    # ConnectorType.GITHUB_ACTIONS: [
-    #     [
-    #         ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
-    #     ]
-    # ],
     ConnectorType.AGENT_PROXY: [
         [
             ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
@@ -138,14 +118,6 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.AWS_REGION,
         ]
     ],
-    # ConnectorType.GCM: [
-    #     [
-    #         ConnectorKeyProto.KeyType.GCM_PROJECT_ID,
-    #         ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
-    #         ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL,
-    #         ConnectorKeyProto.KeyType.GCM_TOKEN_URI
-    #     ]
-    # ],
     ConnectorType.CLICKHOUSE: [
         [
             ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE,
@@ -172,16 +144,6 @@ integrations_connector_type_connector_keys_map = {
             ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
         ]
     ],
-    # ConnectorType.PAGER_DUTY: [
-    #     [
-    #         ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
-    #     ]
-    # ],
-    # ConnectorType.OPS_GENIE: [
-    #     [
-    #         ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-    #     ]
-    # ],
     ConnectorType.SQL_DATABASE_CONNECTION: [
         [
             ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,

@@ -1,12 +1,12 @@
 from typing import Dict
 
-from protos.base_pb2 import TimeRange
+from protos.base_pb2 import TimeRange, Source
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookMetricTaskExecutionResult
 
 
 class PlaybookMetricTaskExecutor:
-    source: PlaybookMetricTaskDefinitionProto.Source = PlaybookMetricTaskDefinitionProto.Source.UNKNOWN
+    source: Source = Source.UNKNOWN
     task_type_callable_map = {}
 
     @classmethod

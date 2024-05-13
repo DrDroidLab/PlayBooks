@@ -2,8 +2,8 @@ syntax = "proto3";
 package protos.connectors.assets;
 
 import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
 import "protos/connectors/connector.proto";
-
 
 message PostgresDatabaseAssetModel {
   google.protobuf.StringValue database = 1;
@@ -13,10 +13,9 @@ message PostgresDatabaseAssetOptions {
   repeated string databases = 1;
 }
 
-
 message PostgresAssetModel {
   google.protobuf.UInt64Value id = 1;
-  ConnectorType connector_type = 2;
+  Source connector_type = 2;
   ConnectorMetadataModelType type = 3;
   sfixed64 last_updated = 4;
   oneof asset {

@@ -7,8 +7,8 @@ from google.protobuf.wrappers_pb2 import StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.azure_api_processor import AzureApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookAzureTask as PlaybookAzureTaskProto, PlaybookMetricTaskExecutionResult
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.AZURE
+        self.source = Source.AZURE
         self.task_type_callable_map = {
             PlaybookAzureTaskProto.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events_task
         }
@@ -27,7 +27,7 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             azure_connector = Connector.objects.get(account_id=account_id,
-                                                    connector_type=ConnectorTypeProto.AZURE,
+                                                    connector_type=Source.AZURE,
                                                     is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Azure connector not found")
