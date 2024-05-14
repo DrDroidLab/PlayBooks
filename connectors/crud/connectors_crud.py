@@ -18,12 +18,10 @@ from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from protos.base_pb2 import Source as ConnectorType
-
+from protos.base_pb2 import Source, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto
 from utils.time_utils import current_milli_time, current_datetime
 from connectors.tasks import populate_connector_metadata
-from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -33,110 +31,110 @@ class ConnectorCrudException(ValueError):
 
 
 connector_type_api_processor_map = {
-    ConnectorType.CLOUDWATCH: AWSBoto3ApiProcessor,
-    ConnectorType.EKS: AWSBoto3ApiProcessor,
-    ConnectorType.CLICKHOUSE: ClickhouseDBProcessor,
-    ConnectorType.DATADOG: DatadogApiProcessor,
-    ConnectorType.GRAFANA: GrafanaApiProcessor,
-    ConnectorType.NEW_RELIC: NewRelicGraphQlConnector,
-    ConnectorType.POSTGRES: PostgresDBProcessor,
-    ConnectorType.GRAFANA_VPC: VpcApiProcessor,
-    ConnectorType.SLACK: SlackApiProcessor,
-    ConnectorType.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor
+    Source.CLOUDWATCH: AWSBoto3ApiProcessor,
+    Source.EKS: AWSBoto3ApiProcessor,
+    Source.CLICKHOUSE: ClickhouseDBProcessor,
+    Source.DATADOG: DatadogApiProcessor,
+    Source.GRAFANA: GrafanaApiProcessor,
+    Source.NEW_RELIC: NewRelicGraphQlConnector,
+    Source.POSTGRES: PostgresDBProcessor,
+    Source.GRAFANA_VPC: VpcApiProcessor,
+    Source.SLACK: SlackApiProcessor,
+    Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor
 }
 
 
 def generate_credentials_dict(connector_type, connector_keys):
     credentials_dict = {}
-    if connector_type == ConnectorType.NEW_RELIC:
+    if connector_type == Source.NEW_RELIC:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.NEWRELIC_API_KEY:
+            if conn_key.key_type == SourceKeyType.NEWRELIC_API_KEY:
                 credentials_dict['nr_api_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.NEWRELIC_APP_ID:
+            elif conn_key.key_type == SourceKeyType.NEWRELIC_APP_ID:
                 credentials_dict['nr_app_id'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.NEWRELIC_API_DOMAIN:
+            elif conn_key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
                 credentials_dict['nr_api_domain'] = conn_key.key.value
-    elif connector_type == ConnectorType.DATADOG:
+    elif connector_type == Source.DATADOG:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.DATADOG_API_KEY:
+            if conn_key.key_type == SourceKeyType.DATADOG_API_KEY:
                 credentials_dict['dd_api_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.DATADOG_APP_KEY:
+            elif conn_key.key_type == SourceKeyType.DATADOG_APP_KEY:
                 credentials_dict['dd_app_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.DATADOG_API_DOMAIN:
+            elif conn_key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 credentials_dict['dd_api_domain'] = conn_key.key.value
-    elif connector_type == ConnectorType.CLOUDWATCH:
+    elif connector_type == Source.CLOUDWATCH:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.AWS_ACCESS_KEY:
+            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.AWS_SECRET_KEY:
+            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 credentials_dict['aws_secret_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.AWS_REGION:
+            elif conn_key.key_type == SourceKeyType.AWS_REGION:
                 regions = credentials_dict.get('regions', [])
                 regions.append(conn_key.key.value)
                 credentials_dict['regions'] = regions
-    elif connector_type == ConnectorType.EKS:
+    elif connector_type == Source.EKS:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.AWS_ACCESS_KEY:
+            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.AWS_SECRET_KEY:
+            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 credentials_dict['aws_secret_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.AWS_REGION:
+            elif conn_key.key_type == SourceKeyType.AWS_REGION:
                 regions = credentials_dict.get('regions', [])
                 regions.append(conn_key.key.value)
                 credentials_dict['regions'] = regions
-    elif connector_type == ConnectorType.GRAFANA:
+    elif connector_type == Source.GRAFANA:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.GRAFANA_API_KEY:
+            if conn_key.key_type == SourceKeyType.GRAFANA_API_KEY:
                 credentials_dict['grafana_api_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.GRAFANA_HOST:
+            elif conn_key.key_type == SourceKeyType.GRAFANA_HOST:
                 credentials_dict['grafana_host'] = conn_key.key.value
-    elif connector_type == ConnectorType.GRAFANA_VPC:
+    elif connector_type == Source.GRAFANA_VPC:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.AGENT_PROXY_API_KEY:
+            if conn_key.key_type == SourceKeyType.AGENT_PROXY_API_KEY:
                 credentials_dict['agent_proxy_api_key'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.AGENT_PROXY_HOST:
+            elif conn_key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 credentials_dict['agent_proxy_host'] = conn_key.key.value
-    elif connector_type == ConnectorType.CLICKHOUSE:
+    elif connector_type == Source.CLICKHOUSE:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.CLICKHOUSE_HOST:
+            if conn_key.key_type == SourceKeyType.CLICKHOUSE_HOST:
                 credentials_dict['host'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.CLICKHOUSE_USER:
+            elif conn_key.key_type == SourceKeyType.CLICKHOUSE_USER:
                 credentials_dict['user'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.CLICKHOUSE_PASSWORD:
+            elif conn_key.key_type == SourceKeyType.CLICKHOUSE_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.CLICKHOUSE_INTERFACE:
+            elif conn_key.key_type == SourceKeyType.CLICKHOUSE_INTERFACE:
                 credentials_dict['interface'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.CLICKHOUSE_PORT:
+            elif conn_key.key_type == SourceKeyType.CLICKHOUSE_PORT:
                 credentials_dict['port'] = conn_key.key.value
-    elif connector_type == ConnectorType.POSTGRES:
+    elif connector_type == Source.POSTGRES:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.POSTGRES_HOST:
+            if conn_key.key_type == SourceKeyType.POSTGRES_HOST:
                 credentials_dict['host'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_USER:
+            elif conn_key.key_type == SourceKeyType.POSTGRES_USER:
                 credentials_dict['user'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PASSWORD:
+            elif conn_key.key_type == SourceKeyType.POSTGRES_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_DATABASE:
+            elif conn_key.key_type == SourceKeyType.POSTGRES_DATABASE:
                 credentials_dict['database'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.POSTGRES_PORT:
+            elif conn_key.key_type == SourceKeyType.POSTGRES_PORT:
                 credentials_dict['port'] = conn_key.key.value
-    elif connector_type == ConnectorType.SQL_DATABASE_CONNECTION:
+    elif connector_type == Source.SQL_DATABASE_CONNECTION:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.SQL_DATABASE_CONNECTION_STRING_URI:
+            if conn_key.key_type == SourceKeyType.SQL_DATABASE_CONNECTION_STRING_URI:
                 credentials_dict['connection_string'] = conn_key.key.value
-    elif connector_type == ConnectorType.SLACK:
+    elif connector_type == Source.SLACK:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN:
+            if conn_key.key_type == SourceKeyType.SLACK_BOT_AUTH_TOKEN:
                 credentials_dict['bot_auth_token'] = conn_key.key.value
-    elif connector_type == ConnectorType.REMOTE_SERVER:
+    elif connector_type == Source.REMOTE_SERVER:
         for conn_key in connector_keys:
-            if conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_HOST:
+            if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
                 credentials_dict['remote_host'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_USER:
+            elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_USER:
                 credentials_dict['remote_user'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_PEM:
+            elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PEM:
                 credentials_dict['remote_pem'] = conn_key.key.value
-            elif conn_key.key_type == ConnectorKeyProto.REMOTE_SERVER_PASSWORD:
+            elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PASSWORD:
                 credentials_dict['remote_password'] = conn_key.key.value
             if 'remote_pem' not in credentials_dict:
                 credentials_dict['remote_pem'] = None
@@ -176,13 +174,17 @@ def get_all_available_connectors(all_active_connectors):
 def get_connector_keys_options(connector_type):
     if not connector_type:
         return None
-    connector_keys = integrations_connector_type_connector_keys_map.get(connector_type)[0]
-    if not connector_keys:
+    source_key_options = integrations_connector_type_connector_keys_map.get(connector_type)
+    all_keys = []
+    for sko in source_key_options:
+        all_keys.extend(sko)
+    all_keys = list(set(all_keys))
+    if not all_keys:
         return None
     connector_key_option_protos = []
-    for ck in connector_keys:
-        connector_key_option_protos.append(ConnectorKeyProto(key_type=ck, display_name=StringValue(
-            value=integrations_connector_key_display_name_map.get(ck))))
+    for sk in all_keys:
+        connector_key_option_protos.append(ConnectorKeyProto(key_type=sk, display_name=StringValue(
+            value=integrations_connector_key_display_name_map.get(sk))))
     return connector_key_option_protos
 
 
@@ -276,21 +278,20 @@ def get_db_connector_keys(account_id, connector_id, key_type=None):
         return None, f'Error fetching Connector Keys: {str(e)}'
 
 
-def create_connector(account: Account, created_by, connector_proto: ConnectorProto,
-                     connector_keys: [ConnectorKeyProto]) -> (Connector, str):
+def update_or_create_connector(account: Account, created_by, connector_proto: ConnectorProto,
+                               connector_keys: [SourceKeyType], update_mode: bool = False) -> (Connector, str):
     if not connector_proto.type:
         return None, 'Received invalid Connector Config'
 
     connector_name: str = connector_proto.name.value
-    # if not connector_name:
-    #     connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}'
-    connector_type: ConnectorType = connector_proto.type
-    metadata = {'connector_type': connector_type}
-    if connector_type == ConnectorType.SENTRY:
-        metadata = proto_to_dict(connector_proto.sentry_config)
+    connector_type: Source = connector_proto.type
+    db_connectors = get_db_account_connectors(account, connector_type=connector_type)
+    if not connector_name and not update_mode:
+        count = db_connectors.count()
+        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}-{count + 1}'
     try:
-        db_connectors = get_db_account_connectors(account, connector_name=connector_name, connector_type=connector_type)
-        if db_connectors.exists():
+        db_connectors = db_connectors.filter(name=connector_name)
+        if db_connectors.exists() and not update_mode:
             db_connector = db_connectors.first()
             if db_connector.is_active:
                 return db_connector, f'Active Connector type ' \
@@ -316,34 +317,28 @@ def create_connector(account: Account, created_by, connector_proto: ConnectorPro
 
     with dj_transaction.atomic():
         try:
-            db_connector = Connector(account=account,
-                                     name=connector_proto.name.value,
-                                     connector_type=connector_type,
-                                     is_active=True,
-                                     created_by=created_by,
-                                     metadata=metadata)
-            db_connector.save()
-            db_connector_keys = []
+            db_connector, _ = Connector.objects.update_or_create(account=account,
+                                                                 name=connector_proto.name.value,
+                                                                 connector_type=connector_type,
+                                                                 defaults={'is_active': True, 'created_by': created_by})
             for c_key in connector_keys:
-                db_connector_keys.append(ConnectorKey(account=account,
+                ConnectorKey.objects.update_or_create(account=account,
                                                       connector=db_connector,
                                                       key_type=c_key.key_type,
                                                       key=c_key.key.value,
-                                                      is_active=True))
-
-            ConnectorKey.objects.bulk_create(db_connector_keys)
+                                                      defaults={'is_active': True})
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'
-    trigger_connector_metadata_fetch(account, db_connector.proto, connector_keys)
+    trigger_connector_metadata_fetch(account, connector_proto, connector_keys)
     return db_connector, None
 
 
-def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [ConnectorKeyProto]) -> (bool, str):
+def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [SourceKeyType]) -> (bool, str):
     if not connector_proto.type:
         return False, 'Received invalid Connector Config'
 
-    connector_type: ConnectorType = connector_proto.type
+    connector_type: Source = connector_proto.type
     all_ck_types = [ck.key_type for ck in connector_keys]
     required_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
     all_keys_found = False
@@ -361,7 +356,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
         if not api_processor:
             return True, 'Source Test Connection Not Implemented'
         connection_state = False
-        if connector_type == ConnectorType.CLOUDWATCH:
+        if connector_type == Source.CLOUDWATCH:
             for region in credentials_dict.get('regions', []):
                 updated_credentials_dict = credentials_dict.copy()
                 updated_credentials_dict.pop('regions', None)
@@ -370,7 +365,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 connection_state = api_processor(**updated_credentials_dict).test_connection()
                 if not connection_state:
                     break
-        elif connector_type == ConnectorType.EKS:
+        elif connector_type == Source.EKS:
             for region in credentials_dict.get('regions', []):
                 updated_credentials_dict = credentials_dict.copy()
                 updated_credentials_dict.pop('regions', None)
@@ -379,10 +374,10 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 connection_state = api_processor(**updated_credentials_dict).test_connection()
                 if not connection_state:
                     break
-        elif connector_type == ConnectorType.DATADOG:
-            credentials_dict['dd_connector_type'] = ConnectorType.DATADOG
+        elif connector_type == Source.DATADOG:
+            credentials_dict['dd_connector_type'] = Source.DATADOG
             connection_state = api_processor(**credentials_dict).test_connection()
-        elif connector_type == ConnectorType.GRAFANA_VPC:
+        elif connector_type == Source.GRAFANA_VPC:
             grafana_health_check_path = 'api/datasources'
             response = api_processor(**credentials_dict).v1_api_grafana(grafana_health_check_path)
             if response:
@@ -402,12 +397,12 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
     return True, 'Source Connection Successful'
 
 
-def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto, connector_keys: [ConnectorKeyProto]):
+def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto, connector_keys: [SourceKeyType]):
     if not connector or not connector_keys or not connector.id or not connector.id.value or not connector.type:
         logger.error(f'Invalid Connector Config for Metadata Fetch')
         return
     connector_id = connector.id.value
-    connector_type: ConnectorType = connector.type
+    connector_type: Source = connector.type
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
     if credentials_dict:
         saved_task = get_or_create_task(populate_connector_metadata.__name__, account.id, connector_id,

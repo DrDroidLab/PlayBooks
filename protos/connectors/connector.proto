@@ -84,88 +84,12 @@ message Connector {
   sfixed64 updated_at = 7;
   google.protobuf.StringValue display_name = 8;
   google.protobuf.StringValue category = 9;
+  repeated ConnectorKey keys = 10;
 }
 
 message ConnectorKey {
-  enum KeyType {
-    UNKNOWN = 0;
-    SENTRY_API_KEY = 1;
-    SENTRY_ORG_SLUG = 6;
-
-    DATADOG_APP_KEY = 2;
-    DATADOG_API_KEY = 3;
-    DATADOG_AUTH_TOKEN = 15;
-    DATADOG_API_DOMAIN = 18;
-
-    NEWRELIC_API_KEY = 4;
-    NEWRELIC_APP_ID = 5;
-    NEWRELIC_QUERY_KEY = 7;
-    NEWRELIC_API_DOMAIN = 19;
-
-    SLACK_BOT_AUTH_TOKEN = 8;
-    SLACK_CHANNEL = 9;
-
-    HONEYBADGER_USERNAME = 10;
-    HONEYBADGER_PASSWORD = 11;
-    HONEYBADGER_PROJECT_ID = 12;
-
-    AWS_ACCESS_KEY = 13;
-    AWS_SECRET_KEY = 14;
-    AWS_REGION = 20;
-    AWS_ASSUMED_ROLE_ARN = 23;
-    EKS_ROLE_ARN = 40;
-
-    GOOGLE_CHAT_BOT_OAUTH_TOKEN = 16;
-    GOOGLE_CHAT_BOT_SPACES = 17;
-
-    GRAFANA_HOST = 21;
-    GRAFANA_API_KEY = 22;
-
-    CLICKHOUSE_INTERFACE = 24;
-    CLICKHOUSE_HOST = 25;
-    CLICKHOUSE_PORT = 26;
-    CLICKHOUSE_USER = 27;
-    CLICKHOUSE_PASSWORD = 28;
-
-    GCM_PROJECT_ID = 29;
-    GCM_PRIVATE_KEY = 30;
-    GCM_CLIENT_EMAIL = 31;
-    GCM_TOKEN_URI = 32;
-
-    POSTGRES_HOST = 33;
-    POSTGRES_USER = 34;
-    POSTGRES_PASSWORD = 35;
-    POSTGRES_PORT = 36;
-    POSTGRES_DATABASE = 37;
-    POSTGRES_OPTIONS = 38;
-
-    SQL_DATABASE_CONNECTION_STRING_URI = 39;
-
-    PAGER_DUTY_API_KEY = 41;
-    OPS_GENIE_API_KEY = 42;
-
-    AGENT_PROXY_HOST = 43;
-    AGENT_PROXY_API_KEY = 44;
-
-    GITHUB_ACTIONS_TOKEN = 45;
-
-    SLACK_APP_ID = 46;
-
-    OPEN_AI_API_KEY = 47;
-
-    REMOTE_SERVER_PEM = 49;
-    REMOTE_SERVER_USER = 50;
-    REMOTE_SERVER_HOST = 51;
-    REMOTE_SERVER_PASSWORD = 52;
-
-    AZURE_SUBSCRIPTION_ID = 53;
-    AZURE_TENANT_ID = 54;
-    AZURE_CLIENT_ID = 55;
-    AZURE_CLIENT_SECRET = 56;
-  }
-
   google.protobuf.UInt64Value id = 1;
-  KeyType key_type = 2;
+  SourceKeyType key_type = 2;
   google.protobuf.StringValue key = 3;
   google.protobuf.BoolValue is_active = 4;
   google.protobuf.UInt64Value connector_id = 5;

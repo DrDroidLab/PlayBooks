@@ -7,9 +7,7 @@ from google.protobuf.wrappers_pb2 import StringValue, DoubleValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookCloudwatchTask as PlaybookCloudwatchTaskProto, PlaybookMetricTaskExecutionResult, \
     TableResult as TableResultProto, TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
@@ -62,9 +60,9 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         self.__aws_session_token = None
         for key in cloudwatch_connector_key:
-            if key.key_type == ConnectorKeyProto.KeyType.AWS_ACCESS_KEY:
+            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 self.__aws_access_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AWS_SECRET_KEY:
+            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 self.__aws_secret_key = key.key
 
         if not self.__aws_access_key or not self.__aws_secret_key:
