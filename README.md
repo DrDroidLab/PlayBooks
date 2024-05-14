@@ -42,27 +42,30 @@ Watch [demo video](https://www.youtube.com/watch?v=xprnmBvF6rk).
 
 
 ## Getting Started with alert enrichment
-#### Self-hosting:
-**Step 1:** We currently support setup using docker.
-Run the below command and signup on [localhost](http://localhost:80) to start creating playbooks.
 
-**Use latest docker images**
+### Use latest stable version
+#### via Docker Compose 
 ```
 docker-compose -f deploy.docker-compose.yaml up -d
 ```
+Access the portal at [localhost](http://localhost:80) (on port 80)
 
-or **Build from source**
-```
-git clone git@github.com:DrDroidLab/PlayBooks.git
-```
-**Using Docker Compose**
-```
-docker-compose -f playbooks.docker-compose.yaml up -d
-```
-**Using Helm (on a kubernetes cluster)**
+#### via Helm (on a kubernetes cluster)
 ```
 cd helm
 helm install playbooks .
+```
+Run the following command to get the portal endpoint
+```
+kubectl get svc web -o custom-columns="EXTERNAL-IP:.status.loadBalancer.ingress[*].hostname"
+```
+OR
+### Build from Source
+
+```
+git clone git@github.com:DrDroidLab/PlayBooks.git
+
+docker-compose -f playbooks.docker-compose.yaml up -d
 ```
 
 **Step 2:** Follow this [Step-by-Step guide](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) to do your first alert enrichment.
