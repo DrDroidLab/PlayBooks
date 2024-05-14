@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  annotations:
+    kubernetes.io/ingress.class: ALB # Use the correct ingress class
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /e/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /accounts/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /connectors/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /pb/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /executor/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /media/
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 8080
+          - path: /*
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
+                  

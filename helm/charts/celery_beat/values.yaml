@@ -1,0 +1,9 @@
+djangoDatabaseHost: postgresql-service
+djangoDatabasePort: 5432
+djangoDatabaseName: db
+djangoDatabaseUsername: user
+djangoDatabasePassword: pass
+
+redisUrl: "redis://redis-service:6379/0"
+
+debug: "no"

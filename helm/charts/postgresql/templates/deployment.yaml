@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:latest
+          env:
+            - name: POSTGRES_USER
+              value: '{{ .Values.postgresqlUsername }}'
+            - name: POSTGRES_PASSWORD
+              value: '{{ .Values.postgresqlPassword }}'
+            - name: POSTGRES_DB
+              value: '{{ .Values.postgresqlDatabase }}'
+          ports:
+            - containerPort: 5432

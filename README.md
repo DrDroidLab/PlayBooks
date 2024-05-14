@@ -55,9 +55,16 @@ or **Build from source**
 ```
 git clone git@github.com:DrDroidLab/PlayBooks.git
 ```
+**Using Docker Compose**
 ```
 docker-compose -f playbooks.docker-compose.yaml up -d
 ```
+**Using Helm (on a kubernetes cluster)**
+```
+cd helm
+helm install playbooks .
+```
+
 **Step 2:** Follow this [Step-by-Step guide](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) to do your first alert enrichment.
 
 #### [Cloud Signup](https://playbooks.drdroid.io/signup)
