@@ -1,3 +1,4 @@
+import { GlobalVariableSet } from "../index.ts";
 import {
   DataFetchTask,
   DocumentationTask,
@@ -5,7 +6,7 @@ import {
   ActionTask,
 } from "./index.ts";
 
-export interface PlaybookTask {
+export type PlaybookTask = {
   name?: string;
   id?: string;
   type: string;
@@ -14,6 +15,6 @@ export interface PlaybookTask {
   data_fetch_task?: DataFetchTask;
   documentation_task?: DocumentationTask;
   action_task?: ActionTask;
-  global_variable_set?: any;
+  global_variable_set?: GlobalVariableSet;
   interpreter_type?: string;
-}
+};

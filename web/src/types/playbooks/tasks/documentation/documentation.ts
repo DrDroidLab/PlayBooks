@@ -1,4 +1,4 @@
 export interface DocumentationTask {
   type: string;
-  documentation: any;
+  documentation: string;
 }
