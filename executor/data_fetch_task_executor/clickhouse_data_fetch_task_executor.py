@@ -5,8 +5,7 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
     PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, TableResult as TableResultProto
 
@@ -15,9 +14,7 @@ class ClickhouseDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.CLICKHOUSE
-
         self.__account_id = account_id
-
         try:
             clickhouse_connector = Connector.objects.get(account_id=account_id,
                                                          connector_type=Source.CLICKHOUSE,
@@ -34,15 +31,15 @@ class ClickhouseDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
             raise Exception("Active Clickhouse connector keys not found for account: {}".format(account_id))
 
         for key in clickhouse_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.CLICKHOUSE_HOST:
+            if key.key_type == SourceKeyType.CLICKHOUSE_HOST:
                 self.__host = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.CLICKHOUSE_PORT:
+            elif key.key_type == SourceKeyType.CLICKHOUSE_PORT:
                 self.__port = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.CLICKHOUSE_USER:
+            elif key.key_type == SourceKeyType.CLICKHOUSE_USER:
                 self.__user = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD:
+            elif key.key_type == SourceKeyType.CLICKHOUSE_PASSWORD:
                 self.__password = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE:
+            elif key.key_type == SourceKeyType.CLICKHOUSE_INTERFACE:
                 self.__interface = key.key
 
         if not self.__host or not self.__port or not self.__user or not self.__password:

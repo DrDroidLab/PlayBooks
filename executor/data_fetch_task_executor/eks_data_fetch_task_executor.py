@@ -9,8 +9,7 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
 from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
     PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, \
     PlaybookEksDataFetchTask as PlaybookEksDataFetchTaskProto, TableResult as TableResultProto
@@ -20,15 +19,13 @@ class EksDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.EKS
+        self.__account_id = account_id
         self.task_type_callable_map = {
             PlaybookEksDataFetchTaskProto.CommandType.GET_PODS: self.get_pods,
             PlaybookEksDataFetchTaskProto.CommandType.GET_DEPLOYMENTS: self.get_deployments,
             PlaybookEksDataFetchTaskProto.CommandType.GET_EVENTS: self.get_events,
             PlaybookEksDataFetchTaskProto.CommandType.GET_SERVICES: self.get_services,
         }
-
-        self.__account_id = account_id
-
         try:
             eks_connector = Connector.objects.get(account_id=account_id,
                                                   connector_type=Source.EKS,
@@ -46,11 +43,11 @@ class EksDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
         self.__aws_session_token = None
         for key in eks_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.AWS_ACCESS_KEY:
+            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 self.__aws_access_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AWS_SECRET_KEY:
+            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 self.__aws_secret_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.EKS_ROLE_ARN:
+            elif key.key_type == SourceKeyType.EKS_ROLE_ARN:
                 self.__eks_role_arn = key.key
 
         if not self.__aws_access_key or not self.__aws_secret_key or not self.__eks_role_arn:

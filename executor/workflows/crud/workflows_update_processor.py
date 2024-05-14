@@ -78,7 +78,7 @@ class WorkflowsUpdateProcessor(UpdateProcessorMixin):
             updated_elem, err = update_or_create_db_workflow(elem.account, elem.created_by, updated_workflow,
                                                              update_mode=True)
             if err:
-                raise Exception(err)
+                raise Exception(f"Error occurred updating workflow for {elem.name}, {err}")
             return updated_elem
         except Exception as ex:
             logger.exception(f"Error occurred updating workflow for {elem.name}, {str(ex)}")

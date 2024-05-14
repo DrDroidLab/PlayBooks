@@ -6,8 +6,7 @@ from psycopg2 import extras
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
     PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, TableResult as TableResultProto
 
@@ -15,10 +14,8 @@ from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as Pla
 class PostgresDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookDataFetchTaskDefinitionProto.Source.POSTGRES
-
+        self.source = Source.POSTGRES
         self.__account_id = account_id
-
         try:
             postgres_connector = Connector.objects.get(account_id=account_id,
                                                        connector_type=Source.POSTGRES,
@@ -35,11 +32,11 @@ class PostgresDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
             raise Exception("Active Postgres connector keys not found for account: {}".format(account_id))
 
         for key in postgres_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.POSTGRES_HOST:
+            if key.key_type == SourceKeyType.POSTGRES_HOST:
                 self.__host = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.POSTGRES_USER:
+            elif key.key_type == SourceKeyType.POSTGRES_USER:
                 self.__user = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.POSTGRES_PASSWORD:
+            elif key.key_type == SourceKeyType.POSTGRES_PASSWORD:
                 self.__password = key.key
 
         if not self.__host or not self.__user or not self.__password:
