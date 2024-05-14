@@ -28,7 +28,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
 
   return (
     <div style={{ zIndex: "200" }}>
-      <Overlay visible={isOpen}>
+      <Overlay close={close} visible={isOpen}>
         <div className={styles["dashboardSaveOverlay"]}>
           <div
             style={!isEditing ? { gap: "10px" } : {}}

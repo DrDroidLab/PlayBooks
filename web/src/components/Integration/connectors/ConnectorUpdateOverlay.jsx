@@ -60,7 +60,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
   return (
     <>
       {isOpen && (
-        <Overlay visible={isOpen}>
+        <Overlay close={toggleOverlay} visible={isOpen}>
           <div className={styles["actionOverlay"]}>
             <div className="flex items-center justify-between">
               <header className="text-gray-500">
