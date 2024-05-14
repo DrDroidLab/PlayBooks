@@ -2,7 +2,7 @@ import { store } from "../../store/index.ts";
 import { executePlaybookStep } from "../../store/features/playbook/api/index.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
-import { Step } from "../../types";
+import { Step } from "../../types/index.ts";
 
 export async function executeStep(step: Step) {
   if (Object.keys(step.errors ?? {}).length > 0) {

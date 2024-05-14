@@ -1,6 +1,5 @@
 import { models } from "../../constants/index.ts";
-import { PlaybookTask } from "../../types.ts";
-import { Step } from "../../types/index.ts";
+import { PlaybookTask, Step } from "../../types/index.ts";
 import { injectCloudwatchLogTasks } from "./cloudwatchLog.ts";
 import { injectCloudwatchMetricTasks } from "./cloudwatchMetric.ts";
 

@@ -1,5 +1,4 @@
-import { GlobalVariable } from "../../../types.ts";
-import { Step } from "../../../types/index.ts";
+import { GlobalVariable, Step } from "../../../types/index.ts";
 import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
 export const executionToPlaybook = (playbook_execution) => {

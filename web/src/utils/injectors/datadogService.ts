@@ -1,5 +1,4 @@
-import { PlaybookTask } from "../../types.ts";
-import { Step } from "../../types/index.ts";
+import { PlaybookTask, Step } from "../../types/index.ts";
 
 export const injectDatadogServiceTasks = (
   step: Step,
