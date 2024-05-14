@@ -37,8 +37,6 @@ services:
     depends_on:
       - db
       - redis
-    ports:
-      - "8081:8081"
     networks:
       - mynetwork
 
