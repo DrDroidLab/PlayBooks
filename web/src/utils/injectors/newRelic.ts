@@ -1,8 +1,9 @@
 import { models } from "../../constants/index.ts";
-import { PlaybookTask, Step } from "../../types.ts";
+import { PlaybookTask } from "../../types.ts";
 import { injectNewRelicEntityApplicationTasks } from "./newRelicEntityApplication.ts";
 import { injectNewRelicEntityDashboardTasks } from "./newRelicEntityDashboard.ts";
 import { injectNewRelicNrqlTasks } from "./newRelicNrql.ts";
+import { Step } from "../../types/index.ts";
 
 export const injectNewRelicTasks = (
   step: Step,

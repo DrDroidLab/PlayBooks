@@ -1,8 +1,8 @@
 import { store } from "../../store/index.ts";
 import { executePlaybookStep } from "../../store/features/playbook/api/index.ts";
-import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { Step } from "../../types";
 
 export async function executeStep(step: Step) {
   if (Object.keys(step.errors ?? {}).length > 0) {

@@ -2,8 +2,8 @@ import {
   Playbook,
   PlaybookContract,
   PlaybookContractStep,
-  Step,
 } from "../../../types.ts";
+import { Step } from "../../../types/index.ts";
 import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 import { stateToStep } from "./stateToStep.ts";
 
