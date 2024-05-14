@@ -5,7 +5,7 @@ from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
 from executor.workflows.action.notify_action_executor.notifier import Notifier
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey
+from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.workflow_pb2 import WorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto, \
     WorkflowActionSlackNotificationConfig as WorkflowActionSlackNotificationConfigProto
@@ -19,12 +19,12 @@ class SlackNotifier(Notifier):
         self.type = WorkflowActionNotificationConfigProto.Type.SLACK
         self.account = account
 
-        slack_connectors = get_db_account_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
+        slack_connectors = get_db_account_connectors(account, connector_type=Source.SLACK, is_active=True)
         if not slack_connectors:
             raise ValueError('Slack connector is not configured for the account')
         slack_connector = slack_connectors.first()
         slack_bot_auth_token_keys = get_db_account_connector_keys(account, slack_connector.id,
-                                                                  ConnectorKey.KeyType.SLACK_BOT_AUTH_TOKEN)
+                                                                  SourceKeyType.SLACK_BOT_AUTH_TOKEN)
         if not slack_bot_auth_token_keys:
             raise ValueError('Slack bot auth token is not configured for the account')
 

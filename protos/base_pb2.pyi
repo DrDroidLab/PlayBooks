@@ -4,16 +4,228 @@ isort:skip_file
 """
 import builtins
 import google.protobuf.descriptor
+import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import sys
+import typing
 
-if sys.version_info >= (3, 8):
+if sys.version_info >= (3, 10):
     import typing as typing_extensions
 else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+
+class _Source:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Source.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN: _Source.ValueType  # 0
+    SENTRY: _Source.ValueType  # 1
+    SEGMENT: _Source.ValueType  # 2
+    ELASTIC_SEARCH: _Source.ValueType  # 3
+    AMPLITUDE: _Source.ValueType  # 4
+    AWS_KINESIS: _Source.ValueType  # 5
+    CLOUDWATCH: _Source.ValueType  # 6
+    CLEVERTAP: _Source.ValueType  # 7
+    RUDDERSTACK: _Source.ValueType  # 8
+    MOENGAGE: _Source.ValueType  # 9
+    CRIBL: _Source.ValueType  # 10
+    KAFKA: _Source.ValueType  # 11
+    DATADOG: _Source.ValueType  # 12
+    FILEBEAT: _Source.ValueType  # 13
+    LOGSTASH: _Source.ValueType  # 14
+    FLUENTD: _Source.ValueType  # 15
+    FLUENTBIT: _Source.ValueType  # 16
+    PAGER_DUTY: _Source.ValueType  # 17
+    NEW_RELIC: _Source.ValueType  # 18
+    SLACK: _Source.ValueType  # 19
+    HONEYBADGER: _Source.ValueType  # 20
+    GOOGLE_CHAT: _Source.ValueType  # 21
+    DATADOG_OAUTH: _Source.ValueType  # 22
+    GCM: _Source.ValueType  # 23
+    PROMETHEUS: _Source.ValueType  # 24
+    ELASTIC_APM: _Source.ValueType  # 25
+    VICTORIA_METRICS: _Source.ValueType  # 26
+    SLACK_CONNECT: _Source.ValueType  # 27
+    GRAFANA: _Source.ValueType  # 28
+    CLICKHOUSE: _Source.ValueType  # 29
+    DOCUMENTATION: _Source.ValueType  # 30
+    POSTGRES: _Source.ValueType  # 31
+    OPS_GENIE: _Source.ValueType  # 32
+    EKS: _Source.ValueType  # 33
+    AGENT_PROXY: _Source.ValueType  # 34
+    GRAFANA_VPC: _Source.ValueType  # 35
+    GITHUB_ACTIONS: _Source.ValueType  # 36
+    SQL_DATABASE_CONNECTION: _Source.ValueType  # 37
+    OPEN_AI: _Source.ValueType  # 38
+    REMOTE_SERVER: _Source.ValueType  # 39
+    API: _Source.ValueType  # 40
+    BASH: _Source.ValueType  # 41
+
+class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
+
+UNKNOWN: Source.ValueType  # 0
+SENTRY: Source.ValueType  # 1
+SEGMENT: Source.ValueType  # 2
+ELASTIC_SEARCH: Source.ValueType  # 3
+AMPLITUDE: Source.ValueType  # 4
+AWS_KINESIS: Source.ValueType  # 5
+CLOUDWATCH: Source.ValueType  # 6
+CLEVERTAP: Source.ValueType  # 7
+RUDDERSTACK: Source.ValueType  # 8
+MOENGAGE: Source.ValueType  # 9
+CRIBL: Source.ValueType  # 10
+KAFKA: Source.ValueType  # 11
+DATADOG: Source.ValueType  # 12
+FILEBEAT: Source.ValueType  # 13
+LOGSTASH: Source.ValueType  # 14
+FLUENTD: Source.ValueType  # 15
+FLUENTBIT: Source.ValueType  # 16
+PAGER_DUTY: Source.ValueType  # 17
+NEW_RELIC: Source.ValueType  # 18
+SLACK: Source.ValueType  # 19
+HONEYBADGER: Source.ValueType  # 20
+GOOGLE_CHAT: Source.ValueType  # 21
+DATADOG_OAUTH: Source.ValueType  # 22
+GCM: Source.ValueType  # 23
+PROMETHEUS: Source.ValueType  # 24
+ELASTIC_APM: Source.ValueType  # 25
+VICTORIA_METRICS: Source.ValueType  # 26
+SLACK_CONNECT: Source.ValueType  # 27
+GRAFANA: Source.ValueType  # 28
+CLICKHOUSE: Source.ValueType  # 29
+DOCUMENTATION: Source.ValueType  # 30
+POSTGRES: Source.ValueType  # 31
+OPS_GENIE: Source.ValueType  # 32
+EKS: Source.ValueType  # 33
+AGENT_PROXY: Source.ValueType  # 34
+GRAFANA_VPC: Source.ValueType  # 35
+GITHUB_ACTIONS: Source.ValueType  # 36
+SQL_DATABASE_CONNECTION: Source.ValueType  # 37
+OPEN_AI: Source.ValueType  # 38
+REMOTE_SERVER: Source.ValueType  # 39
+API: Source.ValueType  # 40
+BASH: Source.ValueType  # 41
+global___Source = Source
+
+class _SourceKeyType:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SourceKeyType.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_SKT: _SourceKeyType.ValueType  # 0
+    SENTRY_API_KEY: _SourceKeyType.ValueType  # 1
+    SENTRY_ORG_SLUG: _SourceKeyType.ValueType  # 6
+    DATADOG_APP_KEY: _SourceKeyType.ValueType  # 2
+    DATADOG_API_KEY: _SourceKeyType.ValueType  # 3
+    DATADOG_AUTH_TOKEN: _SourceKeyType.ValueType  # 15
+    DATADOG_API_DOMAIN: _SourceKeyType.ValueType  # 18
+    NEWRELIC_API_KEY: _SourceKeyType.ValueType  # 4
+    NEWRELIC_APP_ID: _SourceKeyType.ValueType  # 5
+    NEWRELIC_QUERY_KEY: _SourceKeyType.ValueType  # 7
+    NEWRELIC_API_DOMAIN: _SourceKeyType.ValueType  # 19
+    SLACK_BOT_AUTH_TOKEN: _SourceKeyType.ValueType  # 8
+    SLACK_CHANNEL: _SourceKeyType.ValueType  # 9
+    HONEYBADGER_USERNAME: _SourceKeyType.ValueType  # 10
+    HONEYBADGER_PASSWORD: _SourceKeyType.ValueType  # 11
+    HONEYBADGER_PROJECT_ID: _SourceKeyType.ValueType  # 12
+    AWS_ACCESS_KEY: _SourceKeyType.ValueType  # 13
+    AWS_SECRET_KEY: _SourceKeyType.ValueType  # 14
+    AWS_REGION: _SourceKeyType.ValueType  # 20
+    AWS_ASSUMED_ROLE_ARN: _SourceKeyType.ValueType  # 23
+    EKS_ROLE_ARN: _SourceKeyType.ValueType  # 40
+    GOOGLE_CHAT_BOT_OAUTH_TOKEN: _SourceKeyType.ValueType  # 16
+    GOOGLE_CHAT_BOT_SPACES: _SourceKeyType.ValueType  # 17
+    GRAFANA_HOST: _SourceKeyType.ValueType  # 21
+    GRAFANA_API_KEY: _SourceKeyType.ValueType  # 22
+    CLICKHOUSE_INTERFACE: _SourceKeyType.ValueType  # 24
+    CLICKHOUSE_HOST: _SourceKeyType.ValueType  # 25
+    CLICKHOUSE_PORT: _SourceKeyType.ValueType  # 26
+    CLICKHOUSE_USER: _SourceKeyType.ValueType  # 27
+    CLICKHOUSE_PASSWORD: _SourceKeyType.ValueType  # 28
+    GCM_PROJECT_ID: _SourceKeyType.ValueType  # 29
+    GCM_PRIVATE_KEY: _SourceKeyType.ValueType  # 30
+    GCM_CLIENT_EMAIL: _SourceKeyType.ValueType  # 31
+    GCM_TOKEN_URI: _SourceKeyType.ValueType  # 32
+    POSTGRES_HOST: _SourceKeyType.ValueType  # 33
+    POSTGRES_USER: _SourceKeyType.ValueType  # 34
+    POSTGRES_PASSWORD: _SourceKeyType.ValueType  # 35
+    POSTGRES_PORT: _SourceKeyType.ValueType  # 36
+    POSTGRES_DATABASE: _SourceKeyType.ValueType  # 37
+    POSTGRES_OPTIONS: _SourceKeyType.ValueType  # 38
+    SQL_DATABASE_CONNECTION_STRING_URI: _SourceKeyType.ValueType  # 39
+    PAGER_DUTY_API_KEY: _SourceKeyType.ValueType  # 41
+    OPS_GENIE_API_KEY: _SourceKeyType.ValueType  # 42
+    AGENT_PROXY_HOST: _SourceKeyType.ValueType  # 43
+    AGENT_PROXY_API_KEY: _SourceKeyType.ValueType  # 44
+    GITHUB_ACTIONS_TOKEN: _SourceKeyType.ValueType  # 45
+    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
+    OPEN_AI_API_KEY: _SourceKeyType.ValueType  # 47
+    REMOTE_SERVER_PEM: _SourceKeyType.ValueType  # 49
+    REMOTE_SERVER_USER: _SourceKeyType.ValueType  # 50
+    REMOTE_SERVER_HOST: _SourceKeyType.ValueType  # 51
+    REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
+
+class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
+
+UNKNOWN_SKT: SourceKeyType.ValueType  # 0
+SENTRY_API_KEY: SourceKeyType.ValueType  # 1
+SENTRY_ORG_SLUG: SourceKeyType.ValueType  # 6
+DATADOG_APP_KEY: SourceKeyType.ValueType  # 2
+DATADOG_API_KEY: SourceKeyType.ValueType  # 3
+DATADOG_AUTH_TOKEN: SourceKeyType.ValueType  # 15
+DATADOG_API_DOMAIN: SourceKeyType.ValueType  # 18
+NEWRELIC_API_KEY: SourceKeyType.ValueType  # 4
+NEWRELIC_APP_ID: SourceKeyType.ValueType  # 5
+NEWRELIC_QUERY_KEY: SourceKeyType.ValueType  # 7
+NEWRELIC_API_DOMAIN: SourceKeyType.ValueType  # 19
+SLACK_BOT_AUTH_TOKEN: SourceKeyType.ValueType  # 8
+SLACK_CHANNEL: SourceKeyType.ValueType  # 9
+HONEYBADGER_USERNAME: SourceKeyType.ValueType  # 10
+HONEYBADGER_PASSWORD: SourceKeyType.ValueType  # 11
+HONEYBADGER_PROJECT_ID: SourceKeyType.ValueType  # 12
+AWS_ACCESS_KEY: SourceKeyType.ValueType  # 13
+AWS_SECRET_KEY: SourceKeyType.ValueType  # 14
+AWS_REGION: SourceKeyType.ValueType  # 20
+AWS_ASSUMED_ROLE_ARN: SourceKeyType.ValueType  # 23
+EKS_ROLE_ARN: SourceKeyType.ValueType  # 40
+GOOGLE_CHAT_BOT_OAUTH_TOKEN: SourceKeyType.ValueType  # 16
+GOOGLE_CHAT_BOT_SPACES: SourceKeyType.ValueType  # 17
+GRAFANA_HOST: SourceKeyType.ValueType  # 21
+GRAFANA_API_KEY: SourceKeyType.ValueType  # 22
+CLICKHOUSE_INTERFACE: SourceKeyType.ValueType  # 24
+CLICKHOUSE_HOST: SourceKeyType.ValueType  # 25
+CLICKHOUSE_PORT: SourceKeyType.ValueType  # 26
+CLICKHOUSE_USER: SourceKeyType.ValueType  # 27
+CLICKHOUSE_PASSWORD: SourceKeyType.ValueType  # 28
+GCM_PROJECT_ID: SourceKeyType.ValueType  # 29
+GCM_PRIVATE_KEY: SourceKeyType.ValueType  # 30
+GCM_CLIENT_EMAIL: SourceKeyType.ValueType  # 31
+GCM_TOKEN_URI: SourceKeyType.ValueType  # 32
+POSTGRES_HOST: SourceKeyType.ValueType  # 33
+POSTGRES_USER: SourceKeyType.ValueType  # 34
+POSTGRES_PASSWORD: SourceKeyType.ValueType  # 35
+POSTGRES_PORT: SourceKeyType.ValueType  # 36
+POSTGRES_DATABASE: SourceKeyType.ValueType  # 37
+POSTGRES_OPTIONS: SourceKeyType.ValueType  # 38
+SQL_DATABASE_CONNECTION_STRING_URI: SourceKeyType.ValueType  # 39
+PAGER_DUTY_API_KEY: SourceKeyType.ValueType  # 41
+OPS_GENIE_API_KEY: SourceKeyType.ValueType  # 42
+AGENT_PROXY_HOST: SourceKeyType.ValueType  # 43
+AGENT_PROXY_API_KEY: SourceKeyType.ValueType  # 44
+GITHUB_ACTIONS_TOKEN: SourceKeyType.ValueType  # 45
+SLACK_APP_ID: SourceKeyType.ValueType  # 46
+OPEN_AI_API_KEY: SourceKeyType.ValueType  # 47
+REMOTE_SERVER_PEM: SourceKeyType.ValueType  # 49
+REMOTE_SERVER_USER: SourceKeyType.ValueType  # 50
+REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
+REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
+global___SourceKeyType = SourceKeyType
 
 @typing_extensions.final
 class TimeRange(google.protobuf.message.Message):

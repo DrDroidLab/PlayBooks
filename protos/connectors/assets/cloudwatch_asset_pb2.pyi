@@ -8,6 +8,7 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
+import protos.base_pb2
 import protos.connectors.connector_pb2
 import sys
 
@@ -17,36 +18,6 @@ else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
-
-@typing_extensions.final
-class CloudwatchAsset(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    ID_FIELD_NUMBER: builtins.int
-    CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    UID_FIELD_NUMBER: builtins.int
-    LAST_UPDATED_FIELD_NUMBER: builtins.int
-    METADATA_FIELD_NUMBER: builtins.int
-    id: builtins.int
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
-    type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
-    uid: builtins.str
-    last_updated: builtins.int
-    metadata: builtins.str
-    def __init__(
-        self,
-        *,
-        id: builtins.int = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
-        type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
-        uid: builtins.str = ...,
-        last_updated: builtins.int = ...,
-        metadata: builtins.str = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "id", b"id", "last_updated", b"last_updated", "metadata", b"metadata", "type", b"type", "uid", b"uid"]) -> None: ...
-
-global___CloudwatchAsset = CloudwatchAsset
 
 @typing_extensions.final
 class CloudwatchLogGroupAssetModel(google.protobuf.message.Message):
@@ -176,7 +147,7 @@ class CloudwatchAssetModel(google.protobuf.message.Message):
     CLOUDWATCH_METRIC_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     last_updated: builtins.int
     @property
@@ -187,7 +158,7 @@ class CloudwatchAssetModel(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        connector_type: protos.connectors.connector_pb2.ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
         last_updated: builtins.int = ...,
         cloudwatch_log_group: global___CloudwatchLogGroupAssetModel | None = ...,

@@ -9,6 +9,7 @@ import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
+import protos.base_pb2
 import sys
 import typing
 
@@ -18,97 +19,6 @@ else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
-
-class _ConnectorType:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _ConnectorTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_ConnectorType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN: _ConnectorType.ValueType  # 0
-    SENTRY: _ConnectorType.ValueType  # 1
-    SEGMENT: _ConnectorType.ValueType  # 2
-    ELASTIC_SEARCH: _ConnectorType.ValueType  # 3
-    AMPLITUDE: _ConnectorType.ValueType  # 4
-    AWS_KINESIS: _ConnectorType.ValueType  # 5
-    CLOUDWATCH: _ConnectorType.ValueType  # 6
-    CLEVERTAP: _ConnectorType.ValueType  # 7
-    RUDDERSTACK: _ConnectorType.ValueType  # 8
-    MOENGAGE: _ConnectorType.ValueType  # 9
-    CRIBL: _ConnectorType.ValueType  # 10
-    KAFKA: _ConnectorType.ValueType  # 11
-    DATADOG: _ConnectorType.ValueType  # 12
-    FILEBEAT: _ConnectorType.ValueType  # 13
-    LOGSTASH: _ConnectorType.ValueType  # 14
-    FLUENTD: _ConnectorType.ValueType  # 15
-    FLUENTBIT: _ConnectorType.ValueType  # 16
-    PAGER_DUTY: _ConnectorType.ValueType  # 17
-    NEW_RELIC: _ConnectorType.ValueType  # 18
-    SLACK: _ConnectorType.ValueType  # 19
-    HONEYBADGER: _ConnectorType.ValueType  # 20
-    GOOGLE_CHAT: _ConnectorType.ValueType  # 21
-    DATADOG_OAUTH: _ConnectorType.ValueType  # 22
-    GCM: _ConnectorType.ValueType  # 23
-    PROMETHEUS: _ConnectorType.ValueType  # 24
-    ELASTIC_APM: _ConnectorType.ValueType  # 25
-    VICTORIA_METRICS: _ConnectorType.ValueType  # 26
-    SLACK_CONNECT: _ConnectorType.ValueType  # 27
-    GRAFANA: _ConnectorType.ValueType  # 28
-    CLICKHOUSE: _ConnectorType.ValueType  # 29
-    DOCUMENTATION: _ConnectorType.ValueType  # 30
-    POSTGRES: _ConnectorType.ValueType  # 31
-    OPS_GENIE: _ConnectorType.ValueType  # 32
-    EKS: _ConnectorType.ValueType  # 33
-    AGENT_PROXY: _ConnectorType.ValueType  # 34
-    GRAFANA_VPC: _ConnectorType.ValueType  # 35
-    GITHUB_ACTIONS: _ConnectorType.ValueType  # 36
-    SQL_DATABASE_CONNECTION: _ConnectorType.ValueType  # 37
-    OPEN_AI: _ConnectorType.ValueType  # 38
-    REMOTE_SERVER: _ConnectorType.ValueType  # 39
-
-class ConnectorType(_ConnectorType, metaclass=_ConnectorTypeEnumTypeWrapper): ...
-
-UNKNOWN: ConnectorType.ValueType  # 0
-SENTRY: ConnectorType.ValueType  # 1
-SEGMENT: ConnectorType.ValueType  # 2
-ELASTIC_SEARCH: ConnectorType.ValueType  # 3
-AMPLITUDE: ConnectorType.ValueType  # 4
-AWS_KINESIS: ConnectorType.ValueType  # 5
-CLOUDWATCH: ConnectorType.ValueType  # 6
-CLEVERTAP: ConnectorType.ValueType  # 7
-RUDDERSTACK: ConnectorType.ValueType  # 8
-MOENGAGE: ConnectorType.ValueType  # 9
-CRIBL: ConnectorType.ValueType  # 10
-KAFKA: ConnectorType.ValueType  # 11
-DATADOG: ConnectorType.ValueType  # 12
-FILEBEAT: ConnectorType.ValueType  # 13
-LOGSTASH: ConnectorType.ValueType  # 14
-FLUENTD: ConnectorType.ValueType  # 15
-FLUENTBIT: ConnectorType.ValueType  # 16
-PAGER_DUTY: ConnectorType.ValueType  # 17
-NEW_RELIC: ConnectorType.ValueType  # 18
-SLACK: ConnectorType.ValueType  # 19
-HONEYBADGER: ConnectorType.ValueType  # 20
-GOOGLE_CHAT: ConnectorType.ValueType  # 21
-DATADOG_OAUTH: ConnectorType.ValueType  # 22
-GCM: ConnectorType.ValueType  # 23
-PROMETHEUS: ConnectorType.ValueType  # 24
-ELASTIC_APM: ConnectorType.ValueType  # 25
-VICTORIA_METRICS: ConnectorType.ValueType  # 26
-SLACK_CONNECT: ConnectorType.ValueType  # 27
-GRAFANA: ConnectorType.ValueType  # 28
-CLICKHOUSE: ConnectorType.ValueType  # 29
-DOCUMENTATION: ConnectorType.ValueType  # 30
-POSTGRES: ConnectorType.ValueType  # 31
-OPS_GENIE: ConnectorType.ValueType  # 32
-EKS: ConnectorType.ValueType  # 33
-AGENT_PROXY: ConnectorType.ValueType  # 34
-GRAFANA_VPC: ConnectorType.ValueType  # 35
-GITHUB_ACTIONS: ConnectorType.ValueType  # 36
-SQL_DATABASE_CONNECTION: ConnectorType.ValueType  # 37
-OPEN_AI: ConnectorType.ValueType  # 38
-REMOTE_SERVER: ConnectorType.ValueType  # 39
-global___ConnectorType = ConnectorType
 
 class _ConnectorMetadataModelType:
     ValueType = typing.NewType("ValueType", builtins.int)
@@ -205,61 +115,6 @@ SSH_SERVER: ConnectorMetadataModelType.ValueType  # 1100
 """Remote Server Models"""
 global___ConnectorMetadataModelType = ConnectorMetadataModelType
 
-class _TransformerType:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _TransformerTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_TransformerType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN_TT: _TransformerType.ValueType  # 0
-    SEGMENT_DFAULT_TRANSFORMER: _TransformerType.ValueType  # 2
-    AMPLITUDE_DEFAULT_TRANSFORMER: _TransformerType.ValueType  # 3
-    PRODIGAL_CLOUDWATCH_LOG_TRANSFORMER: _TransformerType.ValueType  # 4
-    CLOUDWATCH_JSON_LOG_TRANSFORMER: _TransformerType.ValueType  # 5
-
-class TransformerType(_TransformerType, metaclass=_TransformerTypeEnumTypeWrapper): ...
-
-UNKNOWN_TT: TransformerType.ValueType  # 0
-SEGMENT_DFAULT_TRANSFORMER: TransformerType.ValueType  # 2
-AMPLITUDE_DEFAULT_TRANSFORMER: TransformerType.ValueType  # 3
-PRODIGAL_CLOUDWATCH_LOG_TRANSFORMER: TransformerType.ValueType  # 4
-CLOUDWATCH_JSON_LOG_TRANSFORMER: TransformerType.ValueType  # 5
-global___TransformerType = TransformerType
-
-class _DecoderType:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _DecoderTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_DecoderType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN_DT: _DecoderType.ValueType  # 0
-    AWS_KINESIS_DECODER: _DecoderType.ValueType  # 1
-    AWS_CLOUDWATCH_KINESIS_DECODER: _DecoderType.ValueType  # 2
-
-class DecoderType(_DecoderType, metaclass=_DecoderTypeEnumTypeWrapper): ...
-
-UNKNOWN_DT: DecoderType.ValueType  # 0
-AWS_KINESIS_DECODER: DecoderType.ValueType  # 1
-AWS_CLOUDWATCH_KINESIS_DECODER: DecoderType.ValueType  # 2
-global___DecoderType = DecoderType
-
-class _ReportType:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _ReportTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_ReportType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN_RT: _ReportType.ValueType  # 0
-    INITIAL: _ReportType.ValueType  # 1
-    FINAL: _ReportType.ValueType  # 2
-
-class ReportType(_ReportType, metaclass=_ReportTypeEnumTypeWrapper): ...
-
-UNKNOWN_RT: ReportType.ValueType  # 0
-INITIAL: ReportType.ValueType  # 1
-FINAL: ReportType.ValueType  # 2
-global___ReportType = ReportType
-
 @typing_extensions.final
 class PeriodicRunStatus(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
@@ -300,10 +155,10 @@ class Connector(google.protobuf.message.Message):
     UPDATED_AT_FIELD_NUMBER: builtins.int
     DISPLAY_NAME_FIELD_NUMBER: builtins.int
     CATEGORY_FIELD_NUMBER: builtins.int
-    SENTRY_CONFIG_FIELD_NUMBER: builtins.int
+    KEYS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    type: global___ConnectorType.ValueType
+    type: protos.base_pb2.Source.ValueType
     @property
     def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     @property
@@ -317,12 +172,12 @@ class Connector(google.protobuf.message.Message):
     @property
     def category(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def sentry_config(self) -> global___SentryConnectorConfig: ...
+    def keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ConnectorKey]: ...
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        type: global___ConnectorType.ValueType = ...,
+        type: protos.base_pb2.Source.ValueType = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
@@ -330,147 +185,16 @@ class Connector(google.protobuf.message.Message):
         updated_at: builtins.int = ...,
         display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         category: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        sentry_config: global___SentryConnectorConfig | None = ...,
+        keys: collections.abc.Iterable[global___ConnectorKey] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["category", b"category", "config", b"config", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name", "sentry_config", b"sentry_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "config", b"config", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name", "sentry_config", b"sentry_config", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["sentry_config"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["category", b"category", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "keys", b"keys", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
 
 global___Connector = Connector
 
 @typing_extensions.final
-class SentryConnectorConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    POLLING_FREQUENCY_FIELD_NUMBER: builtins.int
-    @property
-    def polling_frequency(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    def __init__(
-        self,
-        *,
-        polling_frequency: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["polling_frequency", b"polling_frequency"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["polling_frequency", b"polling_frequency"]) -> None: ...
-
-global___SentryConnectorConfig = SentryConnectorConfig
-
-@typing_extensions.final
 class ConnectorKey(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _KeyType:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _KeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ConnectorKey._KeyType.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: ConnectorKey._KeyType.ValueType  # 0
-        SENTRY_API_KEY: ConnectorKey._KeyType.ValueType  # 1
-        SENTRY_ORG_SLUG: ConnectorKey._KeyType.ValueType  # 6
-        DATADOG_APP_KEY: ConnectorKey._KeyType.ValueType  # 2
-        DATADOG_API_KEY: ConnectorKey._KeyType.ValueType  # 3
-        DATADOG_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 15
-        DATADOG_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 18
-        NEWRELIC_API_KEY: ConnectorKey._KeyType.ValueType  # 4
-        NEWRELIC_APP_ID: ConnectorKey._KeyType.ValueType  # 5
-        NEWRELIC_QUERY_KEY: ConnectorKey._KeyType.ValueType  # 7
-        NEWRELIC_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 19
-        SLACK_BOT_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 8
-        SLACK_CHANNEL: ConnectorKey._KeyType.ValueType  # 9
-        HONEYBADGER_USERNAME: ConnectorKey._KeyType.ValueType  # 10
-        HONEYBADGER_PASSWORD: ConnectorKey._KeyType.ValueType  # 11
-        HONEYBADGER_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 12
-        AWS_ACCESS_KEY: ConnectorKey._KeyType.ValueType  # 13
-        AWS_SECRET_KEY: ConnectorKey._KeyType.ValueType  # 14
-        AWS_REGION: ConnectorKey._KeyType.ValueType  # 20
-        AWS_ASSUMED_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 23
-        EKS_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 40
-        GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 16
-        GOOGLE_CHAT_BOT_SPACES: ConnectorKey._KeyType.ValueType  # 17
-        GRAFANA_HOST: ConnectorKey._KeyType.ValueType  # 21
-        GRAFANA_API_KEY: ConnectorKey._KeyType.ValueType  # 22
-        CLICKHOUSE_INTERFACE: ConnectorKey._KeyType.ValueType  # 24
-        CLICKHOUSE_HOST: ConnectorKey._KeyType.ValueType  # 25
-        CLICKHOUSE_PORT: ConnectorKey._KeyType.ValueType  # 26
-        CLICKHOUSE_USER: ConnectorKey._KeyType.ValueType  # 27
-        CLICKHOUSE_PASSWORD: ConnectorKey._KeyType.ValueType  # 28
-        GCM_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 29
-        GCM_PRIVATE_KEY: ConnectorKey._KeyType.ValueType  # 30
-        GCM_CLIENT_EMAIL: ConnectorKey._KeyType.ValueType  # 31
-        GCM_TOKEN_URI: ConnectorKey._KeyType.ValueType  # 32
-        POSTGRES_HOST: ConnectorKey._KeyType.ValueType  # 33
-        POSTGRES_USER: ConnectorKey._KeyType.ValueType  # 34
-        POSTGRES_PASSWORD: ConnectorKey._KeyType.ValueType  # 35
-        POSTGRES_PORT: ConnectorKey._KeyType.ValueType  # 36
-        POSTGRES_DATABASE: ConnectorKey._KeyType.ValueType  # 37
-        POSTGRES_OPTIONS: ConnectorKey._KeyType.ValueType  # 38
-        SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey._KeyType.ValueType  # 39
-        PAGER_DUTY_API_KEY: ConnectorKey._KeyType.ValueType  # 41
-        OPS_GENIE_API_KEY: ConnectorKey._KeyType.ValueType  # 42
-        AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 43
-        AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 44
-        GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
-        SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
-        OPEN_AI_API_KEY: ConnectorKey._KeyType.ValueType  # 47
-        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 49
-        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 50
-        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
-        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
-
-    class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
-    UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
-    SENTRY_API_KEY: ConnectorKey.KeyType.ValueType  # 1
-    SENTRY_ORG_SLUG: ConnectorKey.KeyType.ValueType  # 6
-    DATADOG_APP_KEY: ConnectorKey.KeyType.ValueType  # 2
-    DATADOG_API_KEY: ConnectorKey.KeyType.ValueType  # 3
-    DATADOG_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 15
-    DATADOG_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 18
-    NEWRELIC_API_KEY: ConnectorKey.KeyType.ValueType  # 4
-    NEWRELIC_APP_ID: ConnectorKey.KeyType.ValueType  # 5
-    NEWRELIC_QUERY_KEY: ConnectorKey.KeyType.ValueType  # 7
-    NEWRELIC_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 19
-    SLACK_BOT_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 8
-    SLACK_CHANNEL: ConnectorKey.KeyType.ValueType  # 9
-    HONEYBADGER_USERNAME: ConnectorKey.KeyType.ValueType  # 10
-    HONEYBADGER_PASSWORD: ConnectorKey.KeyType.ValueType  # 11
-    HONEYBADGER_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 12
-    AWS_ACCESS_KEY: ConnectorKey.KeyType.ValueType  # 13
-    AWS_SECRET_KEY: ConnectorKey.KeyType.ValueType  # 14
-    AWS_REGION: ConnectorKey.KeyType.ValueType  # 20
-    AWS_ASSUMED_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 23
-    EKS_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 40
-    GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 16
-    GOOGLE_CHAT_BOT_SPACES: ConnectorKey.KeyType.ValueType  # 17
-    GRAFANA_HOST: ConnectorKey.KeyType.ValueType  # 21
-    GRAFANA_API_KEY: ConnectorKey.KeyType.ValueType  # 22
-    CLICKHOUSE_INTERFACE: ConnectorKey.KeyType.ValueType  # 24
-    CLICKHOUSE_HOST: ConnectorKey.KeyType.ValueType  # 25
-    CLICKHOUSE_PORT: ConnectorKey.KeyType.ValueType  # 26
-    CLICKHOUSE_USER: ConnectorKey.KeyType.ValueType  # 27
-    CLICKHOUSE_PASSWORD: ConnectorKey.KeyType.ValueType  # 28
-    GCM_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 29
-    GCM_PRIVATE_KEY: ConnectorKey.KeyType.ValueType  # 30
-    GCM_CLIENT_EMAIL: ConnectorKey.KeyType.ValueType  # 31
-    GCM_TOKEN_URI: ConnectorKey.KeyType.ValueType  # 32
-    POSTGRES_HOST: ConnectorKey.KeyType.ValueType  # 33
-    POSTGRES_USER: ConnectorKey.KeyType.ValueType  # 34
-    POSTGRES_PASSWORD: ConnectorKey.KeyType.ValueType  # 35
-    POSTGRES_PORT: ConnectorKey.KeyType.ValueType  # 36
-    POSTGRES_DATABASE: ConnectorKey.KeyType.ValueType  # 37
-    POSTGRES_OPTIONS: ConnectorKey.KeyType.ValueType  # 38
-    SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey.KeyType.ValueType  # 39
-    PAGER_DUTY_API_KEY: ConnectorKey.KeyType.ValueType  # 41
-    OPS_GENIE_API_KEY: ConnectorKey.KeyType.ValueType  # 42
-    AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 43
-    AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 44
-    GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
-    SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
-    OPEN_AI_API_KEY: ConnectorKey.KeyType.ValueType  # 47
-    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 49
-    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 50
-    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
-    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int
@@ -482,7 +206,7 @@ class ConnectorKey(google.protobuf.message.Message):
     DISPLAY_NAME_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    key_type: global___ConnectorKey.KeyType.ValueType
+    key_type: protos.base_pb2.SourceKeyType.ValueType
     @property
     def key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -497,7 +221,7 @@ class ConnectorKey(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        key_type: global___ConnectorKey.KeyType.ValueType = ...,
+        key_type: protos.base_pb2.SourceKeyType.ValueType = ...,
         key: google.protobuf.wrappers_pb2.StringValue | None = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
@@ -624,13 +348,13 @@ class AccountActiveConnectorModelTypes(google.protobuf.message.Message):
 
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
     MODEL_TYPES_MAP_FIELD_NUMBER: builtins.int
-    connector_type: global___ConnectorType.ValueType
+    connector_type: protos.base_pb2.Source.ValueType
     @property
     def model_types_map(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap]: ...
     def __init__(
         self,
         *,
-        connector_type: global___ConnectorType.ValueType = ...,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
         model_types_map: collections.abc.Iterable[global___AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap] | None = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "model_types_map", b"model_types_map"]) -> None: ...

@@ -8,10 +8,10 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookNewRelicTask as PlaybookNewRelicTaskProto, PlaybookMetricTaskExecutionResult
+    PlaybookNewRelicTask as PlaybookNewRelicTaskProto, PlaybookMetricTaskExecutionResult, \
+    TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
 
 
 def get_nrql_expression_result_alias(nrql_expression):
@@ -25,7 +25,7 @@ def get_nrql_expression_result_alias(nrql_expression):
 class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC
+        self.source = Source.NEW_RELIC
         self.task_type_callable_map = {
             PlaybookNewRelicTaskProto.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: self.execute_entity_application_golden_metric_execution_task,
             PlaybookNewRelicTaskProto.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: self.execute_entity_dashboard_widget_nrql_metric_execution_task,
@@ -36,7 +36,7 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             nr_connector = Connector.objects.get(account_id=account_id,
-                                                 connector_type=ConnectorTypeProto.NEW_RELIC,
+                                                 connector_type=Source.NEW_RELIC,
                                                  is_active=True)
         except Connector.DoesNotExist:
             raise Exception("New Relic connector not found for account: " + account_id)
@@ -50,11 +50,11 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("New Relic connector key not found for account: " + account_id)
 
         for key in nr_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_API_KEY:
+            if key.key_type == SourceKeyType.NEWRELIC_API_KEY:
                 self.__nr_api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_APP_ID:
+            elif key.key_type == SourceKeyType.NEWRELIC_APP_ID:
                 self.__nr_app_id = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_API_DOMAIN:
+            elif key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
                 self.__nr_api_domain = key.key
 
         if not self.__nr_api_key or not self.__nr_app_id:
@@ -114,31 +114,25 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
             results = response['results']
         process_function = task.process_function.value
         if process_function == 'timeseries':
-            metric_datapoints: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+            metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
             for item in results:
                 utc_timestamp = item['beginTimeSeconds']
                 utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
                 utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
                 val = item.get(result_alias)
-                datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                    timestamp=int(utc_datetime.timestamp() * 1000),
-                    value=DoubleValue(value=val)
-                )
+                datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
+                    timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
                 metric_datapoints.append(datapoint)
 
-            labeled_metric_timeseries = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                unit=StringValue(value=unit),
-                datapoints=metric_datapoints
-            )
+            labeled_metric_timeseries = TimeseriesResultProto.LabeledMetricTimeseries(unit=StringValue(value=unit),
+                                                                                      datapoints=metric_datapoints)
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=[labeled_metric_timeseries]))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=[labeled_metric_timeseries]))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC,
+                metric_source=Source.NEW_RELIC,
                 metric_expression=StringValue(value=nrql_expression),
                 metric_name=StringValue(value=name),
                 result=result)
@@ -185,8 +179,7 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
         process_function = task.process_function.value
         if process_function == 'timeseries' and 'TIMESERIES' in nrql_expression:
             labeled_metric_timeseries_list = []
-            metric_datapoints: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+            metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
             if facet_keys:
                 results = results['facets']
             else:
@@ -202,10 +195,8 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
                         facets = name
                     if len(facets) > 0 and len(facets) == len(facet_keys):
                         for idx, f in enumerate(facets):
-                            metric_label_values.append(PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                                name=StringValue(value=facet_keys[idx]),
-                                value=StringValue(value=f)
-                            ))
+                            metric_label_values.append(LabelValuePairProto(name=StringValue(value=facet_keys[idx]),
+                                                                           value=StringValue(value=f)))
                 time_series = item['timeSeries']
                 for ts in time_series:
                     utc_timestamp = ts['beginTimeSeconds']
@@ -220,26 +211,21 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
                         dp = val
                     else:
                         dp = 0
-                    datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                        timestamp=int(utc_datetime.timestamp() * 1000),
-                        value=DoubleValue(value=dp)
-                    )
+                    datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
+                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=dp))
                     metric_datapoints.append(datapoint)
 
                 labeled_metric_timeseries_list.append(
-                    PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_label_values,
-                        unit=StringValue(value=unit),
-                        datapoints=metric_datapoints
-                    ))
+                    TimeseriesResultProto.LabeledMetricTimeseries(metric_label_values=metric_label_values,
+                                                                  unit=StringValue(value=unit),
+                                                                  datapoints=metric_datapoints))
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=labeled_metric_timeseries_list))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries_list))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC,
+                metric_source=Source.NEW_RELIC,
                 metric_expression=StringValue(value=nrql_expression),
                 metric_name=StringValue(value=metric_name),
                 result=result)
@@ -287,8 +273,7 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
         process_function = task.process_function.value
         if process_function == 'timeseries' and 'TIMESERIES' in nrql_expression:
             labeled_metric_timeseries_list = []
-            metric_datapoints: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+            metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
             if facet_keys:
                 results = results['facets']
             else:
@@ -304,10 +289,8 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
                         facets = name
                     if len(facets) > 0 and len(facets) == len(facet_keys):
                         for idx, f in enumerate(facets):
-                            metric_label_values.append(PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                                name=StringValue(value=facet_keys[idx]),
-                                value=StringValue(value=f)
-                            ))
+                            metric_label_values.append(LabelValuePairProto(name=StringValue(value=facet_keys[idx]),
+                                                                           value=StringValue(value=f)))
                 time_series = item['timeSeries']
                 for ts in time_series:
                     utc_timestamp = ts['beginTimeSeconds']
@@ -322,26 +305,23 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
                         dp = val
                     else:
                         dp = 0
-                    datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
+                    datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
                         timestamp=int(utc_datetime.timestamp() * 1000),
                         value=DoubleValue(value=dp)
                     )
                     metric_datapoints.append(datapoint)
 
                 labeled_metric_timeseries_list.append(
-                    PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_label_values,
-                        unit=StringValue(value=unit),
-                        datapoints=metric_datapoints
-                    ))
+                    TimeseriesResultProto.LabeledMetricTimeseries(metric_label_values=metric_label_values,
+                                                                  unit=StringValue(value=unit),
+                                                                  datapoints=metric_datapoints))
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=labeled_metric_timeseries_list))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries_list))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.NEW_RELIC,
+                metric_source=Source.NEW_RELIC,
                 metric_expression=StringValue(value=nrql_expression),
                 metric_name=StringValue(value=metric_name),
                 result=result)

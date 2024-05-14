@@ -17,12 +17,12 @@ import {
 import { useParams } from "react-router-dom";
 import Loading from "../../common/Loading/index.tsx";
 import CreatePlaybook from "../CreatePlaybook.jsx";
-import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
 import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
-import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { executionToPlaybook } from "../../../utils/parser/playbook/executionToPlaybook.ts";
+import Builder from "../create/Builder.jsx";
 
 const viewOptions = [
   {
@@ -82,7 +82,7 @@ function PlaybookLogs() {
   }
 
   const populateData = () => {
-    const pbData = playbookToSteps(playbook);
+    const pbData = executionToPlaybook(data?.playbook_execution);
     dispatch(setSteps(pbData));
     const assetModelPromises = pbData.map((el, i) =>
       dispatch(
@@ -148,7 +148,7 @@ function PlaybookLogs() {
               <CreatePlaybook showHeading={false} />
             </div>
           ) : (
-            <Builder />
+            <Builder isLog={true} />
           )}
         </main>
       </div>

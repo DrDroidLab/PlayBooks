@@ -5,7 +5,8 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
 from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source as ConnectorType, SourceKeyType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookStepDefinition as PlaybookStepDefinitionProto
 
@@ -27,7 +28,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
         return InterpretationProto()
     open_ai_integration = open_ai_integration.first()
     open_ai_api_key = get_db_account_connector_keys(open_ai_integration.account, open_ai_integration.id,
-                                                    key_type=ConnectorKeyProto.KeyType.OPEN_AI_API_KEY)
+                                                    key_type=SourceKeyType.OPEN_AI_API_KEY)
     if not open_ai_api_key:
         logger.error('Aborting LLM step summariser. OpenAI API key is not set.')
         return InterpretationProto()

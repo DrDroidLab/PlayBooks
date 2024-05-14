@@ -3,7 +3,7 @@ import uuid
 
 from django.db import IntegrityError
 
-from executor.workflows.crud.workflows_crud import create_db_workflow
+from executor.workflows.crud.workflows_crud import update_or_create_db_workflow
 from executor.workflows.models import Workflow
 from protos.playbooks.workflow_pb2 import UpdateWorkflowOp
 from utils.update_processor_mixin import UpdateProcessorMixin
@@ -74,14 +74,11 @@ class WorkflowsUpdateProcessor(UpdateProcessorMixin):
             for action_mapping in all_workflow_actions_mapping:
                 action_mapping.is_active = False
                 action_mapping.save(update_fields=['is_active'])
-            random_generated_str = str(uuid.uuid4())
-            elem.is_active = False
-            elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
-            elem.save(update_fields=['is_active', 'name'])
             updated_workflow = update_op.workflow
-            updated_elem, err = create_db_workflow(elem.account, elem.created_by, updated_workflow)
+            updated_elem, err = update_or_create_db_workflow(elem.account, elem.created_by, updated_workflow,
+                                                             update_mode=True)
             if err:
-                raise Exception(err)
+                raise Exception(f"Error occurred updating workflow for {elem.name}, {err}")
             return updated_elem
         except Exception as ex:
             logger.exception(f"Error occurred updating workflow for {elem.name}, {str(ex)}")

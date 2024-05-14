@@ -7,10 +7,10 @@ from google.protobuf.wrappers_pb2 import StringValue, DoubleValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookCloudwatchTask as PlaybookCloudwatchTaskProto, PlaybookMetricTaskExecutionResult
+    PlaybookCloudwatchTask as PlaybookCloudwatchTaskProto, PlaybookMetricTaskExecutionResult, \
+    TableResult as TableResultProto, TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
 
 
 def logs_add_all_required_fields(query):
@@ -35,7 +35,7 @@ def logs_add_all_required_fields(query):
 class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.CLOUDWATCH
+        self.source = Source.CLOUDWATCH
         self.task_type_callable_map = {
             PlaybookCloudwatchTaskProto.TaskType.METRIC_EXECUTION: self.execute_metric_execution_task,
             PlaybookCloudwatchTaskProto.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events_task
@@ -45,7 +45,7 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             cloudwatch_connector = Connector.objects.get(account_id=account_id,
-                                                         connector_type=ConnectorTypeProto.CLOUDWATCH,
+                                                         connector_type=Source.CLOUDWATCH,
                                                          is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Cloudwatch connector not found")
@@ -60,9 +60,9 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         self.__aws_session_token = None
         for key in cloudwatch_connector_key:
-            if key.key_type == ConnectorKeyProto.KeyType.AWS_ACCESS_KEY:
+            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 self.__aws_access_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AWS_SECRET_KEY:
+            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 self.__aws_secret_key = key.key
 
         if not self.__aws_access_key or not self.__aws_secret_key:
@@ -125,26 +125,21 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
             metric_unit = ''
         process_function = task.process_function.value
         if process_function == 'timeseries':
-            metric_datapoints: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+            metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
             for item in response_datapoints:
                 utc_timestamp = str(item['Timestamp'])
                 utc_datetime = datetime.fromisoformat(utc_timestamp)
                 utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
                 val = item[requested_statistic]
-                datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                    timestamp=int(utc_datetime.timestamp() * 1000),
-                    value=DoubleValue(value=val)
-                )
+                datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
+                    timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
                 metric_datapoints.append(datapoint)
 
-            labeled_metric_timeseries = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
+            labeled_metric_timeseries = TimeseriesResultProto.LabeledMetricTimeseries(
                 metric_label_values=[
-                    PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(name=StringValue(value='namespace'),
-                                                                               value=StringValue(value=namespace)),
-                    PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(name=StringValue(value='statistic'),
-                                                                               value=StringValue(
-                                                                                   value=requested_statistic)),
+                    LabelValuePairProto(name=StringValue(value='namespace'), value=StringValue(value=namespace)),
+                    LabelValuePairProto(name=StringValue(value='statistic'),
+                                        value=StringValue(value=requested_statistic)),
                 ],
                 unit=StringValue(value=metric_unit),
                 datapoints=metric_datapoints
@@ -152,11 +147,10 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=[labeled_metric_timeseries]))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=[labeled_metric_timeseries]))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.CLOUDWATCH,
+                metric_source=Source.CLOUDWATCH,
                 metric_expression=StringValue(value=metric_name),
                 metric_name=StringValue(value=namespace),
                 result=result)
@@ -190,22 +184,22 @@ class CloudwatchMetricTaskExecutor(PlaybookMetricTaskExecutor):
         if not response:
             raise Exception("No data returned from Cloudwatch Logs")
 
-        table_rows: [PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow] = []
+        table_rows: [TableResultProto.TableRow] = []
         for item in response:
-            table_columns: [PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow.TableColumn] = []
+            table_columns: [TableResultProto.TableColumn] = []
             for i in item:
-                table_column = PlaybookMetricTaskExecutionResult.Result.TableResult.TableColumn(
-                    name=StringValue(value=i['field']), value=StringValue(value=i['value']))
+                table_column = TableResultProto.TableColumn(name=StringValue(value=i['field']),
+                                                            value=StringValue(value=i['value']))
                 table_columns.append(table_column)
-            table_row = PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow(columns=table_columns)
+            table_row = TableResultProto.TableRow(columns=table_columns)
             table_rows.append(table_row)
 
         result = PlaybookMetricTaskExecutionResult.Result(
             type=PlaybookMetricTaskExecutionResult.Result.Type.TABLE_RESULT,
-            table_result=PlaybookMetricTaskExecutionResult.Result.TableResult(rows=table_rows))
+            table_result=TableResultProto(rows=table_rows))
 
         task_execution_result = PlaybookMetricTaskExecutionResult(
-            metric_source=PlaybookMetricTaskDefinitionProto.Source.CLOUDWATCH,
+            metric_source=Source.CLOUDWATCH,
             metric_expression=StringValue(value=query_pattern),
             metric_name=StringValue(value='log_events'),
             result=result)

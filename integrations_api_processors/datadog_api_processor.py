@@ -30,7 +30,7 @@ from datadog_api_client.v2.model.timeseries_formula_request_queries import Times
 from datadog_api_client.v2.model.timeseries_formula_request_type import TimeseriesFormulaRequestType
 
 from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto
+from protos.base_pb2 import Source
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class DatadogApiProcessor(object):
             'Accept': 'application/json'
         }
 
-        if dd_connector_type and dd_connector_type == ConnectorTypeProto.DATADOG_OAUTH:
+        if dd_connector_type and dd_connector_type == Source.DATADOG_OAUTH:
             self.headers = {
                 'Content-Type': 'application/json',
                 'Authorization': f'Bearer {dd_app_key}',
@@ -62,7 +62,7 @@ class DatadogApiProcessor(object):
         try:
             self.configuration = Configuration()
             self.configuration.api_key["apiKeyAuth"] = self.__dd_api_key
-            if dd_connector_type == ConnectorTypeProto.DATADOG_OAUTH:
+            if dd_connector_type == Source.DATADOG_OAUTH:
                 self.configuration.access_token = self.__dd_app_key
             else:
                 self.configuration.api_key["appKeyAuth"] = self.__dd_app_key
@@ -85,7 +85,7 @@ class DatadogApiProcessor(object):
                 response: AuthenticationValidationResponse = api_instance.validate()
                 if not response.get('valid', False):
                     return False
-                if self.__dd_connector_type and self.__dd_connector_type == ConnectorTypeProto.DATADOG:
+                if self.__dd_connector_type and self.__dd_connector_type == Source.DATADOG:
                     try:
                         api_instance = MonitorsApi(api_client)
                         monitor_response = api_instance.list_monitors()

@@ -6,16 +6,17 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookGrafanaTask as PlaybookGrafanaTaskProto, PlaybookMetricTaskExecutionResult
+    PlaybookGrafanaTask as PlaybookGrafanaTaskProto, PlaybookMetricTaskExecutionResult, \
+    TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
 
 
 class GrafanaMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.GRAFANA
+        self.source = Source.GRAFANA
         self.task_type_callable_map = {
             PlaybookGrafanaTaskProto.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution_task
         }
@@ -24,7 +25,7 @@ class GrafanaMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             grafana_connector = Connector.objects.get(account_id=account_id,
-                                                      connector_type=ConnectorTypeProto.GRAFANA,
+                                                      connector_type=Source.GRAFANA,
                                                       is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Active Grafana connector not found for account: {}".format(account_id))
@@ -38,9 +39,9 @@ class GrafanaMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("Active Grafana connector keys not found for account: {}".format(account_id))
 
         for key in grafana_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.GRAFANA_API_KEY:
+            if key.key_type == SourceKeyType.GRAFANA_API_KEY:
                 self.__grafana_api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.GRAFANA_HOST:
+            elif key.key_type == SourceKeyType.GRAFANA_HOST:
                 self.__grafana_host = key.key
 
         if not self.__grafana_api_key or not self.__grafana_host:
@@ -99,38 +100,30 @@ class GrafanaMetricTaskExecutor(PlaybookMetricTaskExecutor):
             if 'data' in response and 'result' in response['data']:
                 labeled_metric_timeseries_list = []
                 for item in response['data']['result']:
-                    metric_datapoints: [
-                        PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+                    metric_datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
                     for value in item['values']:
                         utc_timestamp = value[0]
                         utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
                         val = value[1]
-                        datapoint = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(utc_datetime.timestamp() * 1000),
-                            value=DoubleValue(value=float(val))
-                        )
+                        datapoint = TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
                         metric_datapoints.append(datapoint)
                     item_metrics = item['metric']
                     metric_label_values = []
                     for key, value in item_metrics.items():
-                        metric_label_values.append(PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                            name=StringValue(value=key),
-                            value=StringValue(value=value)
-                        ))
-                    labeled_metric_timeseries = PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_label_values,
-                        unit=StringValue(value=""),
-                        datapoints=metric_datapoints
-                    )
+                        metric_label_values.append(
+                            LabelValuePairProto(name=StringValue(value=key), value=StringValue(value=value)))
+                    labeled_metric_timeseries = TimeseriesResultProto.LabeledMetricTimeseries(
+                        metric_label_values=metric_label_values, unit=StringValue(value=""),
+                        datapoints=metric_datapoints)
                     labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
                 result = PlaybookMetricTaskExecutionResult.Result(
                     type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                    timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                        labeled_metric_timeseries=labeled_metric_timeseries_list))
+                    timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries_list))
 
                 task_execution_result = PlaybookMetricTaskExecutionResult(
-                    metric_source=PlaybookMetricTaskDefinitionProto.Source.GRAFANA,
+                    metric_source=Source.GRAFANA,
                     metric_expression=StringValue(value=promql_metric_query),
                     result=result)
 

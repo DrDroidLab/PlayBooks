@@ -8,7 +8,8 @@ from connectors.crud.connectors_crud import get_db_account_connectors, get_db_ac
 from protos.connectors.assets.slack_asset_pb2 import SlackChannelAssetOptions, SlackChannelAssetModel, SlackAssetModel, \
     SlackAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType, ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source as ConnectorType, SourceKeyType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class SlackAssetManager(ConnectorAssetManager):
@@ -16,7 +17,7 @@ class SlackAssetManager(ConnectorAssetManager):
     def __init__(self):
         self.connector_type = ConnectorType.SLACK
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelType,
+    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
                                filters: AccountConnectorAssetsModelFilters, pg_models):
         which_one_of = filters.WhichOneof('filters')
 
@@ -25,10 +26,10 @@ class SlackAssetManager(ConnectorAssetManager):
         for con in slack_connector:
             try:
                 slack_channel_models = get_db_account_connector_keys(account, connector_id=con.id,
-                                                                     key_type=ConnectorKeyProto.KeyType.SLACK_CHANNEL)
+                                                                     key_type=SourceKeyType.SLACK_CHANNEL)
             except Exception as e:
                 slack_channel_models = []
-            if model_type == ConnectorMetadataModelType.SLACK_CHANNEL and (
+            if model_type == ConnectorMetadataModelTypeProto.SLACK_CHANNEL and (
                     not which_one_of or which_one_of == 'slack_channel_model_filters'):
                 options: SlackChannelAssetOptions = filters.slack_channel_model_filters
                 filter_channels_ids = options.channel_ids

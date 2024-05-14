@@ -8,7 +8,8 @@ from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
 from intelligence_layer.result_interpreters.metric_task_result_interpreters.utils import \
     metric_source_displace_name_map, generate_graph_for_metric_timeseries_result
 from media.utils import generate_local_image_path
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source as ConnectorType, SourceKeyType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     PlaybookTaskDefinition as PlaybookTaskDefinitionProto
@@ -99,7 +100,7 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
         raise ValueError('OpenAI integration is not set.')
     open_ai_integration = open_ai_integration.first()
     open_ai_api_key = get_db_account_connector_keys(open_ai_integration.account, open_ai_integration.id,
-                                                    key_type=ConnectorKeyProto.KeyType.OPEN_AI_API_KEY)
+                                                    key_type=SourceKeyType.OPEN_AI_API_KEY)
     if not open_ai_api_key:
         raise ValueError('OpenAI API key is not set.')
     open_ai_api_key = open_ai_api_key.first().key
@@ -116,6 +117,8 @@ def llm_chat_gpt_vision_metric_task_result_interpreter(task: PlaybookTaskDefinit
     if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
         try:
             image_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+            if not image_url:
+                return InterpretationProto()
         except Exception as e:
             logger.error(f'Error generating graph using metric timeseries data: {e}')
             raise e

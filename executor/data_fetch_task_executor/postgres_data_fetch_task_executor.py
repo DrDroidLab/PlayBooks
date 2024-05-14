@@ -6,21 +6,19 @@ from psycopg2 import extras
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from connectors.models import Connector, ConnectorKey
 from executor.data_fetch_task_executor.data_fetch_task_executor import PlaybookDataFetchTaskExecutor
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto, \
-    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto
+    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, TableResult as TableResultProto
 
 
 class PostgresDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookDataFetchTaskDefinitionProto.Source.POSTGRES
-
+        self.source = Source.POSTGRES
         self.__account_id = account_id
-
         try:
             postgres_connector = Connector.objects.get(account_id=account_id,
-                                                       connector_type=ConnectorTypeProto.POSTGRES,
+                                                       connector_type=Source.POSTGRES,
                                                        is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Active Postgres connector not found for account: {}".format(account_id))
@@ -34,11 +32,11 @@ class PostgresDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
             raise Exception("Active Postgres connector keys not found for account: {}".format(account_id))
 
         for key in postgres_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.POSTGRES_HOST:
+            if key.key_type == SourceKeyType.POSTGRES_HOST:
                 self.__host = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.POSTGRES_USER:
+            elif key.key_type == SourceKeyType.POSTGRES_USER:
                 self.__user = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.POSTGRES_PASSWORD:
+            elif key.key_type == SourceKeyType.POSTGRES_PASSWORD:
                 self.__password = key.key
 
         if not self.__host or not self.__user or not self.__password:
@@ -88,19 +86,18 @@ class PostgresDataFetchTaskExecutor(PlaybookDataFetchTaskExecutor):
             cursor.close()
             query_client.close()
 
-            table_rows: [PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableRow] = []
+            table_rows: [TableResultProto.TableRow] = []
             for row in result:
                 table_columns = []
                 for column, value in row.items():
-                    table_column = PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableColumn(
-                        name=StringValue(value=column), value=StringValue(value=str(value)))
+                    table_column = TableResultProto.TableColumn(name=StringValue(value=column),
+                                                                value=StringValue(value=str(value)))
                     table_columns.append(table_column)
-                table_rows.append(
-                    PlaybookDataFetchTaskExecutionResultProto.Result.TableResult.TableRow(columns=table_columns))
+                table_rows.append(TableResultProto.TableRow(columns=table_columns))
             return PlaybookDataFetchTaskExecutionResultProto(data_source=task.source,
                                                              result=PlaybookDataFetchTaskExecutionResultProto.Result(
                                                                  type=PlaybookDataFetchTaskExecutionResultProto.Result.Type.TABLE_RESULT,
-                                                                 table_result=PlaybookDataFetchTaskExecutionResultProto.Result.TableResult(
+                                                                 table_result=TableResultProto(
                                                                      raw_query=postgres_data_fetch_task.query,
                                                                      total_count=UInt64Value(value=int(count_result)),
                                                                      limit=UInt64Value(value=limit),
