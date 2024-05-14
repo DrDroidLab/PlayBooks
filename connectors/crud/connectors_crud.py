@@ -273,12 +273,12 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
 
     connector_name: str = connector_proto.name.value
     connector_type: ConnectorType = connector_proto.type
+    db_connectors = get_db_account_connectors(account, connector_type=connector_type)
     if not connector_name:
-        all_c = get_db_account_connectors(account, connector_type=connector_type)
-        count = all_c.count()
-        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}_{count + 1}'
+        count = db_connectors.count()
+        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}-{count + 1}'
     try:
-        db_connectors = get_db_account_connectors(account, connector_name=connector_name, connector_type=connector_type)
+        db_connectors = db_connectors.filter(name=connector_name)
         if db_connectors.exists() and not update_mode:
             db_connector = db_connectors.first()
             if db_connector.is_active:

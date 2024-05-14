@@ -257,7 +257,8 @@ class Connector(models.Model):
 class ConnectorKey(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(ConnectorKeyType))
+    key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(ConnectorKeyType),
+                                   default=ConnectorKeyType.UNKNOWN_SKT)
     key = models.TextField()
     metadata = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
