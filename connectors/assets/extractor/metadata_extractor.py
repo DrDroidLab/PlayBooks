@@ -29,4 +29,4 @@ class ConnectorMetadataExtractor:
                 defaults={'metadata': metadata, 'is_active': True}
             )
         except Exception as e:
-            logger.error(f'Error creating or updating model metadata: {e}')
+            logger.error(f'Error creating or updating model_type: {model_type}, model_uid: {model_uid}: {e}')
