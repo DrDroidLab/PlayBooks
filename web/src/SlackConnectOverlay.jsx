@@ -17,7 +17,7 @@ const SlackConnectOverlay = ({ isOpen, toggleOverlay, onRefresh }) => {
   return (
     <>
       {isOpen && (
-        <Overlay visible={isOpen}>
+        <Overlay close={close} visible={isOpen}>
           {!showSuccess && (
             <div className={styles["actionOverlay"]}>
               <header className="text-gray-800" style={{ fontSize: "14px" }}>

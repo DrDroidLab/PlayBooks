@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CloseRounded } from "@mui/icons-material";
 
@@ -12,6 +13,7 @@ const CustomDrawer = ({
   showOverlay = true,
   startFrom = "0",
 }) => {
+  const drawerRef = useRef(null);
   const drawerVariants = {
     open: { x: 0 },
     closed: { x: `${(openFrom === "right" ? 1 : -1) * 100}%` },
@@ -29,6 +31,19 @@ const CustomDrawer = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [setIsOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (drawerRef?.current && !drawerRef?.current?.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [drawerRef]);
+
   return (
     <>
       {showOverlay && (
@@ -38,6 +53,7 @@ const CustomDrawer = ({
         />
       )}
       <motion.div
+        ref={drawerRef}
         initial="closed"
         animate={isOpen ? "open" : "closed"}
         variants={drawerVariants}
