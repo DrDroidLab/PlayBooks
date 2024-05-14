@@ -155,6 +155,7 @@ class Connector(google.protobuf.message.Message):
     UPDATED_AT_FIELD_NUMBER: builtins.int
     DISPLAY_NAME_FIELD_NUMBER: builtins.int
     CATEGORY_FIELD_NUMBER: builtins.int
+    KEYS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: protos.base_pb2.Source.ValueType
@@ -170,6 +171,8 @@ class Connector(google.protobuf.message.Message):
     def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def category(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ConnectorKey]: ...
     def __init__(
         self,
         *,
@@ -182,9 +185,10 @@ class Connector(google.protobuf.message.Message):
         updated_at: builtins.int = ...,
         display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         category: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        keys: collections.abc.Iterable[global___ConnectorKey] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["category", b"category", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "keys", b"keys", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
 
 global___Connector = Connector
 

@@ -6,10 +6,14 @@ from google.protobuf.wrappers_pb2 import BoolValue
 
 from accounts.models import Account, get_request_account
 from connectors.assets.manager.asset_manager_facade import asset_manager_facade
+from connectors.crud.connectors_crud import get_db_account_connectors, trigger_connector_metadata_fetch
+from connectors.models import integrations_connector_type_connector_keys_map
 from playbooks.utils.decorators import web_api
 from protos.base_pb2 import Message
 from protos.connectors.assets.api_pb2 import GetConnectorsAssetsModelsOptionsRequest, \
-    GetConnectorsAssetsModelsOptionsResponse, GetConnectorsAssetsModelsRequest, GetConnectorsAssetsModelsResponse
+    GetConnectorsAssetsModelsOptionsResponse, GetConnectorsAssetsModelsRequest, GetConnectorsAssetsModelsResponse, \
+    GetConnectorsAssetsModelsRefreshRequest, GetConnectorsAssetsModelsRefreshResponse
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 logger = logging.getLogger(__name__)
 
@@ -46,28 +50,35 @@ def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
                                                  message=Message(title="Error", description=str(err)))
     return GetConnectorsAssetsModelsResponse(success=BoolValue(value=True), assets=account_connector_assets)
 
-# @web_api(GetConnectorsAssetsModelsRefreshRequest)
-# def assets_models_refresh(request_message: GetConnectorsAssetsModelsRefreshRequest) -> \
-#         Union[GetConnectorsAssetsModelsRefreshResponse, HttpResponse]:
-#     account: Account = get_request_account()
-#     connector_id = request_message.connector_id
-#     if not connector_id or not connector_id.value:
-#         return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
-#                                                         message=Message(title="Invalid Request",
-#                                                                         description="Missing connector details"))
-#     connector_keys = account.connectorkey_set.filter(account=account, connector_id=connector_id.value, is_active=True)
-#     all_ck_types = [ck.key_type for ck in connector_keys]
-#     required_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
-#     all_keys_found = False
-#     for rkt in required_key_types:
-#         if sorted(rkt) == sorted(all_ck_types):
-#             all_keys_found = True
-#             break
-#     if not all_keys_found:
-#         return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
-#                                                         message=Message(title="Invalid Request",
-#                                                                         description="Missing required connector keys"))
-#     connector_proto = ConnectorProto(id=connector_id, type=connector_type)
-#     connector_keys_proto = [x.get_unmasked_proto for x in connector_keys]
-#     # trigger_connector_metadata_fetch(account, connector_proto, connector_keys_proto)
-#     return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=True))
+
+@web_api(GetConnectorsAssetsModelsRefreshRequest)
+def assets_models_refresh(request_message: GetConnectorsAssetsModelsRefreshRequest) -> \
+        Union[GetConnectorsAssetsModelsRefreshResponse, HttpResponse]:
+    account: Account = get_request_account()
+    connector_id = request_message.connector_id
+    if not connector_id or not connector_id.value:
+        return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
+                                                        message=Message(title="Invalid Request",
+                                                                        description="Missing connector details"))
+    db_connectors = get_db_account_connectors(account, connector_id)
+    if not db_connectors.exists() or not db_connectors:
+        return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
+                                                        message=Message(title="Invalid Request",
+                                                                        description="Connector not found"))
+    db_connector = db_connectors.first()
+    connector_proto: ConnectorProto = db_connector.unmasked_proto
+    connector_keys_proto = connector_proto.keys
+    all_ck_types = [ck.key_type for ck in connector_keys_proto]
+    required_key_types = integrations_connector_type_connector_keys_map.get(connector_proto.type, [])
+    all_keys_found = False
+    for rkt in required_key_types:
+        if sorted(rkt) == sorted(all_ck_types):
+            all_keys_found = True
+            break
+    if not all_keys_found:
+        return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
+                                                        message=Message(title="Invalid Request",
+                                                                        description="Missing required connector keys"))
+
+    trigger_connector_metadata_fetch(account, connector_proto, connector_keys_proto)
+    return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=True))

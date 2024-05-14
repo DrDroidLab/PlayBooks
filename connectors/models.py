@@ -240,7 +240,7 @@ class Connector(models.Model):
         return f'{self.account}:{self.connector_type}:{self.name}'
 
     @property
-    def proto(self) -> ConnectorProto:
+    def proto_partial(self) -> ConnectorProto:
         return ConnectorProto(
             id=UInt64Value(value=self.id),
             type=self.connector_type,
@@ -251,6 +251,40 @@ class Connector(models.Model):
             created_by=StringValue(value=self.created_by),
             display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
+        )
+
+    @property
+    def proto(self) -> ConnectorProto:
+        keys = self.connectorkey_set.filter(is_active=True)
+        keys_proto = [key.proto for key in keys]
+        return ConnectorProto(
+            id=UInt64Value(value=self.id),
+            type=self.connector_type,
+            is_active=BoolValue(value=self.is_active),
+            name=StringValue(value=self.name),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
+            created_by=StringValue(value=self.created_by),
+            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
+            keys=keys_proto
+        )
+
+    @property
+    def unmasked_proto(self) -> ConnectorProto:
+        keys = self.connectorkey_set.filter(is_active=True)
+        keys_proto = [key.unmasked_proto for key in keys]
+        return ConnectorProto(
+            id=UInt64Value(value=self.id),
+            type=self.connector_type,
+            is_active=BoolValue(value=self.is_active),
+            name=StringValue(value=self.name),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
+            created_by=StringValue(value=self.created_by),
+            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
+            keys=keys_proto
         )
 
 
@@ -269,7 +303,8 @@ class ConnectorKey(models.Model):
         unique_together = [['account', 'connector', 'key_type', 'key']]
 
     @property
-    def get_proto(self):
+    def proto(self):
+        key_value = self.key
         if self.key_type in [SourceKeyType.DATADOG_APP_KEY, SourceKeyType.DATADOG_API_KEY,
                              SourceKeyType.NEWRELIC_API_KEY, SourceKeyType.NEWRELIC_APP_ID,
                              SourceKeyType.NEWRELIC_QUERY_KEY,
@@ -294,17 +329,8 @@ class ConnectorKey(models.Model):
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM]:
             key_value = '*********' + self.key[-4:]
-            return ConnectorKeyProto(key_type=self.key_type,
-                                     key=StringValue(value=key_value),
-                                     is_active=BoolValue(value=self.is_active),
-                                     connector_id=UInt64Value(value=self.connector_id),
-                                     created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
-                                     updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
-                                     display_name=StringValue(
-                                         value=integrations_connector_key_display_name_map.get(self.key_type, '')))
-
         return ConnectorKeyProto(key_type=self.key_type,
-                                 key=StringValue(value=self.key),
+                                 key=StringValue(value=key_value),
                                  is_active=BoolValue(value=self.is_active),
                                  connector_id=UInt64Value(value=self.connector_id),
                                  created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
@@ -313,7 +339,7 @@ class ConnectorKey(models.Model):
                                      value=integrations_connector_key_display_name_map.get(self.key_type, '')))
 
     @property
-    def get_unmasked_proto(self):
+    def unmasked_proto(self):
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=self.key),
                                  is_active=BoolValue(value=self.is_active),

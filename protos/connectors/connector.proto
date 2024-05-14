@@ -82,6 +82,7 @@ message Connector {
   sfixed64 updated_at = 7;
   google.protobuf.StringValue display_name = 8;
   google.protobuf.StringValue category = 9;
+  repeated ConnectorKey keys = 10;
 }
 
 message ConnectorKey {
