@@ -7,7 +7,7 @@ from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_account_connectors, create_connector, get_all_available_connectors, \
+from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, get_all_available_connectors, \
     get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
@@ -45,11 +45,11 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                                                              is_active=True)
         if not db_agent_proxy_connector or not db_agent_proxy_connector.exists():
             agent_proxy_vpc_connector_proto = ConnectorProto(type=ConnectorType.AGENT_PROXY)
-            db_agent_proxy_connector, err = create_connector(account, created_by, agent_proxy_vpc_connector_proto,
-                                                             connector_keys)
+            db_agent_proxy_connector, err = update_or_create_connector(account, created_by, agent_proxy_vpc_connector_proto,
+                                                                       connector_keys)
             if db_agent_proxy_connector is None and err:
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
-    db_connector, err = create_connector(account, created_by, connector, connector_keys)
+    db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))

@@ -3,7 +3,7 @@ import logging
 from django.db import IntegrityError
 from google.protobuf.wrappers_pb2 import StringValue
 
-from connectors.crud.connectors_crud import create_connector
+from connectors.crud.connectors_crud import update_or_create_connector
 from connectors.models import Connector, integrations_connector_type_connector_keys_map
 from utils.time_utils import current_milli_time
 from protos.connectors.connector_pb2 import UpdateConnectorOp
@@ -80,14 +80,8 @@ class ConnectorUpdateProcessor(UpdateProcessorMixin):
                 for cm in all_connector_metadata:
                     cm.is_active = False
                     cm.save(update_fields=['is_active'])
-                current_millis = current_milli_time()
-                elem.name = f"{elem.name}###(inactive)###{current_millis}"
-                elem.save(update_fields=['is_active', 'name'])
-            account = elem.account
-            created_by = elem.created_by
-            new_connector_proto = ConnectorProto(type=elem.connector_type,
-                                                 created_by=StringValue(value=created_by))
-            new_db_connector, err = create_connector(account, created_by, new_connector_proto, updated_keys)
+            new_db_connector, err = update_or_create_connector(elem.account, elem.created_by, elem.proto, updated_keys,
+                                                               update_mode=True)
             if err:
                 raise Exception(err)
         except Exception as ex:

@@ -1,9 +1,8 @@
 from datetime import timezone
-from hashlib import md5
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
-from protos.base_pb2 import Source as ConnectorType
+from protos.base_pb2 import Source as ConnectorType, SourceKeyType as ConnectorKeyType
 from utils.model_utils import generate_choices
 
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -66,160 +65,160 @@ integrations_connector_type_category_map = {
 integrations_connector_type_connector_keys_map = {
     ConnectorType.SLACK: [
         [
-            ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
-            ConnectorKeyProto.KeyType.SLACK_APP_ID
+            ConnectorKeyType.SLACK_BOT_AUTH_TOKEN,
+            ConnectorKeyType.SLACK_APP_ID
         ]
     ],
     ConnectorType.NEW_RELIC: [
         [
-            ConnectorKeyProto.KeyType.NEWRELIC_API_KEY,
-            ConnectorKeyProto.KeyType.NEWRELIC_APP_ID,
-            ConnectorKeyProto.KeyType.NEWRELIC_API_DOMAIN
+            ConnectorKeyType.NEWRELIC_API_KEY,
+            ConnectorKeyType.NEWRELIC_APP_ID,
+            ConnectorKeyType.NEWRELIC_API_DOMAIN
         ]
     ],
     ConnectorType.DATADOG: [
         [
-            ConnectorKeyProto.KeyType.DATADOG_API_KEY,
-            ConnectorKeyProto.KeyType.DATADOG_APP_KEY,
-            ConnectorKeyProto.KeyType.DATADOG_API_DOMAIN
+            ConnectorKeyType.DATADOG_API_KEY,
+            ConnectorKeyType.DATADOG_APP_KEY,
+            ConnectorKeyType.DATADOG_API_DOMAIN
         ]
     ],
     ConnectorType.DATADOG_OAUTH: [
         [
-            ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN,
-            ConnectorKeyProto.KeyType.DATADOG_API_DOMAIN,
-            ConnectorKeyProto.KeyType.DATADOG_API_KEY
+            ConnectorKeyType.DATADOG_AUTH_TOKEN,
+            ConnectorKeyType.DATADOG_API_DOMAIN,
+            ConnectorKeyType.DATADOG_API_KEY
         ]
     ],
     ConnectorType.GRAFANA: [
         [
-            ConnectorKeyProto.KeyType.GRAFANA_HOST,
-            ConnectorKeyProto.KeyType.GRAFANA_API_KEY
+            ConnectorKeyType.GRAFANA_HOST,
+            ConnectorKeyType.GRAFANA_API_KEY
         ]
     ],
     ConnectorType.GRAFANA_VPC: [
         [
-            ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
-            ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY
+            ConnectorKeyType.AGENT_PROXY_HOST,
+            ConnectorKeyType.AGENT_PROXY_API_KEY
         ]
     ],
     ConnectorType.AGENT_PROXY: [
         [
-            ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
-            ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY
+            ConnectorKeyType.AGENT_PROXY_HOST,
+            ConnectorKeyType.AGENT_PROXY_API_KEY
         ]
     ],
     ConnectorType.CLOUDWATCH: [
         [
-            ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
-            ConnectorKeyProto.KeyType.AWS_SECRET_KEY,
-            ConnectorKeyProto.KeyType.AWS_REGION,
+            ConnectorKeyType.AWS_ACCESS_KEY,
+            ConnectorKeyType.AWS_SECRET_KEY,
+            ConnectorKeyType.AWS_REGION,
         ]
     ],
     ConnectorType.CLICKHOUSE: [
         [
-            ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE,
-            ConnectorKeyProto.KeyType.CLICKHOUSE_HOST,
-            ConnectorKeyProto.KeyType.CLICKHOUSE_PORT,
-            ConnectorKeyProto.KeyType.CLICKHOUSE_USER,
-            ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD
+            ConnectorKeyType.CLICKHOUSE_INTERFACE,
+            ConnectorKeyType.CLICKHOUSE_HOST,
+            ConnectorKeyType.CLICKHOUSE_PORT,
+            ConnectorKeyType.CLICKHOUSE_USER,
+            ConnectorKeyType.CLICKHOUSE_PASSWORD
         ]
     ],
     ConnectorType.POSTGRES: [
         [
-            ConnectorKeyProto.KeyType.POSTGRES_HOST,
-            ConnectorKeyProto.KeyType.POSTGRES_USER,
-            ConnectorKeyProto.KeyType.POSTGRES_PASSWORD,
-            ConnectorKeyProto.KeyType.POSTGRES_PORT,
-            ConnectorKeyProto.KeyType.POSTGRES_DATABASE
+            ConnectorKeyType.POSTGRES_HOST,
+            ConnectorKeyType.POSTGRES_USER,
+            ConnectorKeyType.POSTGRES_PASSWORD,
+            ConnectorKeyType.POSTGRES_PORT,
+            ConnectorKeyType.POSTGRES_DATABASE
         ]
     ],
     ConnectorType.EKS: [
         [
-            ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
-            ConnectorKeyProto.KeyType.AWS_SECRET_KEY,
-            ConnectorKeyProto.KeyType.AWS_REGION,
-            ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
+            ConnectorKeyType.AWS_ACCESS_KEY,
+            ConnectorKeyType.AWS_SECRET_KEY,
+            ConnectorKeyType.AWS_REGION,
+            ConnectorKeyType.EKS_ROLE_ARN,
         ]
     ],
     ConnectorType.SQL_DATABASE_CONNECTION: [
         [
-            ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,
+            ConnectorKeyType.SQL_DATABASE_CONNECTION_STRING_URI,
         ]
     ],
     ConnectorType.OPEN_AI: [
         [
-            ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
+            ConnectorKeyType.OPEN_AI_API_KEY,
         ]
     ],
     ConnectorType.REMOTE_SERVER: [
         [
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM
+            ConnectorKeyType.REMOTE_SERVER_USER,
+            ConnectorKeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyType.REMOTE_SERVER_PASSWORD,
+            ConnectorKeyType.REMOTE_SERVER_PEM
         ],
         [
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyType.REMOTE_SERVER_USER,
+            ConnectorKeyType.REMOTE_SERVER_HOST,
         ],
         [
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM
+            ConnectorKeyType.REMOTE_SERVER_USER,
+            ConnectorKeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyType.REMOTE_SERVER_PEM
         ],
         [
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_USER,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST,
-            ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD
+            ConnectorKeyType.REMOTE_SERVER_USER,
+            ConnectorKeyType.REMOTE_SERVER_HOST,
+            ConnectorKeyType.REMOTE_SERVER_PASSWORD
         ]
     ]
 }
 
 integrations_connector_key_display_name_map = {
-    ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN: 'Bot Auth Token',
-    ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN: 'OAuth Token',
-    ConnectorKeyProto.KeyType.SENTRY_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.SENTRY_ORG_SLUG: 'Org Slug',
-    ConnectorKeyProto.KeyType.NEWRELIC_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.NEWRELIC_APP_ID: 'Account ID',
-    ConnectorKeyProto.KeyType.NEWRELIC_API_DOMAIN: 'API Domain',
-    ConnectorKeyProto.KeyType.DATADOG_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.DATADOG_APP_KEY: 'App Key',
-    ConnectorKeyProto.KeyType.DATADOG_API_DOMAIN: 'API Domain',
-    ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN: 'OAuth Token',
-    ConnectorKeyProto.KeyType.GRAFANA_HOST: 'Host',
-    ConnectorKeyProto.KeyType.GRAFANA_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.AGENT_PROXY_HOST: 'Doctor Droid Agent Host',
-    ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY: 'Doctor Droid API Token',
-    ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN: 'Token',
-    ConnectorKeyProto.KeyType.AWS_ACCESS_KEY: 'AWS Access Key',
-    ConnectorKeyProto.KeyType.AWS_SECRET_KEY: 'AWS Secret Key',
-    ConnectorKeyProto.KeyType.AWS_REGION: 'AWS Region',
-    ConnectorKeyProto.KeyType.GCM_PROJECT_ID: 'Project ID',
-    ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY: 'Private Key',
-    ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL: 'Client Email',
-    ConnectorKeyProto.KeyType.GCM_TOKEN_URI: 'Token URI',
-    ConnectorKeyProto.KeyType.CLICKHOUSE_INTERFACE: 'Interface',
-    ConnectorKeyProto.KeyType.CLICKHOUSE_HOST: 'Host',
-    ConnectorKeyProto.KeyType.CLICKHOUSE_PORT: 'Port',
-    ConnectorKeyProto.KeyType.CLICKHOUSE_USER: 'User',
-    ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD: 'Password',
-    ConnectorKeyProto.KeyType.POSTGRES_HOST: 'Host',
-    ConnectorKeyProto.KeyType.POSTGRES_USER: 'DB User',
-    ConnectorKeyProto.KeyType.POSTGRES_PASSWORD: 'Password',
-    ConnectorKeyProto.KeyType.POSTGRES_PORT: 'Port',
-    ConnectorKeyProto.KeyType.POSTGRES_DATABASE: 'Database',
-    ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.EKS_ROLE_ARN: 'EKS Role ARN',
-    ConnectorKeyProto.KeyType.SLACK_APP_ID: 'App ID',
-    ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI: 'Sql Database Connection URI',
-    ConnectorKeyProto.KeyType.OPEN_AI_API_KEY: 'API Key',
-    ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM: 'PEM',
-    ConnectorKeyProto.KeyType.REMOTE_SERVER_USER: 'User',
-    ConnectorKeyProto.KeyType.REMOTE_SERVER_HOST: 'Host',
-    ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD: 'Password'
+    ConnectorKeyType.SLACK_BOT_AUTH_TOKEN: 'Bot Auth Token',
+    ConnectorKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN: 'OAuth Token',
+    ConnectorKeyType.SENTRY_API_KEY: 'API Key',
+    ConnectorKeyType.SENTRY_ORG_SLUG: 'Org Slug',
+    ConnectorKeyType.NEWRELIC_API_KEY: 'API Key',
+    ConnectorKeyType.NEWRELIC_APP_ID: 'Account ID',
+    ConnectorKeyType.NEWRELIC_API_DOMAIN: 'API Domain',
+    ConnectorKeyType.DATADOG_API_KEY: 'API Key',
+    ConnectorKeyType.DATADOG_APP_KEY: 'App Key',
+    ConnectorKeyType.DATADOG_API_DOMAIN: 'API Domain',
+    ConnectorKeyType.DATADOG_AUTH_TOKEN: 'OAuth Token',
+    ConnectorKeyType.GRAFANA_HOST: 'Host',
+    ConnectorKeyType.GRAFANA_API_KEY: 'API Key',
+    ConnectorKeyType.AGENT_PROXY_HOST: 'Doctor Droid Agent Host',
+    ConnectorKeyType.AGENT_PROXY_API_KEY: 'Doctor Droid API Token',
+    ConnectorKeyType.GITHUB_ACTIONS_TOKEN: 'Token',
+    ConnectorKeyType.AWS_ACCESS_KEY: 'AWS Access Key',
+    ConnectorKeyType.AWS_SECRET_KEY: 'AWS Secret Key',
+    ConnectorKeyType.AWS_REGION: 'AWS Region',
+    ConnectorKeyType.GCM_PROJECT_ID: 'Project ID',
+    ConnectorKeyType.GCM_PRIVATE_KEY: 'Private Key',
+    ConnectorKeyType.GCM_CLIENT_EMAIL: 'Client Email',
+    ConnectorKeyType.GCM_TOKEN_URI: 'Token URI',
+    ConnectorKeyType.CLICKHOUSE_INTERFACE: 'Interface',
+    ConnectorKeyType.CLICKHOUSE_HOST: 'Host',
+    ConnectorKeyType.CLICKHOUSE_PORT: 'Port',
+    ConnectorKeyType.CLICKHOUSE_USER: 'User',
+    ConnectorKeyType.CLICKHOUSE_PASSWORD: 'Password',
+    ConnectorKeyType.POSTGRES_HOST: 'Host',
+    ConnectorKeyType.POSTGRES_USER: 'DB User',
+    ConnectorKeyType.POSTGRES_PASSWORD: 'Password',
+    ConnectorKeyType.POSTGRES_PORT: 'Port',
+    ConnectorKeyType.POSTGRES_DATABASE: 'Database',
+    ConnectorKeyType.PAGER_DUTY_API_KEY: 'API Key',
+    ConnectorKeyType.OPS_GENIE_API_KEY: 'API Key',
+    ConnectorKeyType.EKS_ROLE_ARN: 'EKS Role ARN',
+    ConnectorKeyType.SLACK_APP_ID: 'App ID',
+    ConnectorKeyType.SQL_DATABASE_CONNECTION_STRING_URI: 'Sql Database Connection URI',
+    ConnectorKeyType.OPEN_AI_API_KEY: 'API Key',
+    ConnectorKeyType.REMOTE_SERVER_PEM: 'PEM',
+    ConnectorKeyType.REMOTE_SERVER_USER: 'User',
+    ConnectorKeyType.REMOTE_SERVER_HOST: 'Host',
+    ConnectorKeyType.REMOTE_SERVER_PASSWORD: 'Password'
 }
 
 
@@ -229,23 +228,16 @@ class Connector(models.Model):
     connector_type = models.IntegerField(null=True, blank=True, choices=generate_choices(ConnectorType),
                                          default=ConnectorType.UNKNOWN)
     is_active = models.BooleanField(default=True)
-    metadata = models.JSONField(null=True, blank=True)
-    metadata_md5 = models.CharField(max_length=256, null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = [['account', 'name', 'connector_type', 'metadata_md5']]
+        unique_together = [['account', 'name', 'connector_type']]
 
     def __str__(self):
         return f'{self.account}:{self.connector_type}:{self.name}'
-
-    def save(self, **kwargs):
-        if self.metadata:
-            self.metadata_md5 = md5(str(self.metadata).encode('utf-8')).hexdigest()
-        super().save(**kwargs)
 
     @property
     def proto(self) -> ConnectorProto:
@@ -265,8 +257,7 @@ class Connector(models.Model):
 class ConnectorKey(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
-    key_type = models.IntegerField(null=True, blank=True,
-                                   choices=generate_choices(ConnectorKeyProto.KeyType))
+    key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(ConnectorKeyType))
     key = models.TextField()
     metadata = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -278,30 +269,29 @@ class ConnectorKey(models.Model):
 
     @property
     def get_proto(self):
-        # Hard Coded Key Masking for sensitive keys
-        if self.key_type in [ConnectorKeyProto.KeyType.DATADOG_APP_KEY, ConnectorKeyProto.KeyType.DATADOG_API_KEY,
-                             ConnectorKeyProto.KeyType.NEWRELIC_API_KEY, ConnectorKeyProto.KeyType.NEWRELIC_APP_ID,
-                             ConnectorKeyProto.KeyType.NEWRELIC_QUERY_KEY,
-                             ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_USERNAME,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_PASSWORD,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_PROJECT_ID, ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
-                             ConnectorKeyProto.KeyType.AWS_SECRET_KEY, ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
-                             ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY,
-                             ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
-                             ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
-                             ConnectorKeyProto.KeyType.AWS_ASSUMED_ROLE_ARN,
-                             ConnectorKeyProto.KeyType.CLICKHOUSE_USER, ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD,
-                             ConnectorKeyProto.KeyType.GCM_PROJECT_ID, ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
-                             ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
-                             ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
-                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
-                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-                             ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
-                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
-                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM]:
+        if self.key_type in [ConnectorKeyType.DATADOG_APP_KEY, ConnectorKeyType.DATADOG_API_KEY,
+                             ConnectorKeyType.NEWRELIC_API_KEY, ConnectorKeyType.NEWRELIC_APP_ID,
+                             ConnectorKeyType.NEWRELIC_QUERY_KEY,
+                             ConnectorKeyType.SLACK_BOT_AUTH_TOKEN,
+                             ConnectorKeyType.HONEYBADGER_USERNAME,
+                             ConnectorKeyType.HONEYBADGER_PASSWORD,
+                             ConnectorKeyType.HONEYBADGER_PROJECT_ID, ConnectorKeyType.AWS_ACCESS_KEY,
+                             ConnectorKeyType.AWS_SECRET_KEY, ConnectorKeyType.DATADOG_AUTH_TOKEN,
+                             ConnectorKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
+                             ConnectorKeyType.GRAFANA_API_KEY,
+                             ConnectorKeyType.AGENT_PROXY_API_KEY,
+                             ConnectorKeyType.GITHUB_ACTIONS_TOKEN,
+                             ConnectorKeyType.AGENT_PROXY_HOST,
+                             ConnectorKeyType.AWS_ASSUMED_ROLE_ARN,
+                             ConnectorKeyType.CLICKHOUSE_USER, ConnectorKeyType.CLICKHOUSE_PASSWORD,
+                             ConnectorKeyType.GCM_PROJECT_ID, ConnectorKeyType.GCM_PRIVATE_KEY,
+                             ConnectorKeyType.GCM_CLIENT_EMAIL, ConnectorKeyType.PAGER_DUTY_API_KEY,
+                             ConnectorKeyType.POSTGRES_PASSWORD, ConnectorKeyType.POSTGRES_USER,
+                             ConnectorKeyType.GRAFANA_API_KEY,
+                             ConnectorKeyType.OPS_GENIE_API_KEY,
+                             ConnectorKeyType.OPEN_AI_API_KEY,
+                             ConnectorKeyType.REMOTE_SERVER_PASSWORD,
+                             ConnectorKeyType.REMOTE_SERVER_PEM]:
             key_value = '*********' + self.key[-4:]
             return ConnectorKeyProto(key_type=self.key_type,
                                      key=StringValue(value=key_value),

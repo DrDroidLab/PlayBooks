@@ -266,21 +266,20 @@ def get_db_connector_keys(account_id, connector_id, key_type=None):
         return None, f'Error fetching Connector Keys: {str(e)}'
 
 
-def create_connector(account: Account, created_by, connector_proto: ConnectorProto,
-                     connector_keys: [ConnectorKeyProto]) -> (Connector, str):
+def update_or_create_connector(account: Account, created_by, connector_proto: ConnectorProto,
+                               connector_keys: [ConnectorKeyProto], update_mode: bool = False) -> (Connector, str):
     if not connector_proto.type:
         return None, 'Received invalid Connector Config'
 
     connector_name: str = connector_proto.name.value
-    # if not connector_name:
-    #     connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}'
     connector_type: ConnectorType = connector_proto.type
-    metadata = {'connector_type': connector_type}
-    if connector_type == ConnectorType.SENTRY:
-        metadata = proto_to_dict(connector_proto.sentry_config)
+    if not connector_name:
+        all_c = get_db_account_connectors(account, connector_type=connector_type)
+        count = all_c.count()
+        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}_{count + 1}'
     try:
         db_connectors = get_db_account_connectors(account, connector_name=connector_name, connector_type=connector_type)
-        if db_connectors.exists():
+        if db_connectors.exists() and not update_mode:
             db_connector = db_connectors.first()
             if db_connector.is_active:
                 return db_connector, f'Active Connector type ' \
@@ -306,26 +305,20 @@ def create_connector(account: Account, created_by, connector_proto: ConnectorPro
 
     with dj_transaction.atomic():
         try:
-            db_connector = Connector(account=account,
-                                     name=connector_proto.name.value,
-                                     connector_type=connector_type,
-                                     is_active=True,
-                                     created_by=created_by,
-                                     metadata=metadata)
-            db_connector.save()
-            db_connector_keys = []
+            db_connector, _ = Connector.objects.update_or_create(account=account,
+                                                                 name=connector_proto.name.value,
+                                                                 connector_type=connector_type,
+                                                                 defaults={'is_active': True, 'created_by': created_by})
             for c_key in connector_keys:
-                db_connector_keys.append(ConnectorKey(account=account,
+                ConnectorKey.objects.update_or_create(account=account,
                                                       connector=db_connector,
                                                       key_type=c_key.key_type,
                                                       key=c_key.key.value,
-                                                      is_active=True))
-
-            ConnectorKey.objects.bulk_create(db_connector_keys)
+                                                      defaults={'is_active': True})
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'
-    trigger_connector_metadata_fetch(account, db_connector.proto, connector_keys)
+    trigger_connector_metadata_fetch(account, connector_proto, connector_keys)
     return db_connector, None
 
 
