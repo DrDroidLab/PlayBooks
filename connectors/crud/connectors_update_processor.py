@@ -1,14 +1,12 @@
 import logging
 
 from django.db import IntegrityError
-from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import update_or_create_connector
 from connectors.models import Connector, integrations_connector_type_connector_keys_map
 from utils.time_utils import current_milli_time
 from protos.connectors.connector_pb2 import UpdateConnectorOp
 from utils.update_processor_mixin import UpdateProcessorMixin
-from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 logger = logging.getLogger(__name__)
 
@@ -80,14 +78,14 @@ class ConnectorUpdateProcessor(UpdateProcessorMixin):
                 for cm in all_connector_metadata:
                     cm.is_active = False
                     cm.save(update_fields=['is_active'])
-            new_db_connector, err = update_or_create_connector(elem.account, elem.created_by, elem.proto, updated_keys,
-                                                               update_mode=True)
+            updated_elem, err = update_or_create_connector(elem.account, elem.created_by, elem.proto, updated_keys,
+                                                           update_mode=True)
             if err:
-                raise Exception(err)
+                raise Exception(f"Error occurred updating connector keys for {elem.name} with error: {err}")
+            return updated_elem
         except Exception as ex:
             logger.error(f"Error occurred updating connector keys for {elem.name} with error: {ex}")
             raise Exception(f"Error occurred updating connector keys for {elem.name}")
-        return elem
 
 
 connector_update_processor = ConnectorUpdateProcessor()
