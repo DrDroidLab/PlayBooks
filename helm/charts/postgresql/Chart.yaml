@@ -1,0 +1,4 @@
+apiVersion: v2
+name: postgresql
+description: A Helm chart for PostgreSQL
+version: 0.1.0

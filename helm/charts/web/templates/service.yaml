@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  selector:
+    app: web
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 80
+  type: LoadBalancer

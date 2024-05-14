@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'workflow-action-executor-celery-worker'
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workflow-action-executor-celery-worker
+  template:
+    metadata:
+      labels:
+        app: workflow-action-executor-celery-worker
+    spec:
+      containers:
+        - name: workflow-action-executor-celery-worker
+          image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+          env:
+            - name: CELERY_BROKER_URL
+              value: {{ .Values.redisUrl }}
+            - name: CELERY_RESULT_BACKEND
+              value: {{ .Values.redisUrl }}
+            - name: DJANGO_DEBUG
+              value: "{{ .Values.debug }}"
+            - name: POSTGRES_HOST
+              value: {{ .Values.djangoDatabaseHost }}
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "db"
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.djangoDatabasePassword }}
+            - name: POSTGRES_USER
+              value: {{ .Values.djangoDatabaseUsername }}
+            - name: REDIS_URL
+              value: {{ .Values.redisUrl }}
+            - name: CELERY_QUEUE
+              value: {{ .Values.celeryQueue }}
+          command: ["/bin/sh","-c"]
+          args: ["./start-celery-worker.sh"]
+
