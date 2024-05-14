@@ -1,4 +1,4 @@
-import { Step } from "../../../types.ts";
+import { Step } from "../../../types/index.ts";
 import globalVariableToState from "./globalVariableToState.ts";
 import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 

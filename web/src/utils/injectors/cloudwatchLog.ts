@@ -1,4 +1,4 @@
-import { PlaybookTask, Step } from "../../types.ts";
+import { PlaybookTask, Step } from "../../types/index.ts";
 
 export const injectCloudwatchLogTasks = (
   step: Step,

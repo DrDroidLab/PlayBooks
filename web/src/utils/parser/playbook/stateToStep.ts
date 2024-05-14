@@ -1,6 +1,6 @@
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
-import { Step } from "../../../types.ts";
+import { Step } from "../../../types/index.ts";
 import stepToTasks from "./stepToTasks.ts";
 
 export const stateToStep = (step: Step, i?: number) => {

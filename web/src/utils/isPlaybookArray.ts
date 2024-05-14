@@ -1,4 +1,4 @@
-import { PlaybookTask } from "../types";
+import { PlaybookTask } from "../types/index.ts";
 
 const taskTypes = ["METRIC", "DATA_FETCH", "ACTION"];
 

@@ -1,5 +1,5 @@
 import { GET_ASSET_MODEL_OPTIONS } from "../../../../../constants/index.ts";
-import { AssetModelOptionsResponse } from "../../../../../types";
+import { AssetModelOptionsResponse } from "../../../../../types/index.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 import { setModelTypeOptions } from "../../playbookSlice.ts";
 

@@ -1,7 +1,7 @@
 import { models } from "../../constants/index.ts";
-import { PlaybookTask, Step } from "../../types.ts";
 import { injectDatadogQueryTasks } from "./datadogQuery.ts";
 import { injectDatadogServiceTasks } from "./datadogService.ts";
+import { PlaybookTask, Step } from "../../types/index.ts";
 
 export const injectDatadogTasks = (
   step: Step,

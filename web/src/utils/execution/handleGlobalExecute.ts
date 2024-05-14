@@ -6,8 +6,8 @@ import {
 import { stepsToPlaybook } from "../parser/playbook/stepsToplaybook.ts";
 import { executePlaybook } from "../../store/features/playbook/api/executePlaybookApi.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
-import { Step } from "../../types.ts";
 import { unsupportedRunners } from "../unsupportedRunners.ts";
+import { Step } from "../../types/index.ts";
 
 export default async function handleGlobalExecute() {
   const state = store.getState();

@@ -1,10 +1,10 @@
-export interface NewRelicTask {
+export type NewRelicTask = {
   type: string;
   dashboard_widget_nrql_metric_execution_task?: NrqlMetricExecutionTask;
   application_entity_golden_metric_execution_task?: NrApplicationEntityTask;
-}
+};
 
-export interface NrqlMetricExecutionTask {
+export type NrqlMetricExecutionTask = {
   dashboard_guid: string;
   dashboard_name: string;
   page_guid: string;
@@ -13,11 +13,11 @@ export interface NrqlMetricExecutionTask {
   widget_title: string;
   widget_nrql_expression: string;
   process_function: string;
-}
+};
 
-export interface NrApplicationEntityTask {
+export type NrApplicationEntityTask = {
   metric_name: string;
   unit: string;
   nrql_expression: string;
   process_function: string;
-}
+};

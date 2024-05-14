@@ -1,5 +1,8 @@
 import { GET_CONNECTORS } from "../../../../../constants/index.ts";
-import { ConnectorTypesResponse, ConnectorsType } from "../../../../../types";
+import {
+  ConnectorTypesResponse,
+  ConnectorsType,
+} from "../../../../../types/index.ts";
 import { connectorTypeOptions } from "../../../../../utils/connectorTypeOptions.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 
