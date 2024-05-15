@@ -8,7 +8,7 @@ from intelligence_layer.result_interpreters.metric_task_result_interpreters.util
 from media.utils import generate_local_image_path
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
-    PlaybookTaskDefinition as PlaybookTaskDefinitionProto
+    PlaybookTaskDefinition as PlaybookTaskDefinitionProto, TableResult as TableResultProto
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,9 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
     result_type = result.type
     if result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TIMESERIES:
         try:
-            object_url = generate_graph_for_metric_timeseries_result(result, file_key, task.name.value)
+            object_url = generate_graph_for_metric_timeseries_result(result, file_key, metric_expression)
+            if not object_url:
+                return InterpretationProto()
             if metric_name:
                 metric_name = metric_name.replace('`', '')
                 title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
@@ -49,7 +51,7 @@ def basic_metric_task_result_interpreter(task: PlaybookTaskDefinitionProto,
             raise e
     elif result_type == PlaybookMetricTaskExecutionResultProto.Result.Type.TABLE_RESULT:
         try:
-            table_result: PlaybookMetricTaskExecutionResultProto.Result.TableResult = result.table_result
+            table_result: TableResultProto = result.table_result
             df = table_result_to_df(table_result, metric_name)
             df.to_csv(file_key, index=False)
             title = f'Fetched `{metric_expression}` from `{metric_source}`.'

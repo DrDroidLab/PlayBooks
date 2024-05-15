@@ -1,7 +1,7 @@
 from datetime import datetime, date
 
 from connectors.models import ConnectorMetadataModelStore
-from protos.connectors.connector_pb2 import ConnectorType
+from protos.base_pb2 import Source as ConnectorType
 
 
 class ConnectorMetadataExtractorFacadeException(ValueError):

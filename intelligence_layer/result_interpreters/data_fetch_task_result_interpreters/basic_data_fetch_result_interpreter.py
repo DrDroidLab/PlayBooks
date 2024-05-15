@@ -4,17 +4,17 @@ import pandas as pd
 from google.protobuf.wrappers_pb2 import StringValue
 
 from media.utils import generate_local_csv_path
+from protos.base_pb2 import Source
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, \
-    PlaybookDataFetchTaskDefinition as PlaybookDataFetchTaskDefinitionProto
+    PlaybookDataFetchTaskExecutionResult as PlaybookDataFetchTaskExecutionResultProto, TableResult as TableResultProto
 
 logger = logging.getLogger(__name__)
 
 database_source_display_name_map = {
-    PlaybookDataFetchTaskDefinitionProto.Source.CLICKHOUSE: 'Clickhouse',
-    PlaybookDataFetchTaskDefinitionProto.Source.POSTGRES: 'Postgres',
-    PlaybookDataFetchTaskDefinitionProto.Source.SQL_DATABASE_CONNECTION: 'Database',
+    Source.CLICKHOUSE: 'Clickhouse',
+    Source.POSTGRES: 'Postgres',
+    Source.SQL_DATABASE_CONNECTION: 'Database',
 }
 
 
@@ -36,7 +36,7 @@ def basic_data_fetch_task_result_interpreter(task: PlaybookTaskDefinitionProto,
     result_type = result.type
     if result_type == PlaybookDataFetchTaskExecutionResultProto.Result.Type.TABLE_RESULT:
         try:
-            table_result: PlaybookDataFetchTaskExecutionResultProto.Result.TableResult = result.table_result
+            table_result: TableResultProto = result.table_result
             df = table_result_to_df(table_result, data_fetch_task_name)
             df.to_csv(file_key, index=False)
             title = f'Fetched `{table_result.raw_query.value}` from `{data_source}`. Total rows: {str(table_result.total_count.value)}'

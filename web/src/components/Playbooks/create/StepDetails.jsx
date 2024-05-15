@@ -81,12 +81,12 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <Notes step={step} index={currentStepIndex} />
           <AddSource step={step} />
+          <PlaybookStep card={step} index={currentStepIndex} />
+          <Notes step={step} index={currentStepIndex} />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation />
           )}
-          <PlaybookStep card={step} index={currentStepIndex} />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}

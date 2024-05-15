@@ -1,4 +1,5 @@
-import { GlobalVariable, Step } from "../../../types.ts";
+import { Step } from "../../../types.ts";
+import globalVariableToState from "./globalVariableToState.ts";
 import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
 export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
@@ -16,14 +17,7 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
       isPrefetched: true,
       isCopied: isCopied,
       isOpen: false,
-      globalVariables: Object.entries(playbook.global_variable_set ?? {}).map(
-        (val): GlobalVariable => {
-          return {
-            name: val[0],
-            value: val[1] as string,
-          };
-        },
-      ),
+      globalVariables: globalVariableToState(playbook.global_variable_set),
       showError: false,
       isPlayground: false,
       stepType: "",

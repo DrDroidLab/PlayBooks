@@ -1,10 +1,11 @@
 from typing import Dict
 
+from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookDataFetchTaskDefinition, PlaybookDataFetchTaskExecutionResult
 
 
 class PlaybookDataFetchTaskExecutor:
-    source: PlaybookDataFetchTaskDefinition.Source = PlaybookDataFetchTaskDefinition.Source.UNKNOWN
+    source: Source = Source.UNKNOWN
     task_type_callable_map = {}
 
     @classmethod

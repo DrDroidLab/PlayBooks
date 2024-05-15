@@ -1,5 +1,6 @@
 from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, ConnectorType
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 
 class RemoteServerConnectorMetadataExtractor(ConnectorMetadataExtractor):

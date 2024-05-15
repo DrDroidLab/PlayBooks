@@ -6,15 +6,17 @@ from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
 from protos.base_pb2 import TimeRange
-from protos.connectors.connector_pb2 import ConnectorType as ConnectorTypeProto, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookDatadogTask as PlaybookDatadogTaskProto, PlaybookMetricTaskExecutionResult
+    PlaybookDatadogTask as PlaybookDatadogTaskProto, PlaybookMetricTaskExecutionResult, \
+    TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
 
 
 class DatadogMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
     def __init__(self, account_id):
-        self.source = PlaybookMetricTaskDefinitionProto.Source.DATADOG
+        self.source = Source.DATADOG
         self.task_type_callable_map = {
             PlaybookDatadogTaskProto.TaskType.SERVICE_METRIC_EXECUTION: self.execute_service_metric_execution_task,
             PlaybookDatadogTaskProto.TaskType.QUERY_METRIC_EXECUTION: self.execute_query_metric_execution_task,
@@ -24,7 +26,7 @@ class DatadogMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         try:
             dd_connector = Connector.objects.get(account_id=account_id,
-                                                 connector_type=ConnectorTypeProto.DATADOG,
+                                                 connector_type=Source.DATADOG,
                                                  is_active=True)
         except Connector.DoesNotExist:
             raise Exception("Active Datadog connector not found for account: " + account_id)
@@ -93,46 +95,37 @@ class DatadogMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         process_function = task.process_function.value
         if process_function == 'timeseries':
-            labeled_metric_timeseries: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries] = []
+            labeled_metric_timeseries: [TimeseriesResultProto.LabeledMetricTimeseries] = []
 
             for itr, item in enumerate(results.series.value):
                 group_tags = item.group_tags.value
-                metric_labels: [PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue] = []
+                metric_labels: [LabelValuePairProto] = []
                 if item.unit:
                     unit = item.unit[0].name
                 else:
                     unit = ''
                 for gt in group_tags:
                     metric_labels.append(
-                        PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                            name=StringValue(value='resource_name'),
-                            value=StringValue(value=gt)))
+                        LabelValuePairProto(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
                 times = results.times.value
                 values = results.values.value[itr].value
-                datapoints: [PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+                datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
                 for it, val in enumerate(values):
-                    datapoints.append(
-                        PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(times[it]),
-                            value=DoubleValue(value=val)
-                        ))
+                    datapoints.append(TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                              value=DoubleValue(
+                                                                                                  value=val)))
 
                 labeled_metric_timeseries.append(
-                    PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_labels,
-                        unit=StringValue(value=unit),
-                        datapoints=datapoints
-                    ))
+                    TimeseriesResultProto.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                                  unit=StringValue(value=unit), datapoints=datapoints))
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=labeled_metric_timeseries))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.DATADOG,
+                metric_source=Source.DATADOG,
                 metric_expression=StringValue(value=metric),
                 metric_name=StringValue(value=service_name),
                 result=result)
@@ -177,46 +170,37 @@ class DatadogMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         process_function = task.process_function.value
         if process_function == 'timeseries':
-            labeled_metric_timeseries: [
-                PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries] = []
+            labeled_metric_timeseries: [TimeseriesResultProto.LabeledMetricTimeseries] = []
 
             for itr, item in enumerate(results.series.value):
                 group_tags = item.group_tags.value
-                metric_labels: [PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue] = []
+                metric_labels: [LabelValuePairProto] = []
                 if item.unit:
                     unit = item.unit[0].name
                 else:
                     unit = ''
                 for gt in group_tags:
                     metric_labels.append(
-                        PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue(
-                            name=StringValue(value='resource_name'),
-                            value=StringValue(value=gt)))
+                        LabelValuePairProto(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
                 times = results.times.value
                 values = results.values.value[itr].value
-                datapoints: [PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] = []
+                datapoints: [TimeseriesResultProto.LabeledMetricTimeseries.Datapoint] = []
                 for it, val in enumerate(values):
-                    datapoints.append(
-                        PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(times[it]),
-                            value=DoubleValue(value=val)
-                        ))
+                    datapoints.append(TimeseriesResultProto.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                              value=DoubleValue(
+                                                                                                  value=val)))
 
                 labeled_metric_timeseries.append(
-                    PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries(
-                        metric_label_values=metric_labels,
-                        unit=StringValue(value=unit),
-                        datapoints=datapoints
-                    ))
+                    TimeseriesResultProto.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                                  unit=StringValue(value=unit), datapoints=datapoints))
 
             result = PlaybookMetricTaskExecutionResult.Result(
                 type=PlaybookMetricTaskExecutionResult.Result.Type.TIMESERIES,
-                timeseries=PlaybookMetricTaskExecutionResult.Result.Timeseries(
-                    labeled_metric_timeseries=labeled_metric_timeseries))
+                timeseries=TimeseriesResultProto(labeled_metric_timeseries=labeled_metric_timeseries))
 
             task_execution_result = PlaybookMetricTaskExecutionResult(
-                metric_source=PlaybookMetricTaskDefinitionProto.Source.DATADOG,
+                metric_source=Source.DATADOG,
                 result=result)
 
         return task_execution_result

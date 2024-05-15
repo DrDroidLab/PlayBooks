@@ -5,7 +5,8 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
 from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
-from protos.connectors.connector_pb2 import ConnectorType, ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source as ConnectorType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookStepDefinition as PlaybookStepDefinitionProto
 

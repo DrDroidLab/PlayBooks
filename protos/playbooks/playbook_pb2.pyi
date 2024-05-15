@@ -35,7 +35,9 @@ class _EvaluationConditionFunctionEnumTypeWrapper(google.protobuf.internal.enum_
     ECF_MAX: _EvaluationConditionFunction.ValueType  # 4
 
 class EvaluationConditionFunction(_EvaluationConditionFunction, metaclass=_EvaluationConditionFunctionEnumTypeWrapper):
-    """Decision Task Execution Protos"""
+    """////////////// Playbook Decision Task Execution Protos ////////////////
+    Decision Task Definition Protos
+    """
 
 UNKNOWN_ECF: EvaluationConditionFunction.ValueType  # 0
 ECF_AVG: EvaluationConditionFunction.ValueType  # 1
@@ -92,683 +94,158 @@ FAILED: PlaybookExecutionStatusType.ValueType  # 4
 global___PlaybookExecutionStatusType = PlaybookExecutionStatusType
 
 @typing_extensions.final
-class PlaybookMetricTaskExecutionResult(google.protobuf.message.Message):
-    """Task Execution Result Protos"""
-
+class LabelValuePair(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    @typing_extensions.final
-    class Result(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookMetricTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 0
-            TIMESERIES: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 1
-            TABLE_RESULT: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 2
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 0
-        TIMESERIES: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 1
-        TABLE_RESULT: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 2
-
-        @typing_extensions.final
-        class GroupByLabelValue(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            NAME_FIELD_NUMBER: builtins.int
-            VALUE_FIELD_NUMBER: builtins.int
-            @property
-            def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            def __init__(
-                self,
-                *,
-                name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                value: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> None: ...
-
-        @typing_extensions.final
-        class Timeseries(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            @typing_extensions.final
-            class LabeledMetricTimeseries(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                @typing_extensions.final
-                class Datapoint(google.protobuf.message.Message):
-                    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                    TIMESTAMP_FIELD_NUMBER: builtins.int
-                    VALUE_FIELD_NUMBER: builtins.int
-                    timestamp: builtins.int
-                    @property
-                    def value(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
-                    def __init__(
-                        self,
-                        *,
-                        timestamp: builtins.int = ...,
-                        value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
-                    ) -> None: ...
-                    def HasField(self, field_name: typing_extensions.Literal["value", b"value"]) -> builtins.bool: ...
-                    def ClearField(self, field_name: typing_extensions.Literal["timestamp", b"timestamp", "value", b"value"]) -> None: ...
-
-                METRIC_LABEL_VALUES_FIELD_NUMBER: builtins.int
-                UNIT_FIELD_NUMBER: builtins.int
-                DATAPOINTS_FIELD_NUMBER: builtins.int
-                @property
-                def metric_label_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue]: ...
-                @property
-                def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def datapoints(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint]: ...
-                def __init__(
-                    self,
-                    *,
-                    metric_label_values: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue] | None = ...,
-                    unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    datapoints: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries.Datapoint] | None = ...,
-                ) -> None: ...
-                def HasField(self, field_name: typing_extensions.Literal["unit", b"unit"]) -> builtins.bool: ...
-                def ClearField(self, field_name: typing_extensions.Literal["datapoints", b"datapoints", "metric_label_values", b"metric_label_values", "unit", b"unit"]) -> None: ...
-
-            LABELED_METRIC_TIMESERIES_FIELD_NUMBER: builtins.int
-            @property
-            def labeled_metric_timeseries(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries]: ...
-            def __init__(
-                self,
-                *,
-                labeled_metric_timeseries: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.Timeseries.LabeledMetricTimeseries] | None = ...,
-            ) -> None: ...
-            def ClearField(self, field_name: typing_extensions.Literal["labeled_metric_timeseries", b"labeled_metric_timeseries"]) -> None: ...
-
-        @typing_extensions.final
-        class TableResult(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            @typing_extensions.final
-            class TableColumn(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                NAME_FIELD_NUMBER: builtins.int
-                TYPE_FIELD_NUMBER: builtins.int
-                VALUE_FIELD_NUMBER: builtins.int
-                @property
-                def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                def __init__(
-                    self,
-                    *,
-                    name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    value: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                ) -> None: ...
-                def HasField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> builtins.bool: ...
-                def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> None: ...
-
-            @typing_extensions.final
-            class TableRow(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                COLUMNS_FIELD_NUMBER: builtins.int
-                @property
-                def columns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.TableResult.TableColumn]: ...
-                def __init__(
-                    self,
-                    *,
-                    columns: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.TableResult.TableColumn] | None = ...,
-                ) -> None: ...
-                def ClearField(self, field_name: typing_extensions.Literal["columns", b"columns"]) -> None: ...
-
-            ROWS_FIELD_NUMBER: builtins.int
-            @property
-            def rows(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow]: ...
-            def __init__(
-                self,
-                *,
-                rows: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.TableResult.TableRow] | None = ...,
-            ) -> None: ...
-            def ClearField(self, field_name: typing_extensions.Literal["rows", b"rows"]) -> None: ...
-
-        TYPE_FIELD_NUMBER: builtins.int
-        TIMESERIES_FIELD_NUMBER: builtins.int
-        TABLE_RESULT_FIELD_NUMBER: builtins.int
-        type: global___PlaybookMetricTaskExecutionResult.Result.Type.ValueType
-        @property
-        def timeseries(self) -> global___PlaybookMetricTaskExecutionResult.Result.Timeseries: ...
-        @property
-        def table_result(self) -> global___PlaybookMetricTaskExecutionResult.Result.TableResult: ...
-        def __init__(
-            self,
-            *,
-            type: global___PlaybookMetricTaskExecutionResult.Result.Type.ValueType = ...,
-            timeseries: global___PlaybookMetricTaskExecutionResult.Result.Timeseries | None = ...,
-            table_result: global___PlaybookMetricTaskExecutionResult.Result.TableResult | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "timeseries", b"timeseries"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table_result"] | None: ...
-
-    METRIC_SOURCE_FIELD_NUMBER: builtins.int
-    METRIC_NAME_FIELD_NUMBER: builtins.int
-    METRIC_EXPRESSION_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    metric_source: global___PlaybookMetricTaskDefinition.Source.ValueType
+    NAME_FIELD_NUMBER: builtins.int
+    VALUE_FIELD_NUMBER: builtins.int
     @property
-    def metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def metric_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def result(self) -> global___PlaybookMetricTaskExecutionResult.Result: ...
+    def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
-        metric_source: global___PlaybookMetricTaskDefinition.Source.ValueType = ...,
-        metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        metric_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        result: global___PlaybookMetricTaskExecutionResult.Result | None = ...,
+        name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        value: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["metric_expression", b"metric_expression", "metric_name", b"metric_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["metric_expression", b"metric_expression", "metric_name", b"metric_name", "metric_source", b"metric_source", "result", b"result"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> None: ...
 
-global___PlaybookMetricTaskExecutionResult = PlaybookMetricTaskExecutionResult
+global___LabelValuePair = LabelValuePair
 
 @typing_extensions.final
-class PlaybookDecisionTaskExecutionResult(google.protobuf.message.Message):
+class TimeseriesResult(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     @typing_extensions.final
-    class Result(google.protobuf.message.Message):
+    class LabeledMetricTimeseries(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDecisionTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 0
-            ELSE_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 1
-            TIMESERIES_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 2
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 0
-        ELSE_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 1
-        TIMESERIES_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 2
-
         @typing_extensions.final
-        class ElseEvaluation(google.protobuf.message.Message):
+        class Datapoint(google.protobuf.message.Message):
             DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-            EVALUATION_FIELD_NUMBER: builtins.int
-            @property
-            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-            def __init__(
-                self,
-                *,
-                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> None: ...
-
-        @typing_extensions.final
-        class TimeseriesEvaluation(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            EVALUATION_FIELD_NUMBER: builtins.int
-            RULE_FIELD_NUMBER: builtins.int
+            TIMESTAMP_FIELD_NUMBER: builtins.int
             VALUE_FIELD_NUMBER: builtins.int
-            @property
-            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-            @property
-            def rule(self) -> global___TimeseriesEvaluationTask.Rule: ...
+            timestamp: builtins.int
             @property
             def value(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
             def __init__(
                 self,
                 *,
-                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-                rule: global___TimeseriesEvaluationTask.Rule | None = ...,
+                timestamp: builtins.int = ...,
                 value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
             ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["value", b"value"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["timestamp", b"timestamp", "value", b"value"]) -> None: ...
 
-        TYPE_FIELD_NUMBER: builtins.int
-        NEXT_TASK_FIELD_NUMBER: builtins.int
-        ELSE_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
-        TIMESERIES_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
-        type: global___PlaybookDecisionTaskExecutionResult.Result.Type.ValueType
+        METRIC_LABEL_VALUES_FIELD_NUMBER: builtins.int
+        UNIT_FIELD_NUMBER: builtins.int
+        DATAPOINTS_FIELD_NUMBER: builtins.int
         @property
-        def next_task(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def metric_label_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___LabelValuePair]: ...
         @property
-        def else_evaluation_condition(self) -> global___PlaybookDecisionTaskExecutionResult.Result.ElseEvaluation: ...
+        def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def timeseries_evaluation_condition(self) -> global___PlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation: ...
+        def datapoints(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___TimeseriesResult.LabeledMetricTimeseries.Datapoint]: ...
         def __init__(
             self,
             *,
-            type: global___PlaybookDecisionTaskExecutionResult.Result.Type.ValueType = ...,
-            next_task: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            else_evaluation_condition: global___PlaybookDecisionTaskExecutionResult.Result.ElseEvaluation | None = ...,
-            timeseries_evaluation_condition: global___PlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation | None = ...,
+            metric_label_values: collections.abc.Iterable[global___LabelValuePair] | None = ...,
+            unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            datapoints: collections.abc.Iterable[global___TimeseriesResult.LabeledMetricTimeseries.Datapoint] | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["else_evaluation_condition", "timeseries_evaluation_condition"] | None: ...
+        def HasField(self, field_name: typing_extensions.Literal["unit", b"unit"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["datapoints", b"datapoints", "metric_label_values", b"metric_label_values", "unit", b"unit"]) -> None: ...
 
-    DECISION_TASK_ID_FIELD_NUMBER: builtins.int
-    DECISION_TASK_NAME_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
+    LABELED_METRIC_TIMESERIES_FIELD_NUMBER: builtins.int
     @property
-    def decision_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    @property
-    def decision_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def result(self) -> global___PlaybookDecisionTaskExecutionResult.Result: ...
+    def labeled_metric_timeseries(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___TimeseriesResult.LabeledMetricTimeseries]: ...
     def __init__(
         self,
         *,
-        decision_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        decision_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        result: global___PlaybookDecisionTaskExecutionResult.Result | None = ...,
+        labeled_metric_timeseries: collections.abc.Iterable[global___TimeseriesResult.LabeledMetricTimeseries] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["labeled_metric_timeseries", b"labeled_metric_timeseries"]) -> None: ...
 
-global___PlaybookDecisionTaskExecutionResult = PlaybookDecisionTaskExecutionResult
+global___TimeseriesResult = TimeseriesResult
 
 @typing_extensions.final
-class PlaybookDataFetchTaskExecutionResult(google.protobuf.message.Message):
+class TableResult(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     @typing_extensions.final
-    class Result(google.protobuf.message.Message):
+    class TableColumn(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType  # 0
-            TABLE_RESULT: PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType  # 1
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType  # 0
-        TABLE_RESULT: PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType  # 1
-
-        @typing_extensions.final
-        class TableResult(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            @typing_extensions.final
-            class TableColumn(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                NAME_FIELD_NUMBER: builtins.int
-                TYPE_FIELD_NUMBER: builtins.int
-                VALUE_FIELD_NUMBER: builtins.int
-                @property
-                def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                def __init__(
-                    self,
-                    *,
-                    name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    value: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                ) -> None: ...
-                def HasField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> builtins.bool: ...
-                def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> None: ...
-
-            @typing_extensions.final
-            class TableRow(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                COLUMNS_FIELD_NUMBER: builtins.int
-                @property
-                def columns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookDataFetchTaskExecutionResult.Result.TableResult.TableColumn]: ...
-                def __init__(
-                    self,
-                    *,
-                    columns: collections.abc.Iterable[global___PlaybookDataFetchTaskExecutionResult.Result.TableResult.TableColumn] | None = ...,
-                ) -> None: ...
-                def ClearField(self, field_name: typing_extensions.Literal["columns", b"columns"]) -> None: ...
-
-            RAW_QUERY_FIELD_NUMBER: builtins.int
-            TOTAL_COUNT_FIELD_NUMBER: builtins.int
-            LIMIT_FIELD_NUMBER: builtins.int
-            OFFSET_FIELD_NUMBER: builtins.int
-            ROWS_FIELD_NUMBER: builtins.int
-            @property
-            def raw_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def total_count(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-            @property
-            def limit(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-            @property
-            def offset(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-            @property
-            def rows(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookDataFetchTaskExecutionResult.Result.TableResult.TableRow]: ...
-            def __init__(
-                self,
-                *,
-                raw_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                total_count: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-                limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-                offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-                rows: collections.abc.Iterable[global___PlaybookDataFetchTaskExecutionResult.Result.TableResult.TableRow] | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["limit", b"limit", "offset", b"offset", "raw_query", b"raw_query", "total_count", b"total_count"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["limit", b"limit", "offset", b"offset", "raw_query", b"raw_query", "rows", b"rows", "total_count", b"total_count"]) -> None: ...
-
+        NAME_FIELD_NUMBER: builtins.int
         TYPE_FIELD_NUMBER: builtins.int
-        TABLE_RESULT_FIELD_NUMBER: builtins.int
-        type: global___PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType
+        VALUE_FIELD_NUMBER: builtins.int
         @property
-        def table_result(self) -> global___PlaybookDataFetchTaskExecutionResult.Result.TableResult: ...
+        def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
-            type: global___PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType = ...,
-            table_result: global___PlaybookDataFetchTaskExecutionResult.Result.TableResult | None = ...,
+            name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            value: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["table_result"] | None: ...
-
-    DATA_FETCH_TASK_ID_FIELD_NUMBER: builtins.int
-    DATA_FETCH_TASK_NAME_FIELD_NUMBER: builtins.int
-    DATA_SOURCE_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def data_fetch_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    @property
-    def data_fetch_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    data_source: global___PlaybookDataFetchTaskDefinition.Source.ValueType
-    @property
-    def result(self) -> global___PlaybookDataFetchTaskExecutionResult.Result: ...
-    def __init__(
-        self,
-        *,
-        data_fetch_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        data_fetch_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        data_source: global___PlaybookDataFetchTaskDefinition.Source.ValueType = ...,
-        result: global___PlaybookDataFetchTaskExecutionResult.Result | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["data_fetch_task_id", b"data_fetch_task_id", "data_fetch_task_name", b"data_fetch_task_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["data_fetch_task_id", b"data_fetch_task_id", "data_fetch_task_name", b"data_fetch_task_name", "data_source", b"data_source", "result", b"result"]) -> None: ...
-
-global___PlaybookDataFetchTaskExecutionResult = PlaybookDataFetchTaskExecutionResult
-
-@typing_extensions.final
-class PlaybookDocumentationTaskExecutionResult(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        def HasField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type", "value", b"value"]) -> None: ...
 
     @typing_extensions.final
-    class Result(google.protobuf.message.Message):
+    class TableRow(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType  # 0
-            MARKDOWN: PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType  # 1
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType  # 0
-        MARKDOWN: PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType  # 1
-
-        @typing_extensions.final
-        class MarkdownResult(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            TEXT_FIELD_NUMBER: builtins.int
-            @property
-            def text(self) -> google.protobuf.struct_pb2.Struct: ...
-            def __init__(
-                self,
-                *,
-                text: google.protobuf.struct_pb2.Struct | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["text", b"text"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["text", b"text"]) -> None: ...
-
-        TYPE_FIELD_NUMBER: builtins.int
-        MARKDOWN_RESULT_FIELD_NUMBER: builtins.int
-        type: global___PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType
+        COLUMNS_FIELD_NUMBER: builtins.int
         @property
-        def markdown_result(self) -> global___PlaybookDocumentationTaskExecutionResult.Result.MarkdownResult: ...
+        def columns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___TableResult.TableColumn]: ...
         def __init__(
             self,
             *,
-            type: global___PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType = ...,
-            markdown_result: global___PlaybookDocumentationTaskExecutionResult.Result.MarkdownResult | None = ...,
+            columns: collections.abc.Iterable[global___TableResult.TableColumn] | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["markdown_result", b"markdown_result", "result", b"result"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["markdown_result", b"markdown_result", "result", b"result", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["markdown_result"] | None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["columns", b"columns"]) -> None: ...
 
-    DOCUMENTATION_TASK_ID_FIELD_NUMBER: builtins.int
-    DOCUMENTATION_TASK_NAME_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
+    RAW_QUERY_FIELD_NUMBER: builtins.int
+    TOTAL_COUNT_FIELD_NUMBER: builtins.int
+    LIMIT_FIELD_NUMBER: builtins.int
+    OFFSET_FIELD_NUMBER: builtins.int
+    ROWS_FIELD_NUMBER: builtins.int
     @property
-    def documentation_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def raw_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def documentation_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def total_count(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def result(self) -> global___PlaybookDocumentationTaskExecutionResult.Result: ...
+    def limit(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def offset(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def rows(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___TableResult.TableRow]: ...
     def __init__(
         self,
         *,
-        documentation_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        documentation_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        result: global___PlaybookDocumentationTaskExecutionResult.Result | None = ...,
+        raw_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        total_count: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        rows: collections.abc.Iterable[global___TableResult.TableRow] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["documentation_task_id", b"documentation_task_id", "documentation_task_name", b"documentation_task_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["documentation_task_id", b"documentation_task_id", "documentation_task_name", b"documentation_task_name", "result", b"result"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["limit", b"limit", "offset", b"offset", "raw_query", b"raw_query", "total_count", b"total_count"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["limit", b"limit", "offset", b"offset", "raw_query", b"raw_query", "rows", b"rows", "total_count", b"total_count"]) -> None: ...
 
-global___PlaybookDocumentationTaskExecutionResult = PlaybookDocumentationTaskExecutionResult
-
-@typing_extensions.final
-class PlaybookActionTaskExecutionResult(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    @typing_extensions.final
-    class Result(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookActionTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 0
-            API_RESPONSE: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 1
-            BASH_COMMAND_OUTPUT: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 2
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 0
-        API_RESPONSE: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 1
-        BASH_COMMAND_OUTPUT: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 2
-
-        @typing_extensions.final
-        class ApiResponse(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            REQUEST_METHOD_FIELD_NUMBER: builtins.int
-            REQUEST_URL_FIELD_NUMBER: builtins.int
-            RESPONSE_STATUS_FIELD_NUMBER: builtins.int
-            RESPONSE_HEADERS_FIELD_NUMBER: builtins.int
-            RESPONSE_BODY_FIELD_NUMBER: builtins.int
-            ERROR_FIELD_NUMBER: builtins.int
-            METADATA_FIELD_NUMBER: builtins.int
-            @property
-            def request_method(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def request_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-            @property
-            def response_status(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-            @property
-            def response_headers(self) -> google.protobuf.struct_pb2.Struct: ...
-            @property
-            def response_body(self) -> google.protobuf.struct_pb2.Struct: ...
-            @property
-            def error(self) -> google.protobuf.struct_pb2.Struct: ...
-            @property
-            def metadata(self) -> google.protobuf.struct_pb2.Struct: ...
-            def __init__(
-                self,
-                *,
-                request_method: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                request_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                response_status: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-                response_headers: google.protobuf.struct_pb2.Struct | None = ...,
-                response_body: google.protobuf.struct_pb2.Struct | None = ...,
-                error: google.protobuf.struct_pb2.Struct | None = ...,
-                metadata: google.protobuf.struct_pb2.Struct | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["error", b"error", "metadata", b"metadata", "request_method", b"request_method", "request_url", b"request_url", "response_body", b"response_body", "response_headers", b"response_headers", "response_status", b"response_status"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "metadata", b"metadata", "request_method", b"request_method", "request_url", b"request_url", "response_body", b"response_body", "response_headers", b"response_headers", "response_status", b"response_status"]) -> None: ...
-
-        @typing_extensions.final
-        class BashCommandOutput(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            @typing_extensions.final
-            class CommandOutput(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-                COMMAND_FIELD_NUMBER: builtins.int
-                OUTPUT_FIELD_NUMBER: builtins.int
-                @property
-                def command(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                @property
-                def output(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-                def __init__(
-                    self,
-                    *,
-                    command: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                    output: google.protobuf.wrappers_pb2.StringValue | None = ...,
-                ) -> None: ...
-                def HasField(self, field_name: typing_extensions.Literal["command", b"command", "output", b"output"]) -> builtins.bool: ...
-                def ClearField(self, field_name: typing_extensions.Literal["command", b"command", "output", b"output"]) -> None: ...
-
-            COMMAND_OUTPUTS_FIELD_NUMBER: builtins.int
-            @property
-            def command_outputs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput.CommandOutput]: ...
-            def __init__(
-                self,
-                *,
-                command_outputs: collections.abc.Iterable[global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput.CommandOutput] | None = ...,
-            ) -> None: ...
-            def ClearField(self, field_name: typing_extensions.Literal["command_outputs", b"command_outputs"]) -> None: ...
-
-        TYPE_FIELD_NUMBER: builtins.int
-        API_RESPONSE_FIELD_NUMBER: builtins.int
-        BASH_COMMAND_OUTPUT_FIELD_NUMBER: builtins.int
-        type: global___PlaybookActionTaskExecutionResult.Result.Type.ValueType
-        @property
-        def api_response(self) -> global___PlaybookActionTaskExecutionResult.Result.ApiResponse: ...
-        @property
-        def bash_command_output(self) -> global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput: ...
-        def __init__(
-            self,
-            *,
-            type: global___PlaybookActionTaskExecutionResult.Result.Type.ValueType = ...,
-            api_response: global___PlaybookActionTaskExecutionResult.Result.ApiResponse | None = ...,
-            bash_command_output: global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "result", b"result"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "result", b"result", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["api_response", "bash_command_output"] | None: ...
-
-    ACTION_TASK_ID_FIELD_NUMBER: builtins.int
-    ACTION_TASK_NAME_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def action_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    @property
-    def action_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def result(self) -> global___PlaybookActionTaskExecutionResult.Result: ...
-    def __init__(
-        self,
-        *,
-        action_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        action_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        result: global___PlaybookActionTaskExecutionResult.Result | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_task_id", b"action_task_id", "action_task_name", b"action_task_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_task_id", b"action_task_id", "action_task_name", b"action_task_name", "result", b"result"]) -> None: ...
-
-global___PlaybookActionTaskExecutionResult = PlaybookActionTaskExecutionResult
-
-@typing_extensions.final
-class PlaybookTaskExecutionResult(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    ERROR_FIELD_NUMBER: builtins.int
-    MESSAGE_FIELD_NUMBER: builtins.int
-    METRIC_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    DECISION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    DATA_FETCH_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    DOCUMENTATION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    ACTION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def message(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def metric_task_execution_result(self) -> global___PlaybookMetricTaskExecutionResult: ...
-    @property
-    def decision_task_execution_result(self) -> global___PlaybookDecisionTaskExecutionResult: ...
-    @property
-    def data_fetch_task_execution_result(self) -> global___PlaybookDataFetchTaskExecutionResult: ...
-    @property
-    def documentation_task_execution_result(self) -> global___PlaybookDocumentationTaskExecutionResult: ...
-    @property
-    def action_task_execution_result(self) -> global___PlaybookActionTaskExecutionResult: ...
-    def __init__(
-        self,
-        *,
-        error: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        message: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        metric_task_execution_result: global___PlaybookMetricTaskExecutionResult | None = ...,
-        decision_task_execution_result: global___PlaybookDecisionTaskExecutionResult | None = ...,
-        data_fetch_task_execution_result: global___PlaybookDataFetchTaskExecutionResult | None = ...,
-        documentation_task_execution_result: global___PlaybookDocumentationTaskExecutionResult | None = ...,
-        action_task_execution_result: global___PlaybookActionTaskExecutionResult | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["metric_task_execution_result", "decision_task_execution_result", "data_fetch_task_execution_result", "documentation_task_execution_result", "action_task_execution_result"] | None: ...
-
-global___PlaybookTaskExecutionResult = PlaybookTaskExecutionResult
+global___TableResult = TableResult
 
 @typing_extensions.final
 class PlaybookCloudwatchTask(google.protobuf.message.Message):
-    """Metric Task Execution Protos"""
+    """////////////// Playbook Metric Task Execution Protos ////////////////
+    Metric Task Definition Protos //
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1295,36 +772,13 @@ global___PlaybookPromQLTask = PlaybookPromQLTask
 class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _Source:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookMetricTaskDefinition._Source.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookMetricTaskDefinition._Source.ValueType  # 0
-        CLOUDWATCH: PlaybookMetricTaskDefinition._Source.ValueType  # 1
-        GRAFANA: PlaybookMetricTaskDefinition._Source.ValueType  # 2
-        NEW_RELIC: PlaybookMetricTaskDefinition._Source.ValueType  # 3
-        DATADOG: PlaybookMetricTaskDefinition._Source.ValueType  # 4
-        GRAFANA_VPC: PlaybookMetricTaskDefinition._Source.ValueType  # 5
-        GRAFANA_MIMIR: PlaybookMetricTaskDefinition._Source.ValueType  # 6
-
-    class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
-    UNKNOWN: PlaybookMetricTaskDefinition.Source.ValueType  # 0
-    CLOUDWATCH: PlaybookMetricTaskDefinition.Source.ValueType  # 1
-    GRAFANA: PlaybookMetricTaskDefinition.Source.ValueType  # 2
-    NEW_RELIC: PlaybookMetricTaskDefinition.Source.ValueType  # 3
-    DATADOG: PlaybookMetricTaskDefinition.Source.ValueType  # 4
-    GRAFANA_VPC: PlaybookMetricTaskDefinition.Source.ValueType  # 5
-    GRAFANA_MIMIR: PlaybookMetricTaskDefinition.Source.ValueType  # 6
-
     SOURCE_FIELD_NUMBER: builtins.int
     CLOUDWATCH_TASK_FIELD_NUMBER: builtins.int
     GRAFANA_TASK_FIELD_NUMBER: builtins.int
     NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
     DATADOG_TASK_FIELD_NUMBER: builtins.int
     MIMIR_TASK_FIELD_NUMBER: builtins.int
-    source: global___PlaybookMetricTaskDefinition.Source.ValueType
+    source: protos.base_pb2.Source.ValueType
     @property
     def cloudwatch_task(self) -> global___PlaybookCloudwatchTask: ...
     @property
@@ -1338,7 +792,7 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        source: global___PlaybookMetricTaskDefinition.Source.ValueType = ...,
+        source: protos.base_pb2.Source.ValueType = ...,
         cloudwatch_task: global___PlaybookCloudwatchTask | None = ...,
         grafana_task: global___PlaybookGrafanaTask | None = ...,
         new_relic_task: global___PlaybookNewRelicTask | None = ...,
@@ -1350,6 +804,74 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "mimir_task"] | None: ...
 
 global___PlaybookMetricTaskDefinition = PlaybookMetricTaskDefinition
+
+@typing_extensions.final
+class PlaybookMetricTaskExecutionResult(google.protobuf.message.Message):
+    """Metric Task Result Protos //"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Result(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class _Type:
+            ValueType = typing.NewType("ValueType", builtins.int)
+            V: typing_extensions.TypeAlias = ValueType
+
+        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookMetricTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
+            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+            UNKNOWN: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 0
+            TIMESERIES: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 1
+            TABLE_RESULT: PlaybookMetricTaskExecutionResult.Result._Type.ValueType  # 2
+
+        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+        UNKNOWN: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 0
+        TIMESERIES: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 1
+        TABLE_RESULT: PlaybookMetricTaskExecutionResult.Result.Type.ValueType  # 2
+
+        TYPE_FIELD_NUMBER: builtins.int
+        TIMESERIES_FIELD_NUMBER: builtins.int
+        TABLE_RESULT_FIELD_NUMBER: builtins.int
+        type: global___PlaybookMetricTaskExecutionResult.Result.Type.ValueType
+        @property
+        def timeseries(self) -> global___TimeseriesResult: ...
+        @property
+        def table_result(self) -> global___TableResult: ...
+        def __init__(
+            self,
+            *,
+            type: global___PlaybookMetricTaskExecutionResult.Result.Type.ValueType = ...,
+            timeseries: global___TimeseriesResult | None = ...,
+            table_result: global___TableResult | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "timeseries", b"timeseries"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table_result"] | None: ...
+
+    METRIC_SOURCE_FIELD_NUMBER: builtins.int
+    METRIC_NAME_FIELD_NUMBER: builtins.int
+    METRIC_EXPRESSION_FIELD_NUMBER: builtins.int
+    RESULT_FIELD_NUMBER: builtins.int
+    metric_source: protos.base_pb2.Source.ValueType
+    @property
+    def metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def metric_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def result(self) -> global___PlaybookMetricTaskExecutionResult.Result: ...
+    def __init__(
+        self,
+        *,
+        metric_source: protos.base_pb2.Source.ValueType = ...,
+        metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        metric_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        result: global___PlaybookMetricTaskExecutionResult.Result | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["metric_expression", b"metric_expression", "metric_name", b"metric_name", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["metric_expression", b"metric_expression", "metric_name", b"metric_name", "metric_source", b"metric_source", "result", b"result"]) -> None: ...
+
+global___PlaybookMetricTaskExecutionResult = PlaybookMetricTaskExecutionResult
 
 @typing_extensions.final
 class TimeseriesEvaluationTask(google.protobuf.message.Message):
@@ -1404,7 +926,7 @@ class TimeseriesEvaluationTask(google.protobuf.message.Message):
         @property
         def next_task(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def label_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue]: ...
+        def label_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___LabelValuePair]: ...
         def __init__(
             self,
             *,
@@ -1414,7 +936,7 @@ class TimeseriesEvaluationTask(google.protobuf.message.Message):
             window: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
             threshold: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
             next_task: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            label_values: collections.abc.Iterable[global___PlaybookMetricTaskExecutionResult.Result.GroupByLabelValue] | None = ...,
+            label_values: collections.abc.Iterable[global___LabelValuePair] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["next_task", b"next_task", "threshold", b"threshold", "window", b"window"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["function", b"function", "label_values", b"label_values", "next_task", b"next_task", "operator", b"operator", "threshold", b"threshold", "type", b"type", "window", b"window"]) -> None: ...
@@ -1498,8 +1020,117 @@ class PlaybookDecisionTaskDefinition(google.protobuf.message.Message):
 global___PlaybookDecisionTaskDefinition = PlaybookDecisionTaskDefinition
 
 @typing_extensions.final
+class PlaybookDecisionTaskExecutionResult(google.protobuf.message.Message):
+    """Decision Task Result Protos //"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Result(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class _Type:
+            ValueType = typing.NewType("ValueType", builtins.int)
+            V: typing_extensions.TypeAlias = ValueType
+
+        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDecisionTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
+            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+            UNKNOWN: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 0
+            ELSE_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 1
+            TIMESERIES_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 2
+
+        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+        UNKNOWN: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 0
+        ELSE_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 1
+        TIMESERIES_EVALUATION_CONDITION: PlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 2
+
+        @typing_extensions.final
+        class ElseEvaluation(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            EVALUATION_FIELD_NUMBER: builtins.int
+            @property
+            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+            def __init__(
+                self,
+                *,
+                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> None: ...
+
+        @typing_extensions.final
+        class TimeseriesEvaluation(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            EVALUATION_FIELD_NUMBER: builtins.int
+            RULE_FIELD_NUMBER: builtins.int
+            VALUE_FIELD_NUMBER: builtins.int
+            @property
+            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+            @property
+            def rule(self) -> global___TimeseriesEvaluationTask.Rule: ...
+            @property
+            def value(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
+            def __init__(
+                self,
+                *,
+                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+                rule: global___TimeseriesEvaluationTask.Rule | None = ...,
+                value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> None: ...
+
+        TYPE_FIELD_NUMBER: builtins.int
+        NEXT_TASK_FIELD_NUMBER: builtins.int
+        ELSE_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
+        TIMESERIES_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
+        type: global___PlaybookDecisionTaskExecutionResult.Result.Type.ValueType
+        @property
+        def next_task(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def else_evaluation_condition(self) -> global___PlaybookDecisionTaskExecutionResult.Result.ElseEvaluation: ...
+        @property
+        def timeseries_evaluation_condition(self) -> global___PlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation: ...
+        def __init__(
+            self,
+            *,
+            type: global___PlaybookDecisionTaskExecutionResult.Result.Type.ValueType = ...,
+            next_task: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            else_evaluation_condition: global___PlaybookDecisionTaskExecutionResult.Result.ElseEvaluation | None = ...,
+            timeseries_evaluation_condition: global___PlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition", "type", b"type"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["else_evaluation_condition", "timeseries_evaluation_condition"] | None: ...
+
+    DECISION_TASK_ID_FIELD_NUMBER: builtins.int
+    DECISION_TASK_NAME_FIELD_NUMBER: builtins.int
+    RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def decision_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def decision_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def result(self) -> global___PlaybookDecisionTaskExecutionResult.Result: ...
+    def __init__(
+        self,
+        *,
+        decision_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        decision_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        result: global___PlaybookDecisionTaskExecutionResult.Result | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> None: ...
+
+global___PlaybookDecisionTaskExecutionResult = PlaybookDecisionTaskExecutionResult
+
+@typing_extensions.final
 class PlaybookDocumentationTaskDefinition(google.protobuf.message.Message):
-    """Documentation Task Execution Protos"""
+    """////////////// Playbook Documentation Task Execution Protos ////////////////
+    Documentation Task Definition Protos //
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1533,8 +1164,84 @@ class PlaybookDocumentationTaskDefinition(google.protobuf.message.Message):
 global___PlaybookDocumentationTaskDefinition = PlaybookDocumentationTaskDefinition
 
 @typing_extensions.final
+class PlaybookDocumentationTaskExecutionResult(google.protobuf.message.Message):
+    """Documentation Task Result Protos //"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Result(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class _Type:
+            ValueType = typing.NewType("ValueType", builtins.int)
+            V: typing_extensions.TypeAlias = ValueType
+
+        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
+            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+            UNKNOWN: PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType  # 0
+            MARKDOWN: PlaybookDocumentationTaskExecutionResult.Result._Type.ValueType  # 1
+
+        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+        UNKNOWN: PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType  # 0
+        MARKDOWN: PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType  # 1
+
+        @typing_extensions.final
+        class MarkdownResult(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            TEXT_FIELD_NUMBER: builtins.int
+            @property
+            def text(self) -> google.protobuf.struct_pb2.Struct: ...
+            def __init__(
+                self,
+                *,
+                text: google.protobuf.struct_pb2.Struct | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["text", b"text"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["text", b"text"]) -> None: ...
+
+        TYPE_FIELD_NUMBER: builtins.int
+        MARKDOWN_RESULT_FIELD_NUMBER: builtins.int
+        type: global___PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType
+        @property
+        def markdown_result(self) -> global___PlaybookDocumentationTaskExecutionResult.Result.MarkdownResult: ...
+        def __init__(
+            self,
+            *,
+            type: global___PlaybookDocumentationTaskExecutionResult.Result.Type.ValueType = ...,
+            markdown_result: global___PlaybookDocumentationTaskExecutionResult.Result.MarkdownResult | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["markdown_result", b"markdown_result", "result", b"result"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["markdown_result", b"markdown_result", "result", b"result", "type", b"type"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["markdown_result"] | None: ...
+
+    DOCUMENTATION_TASK_ID_FIELD_NUMBER: builtins.int
+    DOCUMENTATION_TASK_NAME_FIELD_NUMBER: builtins.int
+    RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def documentation_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def documentation_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def result(self) -> global___PlaybookDocumentationTaskExecutionResult.Result: ...
+    def __init__(
+        self,
+        *,
+        documentation_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        documentation_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        result: global___PlaybookDocumentationTaskExecutionResult.Result | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["documentation_task_id", b"documentation_task_id", "documentation_task_name", b"documentation_task_name", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["documentation_task_id", b"documentation_task_id", "documentation_task_name", b"documentation_task_name", "result", b"result"]) -> None: ...
+
+global___PlaybookDocumentationTaskExecutionResult = PlaybookDocumentationTaskExecutionResult
+
+@typing_extensions.final
 class PlaybookClickhouseDataFetchTask(google.protobuf.message.Message):
-    """Data Fetch Task Execution Protos"""
+    """////////////// Playbook Data Fetch Task Execution Protos ////////////////
+    Data Fetch Task Definition Protos //
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1648,25 +1355,6 @@ global___PlaybookSqlDatabaseConnectionDataFetchTask = PlaybookSqlDatabaseConnect
 class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _Source:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDataFetchTaskDefinition._Source.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookDataFetchTaskDefinition._Source.ValueType  # 0
-        CLICKHOUSE: PlaybookDataFetchTaskDefinition._Source.ValueType  # 1
-        POSTGRES: PlaybookDataFetchTaskDefinition._Source.ValueType  # 2
-        EKS: PlaybookDataFetchTaskDefinition._Source.ValueType  # 3
-        SQL_DATABASE_CONNECTION: PlaybookDataFetchTaskDefinition._Source.ValueType  # 4
-
-    class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
-    UNKNOWN: PlaybookDataFetchTaskDefinition.Source.ValueType  # 0
-    CLICKHOUSE: PlaybookDataFetchTaskDefinition.Source.ValueType  # 1
-    POSTGRES: PlaybookDataFetchTaskDefinition.Source.ValueType  # 2
-    EKS: PlaybookDataFetchTaskDefinition.Source.ValueType  # 3
-    SQL_DATABASE_CONNECTION: PlaybookDataFetchTaskDefinition.Source.ValueType  # 4
-
     SOURCE_FIELD_NUMBER: builtins.int
     ORDER_BY_COLUMN_FIELD_NUMBER: builtins.int
     LIMIT_FIELD_NUMBER: builtins.int
@@ -1675,7 +1363,7 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     POSTGRES_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     EKS_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     SQL_DATABASE_CONNECTION_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
-    source: global___PlaybookDataFetchTaskDefinition.Source.ValueType
+    source: protos.base_pb2.Source.ValueType
     @property
     def order_by_column(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -1693,7 +1381,7 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        source: global___PlaybookDataFetchTaskDefinition.Source.ValueType = ...,
+        source: protos.base_pb2.Source.ValueType = ...,
         order_by_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
         limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
@@ -1709,8 +1397,72 @@ class PlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
 global___PlaybookDataFetchTaskDefinition = PlaybookDataFetchTaskDefinition
 
 @typing_extensions.final
+class PlaybookDataFetchTaskExecutionResult(google.protobuf.message.Message):
+    """Data Fetch Task Result Protos //"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Result(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class _Type:
+            ValueType = typing.NewType("ValueType", builtins.int)
+            V: typing_extensions.TypeAlias = ValueType
+
+        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
+            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+            UNKNOWN: PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType  # 0
+            TABLE_RESULT: PlaybookDataFetchTaskExecutionResult.Result._Type.ValueType  # 1
+
+        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+        UNKNOWN: PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType  # 0
+        TABLE_RESULT: PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType  # 1
+
+        TYPE_FIELD_NUMBER: builtins.int
+        TABLE_RESULT_FIELD_NUMBER: builtins.int
+        type: global___PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType
+        @property
+        def table_result(self) -> global___TableResult: ...
+        def __init__(
+            self,
+            *,
+            type: global___PlaybookDataFetchTaskExecutionResult.Result.Type.ValueType = ...,
+            table_result: global___TableResult | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["result", b"result", "table_result", b"table_result", "type", b"type"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["table_result"] | None: ...
+
+    DATA_FETCH_TASK_ID_FIELD_NUMBER: builtins.int
+    DATA_FETCH_TASK_NAME_FIELD_NUMBER: builtins.int
+    DATA_SOURCE_FIELD_NUMBER: builtins.int
+    RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def data_fetch_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def data_fetch_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    data_source: protos.base_pb2.Source.ValueType
+    @property
+    def result(self) -> global___PlaybookDataFetchTaskExecutionResult.Result: ...
+    def __init__(
+        self,
+        *,
+        data_fetch_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        data_fetch_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        data_source: protos.base_pb2.Source.ValueType = ...,
+        result: global___PlaybookDataFetchTaskExecutionResult.Result | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["data_fetch_task_id", b"data_fetch_task_id", "data_fetch_task_name", b"data_fetch_task_name", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["data_fetch_task_id", b"data_fetch_task_id", "data_fetch_task_name", b"data_fetch_task_name", "data_source", b"data_source", "result", b"result"]) -> None: ...
+
+global___PlaybookDataFetchTaskExecutionResult = PlaybookDataFetchTaskExecutionResult
+
+@typing_extensions.final
 class PlaybookApiCallTask(google.protobuf.message.Message):
-    """Playbook Action Task Execution Protos"""
+    """////////////// Playbook Action Task Execution Protos ////////////////
+    Action Task Definition Proto //
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1792,28 +1544,13 @@ global___PlaybookBashCommandTask = PlaybookBashCommandTask
 class PlaybookActionTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _Source:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookActionTaskDefinition._Source.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookActionTaskDefinition._Source.ValueType  # 0
-        API: PlaybookActionTaskDefinition._Source.ValueType  # 1
-        BASH: PlaybookActionTaskDefinition._Source.ValueType  # 2
-
-    class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
-    UNKNOWN: PlaybookActionTaskDefinition.Source.ValueType  # 0
-    API: PlaybookActionTaskDefinition.Source.ValueType  # 1
-    BASH: PlaybookActionTaskDefinition.Source.ValueType  # 2
-
     SOURCE_FIELD_NUMBER: builtins.int
     ID_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
     METADATA_FIELD_NUMBER: builtins.int
     API_CALL_TASK_FIELD_NUMBER: builtins.int
     BASH_COMMAND_TASK_FIELD_NUMBER: builtins.int
-    source: global___PlaybookActionTaskDefinition.Source.ValueType
+    source: protos.base_pb2.Source.ValueType
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -1827,7 +1564,7 @@ class PlaybookActionTaskDefinition(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        source: global___PlaybookActionTaskDefinition.Source.ValueType = ...,
+        source: protos.base_pb2.Source.ValueType = ...,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         metadata: google.protobuf.struct_pb2.Struct | None = ...,
@@ -1839,6 +1576,143 @@ class PlaybookActionTaskDefinition(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["api_call_task", "bash_command_task"] | None: ...
 
 global___PlaybookActionTaskDefinition = PlaybookActionTaskDefinition
+
+@typing_extensions.final
+class PlaybookActionTaskExecutionResult(google.protobuf.message.Message):
+    """Action Task Result Proto //"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Result(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class _Type:
+            ValueType = typing.NewType("ValueType", builtins.int)
+            V: typing_extensions.TypeAlias = ValueType
+
+        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookActionTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
+            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+            UNKNOWN: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 0
+            API_RESPONSE: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 1
+            BASH_COMMAND_OUTPUT: PlaybookActionTaskExecutionResult.Result._Type.ValueType  # 2
+
+        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+        UNKNOWN: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 0
+        API_RESPONSE: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 1
+        BASH_COMMAND_OUTPUT: PlaybookActionTaskExecutionResult.Result.Type.ValueType  # 2
+
+        @typing_extensions.final
+        class ApiResponse(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            REQUEST_METHOD_FIELD_NUMBER: builtins.int
+            REQUEST_URL_FIELD_NUMBER: builtins.int
+            RESPONSE_STATUS_FIELD_NUMBER: builtins.int
+            RESPONSE_HEADERS_FIELD_NUMBER: builtins.int
+            RESPONSE_BODY_FIELD_NUMBER: builtins.int
+            ERROR_FIELD_NUMBER: builtins.int
+            METADATA_FIELD_NUMBER: builtins.int
+            @property
+            def request_method(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            @property
+            def request_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            @property
+            def response_status(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+            @property
+            def response_headers(self) -> google.protobuf.struct_pb2.Struct: ...
+            @property
+            def response_body(self) -> google.protobuf.struct_pb2.Struct: ...
+            @property
+            def error(self) -> google.protobuf.struct_pb2.Struct: ...
+            @property
+            def metadata(self) -> google.protobuf.struct_pb2.Struct: ...
+            def __init__(
+                self,
+                *,
+                request_method: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                request_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                response_status: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+                response_headers: google.protobuf.struct_pb2.Struct | None = ...,
+                response_body: google.protobuf.struct_pb2.Struct | None = ...,
+                error: google.protobuf.struct_pb2.Struct | None = ...,
+                metadata: google.protobuf.struct_pb2.Struct | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["error", b"error", "metadata", b"metadata", "request_method", b"request_method", "request_url", b"request_url", "response_body", b"response_body", "response_headers", b"response_headers", "response_status", b"response_status"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "metadata", b"metadata", "request_method", b"request_method", "request_url", b"request_url", "response_body", b"response_body", "response_headers", b"response_headers", "response_status", b"response_status"]) -> None: ...
+
+        @typing_extensions.final
+        class BashCommandOutput(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            @typing_extensions.final
+            class CommandOutput(google.protobuf.message.Message):
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+                COMMAND_FIELD_NUMBER: builtins.int
+                OUTPUT_FIELD_NUMBER: builtins.int
+                @property
+                def command(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+                @property
+                def output(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+                def __init__(
+                    self,
+                    *,
+                    command: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                    output: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                ) -> None: ...
+                def HasField(self, field_name: typing_extensions.Literal["command", b"command", "output", b"output"]) -> builtins.bool: ...
+                def ClearField(self, field_name: typing_extensions.Literal["command", b"command", "output", b"output"]) -> None: ...
+
+            COMMAND_OUTPUTS_FIELD_NUMBER: builtins.int
+            @property
+            def command_outputs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput.CommandOutput]: ...
+            def __init__(
+                self,
+                *,
+                command_outputs: collections.abc.Iterable[global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput.CommandOutput] | None = ...,
+            ) -> None: ...
+            def ClearField(self, field_name: typing_extensions.Literal["command_outputs", b"command_outputs"]) -> None: ...
+
+        TYPE_FIELD_NUMBER: builtins.int
+        API_RESPONSE_FIELD_NUMBER: builtins.int
+        BASH_COMMAND_OUTPUT_FIELD_NUMBER: builtins.int
+        type: global___PlaybookActionTaskExecutionResult.Result.Type.ValueType
+        @property
+        def api_response(self) -> global___PlaybookActionTaskExecutionResult.Result.ApiResponse: ...
+        @property
+        def bash_command_output(self) -> global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput: ...
+        def __init__(
+            self,
+            *,
+            type: global___PlaybookActionTaskExecutionResult.Result.Type.ValueType = ...,
+            api_response: global___PlaybookActionTaskExecutionResult.Result.ApiResponse | None = ...,
+            bash_command_output: global___PlaybookActionTaskExecutionResult.Result.BashCommandOutput | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "result", b"result"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "result", b"result", "type", b"type"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["api_response", "bash_command_output"] | None: ...
+
+    ACTION_TASK_ID_FIELD_NUMBER: builtins.int
+    ACTION_TASK_NAME_FIELD_NUMBER: builtins.int
+    RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def action_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def action_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def result(self) -> global___PlaybookActionTaskExecutionResult.Result: ...
+    def __init__(
+        self,
+        *,
+        action_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        action_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        result: global___PlaybookActionTaskExecutionResult.Result | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_task_id", b"action_task_id", "action_task_name", b"action_task_name", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_task_id", b"action_task_id", "action_task_name", b"action_task_name", "result", b"result"]) -> None: ...
+
+global___PlaybookActionTaskExecutionResult = PlaybookActionTaskExecutionResult
 
 @typing_extensions.final
 class PlaybookTaskDefinition(google.protobuf.message.Message):
@@ -1924,6 +1798,48 @@ class PlaybookTaskDefinition(google.protobuf.message.Message):
 global___PlaybookTaskDefinition = PlaybookTaskDefinition
 
 @typing_extensions.final
+class PlaybookTaskExecutionResult(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ERROR_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    METRIC_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    DECISION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    DATA_FETCH_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    DOCUMENTATION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    ACTION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
+    @property
+    def error(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def message(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def metric_task_execution_result(self) -> global___PlaybookMetricTaskExecutionResult: ...
+    @property
+    def decision_task_execution_result(self) -> global___PlaybookDecisionTaskExecutionResult: ...
+    @property
+    def data_fetch_task_execution_result(self) -> global___PlaybookDataFetchTaskExecutionResult: ...
+    @property
+    def documentation_task_execution_result(self) -> global___PlaybookDocumentationTaskExecutionResult: ...
+    @property
+    def action_task_execution_result(self) -> global___PlaybookActionTaskExecutionResult: ...
+    def __init__(
+        self,
+        *,
+        error: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        message: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        metric_task_execution_result: global___PlaybookMetricTaskExecutionResult | None = ...,
+        decision_task_execution_result: global___PlaybookDecisionTaskExecutionResult | None = ...,
+        data_fetch_task_execution_result: global___PlaybookDataFetchTaskExecutionResult | None = ...,
+        documentation_task_execution_result: global___PlaybookDocumentationTaskExecutionResult | None = ...,
+        action_task_execution_result: global___PlaybookActionTaskExecutionResult | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["metric_task_execution_result", "decision_task_execution_result", "data_fetch_task_execution_result", "documentation_task_execution_result", "action_task_execution_result"] | None: ...
+
+global___PlaybookTaskExecutionResult = PlaybookTaskExecutionResult
+
+@typing_extensions.final
 class PlaybookStepDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1996,7 +1912,6 @@ class Playbook(google.protobuf.message.Message):
     STATUS_FIELD_NUMBER: builtins.int
     STEPS_FIELD_NUMBER: builtins.int
     GLOBAL_VARIABLE_SET_FIELD_NUMBER: builtins.int
-    HAS_TRIGGERS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -2014,8 +1929,6 @@ class Playbook(google.protobuf.message.Message):
     def steps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepDefinition]: ...
     @property
     def global_variable_set(self) -> google.protobuf.struct_pb2.Struct: ...
-    @property
-    def has_triggers(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     def __init__(
         self,
         *,
@@ -2029,10 +1942,9 @@ class Playbook(google.protobuf.message.Message):
         status: global___PlaybookExecutionStatusType.ValueType = ...,
         steps: collections.abc.Iterable[global___PlaybookStepDefinition] | None = ...,
         global_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
-        has_triggers: google.protobuf.wrappers_pb2.BoolValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "has_triggers", b"has_triggers", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "has_triggers", b"has_triggers", "id", b"id", "is_active", b"is_active", "last_run_at", b"last_run_at", "name", b"name", "status", b"status", "steps", b"steps"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "global_variable_set", b"global_variable_set", "id", b"id", "is_active", b"is_active", "last_run_at", b"last_run_at", "name", b"name", "status", b"status", "steps", b"steps"]) -> None: ...
 
 global___Playbook = Playbook
 
@@ -2181,14 +2093,12 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         UPDATE_PLAYBOOK_NAME: UpdatePlaybookOp._Op.ValueType  # 1
         UPDATE_PLAYBOOK_STATUS: UpdatePlaybookOp._Op.ValueType  # 2
         UPDATE_PLAYBOOK: UpdatePlaybookOp._Op.ValueType  # 3
-        UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS: UpdatePlaybookOp._Op.ValueType  # 4
 
     class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
     UNKNOWN: UpdatePlaybookOp.Op.ValueType  # 0
     UPDATE_PLAYBOOK_NAME: UpdatePlaybookOp.Op.ValueType  # 1
     UPDATE_PLAYBOOK_STATUS: UpdatePlaybookOp.Op.ValueType  # 2
     UPDATE_PLAYBOOK: UpdatePlaybookOp.Op.ValueType  # 3
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS: UpdatePlaybookOp.Op.ValueType  # 4
 
     @typing_extensions.final
     class UpdatePlaybookName(google.protobuf.message.Message):
@@ -2235,30 +2145,10 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["playbook", b"playbook"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["playbook", b"playbook"]) -> None: ...
 
-    @typing_extensions.final
-    class UpdatePlaybookAlertOpsTriggerStatus(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        ALERT_OPS_TRIGGER_ID_FIELD_NUMBER: builtins.int
-        IS_ACTIVE_FIELD_NUMBER: builtins.int
-        @property
-        def alert_ops_trigger_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-        @property
-        def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-        def __init__(
-            self,
-            *,
-            alert_ops_trigger_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-            is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["alert_ops_trigger_id", b"alert_ops_trigger_id", "is_active", b"is_active"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["alert_ops_trigger_id", b"alert_ops_trigger_id", "is_active", b"is_active"]) -> None: ...
-
     OP_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_NAME_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_STATUS_FIELD_NUMBER: builtins.int
     UPDATE_PLAYBOOK_FIELD_NUMBER: builtins.int
-    UPDATE_PLAYBOOK_ALERT_OPS_TRIGGER_STATUS_FIELD_NUMBER: builtins.int
     op: global___UpdatePlaybookOp.Op.ValueType
     @property
     def update_playbook_name(self) -> global___UpdatePlaybookOp.UpdatePlaybookName: ...
@@ -2266,8 +2156,6 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
     def update_playbook_status(self) -> global___UpdatePlaybookOp.UpdatePlaybookStatus: ...
     @property
     def update_playbook(self) -> global___UpdatePlaybookOp.UpdatePlaybook: ...
-    @property
-    def update_playbook_alert_ops_trigger_status(self) -> global___UpdatePlaybookOp.UpdatePlaybookAlertOpsTriggerStatus: ...
     def __init__(
         self,
         *,
@@ -2275,10 +2163,9 @@ class UpdatePlaybookOp(google.protobuf.message.Message):
         update_playbook_name: global___UpdatePlaybookOp.UpdatePlaybookName | None = ...,
         update_playbook_status: global___UpdatePlaybookOp.UpdatePlaybookStatus | None = ...,
         update_playbook: global___UpdatePlaybookOp.UpdatePlaybook | None = ...,
-        update_playbook_alert_ops_trigger_status: global___UpdatePlaybookOp.UpdatePlaybookAlertOpsTriggerStatus | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["update", b"update", "update_playbook", b"update_playbook", "update_playbook_alert_ops_trigger_status", b"update_playbook_alert_ops_trigger_status", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "update", b"update", "update_playbook", b"update_playbook", "update_playbook_alert_ops_trigger_status", b"update_playbook_alert_ops_trigger_status", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_playbook_name", "update_playbook_status", "update_playbook", "update_playbook_alert_ops_trigger_status"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["update", b"update", "update_playbook", b"update_playbook", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "update", b"update", "update_playbook", b"update_playbook", "update_playbook_name", b"update_playbook_name", "update_playbook_status", b"update_playbook_status"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["update", b"update"]) -> typing_extensions.Literal["update_playbook_name", "update_playbook_status", "update_playbook"] | None: ...
 
 global___UpdatePlaybookOp = UpdatePlaybookOp
