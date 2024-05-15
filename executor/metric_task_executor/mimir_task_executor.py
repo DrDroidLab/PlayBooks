@@ -6,7 +6,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from protos.base_pb2 import TimeRange
+from protos.base_pb2 import SourceKeyType, TimeRange
 from protos.base_pb2 import Source
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
@@ -40,9 +40,9 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("Active Mimir connector keys not found for account: {}".format(account_id))
 
         for key in mimir_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.MIMIR_HOST:
+            if key.key_type == SourceKeyType.MIMIR_HOST:
                 self.__mimir_host = key.key
-            if key.key_type == ConnectorKeyProto.KeyType.X_SCOPE_ORG_ID:
+            if key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 self.__x_scope_org_id = key.key
 
         if not self.__mimir_host or not self.__x_scope_org_id:
