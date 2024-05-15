@@ -10,7 +10,8 @@ from protos.connectors.assets.grafana_asset_pb2 import GrafanaTargetMetricPromQl
     GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
     AccountConnectorAssets
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType, ConnectorType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType
+from protos.base_pb2 import Source as ConnectorType
 
 
 class MimirAssetManager(ConnectorAssetManager):

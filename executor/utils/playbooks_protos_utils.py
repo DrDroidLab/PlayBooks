@@ -58,7 +58,7 @@ def get_grafana_mimir_task_execution_proto(task) -> PlaybookMetricTaskDefinition
     else:
         raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
     return PlaybookMetricTaskDefinition(
-        source=PlaybookMetricTaskDefinition.Source.GRAFANA_MIMIR,
+        source=Source.GRAFANA_MIMIR,
         mimir_task=mimir_task_proto)
 
 

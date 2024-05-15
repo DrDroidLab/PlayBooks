@@ -155,8 +155,8 @@ integrations_connector_type_connector_keys_map = {
     ],
     Source.GRAFANA_MIMIR: [
         [
-            SourceKeyType.KeyType.MIMIR_HOST,
-            SourceKeyType.KeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID,
         ]
     ],
     Source.REMOTE_SERVER: [
@@ -227,8 +227,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_USER: 'User',
     SourceKeyType.REMOTE_SERVER_HOST: 'Host',
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
-    SourceKeyType.KeyType.MIMIR_HOST: 'Host',
-    SourceKeyType.KeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
+    SourceKeyType.MIMIR_HOST: 'Host',
+    SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
 }
 
 
