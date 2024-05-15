@@ -46,7 +46,7 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
   return (
     <>
       {isOpen && (
-        <Overlay visible={isOpen}>
+        <Overlay close={toggleOverlay} visible={isOpen}>
           <div className={styles["actionOverlay"]}>
             <header className="text-gray-500">
               Share the current URL with your team members to invite them. They

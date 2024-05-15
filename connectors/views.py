@@ -7,7 +7,8 @@ from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_account_connectors, create_connector, get_all_available_connectors, \
+from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, \
+    get_all_available_connectors, \
     get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
@@ -45,11 +46,12 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                                                              is_active=True)
         if not db_agent_proxy_connector or not db_agent_proxy_connector.exists():
             agent_proxy_vpc_connector_proto = ConnectorProto(type=ConnectorType.AGENT_PROXY)
-            db_agent_proxy_connector, err = create_connector(account, created_by, agent_proxy_vpc_connector_proto,
-                                                             connector_keys)
+            db_agent_proxy_connector, err = update_or_create_connector(account, created_by,
+                                                                       agent_proxy_vpc_connector_proto,
+                                                                       connector_keys)
             if db_agent_proxy_connector is None and err:
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
-    db_connector, err = create_connector(account, created_by, connector, connector_keys)
+    db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
@@ -59,7 +61,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
 def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConnectorsListResponse, HttpResponse]:
     account: Account = get_request_account()
     all_active_connectors = get_db_account_connectors(account, is_active=True)
-    all_active_connector_protos = list(x.proto for x in all_active_connectors)
+    all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
     all_available_connectors = get_all_available_connectors(all_active_connectors)
     all_request_connectors = get_all_request_connectors()
     return GetConnectorsListResponse(success=BoolValue(value=True),
@@ -77,7 +79,11 @@ def connectors_update(request_message: UpdateConnectorRequest) -> Union[UpdateCo
         return UpdateConnectorResponse(success=BoolValue(value=False),
                                        message=Message(title="Invalid Request", description="Missing playbook_id/ops"))
     try:
-        account_connector = account.connector_set.get(id=connector_id)
+        account_connectors = get_db_account_connectors(account, connector_id=connector_id)
+        if not account_connectors.exists():
+            return UpdateConnectorResponse(success=BoolValue(value=False),
+                                           message=Message(title="Connector not found"))
+        account_connector = account_connectors.first()
         updated_connector = connector_update_processor.update(account_connector, update_connector_ops), None
     except Connector.DoesNotExist:
         return UpdateConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector not found'))
@@ -92,8 +98,6 @@ def connectors_update(request_message: UpdateConnectorRequest) -> Union[UpdateCo
 @web_api(GetConnectorKeysOptionsRequest)
 def connector_keys_options(request_message: GetConnectorKeysOptionsRequest) -> \
         Union[GetConnectorKeysOptionsResponse, HttpResponse]:
-    account: Account = get_request_account()
-
     connector_type = request_message.connector_type
 
     if not connector_type:
@@ -117,21 +121,35 @@ def connector_keys_get(request_message: GetConnectorKeysRequest) -> Union[GetCon
     if not connector:
         return GetConnectorKeysResponse(success=BoolValue(value=False),
                                         message=Message(title='Active Connector not found'))
-    else:
-        connector = connector.first()
-    try:
-        connector_keys = get_db_account_connector_keys(account, connector_id)
-    except Exception as e:
-        return GetConnectorKeysResponse(success=BoolValue(value=False), message=Message(title=str(e)))
-    connector_key_protos = list(x.get_proto for x in connector_keys)
+
+    connector = connector.first()
+    connector_proto = connector.proto
+    connector_key_protos = connector_proto.keys
     return GetConnectorKeysResponse(success=BoolValue(value=True), connector=connector.proto,
                                     connector_keys=connector_key_protos)
 
 
 @web_api(CreateConnectorRequest)
 def connectors_test_connection(request_message: CreateConnectorRequest) -> Union[CreateConnectorResponse, HttpResponse]:
+    account: Account = get_request_account()
     connector: ConnectorProto = request_message.connector
-    connector_keys = request_message.connector_keys
+    if not connector:
+        return CreateConnectorResponse(success=BoolValue(value=False),
+                                       message=Message(title='Connector details not found'))
+    if connector.id and connector.id.value:
+        connector_id = connector.id.value
+        db_connectors = get_db_account_connectors(account, connector_id=connector_id)
+        if not db_connectors.exists():
+            return CreateConnectorResponse(success=BoolValue(value=False),
+                                           message=Message(title='Connector not found'))
+        db_connector = db_connectors.first()
+        connector = db_connector.unmasked_proto
+        connector_keys = connector.keys
+    elif request_message.connector_keys:
+        connector_keys = request_message.connector_keys
+    else:
+        return CreateConnectorResponse(success=BoolValue(value=False),
+                                       message=Message(title='Connector keys not found'))
     connection_state, message = test_connection_connector(connector, connector_keys)
     return CreateConnectorResponse(success=BoolValue(value=connection_state), message=Message(title=message))
 
@@ -249,38 +267,38 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
 
     # read sample_manifest file string
     sample_manifest = """
-        display_information:
-            name: MyDroid
-            description: App for Automating Investigation & Actions
-            background_color: "#1f2126"
-        features:
-            bot_user:
-                display_name: MyDroid
-                always_online: true
-        oauth_config:
-            scopes:
-                bot:
-                - channels:history
-                - chat:write
-                - files:write
-                - conversations.connect:manage
-                - conversations.connect:write
-                - groups:write
-                - mpim:write
-                - im:write
-                - channels:manage
-                - channels:read
-                - groups:read
-                - mpim:read
-                - im:read
-        settings:
-            event_subscriptions:
-                request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
-                bot_events:
-                - message.channels
-            org_deploy_enabled: false
-            socket_mode_enabled: false
-            token_rotation_enabled: false
+display_information:
+    name: MyDroid
+    description: App for Automating Investigation & Actions
+    background_color: "#1f2126"
+features:
+    bot_user:
+        display_name: MyDroid
+        always_online: true
+oauth_config:
+    scopes:
+        bot:
+        - channels:history
+        - chat:write
+        - files:write
+        - conversations.connect:manage
+        - conversations.connect:write
+        - groups:write
+        - mpim:write
+        - im:write
+        - channels:manage
+        - channels:read
+        - groups:read
+        - mpim:read
+        - im:read
+settings:
+    event_subscriptions:
+        request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
+        bot_events:
+        - message.channels
+    org_deploy_enabled: false
+    socket_mode_enabled: false
+    token_rotation_enabled: false
     """
 
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)

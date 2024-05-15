@@ -159,6 +159,7 @@ class Connector(google.protobuf.message.Message):
     UPDATED_AT_FIELD_NUMBER: builtins.int
     DISPLAY_NAME_FIELD_NUMBER: builtins.int
     CATEGORY_FIELD_NUMBER: builtins.int
+    KEYS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: protos.base_pb2.Source.ValueType
@@ -174,6 +175,8 @@ class Connector(google.protobuf.message.Message):
     def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def category(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ConnectorKey]: ...
     def __init__(
         self,
         *,
@@ -186,132 +189,16 @@ class Connector(google.protobuf.message.Message):
         updated_at: builtins.int = ...,
         display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         category: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        keys: collections.abc.Iterable[global___ConnectorKey] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["category", b"category", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "keys", b"keys", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
 
 global___Connector = Connector
 
 @typing_extensions.final
 class ConnectorKey(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _KeyType:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _KeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ConnectorKey._KeyType.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: ConnectorKey._KeyType.ValueType  # 0
-        SENTRY_API_KEY: ConnectorKey._KeyType.ValueType  # 1
-        SENTRY_ORG_SLUG: ConnectorKey._KeyType.ValueType  # 6
-        DATADOG_APP_KEY: ConnectorKey._KeyType.ValueType  # 2
-        DATADOG_API_KEY: ConnectorKey._KeyType.ValueType  # 3
-        DATADOG_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 15
-        DATADOG_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 18
-        NEWRELIC_API_KEY: ConnectorKey._KeyType.ValueType  # 4
-        NEWRELIC_APP_ID: ConnectorKey._KeyType.ValueType  # 5
-        NEWRELIC_QUERY_KEY: ConnectorKey._KeyType.ValueType  # 7
-        NEWRELIC_API_DOMAIN: ConnectorKey._KeyType.ValueType  # 19
-        SLACK_BOT_AUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 8
-        SLACK_CHANNEL: ConnectorKey._KeyType.ValueType  # 9
-        HONEYBADGER_USERNAME: ConnectorKey._KeyType.ValueType  # 10
-        HONEYBADGER_PASSWORD: ConnectorKey._KeyType.ValueType  # 11
-        HONEYBADGER_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 12
-        AWS_ACCESS_KEY: ConnectorKey._KeyType.ValueType  # 13
-        AWS_SECRET_KEY: ConnectorKey._KeyType.ValueType  # 14
-        AWS_REGION: ConnectorKey._KeyType.ValueType  # 20
-        AWS_ASSUMED_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 23
-        EKS_ROLE_ARN: ConnectorKey._KeyType.ValueType  # 40
-        GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey._KeyType.ValueType  # 16
-        GOOGLE_CHAT_BOT_SPACES: ConnectorKey._KeyType.ValueType  # 17
-        GRAFANA_HOST: ConnectorKey._KeyType.ValueType  # 21
-        GRAFANA_API_KEY: ConnectorKey._KeyType.ValueType  # 22
-        CLICKHOUSE_INTERFACE: ConnectorKey._KeyType.ValueType  # 24
-        CLICKHOUSE_HOST: ConnectorKey._KeyType.ValueType  # 25
-        CLICKHOUSE_PORT: ConnectorKey._KeyType.ValueType  # 26
-        CLICKHOUSE_USER: ConnectorKey._KeyType.ValueType  # 27
-        CLICKHOUSE_PASSWORD: ConnectorKey._KeyType.ValueType  # 28
-        GCM_PROJECT_ID: ConnectorKey._KeyType.ValueType  # 29
-        GCM_PRIVATE_KEY: ConnectorKey._KeyType.ValueType  # 30
-        GCM_CLIENT_EMAIL: ConnectorKey._KeyType.ValueType  # 31
-        GCM_TOKEN_URI: ConnectorKey._KeyType.ValueType  # 32
-        POSTGRES_HOST: ConnectorKey._KeyType.ValueType  # 33
-        POSTGRES_USER: ConnectorKey._KeyType.ValueType  # 34
-        POSTGRES_PASSWORD: ConnectorKey._KeyType.ValueType  # 35
-        POSTGRES_PORT: ConnectorKey._KeyType.ValueType  # 36
-        POSTGRES_DATABASE: ConnectorKey._KeyType.ValueType  # 37
-        POSTGRES_OPTIONS: ConnectorKey._KeyType.ValueType  # 38
-        SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey._KeyType.ValueType  # 39
-        PAGER_DUTY_API_KEY: ConnectorKey._KeyType.ValueType  # 41
-        OPS_GENIE_API_KEY: ConnectorKey._KeyType.ValueType  # 42
-        AGENT_PROXY_HOST: ConnectorKey._KeyType.ValueType  # 43
-        AGENT_PROXY_API_KEY: ConnectorKey._KeyType.ValueType  # 44
-        GITHUB_ACTIONS_TOKEN: ConnectorKey._KeyType.ValueType  # 45
-        SLACK_APP_ID: ConnectorKey._KeyType.ValueType  # 46
-        OPEN_AI_API_KEY: ConnectorKey._KeyType.ValueType  # 47
-        REMOTE_SERVER_PEM: ConnectorKey._KeyType.ValueType  # 49
-        REMOTE_SERVER_USER: ConnectorKey._KeyType.ValueType  # 50
-        REMOTE_SERVER_HOST: ConnectorKey._KeyType.ValueType  # 51
-        REMOTE_SERVER_PASSWORD: ConnectorKey._KeyType.ValueType  # 52
-        MIMIR_HOST: ConnectorKey._KeyType.ValueType  # 57
-        X_SCOPE_ORG_ID: ConnectorKey._KeyType.ValueType  # 58
-
-    class KeyType(_KeyType, metaclass=_KeyTypeEnumTypeWrapper): ...
-    UNKNOWN: ConnectorKey.KeyType.ValueType  # 0
-    SENTRY_API_KEY: ConnectorKey.KeyType.ValueType  # 1
-    SENTRY_ORG_SLUG: ConnectorKey.KeyType.ValueType  # 6
-    DATADOG_APP_KEY: ConnectorKey.KeyType.ValueType  # 2
-    DATADOG_API_KEY: ConnectorKey.KeyType.ValueType  # 3
-    DATADOG_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 15
-    DATADOG_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 18
-    NEWRELIC_API_KEY: ConnectorKey.KeyType.ValueType  # 4
-    NEWRELIC_APP_ID: ConnectorKey.KeyType.ValueType  # 5
-    NEWRELIC_QUERY_KEY: ConnectorKey.KeyType.ValueType  # 7
-    NEWRELIC_API_DOMAIN: ConnectorKey.KeyType.ValueType  # 19
-    SLACK_BOT_AUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 8
-    SLACK_CHANNEL: ConnectorKey.KeyType.ValueType  # 9
-    HONEYBADGER_USERNAME: ConnectorKey.KeyType.ValueType  # 10
-    HONEYBADGER_PASSWORD: ConnectorKey.KeyType.ValueType  # 11
-    HONEYBADGER_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 12
-    AWS_ACCESS_KEY: ConnectorKey.KeyType.ValueType  # 13
-    AWS_SECRET_KEY: ConnectorKey.KeyType.ValueType  # 14
-    AWS_REGION: ConnectorKey.KeyType.ValueType  # 20
-    AWS_ASSUMED_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 23
-    EKS_ROLE_ARN: ConnectorKey.KeyType.ValueType  # 40
-    GOOGLE_CHAT_BOT_OAUTH_TOKEN: ConnectorKey.KeyType.ValueType  # 16
-    GOOGLE_CHAT_BOT_SPACES: ConnectorKey.KeyType.ValueType  # 17
-    GRAFANA_HOST: ConnectorKey.KeyType.ValueType  # 21
-    GRAFANA_API_KEY: ConnectorKey.KeyType.ValueType  # 22
-    CLICKHOUSE_INTERFACE: ConnectorKey.KeyType.ValueType  # 24
-    CLICKHOUSE_HOST: ConnectorKey.KeyType.ValueType  # 25
-    CLICKHOUSE_PORT: ConnectorKey.KeyType.ValueType  # 26
-    CLICKHOUSE_USER: ConnectorKey.KeyType.ValueType  # 27
-    CLICKHOUSE_PASSWORD: ConnectorKey.KeyType.ValueType  # 28
-    GCM_PROJECT_ID: ConnectorKey.KeyType.ValueType  # 29
-    GCM_PRIVATE_KEY: ConnectorKey.KeyType.ValueType  # 30
-    GCM_CLIENT_EMAIL: ConnectorKey.KeyType.ValueType  # 31
-    GCM_TOKEN_URI: ConnectorKey.KeyType.ValueType  # 32
-    POSTGRES_HOST: ConnectorKey.KeyType.ValueType  # 33
-    POSTGRES_USER: ConnectorKey.KeyType.ValueType  # 34
-    POSTGRES_PASSWORD: ConnectorKey.KeyType.ValueType  # 35
-    POSTGRES_PORT: ConnectorKey.KeyType.ValueType  # 36
-    POSTGRES_DATABASE: ConnectorKey.KeyType.ValueType  # 37
-    POSTGRES_OPTIONS: ConnectorKey.KeyType.ValueType  # 38
-    SQL_DATABASE_CONNECTION_STRING_URI: ConnectorKey.KeyType.ValueType  # 39
-    PAGER_DUTY_API_KEY: ConnectorKey.KeyType.ValueType  # 41
-    OPS_GENIE_API_KEY: ConnectorKey.KeyType.ValueType  # 42
-    AGENT_PROXY_HOST: ConnectorKey.KeyType.ValueType  # 43
-    AGENT_PROXY_API_KEY: ConnectorKey.KeyType.ValueType  # 44
-    GITHUB_ACTIONS_TOKEN: ConnectorKey.KeyType.ValueType  # 45
-    SLACK_APP_ID: ConnectorKey.KeyType.ValueType  # 46
-    OPEN_AI_API_KEY: ConnectorKey.KeyType.ValueType  # 47
-    REMOTE_SERVER_PEM: ConnectorKey.KeyType.ValueType  # 49
-    REMOTE_SERVER_USER: ConnectorKey.KeyType.ValueType  # 50
-    REMOTE_SERVER_HOST: ConnectorKey.KeyType.ValueType  # 51
-    REMOTE_SERVER_PASSWORD: ConnectorKey.KeyType.ValueType  # 52
-    MIMIR_HOST: ConnectorKey.KeyType.ValueType  # 57
-    X_SCOPE_ORG_ID: ConnectorKey.KeyType.ValueType  # 58
 
     ID_FIELD_NUMBER: builtins.int
     KEY_TYPE_FIELD_NUMBER: builtins.int
@@ -323,7 +210,7 @@ class ConnectorKey(google.protobuf.message.Message):
     DISPLAY_NAME_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    key_type: global___ConnectorKey.KeyType.ValueType
+    key_type: protos.base_pb2.SourceKeyType.ValueType
     @property
     def key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -338,7 +225,7 @@ class ConnectorKey(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        key_type: global___ConnectorKey.KeyType.ValueType = ...,
+        key_type: protos.base_pb2.SourceKeyType.ValueType = ...,
         key: google.protobuf.wrappers_pb2.StringValue | None = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,

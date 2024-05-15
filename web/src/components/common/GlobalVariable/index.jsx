@@ -44,7 +44,9 @@ function GlobalVariables() {
       <div className={styles.info}>
         {playbook?.globalVariables?.length > 0 ? (
           playbook?.globalVariables.map((variable, index) => (
-            <div key={index} className={styles.variable}>
+            <div
+              key={index}
+              className={`${styles.variable} flex flex-wrap p-2 border-b`}>
               <div className={styles.name}>{variable.name}</div>
               <ValueComponent
                 valueType={"STRING"}

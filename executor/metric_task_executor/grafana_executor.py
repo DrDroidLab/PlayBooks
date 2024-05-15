@@ -6,8 +6,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookGrafanaTask as PlaybookGrafanaTaskProto, PlaybookMetricTaskExecutionResult, \
@@ -40,9 +39,9 @@ class GrafanaMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("Active Grafana connector keys not found for account: {}".format(account_id))
 
         for key in grafana_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.GRAFANA_API_KEY:
+            if key.key_type == SourceKeyType.GRAFANA_API_KEY:
                 self.__grafana_api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.GRAFANA_HOST:
+            elif key.key_type == SourceKeyType.GRAFANA_HOST:
                 self.__grafana_host = key.key
 
         if not self.__grafana_api_key or not self.__grafana_host:
