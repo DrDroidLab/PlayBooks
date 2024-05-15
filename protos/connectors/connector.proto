@@ -69,6 +69,9 @@ enum ConnectorMetadataModelType {
 
   //Remote Server Models
   SSH_SERVER = 1100;
+
+  // Mimir Server Models
+  GRAFANA_MIMIR_PROMQL = 1201;
 }
 
 

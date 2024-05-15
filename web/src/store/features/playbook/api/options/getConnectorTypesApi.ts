@@ -16,16 +16,16 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
         options.push(...connectorTypeOptions);
         for (let connector of response.active_account_connectors) {
           for (let k = 0; k < connector.model_types_map?.length; k++) {
-            options.push({
+            let o = {
               id: `${connector.connector_type} ${connector.model_types_map[k].display_name}`,
               label: `${connector.connector_type} ${connector.model_types_map[k].display_name}`,
               connector_type: connector.connector_type,
               model_type: connector.model_types_map[k].model_type,
               display_name: connector.model_types_map[k].display_name,
-            });
+            };
+            options.push(o);
           }
         }
-
         return options;
       },
     }),
