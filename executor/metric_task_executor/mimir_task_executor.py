@@ -68,7 +68,7 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         end_time = current_datetime.isoformat() + "Z"
         start_time = evaluation_time.isoformat() + "Z"
-        period = 300
+        period = '300s'
 
         task_execution_result = PlaybookMetricTaskExecutionResult()
 
@@ -96,7 +96,6 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("No data returned from Mimir")
 
         if process_function == 'timeseries':
-            print('response', response)
             if 'data' in response and 'result' in response['data']:
                 labeled_metric_timeseries_list = []
                 for item in response['data']['result']:
