@@ -18,6 +18,7 @@ import "protos/playbooks/source_task_definitions/sql_database_task.proto";
 import "protos/playbooks/source_task_definitions/api_call_task.proto";
 import "protos/playbooks/source_task_definitions/bash_command_task.proto";
 import "protos/playbooks/source_task_definitions/documentation_task.proto";
+import "protos/playbooks/source_task_definitions/promql_task.proto";
 
 
 //////////////// Playbook Metric Task Execution Protos ////////////////
@@ -28,6 +29,7 @@ message PlaybookMetricTaskDefinition {
     PlaybookGrafanaTask grafana_task = 7;
     PlaybookNewRelicTask new_relic_task = 8;
     PlaybookDatadogTask datadog_task = 9;
+    PlaybookPromQLTask mimir_task = 10;
   }
 }
 

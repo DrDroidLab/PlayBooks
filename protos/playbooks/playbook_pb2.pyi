@@ -22,6 +22,7 @@ import protos.playbooks.source_task_definitions.documentation_task_pb2
 import protos.playbooks.source_task_definitions.eks_task_pb2
 import protos.playbooks.source_task_definitions.grafana_task_pb2
 import protos.playbooks.source_task_definitions.new_relic_task_pb2
+import protos.playbooks.source_task_definitions.promql_task_pb2
 import protos.playbooks.source_task_definitions.sql_database_task_pb2
 import sys
 import typing
@@ -44,6 +45,7 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     GRAFANA_TASK_FIELD_NUMBER: builtins.int
     NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
     DATADOG_TASK_FIELD_NUMBER: builtins.int
+    MIMIR_TASK_FIELD_NUMBER: builtins.int
     source: protos.base_pb2.Source.ValueType
     @property
     def cloudwatch_task(self) -> protos.playbooks.source_task_definitions.cloudwatch_task_pb2.PlaybookCloudwatchTask: ...
@@ -53,6 +55,8 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def new_relic_task(self) -> protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask: ...
     @property
     def datadog_task(self) -> protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask: ...
+    @property
+    def mimir_task(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask: ...
     def __init__(
         self,
         *,
@@ -61,10 +65,11 @@ class PlaybookMetricTaskDefinition(google.protobuf.message.Message):
         grafana_task: protos.playbooks.source_task_definitions.grafana_task_pb2.PlaybookGrafanaTask | None = ...,
         new_relic_task: protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask | None = ...,
         datadog_task: protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask | None = ...,
+        mimir_task: protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "mimir_task"] | None: ...
 
 global___PlaybookMetricTaskDefinition = PlaybookMetricTaskDefinition
 

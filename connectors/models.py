@@ -35,6 +35,7 @@ integrations_connector_type_display_name_map = {
     Source.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
     Source.OPEN_AI: 'OPEN AI',
     Source.REMOTE_SERVER: 'REMOTE SERVER',
+    Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
 }
 
 integrations_connector_type_category_map = {
@@ -60,6 +61,7 @@ integrations_connector_type_category_map = {
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
+    Source.GRAFANA_MIMIR: 'Grafana Mimir',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -151,6 +153,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.OPEN_AI_API_KEY,
         ]
     ],
+    Source.GRAFANA_MIMIR: [
+        [
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID,
+        ]
+    ],
     Source.REMOTE_SERVER: [
         [
             SourceKeyType.REMOTE_SERVER_USER,
@@ -218,7 +226,9 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_PEM: 'PEM',
     SourceKeyType.REMOTE_SERVER_USER: 'User',
     SourceKeyType.REMOTE_SERVER_HOST: 'Host',
-    SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password'
+    SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
+    SourceKeyType.MIMIR_HOST: 'Host',
+    SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
 }
 
 

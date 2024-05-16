@@ -18,6 +18,7 @@ import "protos/playbooks/source_task_definitions/sql_database_task.proto";
 import "protos/playbooks/source_task_definitions/api_call_task.proto";
 import "protos/playbooks/source_task_definitions/bash_command_task.proto";
 import "protos/playbooks/source_task_definitions/documentation_task.proto";
+import "protos/playbooks/source_task_definitions/promql_task.proto";
 
 
 // Playbook Task Protos
@@ -42,6 +43,7 @@ message PlaybookTask {
     SqlDataFetchTask sql_database_connection_data_fetch_task = 109;
     PlaybookApiCallTask api_call_task = 110;
     PlaybookBashCommandTask bash_command_task = 111;
+    PlaybookPromQLTask promql_task = 112;
   }
 }
 

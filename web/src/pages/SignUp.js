@@ -74,7 +74,7 @@ function SignUp() {
   }
 
   const getError = (err) => {
-    const errObj = err?.response?.data;
+    const errObj = err?.data;
     if (errObj && Object.keys(errObj).length !== 0) {
       if (errObj.email) return errObj.email[0];
       if (!errObj.email && errObj.password) return errObj.password[0];

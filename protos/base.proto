@@ -93,6 +93,8 @@ enum Source {
   REMOTE_SERVER = 39;
   API = 40;
   BASH = 41;
+
+  GRAFANA_MIMIR = 43;
 }
 
 enum SourceKeyType {
@@ -165,6 +167,9 @@ enum SourceKeyType {
   REMOTE_SERVER_USER = 50;
   REMOTE_SERVER_HOST = 51;
   REMOTE_SERVER_PASSWORD = 52;
+
+  MIMIR_HOST = 53;
+  X_SCOPE_ORG_ID = 54;
 }
 
 enum ConnectorMetadataModelType {

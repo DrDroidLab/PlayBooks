@@ -65,6 +65,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     REMOTE_SERVER: _Source.ValueType  # 39
     API: _Source.ValueType  # 40
     BASH: _Source.ValueType  # 41
+    GRAFANA_MIMIR: _Source.ValueType  # 43
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -110,6 +111,7 @@ OPEN_AI: Source.ValueType  # 38
 REMOTE_SERVER: Source.ValueType  # 39
 API: Source.ValueType  # 40
 BASH: Source.ValueType  # 41
+GRAFANA_MIMIR: Source.ValueType  # 43
 global___Source = Source
 
 class _SourceKeyType:
@@ -170,6 +172,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     REMOTE_SERVER_USER: _SourceKeyType.ValueType  # 50
     REMOTE_SERVER_HOST: _SourceKeyType.ValueType  # 51
     REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
+    MIMIR_HOST: _SourceKeyType.ValueType  # 53
+    X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -225,6 +229,8 @@ REMOTE_SERVER_PEM: SourceKeyType.ValueType  # 49
 REMOTE_SERVER_USER: SourceKeyType.ValueType  # 50
 REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
+MIMIR_HOST: SourceKeyType.ValueType  # 53
+X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
 global___SourceKeyType = SourceKeyType
 
 class _ConnectorMetadataModelType:

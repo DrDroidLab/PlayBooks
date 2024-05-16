@@ -68,6 +68,8 @@ class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_t
     """Sql Database Connection Models"""
     SSH_SERVER: _ConnectorMetadataModelType.ValueType  # 1100
     """Remote Server Models"""
+    GRAFANA_MIMIR_PROMQL: _ConnectorMetadataModelType.ValueType  # 1201
+    """Mimir Server Models"""
 
 class ConnectorMetadataModelType(_ConnectorMetadataModelType, metaclass=_ConnectorMetadataModelTypeEnumTypeWrapper): ...
 
@@ -113,6 +115,8 @@ SQL_DATABASE_CONNECTION_RAW_QUERY: ConnectorMetadataModelType.ValueType  # 901
 """Sql Database Connection Models"""
 SSH_SERVER: ConnectorMetadataModelType.ValueType  # 1100
 """Remote Server Models"""
+GRAFANA_MIMIR_PROMQL: ConnectorMetadataModelType.ValueType  # 1201
+"""Mimir Server Models"""
 global___ConnectorMetadataModelType = ConnectorMetadataModelType
 
 @typing_extensions.final

@@ -15,6 +15,7 @@ from protos.playbooks.source_task_definitions.eks_task_pb2 import PlaybookEksDat
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import PlaybookGrafanaTask, PromQlMetricExecutionTask
 from protos.playbooks.source_task_definitions.new_relic_task_pb2 import PlaybookNewRelicTask, \
     EntityApplicationGoldenMetricExecutionTask, EntityDashboardWidgetNRQLMetricExecutionTask, NRQLMetricExecutionTask
+from protos.playbooks.source_task_definitions.promql_task_pb2 import PlaybookPromQLTask
 from protos.playbooks.source_task_definitions.sql_database_task_pb2 import SqlDataFetchTask
 
 from utils.proto_utils import dict_to_proto
@@ -51,6 +52,21 @@ def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     return PlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
+
+
+def get_grafana_mimir_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+    mimir_task = task.get('mimir_task', {})
+    if mimir_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
+        promql_metric_execution_task_proto = dict_to_proto(
+            mimir_task.get('promql_metric_execution_task', {}),
+            PlaybookPromQLTask.PromQlMetricExecutionTask)
+        mimir_task_proto = PlaybookPromQLTask(type=PlaybookPromQLTask.TaskType.PROMQL_METRIC_EXECUTION,
+                                              promql_metric_execution_task=promql_metric_execution_task_proto)
+    else:
+        raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
+    return PlaybookMetricTaskDefinition(
+        source=Source.GRAFANA_MIMIR,
+        mimir_task=mimir_task_proto)
 
 
 def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
@@ -152,6 +168,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_new_relic_task_execution_proto(task)
         elif source == 'DATADOG':
             metric_task_proto = get_datadog_task_execution_proto(task)
+        elif source == 'GRAFANA_MIMIR':
+            metric_task_proto = get_grafana_mimir_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return PlaybookTaskDefinition(

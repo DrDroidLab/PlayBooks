@@ -68,6 +68,7 @@ export interface Step {
   connector_type?: any;
   model_type?: any;
   interpreter?: any;
+  promql_expression?: string;
   remote_server?: string;
 }
 

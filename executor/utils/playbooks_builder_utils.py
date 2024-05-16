@@ -9,7 +9,7 @@ from protos.connectors.connector_pb2 import ConnectorMetadataModelType as Connec
 
 playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA_VPC,
                                Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC,
-                               Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION]
+                               Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION, Source.GRAFANA_MIMIR]
 
 supported_connectors_model_maps = {
     Source.CLOUDWATCH: [ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC,
@@ -26,6 +26,7 @@ supported_connectors_model_maps = {
     Source.POSTGRES: [ConnectorMetadataModelTypeProto.POSTGRES_DATABASE],
     Source.EKS: [ConnectorMetadataModelTypeProto.EKS_CLUSTER],
     Source.SQL_DATABASE_CONNECTION: [ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY],
+    Source.GRAFANA_MIMIR: [],
 }
 
 model_type_display_name_maps = {
@@ -41,6 +42,7 @@ model_type_display_name_maps = {
     ConnectorMetadataModelTypeProto.POSTGRES_DATABASE: "Database",
     ConnectorMetadataModelTypeProto.EKS_CLUSTER: "Cluster",
     ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
+    ConnectorMetadataModelTypeProto.GRAFANA_MIMIR_PROMQL: "PromQL",
 }
 
 
@@ -76,6 +78,13 @@ def playbooks_builder_get_connector_sources_options(account: Account):
 
         if connector.connector_type == Source.SQL_DATABASE_CONNECTION:
             model_type = ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY
+            display_name = model_type_display_name_maps.get(model_type, "")
+            model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
+                                                                                                  display_name=StringValue(
+                                                                                                      value=display_name)))
+
+        if connector.connector_type == Source.GRAFANA_MIMIR:
+            model_type = ConnectorMetadataModelTypeProto.GRAFANA_MIMIR_PROMQL
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(

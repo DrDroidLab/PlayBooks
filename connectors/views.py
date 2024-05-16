@@ -267,38 +267,38 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
 
     # read sample_manifest file string
     sample_manifest = """
-        display_information:
-            name: MyDroid
-            description: App for Automating Investigation & Actions
-            background_color: "#1f2126"
-        features:
-            bot_user:
-                display_name: MyDroid
-                always_online: true
-        oauth_config:
-            scopes:
-                bot:
-                - channels:history
-                - chat:write
-                - files:write
-                - conversations.connect:manage
-                - conversations.connect:write
-                - groups:write
-                - mpim:write
-                - im:write
-                - channels:manage
-                - channels:read
-                - groups:read
-                - mpim:read
-                - im:read
-        settings:
-            event_subscriptions:
-                request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
-                bot_events:
-                - message.channels
-            org_deploy_enabled: false
-            socket_mode_enabled: false
-            token_rotation_enabled: false
+display_information:
+    name: MyDroid
+    description: App for Automating Investigation & Actions
+    background_color: "#1f2126"
+features:
+    bot_user:
+        display_name: MyDroid
+        always_online: true
+oauth_config:
+    scopes:
+        bot:
+        - channels:history
+        - chat:write
+        - files:write
+        - conversations.connect:manage
+        - conversations.connect:write
+        - groups:write
+        - mpim:write
+        - im:write
+        - channels:manage
+        - channels:read
+        - groups:read
+        - mpim:read
+        - im:read
+settings:
+    event_subscriptions:
+        request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
+        bot_events:
+        - message.channels
+    org_deploy_enabled: false
+    socket_mode_enabled: false
+    token_rotation_enabled: false
     """
 
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)

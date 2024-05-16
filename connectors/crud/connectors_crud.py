@@ -1,15 +1,13 @@
 import logging
 
 from django.db import transaction as dj_transaction
-from google.protobuf.wrappers_pb2 import StringValue
 
 from accounts.models import Account
 from connectors.models import Connector, ConnectorKey, integrations_connector_type_connector_keys_map, \
-    integrations_connector_type_display_name_map, integrations_connector_type_category_map, \
-    integrations_connector_key_display_name_map
+    integrations_connector_type_display_name_map
 from connectors.utils import trigger_connector_metadata_fetch
 from protos.base_pb2 import Source, SourceKeyType
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)

@@ -21,6 +21,7 @@ import protos.playbooks.source_task_definitions.documentation_task_pb2
 import protos.playbooks.source_task_definitions.eks_task_pb2
 import protos.playbooks.source_task_definitions.grafana_task_pb2
 import protos.playbooks.source_task_definitions.new_relic_task_pb2
+import protos.playbooks.source_task_definitions.promql_task_pb2
 import protos.playbooks.source_task_definitions.sql_database_task_pb2
 import sys
 import typing
@@ -57,6 +58,7 @@ class PlaybookTask(google.protobuf.message.Message):
     SQL_DATABASE_CONNECTION_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     API_CALL_TASK_FIELD_NUMBER: builtins.int
     BASH_COMMAND_TASK_FIELD_NUMBER: builtins.int
+    PROMQL_TASK_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     source: protos.base_pb2.Source.ValueType
@@ -93,6 +95,8 @@ class PlaybookTask(google.protobuf.message.Message):
     def api_call_task(self) -> protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask: ...
     @property
     def bash_command_task(self) -> protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask: ...
+    @property
+    def promql_task(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask: ...
     def __init__(
         self,
         *,
@@ -115,10 +119,11 @@ class PlaybookTask(google.protobuf.message.Message):
         sql_database_connection_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
         api_call_task: protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask | None = ...,
         bash_command_task: protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask | None = ...,
+        promql_task: protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "source", b"source", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation_task", "cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "clickhouse_data_fetch_task", "postgres_data_fetch_task", "eks_data_fetch_task", "sql_database_connection_data_fetch_task", "api_call_task", "bash_command_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "promql_task", b"promql_task", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "promql_task", b"promql_task", "source", b"source", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation_task", "cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "clickhouse_data_fetch_task", "postgres_data_fetch_task", "eks_data_fetch_task", "sql_database_connection_data_fetch_task", "api_call_task", "bash_command_task", "promql_task"] | None: ...
 
 global___PlaybookTask = PlaybookTask
 

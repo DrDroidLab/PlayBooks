@@ -12,6 +12,7 @@ from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProc
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
+from integrations_api_processors.mimir_api_processor import MimirApiProcessor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
 from integrations_api_processors.slack_api_processor import SlackApiProcessor
@@ -34,7 +35,8 @@ connector_type_api_processor_map = {
     Source.POSTGRES: PostgresDBProcessor,
     Source.GRAFANA_VPC: VpcApiProcessor,
     Source.SLACK: SlackApiProcessor,
-    Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor
+    Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
+    Source.GRAFANA_MIMIR: MimirApiProcessor
 }
 
 
@@ -121,6 +123,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['agent_proxy_api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 credentials_dict['agent_proxy_host'] = conn_key.key.value
+    elif connector_type == Source.GRAFANA_MIMIR:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.MIMIR_HOST:
+                credentials_dict['mimir_host'] = conn_key.key.value
+            if conn_key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
+                credentials_dict['x_scope_org_id'] = conn_key.key.value
     elif connector_type == Source.CLICKHOUSE:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.CLICKHOUSE_HOST:
