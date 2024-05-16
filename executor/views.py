@@ -20,7 +20,7 @@ from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.crud.playbooks_crud import update_or_create_db_playbook
-from executor.task_executor import execute_task
+from executor.deprecated_task_executor import deprecated_execute_task
 from executor.task_executor_facade import executor_facade
 from executor.tasks import execute_playbook
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
@@ -70,7 +70,7 @@ def task_run(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTaskRe
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
     task = request_message.playbook_task_definition
     try:
-        task_execution_result = execute_task(account.id, time_range, task)
+        task_execution_result = deprecated_execute_task(account.id, time_range, task)
     except Exception as e:
         return RunPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                        task_execution_result=DeprecatedPlaybookTaskExecutionResult(
@@ -92,7 +92,7 @@ def task_run_v2(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTas
     task = request_message.playbook_task_definition
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
     try:
-        task_execution_result = execute_task(account.id, time_range, task)
+        task_execution_result = deprecated_execute_task(account.id, time_range, task)
         playbook_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(task_execution_result)
         interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, playbook_task_result)
     except Exception as e:
@@ -154,7 +154,7 @@ def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepRe
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
     for task in tasks:
         try:
-            task_result = execute_task(account.id, time_range, task)
+            task_result = deprecated_execute_task(account.id, time_range, task)
             task_execution_results.append(task_result)
         except Exception as e:
             task_execution_results.append(DeprecatedPlaybookTaskExecutionResult(error=StringValue(value=str(e))))
@@ -181,7 +181,7 @@ def step_run_v2(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookSte
     task_interpretations = []
     for task in tasks:
         try:
-            task_execution_result = execute_task(account.id, time_range, task)
+            task_execution_result = deprecated_execute_task(account.id, time_range, task)
             new_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(task_execution_result)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, new_task_result)
             playbook_execution_log = DeprecatedPlaybookExecutionLog(
@@ -266,7 +266,7 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
         task_interpretations = []
         for task in tasks:
             try:
-                task_execution_result = execute_task(account.id, time_range, task)
+                task_execution_result = deprecated_execute_task(account.id, time_range, task)
                 playbook_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(
                     task_execution_result)
                 interpretation: InterpretationProto = task_result_interpret(interpreter_type, task,
