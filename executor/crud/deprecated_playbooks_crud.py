@@ -25,7 +25,7 @@ task_type_display_map = {
 
 
 @deprecated
-def validate_playbook_request(playbook: DeprecatedPlaybook):
+def deprecated_validate_playbook_request(playbook: DeprecatedPlaybook):
     global_variable_set = playbook.global_variable_set
     if global_variable_set:
         for global_variable_key in list(global_variable_set.keys()):
@@ -35,8 +35,9 @@ def validate_playbook_request(playbook: DeprecatedPlaybook):
 
 
 @deprecated
-def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None, playbook_ids=None,
-                     created_by=None):
+def deprecated_get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None,
+                                playbook_ids=None,
+                                created_by=None):
     filters = {}
     if playbook_id:
         filters['id'] = playbook_id
@@ -56,43 +57,16 @@ def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_
 
 
 @deprecated
-def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=None, is_active=None):
-    filters = {'playbook_id': playbook_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if playbook_step_name:
-        filters['name'] = playbook_step_name
-    try:
-        return account.playbookstep_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook steps for account_id {account.id} with error {e}")
-    return None
-
-
-@deprecated
-def get_db_playbook_task_definitions(account: Account, playbook_id: str, playbook_step_id, is_active=None):
-    filters = {'playbook_id': playbook_id, 'playbook_step_id': playbook_step_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if is_active is not None:
-        filters['is_active'] = is_active
-    try:
-        return account.playbooktask_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
-    return None
-
-
-@deprecated
-def update_or_create_db_playbook(account: Account, created_by, playbook: DeprecatedPlaybook,
-                                 update_mode: bool = False) -> \
+def deprecated_update_or_create_db_playbook(account: Account, created_by, playbook: DeprecatedPlaybook,
+                                            update_mode: bool = False) -> \
         (PlayBook, bool, str):
-    is_valid_playbook, err = validate_playbook_request(playbook)
+    is_valid_playbook, err = deprecated_validate_playbook_request(playbook)
     if not is_valid_playbook:
         return None, f"Invalid Playbook Request: {err}"
 
     playbook_name = playbook.name.value
-    db_playbook = get_db_playbooks(account, playbook_name=playbook_name, created_by=created_by, is_active=True)
+    db_playbook = deprecated_get_db_playbooks(account, playbook_name=playbook_name, created_by=created_by,
+                                              is_active=True)
     if db_playbook.exists() and not update_mode:
         return None, f"Playbook with name {playbook_name} already exists"
 
@@ -100,7 +74,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Depreca
         playbook_steps: [DeprecatedPlaybookStepDefinition] = playbook.steps
         db_steps = []
         for step in playbook_steps:
-            db_step, err = create_db_step(account, created_by, step)
+            db_step, err = deprecated_create_db_step(account, created_by, step)
             if not db_step or err:
                 return None, f"Failed to create playbook step with error: {err}"
             db_steps.append(db_step)
@@ -136,14 +110,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Depreca
 
 
 @deprecated
-def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybookStepDefinition) -> (
+def deprecated_create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybookStepDefinition) -> (
         PlayBookStep, str):
     try:
         tasks: [DeprecatedPlaybookTaskDefinition] = playbook_step.tasks
         db_tasks = []
         for task in tasks:
             task_type_display = task_type_display_map.get(task.type, f"{task.type}: Unknown")
-            db_task, err = get_or_create_db_task(account, created_by, task)
+            db_task, err = deprecated_get_or_create_db_task(account, created_by, task)
             if not db_task or err:
                 return None, f"Failed to create task: {task_type_display} for " \
                              f"playbook step {playbook_step.name.value} with error {err}"
@@ -183,7 +157,7 @@ def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybo
 
 
 @deprecated
-def get_or_create_db_task(account: Account, created_by, task_proto: DeprecatedPlaybookTaskDefinition) -> \
+def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: DeprecatedPlaybookTaskDefinition) -> \
         (PlayBookTask, str):
     task_type = task_proto.type
     task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
