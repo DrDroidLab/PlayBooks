@@ -16,10 +16,10 @@ from accounts.models import Account, get_request_account, get_request_user, get_
 from connectors.crud.connectors_crud import get_db_account_connectors
 from connectors.models import integrations_connector_type_display_name_map
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
-from executor.crud.playbooks_v2_crud import update_or_create_db_playbook_v2
+from executor.crud.playbooks_crud import update_or_create_db_playbook
 from executor.task_executor import execute_task
 from executor.task_executor_facade import executor_facade
 from executor.tasks import execute_playbook
@@ -400,7 +400,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     if not playbook or not playbook.name:
         return CreatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/playbook"))
-    playbook, error = update_or_create_db_playbook(account, user.email, playbook)
+    playbook, error = deprecated_update_or_create_db_playbook(account, user.email, playbook)
     if error:
         return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
@@ -414,7 +414,7 @@ def playbooks_create_v2(request_message: CreatePlaybookRequestV2) -> Union[Creat
     if not playbook or not playbook.name:
         return CreatePlaybookResponseV2(success=BoolValue(value=False),
                                         message=Message(title="Invalid Request", description="Missing name/playbook"))
-    playbook, error = update_or_create_db_playbook_v2(account, user.email, playbook, update_mode=False)
+    playbook, error = update_or_create_db_playbook(account, user.email, playbook, update_mode=False)
     if error:
         return CreatePlaybookResponseV2(success=BoolValue(value=False),
                                         message=Message(title="Error", description=error))

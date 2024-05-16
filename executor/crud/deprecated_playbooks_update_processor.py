@@ -3,7 +3,7 @@ import uuid
 
 from django.db import IntegrityError
 
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.models import PlayBook
 from playbooks.utils.decorators import deprecated
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedUpdatePlaybookOp
@@ -67,8 +67,8 @@ class DeprecatedPlaybooksUpdateProcessor(UpdateProcessorMixin):
                 mapping.is_active = False
                 mapping.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook
-            updated_elem, err = update_or_create_db_playbook(elem.account, elem.created_by, updated_playbook,
-                                                             update_mode=True)
+            updated_elem, err = deprecated_update_or_create_db_playbook(elem.account, elem.created_by, updated_playbook,
+                                                                        update_mode=True)
             if err:
                 raise Exception(f"Error occurred updating playbook for {elem.name}, {err}")
             return updated_elem

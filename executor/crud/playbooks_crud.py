@@ -6,26 +6,16 @@ from django.db.utils import IntegrityError
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
     PlayBookStepMapping
-from playbooks.utils.decorators import deprecated
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
-from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, DeprecatedPlaybook, \
-    DeprecatedPlaybookStepDefinition
+from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
+    Playbook as PlaybookProto
 from utils.proto_utils import proto_to_dict
+from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
 
-task_type_display_map = {
-    DeprecatedPlaybookTaskDefinition.Type.UNKNOWN: "Unknown",
-    DeprecatedPlaybookTaskDefinition.Type.METRIC: "Metric",
-    DeprecatedPlaybookTaskDefinition.Type.DECISION: "Decision",
-    DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH: "Data Fetch",
-    DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION: "Documentation",
-    DeprecatedPlaybookTaskDefinition.Type.ACTION: "Action",
-}
 
-
-@deprecated
-def validate_playbook_request(playbook: DeprecatedPlaybook):
+def validate_playbook_request(playbook: PlaybookProto):
     global_variable_set = playbook.global_variable_set
     if global_variable_set:
         for global_variable_key in list(global_variable_set.keys()):
@@ -34,7 +24,6 @@ def validate_playbook_request(playbook: DeprecatedPlaybook):
     return True, None
 
 
-@deprecated
 def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None, playbook_ids=None,
                      created_by=None):
     filters = {}
@@ -55,38 +44,8 @@ def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_
         return None
 
 
-@deprecated
-def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=None, is_active=None):
-    filters = {'playbook_id': playbook_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if playbook_step_name:
-        filters['name'] = playbook_step_name
-    try:
-        return account.playbookstep_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook steps for account_id {account.id} with error {e}")
-    return None
-
-
-@deprecated
-def get_db_playbook_task_definitions(account: Account, playbook_id: str, playbook_step_id, is_active=None):
-    filters = {'playbook_id': playbook_id, 'playbook_step_id': playbook_step_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if is_active is not None:
-        filters['is_active'] = is_active
-    try:
-        return account.playbooktask_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
-    return None
-
-
-@deprecated
-def update_or_create_db_playbook(account: Account, created_by, playbook: DeprecatedPlaybook,
-                                 update_mode: bool = False) -> \
-        (PlayBook, bool, str):
+def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto,
+                                 update_mode: bool = False) -> (PlayBook, bool, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
     if not is_valid_playbook:
         return None, f"Invalid Playbook Request: {err}"
@@ -94,10 +53,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Depreca
     playbook_name = playbook.name.value
     db_playbook = get_db_playbooks(account, playbook_name=playbook_name, created_by=created_by, is_active=True)
     if db_playbook.exists() and not update_mode:
-        return None, f"Playbook with name {playbook_name} already exists"
-
+        if db_playbook.is_active:
+            return None, f"Playbook with name {playbook_name} already exists"
+        else:
+            current_millis = current_milli_time()
+            db_playbook.name = f'{playbook_name}###(inactive)###{current_millis}'
+            db_playbook.save(update_fields=['name'])
     try:
-        playbook_steps: [DeprecatedPlaybookStepDefinition] = playbook.steps
+        playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
         for step in playbook_steps:
             db_step, err = create_db_step(account, created_by, step)
@@ -135,22 +98,19 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Depreca
     return db_playbook, None
 
 
-@deprecated
-def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybookStepDefinition) -> (
-        PlayBookStep, str):
+def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, str):
     try:
-        tasks: [DeprecatedPlaybookTaskDefinition] = playbook_step.tasks
+        tasks: [PlayBookTask] = step.tasks
         db_tasks = []
         for task in tasks:
-            task_type_display = task_type_display_map.get(task.type, f"{task.type}: Unknown")
             db_task, err = get_or_create_db_task(account, created_by, task)
             if not db_task or err:
-                return None, f"Failed to create task: {task_type_display} for " \
-                             f"playbook step {playbook_step.name.value} with error {err}"
+                return None, f"Failed to create task: {task.name.value} for " \
+                             f"playbook step {step.name.value} with error {err}"
             db_tasks.append(db_task)
 
         metadata = {}
-        external_links = playbook_step.external_links
+        external_links = step.external_links
         if external_links:
             el_list = []
             for el in external_links:
@@ -159,11 +119,11 @@ def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybo
 
         try:
             db_step = PlayBookStep.objects.create(account=account,
-                                                  name=playbook_step.name.value,
-                                                  description=playbook_step.description.value,
-                                                  notes=playbook_step.notes.value,
+                                                  name=step.name.value,
+                                                  description=step.description.value,
+                                                  notes=step.notes.value,
                                                   metadata=metadata,
-                                                  interpreter_type=playbook_step.interpreter_type if playbook_step.interpreter_type else InterpreterType.BASIC_I,
+                                                  interpreter_type=step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I,
                                                   created_by=created_by)
         except Exception as e:
             return None, f"Failed to create playbook step with error: {e}"
@@ -173,48 +133,37 @@ def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybo
                                                                         playbook_step=db_step,
                                                                         playbook_task_definition=db_task)
             except Exception as e:
-                task_type_display = task_type_display_map.get(db_task.type, f"{db_task.type}: Unknown")
-                logger.error(f"Failed to create playbook step task definition mapping for task {task_type_display} "
+                logger.error(f"Failed to create playbook step task definition mapping for task {db_task.name} "
                              f"with error {e}")
-                return None, f"Failed to create playbook step task definition mapping for task {task_type_display}"
+                return None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
         return db_step, None
     except Exception as e:
         return None, f"Failed to create playbook step with error: {e}"
 
 
-@deprecated
-def get_or_create_db_task(account: Account, created_by, task_proto: DeprecatedPlaybookTaskDefinition) -> \
-        (PlayBookTask, str):
-    task_type = task_proto.type
-    task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
-    if task_type == DeprecatedPlaybookTaskDefinition.Type.METRIC:
-        task = task_proto.metric_task
-    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DECISION:
-        task = task_proto.decision_task
-    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH:
-        task = task_proto.data_fetch_task
-    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION:
-        task = task_proto.documentation_task
-    elif task_type == DeprecatedPlaybookTaskDefinition.Type.ACTION:
-        task = task_proto.action_task
-    else:
-        return None, f"Invalid Task Type Received: {task_type_display}"
+def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto) -> (PlaybookTaskProto, str):
     task_dict = proto_to_dict(task)
+    task_dict.pop('id', None)
+    task_dict.pop('name', None)
+    task_dict.pop('description', None)
+    task_dict.pop('notes', None)
+    task_dict.pop('created_by', None)
+    task_dict.pop('global_variable_set', None)
+    task_dict.pop('interpreter_type', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
         db_task, _ = PlayBookTask.objects.get_or_create(account=account,
-                                                        name=task_proto.name.value,
-                                                        description=task_proto.description.value,
-                                                        notes=task_proto.notes.value,
-                                                        type=task_type,
+                                                        name=task.name.value,
                                                         task_md5=task_md5,
                                                         created_by=created_by,
-                                                        defaults={'task': task_dict})
+                                                        defaults={'task': task_dict,
+                                                                  'description': task.description.value,
+                                                                  'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
-        db_task = PlayBookTask.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
+        db_task = PlayBookTask.objects.get(account=account, name=task.name.value, task_md5=task_md5,
                                            created_by=created_by)
         return db_task, None
     except Exception as e:
-        logger.error(f"Failed to create playbook task definition for task type {task_type_display} with error {e}")
-    return None, f"Failed to create playbook task definition for task type: {task_type_display}"
+        logger.error(f"Failed to create playbook task definition for task name {task.name.value} with error {e}")
+    return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"
