@@ -8,7 +8,7 @@ from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
@@ -93,7 +93,8 @@ def task_run_v2(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTas
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
     try:
         task_execution_result = execute_task(account.id, time_range, task)
-        interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_execution_result)
+        playbook_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(task_execution_result)
+        interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, playbook_task_result)
     except Exception as e:
         playbook_execution_log = PlaybookExecutionLogProto(
             task=task,
@@ -266,8 +267,10 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
         for task in tasks:
             try:
                 task_execution_result = execute_task(account.id, time_range, task)
+                playbook_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(
+                    task_execution_result)
                 interpretation: InterpretationProto = task_result_interpret(interpreter_type, task,
-                                                                            task_execution_result)
+                                                                            playbook_task_result)
                 playbook_execution_log = PlaybookExecutionLogProto(
                     step=step,
                     task=task,
@@ -735,9 +738,11 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
         for dbc in db_connectors:
             connector_type_name = integrations_connector_type_display_name_map.get(dbc.connector_type,
                                                                                    dbc.connector_type)
-            display_name = f'{connector_type_name} - {dbc.connector_name}'
+            display_name = f'{connector_type_name}'
+            if dbc.name:
+                display_name = f'{connector_type_name} - {dbc.name}'
             connector_options.append(PlaybooksBuilderOptionsResponse.ConnectorOptions(
-                connector_id=StringValue(value=dbc.connector_id),
+                connector_id=UInt64Value(value=dbc.id),
                 display_name=StringValue(value=display_name),
                 connector_type=dbc.connector_type
             ))
