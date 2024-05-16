@@ -6,12 +6,12 @@ from django.http import HttpResponse
 from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
-from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, \
-    get_all_available_connectors, \
-    get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
+from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
+from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
+from connectors.utils import test_connection_connector, get_all_available_connectors, get_all_request_connectors, \
+    get_connector_keys_options
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page

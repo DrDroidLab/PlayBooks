@@ -1,0 +1,14 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+message PlaybookDocumentationTaskDefinition {
+  enum Type {
+    UNKNOWN = 0;
+    MARKDOWN = 1;
+  }
+  Type type = 1;
+  google.protobuf.StringValue documentation = 2;
+}

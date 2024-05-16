@@ -1,0 +1,21 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+
+message PlaybookEksDataFetchTask {
+  enum CommandType {
+    UNKNOWN = 0;
+    GET_PODS = 1;
+    GET_DEPLOYMENTS = 2;
+    GET_EVENTS = 3;
+    GET_SERVICES = 4;
+  }
+  CommandType command_type = 1;
+  google.protobuf.StringValue description = 2;
+  google.protobuf.StringValue region = 3;
+  google.protobuf.StringValue cluster = 4;
+  google.protobuf.StringValue namespace = 5;
+}

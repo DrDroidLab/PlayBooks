@@ -1,0 +1,34 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+
+message PromQlMetricExecutionTask {
+  message LabelValue {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue value = 2;
+  }
+  google.protobuf.StringValue promql_expression = 1;
+  repeated LabelValue promql_label_option_values = 2;
+  google.protobuf.StringValue dashboard_uid = 3;
+  google.protobuf.StringValue dashboard_title = 4;
+  google.protobuf.StringValue panel_id = 5;
+  google.protobuf.StringValue panel_title = 6;
+  google.protobuf.StringValue process_function = 7;
+  google.protobuf.StringValue panel_promql_expression = 8;
+}
+
+message PlaybookGrafanaTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    PROMQL_METRIC_EXECUTION = 1;
+  }
+
+  TaskType type = 1;
+  google.protobuf.StringValue datasource_uid = 2;
+  oneof task {
+    PromQlMetricExecutionTask promql_metric_execution_task = 3;
+  }
+}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+
+message CloudwatchMetricExecutionTask {
+  message Dimension {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue value = 2;
+  }
+  google.protobuf.StringValue namespace = 1;
+  google.protobuf.StringValue region = 2;
+  google.protobuf.StringValue metric_name = 3;
+  repeated Dimension dimensions = 4;
+  google.protobuf.StringValue statistic = 5;
+  google.protobuf.StringValue process_function = 6;
+}
+
+message CloudwatchFilterLogEventsTask {
+  google.protobuf.StringValue region = 1;
+  google.protobuf.StringValue log_group_name = 2;
+  google.protobuf.StringValue filter_query = 3;
+}
+
+
+message PlaybookCloudwatchTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    METRIC_EXECUTION = 1;
+    FILTER_LOG_EVENTS = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    CloudwatchMetricExecutionTask metric_execution_task = 2;
+    CloudwatchFilterLogEventsTask filter_log_events_task = 3;
+  }
+}
