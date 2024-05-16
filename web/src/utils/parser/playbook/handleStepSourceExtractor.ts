@@ -39,6 +39,7 @@ export const handleStepSourceExtractor = (step) => {
       break;
     case SOURCES.TEXT:
       data = Extractor.extractTextTasks(step);
+      break;
     case SOURCES.GRAFANA_MIMIR:
       data = Extractor.extractMimirTasks(step);
       break;

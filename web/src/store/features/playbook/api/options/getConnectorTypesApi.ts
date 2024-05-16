@@ -14,7 +14,7 @@ export const getConnectorTypesApi = apiSlice.injectEndpoints({
       transformResponse: (response: ConnectorTypesResponse, meta, arg) => {
         const options: ConnectorsType[] = [];
         options.push(...connectorTypeOptions);
-        for (let connector of response.active_account_connectors) {
+        for (let connector of response?.active_account_connectors ?? []) {
           for (let k = 0; k < connector.model_types_map?.length; k++) {
             let o = {
               id: `${connector.connector_type} ${connector.model_types_map[k].display_name}`,
