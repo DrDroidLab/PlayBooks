@@ -7,7 +7,7 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from executor.playbook_task_executor import PlaybookTaskExecutor
 from protos.base_pb2 import Source, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.api_call_task_pb2 import PlaybookApiCallTask
 
 from utils.proto_utils import proto_to_dict

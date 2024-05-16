@@ -5,8 +5,8 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 
 import "protos/base.proto";
+import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
-import "protos/playbooks/playbook_v2.proto";
 
 ///////////////////// Workflow Scheduling /////////////////////
 message WorkflowOneOffSchedule {
@@ -140,7 +140,7 @@ message Workflow {
   sfixed64 created_at = 5;
   google.protobuf.BoolValue is_active = 6;
   WorkflowSchedule schedule = 7;
-  repeated PlaybookDefinition playbooks = 8;
+  repeated Playbook playbooks = 8;
   repeated WorkflowEntryPoint entry_points = 9;
   repeated WorkflowAction actions = 10;
 
@@ -203,7 +203,7 @@ message UpdateWorkflowOp {
 ///////////////////// Workflow Executions Proto /////////////////////
 message WorkflowExecutionLog {
   google.protobuf.UInt64Value id = 1;
-  PlaybookExecution playbook_execution = 2;
+  DeprecatedPlaybookExecution playbook_execution = 2;
   sfixed64 created_at = 3;
 }
 
@@ -225,7 +225,7 @@ message WorkflowExecution {
 
 message WorkflowExecutionLogV2 {
   google.protobuf.UInt64Value id = 1;
-  PlaybookExecutionV2 playbook_execution = 2;
+  PlaybookExecution playbook_execution = 2;
   sfixed64 created_at = 3;
 }
 

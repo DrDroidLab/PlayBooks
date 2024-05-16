@@ -8,7 +8,7 @@ from connectors.models import Connector, ConnectorKey
 from executor.playbook_task_executor import PlaybookTaskExecutor
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 
 
 class PostgresTaskExecutor(PlaybookTaskExecutor):

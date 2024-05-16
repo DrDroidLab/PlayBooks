@@ -12,7 +12,7 @@ from intelligence_layer.result_interpreters.step_interpreter import basic_step_s
 
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask, PlaybookStep, PlaybookStepExecutionLogV2, PlaybookDefinition
+from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookStep, PlaybookStepExecutionLog, Playbook
 from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
@@ -40,8 +40,8 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStep,
         return InterpretationProto()
 
 
-def playbook_step_execution_result_interpret(playbook: PlaybookDefinition,
-                                             step_logs: [PlaybookStepExecutionLogV2]) -> [InterpretationProto]:
+def playbook_step_execution_result_interpret(playbook: Playbook,
+                                             step_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
     location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook.id.value)
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
     enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE

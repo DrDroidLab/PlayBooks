@@ -3,9 +3,8 @@ import uuid
 
 from django.db import IntegrityError
 
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.playbooks_v2_crud import update_or_create_db_playbook_v2
 from executor.models import PlayBook
-from playbooks.utils.decorators import deprecated
 from protos.playbooks.playbook_pb2 import UpdatePlaybookOp
 from utils.update_processor_mixin import UpdateProcessorMixin
 
@@ -16,7 +15,6 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
     update_op_cls = UpdatePlaybookOp
 
     @staticmethod
-    @deprecated
     def update_playbook_name(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybookName) -> PlayBook:
         if not update_op.name.value:
             raise Exception(f"New playbook name missing for update_playbook_name op")
@@ -31,7 +29,6 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
         return elem
 
     @staticmethod
-    @deprecated
     def update_playbook_status(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybookStatus) -> PlayBook:
         if not elem.is_active:
             raise Exception(f"Playbook {elem.name} is already inactive")
@@ -57,7 +54,6 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
         return elem
 
     @staticmethod
-    @deprecated
     def update_playbook(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybook) -> PlayBook:
         if not elem.is_active:
             raise Exception(f"Playbook {elem.name} is inactive")
@@ -67,8 +63,8 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                 mapping.is_active = False
                 mapping.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook
-            updated_elem, err = update_or_create_db_playbook(elem.account, elem.created_by, updated_playbook,
-                                                             update_mode=True)
+            updated_elem, err = update_or_create_db_playbook_v2(elem.account, elem.created_by, updated_playbook,
+                                                                update_mode=True)
             if err:
                 raise Exception(f"Error occurred updating playbook for {elem.name}, {err}")
             return updated_elem

@@ -5,8 +5,8 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
 import "protos/base.proto";
+import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
-import "protos/playbooks/playbook_v2.proto";
 import "protos/playbooks/workflow.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 
@@ -14,21 +14,21 @@ import "protos/playbooks/intelligence_layer/interpreter.proto";
 ///////////////////// PlayBooks Run APIs /////////////////////
 message RunPlaybookTaskRequest {
   Meta meta = 1;
-  PlaybookTaskDefinition playbook_task_definition = 2;
+  DeprecatedPlaybookTaskDefinition playbook_task_definition = 2;
 }
 
 message RunPlaybookTaskResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookTaskExecutionResult task_execution_result = 4;
+  DeprecatedPlaybookTaskExecutionResult task_execution_result = 4;
 }
 
 message RunPlaybookTaskResponseV2 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookExecutionLog task_execution_log = 4;
+  DeprecatedPlaybookExecutionLog task_execution_log = 4;
 }
 
 message RunPlaybookTaskRequestV3 {
@@ -46,7 +46,7 @@ message RunPlaybookTaskResponseV3 {
 
 message RunPlaybookStepRequest {
   Meta meta = 1;
-  PlaybookStepDefinition playbook_step = 2;
+  DeprecatedPlaybookStepDefinition playbook_step = 2;
 }
 
 message RunPlaybookStepResponse {
@@ -55,14 +55,14 @@ message RunPlaybookStepResponse {
   Message message = 3;
   google.protobuf.StringValue name = 4;
   google.protobuf.StringValue description = 5;
-  repeated PlaybookTaskExecutionResult task_execution_results = 6;
+  repeated DeprecatedPlaybookTaskExecutionResult task_execution_results = 6;
 }
 
 message RunPlaybookStepResponseV2 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookStepExecutionLog step_execution_log = 4;
+  DeprecatedPlaybookStepExecutionLog step_execution_log = 4;
 }
 
 message RunPlaybookStepRequestV3 {
@@ -74,31 +74,31 @@ message RunPlaybookStepResponseV3 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookStepExecutionLogV2 step_execution_log = 4;
+  PlaybookStepExecutionLog step_execution_log = 4;
 }
 
 message RunPlaybookRequest {
   Meta meta = 1;
-  Playbook playbook = 2;
+  DeprecatedPlaybook playbook = 2;
 }
 
 message RunPlaybookResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookExecution playbook_execution = 4;
+  DeprecatedPlaybookExecution playbook_execution = 4;
 }
 
 message RunPlaybookRequestV2 {
   Meta meta = 1;
-  PlaybookDefinition playbook = 2;
+  Playbook playbook = 2;
 }
 
 message RunPlaybookResponseV2 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookExecutionV2 playbook_execution = 4;
+  PlaybookExecution playbook_execution = 4;
 }
 
 ///////////////////// PlayBooks CRUD APIs /////////////////////
@@ -109,7 +109,7 @@ message GetPlaybooksRequest {
 
 message GetPlaybooksResponse {
   Meta meta = 1;
-  repeated Playbook playbooks = 2;
+  repeated DeprecatedPlaybook playbooks = 2;
 }
 
 message GetPlaybooksRequestV2 {
@@ -119,34 +119,34 @@ message GetPlaybooksRequestV2 {
 
 message GetPlaybooksResponseV2 {
   Meta meta = 1;
-  repeated PlaybookDefinition playbooks = 2;
+  repeated Playbook playbooks = 2;
 }
 
 message CreatePlaybookRequest {
   string name = 1;
-  Playbook playbook = 2;
+  DeprecatedPlaybook playbook = 2;
 }
 
 message CreatePlaybookResponse {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
-  Playbook playbook = 3;
+  DeprecatedPlaybook playbook = 3;
 }
 
 message CreatePlaybookRequestV2 {
   string name = 1;
-  PlaybookDefinition playbook = 2;
+  Playbook playbook = 2;
 }
 
 message CreatePlaybookResponseV2 {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
-  PlaybookDefinition playbook = 3;
+  Playbook playbook = 3;
 }
 
 message UpdatePlaybookRequest {
   google.protobuf.UInt64Value playbook_id = 1;
-  repeated UpdatePlaybookOp update_playbook_ops = 2;
+  repeated DeprecatedUpdatePlaybookOp update_playbook_ops = 2;
 }
 
 message UpdatePlaybookResponse {
@@ -156,7 +156,7 @@ message UpdatePlaybookResponse {
 
 message UpdatePlaybookRequestV2 {
   google.protobuf.UInt64Value playbook_id = 1;
-  repeated UpdatePlaybookOpV2 update_playbook_ops = 2;
+  repeated UpdatePlaybookOp update_playbook_ops = 2;
 }
 
 message UpdatePlaybookResponseV2 {
@@ -187,7 +187,7 @@ message ExecutionPlaybookGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookExecution playbook_execution = 4;
+  DeprecatedPlaybookExecution playbook_execution = 4;
 }
 
 
@@ -200,21 +200,21 @@ message ExecutionPlaybookGetResponseV2 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  PlaybookExecutionV2 playbook_execution = 4;
+  PlaybookExecution playbook_execution = 4;
 }
 
 message ExecutionPlaybookAPIGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated PlaybookExecution playbook_executions = 4;
+  repeated DeprecatedPlaybookExecution playbook_executions = 4;
 }
 
 message ExecutionPlaybookAPIGetResponseV2 {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated PlaybookExecutionV2 playbook_executions = 4;
+  repeated PlaybookExecution playbook_executions = 4;
 }
 
 message ExecutionsPlaybooksListRequest {
@@ -226,7 +226,7 @@ message ExecutionsPlaybooksListResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated PlaybookExecutionV2 playbook_executions = 4;
+  repeated PlaybookExecution playbook_executions = 4;
 }
 
 message PlaybookTemplatesGetResponse  {

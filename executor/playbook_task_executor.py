@@ -2,7 +2,7 @@ from typing import Dict
 
 from protos.base_pb2 import TimeRange, Source
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 
 
 class PlaybookTaskExecutor:

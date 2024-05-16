@@ -10,7 +10,7 @@ from executor.playbook_task_executor import PlaybookTaskExecutor
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.bash_command_task_pb2 import PlaybookBashCommandTask
 
 

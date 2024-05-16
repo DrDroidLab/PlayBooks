@@ -19,7 +19,7 @@ from executor.source_task_executor.sql_database_connection_executor import SqlDa
 from protos.base_pb2 import Source
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
 
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 
 logger = logging.getLogger(__name__)
 

@@ -2,8 +2,8 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from playbooks.utils.decorators import deprecated
 from protos.base_pb2 import Source
-from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookDataFetchTaskDefinition, \
-    PlaybookTaskDefinition, PlaybookActionTaskDefinition
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookMetricTaskDefinition, \
+    DeprecatedPlaybookDataFetchTaskDefinition, DeprecatedPlaybookTaskDefinition, DeprecatedPlaybookActionTaskDefinition
 from protos.playbooks.source_task_definitions.api_call_task_pb2 import PlaybookApiCallTask
 from protos.playbooks.source_task_definitions.bash_command_task_pb2 import PlaybookBashCommandTask
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import PlaybookCloudwatchTask, \
@@ -21,7 +21,8 @@ from protos.playbooks.source_task_definitions.sql_database_task_pb2 import SqlDa
 from utils.proto_utils import dict_to_proto
 
 
-def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+@deprecated
+def get_cloudwatch_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     cloudwatch_task = task.get('cloudwatch_task', {})
     if cloudwatch_task.get('type', None) == 'METRIC_EXECUTION':
         metric_execution_task_proto = dict_to_proto(cloudwatch_task.get('metric_execution_task', {}),
@@ -37,10 +38,11 @@ def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             filter_log_events_task=filter_log_events_task_proto)
     else:
         raise Exception(f"Task type {cloudwatch_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(source=Source.CLOUDWATCH, cloudwatch_task=cloudwatch_task_proto)
+    return DeprecatedPlaybookMetricTaskDefinition(source=Source.CLOUDWATCH, cloudwatch_task=cloudwatch_task_proto)
 
 
-def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+@deprecated
+def get_grafana_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     grafana_task = task.get('grafana_task', {})
     if grafana_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
         promql_metric_execution_task_proto = dict_to_proto(grafana_task.get('promql_metric_execution_task', {}),
@@ -51,10 +53,11 @@ def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
                                                  promql_metric_execution_task=promql_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
+    return DeprecatedPlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
 
 
-def get_grafana_mimir_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+@deprecated
+def get_grafana_mimir_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     mimir_task = task.get('mimir_task', {})
     if mimir_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
         promql_metric_execution_task_proto = dict_to_proto(
@@ -64,12 +67,13 @@ def get_grafana_mimir_task_execution_proto(task) -> PlaybookMetricTaskDefinition
                                               promql_metric_execution_task=promql_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
+    return DeprecatedPlaybookMetricTaskDefinition(
         source=Source.GRAFANA_MIMIR,
         mimir_task=mimir_task_proto)
 
 
-def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+@deprecated
+def get_new_relic_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     nr_task = task.get('new_relic_task', {})
     if nr_task.get('type', None) == 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION':
         entity_application_golden_metric_execution_task_proto = dict_to_proto(
@@ -93,10 +97,11 @@ def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             nrql_metric_execution_task=nrql_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {nr_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(source=Source.NEW_RELIC, new_relic_task=nr_task_proto)
+    return DeprecatedPlaybookMetricTaskDefinition(source=Source.NEW_RELIC, new_relic_task=nr_task_proto)
 
 
-def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+@deprecated
+def get_datadog_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     dd_task = task.get('datadog_task', {})
     if dd_task.get('type', None) == 'SERVICE_METRIC_EXECUTION':
         service_metric_execution_task_proto = dict_to_proto(dd_task.get('service_metric_execution_task', {}),
@@ -112,47 +117,53 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
             query_metric_execution_task=query_metric_execution_task)
     else:
         raise Exception(f"Task type {dd_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(source=Source.DATADOG, datadog_task=dd_task_proto)
+    return DeprecatedPlaybookMetricTaskDefinition(source=Source.DATADOG, datadog_task=dd_task_proto)
 
 
-def get_clickhouse_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
+@deprecated
+def get_clickhouse_task_execution_proto(task) -> DeprecatedPlaybookDataFetchTaskDefinition:
     clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
     clickhouse_data_fetch_task_proto = dict_to_proto(clickhouse_data_fetch_task, SqlDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=Source.CLICKHOUSE,
-                                           clickhouse_data_fetch_task=clickhouse_data_fetch_task_proto)
+    return DeprecatedPlaybookDataFetchTaskDefinition(source=Source.CLICKHOUSE,
+                                                     clickhouse_data_fetch_task=clickhouse_data_fetch_task_proto)
 
 
-def get_postgres_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
+@deprecated
+def get_postgres_task_execution_proto(task) -> DeprecatedPlaybookDataFetchTaskDefinition:
     postgres_data_fetch_task = task.get('postgres_data_fetch_task', {})
     postgres_data_fetch_task_proto = dict_to_proto(postgres_data_fetch_task, SqlDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=Source.POSTGRES,
-                                           postgres_data_fetch_task=postgres_data_fetch_task_proto)
+    return DeprecatedPlaybookDataFetchTaskDefinition(source=Source.POSTGRES,
+                                                     postgres_data_fetch_task=postgres_data_fetch_task_proto)
 
 
-def get_sql_database_connection_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
+@deprecated
+def get_sql_database_connection_task_execution_proto(task) -> DeprecatedPlaybookDataFetchTaskDefinition:
     sql_database_connection_data_fetch_task = task.get('sql_database_connection_data_fetch_task', {})
     sql_database_connection_data_fetch_task_proto = dict_to_proto(sql_database_connection_data_fetch_task,
                                                                   SqlDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=Source.SQL_DATABASE_CONNECTION,
-                                           sql_database_connection_data_fetch_task=sql_database_connection_data_fetch_task_proto)
+    return DeprecatedPlaybookDataFetchTaskDefinition(source=Source.SQL_DATABASE_CONNECTION,
+                                                     sql_database_connection_data_fetch_task=sql_database_connection_data_fetch_task_proto)
 
 
-def get_eks_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
+@deprecated
+def get_eks_task_execution_proto(task) -> DeprecatedPlaybookDataFetchTaskDefinition:
     eks_data_fetch_task = task.get('eks_data_fetch_task', {})
     eks_data_fetch_task_proto = dict_to_proto(eks_data_fetch_task, PlaybookEksDataFetchTask)
-    return PlaybookDataFetchTaskDefinition(source=Source.EKS, eks_data_fetch_task=eks_data_fetch_task_proto)
+    return DeprecatedPlaybookDataFetchTaskDefinition(source=Source.EKS, eks_data_fetch_task=eks_data_fetch_task_proto)
 
 
-def get_api_call_task_execution_proto(task) -> PlaybookActionTaskDefinition:
+@deprecated
+def get_api_call_task_execution_proto(task) -> DeprecatedPlaybookActionTaskDefinition:
     api_call_task = task.get('api_call_task', {})
     api_call_task_proto = dict_to_proto(api_call_task, PlaybookApiCallTask)
-    return PlaybookActionTaskDefinition(source=Source.API, api_call_task=api_call_task_proto)
+    return DeprecatedPlaybookActionTaskDefinition(source=Source.API, api_call_task=api_call_task_proto)
 
 
-def get_bash_command_task_execution_proto(task) -> PlaybookActionTaskDefinition:
+@deprecated
+def get_bash_command_task_execution_proto(task) -> DeprecatedPlaybookActionTaskDefinition:
     bash_command_task = task.get('bash_command_task', {})
     bash_command_task_proto = dict_to_proto(bash_command_task, PlaybookBashCommandTask)
-    return PlaybookActionTaskDefinition(source=Source.BASH, bash_command_task=bash_command_task_proto)
+    return DeprecatedPlaybookActionTaskDefinition(source=Source.BASH, bash_command_task=bash_command_task_proto)
 
 
 @deprecated
@@ -172,11 +183,11 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_grafana_mimir_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinition(
+        return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=PlaybookTaskDefinition.Type.METRIC,
+            type=DeprecatedPlaybookTaskDefinition.Type.METRIC,
             metric_task=metric_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
@@ -192,11 +203,11 @@ def get_playbook_task_definition_proto(db_task_definition):
             data_fetch_task_proto = get_sql_database_connection_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinition(
+        return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=PlaybookTaskDefinition.Type.DATA_FETCH,
+            type=DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH,
             data_fetch_task=data_fetch_task_proto,
             notes=StringValue(value=db_task_definition.notes),
         )
@@ -208,21 +219,21 @@ def get_playbook_task_definition_proto(db_task_definition):
             action_task_proto = get_bash_command_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinition(
+        return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=PlaybookTaskDefinition.Type.ACTION,
+            type=DeprecatedPlaybookTaskDefinition.Type.ACTION,
             action_task=action_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
     elif task.get('documentation_task', None):
         documentation_task_proto = dict_to_proto(db_task_definition.task, PlaybookDocumentationTaskDefinition)
-        return PlaybookTaskDefinition(
+        return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=PlaybookTaskDefinition.Type.DOCUMENTATION,
+            type=DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION,
             documentation_task=documentation_task_proto,
             notes=StringValue(value=db_task_definition.notes),
         )

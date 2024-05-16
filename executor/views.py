@@ -17,8 +17,8 @@ from connectors.crud.connectors_crud import get_db_account_connectors
 from connectors.models import integrations_connector_type_display_name_map
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
-from executor.crud.playbooks_update_processor_v2 import playbooks_update_processor_v2
 from executor.crud.playbooks_v2_crud import update_or_create_db_playbook_v2
 from executor.task_executor import execute_task
 from executor.task_executor_facade import executor_facade
@@ -36,8 +36,8 @@ from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask, PlaybookTaskExecutionLog, PlaybookStepExecutionLogV2, \
-    PlaybookExecutionV2, PlaybookDefinition
+from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, PlaybookStepExecutionLog, \
+    PlaybookExecution, Playbook
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
@@ -51,9 +51,9 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2
-from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionResult, Playbook as PlaybookProto, \
-    PlaybookExecutionLog as PlaybookExecutionLogProto, PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, \
-    PlaybookExecution as PlaybookExecutionProto
+
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
+    DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ def task_run(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTaskRe
         task_execution_result = execute_task(account.id, time_range, task)
     except Exception as e:
         return RunPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
-                                       task_execution_result=PlaybookTaskExecutionResult(
+                                       task_execution_result=DeprecatedPlaybookTaskExecutionResult(
                                            error=StringValue(value=str(e))))
     return RunPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                    task_execution_result=task_execution_result)
@@ -96,13 +96,13 @@ def task_run_v2(request_message: RunPlaybookTaskRequest) -> Union[RunPlaybookTas
         playbook_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(task_execution_result)
         interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, playbook_task_result)
     except Exception as e:
-        playbook_execution_log = PlaybookExecutionLogProto(
+        playbook_execution_log = DeprecatedPlaybookExecutionLog(
             task=task,
-            task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+            task_execution_result=DeprecatedPlaybookTaskExecutionResult(error=StringValue(value=str(e)))
         )
         return RunPlaybookTaskResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                          task_execution_log=playbook_execution_log)
-    playbook_execution_log = PlaybookExecutionLogProto(
+    playbook_execution_log = DeprecatedPlaybookExecutionLog(
         task=task,
         task_execution_result=task_execution_result,
         task_interpretation=interpretation
@@ -157,7 +157,7 @@ def step_run(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookStepRe
             task_result = execute_task(account.id, time_range, task)
             task_execution_results.append(task_result)
         except Exception as e:
-            task_execution_results.append(PlaybookTaskExecutionResult(error=StringValue(value=str(e))))
+            task_execution_results.append(DeprecatedPlaybookTaskExecutionResult(error=StringValue(value=str(e))))
 
     return RunPlaybookStepResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True), name=step.name,
                                    description=step.description, task_execution_results=task_execution_results)
@@ -184,7 +184,7 @@ def step_run_v2(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookSte
             task_execution_result = execute_task(account.id, time_range, task)
             new_task_result = transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(task_execution_result)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, new_task_result)
-            playbook_execution_log = PlaybookExecutionLogProto(
+            playbook_execution_log = DeprecatedPlaybookExecutionLog(
                 step=step,
                 task=task,
                 task_execution_result=task_execution_result,
@@ -193,15 +193,15 @@ def step_run_v2(request_message: RunPlaybookStepRequest) -> Union[RunPlaybookSte
             pe_logs.append(playbook_execution_log)
             task_interpretations.append(interpretation)
         except Exception as e:
-            playbook_execution_log = PlaybookExecutionLogProto(
+            playbook_execution_log = DeprecatedPlaybookExecutionLog(
                 task=task,
-                task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+                task_execution_result=DeprecatedPlaybookTaskExecutionResult(error=StringValue(value=str(e)))
             )
             pe_logs.append(playbook_execution_log)
 
     step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
-    step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
-                                                       step_interpretation=step_interpretation)
+    step_execution_log = DeprecatedPlaybookStepExecutionLog(step=step, logs=pe_logs,
+                                                            step_interpretation=step_interpretation)
 
     return RunPlaybookStepResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                      step_execution_log=step_execution_log)
@@ -239,8 +239,8 @@ def step_run_v3(request_message: RunPlaybookStepRequestV3) -> Union[RunPlaybookS
         pte_logs.append(playbook_task_execution_log)
 
     step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
-    step_execution_log = PlaybookStepExecutionLogV2(step=step, task_execution_logs=pte_logs,
-                                                    step_interpretation=step_interpretation)
+    step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
+                                                  step_interpretation=step_interpretation)
 
     return RunPlaybookStepResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                      step_execution_log=step_execution_log)
@@ -271,7 +271,7 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
                     task_execution_result)
                 interpretation: InterpretationProto = task_result_interpret(interpreter_type, task,
                                                                             playbook_task_result)
-                playbook_execution_log = PlaybookExecutionLogProto(
+                playbook_execution_log = DeprecatedPlaybookExecutionLog(
                     step=step,
                     task=task,
                     task_execution_result=task_execution_result,
@@ -280,19 +280,19 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
                 pe_logs.append(playbook_execution_log)
                 task_interpretations.append(interpretation)
             except Exception as e:
-                playbook_execution_log = PlaybookExecutionLogProto(
+                playbook_execution_log = DeprecatedPlaybookExecutionLog(
                     task=task,
-                    task_execution_result=PlaybookTaskExecutionResult(error=StringValue(value=str(e)))
+                    task_execution_result=DeprecatedPlaybookTaskExecutionResult(error=StringValue(value=str(e)))
                 )
                 pe_logs.append(playbook_execution_log)
 
         step_interpretations: InterpretationProto = step_result_interpret(interpreter_type, step,
                                                                           task_interpretations)
-        step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs,
-                                                           step_interpretation=step_interpretations)
+        step_execution_log = DeprecatedPlaybookStepExecutionLog(step=step, logs=pe_logs,
+                                                                step_interpretation=step_interpretations)
         step_execution_logs.append(step_execution_log)
-    playbook_execution = PlaybookExecutionProto(playbook=playbook, time_range=time_range,
-                                                step_execution_logs=step_execution_logs)
+    playbook_execution = DeprecatedPlaybookExecution(playbook=playbook, time_range=time_range,
+                                                     step_execution_logs=step_execution_logs)
     return RunPlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                playbook_execution=playbook_execution)
 
@@ -330,11 +330,11 @@ def playbook_run_v2(request_message: RunPlaybookRequestV2) -> Union[RunPlaybookR
                                                                            error=StringValue(value=str(e))))
             pte_logs.append(playbook_task_execution_log)
         step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
-        step_execution_log = PlaybookStepExecutionLogV2(step=step, task_execution_logs=pte_logs,
-                                                        step_interpretation=step_interpretation)
+        step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
+                                                      step_interpretation=step_interpretation)
         step_execution_logs.append(step_execution_log)
-    playbook_execution = PlaybookExecutionV2(playbook=playbook, time_range=time_range,
-                                             step_execution_logs=step_execution_logs)
+    playbook_execution = PlaybookExecution(playbook=playbook, time_range=time_range,
+                                           step_execution_logs=step_execution_logs)
     return RunPlaybookResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                  playbook_execution=playbook_execution)
 
@@ -396,7 +396,7 @@ def playbooks_get_v2(request_message: GetPlaybooksRequestV2) -> Union[GetPlayboo
 def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
-    playbook: PlaybookProto = request_message.playbook
+    playbook: DeprecatedPlaybook = request_message.playbook
     if not playbook or not playbook.name:
         return CreatePlaybookResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/playbook"))
@@ -410,7 +410,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
 def playbooks_create_v2(request_message: CreatePlaybookRequestV2) -> Union[CreatePlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
-    playbook: PlaybookDefinition = request_message.playbook
+    playbook: Playbook = request_message.playbook
     if not playbook or not playbook.name:
         return CreatePlaybookResponseV2(success=BoolValue(value=False),
                                         message=Message(title="Invalid Request", description="Missing name/playbook"))
@@ -442,7 +442,7 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
                                       message=Message(title="Invalid Request",
                                                       description="Unauthorized Action for user"))
     try:
-        playbooks_update_processor.update(account_playbook, update_playbook_ops)
+        deprecated_playbooks_update_processor.update(account_playbook, update_playbook_ops)
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return UpdatePlaybookResponse(success=BoolValue(value=False),
@@ -470,7 +470,7 @@ def playbooks_update_v2(request_message: UpdatePlaybookRequestV2) -> Union[Updat
                                       message=Message(title="Invalid Request",
                                                       description="Unauthorized Action for user"))
     try:
-        playbooks_update_processor_v2.update(account_playbook, update_playbook_ops)
+        playbooks_update_processor.update(account_playbook, update_playbook_ops)
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return UpdatePlaybookResponse(success=BoolValue(value=False),

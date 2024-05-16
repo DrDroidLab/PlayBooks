@@ -4,21 +4,19 @@ from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult
-from executor.utils.playbooks_protos_utils import get_playbook_task_definition_proto
+from executor.utils.deprecated_playbooks_protos_utils import get_playbook_task_definition_proto
 from playbooks.utils.decorators import deprecated
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType, \
     PlaybookTaskResult as PlaybookTaskResultProto
-from protos.playbooks.playbook_pb2 import Playbook as DeprecatedPlaybookProto, \
-    PlaybookStepDefinition as DeprecatedPlaybookStepDefinitionProto, \
-    PlaybookTaskDefinition as DeprecatedPlaybookTaskDefinitionProto, \
-    PlaybookExecutionLog as DeprecatedPlaybookExecutionLogProto, \
-    PlaybookExecution as DeprecatedPlaybookExecutionProto, \
-    PlaybookStepExecutionLog as DeprecatedPlaybookStepExecutionLogProto
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
-    PlaybookDefinition, PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, PlaybookStepExecutionLogV2, \
-    PlaybookExecutionV2
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook, DeprecatedPlaybookStepDefinition, \
+    DeprecatedPlaybookTaskDefinition, DeprecatedPlaybookExecutionLog, DeprecatedPlaybookExecution, \
+    DeprecatedPlaybookStepExecutionLog
+from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
+    Playbook as PlaybookProto, PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, \
+    PlaybookExecution as PlaybookExecutionProto
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
@@ -65,7 +63,7 @@ class PlayBookTask(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookTaskDefinitionProto:
+    def deprecated_proto(self) -> DeprecatedPlaybookTaskDefinition:
         return get_playbook_task_definition_proto(self)
 
 
@@ -92,10 +90,10 @@ class PlayBookStep(models.Model):
         tasks = [pbt.proto for pbt in all_tasks]
 
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinitionProto.ExternalLink] = []
+        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinitionProto.ExternalLink(
+                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
@@ -113,10 +111,10 @@ class PlayBookStep(models.Model):
     @property
     def proto_partial(self) -> PlaybookStepProto:
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinitionProto.ExternalLink] = []
+        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinitionProto.ExternalLink(
+                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
@@ -131,20 +129,20 @@ class PlayBookStep(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookStepDefinitionProto:
+    def deprecated_proto(self) -> DeprecatedPlaybookStepDefinition:
         all_tasks = self.tasks.all().order_by('playbooksteptaskdefinitionmapping__id')
         tasks = [pbt.deprecated_proto for pbt in all_tasks]
 
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinitionProto.ExternalLink] = []
+        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinitionProto.ExternalLink(
+                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
 
-        return DeprecatedPlaybookStepDefinitionProto(
+        return DeprecatedPlaybookStepDefinition(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
@@ -156,16 +154,16 @@ class PlayBookStep(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto_partial(self) -> DeprecatedPlaybookStepDefinitionProto:
+    def deprecated_proto_partial(self) -> DeprecatedPlaybookStepDefinition:
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinitionProto.ExternalLink] = []
+        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinitionProto.ExternalLink(
+                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
-        return DeprecatedPlaybookStepDefinitionProto(
+        return DeprecatedPlaybookStepDefinition(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
@@ -194,7 +192,7 @@ class PlayBook(models.Model):
         unique_together = [['account', 'name', 'created_by']]
 
     @property
-    def proto(self) -> PlaybookDefinition:
+    def proto(self) -> PlaybookProto:
         all_steps = self.steps.all().order_by('playbookstepmapping__id')
         if self.is_active:
             all_steps = all_steps.filter(playbookstepmapping__is_active=True)
@@ -204,7 +202,7 @@ class PlayBook(models.Model):
         if self.global_variable_set:
             global_variable_set_proto.update(self.global_variable_set)
 
-        return PlaybookDefinition(
+        return PlaybookProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
             is_active=BoolValue(value=self.is_active),
@@ -216,11 +214,11 @@ class PlayBook(models.Model):
         )
 
     @property
-    def proto_partial(self) -> PlaybookDefinition:
+    def proto_partial(self) -> PlaybookProto:
         global_variable_set_proto = Struct()
         if self.global_variable_set:
             global_variable_set_proto.update(self.global_variable_set)
-        return PlaybookDefinition(
+        return PlaybookProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
             is_active=BoolValue(value=self.is_active),
@@ -231,7 +229,7 @@ class PlayBook(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookProto:
+    def deprecated_proto(self) -> DeprecatedPlaybook:
         all_steps = self.steps.all().order_by('playbookstepmapping__id')
         if self.is_active:
             all_steps = all_steps.filter(playbookstepmapping__is_active=True)
@@ -241,7 +239,7 @@ class PlayBook(models.Model):
         if self.global_variable_set:
             global_variable_set_proto.update(self.global_variable_set)
 
-        return DeprecatedPlaybookProto(
+        return DeprecatedPlaybook(
             id=UInt64Value(value=self.id), name=StringValue(value=self.name), is_active=BoolValue(value=self.is_active),
             description=StringValue(value=self.description),
             created_by=StringValue(value=self.created_by),
@@ -252,11 +250,11 @@ class PlayBook(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto_partial(self) -> DeprecatedPlaybookProto:
+    def deprecated_proto_partial(self) -> DeprecatedPlaybook:
         global_variable_set_proto = Struct()
         if self.global_variable_set:
             global_variable_set_proto.update(self.global_variable_set)
-        return DeprecatedPlaybookProto(
+        return DeprecatedPlaybook(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
             is_active=BoolValue(value=self.is_active),
@@ -298,10 +296,10 @@ class PlayBookExecution(models.Model):
         unique_together = [['account', 'playbook_run_id']]
 
     @property
-    def proto_partial(self) -> PlaybookExecutionV2:
+    def proto_partial(self) -> PlaybookExecutionProto:
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
 
-        return PlaybookExecutionV2(
+        return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
             playbook=self.playbook.proto_partial,
@@ -314,11 +312,11 @@ class PlayBookExecution(models.Model):
         )
 
     @property
-    def proto(self) -> PlaybookExecutionV2:
+    def proto(self) -> PlaybookExecutionProto:
         playbook_step_execution_logs = self.playbookstepexecutionlog_set.all()
         if not playbook_step_execution_logs:
             playbook_execution_logs = self.playbooktaskexecutionlog_set.all()
-            step_execution_logs: [PlaybookStepExecutionLogV2] = []
+            step_execution_logs: [PlaybookStepExecutionLogProto] = []
             step_task_executions_map = {}
             step_definition_map = {}
             for log in playbook_execution_logs:
@@ -331,14 +329,14 @@ class PlayBookExecution(models.Model):
                 step_task_executions_map[log.playbook_step.id] = execution_logs
             for step_id, logs in step_task_executions_map.items():
                 step = step_definition_map[step_id]
-                step_execution_logs.append(PlaybookStepExecutionLogV2(
+                step_execution_logs.append(PlaybookStepExecutionLogProto(
                     step=step,
                     task_execution_logs=logs
                 ))
         else:
             step_execution_logs = [pel.proto for pel in playbook_step_execution_logs]
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
-        return PlaybookExecutionV2(
+        return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
             playbook=self.playbook.proto_partial,
@@ -353,12 +351,12 @@ class PlayBookExecution(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookExecutionProto:
+    def deprecated_proto(self) -> DeprecatedPlaybookExecution:
         playbook_step_execution_logs = self.playbookstepexecutionlog_set.all()
         if not playbook_step_execution_logs:
             playbook_execution_logs = self.playbooktaskexecutionlog_set.all()
             logs = [pel.deprecated_proto for pel in playbook_execution_logs]
-            step_execution_logs: [DeprecatedPlaybookStepExecutionLogProto] = []
+            step_execution_logs: [DeprecatedPlaybookStepExecutionLog] = []
             step_task_executions_map = {}
             step_definition_map = {}
             for log in logs:
@@ -371,14 +369,14 @@ class PlayBookExecution(models.Model):
                 step_task_executions_map[log.step.id.value] = execution_logs
             for step_id, logs in step_task_executions_map.items():
                 step = step_definition_map[step_id]
-                step_execution_logs.append(DeprecatedPlaybookStepExecutionLogProto(
+                step_execution_logs.append(DeprecatedPlaybookStepExecutionLog(
                     step=step,
                     logs=logs
                 ))
         else:
             step_execution_logs = [pel.deprecated_proto for pel in playbook_step_execution_logs]
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
-        return DeprecatedPlaybookExecutionProto(
+        return DeprecatedPlaybookExecution(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
             playbook=self.playbook.deprecated_proto_partial,
@@ -401,11 +399,11 @@ class PlayBookStepExecutionLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     @property
-    def proto(self) -> PlaybookStepExecutionLogV2:
+    def proto(self) -> PlaybookStepExecutionLogProto:
         logs = self.playbooktaskexecutionlog_set.all()
         task_execution_logs = [pel.proto for pel in logs]
         step = self.playbook_step.proto_partial
-        return PlaybookStepExecutionLogV2(
+        return PlaybookStepExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             step=step,
@@ -416,11 +414,11 @@ class PlayBookStepExecutionLog(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookStepExecutionLogProto:
+    def deprecated_proto(self) -> DeprecatedPlaybookStepExecutionLog:
         logs = self.playbooktaskexecutionlog_set.all()
         log_protos = [pel.deprecated_proto for pel in logs]
         step = self.playbook_step.deprecated_proto_partial
-        return DeprecatedPlaybookStepExecutionLogProto(
+        return DeprecatedPlaybookStepExecutionLog(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             step=step,
@@ -456,12 +454,12 @@ class PlayBookTaskExecutionLog(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> DeprecatedPlaybookExecutionLogProto:
+    def deprecated_proto(self) -> DeprecatedPlaybookExecutionLog:
         task = self.playbook_task_definition.deprecated_proto
         task_result = self.playbook_task_result
         task_result_proto = dict_to_proto(task_result, PlaybookTaskResultProto)
         task_execution_result = transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(task_result_proto)
-        return DeprecatedPlaybookExecutionLogProto(
+        return DeprecatedPlaybookExecutionLog(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             task=task,

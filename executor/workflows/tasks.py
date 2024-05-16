@@ -22,12 +22,12 @@ from intelligence_layer.result_interpreters.result_interpreter_facade import pla
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from protos.playbooks.playbook_v2_pb2 import PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
-    PlaybookStepExecutionLogV2 as PlaybookStepExecutionLogProto
+from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookExecution
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
 from protos.base_pb2 import Source
@@ -189,7 +189,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
             thread_ts = workflow_execution.metadata.get('thread_ts', None)
 
         playbook_execution = playbook_executions.first()
-        pe_proto: PlaybookExecutionProto = playbook_execution.proto
+        pe_proto: DeprecatedPlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,

@@ -9,7 +9,7 @@ from integrations_api_processors.grafana_api_processor import GrafanaApiProcesso
 from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import PlaybookGrafanaTask
 
 

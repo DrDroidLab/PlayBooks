@@ -8,24 +8,24 @@ from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTa
     PlayBookStepMapping
 from playbooks.utils.decorators import deprecated
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
-from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    Playbook as PlaybookProto, PlaybookStepDefinition
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, DeprecatedPlaybook, \
+    DeprecatedPlaybookStepDefinition
 from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
 
 task_type_display_map = {
-    PlaybookTaskDefinitionProto.Type.UNKNOWN: "Unknown",
-    PlaybookTaskDefinitionProto.Type.METRIC: "Metric",
-    PlaybookTaskDefinitionProto.Type.DECISION: "Decision",
-    PlaybookTaskDefinitionProto.Type.DATA_FETCH: "Data Fetch",
-    PlaybookTaskDefinitionProto.Type.DOCUMENTATION: "Documentation",
-    PlaybookTaskDefinitionProto.Type.ACTION: "Action",
+    DeprecatedPlaybookTaskDefinition.Type.UNKNOWN: "Unknown",
+    DeprecatedPlaybookTaskDefinition.Type.METRIC: "Metric",
+    DeprecatedPlaybookTaskDefinition.Type.DECISION: "Decision",
+    DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH: "Data Fetch",
+    DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION: "Documentation",
+    DeprecatedPlaybookTaskDefinition.Type.ACTION: "Action",
 }
 
 
 @deprecated
-def validate_playbook_request(playbook: PlaybookProto):
+def validate_playbook_request(playbook: DeprecatedPlaybook):
     global_variable_set = playbook.global_variable_set
     if global_variable_set:
         for global_variable_key in list(global_variable_set.keys()):
@@ -84,7 +84,8 @@ def get_db_playbook_task_definitions(account: Account, playbook_id: str, playboo
 
 
 @deprecated
-def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto, update_mode: bool = False) -> \
+def update_or_create_db_playbook(account: Account, created_by, playbook: DeprecatedPlaybook,
+                                 update_mode: bool = False) -> \
         (PlayBook, bool, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
     if not is_valid_playbook:
@@ -96,7 +97,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
         return None, f"Playbook with name {playbook_name} already exists"
 
     try:
-        playbook_steps: [PlaybookStepDefinition] = playbook.steps
+        playbook_steps: [DeprecatedPlaybookStepDefinition] = playbook.steps
         db_steps = []
         for step in playbook_steps:
             db_step, err = create_db_step(account, created_by, step)
@@ -135,9 +136,10 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
 
 
 @deprecated
-def create_db_step(account: Account, created_by, playbook_step: PlaybookStepDefinition) -> (PlayBookStep, str):
+def create_db_step(account: Account, created_by, playbook_step: DeprecatedPlaybookStepDefinition) -> (
+        PlayBookStep, str):
     try:
-        tasks: [PlaybookTaskDefinitionProto] = playbook_step.tasks
+        tasks: [DeprecatedPlaybookTaskDefinition] = playbook_step.tasks
         db_tasks = []
         for task in tasks:
             task_type_display = task_type_display_map.get(task.type, f"{task.type}: Unknown")
@@ -181,19 +183,19 @@ def create_db_step(account: Account, created_by, playbook_step: PlaybookStepDefi
 
 
 @deprecated
-def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTaskDefinitionProto) -> \
+def get_or_create_db_task(account: Account, created_by, task_proto: DeprecatedPlaybookTaskDefinition) -> \
         (PlayBookTask, str):
     task_type = task_proto.type
     task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
-    if task_type == PlaybookTaskDefinitionProto.Type.METRIC:
+    if task_type == DeprecatedPlaybookTaskDefinition.Type.METRIC:
         task = task_proto.metric_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DECISION:
+    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DECISION:
         task = task_proto.decision_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
+    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH:
         task = task_proto.data_fetch_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
+    elif task_type == DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION:
         task = task_proto.documentation_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.ACTION:
+    elif task_type == DeprecatedPlaybookTaskDefinition.Type.ACTION:
         task = task_proto.action_task
     else:
         return None, f"Invalid Task Type Received: {task_type_display}"

@@ -7,14 +7,15 @@ from accounts.models import Account
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
     PlayBookStepMapping
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask, PlaybookStep, PlaybookDefinition
+from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
+    Playbook as PlaybookProto
 from utils.proto_utils import proto_to_dict
 from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
 
 
-def validate_playbook_request(playbook: PlaybookDefinition):
+def validate_playbook_request(playbook: PlaybookProto):
     global_variable_set = playbook.global_variable_set
     if global_variable_set:
         for global_variable_key in list(global_variable_set.keys()):
@@ -69,7 +70,7 @@ def get_db_playbook_task_definitions_v2(account: Account, playbook_id: str, play
     return None
 
 
-def update_or_create_db_playbook_v2(account: Account, created_by, playbook: PlaybookDefinition,
+def update_or_create_db_playbook_v2(account: Account, created_by, playbook: PlaybookProto,
                                     update_mode: bool = False) -> (PlayBook, bool, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
     if not is_valid_playbook:
@@ -85,7 +86,7 @@ def update_or_create_db_playbook_v2(account: Account, created_by, playbook: Play
             db_playbook.name = f'{playbook_name}###(inactive)###{current_millis}'
             db_playbook.save(update_fields=['name'])
     try:
-        playbook_steps: [PlaybookStep] = playbook.steps
+        playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
         for step in playbook_steps:
             db_step, err = create_db_step_v2(account, created_by, step)
@@ -123,7 +124,7 @@ def update_or_create_db_playbook_v2(account: Account, created_by, playbook: Play
     return db_playbook, None
 
 
-def create_db_step_v2(account: Account, created_by, step: PlaybookStep) -> (PlayBookStep, str):
+def create_db_step_v2(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, str):
     try:
         tasks: [PlayBookTask] = step.tasks
         db_tasks = []
@@ -166,7 +167,7 @@ def create_db_step_v2(account: Account, created_by, step: PlaybookStep) -> (Play
         return None, f"Failed to create playbook step with error: {e}"
 
 
-def get_or_create_db_task_v2(account: Account, created_by, task: PlaybookTask) -> (PlaybookTask, str):
+def get_or_create_db_task_v2(account: Account, created_by, task: PlaybookTaskProto) -> (PlaybookTaskProto, str):
     task_dict = proto_to_dict(task)
     task_dict.pop('id', None)
     task_dict.pop('name', None)
@@ -182,8 +183,8 @@ def get_or_create_db_task_v2(account: Account, created_by, task: PlaybookTask) -
                                                         task_md5=task_md5,
                                                         created_by=created_by,
                                                         defaults={'task': task_dict,
-                                                                            'description': task.description.value,
-                                                                            'notes': task.notes.value})
+                                                                  'description': task.description.value,
+                                                                  'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
         db_task = PlayBookTask.objects.get(account=account, name=task.name.value, task_md5=task_md5,

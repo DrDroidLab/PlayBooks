@@ -1,0 +1,324 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+import "protos/playbooks/playbook_commons.proto";
+import "protos/playbooks/intelligence_layer/interpreter.proto";
+
+import "protos/playbooks/decision_task_definitions/decision_task.proto";
+
+import "protos/playbooks/source_task_definitions/cloudwatch_task.proto";
+import "protos/playbooks/source_task_definitions/grafana_task.proto";
+import "protos/playbooks/source_task_definitions/new_relic_task.proto";
+import "protos/playbooks/source_task_definitions/datadog_task.proto";
+import "protos/playbooks/source_task_definitions/eks_task.proto";
+import "protos/playbooks/source_task_definitions/sql_database_task.proto";
+import "protos/playbooks/source_task_definitions/api_call_task.proto";
+import "protos/playbooks/source_task_definitions/bash_command_task.proto";
+import "protos/playbooks/source_task_definitions/documentation_task.proto";
+import "protos/playbooks/source_task_definitions/promql_task.proto";
+
+
+//////////////// Playbook Metric Task Execution Protos ////////////////
+message DeprecatedPlaybookMetricTaskDefinition {
+  Source source = 1;
+  oneof task {
+    PlaybookCloudwatchTask cloudwatch_task = 6;
+    PlaybookGrafanaTask grafana_task = 7;
+    PlaybookNewRelicTask new_relic_task = 8;
+    PlaybookDatadogTask datadog_task = 9;
+    PlaybookPromQLTask mimir_task = 10;
+  }
+}
+
+message DeprecatedPlaybookMetricTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TIMESERIES = 1;
+      TABLE_RESULT = 2;
+    }
+
+    Type type = 1;
+    oneof result {
+      TimeseriesResult timeseries = 2;
+      TableResult table_result = 3;
+    }
+  }
+
+  Source metric_source = 1;
+  google.protobuf.StringValue metric_name = 2;
+  google.protobuf.StringValue metric_expression = 3;
+  Result result = 5;
+}
+
+
+//////////////// Playbook Decision Task Execution Protos ////////////////
+message DeprecatedPlaybookDecisionTaskDefinition {
+  enum EvaluationType {
+    UNKNOWN_ET = 0;
+    ELSE = 1;
+    TIMESERIES = 2;
+  }
+
+  EvaluationType evaluation_type = 1;
+  oneof condition {
+    ElseEvaluationTask else_evaluation_task = 2;
+    TimeseriesEvaluationTask timeseries_evaluation_task = 3;
+  }
+}
+
+message DeprecatedPlaybookDecisionTaskExecutionResult {
+
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      ELSE_EVALUATION_CONDITION = 1;
+      TIMESERIES_EVALUATION_CONDITION = 2;
+    }
+
+    message ElseEvaluation {
+      google.protobuf.BoolValue evaluation = 1;
+    }
+
+    message TimeseriesEvaluation {
+      google.protobuf.BoolValue evaluation = 1;
+      TimeseriesEvaluationTask.Rule rule = 2;
+      google.protobuf.DoubleValue value = 3;
+    }
+
+    Type type = 1;
+    google.protobuf.StringValue next_task = 2;
+    oneof result {
+      ElseEvaluation else_evaluation_condition = 3;
+      TimeseriesEvaluation timeseries_evaluation_condition = 4;
+    }
+  }
+
+  google.protobuf.UInt64Value decision_task_id = 1;
+  google.protobuf.StringValue decision_task_name = 2;
+  Result result = 3;
+}
+
+
+//////////////// Playbook Documentation Task Execution Protos ////////////////
+message DeprecatedPlaybookDocumentationTaskExecutionResult {
+
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      MARKDOWN = 1;
+    }
+
+    message MarkdownResult {
+      google.protobuf.Struct text = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      MarkdownResult markdown_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value documentation_task_id = 1;
+  google.protobuf.StringValue documentation_task_name = 2;
+  Result result = 3;
+}
+
+
+//////////////// Playbook Data Fetch Task Execution Protos ////////////////
+message DeprecatedPlaybookDataFetchTaskDefinition {
+  Source source = 1;
+  google.protobuf.StringValue order_by_column = 2;
+  google.protobuf.UInt64Value limit = 3;
+  google.protobuf.UInt64Value offset = 4;
+  oneof task {
+    SqlDataFetchTask clickhouse_data_fetch_task = 5;
+    SqlDataFetchTask postgres_data_fetch_task = 6;
+    PlaybookEksDataFetchTask eks_data_fetch_task = 7;
+    SqlDataFetchTask sql_database_connection_data_fetch_task = 8;
+  }
+}
+
+// Data Fetch Task Result Protos //
+message DeprecatedPlaybookDataFetchTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TABLE_RESULT = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      TableResult table_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value data_fetch_task_id = 1;
+  google.protobuf.StringValue data_fetch_task_name = 2;
+  Source data_source = 3;
+  Result result = 4;
+}
+
+
+//////////////// Playbook Action Task Execution Protos ////////////////
+message DeprecatedPlaybookActionTaskDefinition {
+  Source source = 1;
+  google.protobuf.UInt64Value id = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.Struct metadata = 4;
+  oneof task {
+    PlaybookApiCallTask api_call_task = 5;
+    PlaybookBashCommandTask bash_command_task = 6;
+  }
+}
+
+// Action Task Result Proto //
+message DeprecatedPlaybookActionTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      API_RESPONSE = 1;
+      BASH_COMMAND_OUTPUT = 2;
+    }
+
+    Type type = 1;
+    oneof result {
+      ApiResponseResult api_response = 2;
+      BashCommandOutputResult bash_command_output = 3;
+    }
+  }
+
+  google.protobuf.UInt64Value action_task_id = 1;
+  google.protobuf.StringValue action_task_name = 2;
+  Result result = 3;
+}
+
+
+// Playbook Protos
+message DeprecatedPlaybookTaskDefinition {
+
+  enum Type {
+    UNKNOWN = 0;
+    METRIC = 1;
+    DECISION = 2;
+    DATA_FETCH = 3;
+    DOCUMENTATION = 4;
+    ACTION = 5;
+  }
+
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue notes = 4;
+  google.protobuf.Struct global_variable_set = 5;
+  Type type = 6;
+  InterpreterType interpreter_type = 7;
+  oneof task {
+    DeprecatedPlaybookMetricTaskDefinition metric_task = 8;
+    DeprecatedPlaybookDecisionTaskDefinition decision_task = 9;
+    DeprecatedPlaybookDataFetchTaskDefinition data_fetch_task = 10;
+    PlaybookDocumentationTaskDefinition documentation_task = 11;
+    DeprecatedPlaybookActionTaskDefinition action_task = 12;
+  }
+}
+
+message DeprecatedPlaybookTaskExecutionResult  {
+  google.protobuf.StringValue error = 1;
+  google.protobuf.StringValue message = 2;
+  oneof result {
+    DeprecatedPlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
+    DeprecatedPlaybookDecisionTaskExecutionResult decision_task_execution_result = 4;
+    DeprecatedPlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 5;
+    DeprecatedPlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 6;
+    DeprecatedPlaybookActionTaskExecutionResult action_task_execution_result = 7;
+  }
+}
+
+message DeprecatedPlaybookStepDefinition {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue notes = 4;
+  repeated ExternalLink external_links = 5;
+  InterpreterType interpreter_type = 6;
+  repeated DeprecatedPlaybookTaskDefinition tasks = 7;
+}
+
+message DeprecatedPlaybook {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.BoolValue is_active = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  sfixed64 last_run_at = 7;
+  PlaybookExecutionStatusType status = 8;
+  repeated DeprecatedPlaybookStepDefinition steps = 9;
+  google.protobuf.Struct global_variable_set = 10;
+}
+
+
+message DeprecatedPlaybookExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  google.protobuf.StringValue playbook_run_id = 3;
+  DeprecatedPlaybook playbook = 4;
+  DeprecatedPlaybookStepDefinition step = 5;
+  DeprecatedPlaybookTaskDefinition task = 6;
+  DeprecatedPlaybookTaskExecutionResult task_execution_result = 7;
+  Interpretation task_interpretation = 8;
+}
+
+message DeprecatedPlaybookStepExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  DeprecatedPlaybookStepDefinition step = 3;
+  repeated DeprecatedPlaybookExecutionLog logs = 4;
+  Interpretation step_interpretation = 5;
+}
+
+message DeprecatedPlaybookExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+  DeprecatedPlaybook playbook = 3;
+  PlaybookExecutionStatusType status = 4;
+  sfixed64 created_at = 5;
+  sfixed64 started_at = 6;
+  sfixed64 finished_at = 7;
+  TimeRange time_range = 8;
+  google.protobuf.StringValue created_by = 9;
+  repeated DeprecatedPlaybookExecutionLog logs = 10;
+  repeated DeprecatedPlaybookStepExecutionLog step_execution_logs = 11;
+}
+
+// Crud Protos
+message DeprecatedUpdatePlaybookOp {
+  enum Op {
+    UNKNOWN = 0;
+    UPDATE_PLAYBOOK_NAME = 1;
+    UPDATE_PLAYBOOK_STATUS = 2;
+    UPDATE_PLAYBOOK = 3;
+  }
+
+  message UpdatePlaybookName {
+    google.protobuf.StringValue name = 1;
+  }
+
+  message UpdatePlaybookStatus {
+    google.protobuf.BoolValue is_active = 1;
+  }
+
+  message UpdatePlaybook {
+    DeprecatedPlaybook playbook = 1;
+  }
+
+  Op op = 1;
+  oneof update {
+    UpdatePlaybookName update_playbook_name = 2;
+    UpdatePlaybookStatus update_playbook_status = 3;
+    UpdatePlaybook update_playbook = 4;
+  }
+}

@@ -11,7 +11,7 @@ from executor.playbook_task_executor import PlaybookTaskExecutor
 from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.eks_task_pb2 import PlaybookEksDataFetchTask
 
 

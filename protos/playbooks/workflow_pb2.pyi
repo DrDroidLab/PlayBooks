@@ -11,8 +11,8 @@ import google.protobuf.message
 import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
+import protos.playbooks.deprecated_playbook_pb2
 import protos.playbooks.playbook_pb2
-import protos.playbooks.playbook_v2_pb2
 import sys
 import typing
 
@@ -441,7 +441,7 @@ class Workflow(google.protobuf.message.Message):
     @property
     def schedule(self) -> global___WorkflowSchedule: ...
     @property
-    def playbooks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_v2_pb2.PlaybookDefinition]: ...
+    def playbooks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_pb2.Playbook]: ...
     @property
     def entry_points(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowEntryPoint]: ...
     @property
@@ -458,7 +458,7 @@ class Workflow(google.protobuf.message.Message):
         created_at: builtins.int = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         schedule: global___WorkflowSchedule | None = ...,
-        playbooks: collections.abc.Iterable[protos.playbooks.playbook_v2_pb2.PlaybookDefinition] | None = ...,
+        playbooks: collections.abc.Iterable[protos.playbooks.playbook_pb2.Playbook] | None = ...,
         entry_points: collections.abc.Iterable[global___WorkflowEntryPoint] | None = ...,
         actions: collections.abc.Iterable[global___WorkflowAction] | None = ...,
         last_execution_time: builtins.int = ...,
@@ -649,13 +649,13 @@ class WorkflowExecutionLog(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def playbook_execution(self) -> protos.playbooks.playbook_pb2.PlaybookExecution: ...
+    def playbook_execution(self) -> protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution: ...
     created_at: builtins.int
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        playbook_execution: protos.playbooks.playbook_pb2.PlaybookExecution | None = ...,
+        playbook_execution: protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution | None = ...,
         created_at: builtins.int = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_execution", b"playbook_execution"]) -> builtins.bool: ...
@@ -732,13 +732,13 @@ class WorkflowExecutionLogV2(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def playbook_execution(self) -> protos.playbooks.playbook_v2_pb2.PlaybookExecutionV2: ...
+    def playbook_execution(self) -> protos.playbooks.playbook_pb2.PlaybookExecution: ...
     created_at: builtins.int
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        playbook_execution: protos.playbooks.playbook_v2_pb2.PlaybookExecutionV2 | None = ...,
+        playbook_execution: protos.playbooks.playbook_pb2.PlaybookExecution | None = ...,
         created_at: builtins.int = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_execution", b"playbook_execution"]) -> builtins.bool: ...

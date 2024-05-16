@@ -6,7 +6,7 @@ from executor.playbook_task_executor import PlaybookTaskExecutor
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
-from protos.playbooks.playbook_v2_pb2 import PlaybookTask
+from protos.playbooks.playbook_pb2 import PlaybookTask
 
 
 class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
