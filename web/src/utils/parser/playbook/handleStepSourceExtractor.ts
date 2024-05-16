@@ -3,13 +3,14 @@ import * as Extractor from "../../extractors/index.ts";
 
 export const handleStepSourceExtractor = (step) => {
   let data: any = {};
-  let stepSource = step.tasks
-    ? step?.tasks[0].metric_task
-      ? step.tasks[0].metric_task.source
-      : step.tasks[0].data_fetch_task
-      ? step.tasks[0].data_fetch_task.source
-      : step.tasks[0].action_task?.source ?? step?.tasks[0].type
-    : "";
+  // let stepSource = step.tasks
+  //   ? step?.tasks[0].metric_task
+  //     ? step.tasks[0].metric_task.source
+  //     : step.tasks[0].data_fetch_task
+  //     ? step.tasks[0].data_fetch_task.source
+  //     : step.tasks[0].action_task?.source ?? step?.tasks[0].type
+  //   : "";
+  let stepSource = step.tasks ? step.tasks[0].source : "";
 
   switch (stepSource) {
     case SOURCES.CLOUDWATCH:

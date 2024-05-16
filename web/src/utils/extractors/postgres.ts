@@ -3,7 +3,7 @@ export const extractPostgresTasks = (step: any) => {
   let modelType = "POSTGRES_DATABASE";
   let selected = "POSTGRES Database";
   const tasks = step.tasks;
-  const postgresTask = tasks[0].data_fetch_task?.postgres_data_fetch_task;
+  const postgresTask = tasks[0]?.postgres_data_fetch_task;
 
   const stepData = {
     source: stepSource,

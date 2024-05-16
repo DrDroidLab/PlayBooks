@@ -3,7 +3,7 @@ export const extractBashTasks = (step: any) => {
   let modelType = "BASH";
   let selected = "BASH";
   const tasks = step.tasks;
-  const bashTask = tasks[0].action_task?.bash_command_task;
+  const bashTask = tasks[0]?.bash_command_task;
 
   const stepData = {
     source: stepSource,

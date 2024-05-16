@@ -1,7 +1,7 @@
 // Playbooks
-export const GET_PLAYBOOKS = "/pb/get";
+export const GET_PLAYBOOKS = "/pb/get/v2";
 export const UPDATE_PLAYBOOK = "/pb/update";
-export const CREATE_PLAYBOOK = "/pb/create";
+export const CREATE_PLAYBOOK = "/pb/create/v2";
 export const EXECUTE_TASK = "/executor/task/run/v2";
 export const EXECUTE_STEP = "/executor/step/run/v2";
 export const EXECUTE_PLAYBOOK = "/executor/playbook/run";

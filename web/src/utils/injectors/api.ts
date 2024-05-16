@@ -15,11 +15,8 @@ export const injectApiTasks = (
   return [
     {
       ...baseTask,
-      type: "ACTION",
-      action_task: {
-        source: step.source.toUpperCase(),
-        api_call_task,
-      },
+      source: step.source.toUpperCase(),
+      api_call_task,
     },
   ];
 };

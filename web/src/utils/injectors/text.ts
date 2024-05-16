@@ -12,7 +12,6 @@ export const injectTextTasks = (
   return [
     {
       ...baseTask,
-      type: "DOCUMENTATION",
       documentation_task: documentation_task,
     },
   ];

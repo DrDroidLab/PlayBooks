@@ -3,7 +3,7 @@ export const extractCloudwatchTasks = (step: any) => {
   let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const cloudwatchStep = tasks[0]?.metric_task?.cloudwatch_task;
+  const cloudwatchStep = tasks[0]?.cloudwatch_task;
 
   switch (cloudwatchStep.type) {
     case "FILTER_LOG_EVENTS":

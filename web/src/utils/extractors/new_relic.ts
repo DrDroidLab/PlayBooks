@@ -5,7 +5,7 @@ export const extractNewRelicTasks = (step: any) => {
   let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const newRelicTask = tasks[0]?.metric_task?.new_relic_task;
+  const newRelicTask = tasks[0]?.new_relic_task;
 
   switch (newRelicTask.type) {
     case "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION":

@@ -3,7 +3,7 @@ export const extractApiTasks = (step: any) => {
   let modelType = "API";
   let selected = "API";
   const tasks = step.tasks;
-  const apiTask = tasks[0].action_task?.api_call_task;
+  const apiTask = tasks[0]?.api_call_task;
 
   const stepData = {
     source: stepSource,

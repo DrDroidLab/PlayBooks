@@ -3,7 +3,7 @@ export const extractMimirTasks = (step: any) => {
   let modelType = "GRAFANA_MIMIR_PROMQL";
   let selected = "GRAFANA_MIMIR PromQL";
   const tasks = step.tasks;
-  const mimirTask = tasks[0].metric_task?.mimir_task;
+  const mimirTask = tasks[0]?.mimir_task;
 
   const stepData = {
     source: stepSource,

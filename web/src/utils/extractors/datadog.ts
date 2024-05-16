@@ -5,7 +5,7 @@ export const extracDatadogTasks = (step: any) => {
   let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const datadogTask = tasks[0]?.metric_task?.datadog_task;
+  const datadogTask = tasks[0]?.datadog_task;
 
   switch (datadogTask.type) {
     case "SERVICE_METRIC_EXECUTION":

@@ -3,7 +3,7 @@ export const extractEksTasks = (step: any) => {
   let modelType = "EKS_CLUSTER";
   let selected = "EKS Cluster";
   const tasks = step.tasks;
-  const eksTask = tasks[0].data_fetch_task?.eks_data_fetch_task;
+  const eksTask = tasks[0]?.eks_data_fetch_task;
 
   const stepData = {
     source: stepSource,

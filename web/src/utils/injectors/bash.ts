@@ -12,11 +12,8 @@ export const injectBashTasks = (
   return [
     {
       ...baseTask,
-      type: "ACTION",
-      action_task: {
-        source: step.source.toUpperCase(),
-        bash_command_task,
-      },
+      source: step.source.toUpperCase(),
+      bash_command_task,
     },
   ];
 };
