@@ -4,8 +4,9 @@ from hashlib import md5
 from django.db.utils import IntegrityError
 
 from accounts.models import Account
-from executor.models import PlayBook, PlayBookTaskDefinition, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
+from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
     PlayBookStepMapping
+from playbooks.utils.decorators import deprecated
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     Playbook as PlaybookProto, PlaybookStepDefinition
@@ -23,6 +24,7 @@ task_type_display_map = {
 }
 
 
+@deprecated
 def validate_playbook_request(playbook: PlaybookProto):
     global_variable_set = playbook.global_variable_set
     if global_variable_set:
@@ -32,6 +34,7 @@ def validate_playbook_request(playbook: PlaybookProto):
     return True, None
 
 
+@deprecated
 def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_active=None, playbook_ids=None,
                      created_by=None):
     filters = {}
@@ -52,6 +55,7 @@ def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_
         return None
 
 
+@deprecated
 def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=None, is_active=None):
     filters = {'playbook_id': playbook_id}
     if is_active is not None:
@@ -65,6 +69,7 @@ def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=
     return None
 
 
+@deprecated
 def get_db_playbook_task_definitions(account: Account, playbook_id: str, playbook_step_id, is_active=None):
     filters = {'playbook_id': playbook_id, 'playbook_step_id': playbook_step_id}
     if is_active is not None:
@@ -72,12 +77,13 @@ def get_db_playbook_task_definitions(account: Account, playbook_id: str, playboo
     if is_active is not None:
         filters['is_active'] = is_active
     try:
-        return account.playbooktaskdefinition_set.filter(**filters)
+        return account.playbooktask_set.filter(**filters)
     except Exception as e:
         logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
     return None
 
 
+@deprecated
 def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto, update_mode: bool = False) -> \
         (PlayBook, bool, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
@@ -128,6 +134,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     return db_playbook, None
 
 
+@deprecated
 def create_db_step(account: Account, created_by, playbook_step: PlaybookStepDefinition) -> (PlayBookStep, str):
     try:
         tasks: [PlaybookTaskDefinitionProto] = playbook_step.tasks
@@ -173,8 +180,9 @@ def create_db_step(account: Account, created_by, playbook_step: PlaybookStepDefi
         return None, f"Failed to create playbook step with error: {e}"
 
 
+@deprecated
 def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTaskDefinitionProto) -> \
-        (PlayBookTaskDefinition, str):
+        (PlayBookTask, str):
     task_type = task_proto.type
     task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
     if task_type == PlaybookTaskDefinitionProto.Type.METRIC:
@@ -192,18 +200,18 @@ def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTask
     task_dict = proto_to_dict(task)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
-        db_task, _ = PlayBookTaskDefinition.objects.get_or_create(account=account,
-                                                                  name=task_proto.name.value,
-                                                                  description=task_proto.description.value,
-                                                                  notes=task_proto.notes.value,
-                                                                  type=task_type,
-                                                                  task_md5=task_md5,
-                                                                  created_by=created_by,
-                                                                  defaults={'task': task_dict})
+        db_task, _ = PlayBookTask.objects.get_or_create(account=account,
+                                                        name=task_proto.name.value,
+                                                        description=task_proto.description.value,
+                                                        notes=task_proto.notes.value,
+                                                        type=task_type,
+                                                        task_md5=task_md5,
+                                                        created_by=created_by,
+                                                        defaults={'task': task_dict})
         return db_task, None
     except IntegrityError:
-        db_task = PlayBookTaskDefinition.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
-                                                     created_by=created_by)
+        db_task = PlayBookTask.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
+                                           created_by=created_by)
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task type {task_type_display} with error {e}")

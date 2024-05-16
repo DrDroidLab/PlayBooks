@@ -41,7 +41,7 @@ def transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(old_result: Play
             offset=data_fetch_task_result.result.table_result.offset,
             total_count=data_fetch_task_result.result.table_result.total_count
         )
-        return PlaybookTaskResult(source=data_fetch_task_result.source, table=table_result,
+        return PlaybookTaskResult(source=data_fetch_task_result.data_source, table=table_result,
                                   type=PlaybookTaskResultType.TABLE)
     elif which_oneof == 'documentation_task_execution_result':
         return PlaybookTaskResult()
@@ -61,7 +61,89 @@ def transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(old_result: Play
         raise ValueError(f'No transformer found for result type: {which_oneof}')
 
 
-def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(new_result: PlaybookTaskResult):
+def transform_PlaybookTaskExecutionResult_json_to_PlaybookTaskResult_json(old_result: dict):
+    if old_result.get('error'):
+        return {
+            'error': old_result['error']
+        }
+
+    if old_result.get('metric_task_execution_result', None):
+        metric_task_result = old_result['metric_task_execution_result']
+        metric_task_result_type = metric_task_result['result']['type']
+
+        if metric_task_result_type == 'TIMESERIES':
+            timeseries_result = {
+                'metric_name': metric_task_result['metric_name'],
+                'metric_expression': metric_task_result['metric_expression'],
+                'labeled_metric_timeseries': metric_task_result['result']['timeseries']['labeled_metric_timeseries']
+            }
+            return {
+                'source': metric_task_result['metric_source'],
+                'timeseries': timeseries_result,
+                'type': 'TIMESERIES'
+            }
+
+        elif metric_task_result_type == 'TABLE_RESULT':
+            table_result = {
+                'rows': metric_task_result['result']['table_result']['rows'],
+                'raw_query': metric_task_result['metric_expression'],
+                'limit': metric_task_result['result']['table_result'].get('limit', None),
+                'offset': metric_task_result['result']['table_result'].get('offset', None),
+                'total_count': metric_task_result['result']['table_result'].get('total_count', None)
+            }
+            return {
+                'source': metric_task_result['metric_source'],
+                'table': table_result,
+                'type': 'TABLE'
+            }
+
+    elif old_result.get('data_fetch_task_execution_result', None):
+        data_fetch_task_result = old_result['data_fetch_task_execution_result']
+        table_result = {
+            'rows': data_fetch_task_result['result']['table_result']['rows'],
+            'raw_query': data_fetch_task_result['result']['table_result']['raw_query'],
+            'limit': data_fetch_task_result['result']['table_result']['limit'],
+            'offset': data_fetch_task_result['result']['table_result']['offset'],
+            'total_count': data_fetch_task_result['result']['table_result']['total_count']
+        }
+        return {
+            'source': data_fetch_task_result['data_source'],
+            'table': table_result,
+            'type': 'TABLE'
+        }
+
+    elif old_result.get('documentation_task_execution_result', None):
+        return {}
+
+    elif old_result.get('action_task_execution_result', None):
+        action_task_result = old_result['action_task_execution_result']
+        action_result_type = action_task_result['result']['type']
+
+        if action_result_type == 'BASH_COMMAND_OUTPUT':
+            bash_command_output = action_task_result['result']['bash_command_output']
+            return {
+                'source': 'BASH',
+                'type': 'BASH_COMMAND_OUTPUT',
+                'bash_command_output': bash_command_output
+            }
+
+        elif action_result_type == 'API_RESPONSE':
+            api_response = action_task_result['result']['api_response']
+            return {
+                'source': 'API',
+                'type': 'API_RESPONSE',
+                'api_response': api_response
+            }
+
+        else:
+            raise ValueError(f'Unsupported action task result type: {action_result_type}')
+
+    else:
+        raise ValueError(f'No transformer found for result: {old_result}')
+
+
+def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(
+        new_result: PlaybookTaskResult) -> PlaybookTaskExecutionResult:
     if new_result.error and new_result.error.value:
         return PlaybookTaskExecutionResult(error=new_result.error)
     elif new_result.type == PlaybookTaskResultType.TIMESERIES:
@@ -97,6 +179,7 @@ def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(new_result: Play
             data_fetch_task_execution_result=PlaybookDataFetchTaskExecutionResult(
                 data_source=new_result.source,
                 result=PlaybookDataFetchTaskExecutionResult.Result(
+                    type=PlaybookDataFetchTaskExecutionResult.Result.Type.TABLE_RESULT,
                     table_result=TableResult(
                         rows=new_result.table.rows,
                         raw_query=new_result.table.raw_query,

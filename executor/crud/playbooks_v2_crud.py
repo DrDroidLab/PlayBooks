@@ -4,7 +4,7 @@ from hashlib import md5
 from django.db.utils import IntegrityError
 
 from accounts.models import Account
-from executor.models import PlayBook, PlayBookTaskDefinition, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
+from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
     PlayBookStepMapping
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_v2_pb2 import PlaybookTask, PlaybookStep, PlaybookDefinition
@@ -63,7 +63,7 @@ def get_db_playbook_task_definitions_v2(account: Account, playbook_id: str, play
     if is_active is not None:
         filters['is_active'] = is_active
     try:
-        return account.playbooktaskdefinition_set.filter(**filters)
+        return account.playbooktask_set.filter(**filters)
     except Exception as e:
         logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
     return None
@@ -125,7 +125,7 @@ def update_or_create_db_playbook_v2(account: Account, created_by, playbook: Play
 
 def create_db_step_v2(account: Account, created_by, step: PlaybookStep) -> (PlayBookStep, str):
     try:
-        tasks: [PlaybookTask] = step.tasks
+        tasks: [PlayBookTask] = step.tasks
         db_tasks = []
         for task in tasks:
             db_task, err = get_or_create_db_task_v2(account, created_by, task)
@@ -166,30 +166,28 @@ def create_db_step_v2(account: Account, created_by, step: PlaybookStep) -> (Play
         return None, f"Failed to create playbook step with error: {e}"
 
 
-def get_or_create_db_task_v2(account: Account, created_by, task: PlaybookTask) -> (PlayBookTaskDefinition, str):
+def get_or_create_db_task_v2(account: Account, created_by, task: PlaybookTask) -> (PlaybookTask, str):
     task_dict = proto_to_dict(task)
-    hash_task_dict = task_dict.copy()
-    hash_task_dict.pop('id', None)
-    hash_task_dict.pop('name', None)
-    hash_task_dict.pop('description', None)
-    hash_task_dict.pop('notes', None)
-    hash_task_dict.pop('created_by', None)
-    hash_task_dict.pop('global_variable_set', None)
-    hash_task_dict.pop('interpreter_type', None)
-    task_md5 = md5(str(hash_task_dict).encode('utf-8')).hexdigest()
+    task_dict.pop('id', None)
+    task_dict.pop('name', None)
+    task_dict.pop('description', None)
+    task_dict.pop('notes', None)
+    task_dict.pop('created_by', None)
+    task_dict.pop('global_variable_set', None)
+    task_dict.pop('interpreter_type', None)
+    task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
-        db_task, _ = PlayBookTaskDefinition.objects.get_or_create(account=account,
-                                                                  name=task.name.value,
-                                                                  task_md5=task_md5,
-                                                                  created_by=created_by,
-                                                                  defaults={'task': task_dict,
+        db_task, _ = PlayBookTask.objects.get_or_create(account=account,
+                                                        name=task.name.value,
+                                                        task_md5=task_md5,
+                                                        created_by=created_by,
+                                                        defaults={'task': task_dict,
                                                                             'description': task.description.value,
-                                                                            'is_active': True,
                                                                             'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
-        db_task = PlayBookTaskDefinition.objects.get(account=account, name=task.name.value, task_md5=task_md5,
-                                                     created_by=created_by)
+        db_task = PlayBookTask.objects.get(account=account, name=task.name.value, task_md5=task_md5,
+                                           created_by=created_by)
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task name {task.name.value} with error {e}")

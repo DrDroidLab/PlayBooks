@@ -58,12 +58,14 @@ class Interpretation(google.protobuf.message.Message):
     CSV_FILE: Interpretation.Type.ValueType  # 3
 
     TYPE_FIELD_NUMBER: builtins.int
+    INTERPRETER_TYPE_FIELD_NUMBER: builtins.int
     TITLE_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
     SUMMARY_FIELD_NUMBER: builtins.int
     IMAGE_URL_FIELD_NUMBER: builtins.int
     FILE_PATH_FIELD_NUMBER: builtins.int
     type: global___Interpretation.Type.ValueType
+    interpreter_type: global___InterpreterType.ValueType
     @property
     def title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -78,6 +80,7 @@ class Interpretation(google.protobuf.message.Message):
         self,
         *,
         type: global___Interpretation.Type.ValueType = ...,
+        interpreter_type: global___InterpreterType.ValueType = ...,
         title: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
         summary: google.protobuf.wrappers_pb2.StringValue | None = ...,
@@ -85,6 +88,6 @@ class Interpretation(google.protobuf.message.Message):
         file_path: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "interpreter_type", b"interpreter_type", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
 
 global___Interpretation = Interpretation

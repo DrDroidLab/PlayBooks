@@ -6,6 +6,7 @@ import "google/protobuf/wrappers.proto";
 
 import "protos/base.proto";
 import "protos/playbooks/playbook.proto";
+import "protos/playbooks/playbook_v2.proto";
 
 ///////////////////// Workflow Scheduling /////////////////////
 message WorkflowOneOffSchedule {
@@ -139,7 +140,7 @@ message Workflow {
   sfixed64 created_at = 5;
   google.protobuf.BoolValue is_active = 6;
   WorkflowSchedule schedule = 7;
-  repeated Playbook playbooks = 8;
+  repeated PlaybookDefinition playbooks = 8;
   repeated WorkflowEntryPoint entry_points = 9;
   repeated WorkflowAction actions = 10;
 
@@ -220,4 +221,26 @@ message WorkflowExecution {
   sfixed64 finished_at = 11;
   google.protobuf.StringValue created_by = 12;
   repeated WorkflowExecutionLog workflow_logs = 13;
+}
+
+message WorkflowExecutionLogV2 {
+  google.protobuf.UInt64Value id = 1;
+  PlaybookExecutionV2 playbook_execution = 2;
+  sfixed64 created_at = 3;
+}
+
+message WorkflowExecutionV2 {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+  Workflow workflow = 3;
+  WorkflowExecutionStatusType status = 4;
+  sfixed64 scheduled_at = 5;
+  sfixed64 expiry_at = 6;
+  google.protobuf.UInt64Value interval = 7;
+  google.protobuf.UInt64Value total_executions = 8;
+  sfixed64 created_at = 9;
+  sfixed64 started_at = 10;
+  sfixed64 finished_at = 11;
+  google.protobuf.StringValue created_by = 12;
+  repeated WorkflowExecutionLogV2 workflow_logs = 13;
 }

@@ -26,7 +26,7 @@ class SlackAssetManager(ConnectorAssetManager):
         for con in slack_connector:
             try:
                 slack_channel_models = get_db_account_connector_keys(account, connector_id=con.id,
-                                                                     key_type=SourceKeyType.SLACK_CHANNEL)
+                                                                     key_type=SourceKeyType.SLACK_CHANNEL_ID)
             except Exception as e:
                 slack_channel_models = []
             if model_type == ConnectorMetadataModelTypeProto.SLACK_CHANNEL and (

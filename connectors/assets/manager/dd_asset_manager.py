@@ -7,7 +7,7 @@ from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.datadog_asset_pb2 import DatadogServiceAssetOptions, DatadogServiceAssetModel, \
     DatadogAssetModel, DatadogAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.base_pb2 import Source as ConnectorType
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
@@ -34,8 +34,7 @@ class DatadogAssetManager(ConnectorAssetManager):
                         DatadogServiceAssetOptions.DatadogServiceAssetOption(name=StringValue(value=item['model_uid']),
                                                                              metric_families=list(set(families))))
             options = DatadogServiceAssetOptions(services=asset_model_options)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      datadog_service_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, datadog_service_model_options=options)
         else:
             return None
 

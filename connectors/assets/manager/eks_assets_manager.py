@@ -11,7 +11,7 @@ from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_ins
 from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksClusterAssetModel, EksAssetModel, \
     EksAssets, RegionCluster, Cluster, Command, Namespace
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, AccountConnectorAssetsModelFilters, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.base_pb2 import Source, SourceKeyType
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
@@ -39,8 +39,7 @@ class EKSAssetManager(ConnectorAssetManager):
                 all_region_clusters.append(
                     RegionCluster(region=StringValue(value=item['model_uid']), clusters=clusters))
             options = EksClusterAssetOptions(regions=all_region_clusters)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      eks_cluster_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, eks_cluster_model_options=options)
         else:
             return None
 

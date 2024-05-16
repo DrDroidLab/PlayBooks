@@ -7,7 +7,7 @@ from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.postgres_asset_pb2 import PostgresDatabaseAssetOptions, PostgresDatabaseAssetModel, \
     PostgresAssetModel, PostgresAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.base_pb2 import Source as ConnectorType
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
@@ -23,8 +23,7 @@ class PostgresAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_databases.append(item['model_uid'])
             options = PostgresDatabaseAssetOptions(databases=all_databases)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      postgres_database_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, postgres_database_model_options=options)
         else:
             return None
 

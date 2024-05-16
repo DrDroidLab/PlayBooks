@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
-    AccountConnectorAssetsModelOptions
+    AccountConnectorAssetsModelOptions, ConnectorModelTypeOptions
 from protos.connectors.assets.remote_server_asset_pb2 import SshServerAssetOptions, RemoteServerAssetModel, \
     SshServerAssetModel, RemoteServerAssets
 from protos.base_pb2 import Source as ConnectorType
@@ -23,8 +23,7 @@ class RemoteServetAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_servers.append(item['model_uid'])
             options = SshServerAssetOptions(ssh_servers=all_servers)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      ssh_server_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, ssh_server_model_options=options)
         else:
             return None
 

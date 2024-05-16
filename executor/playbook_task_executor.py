@@ -1,8 +1,8 @@
 from typing import Dict
 
 from protos.base_pb2 import TimeRange, Source
-from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookMetricTaskExecutionResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
+from protos.playbooks.playbook_v2_pb2 import PlaybookTask
 
 
 class PlaybookTaskExecutor:
@@ -13,6 +13,5 @@ class PlaybookTaskExecutor:
     def get_task_type_callable_map(cls):
         return cls.task_type_callable_map
 
-    def execute(self, time_range: TimeRange, global_variable_set: Dict,
-                task: PlaybookMetricTaskDefinitionProto) -> PlaybookMetricTaskExecutionResult:
+    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
         pass

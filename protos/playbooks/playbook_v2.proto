@@ -46,9 +46,11 @@ message PlaybookTask {
 }
 
 message PlaybookTaskExecutionLog {
-  PlaybookTask task = 1;
-  PlaybookTaskResult result = 2;
-  Interpretation task_result_interpretation = 3;
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  PlaybookTask task = 3;
+  PlaybookTaskResult result = 4;
+  Interpretation interpretation = 5;
 }
 
 // Playbook Step Protos

@@ -130,7 +130,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     NEWRELIC_QUERY_KEY: _SourceKeyType.ValueType  # 7
     NEWRELIC_API_DOMAIN: _SourceKeyType.ValueType  # 19
     SLACK_BOT_AUTH_TOKEN: _SourceKeyType.ValueType  # 8
-    SLACK_CHANNEL: _SourceKeyType.ValueType  # 9
+    SLACK_CHANNEL_ID: _SourceKeyType.ValueType  # 9
+    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     HONEYBADGER_USERNAME: _SourceKeyType.ValueType  # 10
     HONEYBADGER_PASSWORD: _SourceKeyType.ValueType  # 11
     HONEYBADGER_PROJECT_ID: _SourceKeyType.ValueType  # 12
@@ -164,7 +165,6 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AGENT_PROXY_HOST: _SourceKeyType.ValueType  # 43
     AGENT_PROXY_API_KEY: _SourceKeyType.ValueType  # 44
     GITHUB_ACTIONS_TOKEN: _SourceKeyType.ValueType  # 45
-    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     OPEN_AI_API_KEY: _SourceKeyType.ValueType  # 47
     REMOTE_SERVER_PEM: _SourceKeyType.ValueType  # 49
     REMOTE_SERVER_USER: _SourceKeyType.ValueType  # 50
@@ -185,7 +185,8 @@ NEWRELIC_APP_ID: SourceKeyType.ValueType  # 5
 NEWRELIC_QUERY_KEY: SourceKeyType.ValueType  # 7
 NEWRELIC_API_DOMAIN: SourceKeyType.ValueType  # 19
 SLACK_BOT_AUTH_TOKEN: SourceKeyType.ValueType  # 8
-SLACK_CHANNEL: SourceKeyType.ValueType  # 9
+SLACK_CHANNEL_ID: SourceKeyType.ValueType  # 9
+SLACK_APP_ID: SourceKeyType.ValueType  # 46
 HONEYBADGER_USERNAME: SourceKeyType.ValueType  # 10
 HONEYBADGER_PASSWORD: SourceKeyType.ValueType  # 11
 HONEYBADGER_PROJECT_ID: SourceKeyType.ValueType  # 12
@@ -219,13 +220,107 @@ OPS_GENIE_API_KEY: SourceKeyType.ValueType  # 42
 AGENT_PROXY_HOST: SourceKeyType.ValueType  # 43
 AGENT_PROXY_API_KEY: SourceKeyType.ValueType  # 44
 GITHUB_ACTIONS_TOKEN: SourceKeyType.ValueType  # 45
-SLACK_APP_ID: SourceKeyType.ValueType  # 46
 OPEN_AI_API_KEY: SourceKeyType.ValueType  # 47
 REMOTE_SERVER_PEM: SourceKeyType.ValueType  # 49
 REMOTE_SERVER_USER: SourceKeyType.ValueType  # 50
 REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 global___SourceKeyType = SourceKeyType
+
+class _ConnectorMetadataModelType:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _ConnectorMetadataModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_ConnectorMetadataModelType.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_MT: _ConnectorMetadataModelType.ValueType  # 0
+    NEW_RELIC_POLICY: _ConnectorMetadataModelType.ValueType  # 1
+    """New Relic Models"""
+    NEW_RELIC_CONDITION: _ConnectorMetadataModelType.ValueType  # 2
+    NEW_RELIC_ENTITY: _ConnectorMetadataModelType.ValueType  # 3
+    NEW_RELIC_ENTITY_DASHBOARD: _ConnectorMetadataModelType.ValueType  # 4
+    NEW_RELIC_ENTITY_APPLICATION: _ConnectorMetadataModelType.ValueType  # 5
+    NEW_RELIC_NRQL: _ConnectorMetadataModelType.ValueType  # 6
+    DATADOG_MONITOR: _ConnectorMetadataModelType.ValueType  # 101
+    """Datadog Models"""
+    DATADOG_DASHBOARD: _ConnectorMetadataModelType.ValueType  # 102
+    DATADOG_LIVE_INTEGRATION_AWS: _ConnectorMetadataModelType.ValueType  # 103
+    DATADOG_LIVE_INTEGRATION_AWS_LOG: _ConnectorMetadataModelType.ValueType  # 104
+    DATADOG_LIVE_INTEGRATION_AZURE: _ConnectorMetadataModelType.ValueType  # 105
+    DATADOG_LIVE_INTEGRATION_CLOUDFLARE: _ConnectorMetadataModelType.ValueType  # 106
+    DATADOG_LIVE_INTEGRATION_FASTLY: _ConnectorMetadataModelType.ValueType  # 107
+    DATADOG_LIVE_INTEGRATION_GCP: _ConnectorMetadataModelType.ValueType  # 108
+    DATADOG_LIVE_INTEGRATION_CONFLUENT: _ConnectorMetadataModelType.ValueType  # 109
+    DATADOG_SERVICE: _ConnectorMetadataModelType.ValueType  # 110
+    DATADOG_METRIC: _ConnectorMetadataModelType.ValueType  # 111
+    DATADOG_QUERY: _ConnectorMetadataModelType.ValueType  # 112
+    CLOUDWATCH_METRIC: _ConnectorMetadataModelType.ValueType  # 201
+    """Cloudwatch Models"""
+    CLOUDWATCH_LOG_GROUP: _ConnectorMetadataModelType.ValueType  # 202
+    GRAFANA_DATASOURCE: _ConnectorMetadataModelType.ValueType  # 301
+    """Grafana Models"""
+    GRAFANA_DASHBOARD: _ConnectorMetadataModelType.ValueType  # 302
+    GRAFANA_TARGET_METRIC_PROMQL: _ConnectorMetadataModelType.ValueType  # 303
+    CLICKHOUSE_DATABASE: _ConnectorMetadataModelType.ValueType  # 401
+    """Clickhouse Models"""
+    SLACK_CHANNEL: _ConnectorMetadataModelType.ValueType  # 501
+    """Slack Models"""
+    MARKDOWN: _ConnectorMetadataModelType.ValueType  # 601
+    """Documentation Models"""
+    POSTGRES_DATABASE_ASSET: _ConnectorMetadataModelType.ValueType  # 701
+    """Postgres Models"""
+    EKS_CLUSTER: _ConnectorMetadataModelType.ValueType  # 801
+    """EKS Models"""
+    SQL_DATABASE_CONNECTION_RAW_QUERY: _ConnectorMetadataModelType.ValueType  # 901
+    """Sql Database Connection Models"""
+    SSH_SERVER: _ConnectorMetadataModelType.ValueType  # 1100
+    """Remote Server Models"""
+
+class ConnectorMetadataModelType(_ConnectorMetadataModelType, metaclass=_ConnectorMetadataModelTypeEnumTypeWrapper): ...
+
+UNKNOWN_MT: ConnectorMetadataModelType.ValueType  # 0
+NEW_RELIC_POLICY: ConnectorMetadataModelType.ValueType  # 1
+"""New Relic Models"""
+NEW_RELIC_CONDITION: ConnectorMetadataModelType.ValueType  # 2
+NEW_RELIC_ENTITY: ConnectorMetadataModelType.ValueType  # 3
+NEW_RELIC_ENTITY_DASHBOARD: ConnectorMetadataModelType.ValueType  # 4
+NEW_RELIC_ENTITY_APPLICATION: ConnectorMetadataModelType.ValueType  # 5
+NEW_RELIC_NRQL: ConnectorMetadataModelType.ValueType  # 6
+DATADOG_MONITOR: ConnectorMetadataModelType.ValueType  # 101
+"""Datadog Models"""
+DATADOG_DASHBOARD: ConnectorMetadataModelType.ValueType  # 102
+DATADOG_LIVE_INTEGRATION_AWS: ConnectorMetadataModelType.ValueType  # 103
+DATADOG_LIVE_INTEGRATION_AWS_LOG: ConnectorMetadataModelType.ValueType  # 104
+DATADOG_LIVE_INTEGRATION_AZURE: ConnectorMetadataModelType.ValueType  # 105
+DATADOG_LIVE_INTEGRATION_CLOUDFLARE: ConnectorMetadataModelType.ValueType  # 106
+DATADOG_LIVE_INTEGRATION_FASTLY: ConnectorMetadataModelType.ValueType  # 107
+DATADOG_LIVE_INTEGRATION_GCP: ConnectorMetadataModelType.ValueType  # 108
+DATADOG_LIVE_INTEGRATION_CONFLUENT: ConnectorMetadataModelType.ValueType  # 109
+DATADOG_SERVICE: ConnectorMetadataModelType.ValueType  # 110
+DATADOG_METRIC: ConnectorMetadataModelType.ValueType  # 111
+DATADOG_QUERY: ConnectorMetadataModelType.ValueType  # 112
+CLOUDWATCH_METRIC: ConnectorMetadataModelType.ValueType  # 201
+"""Cloudwatch Models"""
+CLOUDWATCH_LOG_GROUP: ConnectorMetadataModelType.ValueType  # 202
+GRAFANA_DATASOURCE: ConnectorMetadataModelType.ValueType  # 301
+"""Grafana Models"""
+GRAFANA_DASHBOARD: ConnectorMetadataModelType.ValueType  # 302
+GRAFANA_TARGET_METRIC_PROMQL: ConnectorMetadataModelType.ValueType  # 303
+CLICKHOUSE_DATABASE: ConnectorMetadataModelType.ValueType  # 401
+"""Clickhouse Models"""
+SLACK_CHANNEL: ConnectorMetadataModelType.ValueType  # 501
+"""Slack Models"""
+MARKDOWN: ConnectorMetadataModelType.ValueType  # 601
+"""Documentation Models"""
+POSTGRES_DATABASE_ASSET: ConnectorMetadataModelType.ValueType  # 701
+"""Postgres Models"""
+EKS_CLUSTER: ConnectorMetadataModelType.ValueType  # 801
+"""EKS Models"""
+SQL_DATABASE_CONNECTION_RAW_QUERY: ConnectorMetadataModelType.ValueType  # 901
+"""Sql Database Connection Models"""
+SSH_SERVER: ConnectorMetadataModelType.ValueType  # 1100
+"""Remote Server Models"""
+global___ConnectorMetadataModelType = ConnectorMetadataModelType
 
 @typing_extensions.final
 class TimeRange(google.protobuf.message.Message):

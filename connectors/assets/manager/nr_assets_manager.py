@@ -8,7 +8,7 @@ from protos.connectors.assets.newrelic_asset_pb2 import NewRelicApplicationEntit
     NewRelicAssetModel, NewRelicApplicationEntityAssetModel, NewRelicDashboardEntityAssetModel, \
     NewRelicDashboardEntityAssetOptions
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.base_pb2 import Source as ConnectorType
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
@@ -24,8 +24,7 @@ class NewRelicAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_application_entities.append(item['metadata']['name'])
             options = NewRelicApplicationEntityAssetOptions(application_names=all_application_entities)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      new_relic_entity_application_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, new_relic_entity_application_model_options=options)
         elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD:
             all_dashboards = {}
             for item in model_uid_metadata_list:
@@ -50,11 +49,11 @@ class NewRelicAssetManager(ConnectorAssetManager):
                     dashboard_guid=StringValue(value=dashboard_id),
                     dashboard_name=StringValue(value=dict_items['dashboard_name']),
                     page_options=page_options))
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      new_relic_entity_dashboard_model_options=NewRelicDashboardEntityAssetOptions(
-                                                                          dashboards=dashboard_options))
+            return ConnectorModelTypeOptions(model_type=model_type,
+                                             new_relic_entity_dashboard_model_options=NewRelicDashboardEntityAssetOptions(
+                                                 dashboards=dashboard_options))
         elif model_type == ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL:
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type)
+            return ConnectorModelTypeOptions(model_type=model_type)
         else:
             return None
 

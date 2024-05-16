@@ -6,7 +6,7 @@ from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.connectors.assets.clickhouse_asset_pb2 import ClickhouseDatabaseAssetOptions, ClickhouseDatabaseAssetModel, \
     ClickhouseAssetModel, ClickhouseAssets
 from protos.base_pb2 import Source as ConnectorType
@@ -24,8 +24,7 @@ class ClickhouseAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_databases.append(item['model_uid'])
             options = ClickhouseDatabaseAssetOptions(databases=all_databases)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      clickhouse_database_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, clickhouse_database_model_options=options)
         else:
             return None
 

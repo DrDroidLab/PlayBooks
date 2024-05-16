@@ -1,15 +1,22 @@
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
+from playbooks.utils.decorators import deprecated
 from protos.base_pb2 import Source
-from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookCloudwatchTask, PlaybookGrafanaTask, \
-    PlaybookNewRelicTask, PlaybookDatadogTask, PlaybookDataFetchTaskDefinition, PlaybookClickhouseDataFetchTask, \
-    PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    ElseEvaluationTask, PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, \
-    PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
-    TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
-    PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
-    PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask, \
-    PlaybookBashCommandTask
+from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookDataFetchTaskDefinition, \
+    PlaybookTaskDefinition, PlaybookActionTaskDefinition
+from protos.playbooks.source_task_definitions.api_call_task_pb2 import PlaybookApiCallTask
+from protos.playbooks.source_task_definitions.bash_command_task_pb2 import PlaybookBashCommandTask
+from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import PlaybookCloudwatchTask, \
+    CloudwatchMetricExecutionTask, CloudwatchFilterLogEventsTask
+from protos.playbooks.source_task_definitions.datadog_task_pb2 import PlaybookDatadogTask, ServiceMetricExecutionTask, \
+    QueryMetricExecutionTask
+from protos.playbooks.source_task_definitions.documentation_task_pb2 import PlaybookDocumentationTaskDefinition
+from protos.playbooks.source_task_definitions.eks_task_pb2 import PlaybookEksDataFetchTask
+from protos.playbooks.source_task_definitions.grafana_task_pb2 import PlaybookGrafanaTask, PromQlMetricExecutionTask
+from protos.playbooks.source_task_definitions.new_relic_task_pb2 import PlaybookNewRelicTask, \
+    EntityApplicationGoldenMetricExecutionTask, EntityDashboardWidgetNRQLMetricExecutionTask, NRQLMetricExecutionTask
+from protos.playbooks.source_task_definitions.sql_database_task_pb2 import SqlDataFetchTask
+
 from utils.proto_utils import dict_to_proto
 
 
@@ -17,13 +24,13 @@ def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     cloudwatch_task = task.get('cloudwatch_task', {})
     if cloudwatch_task.get('type', None) == 'METRIC_EXECUTION':
         metric_execution_task_proto = dict_to_proto(cloudwatch_task.get('metric_execution_task', {}),
-                                                    PlaybookCloudwatchTask.CloudwatchMetricExecutionTask)
+                                                    CloudwatchMetricExecutionTask)
         cloudwatch_task_proto = PlaybookCloudwatchTask(
             type=PlaybookCloudwatchTask.TaskType.METRIC_EXECUTION,
             metric_execution_task=metric_execution_task_proto)
     elif cloudwatch_task.get('type', None) == 'FILTER_LOG_EVENTS':
         filter_log_events_task_proto = dict_to_proto(cloudwatch_task.get('filter_log_events_task', {}),
-                                                     PlaybookCloudwatchTask.CloudwatchFilterLogEventsTask)
+                                                     CloudwatchFilterLogEventsTask)
         cloudwatch_task_proto = PlaybookCloudwatchTask(
             type=PlaybookCloudwatchTask.TaskType.FILTER_LOG_EVENTS,
             filter_log_events_task=filter_log_events_task_proto)
@@ -35,9 +42,8 @@ def get_cloudwatch_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
 def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     grafana_task = task.get('grafana_task', {})
     if grafana_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
-        promql_metric_execution_task_proto = dict_to_proto(
-            grafana_task.get('promql_metric_execution_task', {}),
-            PlaybookGrafanaTask.PromQlMetricExecutionTask)
+        promql_metric_execution_task_proto = dict_to_proto(grafana_task.get('promql_metric_execution_task', {}),
+                                                           PromQlMetricExecutionTask)
         grafana_task_proto = PlaybookGrafanaTask(type=PlaybookGrafanaTask.TaskType.PROMQL_METRIC_EXECUTION,
                                                  datasource_uid=StringValue(
                                                      value=grafana_task.get('datasource_uid', '')),
@@ -52,21 +58,20 @@ def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     if nr_task.get('type', None) == 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION':
         entity_application_golden_metric_execution_task_proto = dict_to_proto(
             nr_task.get('entity_application_golden_metric_execution_task', {}),
-            PlaybookNewRelicTask.EntityApplicationGoldenMetricExecutionTask)
+            EntityApplicationGoldenMetricExecutionTask)
         nr_task_proto = PlaybookNewRelicTask(
             type=PlaybookNewRelicTask.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION,
             entity_application_golden_metric_execution_task=entity_application_golden_metric_execution_task_proto)
     elif nr_task.get('type', None) == 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION':
         entity_dashboard_widget_nrql_metric_execution_task_proto = dict_to_proto(
             nr_task.get('entity_dashboard_widget_nrql_metric_execution_task', {}),
-            PlaybookNewRelicTask.EntityDashboardWidgetNRQLMetricExecutionTask)
+            EntityDashboardWidgetNRQLMetricExecutionTask)
         nr_task_proto = PlaybookNewRelicTask(
             type=PlaybookNewRelicTask.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION,
             entity_dashboard_widget_nrql_metric_execution_task=entity_dashboard_widget_nrql_metric_execution_task_proto)
     elif nr_task.get('type', None) == 'NRQL_METRIC_EXECUTION':
-        nrql_metric_execution_task_proto = dict_to_proto(
-            nr_task.get('nrql_metric_execution_task', {}),
-            PlaybookNewRelicTask.NRQLMetricExecutionTask)
+        nrql_metric_execution_task_proto = dict_to_proto(nr_task.get('nrql_metric_execution_task', {}),
+                                                         NRQLMetricExecutionTask)
         nr_task_proto = PlaybookNewRelicTask(
             type=PlaybookNewRelicTask.TaskType.NRQL_METRIC_EXECUTION,
             nrql_metric_execution_task=nrql_metric_execution_task_proto)
@@ -78,16 +83,14 @@ def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
 def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     dd_task = task.get('datadog_task', {})
     if dd_task.get('type', None) == 'SERVICE_METRIC_EXECUTION':
-        service_metric_execution_task_proto = dict_to_proto(
-            dd_task.get('service_metric_execution_task', {}),
-            PlaybookDatadogTask.ServiceMetricExecutionTask)
+        service_metric_execution_task_proto = dict_to_proto(dd_task.get('service_metric_execution_task', {}),
+                                                            ServiceMetricExecutionTask)
         dd_task_proto = PlaybookDatadogTask(
             type=PlaybookDatadogTask.TaskType.SERVICE_METRIC_EXECUTION,
             service_metric_execution_task=service_metric_execution_task_proto)
     elif dd_task.get('type', None) == 'QUERY_METRIC_EXECUTION':
-        query_metric_execution_task = dict_to_proto(
-            dd_task.get('query_metric_execution_task', {}),
-            PlaybookDatadogTask.QueryMetricExecutionTask)
+        query_metric_execution_task = dict_to_proto(dd_task.get('query_metric_execution_task', {}),
+                                                    QueryMetricExecutionTask)
         dd_task_proto = PlaybookDatadogTask(
             type=PlaybookDatadogTask.TaskType.QUERY_METRIC_EXECUTION,
             query_metric_execution_task=query_metric_execution_task)
@@ -98,14 +101,14 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
 
 def get_clickhouse_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
-    clickhouse_data_fetch_task_proto = dict_to_proto(clickhouse_data_fetch_task, PlaybookClickhouseDataFetchTask)
+    clickhouse_data_fetch_task_proto = dict_to_proto(clickhouse_data_fetch_task, SqlDataFetchTask)
     return PlaybookDataFetchTaskDefinition(source=Source.CLICKHOUSE,
                                            clickhouse_data_fetch_task=clickhouse_data_fetch_task_proto)
 
 
 def get_postgres_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     postgres_data_fetch_task = task.get('postgres_data_fetch_task', {})
-    postgres_data_fetch_task_proto = dict_to_proto(postgres_data_fetch_task, PlaybookPostgresDataFetchTask)
+    postgres_data_fetch_task_proto = dict_to_proto(postgres_data_fetch_task, SqlDataFetchTask)
     return PlaybookDataFetchTaskDefinition(source=Source.POSTGRES,
                                            postgres_data_fetch_task=postgres_data_fetch_task_proto)
 
@@ -113,7 +116,7 @@ def get_postgres_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
 def get_sql_database_connection_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
     sql_database_connection_data_fetch_task = task.get('sql_database_connection_data_fetch_task', {})
     sql_database_connection_data_fetch_task_proto = dict_to_proto(sql_database_connection_data_fetch_task,
-                                                                  PlaybookSqlDatabaseConnectionDataFetchTask)
+                                                                  SqlDataFetchTask)
     return PlaybookDataFetchTaskDefinition(source=Source.SQL_DATABASE_CONNECTION,
                                            sql_database_connection_data_fetch_task=sql_database_connection_data_fetch_task_proto)
 
@@ -136,55 +139,11 @@ def get_bash_command_task_execution_proto(task) -> PlaybookActionTaskDefinition:
     return PlaybookActionTaskDefinition(source=Source.BASH, bash_command_task=bash_command_task_proto)
 
 
+@deprecated
 def get_playbook_task_definition_proto(db_task_definition):
-    task_type = db_task_definition.type
     task = db_task_definition.task
-    if task_type == PlaybookTaskDefinitionProto.Type.DECISION:
-        decision_task = task.get('decision_task', None)
-        if decision_task.get('evaluation_type', None) == 'ELSE':
-            else_evaluation_task_proto = dict_to_proto(decision_task.get('else_evaluation_task', {}),
-                                                       ElseEvaluationTask)
-            decision_task_proto = PlaybookDecisionTaskDefinitionProto(
-                evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.ELSE,
-                else_evaluation_task=else_evaluation_task_proto
-            )
-            return PlaybookTaskDefinitionProto(
-                id=UInt64Value(value=db_task_definition.id),
-                name=StringValue(value=db_task_definition.name),
-                description=StringValue(value=db_task_definition.description),
-                type=db_task_definition.type,
-                decision_task=decision_task_proto,
-                notes=StringValue(value=db_task_definition.notes)
-            )
-        elif decision_task.get('evaluation_type', None) == 'TIMESERIES':
-            timeseries_evaluation_task = decision_task.get('timeseries_evaluation_task', {})
-            if timeseries_evaluation_task.get('input_type', None) == 'METRIC_TIMESERIES':
-                metric_timeseries_input = dict_to_proto(
-                    timeseries_evaluation_task.get('metric_timeseries_input', {}),
-                    PlaybookMetricTaskExecutionResultProto)
-                rules_proto = dict_to_proto(decision_task.get('rule', {}), TimeseriesEvaluationTaskProto.Rule)
-                timeseries_evaluation_task_proto = TimeseriesEvaluationTaskProto(
-                    input_type=PlaybookTaskDefinitionProto.TimeseriesEvaluationTask.InputType.METRIC_TIMESERIES,
-                    rules=rules_proto,
-                    metric_timeseries_input=metric_timeseries_input
-                )
-                decision_task_proto = PlaybookDecisionTaskDefinitionProto(
-                    evaluation_type=PlaybookTaskDefinitionProto.DecisionTask.EvaluationType.TIMESERIES,
-                    timeseries_evaluation_task=timeseries_evaluation_task_proto
-                )
-                return PlaybookTaskDefinitionProto(
-                    id=UInt64Value(value=db_task_definition.id),
-                    name=StringValue(value=db_task_definition.name),
-                    description=StringValue(value=db_task_definition.description),
-                    notes=StringValue(value=db_task_definition.notes),
-                    type=db_task_definition.type, decision_task=decision_task_proto
-                )
-            else:
-                raise ValueError(f"Invalid input type: {timeseries_evaluation_task.get('input_type', None)}")
-        else:
-            raise ValueError(f"Invalid evaluation type: {decision_task.get('evaluation_type', None)}")
-    elif task_type == PlaybookTaskDefinitionProto.Type.METRIC:
-        source = task.get('source', None)
+    source = task.get('source', None)
+    if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG']:
         if source == 'CLOUDWATCH':
             metric_task_proto = get_cloudwatch_task_execution_proto(task)
         elif source == 'GRAFANA':
@@ -195,15 +154,15 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_datadog_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinitionProto(
+        return PlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=db_task_definition.type,
+            type=PlaybookTaskDefinition.Type.METRIC,
             metric_task=metric_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
-    elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
+    elif source in ['CLICKHOUSE', 'POSTGRES', 'EKS', 'SQL_DATABASE_CONNECTION']:
         source = task.get('source', None)
         if source == 'CLICKHOUSE':
             data_fetch_task_proto = get_clickhouse_task_execution_proto(task)
@@ -215,25 +174,15 @@ def get_playbook_task_definition_proto(db_task_definition):
             data_fetch_task_proto = get_sql_database_connection_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinitionProto(
+        return PlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=db_task_definition.type,
+            type=PlaybookTaskDefinition.Type.DATA_FETCH,
             data_fetch_task=data_fetch_task_proto,
             notes=StringValue(value=db_task_definition.notes),
         )
-    elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
-        documentation_task_proto = dict_to_proto(db_task_definition.task, PlaybookDocumentationTaskDefinitionProto)
-        return PlaybookTaskDefinitionProto(
-            id=UInt64Value(value=db_task_definition.id),
-            name=StringValue(value=db_task_definition.name),
-            description=StringValue(value=db_task_definition.description),
-            type=db_task_definition.type,
-            documentation_task=documentation_task_proto,
-            notes=StringValue(value=db_task_definition.notes),
-        )
-    elif task_type == PlaybookTaskDefinitionProto.Type.ACTION:
+    elif source in ['API', 'BASH']:
         source = task.get('source', None)
         if source == 'API':
             action_task_proto = get_api_call_task_execution_proto(task)
@@ -241,13 +190,23 @@ def get_playbook_task_definition_proto(db_task_definition):
             action_task_proto = get_bash_command_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
-        return PlaybookTaskDefinitionProto(
+        return PlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
             description=StringValue(value=db_task_definition.description),
-            type=db_task_definition.type,
+            type=PlaybookTaskDefinition.Type.ACTION,
             action_task=action_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
+    elif task.get('documentation_task', None):
+        documentation_task_proto = dict_to_proto(db_task_definition.task, PlaybookDocumentationTaskDefinition)
+        return PlaybookTaskDefinition(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=PlaybookTaskDefinition.Type.DOCUMENTATION,
+            documentation_task=documentation_task_proto,
+            notes=StringValue(value=db_task_definition.notes),
+        )
     else:
-        raise ValueError(f"Invalid type: {task_type}")
+        raise ValueError(f"Invalid source: {source}")

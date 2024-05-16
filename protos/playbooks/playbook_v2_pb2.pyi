@@ -126,24 +126,31 @@ global___PlaybookTask = PlaybookTask
 class PlaybookTaskExecutionLog(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    ID_FIELD_NUMBER: builtins.int
+    TIMESTAMP_FIELD_NUMBER: builtins.int
     TASK_FIELD_NUMBER: builtins.int
     RESULT_FIELD_NUMBER: builtins.int
-    TASK_RESULT_INTERPRETATION_FIELD_NUMBER: builtins.int
+    INTERPRETATION_FIELD_NUMBER: builtins.int
+    @property
+    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    timestamp: builtins.int
     @property
     def task(self) -> global___PlaybookTask: ...
     @property
     def result(self) -> protos.playbooks.playbook_commons_pb2.PlaybookTaskResult: ...
     @property
-    def task_result_interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
+    def interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
     def __init__(
         self,
         *,
+        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        timestamp: builtins.int = ...,
         task: global___PlaybookTask | None = ...,
         result: protos.playbooks.playbook_commons_pb2.PlaybookTaskResult | None = ...,
-        task_result_interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
+        interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["result", b"result", "task", b"task", "task_result_interpretation", b"task_result_interpretation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["result", b"result", "task", b"task", "task_result_interpretation", b"task_result_interpretation"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "timestamp", b"timestamp"]) -> None: ...
 
 global___PlaybookTaskExecutionLog = PlaybookTaskExecutionLog
 

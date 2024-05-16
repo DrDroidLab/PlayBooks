@@ -3,21 +3,19 @@ import uuid
 
 from django.db import IntegrityError
 
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.playbooks_v2_crud import update_or_create_db_playbook_v2
 from executor.models import PlayBook
-from playbooks.utils.decorators import deprecated
-from protos.playbooks.playbook_pb2 import UpdatePlaybookOp
+from protos.playbooks.playbook_v2_pb2 import UpdatePlaybookOpV2
 from utils.update_processor_mixin import UpdateProcessorMixin
 
 logger = logging.getLogger(__name__)
 
 
-class PlaybooksUpdateProcessor(UpdateProcessorMixin):
-    update_op_cls = UpdatePlaybookOp
+class PlaybooksUpdateProcessorV2(UpdateProcessorMixin):
+    update_op_cls = UpdatePlaybookOpV2
 
     @staticmethod
-    @deprecated
-    def update_playbook_name(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybookName) -> PlayBook:
+    def update_playbook_name(elem: PlayBook, update_op: UpdatePlaybookOpV2.UpdatePlaybookName) -> PlayBook:
         if not update_op.name.value:
             raise Exception(f"New playbook name missing for update_playbook_name op")
         if update_op.name.value == elem.name:
@@ -31,8 +29,7 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
         return elem
 
     @staticmethod
-    @deprecated
-    def update_playbook_status(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybookStatus) -> PlayBook:
+    def update_playbook_status(elem: PlayBook, update_op: UpdatePlaybookOpV2.UpdatePlaybookStatus) -> PlayBook:
         if not elem.is_active:
             raise Exception(f"Playbook {elem.name} is already inactive")
         if update_op.is_active.value:
@@ -57,8 +54,7 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
         return elem
 
     @staticmethod
-    @deprecated
-    def update_playbook(elem: PlayBook, update_op: UpdatePlaybookOp.UpdatePlaybook) -> PlayBook:
+    def update_playbook(elem: PlayBook, update_op: UpdatePlaybookOpV2.UpdatePlaybook) -> PlayBook:
         if not elem.is_active:
             raise Exception(f"Playbook {elem.name} is inactive")
         try:
@@ -67,8 +63,8 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                 mapping.is_active = False
                 mapping.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook
-            updated_elem, err = update_or_create_db_playbook(elem.account, elem.created_by, updated_playbook,
-                                                             update_mode=True)
+            updated_elem, err = update_or_create_db_playbook_v2(elem.account, elem.created_by, updated_playbook,
+                                                                update_mode=True)
             if err:
                 raise Exception(f"Error occurred updating playbook for {elem.name}, {err}")
             return updated_elem
@@ -77,4 +73,4 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
             raise Exception(f"Error occurred updating playbook status for {elem.name}")
 
 
-playbooks_update_processor = PlaybooksUpdateProcessor()
+playbooks_update_processor_v2 = PlaybooksUpdateProcessorV2()

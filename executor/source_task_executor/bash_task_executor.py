@@ -3,14 +3,14 @@ import subprocess
 from typing import Dict
 
 import paramiko
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
-from executor.action_task_executor.action_task_executor import PlaybookActionTaskExecutor
-from protos.base_pb2 import Source
+from executor.playbook_task_executor import PlaybookTaskExecutor
+from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
-from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
-    PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
+from protos.playbooks.playbook_v2_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.bash_command_task_pb2 import PlaybookBashCommandTask
 
 
@@ -97,15 +97,14 @@ def execute_remote_command_using_password(remote_host, remote_user, password, co
         client.close()
 
 
-class BashCommandActionTaskExecutor(PlaybookActionTaskExecutor):
+class BashTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.BASH
 
         self.__account_id = account_id
 
-    def execute(self, global_variable_set: Dict,
-                task: PlaybookActionTaskDefinitionProto) -> PlaybookActionTaskExecutionResultProto:
+    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
         try:
             bash_command_task: PlaybookBashCommandTask = task.bash_command_task
             remote_server_str = bash_command_task.remote_server.value
@@ -152,20 +151,17 @@ class BashCommandActionTaskExecutor(PlaybookActionTaskExecutor):
                     outputs[command] = output
                 command_outputs = []
                 for command, output in outputs.items():
-                    bash_command_result = PlaybookActionTaskExecutionResultProto.Result.BashCommandOutput.CommandOutput(
+                    bash_command_result = BashCommandOutputResult.CommandOutput(
                         command=StringValue(value=command),
                         output=StringValue(value=output)
                     )
                     command_outputs.append(bash_command_result)
 
-                return PlaybookActionTaskExecutionResultProto(
-                    action_task_id=UInt64Value(value=task.id.value),
-                    action_task_name=StringValue(value=task.name.value),
-                    result=PlaybookActionTaskExecutionResultProto.Result(
-                        type=PlaybookActionTaskExecutionResultProto.Result.Type.BASH_COMMAND_OUTPUT,
-                        bash_command_output=PlaybookActionTaskExecutionResultProto.Result.BashCommandOutput(
-                            command_outputs=command_outputs
-                        )
+                return PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                    bash_command_output=BashCommandOutputResult(
+                        command_outputs=command_outputs
                     )
                 )
             except Exception as e:

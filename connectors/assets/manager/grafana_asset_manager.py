@@ -9,7 +9,7 @@ from connectors.crud.connector_asset_model_crud import get_db_account_connector_
 from protos.connectors.assets.grafana_asset_pb2 import GrafanaTargetMetricPromQlAssetOptions, \
     GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.base_pb2 import Source as ConnectorType
 from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
@@ -46,8 +46,7 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     dashboard_title=StringValue(value=dict_items['dashboard_title']),
                     panel_options=panel_options))
             options = GrafanaTargetMetricPromQlAssetOptions(dashboards=dashboard_options)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      grafana_target_metric_promql_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, grafana_target_metric_promql_model_options=options)
         else:
             return None
 

@@ -19,6 +19,19 @@ message GetConnectorsAssetsModelsOptionsResponse {
   repeated AccountConnectorAssetsModelOptions asset_model_options = 4;
 }
 
+
+message GetConnectorsAssetsModelsOptionsV2Request {
+  Meta meta = 1;
+  Connector connector = 2;
+}
+
+message GetConnectorsAssetsModelsOptionsV2Response {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated ConnectorModelTypeOptions asset_model_options = 4;
+}
+
 message GetConnectorsAssetsModelsRequest {
   Meta meta = 1;
   Source connector_type = 2;
@@ -27,6 +40,20 @@ message GetConnectorsAssetsModelsRequest {
 }
 
 message GetConnectorsAssetsModelsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated AccountConnectorAssets assets = 4;
+}
+
+message GetConnectorsAssetsModelsV2Request {
+  Meta meta = 1;
+  Connector connector = 2;
+  ConnectorMetadataModelType type = 3;
+  AccountConnectorAssetsModelFilters filters = 4;
+}
+
+message GetConnectorsAssetsModelsV2Response {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;

@@ -4,11 +4,12 @@ import requests
 from google.protobuf.struct_pb2 import Struct
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
-from executor.action_task_executor.action_task_executor import PlaybookActionTaskExecutor
-from protos.base_pb2 import Source
+from executor.playbook_task_executor import PlaybookTaskExecutor
+from protos.base_pb2 import Source, TimeRange
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
+from protos.playbooks.playbook_v2_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.api_call_task_pb2 import PlaybookApiCallTask
-from protos.playbooks.playbook_pb2 import PlaybookActionTaskDefinition as PlaybookActionTaskDefinitionProto, \
-    PlaybookActionTaskExecutionResult as PlaybookActionTaskExecutionResultProto
+
 from utils.proto_utils import proto_to_dict
 
 method_proto_string_mapping = {
@@ -20,15 +21,14 @@ method_proto_string_mapping = {
 }
 
 
-class ApiActionTaskExecutor(PlaybookActionTaskExecutor):
+class ApiTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.API
 
         self.__account_id = account_id
 
-    def execute(self, global_variable_set: Dict,
-                task: PlaybookActionTaskDefinitionProto) -> PlaybookActionTaskExecutionResultProto:
+    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
         try:
             api_action_task: PlaybookApiCallTask = task.api_call_task
             method = api_action_task.method
@@ -66,20 +66,17 @@ class ApiActionTaskExecutor(PlaybookActionTaskExecutor):
                 response_struct = Struct()
                 response_struct.update(response_json)
 
-                api_action_result = PlaybookActionTaskExecutionResultProto.Result.ApiResponse(
+                api_response = ApiResponseResult(
                     request_method=StringValue(value=request_method),
                     request_url=StringValue(value=url),
                     response_status=UInt64Value(value=response.status_code),
                     response_headers=response_headers_struct,
                     response_body=response_struct
                 )
-                return PlaybookActionTaskExecutionResultProto(
-                    action_task_id=UInt64Value(value=task.id.value),
-                    action_task_name=StringValue(value=task.name.value),
-                    result=PlaybookActionTaskExecutionResultProto.Result(
-                        type=PlaybookActionTaskExecutionResultProto.Result.Type.API_RESPONSE,
-                        api_response=api_action_result
-                    )
+                return PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.API_RESPONSE,
+                    api_response=api_response,
                 )
             except Exception as e:
                 raise Exception(f"Error while executing API call task: {e}")

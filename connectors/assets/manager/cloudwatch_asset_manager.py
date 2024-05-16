@@ -5,7 +5,8 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto, AccountConnectorAssets
+    AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto, AccountConnectorAssets, \
+    ConnectorModelTypeOptions
 from protos.connectors.assets.cloudwatch_asset_pb2 import CloudwatchLogGroupAssetOptions, CloudwatchMetricAssetOptions, \
     CloudwatchAssets, CloudwatchMetricAssetModel as CloudwatchMetricAssetProto, \
     CloudwatchAssetModel as CloudwatchAssetModelProto, CloudwatchLogGroupAssetModel as CloudwatchLogGroupAssetModelProto
@@ -23,15 +24,13 @@ class CloudwatchAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_regions.append(item['model_uid'])
             options = CloudwatchLogGroupAssetOptions(regions=all_regions)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      cloudwatch_log_group_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, cloudwatch_log_group_model_options=options)
         elif model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC:
             all_namespaces = []
             for item in model_uid_metadata_list:
                 all_namespaces.append(item['model_uid'])
             options = CloudwatchMetricAssetOptions(namespaces=all_namespaces)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      cloudwatch_metric_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, cloudwatch_metric_model_options=options)
         else:
             return None
 
