@@ -107,7 +107,7 @@ function PlaybookLogs() {
       const outputList = [];
       const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
       if (stepIndex === isNaN || stepIndex === -1) continue;
-      for (let outputData of output.logs) {
+      for (let outputData of output.task_execution_logs) {
         outputList.push(outputData);
       }
       updateCardByIndex("showOutput", true, stepIndex);

@@ -73,13 +73,15 @@ const PlaybookStep = ({ card, index }) => {
                       step={card}
                     />
                   </div>
-                  <div className="flex-1 h-full">
-                    <Interpretation
-                      title={output?.task_interpretation?.title}
-                      description={output?.task_interpretation?.description}
-                      summary={output?.task_interpretation?.summary}
-                    />
-                  </div>
+                  {Object.keys(output?.interpretation).length > 0 && (
+                    <div className="flex-1 h-full">
+                      <Interpretation
+                        title={output?.interpretation?.title}
+                        description={output?.interpretation?.description}
+                        summary={output?.interpretation?.summary}
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
