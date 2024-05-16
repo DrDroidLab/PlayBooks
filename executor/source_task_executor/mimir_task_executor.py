@@ -14,7 +14,7 @@ from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.promql_task_pb2 import PlaybookPromQLTask
 
 
-class MimirMetricTaskExecutor(PlaybookTaskExecutor):
+class MimirTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.GRAFANA_MIMIR

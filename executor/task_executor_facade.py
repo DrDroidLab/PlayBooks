@@ -7,6 +7,7 @@ from executor.source_task_executor.api_task_executor import ApiTaskExecutor
 from executor.source_task_executor.bash_task_executor import BashTaskExecutor
 from executor.source_task_executor.grafana_executor import GrafanaTaskExecutor
 from executor.source_task_executor.grafana_vpc_executor import GrafanaVpcTaskExecutor
+from executor.source_task_executor.mimir_task_executor import MimirTaskExecutor
 from executor.source_task_executor.newrelic_task_executor import NewRelicTaskExecutor
 from executor.source_task_executor.clickhouse_task_executor import ClickhouseTaskExecutor
 from executor.source_task_executor.cloudwatch_task_executor import CloudwatchTaskExecutor
@@ -51,6 +52,7 @@ executor_facade.register(Source.DATADOG, DatadogTaskExecutor)
 executor_facade.register(Source.NEW_RELIC, NewRelicTaskExecutor)
 executor_facade.register(Source.GRAFANA, GrafanaTaskExecutor)
 executor_facade.register(Source.GRAFANA_VPC, GrafanaVpcTaskExecutor)
+executor_facade.register(Source.GRAFANA_MIMIR, MimirTaskExecutor)
 
 executor_facade.register(Source.POSTGRES, PostgresTaskExecutor)
 executor_facade.register(Source.CLICKHOUSE, ClickhouseTaskExecutor)
