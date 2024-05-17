@@ -74,20 +74,20 @@ def transform_PlaybookTaskExecutionResult_json_to_PlaybookTaskResult_json(old_re
 
         if metric_task_result_type == 'TIMESERIES':
             timeseries_result = {
-                'metric_name': metric_task_result['metric_name'],
-                'metric_expression': metric_task_result['metric_expression'],
+                'metric_name': metric_task_result.get('metric_name', None),
+                'metric_expression': metric_task_result.get('metric_expression', None),
                 'labeled_metric_timeseries': metric_task_result['result']['timeseries']['labeled_metric_timeseries']
             }
             return {
-                'source': metric_task_result['metric_source'],
+                'source': metric_task_result.get('metric_source', None),
                 'timeseries': timeseries_result,
                 'type': 'TIMESERIES'
             }
 
         elif metric_task_result_type == 'TABLE_RESULT':
             table_result = {
-                'rows': metric_task_result['result']['table_result']['rows'],
-                'raw_query': metric_task_result['metric_expression'],
+                'rows': metric_task_result['result']['table_result'].get('rows', None),
+                'raw_query': metric_task_result.get('metric_expression', None),
                 'limit': metric_task_result['result']['table_result'].get('limit', None),
                 'offset': metric_task_result['result']['table_result'].get('offset', None),
                 'total_count': metric_task_result['result']['table_result'].get('total_count', None)
@@ -101,11 +101,11 @@ def transform_PlaybookTaskExecutionResult_json_to_PlaybookTaskResult_json(old_re
     elif old_result.get('data_fetch_task_execution_result', None):
         data_fetch_task_result = old_result['data_fetch_task_execution_result']
         table_result = {
-            'rows': data_fetch_task_result['result']['table_result']['rows'],
+            'rows': data_fetch_task_result['result']['table_result'].get('rows', None),
             'raw_query': data_fetch_task_result['result']['table_result']['raw_query'],
-            'limit': data_fetch_task_result['result']['table_result']['limit'],
-            'offset': data_fetch_task_result['result']['table_result']['offset'],
-            'total_count': data_fetch_task_result['result']['table_result']['total_count']
+            'limit': data_fetch_task_result['result']['table_result'].get('limit', None),
+            'offset': data_fetch_task_result['result']['table_result'].get('offset', None),
+            'total_count': data_fetch_task_result['result']['table_result'].get('total_count', None)
         }
         return {
             'source': data_fetch_task_result['data_source'],
