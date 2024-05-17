@@ -18,7 +18,7 @@ class PostgresTaskExecutor(PlaybookTaskExecutor):
         self.source = Source.POSTGRES
         self.__account_id = account_id
         self.task_type_callable_map = {
-            SqlDataFetch.sql_query: self.execute_sql_query
+            SqlDataFetch.TaskType.SQL_QUERY: self.execute_sql_query
         }
 
         try:

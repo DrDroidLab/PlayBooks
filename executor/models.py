@@ -9,7 +9,7 @@ from playbooks.utils.decorators import deprecated
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType, \
-    PlaybookTaskResult as PlaybookTaskResultProto
+    PlaybookTaskResult as PlaybookTaskResultProto, ExternalLink
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook, DeprecatedPlaybookStepDefinition, \
     DeprecatedPlaybookTaskDefinition, DeprecatedPlaybookExecutionLog, DeprecatedPlaybookExecution, \
     DeprecatedPlaybookStepExecutionLog
@@ -137,10 +137,7 @@ class PlayBookStep(models.Model):
         el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
-                    name=StringValue(value=el['name']),
-                    url=StringValue(value=el['url'])
-                ))
+                el_list_proto.append(ExternalLink(name=StringValue(value=el['name']), url=StringValue(value=el['url'])))
 
         return DeprecatedPlaybookStepDefinition(
             id=UInt64Value(value=self.id),
