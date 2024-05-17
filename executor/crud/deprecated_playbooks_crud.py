@@ -6,6 +6,7 @@ from django.db.utils import IntegrityError
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
     PlayBookStepMapping
+from executor.utils.old_to_new_model_transformers import transform_old_task_definition_to_new
 from playbooks.utils.decorators import deprecated
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, DeprecatedPlaybook, \
@@ -174,16 +175,16 @@ def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: D
     else:
         return None, f"Invalid Task Type Received: {task_type_display}"
     task_dict = proto_to_dict(task)
-    task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
+    new_task = transform_old_task_definition_to_new(task_dict)
+    task_md5 = md5(str(new_task).encode('utf-8')).hexdigest()
     try:
         db_task, _ = PlayBookTask.objects.get_or_create(account=account,
                                                         name=task_proto.name.value,
-                                                        description=task_proto.description.value,
-                                                        notes=task_proto.notes.value,
-                                                        type=task_type,
                                                         task_md5=task_md5,
                                                         created_by=created_by,
-                                                        defaults={'task': task_dict})
+                                                        defaults={'task': new_task,
+                                                                  'description': task.description.value,
+                                                                  'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
         db_task = PlayBookTask.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
