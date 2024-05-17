@@ -16,7 +16,7 @@ tl;dr Enrich your Slack alerts with contextual observability data, helping on-ca
 
 ## About PlayBooks
 PlayBooks are executable notebooks designed to *Automate Preliminary Investigations in Production* for engineers.
-Watch [demo video](https://www.youtube.com/watch?v=xprnmBvF6rk).
+Watch [demo video](https://www.youtube.com/watch?v=-a-AqwuvI8g).
 ### **Automating Playbook Executions**
 1. Define a playbook with your enrichment logic
 2. Configure the playbook to auto-trigger basis a Slack alert received in a channel
@@ -33,9 +33,9 @@ Watch [demo video](https://www.youtube.com/watch?v=xprnmBvF6rk).
 
 - **Continuous monitoring**: Setup continuous monitoring cron for specific use-cases (e.g. post deployment, peak hours, post bug-fix). Read [docs](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) for list of allowed configurations.
 
+- **Interpretation Layer**: Configure ML modules which can analyse & interpret data from your investigation playbooks.
 
 ### Coming Soon:
-- **Interpretation Layer**: Configure ML modules which can analyse & interpret data from your investigation playbooks.
 - **Templates**: Common investigation & troubleshooting logics which can be used out of the box.
 - **Conditionals**: Create decision trees in your playbooks basis evaluation of a playbook step.
 - **More integrations**: Find something missing? Request [here](https://github.com/DrDroidLab/PlayBooks/issues/new).
