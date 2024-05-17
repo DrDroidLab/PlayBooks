@@ -9,7 +9,7 @@ from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.datadog_task_pb2 import PlaybookDatadogTask
+from protos.playbooks.source_task_definitions.datadog_task_pb2 import Datadog
 
 
 class DatadogTaskExecutor(PlaybookTaskExecutor):
@@ -17,8 +17,8 @@ class DatadogTaskExecutor(PlaybookTaskExecutor):
     def __init__(self, account_id):
         self.source = Source.DATADOG
         self.task_type_callable_map = {
-            PlaybookDatadogTask.TaskType.SERVICE_METRIC_EXECUTION: self.execute_service_metric_execution_task,
-            PlaybookDatadogTask.TaskType.QUERY_METRIC_EXECUTION: self.execute_query_metric_execution_task,
+            Datadog.TaskType.SERVICE_METRIC_EXECUTION: self.execute_service_metric_execution,
+            Datadog.TaskType.QUERY_METRIC_EXECUTION: self.execute_query_metric_execution,
         }
 
         self.__account_id = account_id
@@ -55,7 +55,7 @@ class DatadogTaskExecutor(PlaybookTaskExecutor):
             self.__dd_api_domain = 'datadoghq.com'
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        dd_task = task.datadog_task
+        dd_task: Datadog = task.datadog
         task_type = dd_task.type
         if task_type in self.task_type_callable_map:
             try:
@@ -65,11 +65,11 @@ class DatadogTaskExecutor(PlaybookTaskExecutor):
         else:
             raise Exception(f"Task type {task_type} not supported")
 
-    def execute_service_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                              dd_task: PlaybookDatadogTask) -> PlaybookTaskResult:
+    def execute_service_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                         dd_task: Datadog) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
-        task = dd_task.service_metric_execution_task
+        task = dd_task.service_metric_execution
         service_name = task.service_name.value
         env_name = task.environment_name.value
         metric = task.metric.value
@@ -128,11 +128,11 @@ class DatadogTaskExecutor(PlaybookTaskExecutor):
                 source=self.source)
         return task_result
 
-    def execute_query_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                            dd_task: PlaybookDatadogTask) -> PlaybookTaskResult:
+    def execute_query_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                       dd_task: Datadog) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
-        task = dd_task.query_metric_execution_task
+        task = dd_task.query_metric_execution
 
         queries = task.queries
         formula = task.formula.value

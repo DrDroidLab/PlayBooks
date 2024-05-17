@@ -74,20 +74,20 @@ def transform_PlaybookTaskExecutionResult_json_to_PlaybookTaskResult_json(old_re
 
         if metric_task_result_type == 'TIMESERIES':
             timeseries_result = {
-                'metric_name': metric_task_result['metric_name'],
-                'metric_expression': metric_task_result['metric_expression'],
+                'metric_name': metric_task_result.get('metric_name', None),
+                'metric_expression': metric_task_result.get('metric_expression', None),
                 'labeled_metric_timeseries': metric_task_result['result']['timeseries']['labeled_metric_timeseries']
             }
             return {
-                'source': metric_task_result['metric_source'],
+                'source': metric_task_result.get('metric_source', None),
                 'timeseries': timeseries_result,
                 'type': 'TIMESERIES'
             }
 
         elif metric_task_result_type == 'TABLE_RESULT':
             table_result = {
-                'rows': metric_task_result['result']['table_result']['rows'],
-                'raw_query': metric_task_result['metric_expression'],
+                'rows': metric_task_result['result']['table_result'].get('rows', None),
+                'raw_query': metric_task_result.get('metric_expression', None),
                 'limit': metric_task_result['result']['table_result'].get('limit', None),
                 'offset': metric_task_result['result']['table_result'].get('offset', None),
                 'total_count': metric_task_result['result']['table_result'].get('total_count', None)
@@ -101,11 +101,11 @@ def transform_PlaybookTaskExecutionResult_json_to_PlaybookTaskResult_json(old_re
     elif old_result.get('data_fetch_task_execution_result', None):
         data_fetch_task_result = old_result['data_fetch_task_execution_result']
         table_result = {
-            'rows': data_fetch_task_result['result']['table_result']['rows'],
+            'rows': data_fetch_task_result['result']['table_result'].get('rows', None),
             'raw_query': data_fetch_task_result['result']['table_result']['raw_query'],
-            'limit': data_fetch_task_result['result']['table_result']['limit'],
-            'offset': data_fetch_task_result['result']['table_result']['offset'],
-            'total_count': data_fetch_task_result['result']['table_result']['total_count']
+            'limit': data_fetch_task_result['result']['table_result'].get('limit', None),
+            'offset': data_fetch_task_result['result']['table_result'].get('offset', None),
+            'total_count': data_fetch_task_result['result']['table_result'].get('total_count', None)
         }
         return {
             'source': data_fetch_task_result['data_source'],
@@ -211,3 +211,364 @@ def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(
         )
     else:
         raise ValueError(f'Unsupported task result type: {new_result.type}')
+
+
+def transform_old_task_definition_to_new(task):
+    source = task.get('source', None)
+    if source == 'CLOUDWATCH':
+        cloudwatch_task = task.get('cloudwatch_task')
+        if cloudwatch_task.get('type') == 'METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'CLOUDWATCH',
+                'cloudwatch': {
+                    'type': 'METRIC_EXECUTION',
+                    'metric_execution': cloudwatch_task.get('metric_execution_task')
+                }
+            }
+        elif cloudwatch_task.get('type') == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'CLOUDWATCH',
+                'cloudwatch': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events': cloudwatch_task.get('filter_log_events_task')
+                }
+            }
+        else:
+            raise Exception(f"Task type {cloudwatch_task.get('type', None)} not supported")
+    elif source == 'GRAFANA':
+        grafana_task = task.get('grafana_task', {})
+        if grafana_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana': {
+                    'type': 'PROMQL_METRIC_EXECUTION',
+                    'promql_metric_execution': grafana_task.get('promql_metric_execution_task')
+                }
+            }
+        else:
+            raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
+    elif source == 'NEW_RELIC':
+        nr_task = task.get('new_relic_task')
+        if nr_task.get('type', None) == 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic': {
+                    'type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
+                    'entity_application_golden_metric_execution': nr_task.get(
+                        'entity_application_golden_metric_execution_task')
+                }
+            }
+        elif nr_task.get('type', None) == 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic': {
+                    'type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
+                    'entity_dashboard_widget_nrql_metric_execution': nr_task.get(
+                        'entity_dashboard_widget_nrql_metric_execution_task')
+                }
+            }
+        elif nr_task.get('type', None) == 'NRQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic': {
+                    'type': 'NRQL_METRIC_EXECUTION',
+                    'nrql_metric_execution': nr_task.get('nrql_metric_execution_task')
+                }
+            }
+        else:
+            raise Exception(f"Task type {nr_task.get('type', None)} not supported")
+    elif source == 'DATADOG':
+        dd_task = task.get('datadog_task', {})
+        if dd_task.get('type', None) == 'SERVICE_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'DATADOG',
+                'datadog': {
+                    'type': 'SERVICE_METRIC_EXECUTION',
+                    'service_metric_execution': dd_task.get('service_metric_execution_task', {})
+                }
+            }
+        elif dd_task.get('type', None) == 'QUERY_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'DATADOG',
+                'datadog': {
+                    'type': 'QUERY_METRIC_EXECUTION',
+                    'query_metric_execution': dd_task.get('query_metric_execution_task', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {dd_task.get('type', None)} not supported")
+    elif source == 'GRAFANA_MIMIR':
+        mimir_task = task.get('mimir_task', {})
+        if mimir_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'GRAFANA_MIMIR',
+                'grafana_mimir': {
+                    'type': 'PROMQL_METRIC_EXECUTION',
+                    'promql_metric_execution': mimir_task.get('promql_metric_execution_task', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
+
+    elif source == 'CLICKHOUSE':
+        clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
+        updated_task_def = {
+            'source': 'CLICKHOUSE',
+            'clickhouse': {
+                'type': 'SQL_QUERY',
+                'sql_query': {
+                    'database': clickhouse_data_fetch_task.get('database', None),
+                    'query': clickhouse_data_fetch_task.get('query', None),
+                }
+            }
+        }
+    elif source == 'POSTGRES':
+        postgres_data_fetch_task = task.get('postgres_data_fetch_task', {})
+        updated_task_def = {
+            'source': 'POSTGRES',
+            'postgres': {
+                'type': 'SQL_QUERY',
+                'sql_query': {
+                    'database': postgres_data_fetch_task.get('database', None),
+                    'query': postgres_data_fetch_task.get('query', None),
+                }
+            }
+        }
+    elif source == 'SQL_DATABASE_CONNECTION':
+        sql_database_connection_task = task.get('sql_database_connection_task', {})
+        updated_task_def = {
+            'source': 'SQL_DATABASE_CONNECTION',
+            'sql_database_connection': {
+                'type': 'SQL_QUERY',
+                'sql_query': {
+                    'query': sql_database_connection_task.get('query', None),
+                }
+            }
+        }
+    elif source == 'EKS':
+        eks_data_fetch_task = task.get('eks_data_fetch_task', {})
+        updated_task_def = {
+            'source': 'EKS',
+            'eks': {
+                'type': eks_data_fetch_task.get('command_type', None),
+                'command': {
+                    'description': eks_data_fetch_task.get('description', None),
+                    'region': eks_data_fetch_task.get('region', None),
+                    'cluster': eks_data_fetch_task.get('cluster', None),
+                    'namespace': eks_data_fetch_task.get('namespace', None),
+                }
+            }
+        }
+    elif source == 'API':
+        api_call_task = task.get('api_call_task', {})
+        updated_task_def = {
+            'source': 'API',
+            'api': {
+                'type': 'HTTP_REQUEST',
+                'http_request': {
+                    'method': api_call_task.get('method', None),
+                    'url': api_call_task.get('url', None),
+                    'headers': api_call_task.get('headers', None),
+                    'payload': api_call_task.get('payload', None),
+                    'timeout': api_call_task.get('timeout', None),
+                    'cookies': api_call_task.get('cookies', None),
+                }
+            }
+        }
+    elif source == 'BASH':
+        bash_command_task = task.get('bash_command_task', {})
+        updated_task_def = {
+            'source': 'BASH',
+            'bash': {
+                'type': 'COMMAND',
+                'command': {
+                    'command': bash_command_task.get('command', None),
+                    'remote_server': bash_command_task.get('remote_server', None),
+                }
+            }
+        }
+    elif task.get('documentation_task', None):
+        updated_task_def = {
+            'source': 'DOCUMENTATION',
+            'documentation': {
+                'type': 'MARKDOWN',
+                'markdown': {
+                    'content': task.get('documentation_task', {}).get('documentation', None)
+                }
+            }
+        }
+    else:
+        raise ValueError(f"Invalid source: {source}")
+    return updated_task_def
+
+
+def transform_new_task_definition_to_old(task):
+    source = task.get('source', None)
+    if source == 'CLOUDWATCH':
+        cloudwatch_task = task.get('cloudwatch', {})
+        if cloudwatch_task.get('type') == 'METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'CLOUDWATCH',
+                'cloudwatch_task': {
+                    'type': 'METRIC_EXECUTION',
+                    'metric_execution_task': cloudwatch_task.get('metric_execution', {})
+                }
+            }
+        elif cloudwatch_task.get('type') == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'CLOUDWATCH',
+                'cloudwatch_task': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events_task': cloudwatch_task.get('filter_log_events', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {cloudwatch_task.get('type', None)} not supported")
+    elif source == 'GRAFANA':
+        grafana_task = task.get('grafana', {})
+        if grafana_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana_task': {
+                    'type': 'PROMQL_METRIC_EXECUTION',
+                    'promql_metric_execution_task': grafana_task.get('promql_metric_execution', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
+    elif source == 'NEW_RELIC':
+        nr_task = task.get('new_relic', {})
+        if nr_task.get('type', None) == 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic_task': {
+                    'type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
+                    'entity_application_golden_metric_execution_task': nr_task.get(
+                        'entity_application_golden_metric_execution', {})
+                }
+            }
+        elif nr_task.get('type', None) == 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic_task': {
+                    'type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
+                    'entity_dashboard_widget_nrql_metric_execution_task': nr_task.get(
+                        'entity_dashboard_widget_nrql_metric_execution', {})
+                }
+            }
+        elif nr_task.get('type', None) == 'NRQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'NEW_RELIC',
+                'new_relic_task': {
+                    'type': 'NRQL_METRIC_EXECUTION',
+                    'nrql_metric_execution_task': nr_task.get('nrql_metric_execution', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {nr_task.get('type', None)} not supported")
+    elif source == 'DATADOG':
+        dd_task = task.get('datadog', {})
+        if dd_task.get('type', None) == 'SERVICE_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'DATADOG',
+                'datadog_task': {
+                    'type': 'SERVICE_METRIC_EXECUTION',
+                    'service_metric_execution_task': dd_task.get('service_metric_execution', {})
+                }
+            }
+        elif dd_task.get('type', None) == 'QUERY_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'DATADOG',
+                'datadog_task': {
+                    'type': 'QUERY_METRIC_EXECUTION',
+                    'query_metric_execution_task': dd_task.get('query_metric_execution', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {dd_task.get('type', None)} not supported")
+    elif source == 'GRAFANA_MIMIR':
+        mimir_task = task.get('grafana_mimir', {})
+        if mimir_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
+            updated_task_def = {
+                'source': 'GRAFANA_MIMIR',
+                'mimir_task': {
+                    'type': 'PROMQL_METRIC_EXECUTION',
+                    'promql_metric_execution_task': mimir_task.get('promql_metric_execution', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
+    elif source == 'CLICKHOUSE':
+        clickhouse_task = task.get('clickhouse', {})
+        sql_query_task = clickhouse_task.get('sql_query', None)
+        updated_task_def = {
+            'source': 'CLICKHOUSE',
+            'clickhouse_data_fetch_task': {
+                'database': sql_query_task.get('database', None),
+                'query': sql_query_task.get('query', None),
+            }
+        }
+    elif source == 'POSTGRES':
+        postgres_task = task.get('postgres', {})
+        sql_query_task = postgres_task.get('sql_query', None)
+        updated_task_def = {
+            'source': 'POSTGRES',
+            'postgres_data_fetch_task': {
+                'database': sql_query_task.get('database', None),
+                'query': sql_query_task.get('query', None),
+            }
+        }
+    elif source == 'SQL_DATABASE_CONNECTION':
+        sql_database_connection_task = task.get('sql_database_connection', {})
+        sql_query_task = sql_database_connection_task.get('sql_query', None)
+        updated_task_def = {
+            'source': 'SQL_DATABASE_CONNECTION',
+            'sql_database_connection_task': {
+                'query': sql_query_task.get('query', None),
+            }
+        }
+    elif source == 'EKS':
+        eks_data_fetch_task = task.get('eks', {})
+        updated_task_def = {
+            'source': 'EKS',
+            'eks_data_fetch_task': {
+                'command_type': eks_data_fetch_task.get('type', None),
+                'description': eks_data_fetch_task.get('description', None),
+                'region': eks_data_fetch_task.get('region', None),
+                'cluster': eks_data_fetch_task.get('cluster', None),
+                'namespace': eks_data_fetch_task.get('namespace', None),
+            }
+        }
+    elif source == 'API':
+        api_call_task = task.get('api', {})
+        updated_task_def = {
+            'source': 'API',
+            'api_call_task': {
+                'method': api_call_task.get('method', None),
+                'url': api_call_task.get('url', None),
+                'headers': api_call_task.get('headers', None),
+                'payload': api_call_task.get('payload', None),
+                'timeout': api_call_task.get('timeout', None),
+                'cookies': api_call_task.get('cookies', None),
+            }
+        }
+    elif source == 'BASH':
+        bash_command_task = task.get('bash', {})
+        updated_task_def = {
+            'source': 'BASH',
+            'bash_command_task': {
+                'command': bash_command_task.get('command', None),
+                'remote_server': bash_command_task.get('remote_server', None),
+            }
+        }
+    elif source == 'DOCUMENTATION':
+        documentation_task = task.get('documentation', {})
+        updated_task_def = {
+            'source': 'DOCUMENTATION',
+            'documentation_task': {
+                'documentation': documentation_task.get('content', None)
+            }
+        }
+    else:
+        raise ValueError(f"Invalid source: {source}")
+    return updated_task_def

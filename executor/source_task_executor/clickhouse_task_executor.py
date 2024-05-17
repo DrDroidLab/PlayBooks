@@ -8,6 +8,7 @@ from executor.playbook_task_executor import PlaybookTaskExecutor
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
+from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
 
 
 class ClickhouseTaskExecutor(PlaybookTaskExecutor):
@@ -15,6 +16,10 @@ class ClickhouseTaskExecutor(PlaybookTaskExecutor):
     def __init__(self, account_id):
         self.source = Source.CLICKHOUSE
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            SqlDataFetch.TaskType.SQL_QUERY: self.execute_sql_query
+        }
+
         try:
             clickhouse_connector = Connector.objects.get(account_id=account_id,
                                                          connector_type=Source.CLICKHOUSE,
@@ -46,12 +51,22 @@ class ClickhouseTaskExecutor(PlaybookTaskExecutor):
             raise Exception("Clickhouse host, port, user or password not found for account: {}".format(account_id))
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+        clickhouse_task: SqlDataFetch = task.clickhouse
+        task_type = clickhouse_task.type
+        task_callable = self.task_type_callable_map.get(task_type)
+        if task_callable:
+            return task_callable(time_range, global_variable_set, clickhouse_task)
+        else:
+            raise Exception(f"Unsupported task type: {task_type}")
+
+    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
+                          clickhouse_task: SqlDataFetch) -> PlaybookTaskResult:
         try:
-            clickhouse_data_fetch_task = task.clickhouse_data_fetch_task
-            order_by_column = clickhouse_data_fetch_task.order_by_column.value
-            limit = clickhouse_data_fetch_task.limit.value
-            offset = clickhouse_data_fetch_task.offset.value
-            query = clickhouse_data_fetch_task.query.value
+            sql_query = clickhouse_task.sql_query
+            order_by_column = sql_query.order_by_column.value
+            limit = sql_query.limit.value
+            offset = sql_query.offset.value
+            query = sql_query.query.value
             query = query.strip()
             if query[-1] == ';':
                 query = query[:-1]
@@ -66,7 +81,7 @@ class ClickhouseTaskExecutor(PlaybookTaskExecutor):
                 limit = 10
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
-            database = clickhouse_data_fetch_task.database.value
+            database = sql_query.database.value
             config = {
                 'interface': self.__interface,
                 'host': self.__host,
@@ -92,7 +107,7 @@ class ClickhouseTaskExecutor(PlaybookTaskExecutor):
                                                            value=StringValue(value=str(row[i])))
                     table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=clickhouse_data_fetch_task.query,
+            table = TableResult(raw_query=sql_query.query,
                                 total_count=UInt64Value(value=int(count_result.result_set[0][0])),
                                 limit=UInt64Value(value=limit),
                                 offset=UInt64Value(value=offset),

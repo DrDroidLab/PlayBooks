@@ -13,8 +13,8 @@ import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_commons_pb2
-import protos.playbooks.source_task_definitions.api_call_task_pb2
-import protos.playbooks.source_task_definitions.bash_command_task_pb2
+import protos.playbooks.source_task_definitions.api_task_pb2
+import protos.playbooks.source_task_definitions.bash_task_pb2
 import protos.playbooks.source_task_definitions.cloudwatch_task_pb2
 import protos.playbooks.source_task_definitions.datadog_task_pb2
 import protos.playbooks.source_task_definitions.documentation_task_pb2
@@ -22,7 +22,7 @@ import protos.playbooks.source_task_definitions.eks_task_pb2
 import protos.playbooks.source_task_definitions.grafana_task_pb2
 import protos.playbooks.source_task_definitions.new_relic_task_pb2
 import protos.playbooks.source_task_definitions.promql_task_pb2
-import protos.playbooks.source_task_definitions.sql_database_task_pb2
+import protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2
 import sys
 import typing
 
@@ -47,18 +47,18 @@ class PlaybookTask(google.protobuf.message.Message):
     CREATED_BY_FIELD_NUMBER: builtins.int
     GLOBAL_VARIABLE_SET_FIELD_NUMBER: builtins.int
     INTERPRETER_TYPE_FIELD_NUMBER: builtins.int
-    DOCUMENTATION_TASK_FIELD_NUMBER: builtins.int
-    CLOUDWATCH_TASK_FIELD_NUMBER: builtins.int
-    GRAFANA_TASK_FIELD_NUMBER: builtins.int
-    NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
-    DATADOG_TASK_FIELD_NUMBER: builtins.int
-    CLICKHOUSE_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
-    POSTGRES_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
-    EKS_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
-    SQL_DATABASE_CONNECTION_DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
-    API_CALL_TASK_FIELD_NUMBER: builtins.int
-    BASH_COMMAND_TASK_FIELD_NUMBER: builtins.int
-    PROMQL_TASK_FIELD_NUMBER: builtins.int
+    DOCUMENTATION_FIELD_NUMBER: builtins.int
+    CLOUDWATCH_FIELD_NUMBER: builtins.int
+    GRAFANA_FIELD_NUMBER: builtins.int
+    NEW_RELIC_FIELD_NUMBER: builtins.int
+    DATADOG_FIELD_NUMBER: builtins.int
+    CLICKHOUSE_FIELD_NUMBER: builtins.int
+    POSTGRES_FIELD_NUMBER: builtins.int
+    EKS_FIELD_NUMBER: builtins.int
+    SQL_DATABASE_CONNECTION_FIELD_NUMBER: builtins.int
+    API_FIELD_NUMBER: builtins.int
+    BASH_FIELD_NUMBER: builtins.int
+    GRAFANA_MIMIR_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     source: protos.base_pb2.Source.ValueType
@@ -74,29 +74,29 @@ class PlaybookTask(google.protobuf.message.Message):
     def global_variable_set(self) -> google.protobuf.struct_pb2.Struct: ...
     interpreter_type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType
     @property
-    def documentation_task(self) -> protos.playbooks.source_task_definitions.documentation_task_pb2.PlaybookDocumentationTaskDefinition: ...
+    def documentation(self) -> protos.playbooks.source_task_definitions.documentation_task_pb2.Documentation: ...
     @property
-    def cloudwatch_task(self) -> protos.playbooks.source_task_definitions.cloudwatch_task_pb2.PlaybookCloudwatchTask: ...
+    def cloudwatch(self) -> protos.playbooks.source_task_definitions.cloudwatch_task_pb2.Cloudwatch: ...
     @property
-    def grafana_task(self) -> protos.playbooks.source_task_definitions.grafana_task_pb2.PlaybookGrafanaTask: ...
+    def grafana(self) -> protos.playbooks.source_task_definitions.grafana_task_pb2.Grafana: ...
     @property
-    def new_relic_task(self) -> protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask: ...
+    def new_relic(self) -> protos.playbooks.source_task_definitions.new_relic_task_pb2.NewRelic: ...
     @property
-    def datadog_task(self) -> protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask: ...
+    def datadog(self) -> protos.playbooks.source_task_definitions.datadog_task_pb2.Datadog: ...
     @property
-    def clickhouse_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def clickhouse(self) -> protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch: ...
     @property
-    def postgres_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def postgres(self) -> protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch: ...
     @property
-    def eks_data_fetch_task(self) -> protos.playbooks.source_task_definitions.eks_task_pb2.PlaybookEksDataFetchTask: ...
+    def eks(self) -> protos.playbooks.source_task_definitions.eks_task_pb2.Eks: ...
     @property
-    def sql_database_connection_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def sql_database_connection(self) -> protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch: ...
     @property
-    def api_call_task(self) -> protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask: ...
+    def api(self) -> protos.playbooks.source_task_definitions.api_task_pb2.Api: ...
     @property
-    def bash_command_task(self) -> protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask: ...
+    def bash(self) -> protos.playbooks.source_task_definitions.bash_task_pb2.Bash: ...
     @property
-    def promql_task(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask: ...
+    def grafana_mimir(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PromQl: ...
     def __init__(
         self,
         *,
@@ -108,22 +108,22 @@ class PlaybookTask(google.protobuf.message.Message):
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         global_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
         interpreter_type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType = ...,
-        documentation_task: protos.playbooks.source_task_definitions.documentation_task_pb2.PlaybookDocumentationTaskDefinition | None = ...,
-        cloudwatch_task: protos.playbooks.source_task_definitions.cloudwatch_task_pb2.PlaybookCloudwatchTask | None = ...,
-        grafana_task: protos.playbooks.source_task_definitions.grafana_task_pb2.PlaybookGrafanaTask | None = ...,
-        new_relic_task: protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask | None = ...,
-        datadog_task: protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask | None = ...,
-        clickhouse_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
-        postgres_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
-        eks_data_fetch_task: protos.playbooks.source_task_definitions.eks_task_pb2.PlaybookEksDataFetchTask | None = ...,
-        sql_database_connection_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
-        api_call_task: protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask | None = ...,
-        bash_command_task: protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask | None = ...,
-        promql_task: protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask | None = ...,
+        documentation: protos.playbooks.source_task_definitions.documentation_task_pb2.Documentation | None = ...,
+        cloudwatch: protos.playbooks.source_task_definitions.cloudwatch_task_pb2.Cloudwatch | None = ...,
+        grafana: protos.playbooks.source_task_definitions.grafana_task_pb2.Grafana | None = ...,
+        new_relic: protos.playbooks.source_task_definitions.new_relic_task_pb2.NewRelic | None = ...,
+        datadog: protos.playbooks.source_task_definitions.datadog_task_pb2.Datadog | None = ...,
+        clickhouse: protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch | None = ...,
+        postgres: protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch | None = ...,
+        eks: protos.playbooks.source_task_definitions.eks_task_pb2.Eks | None = ...,
+        sql_database_connection: protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2.SqlDataFetch | None = ...,
+        api: protos.playbooks.source_task_definitions.api_task_pb2.Api | None = ...,
+        bash: protos.playbooks.source_task_definitions.bash_task_pb2.Bash | None = ...,
+        grafana_mimir: protos.playbooks.source_task_definitions.promql_task_pb2.PromQl | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "promql_task", b"promql_task", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "cloudwatch_task", b"cloudwatch_task", "created_by", b"created_by", "datadog_task", b"datadog_task", "description", b"description", "documentation_task", b"documentation_task", "eks_data_fetch_task", b"eks_data_fetch_task", "global_variable_set", b"global_variable_set", "grafana_task", b"grafana_task", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic_task", b"new_relic_task", "notes", b"notes", "postgres_data_fetch_task", b"postgres_data_fetch_task", "promql_task", b"promql_task", "source", b"source", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation_task", "cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "clickhouse_data_fetch_task", "postgres_data_fetch_task", "eks_data_fetch_task", "sql_database_connection_data_fetch_task", "api_call_task", "bash_command_task", "promql_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "source", b"source", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation", "cloudwatch", "grafana", "new_relic", "datadog", "clickhouse", "postgres", "eks", "sql_database_connection", "api", "bash", "grafana_mimir"] | None: ...
 
 global___PlaybookTask = PlaybookTask
 

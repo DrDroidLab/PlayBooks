@@ -16,7 +16,7 @@ import "protos/connectors/assets/remote_server_asset.proto";
 
 message ConnectorModelTypeOptions {
   Connector connector = 1;
-  ConnectorMetadataModelType model_type = 2;
+  SourceModelType model_type = 2;
   oneof options {
     CloudwatchLogGroupAssetOptions cloudwatch_log_group_model_options = 3;
     CloudwatchMetricAssetOptions cloudwatch_metric_model_options = 4;

@@ -1,10 +1,9 @@
 import re
 import time
 
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType as SourceModelType
 
 
 def promql_get_metric_name(promql):
@@ -30,15 +29,15 @@ def promql_get_metric_optional_label_variable_pairs(promql):
     return label_value_pairs
 
 
-class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class GrafanaSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, grafana_host, grafana_api_key, account_id=None, connector_id=None):
         self.__grafana_api_processor = GrafanaApiProcessor(grafana_host, grafana_api_key)
 
-        super().__init__(account_id, connector_id, ConnectorType.GRAFANA)
+        super().__init__(account_id, connector_id, Source.GRAFANA)
 
     def extract_data_source(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DATASOURCE
+        model_type = SourceModelType.GRAFANA_DATASOURCE
         try:
             datasources = self.__grafana_api_processor.fetch_data_sources()
         except Exception as e:
@@ -55,7 +54,7 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboards(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DASHBOARD
+        model_type = SourceModelType.GRAFANA_DASHBOARD
         try:
             all_dashboards = self.__grafana_api_processor.fetch_dashboards()
         except Exception as e:
@@ -83,7 +82,7 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboard_target_metric_promql(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL
+        model_type = SourceModelType.GRAFANA_TARGET_METRIC_PROMQL
         try:
             all_data_sources = self.__grafana_api_processor.fetch_data_sources()
         except Exception as e:

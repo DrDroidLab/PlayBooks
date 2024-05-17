@@ -46,7 +46,7 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     SSH_SERVER_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     @property
     def connector(self) -> protos.connectors.connector_pb2.Connector: ...
-    model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    model_type: protos.base_pb2.SourceModelType.ValueType
     @property
     def cloudwatch_log_group_model_options(self) -> protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions: ...
     @property
@@ -73,7 +73,7 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
         self,
         *,
         connector: protos.connectors.connector_pb2.Connector | None = ...,
-        model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        model_type: protos.base_pb2.SourceModelType.ValueType = ...,
         cloudwatch_log_group_model_options: protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions | None = ...,
         cloudwatch_metric_model_options: protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchMetricAssetOptions | None = ...,
         grafana_target_metric_promql_model_options: protos.connectors.assets.grafana_asset_pb2.GrafanaTargetMetricPromQlAssetOptions | None = ...,

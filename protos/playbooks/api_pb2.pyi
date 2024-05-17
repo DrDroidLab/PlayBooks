@@ -1321,20 +1321,24 @@ class PlaybooksBuilderOptionsResponse(google.protobuf.message.Message):
         CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
         CONNECTOR_ID_FIELD_NUMBER: builtins.int
         DISPLAY_NAME_FIELD_NUMBER: builtins.int
+        SUPPORTED_TASK_TYPES_FIELD_NUMBER: builtins.int
         connector_type: protos.base_pb2.Source.ValueType
         @property
         def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
         @property
         def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def supported_task_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.wrappers_pb2.StringValue]: ...
         def __init__(
             self,
             *,
             connector_type: protos.base_pb2.Source.ValueType = ...,
             connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
             display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            supported_task_types: collections.abc.Iterable[google.protobuf.wrappers_pb2.StringValue] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "display_name", b"display_name"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "connector_type", b"connector_type", "display_name", b"display_name"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "connector_type", b"connector_type", "display_name", b"display_name", "supported_task_types", b"supported_task_types"]) -> None: ...
 
     META_FIELD_NUMBER: builtins.int
     SUCCESS_FIELD_NUMBER: builtins.int

@@ -3,46 +3,42 @@ from google.protobuf.wrappers_pb2 import StringValue
 from accounts.models import Account
 from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
 from connectors.crud.connectors_crud import get_db_account_connectors
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, \
-    AccountActiveConnectorModelTypes
+from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import AccountActiveConnectorModelTypes
 
 playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA_VPC,
                                Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC,
                                Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION, Source.GRAFANA_MIMIR]
 
 supported_connectors_model_maps = {
-    Source.CLOUDWATCH: [ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC,
-                        ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP],
-    Source.GRAFANA: [ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL],
-    Source.GRAFANA_VPC: [ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL],
-    Source.NEW_RELIC: [ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION,
-                       ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD,
-                       ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL],
-    Source.CLICKHOUSE: [ConnectorMetadataModelTypeProto.CLICKHOUSE_DATABASE],
-    Source.SLACK: [ConnectorMetadataModelTypeProto.SLACK_CHANNEL],
-    Source.DATADOG: [ConnectorMetadataModelTypeProto.DATADOG_SERVICE,
-                     ConnectorMetadataModelTypeProto.DATADOG_QUERY],
-    Source.POSTGRES: [ConnectorMetadataModelTypeProto.POSTGRES_DATABASE],
-    Source.EKS: [ConnectorMetadataModelTypeProto.EKS_CLUSTER],
-    Source.SQL_DATABASE_CONNECTION: [ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY],
+    Source.CLOUDWATCH: [SourceModelType.CLOUDWATCH_METRIC, SourceModelType.CLOUDWATCH_LOG_GROUP],
+    Source.GRAFANA: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+    Source.GRAFANA_VPC: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+    Source.NEW_RELIC: [SourceModelType.NEW_RELIC_ENTITY_APPLICATION, SourceModelType.NEW_RELIC_ENTITY_DASHBOARD,
+                       SourceModelType.NEW_RELIC_NRQL],
+    Source.CLICKHOUSE: [SourceModelType.CLICKHOUSE_DATABASE],
+    Source.SLACK: [SourceModelType.SLACK_CHANNEL],
+    Source.DATADOG: [SourceModelType.DATADOG_SERVICE, SourceModelType.DATADOG_QUERY],
+    Source.EKS: [SourceModelType.EKS_CLUSTER],
+    Source.SQL_DATABASE_CONNECTION: [SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY],
     Source.GRAFANA_MIMIR: [],
+    Source.POSTGRES: [SourceModelType.POSTGRES_QUERY],
 }
 
 model_type_display_name_maps = {
-    ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC: "Metric",
-    ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP: "Log Group",
-    ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL: "PromQL",
-    ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION: "Entity Application",
-    ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD: "Entity Dashboard",
-    ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL: "Raw NRQL",
-    ConnectorMetadataModelTypeProto.CLICKHOUSE_DATABASE: "Database",
-    ConnectorMetadataModelTypeProto.DATADOG_SERVICE: "Service",
-    ConnectorMetadataModelTypeProto.DATADOG_QUERY: "Custom Query",
-    ConnectorMetadataModelTypeProto.POSTGRES_DATABASE: "Database",
-    ConnectorMetadataModelTypeProto.EKS_CLUSTER: "Cluster",
-    ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
-    ConnectorMetadataModelTypeProto.GRAFANA_MIMIR_PROMQL: "PromQL",
+    SourceModelType.CLOUDWATCH_METRIC: "Metric",
+    SourceModelType.CLOUDWATCH_LOG_GROUP: "Log Group",
+    SourceModelType.GRAFANA_TARGET_METRIC_PROMQL: "PromQL",
+    SourceModelType.NEW_RELIC_ENTITY_APPLICATION: "Entity Application",
+    SourceModelType.NEW_RELIC_ENTITY_DASHBOARD: "Entity Dashboard",
+    SourceModelType.NEW_RELIC_NRQL: "Raw NRQL",
+    SourceModelType.CLICKHOUSE_DATABASE: "Database",
+    SourceModelType.DATADOG_SERVICE: "Service",
+    SourceModelType.DATADOG_QUERY: "Custom Query",
+    SourceModelType.EKS_CLUSTER: "Cluster",
+    SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
+    SourceModelType.GRAFANA_MIMIR_PROMQL: "PromQL",
+    SourceModelType.POSTGRES_QUERY: "Sql Query",
 }
 
 
@@ -63,28 +59,28 @@ def playbooks_builder_get_connector_sources_options(account: Account):
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
         if connector.connector_type == Source.NEW_RELIC:
-            model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_NRQL
+            model_type = SourceModelType.NEW_RELIC_NRQL
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
 
         if connector.connector_type == Source.DATADOG:
-            model_type = ConnectorMetadataModelTypeProto.DATADOG_QUERY
+            model_type = SourceModelType.DATADOG_QUERY
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
 
         if connector.connector_type == Source.SQL_DATABASE_CONNECTION:
-            model_type = ConnectorMetadataModelTypeProto.SQL_DATABASE_CONNECTION_RAW_QUERY
+            model_type = SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
 
         if connector.connector_type == Source.GRAFANA_MIMIR:
-            model_type = ConnectorMetadataModelTypeProto.GRAFANA_MIMIR_PROMQL
+            model_type = SourceModelType.GRAFANA_MIMIR_PROMQL
             display_name = model_type_display_name_maps.get(model_type, "")
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
                                                                                                   display_name=StringValue(

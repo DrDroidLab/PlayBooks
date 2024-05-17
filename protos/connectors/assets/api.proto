@@ -9,7 +9,7 @@ import "protos/connectors/assets/asset.proto";
 message GetConnectorsAssetsModelsOptionsRequest {
   Meta meta = 1;
   Source connector_type = 2;
-  ConnectorMetadataModelType model_type = 3;
+  SourceModelType model_type = 3;
 }
 
 message GetConnectorsAssetsModelsOptionsResponse {
@@ -35,7 +35,7 @@ message GetConnectorsAssetsModelsOptionsV2Response {
 message GetConnectorsAssetsModelsRequest {
   Meta meta = 1;
   Source connector_type = 2;
-  ConnectorMetadataModelType type = 3;
+  SourceModelType type = 3;
   AccountConnectorAssetsModelFilters filters = 4;
 }
 
@@ -49,7 +49,7 @@ message GetConnectorsAssetsModelsResponse {
 message GetConnectorsAssetsModelsV2Request {
   Meta meta = 1;
   Connector connector = 2;
-  ConnectorMetadataModelType type = 3;
+  SourceModelType type = 3;
   AccountConnectorAssetsModelFilters filters = 4;
 }
 

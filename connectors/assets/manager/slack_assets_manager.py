@@ -8,28 +8,27 @@ from connectors.crud.connectors_crud import get_db_account_connectors, get_db_ac
 from protos.connectors.assets.slack_asset_pb2 import SlackChannelAssetOptions, SlackChannelAssetModel, SlackAssetModel, \
     SlackAssets
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets
-from protos.base_pb2 import Source as ConnectorType, SourceKeyType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 
 
 class SlackAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.connector_type = ConnectorType.SLACK
+        self.source = Source.SLACK
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
+    def get_asset_model_values(self, account: Account, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFilters, pg_models):
         which_one_of = filters.WhichOneof('filters')
 
         channel_protos = []
-        slack_connector = get_db_account_connectors(account, connector_type=ConnectorType.SLACK, is_active=True)
+        slack_connector = get_db_account_connectors(account, connector_type=Source.SLACK, is_active=True)
         for con in slack_connector:
             try:
                 slack_channel_models = get_db_account_connector_keys(account, connector_id=con.id,
                                                                      key_type=SourceKeyType.SLACK_CHANNEL_ID)
             except Exception as e:
                 slack_channel_models = []
-            if model_type == ConnectorMetadataModelTypeProto.SLACK_CHANNEL and (
+            if model_type == SourceModelType.SLACK_CHANNEL and (
                     not which_one_of or which_one_of == 'slack_channel_model_filters'):
                 options: SlackChannelAssetOptions = filters.slack_channel_model_filters
                 filter_channels_ids = options.channel_ids

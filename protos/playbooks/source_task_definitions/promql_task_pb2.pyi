@@ -18,24 +18,24 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class PlaybookPromQLTask(google.protobuf.message.Message):
+class PromQl(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _TaskType:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookPromQLTask._TaskType.ValueType], builtins.type):  # noqa: F821
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PromQl._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookPromQLTask._TaskType.ValueType  # 0
-        PROMQL_METRIC_EXECUTION: PlaybookPromQLTask._TaskType.ValueType  # 1
+        UNKNOWN: PromQl._TaskType.ValueType  # 0
+        PROMQL_METRIC_EXECUTION: PromQl._TaskType.ValueType  # 1
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
-    UNKNOWN: PlaybookPromQLTask.TaskType.ValueType  # 0
-    PROMQL_METRIC_EXECUTION: PlaybookPromQLTask.TaskType.ValueType  # 1
+    UNKNOWN: PromQl.TaskType.ValueType  # 0
+    PROMQL_METRIC_EXECUTION: PromQl.TaskType.ValueType  # 1
 
     @typing_extensions.final
-    class PromQlMetricExecutionTask(google.protobuf.message.Message):
+    class PromQlMetricExecution(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
@@ -54,18 +54,18 @@ class PlaybookPromQLTask(google.protobuf.message.Message):
         def ClearField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
-    PROMQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
-    type: global___PlaybookPromQLTask.TaskType.ValueType
+    PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int
+    type: global___PromQl.TaskType.ValueType
     @property
-    def promql_metric_execution_task(self) -> global___PlaybookPromQLTask.PromQlMetricExecutionTask: ...
+    def promql_metric_execution(self) -> global___PromQl.PromQlMetricExecution: ...
     def __init__(
         self,
         *,
-        type: global___PlaybookPromQLTask.TaskType.ValueType = ...,
-        promql_metric_execution_task: global___PlaybookPromQLTask.PromQlMetricExecutionTask | None = ...,
+        type: global___PromQl.TaskType.ValueType = ...,
+        promql_metric_execution: global___PromQl.PromQlMetricExecution | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["promql_metric_execution", b"promql_metric_execution", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["promql_metric_execution", b"promql_metric_execution", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution"] | None: ...
 
-global___PlaybookPromQLTask = PlaybookPromQLTask
+global___PromQl = PromQl

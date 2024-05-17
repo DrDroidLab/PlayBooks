@@ -14,9 +14,9 @@ import "protos/playbooks/source_task_definitions/grafana_task.proto";
 import "protos/playbooks/source_task_definitions/new_relic_task.proto";
 import "protos/playbooks/source_task_definitions/datadog_task.proto";
 import "protos/playbooks/source_task_definitions/eks_task.proto";
-import "protos/playbooks/source_task_definitions/sql_database_task.proto";
-import "protos/playbooks/source_task_definitions/api_call_task.proto";
-import "protos/playbooks/source_task_definitions/bash_command_task.proto";
+import "protos/playbooks/source_task_definitions/sql_data_fetch_task.proto";
+import "protos/playbooks/source_task_definitions/api_task.proto";
+import "protos/playbooks/source_task_definitions/bash_task.proto";
 import "protos/playbooks/source_task_definitions/documentation_task.proto";
 import "protos/playbooks/source_task_definitions/promql_task.proto";
 
@@ -32,18 +32,18 @@ message PlaybookTask {
   google.protobuf.Struct global_variable_set = 7;
   InterpreterType interpreter_type = 8;
   oneof task {
-    PlaybookDocumentationTaskDefinition documentation_task = 101;
-    PlaybookCloudwatchTask cloudwatch_task = 102;
-    PlaybookGrafanaTask grafana_task = 103;
-    PlaybookNewRelicTask new_relic_task = 104;
-    PlaybookDatadogTask datadog_task = 105;
-    SqlDataFetchTask clickhouse_data_fetch_task = 106;
-    SqlDataFetchTask postgres_data_fetch_task = 107;
-    PlaybookEksDataFetchTask eks_data_fetch_task = 108;
-    SqlDataFetchTask sql_database_connection_data_fetch_task = 109;
-    PlaybookApiCallTask api_call_task = 110;
-    PlaybookBashCommandTask bash_command_task = 111;
-    PlaybookPromQLTask promql_task = 112;
+    Documentation documentation = 101;
+    Cloudwatch cloudwatch = 102;
+    Grafana grafana = 103;
+    NewRelic new_relic = 104;
+    Datadog datadog = 105;
+    SqlDataFetch clickhouse = 106;
+    SqlDataFetch postgres = 107;
+    Eks eks = 108;
+    SqlDataFetch sql_database_connection = 109;
+    Api api = 110;
+    Bash bash = 111;
+    PromQl grafana_mimir = 112;
   }
 }
 

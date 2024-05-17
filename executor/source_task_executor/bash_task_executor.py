@@ -7,11 +7,10 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from executor.playbook_task_executor import PlaybookTaskExecutor
-from protos.base_pb2 import Source, TimeRange
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.bash_command_task_pb2 import PlaybookBashCommandTask
+from protos.playbooks.source_task_definitions.bash_task_pb2 import Bash
 
 
 def reconstruct_rsa_key(key_string):
@@ -101,18 +100,29 @@ class BashTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.BASH
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            Bash.TaskType.COMMAND: self.execute_command,
+        }
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+        bash_task: Bash = task.bash
+        task_type = bash_task.type
+        task_callable = self.task_type_callable_map.get(task_type)
+        if task_callable:
+            return task_callable(time_range, global_variable_set, bash_task)
+        else:
+            raise Exception(f"Unsupported task type: {task_type}")
+
+    def execute_command(self, time_range: TimeRange, global_variable_set: Dict, bash_task: Bash) -> PlaybookTaskResult:
         try:
-            bash_command_task: PlaybookBashCommandTask = task.bash_command_task
-            remote_server_str = bash_command_task.remote_server.value
+            command: Bash = bash_task.command
+            remote_server_str = command.remote_server.value
             pem_key = None
             password = None
             if remote_server_str:
                 ssh_server_asset = get_db_connector_metadata_models(self.__account_id,
-                                                                    model_type=ConnectorMetadataModelTypeProto.SSH_SERVER,
+                                                                    model_type=SourceModelType.SSH_SERVER,
                                                                     model_uid=remote_server_str)
                 if not ssh_server_asset:
                     raise Exception("No remote servers assets found")
@@ -123,7 +133,7 @@ class BashTaskExecutor(PlaybookTaskExecutor):
                         pem_key = metadata['pem']
                     elif 'password' in metadata:
                         password = metadata['password']
-            command_str = bash_command_task.command.value
+            command_str = command.command.value
             commands = command_str.split('\n')
             for key, value in global_variable_set.items():
                 updated_commands = []

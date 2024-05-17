@@ -11,7 +11,7 @@ from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import PlaybookCloudwatchTask
+from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
 
 
 class CloudwatchTaskExecutor(PlaybookTaskExecutor):
@@ -19,8 +19,8 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
     def __init__(self, account_id):
         self.source = Source.CLOUDWATCH
         self.task_type_callable_map = {
-            PlaybookCloudwatchTask.TaskType.METRIC_EXECUTION: self.execute_metric_execution_task,
-            PlaybookCloudwatchTask.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events_task
+            Cloudwatch.TaskType.METRIC_EXECUTION: self.execute_metric_execution,
+            Cloudwatch.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events
         }
 
         self.__account_id = account_id
@@ -52,7 +52,7 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
         try:
-            cloudwatch_task: PlaybookCloudwatchTask = task.cloudwatch_task
+            cloudwatch_task: Cloudwatch = task.cloudwatch
             task_type = cloudwatch_task.type
             if task_type in self.task_type_callable_map:
                 try:
@@ -64,8 +64,8 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
         except Exception as e:
             raise Exception(f"Error while executing Cloudwatch task: {e}")
 
-    def execute_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                      cloudwatch_task: PlaybookCloudwatchTask) -> PlaybookTaskResult:
+    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                 cloudwatch_task: Cloudwatch) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
         tr_end_time = time_range.time_lt
         end_time = datetime.utcfromtimestamp(tr_end_time)
@@ -73,7 +73,7 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
         start_time = datetime.utcfromtimestamp(tr_start_time)
         period = 300
 
-        task = cloudwatch_task.metric_execution_task
+        task = cloudwatch_task.metric_execution
         region = task.region.value
         metric_name = task.metric_name.value
         namespace = task.namespace.value
@@ -138,15 +138,15 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
 
         return task_result
 
-    def execute_filter_log_events_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                       cloudwatch_task: PlaybookCloudwatchTask) -> PlaybookTaskResult:
+    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict,
+                                  cloudwatch_task: Cloudwatch) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
         tr_end_time = time_range.time_lt
         end_time = int(tr_end_time * 1000)
         tr_start_time = time_range.time_geq
         start_time = int(tr_start_time * 1000)
 
-        task = cloudwatch_task.filter_log_events_task
+        task = cloudwatch_task.filter_log_events
         region = task.region.value
         log_group = task.log_group_name.value
         query_pattern = task.filter_query.value

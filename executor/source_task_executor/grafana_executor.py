@@ -10,18 +10,17 @@ from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.grafana_task_pb2 import PlaybookGrafanaTask
+from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
 
 
 class GrafanaTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.GRAFANA
-        self.task_type_callable_map = {
-            PlaybookGrafanaTask.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution_task
-        }
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            Grafana.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution
+        }
 
         try:
             grafana_connector = Connector.objects.get(account_id=account_id,
@@ -48,7 +47,7 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
             raise Exception("Grafana API key or host not found for account: {}".format(account_id))
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        grafana_task = task.grafana_task
+        grafana_task: Grafana = task.grafana
         task_type = grafana_task.type
         if task_type in self.task_type_callable_map:
             try:
@@ -58,8 +57,8 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
         else:
             raise Exception(f"Task type {task_type} not supported")
 
-    def execute_promql_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                             grafana_task: PlaybookGrafanaTask) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                        grafana_task: Grafana) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         tr_start_time = time_range.time_geq
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
@@ -70,12 +69,13 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
         period = 300
 
         task_result = PlaybookTaskResult()
-        datasource_uid = grafana_task.datasource_uid.value
+        task = grafana_task.promql_metric_execution
 
-        task = grafana_task.promql_metric_execution_task
+        datasource_uid = task.datasource_uid.value
         process_function = task.process_function.value
         promql_metric_query = task.promql_expression.value
         promql_label_option_values = task.promql_label_option_values
+
         for label_option in promql_label_option_values:
             promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                               label_option.value.value)

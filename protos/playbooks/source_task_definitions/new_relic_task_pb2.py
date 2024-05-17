@@ -11,25 +11,24 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n=protos/playbooks/source_task_definitions/new_relic_task.proto\x12\x10protos.playbooks\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\x9b\x03\n*EntityApplicationGoldenMetricExecutionTask\x12=\n\x17\x61pplication_entity_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\x17\x61pplication_entity_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_name\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_unit\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x43\n\x1dgolden_metric_nrql_expression\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xb6\x04\n,EntityDashboardWidgetNRQLMetricExecutionTask\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_guid\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\twidget_id\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cwidget_title\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bwidget_type\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12<\n\x16widget_nrql_expression\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04unit\x18\t \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\n \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xe7\x01\n\x17NRQLMetricExecutionTask\x12\x31\n\x0bmetric_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0fnrql_expression\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04unit\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xbd\x04\n\x14PlaybookNewRelicTask\x12=\n\x04type\x18\x01 \x01(\x0e\x32/.protos.playbooks.PlaybookNewRelicTask.TaskType\x12w\n/entity_application_golden_metric_execution_task\x18\x02 \x01(\x0b\x32<.protos.playbooks.EntityApplicationGoldenMetricExecutionTaskH\x00\x12|\n2entity_dashboard_widget_nrql_metric_execution_task\x18\x03 \x01(\x0b\x32>.protos.playbooks.EntityDashboardWidgetNRQLMetricExecutionTaskH\x00\x12O\n\x1anrql_metric_execution_task\x18\x04 \x01(\x0b\x32).protos.playbooks.NRQLMetricExecutionTaskH\x00\"\x95\x01\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12.\n*ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION\x10\x01\x12\x31\n-ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION\x10\x02\x12\x19\n\x15NRQL_METRIC_EXECUTION\x10\x03\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n=protos/playbooks/source_task_definitions/new_relic_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xf3\r\n\x08NewRelic\x12\x31\n\x04type\x18\x01 \x01(\x0e\x32#.protos.playbooks.NewRelic.TaskType\x12{\n*entity_application_golden_metric_execution\x18\x02 \x01(\x0b\x32\x45.protos.playbooks.NewRelic.EntityApplicationGoldenMetricExecutionTaskH\x00\x12\x80\x01\n-entity_dashboard_widget_nrql_metric_execution\x18\x03 \x01(\x0b\x32G.protos.playbooks.NewRelic.EntityDashboardWidgetNRQLMetricExecutionTaskH\x00\x12S\n\x15nrql_metric_execution\x18\x04 \x01(\x0b\x32\x32.protos.playbooks.NewRelic.NRQLMetricExecutionTaskH\x00\x1a\x9b\x03\n*EntityApplicationGoldenMetricExecutionTask\x12=\n\x17\x61pplication_entity_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\x17\x61pplication_entity_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_name\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12golden_metric_unit\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x43\n\x1dgolden_metric_nrql_expression\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xb6\x04\n,EntityDashboardWidgetNRQLMetricExecutionTask\x12\x34\n\x0e\x64\x61shboard_guid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0e\x64\x61shboard_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_guid\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_name\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\twidget_id\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cwidget_title\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bwidget_type\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12<\n\x16widget_nrql_expression\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04unit\x18\t \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\n \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xe7\x01\n\x17NRQLMetricExecutionTask\x12\x31\n\x0bmetric_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0fnrql_expression\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12*\n\x04unit\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\x95\x01\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12.\n*ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION\x10\x01\x12\x31\n-ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION\x10\x02\x12\x19\n\x15NRQL_METRIC_EXECUTION\x10\x03\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.new_relic_task_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _ENTITYAPPLICATIONGOLDENMETRICEXECUTIONTASK._serialized_start=135
-  _ENTITYAPPLICATIONGOLDENMETRICEXECUTIONTASK._serialized_end=546
-  _ENTITYDASHBOARDWIDGETNRQLMETRICEXECUTIONTASK._serialized_start=549
-  _ENTITYDASHBOARDWIDGETNRQLMETRICEXECUTIONTASK._serialized_end=1115
-  _NRQLMETRICEXECUTIONTASK._serialized_start=1118
-  _NRQLMETRICEXECUTIONTASK._serialized_end=1349
-  _PLAYBOOKNEWRELICTASK._serialized_start=1352
-  _PLAYBOOKNEWRELICTASK._serialized_end=1925
-  _PLAYBOOKNEWRELICTASK_TASKTYPE._serialized_start=1768
-  _PLAYBOOKNEWRELICTASK_TASKTYPE._serialized_end=1917
+  _NEWRELIC._serialized_start=116
+  _NEWRELIC._serialized_end=1895
+  _NEWRELIC_ENTITYAPPLICATIONGOLDENMETRICEXECUTIONTASK._serialized_start=521
+  _NEWRELIC_ENTITYAPPLICATIONGOLDENMETRICEXECUTIONTASK._serialized_end=932
+  _NEWRELIC_ENTITYDASHBOARDWIDGETNRQLMETRICEXECUTIONTASK._serialized_start=935
+  _NEWRELIC_ENTITYDASHBOARDWIDGETNRQLMETRICEXECUTIONTASK._serialized_end=1501
+  _NEWRELIC_NRQLMETRICEXECUTIONTASK._serialized_start=1504
+  _NEWRELIC_NRQLMETRICEXECUTIONTASK._serialized_end=1735
+  _NEWRELIC_TASKTYPE._serialized_start=1738
+  _NEWRELIC_TASKTYPE._serialized_end=1887
 # @@protoc_insertion_point(module_scope)
