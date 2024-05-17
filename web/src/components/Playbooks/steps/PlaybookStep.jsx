@@ -64,8 +64,8 @@ const PlaybookStep = ({ card, index }) => {
             {(card.outputs?.data ?? [])?.map((output, index) => {
               return (
                 <div
-                  className={`${styles["output-box"]} flex flex-col lg:flex-row w-full gap-4 max-w-full`}>
-                  <div className="flex-1">
+                  className={`${styles["output-box"]} flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-4 max-w-full`}>
+                  <div className="w-full">
                     <PlaybookStepOutput
                       key={index}
                       error={card.outputError}
@@ -74,11 +74,11 @@ const PlaybookStep = ({ card, index }) => {
                     />
                   </div>
                   {Object.keys(output?.interpretation).length > 0 && (
-                    <div className="flex-1 h-full">
+                    <div className="w-2/5 h-full">
                       <Interpretation
-                        title={output?.interpretation?.title}
-                        description={output?.interpretation?.description}
-                        summary={output?.interpretation?.summary}
+                        title={output?.task_interpretation?.title}
+                        description={output?.task_interpretation?.description}
+                        summary={output?.task_interpretation?.summary}
                       />
                     </div>
                   )}

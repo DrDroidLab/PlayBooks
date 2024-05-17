@@ -61,7 +61,7 @@ integrations_connector_type_category_map = {
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
-    Source.GRAFANA_MIMIR: 'Grafana Mimir',
+    Source.GRAFANA_MIMIR: 'APM Tools',
 }
 
 integrations_connector_type_connector_keys_map = {
