@@ -44,23 +44,27 @@ function GlobalVariables() {
       <div className={styles.info}>
         {playbook?.globalVariables?.length > 0 ? (
           playbook?.globalVariables.map((variable, index) => (
-            <div key={index} className={styles.variable}>
+            <div
+              key={index}
+              className={`${styles.variable} flex flex-wrap p-2 border-b`}>
               <div className={styles.name}>{variable.name}</div>
-              <ValueComponent
-                valueType={"STRING"}
-                value={variable.value}
-                placeHolder={"Enter variable value"}
-                length={200}
-                onValueChange={(val) => {
-                  dispatch(updateGlobalVariable({ index, value: val }));
-                }}
-              />
-              {!isPrefetched && (
-                <Close
-                  onClick={() => handleDelete(index)}
-                  className={styles.close}
+              <div className="flex gap-2 items-center">
+                <ValueComponent
+                  valueType={"STRING"}
+                  value={variable.value}
+                  placeHolder={"Enter variable value"}
+                  length={200}
+                  onValueChange={(val) => {
+                    dispatch(updateGlobalVariable({ index, value: val }));
+                  }}
                 />
-              )}
+                {!isPrefetched && (
+                  <Close
+                    onClick={() => handleDelete(index)}
+                    className={styles.close}
+                  />
+                )}
+              </div>
             </div>
           ))
         ) : (

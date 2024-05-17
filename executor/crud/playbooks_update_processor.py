@@ -65,6 +65,8 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
             updated_playbook = update_op.playbook
             updated_elem, err = update_or_create_db_playbook(elem.account, elem.created_by, updated_playbook,
                                                              update_mode=True)
+            if err:
+                raise Exception(f"Error occurred updating playbook for {elem.name}, {err}")
             return updated_elem
         except Exception as ex:
             logger.exception(f"Error occurred updating playbook for {elem.name}, {ex}")

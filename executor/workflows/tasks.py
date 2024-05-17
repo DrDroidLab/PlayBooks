@@ -23,14 +23,13 @@ from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import current_datetime, current_epoch_timestamp
-from protos.base_pb2 import TimeRange
-from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
+from protos.base_pb2 import TimeRange, SourceKeyType
+from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog, \
     PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
 from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
@@ -245,7 +244,7 @@ def test_workflow_notification(account_id, workflow, message_type):
 
         slack_connector = slack_connectors.first()
         bot_auth_token_slack_connector_keys = get_db_connector_keys(account, slack_connector.id,
-                                                                    key_type=ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN)
+                                                                    key_type=SourceKeyType.SLACK_BOT_AUTH_TOKEN)
         if not bot_auth_token_slack_connector_keys:
             logger.error(f"Bot auth token not found for account_id: {account_id}")
             return

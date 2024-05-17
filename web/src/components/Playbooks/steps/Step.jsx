@@ -90,7 +90,7 @@ function Step({ step, index }) {
               </button>
             </div>
           )}
-          {!step.isPrefetched && (
+          {!isPrefetched && (
             <div>
               <div>
                 <div

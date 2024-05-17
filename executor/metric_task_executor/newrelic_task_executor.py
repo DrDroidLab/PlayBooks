@@ -8,9 +8,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookNewRelicTask as PlaybookNewRelicTaskProto, PlaybookMetricTaskExecutionResult, \
     TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
@@ -52,11 +50,11 @@ class NewRelicMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("New Relic connector key not found for account: " + account_id)
 
         for key in nr_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_API_KEY:
+            if key.key_type == SourceKeyType.NEWRELIC_API_KEY:
                 self.__nr_api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_APP_ID:
+            elif key.key_type == SourceKeyType.NEWRELIC_APP_ID:
                 self.__nr_app_id = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.NEWRELIC_API_DOMAIN:
+            elif key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
                 self.__nr_api_domain = key.key
 
         if not self.__nr_api_key or not self.__nr_app_id:

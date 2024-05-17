@@ -26,7 +26,7 @@ const WorkflowActionOverlay = ({
   return (
     <>
       {isOpen && (
-        <Overlay visible={isOpen}>
+        <Overlay close={toggleOverlay} visible={isOpen}>
           <div className="bg-white p-5 rounded w-[400px] min-h-[100px] max-h-[500px] overflow-scroll">
             <header className="text-gray-500">Delete {workflow.name}?</header>
             <div className="flex gap-2 mt-4 mb-2">

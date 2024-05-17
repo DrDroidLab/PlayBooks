@@ -1,0 +1,4 @@
+apiVersion: v2
+name: playbooks
+description: A Helm chart for playbooks
+version: 0.1.0

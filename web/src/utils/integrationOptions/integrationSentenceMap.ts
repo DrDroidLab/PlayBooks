@@ -17,4 +17,5 @@ export const integrationSentenceMap = {
   [models.TEXT]: "Write documentation",
   [models.BASH]: "Execute a BASH command",
   [models.SQL_DATABASE_CONNECTION]: "Query from your configured SQL Database",
+  [models.GRAFANA_MIMIR_PROMQL]: "Query Metrics from Mimir",
 };

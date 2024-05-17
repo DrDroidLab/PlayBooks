@@ -1,0 +1,4 @@
+apiVersion: v2
+name: redis
+description: A Helm chart for Redis
+version: 0.1.0

@@ -6,8 +6,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookGrafanaTask as PlaybookGrafanaTaskProto, PlaybookMetricTaskExecutionResult, \
@@ -40,9 +39,9 @@ class GrafanaVpcMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("Active Grafana Agent Proxy keys not found for account: {}".format(account_id))
 
         for key in grafana_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY:
+            if key.key_type == SourceKeyType.AGENT_PROXY_API_KEY:
                 self.__api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AGENT_PROXY_HOST:
+            elif key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 self.__host = key.key
 
         if not self.__api_key or not self.__host:
