@@ -62,6 +62,7 @@ const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = useSelector(selectEmail);
+  const accessToken = useSelector(selectAccessToken);
   const { isLoading, data, isError } = useGetUserQuery();
 
   useEffect(() => {
@@ -77,7 +78,7 @@ const App = () => {
         state: { from: location.pathname },
       });
     }
-  }, [data, isError]);
+  }, [data, isError, accessToken]);
 
   useEffect(() => {
     const loader = document.querySelector(".loader-container");
