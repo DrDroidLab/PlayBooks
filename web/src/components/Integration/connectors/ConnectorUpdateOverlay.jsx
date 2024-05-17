@@ -29,12 +29,15 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
       });
     }
 
-    await updateConnector({
-      id: vpcEnabled ? currentConnector?.vpc?.id : currentConnector.id,
-      keys: formattedKeys,
-    });
-
-    window.location.reload();
+    try {
+      await updateConnector({
+        id: vpcEnabled ? currentConnector?.vpc?.id : currentConnector.id,
+        keys: formattedKeys,
+      });
+      window.location.reload();
+    } catch (e) {
+      console.log("There was an error");
+    }
   };
 
   useEffect(() => {
