@@ -200,10 +200,9 @@ message UpdateWorkflowOp {
 }
 
 
-///////////////////// Workflow Executions Proto /////////////////////
 message WorkflowExecutionLog {
   google.protobuf.UInt64Value id = 1;
-  DeprecatedPlaybookExecution playbook_execution = 2;
+  PlaybookExecution playbook_execution = 2;
   sfixed64 created_at = 3;
 }
 
@@ -223,13 +222,15 @@ message WorkflowExecution {
   repeated WorkflowExecutionLog workflow_logs = 13;
 }
 
-message WorkflowExecutionLogV2 {
+
+///////////////////// Deprecated Workflow Executions Proto /////////////////////
+message DeprecatedWorkflowExecutionLog {
   google.protobuf.UInt64Value id = 1;
-  PlaybookExecution playbook_execution = 2;
+  DeprecatedPlaybookExecution playbook_execution = 2;
   sfixed64 created_at = 3;
 }
 
-message WorkflowExecutionV2 {
+message DeprecatedWorkflowExecution {
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue workflow_run_id = 2;
   Workflow workflow = 3;
@@ -242,5 +243,5 @@ message WorkflowExecutionV2 {
   sfixed64 started_at = 10;
   sfixed64 finished_at = 11;
   google.protobuf.StringValue created_by = 12;
-  repeated WorkflowExecutionLogV2 workflow_logs = 13;
+  repeated DeprecatedWorkflowExecutionLog workflow_logs = 13;
 }

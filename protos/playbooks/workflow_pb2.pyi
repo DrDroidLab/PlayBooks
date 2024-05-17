@@ -639,8 +639,6 @@ global___UpdateWorkflowOp = UpdateWorkflowOp
 
 @typing_extensions.final
 class WorkflowExecutionLog(google.protobuf.message.Message):
-    """/////////////////// Workflow Executions Proto /////////////////////"""
-
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
@@ -649,13 +647,13 @@ class WorkflowExecutionLog(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def playbook_execution(self) -> protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution: ...
+    def playbook_execution(self) -> protos.playbooks.playbook_pb2.PlaybookExecution: ...
     created_at: builtins.int
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        playbook_execution: protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution | None = ...,
+        playbook_execution: protos.playbooks.playbook_pb2.PlaybookExecution | None = ...,
         created_at: builtins.int = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_execution", b"playbook_execution"]) -> builtins.bool: ...
@@ -723,7 +721,9 @@ class WorkflowExecution(google.protobuf.message.Message):
 global___WorkflowExecution = WorkflowExecution
 
 @typing_extensions.final
-class WorkflowExecutionLogV2(google.protobuf.message.Message):
+class DeprecatedWorkflowExecutionLog(google.protobuf.message.Message):
+    """/////////////////// Deprecated Workflow Executions Proto /////////////////////"""
+
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
@@ -732,22 +732,22 @@ class WorkflowExecutionLogV2(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def playbook_execution(self) -> protos.playbooks.playbook_pb2.PlaybookExecution: ...
+    def playbook_execution(self) -> protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution: ...
     created_at: builtins.int
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        playbook_execution: protos.playbooks.playbook_pb2.PlaybookExecution | None = ...,
+        playbook_execution: protos.playbooks.deprecated_playbook_pb2.DeprecatedPlaybookExecution | None = ...,
         created_at: builtins.int = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_execution", b"playbook_execution"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "id", b"id", "playbook_execution", b"playbook_execution"]) -> None: ...
 
-global___WorkflowExecutionLogV2 = WorkflowExecutionLogV2
+global___DeprecatedWorkflowExecutionLog = DeprecatedWorkflowExecutionLog
 
 @typing_extensions.final
-class WorkflowExecutionV2(google.protobuf.message.Message):
+class DeprecatedWorkflowExecution(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
@@ -782,7 +782,7 @@ class WorkflowExecutionV2(google.protobuf.message.Message):
     @property
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def workflow_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowExecutionLogV2]: ...
+    def workflow_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___DeprecatedWorkflowExecutionLog]: ...
     def __init__(
         self,
         *,
@@ -798,9 +798,9 @@ class WorkflowExecutionV2(google.protobuf.message.Message):
         started_at: builtins.int = ...,
         finished_at: builtins.int = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        workflow_logs: collections.abc.Iterable[global___WorkflowExecutionLogV2] | None = ...,
+        workflow_logs: collections.abc.Iterable[global___DeprecatedWorkflowExecutionLog] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interval", b"interval", "total_executions", b"total_executions", "workflow", b"workflow", "workflow_run_id", b"workflow_run_id"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "expiry_at", b"expiry_at", "finished_at", b"finished_at", "id", b"id", "interval", b"interval", "scheduled_at", b"scheduled_at", "started_at", b"started_at", "status", b"status", "total_executions", b"total_executions", "workflow", b"workflow", "workflow_logs", b"workflow_logs", "workflow_run_id", b"workflow_run_id"]) -> None: ...
 
-global___WorkflowExecutionV2 = WorkflowExecutionV2
+global___DeprecatedWorkflowExecution = DeprecatedWorkflowExecution

@@ -7,7 +7,7 @@ from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefin
 
 
 @deprecated
-def execute_task(account_id, time_range, playbook_task: DeprecatedPlaybookTaskDefinition) -> \
+def deprecated_execute_task(account_id, time_range, playbook_task: DeprecatedPlaybookTaskDefinition) -> \
         DeprecatedPlaybookTaskExecutionResult:
     task_type = playbook_task.type
     global_variable_set = playbook_task.global_variable_set

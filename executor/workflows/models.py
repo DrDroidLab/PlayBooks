@@ -7,10 +7,10 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookExecution
 from playbooks.utils.decorators import deprecated
+from protos.playbooks.workflow_pb2 import DeprecatedWorkflowExecutionLog, DeprecatedWorkflowExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
-    WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
-    WorkflowExecutionLog as WorkflowExecutionLogProto, WorkflowExecutionV2, WorkflowExecutionLogV2
+    WorkflowExecutionStatusType, WorkflowExecution, WorkflowExecutionLog
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -233,10 +233,10 @@ class WorkflowExecution(models.Model):
         unique_together = [['account', 'workflow_run_id', 'scheduled_at']]
 
     @property
-    def proto(self) -> WorkflowExecutionV2:
+    def proto(self) -> WorkflowExecution:
         workflow_execution_logs = self.workflowexecutionlog_set.all()
         wf_logs = [wel.proto for wel in workflow_execution_logs]
-        return WorkflowExecutionV2(
+        return WorkflowExecution(
             id=UInt64Value(value=self.id),
             workflow_run_id=StringValue(value=self.workflow_run_id),
             workflow=self.workflow.proto_partial,
@@ -253,8 +253,8 @@ class WorkflowExecution(models.Model):
         )
 
     @property
-    def proto_partial(self) -> WorkflowExecutionV2:
-        return WorkflowExecutionV2(
+    def proto_partial(self) -> WorkflowExecution:
+        return WorkflowExecution(
             id=UInt64Value(value=self.id),
             workflow_run_id=StringValue(value=self.workflow_run_id),
             workflow=self.workflow.proto_partial,
@@ -271,10 +271,10 @@ class WorkflowExecution(models.Model):
 
     @property
     @deprecated
-    def deprecated_proto(self) -> WorkflowExecutionProto:
+    def deprecated_proto(self) -> DeprecatedWorkflowExecution:
         workflow_execution_logs = self.workflowexecutionlog_set.all()
         wf_logs = [wel.deprecated_proto for wel in workflow_execution_logs]
-        return WorkflowExecutionProto(
+        return DeprecatedWorkflowExecution(
             id=UInt64Value(value=self.id),
             workflow_run_id=StringValue(value=self.workflow_run_id),
             workflow=self.workflow.proto_partial,
@@ -299,26 +299,26 @@ class WorkflowExecutionLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     @property
-    def proto(self) -> WorkflowExecutionLogV2:
+    def proto(self) -> WorkflowExecutionLog:
         playbook_execution_proto = self.playbook_execution.proto
-        return WorkflowExecutionLogV2(
+        return WorkflowExecutionLog(
             id=UInt64Value(value=self.id),
             playbook_execution=playbook_execution_proto,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
         )
 
     @property
-    def proto_partial(self) -> WorkflowExecutionLogV2:
-        return WorkflowExecutionLogV2(
+    def proto_partial(self) -> WorkflowExecutionLog:
+        return WorkflowExecutionLog(
             id=UInt64Value(value=self.id),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
         )
 
     @property
     @deprecated
-    def deprecated_proto(self) -> WorkflowExecutionLogProto:
+    def deprecated_proto(self) -> DeprecatedWorkflowExecutionLog:
         playbook_execution_proto = self.playbook_execution.deprecated_proto
-        return WorkflowExecutionLogProto(
+        return DeprecatedWorkflowExecutionLog(
             id=UInt64Value(value=self.id),
             playbook_execution=playbook_execution_proto,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
