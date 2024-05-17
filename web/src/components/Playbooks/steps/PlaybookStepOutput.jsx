@@ -2,9 +2,31 @@ import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph";
 import PlayBookRunDataTable from "../PlayBookRunDataTable";
 import PlaybookActionOutput from "../PlaybookActionOutput";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput";
+import PlaybookBashActionOutput from "../PlaybookBashActionOutput";
+
+const OutputTypes = {
+  API_RESPONSE: "API_RESPONSE",
+  BASH_COMMAND_OUTPUT: "BASH_COMMAND_OUTPUT",
+};
 
 const PlaybookStepOutput = ({ stepOutput, error, step }) => {
   const out = stepOutput.result;
+
+  switch (out.type) {
+    case OutputTypes.API_RESPONSE:
+      return <PlaybookAPIActionOutput output={out.api_response} />;
+    case OutputTypes.BASH_COMMAND_OUTPUT:
+      return <PlaybookBashActionOutput output={out.bash_command_output} />;
+    default:
+      return (
+        <PlayBookRunMetricGraph
+          error={error}
+          title={
+            error ? "Error from Source" : "No data available for this step"
+          }
+        />
+      );
+  }
 
   return (
     <div style={{ marginTop: "5px" }}>
