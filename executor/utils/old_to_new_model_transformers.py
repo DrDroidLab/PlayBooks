@@ -499,29 +499,32 @@ def transform_new_task_definition_to_old(task):
         else:
             raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
     elif source == 'CLICKHOUSE':
-        clickhouse_data_fetch_task = task.get('clickhouse', {})
+        clickhouse_task = task.get('clickhouse', {})
+        sql_query_task = clickhouse_task.get('sql_query', None)
         updated_task_def = {
             'source': 'CLICKHOUSE',
             'clickhouse_data_fetch_task': {
-                'database': clickhouse_data_fetch_task.get('database', None),
-                'query': clickhouse_data_fetch_task.get('query', None),
+                'database': sql_query_task.get('database', None),
+                'query': sql_query_task.get('query', None),
             }
         }
     elif source == 'POSTGRES':
-        postgres_data_fetch_task = task.get('postgres', {})
+        postgres_task = task.get('postgres', {})
+        sql_query_task = postgres_task.get('sql_query', None)
         updated_task_def = {
             'source': 'POSTGRES',
             'postgres_data_fetch_task': {
-                'database': postgres_data_fetch_task.get('database', None),
-                'query': postgres_data_fetch_task.get('query', None),
+                'database': sql_query_task.get('database', None),
+                'query': sql_query_task.get('query', None),
             }
         }
     elif source == 'SQL_DATABASE_CONNECTION':
         sql_database_connection_task = task.get('sql_database_connection', {})
+        sql_query_task = sql_database_connection_task.get('sql_query', None)
         updated_task_def = {
             'source': 'SQL_DATABASE_CONNECTION',
             'sql_database_connection_task': {
-                'query': sql_database_connection_task.get('query', None),
+                'query': sql_query_task.get('query', None),
             }
         }
     elif source == 'EKS':

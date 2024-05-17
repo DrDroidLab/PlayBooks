@@ -100,7 +100,7 @@ def get_datadog_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefini
     dd_task = task.get('datadog_task', {})
     if dd_task.get('type', None) == 'SERVICE_METRIC_EXECUTION':
         service_metric_execution_task_proto = dict_to_proto(dd_task.get('service_metric_execution_task', {}),
-                                                            DeprecatedPlaybookDatadogTask.ServiceMetricExecutionTask)
+                                                            DeprecatedPlaybookDatadogTask.DeprecatedServiceMetricExecutionTask)
         dd_task_proto = DeprecatedPlaybookDatadogTask(
             type=DeprecatedPlaybookDatadogTask.TaskType.SERVICE_METRIC_EXECUTION,
             service_metric_execution_task=service_metric_execution_task_proto)
