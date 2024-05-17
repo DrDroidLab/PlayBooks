@@ -95,13 +95,14 @@ integrations_connector_type_connector_keys_map = {
     Source.GRAFANA: [
         [
             SourceKeyType.GRAFANA_HOST,
-            SourceKeyType.GRAFANA_API_KEY
+            SourceKeyType.GRAFANA_API_KEY,
+            SourceKeyType.SSL_VERIFY,
         ]
     ],
     Source.GRAFANA_VPC: [
         [
             SourceKeyType.AGENT_PROXY_HOST,
-            SourceKeyType.AGENT_PROXY_API_KEY
+            SourceKeyType.AGENT_PROXY_API_KEY,
         ]
     ],
     Source.AGENT_PROXY: [
@@ -157,6 +158,7 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.SSL_VERIFY,
         ]
     ],
     Source.REMOTE_SERVER: [
@@ -229,6 +231,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
+    SourceKeyType.SSL_VERIFY: "SSL Verify",
 }
 
 
@@ -333,7 +336,6 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
-                             SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.OPS_GENIE_API_KEY,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,

@@ -90,12 +90,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['grafana_api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GRAFANA_HOST:
                 credentials_dict['grafana_host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
+                credentials_dict['ssl_verify'] = conn_key.key.value
     elif connector_type == Source.GRAFANA_VPC:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AGENT_PROXY_API_KEY:
                 credentials_dict['agent_proxy_api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 credentials_dict['agent_proxy_host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
+                credentials_dict['ssl_verify'] = conn_key.key.value
     elif connector_type == Source.CLICKHOUSE:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.CLICKHOUSE_HOST:
@@ -134,6 +138,8 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['mimir_host'] = conn_key.key.value
             if conn_key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 credentials_dict['x_scope_org_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
+                credentials_dict['ssl_verify'] = conn_key.key.value
     elif connector_type == Source.REMOTE_SERVER:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:

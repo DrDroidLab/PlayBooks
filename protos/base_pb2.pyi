@@ -174,6 +174,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
     MIMIR_HOST: _SourceKeyType.ValueType  # 53
     X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
+    SSL_VERIFY: _SourceKeyType.ValueType  # 55
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -231,6 +232,7 @@ REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 MIMIR_HOST: SourceKeyType.ValueType  # 53
 X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
+SSL_VERIFY: SourceKeyType.ValueType  # 55
 global___SourceKeyType = SourceKeyType
 
 @typing_extensions.final
