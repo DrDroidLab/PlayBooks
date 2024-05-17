@@ -39,13 +39,15 @@ class MimirMetricTaskExecutor(PlaybookMetricTaskExecutor):
         if not mimir_connector_keys:
             raise Exception("Active Mimir connector keys not found for account: {}".format(account_id))
 
+        self.__ssl_verify = True
         for key in mimir_connector_keys:
             if key.key_type == SourceKeyType.MIMIR_HOST:
                 self.__mimir_host = key.key
             if key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 self.__x_scope_org_id = key.key
             elif key.key_type == SourceKeyType.SSL_VERIFY:
-                self.__ssl_verify = key.key
+                verify = key.key == "true"
+                self.__ssl_verify = verify
 
         if not self.__mimir_host or not self.__x_scope_org_id:
             raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))

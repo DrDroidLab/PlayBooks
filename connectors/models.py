@@ -99,10 +99,16 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.SSL_VERIFY,
         ]
     ],
+    Source.GRAFANA: [
+        [
+            SourceKeyType.GRAFANA_HOST,
+            SourceKeyType.GRAFANA_API_KEY
+        ]
+    ],
     Source.GRAFANA_VPC: [
         [
             SourceKeyType.AGENT_PROXY_HOST,
-            SourceKeyType.AGENT_PROXY_API_KEY,
+            SourceKeyType.AGENT_PROXY_API_KEY
         ]
     ],
     Source.AGENT_PROXY: [
@@ -159,6 +165,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID,
             SourceKeyType.SSL_VERIFY,
+        ]
+    ],
+    Source.GRAFANA_MIMIR: [
+        [
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
     Source.REMOTE_SERVER: [

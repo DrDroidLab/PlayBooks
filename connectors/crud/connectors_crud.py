@@ -98,8 +98,6 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['agent_proxy_api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 credentials_dict['agent_proxy_host'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
-                credentials_dict['ssl_verify'] = conn_key.key.value
     elif connector_type == Source.CLICKHOUSE:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.CLICKHOUSE_HOST:
