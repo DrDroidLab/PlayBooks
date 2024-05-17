@@ -22,6 +22,7 @@ supported_connectors_model_maps = {
     Source.EKS: [SourceModelType.EKS_CLUSTER],
     Source.SQL_DATABASE_CONNECTION: [SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY],
     Source.GRAFANA_MIMIR: [],
+    Source.POSTGRES: [SourceModelType.POSTGRES_QUERY],
 }
 
 model_type_display_name_maps = {
@@ -37,6 +38,7 @@ model_type_display_name_maps = {
     SourceModelType.EKS_CLUSTER: "Cluster",
     SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
     SourceModelType.GRAFANA_MIMIR_PROMQL: "PromQL",
+    SourceModelType.POSTGRES_QUERY: "Sql Query",
 }
 
 
