@@ -98,7 +98,7 @@ function StepDetails() {
           )}
         </>
       )}
-      {!step?.isPrefetched && (
+      {!isPrefetched && (
         <div className="my-4">
           <div
             className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
