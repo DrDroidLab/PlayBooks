@@ -2,21 +2,21 @@ import logging
 from datetime import datetime, date
 
 from connectors.models import ConnectorMetadataModelStore
-from protos.base_pb2 import Source as ConnectorType
+from protos.base_pb2 import Source
 
 logger = logging.getLogger(__name__)
 
 
-class ConnectorMetadataExtractor:
+class SourceMetadataExtractor:
 
-    def __init__(self, account_id=None, connector_id=None, connector_type=ConnectorType.UNKNOWN):
+    def __init__(self, account_id=None, connector_id=None, source=Source.UNKNOWN):
         self.account_id = account_id
         self.connector_id = connector_id
-        self.connector_type = connector_type
+        self.source = source
 
     def create_or_update_model_metadata(self, model_type, model_uid, metadata):
         try:
-            if not self.account_id or not self.connector_id or not self.connector_type:
+            if not self.account_id or not self.connector_id or not self.source:
                 logger.error(f'Aborting metadata creation or update for model_type: {model_type}, model_uid: '
                              f'{model_uid}. Account ID, Connector ID and Connector Type are required')
                 return
@@ -24,7 +24,7 @@ class ConnectorMetadataExtractor:
                 if isinstance(v, (datetime, date)):
                     metadata[k] = v.isoformat()
             ConnectorMetadataModelStore.objects.update_or_create(
-                account_id=self.account_id, connector_id=self.connector_id, connector_type=self.connector_type,
+                account_id=self.account_id, connector_id=self.connector_id, connector_type=self.source,
                 model_type=model_type, model_uid=model_uid,
                 defaults={'metadata': metadata, 'is_active': True}
             )

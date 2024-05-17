@@ -7,14 +7,17 @@ from integrations_api_processors.db_connection_string_processor import DBConnect
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
+from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
 
 
 class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.SQL_DATABASE_CONNECTION
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            SqlDataFetch.TaskType.SQL_QUERY: self.execute_sql_query
+        }
 
         try:
             sql_database_connector = Connector.objects.get(account_id=account_id,
@@ -45,12 +48,24 @@ class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
             raise Exception(f"Error while connecting to SQL Database: {e}")
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+        sql_database_connection: SqlDataFetch = task.sql_database_connection
+        task_type = sql_database_connection.type
+        if task_type in self.task_type_callable_map:
+            try:
+                return self.task_type_callable_map[task_type](time_range, global_variable_set, sql_database_connection)
+            except Exception as e:
+                raise Exception(f"Error while executing SQL Database task: {e}")
+        else:
+            raise Exception(f"Task type {task_type} not supported")
+
+    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
+                          sql_data_fetch_task: SqlDataFetch) -> PlaybookTaskResult:
         try:
-            sql_database_connection_data_fetch_task = task.sql_database_connection_data_fetch_task
-            order_by_column = sql_database_connection_data_fetch_task.order_by_column.value
-            limit = sql_database_connection_data_fetch_task.limit.value
-            offset = sql_database_connection_data_fetch_task.offset.value
-            query = sql_database_connection_data_fetch_task.query.value
+            sql_query = sql_data_fetch_task.sql_query
+            order_by_column = sql_query.order_by_column.value
+            limit = sql_query.limit.value
+            offset = sql_query.offset.value
+            query = sql_query.query.value
             query = query.strip()
             if query[-1] == ';':
                 query = query[:-1]
@@ -82,7 +97,7 @@ class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
                                                            value=StringValue(value=str(value)))
                     table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=sql_database_connection_data_fetch_task.query,
+            table = TableResult(raw_query=sql_query.query,
                                 total_count=UInt64Value(value=int(count_result)),
                                 limit=UInt64Value(value=limit),
                                 offset=UInt64Value(value=offset),

@@ -330,6 +330,7 @@ message PlaybooksBuilderOptionsResponse {
     Source connector_type = 1;
     google.protobuf.UInt64Value connector_id = 2;
     google.protobuf.StringValue display_name = 3;
+    repeated google.protobuf.StringValue supported_task_types = 4;
   }
 
   Meta meta = 1;

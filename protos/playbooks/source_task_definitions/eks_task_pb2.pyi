@@ -18,52 +18,68 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class PlaybookEksDataFetchTask(google.protobuf.message.Message):
+class Eks(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _CommandType:
+    class _TaskType:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _CommandTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookEksDataFetchTask._CommandType.ValueType], builtins.type):  # noqa: F821
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Eks._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookEksDataFetchTask._CommandType.ValueType  # 0
-        GET_PODS: PlaybookEksDataFetchTask._CommandType.ValueType  # 1
-        GET_DEPLOYMENTS: PlaybookEksDataFetchTask._CommandType.ValueType  # 2
-        GET_EVENTS: PlaybookEksDataFetchTask._CommandType.ValueType  # 3
-        GET_SERVICES: PlaybookEksDataFetchTask._CommandType.ValueType  # 4
+        UNKNOWN: Eks._TaskType.ValueType  # 0
+        GET_PODS: Eks._TaskType.ValueType  # 1
+        GET_DEPLOYMENTS: Eks._TaskType.ValueType  # 2
+        GET_EVENTS: Eks._TaskType.ValueType  # 3
+        GET_SERVICES: Eks._TaskType.ValueType  # 4
 
-    class CommandType(_CommandType, metaclass=_CommandTypeEnumTypeWrapper): ...
-    UNKNOWN: PlaybookEksDataFetchTask.CommandType.ValueType  # 0
-    GET_PODS: PlaybookEksDataFetchTask.CommandType.ValueType  # 1
-    GET_DEPLOYMENTS: PlaybookEksDataFetchTask.CommandType.ValueType  # 2
-    GET_EVENTS: PlaybookEksDataFetchTask.CommandType.ValueType  # 3
-    GET_SERVICES: PlaybookEksDataFetchTask.CommandType.ValueType  # 4
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: Eks.TaskType.ValueType  # 0
+    GET_PODS: Eks.TaskType.ValueType  # 1
+    GET_DEPLOYMENTS: Eks.TaskType.ValueType  # 2
+    GET_EVENTS: Eks.TaskType.ValueType  # 3
+    GET_SERVICES: Eks.TaskType.ValueType  # 4
 
-    COMMAND_TYPE_FIELD_NUMBER: builtins.int
-    DESCRIPTION_FIELD_NUMBER: builtins.int
-    REGION_FIELD_NUMBER: builtins.int
-    CLUSTER_FIELD_NUMBER: builtins.int
-    NAMESPACE_FIELD_NUMBER: builtins.int
-    command_type: global___PlaybookEksDataFetchTask.CommandType.ValueType
+    @typing_extensions.final
+    class Command(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        DESCRIPTION_FIELD_NUMBER: builtins.int
+        REGION_FIELD_NUMBER: builtins.int
+        CLUSTER_FIELD_NUMBER: builtins.int
+        NAMESPACE_FIELD_NUMBER: builtins.int
+        @property
+        def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def region(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def cluster(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def namespace(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            description: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            region: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            cluster: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            namespace: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    COMMAND_FIELD_NUMBER: builtins.int
+    type: global___Eks.TaskType.ValueType
     @property
-    def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def region(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def cluster(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def namespace(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def command(self) -> global___Eks.Command: ...
     def __init__(
         self,
         *,
-        command_type: global___PlaybookEksDataFetchTask.CommandType.ValueType = ...,
-        description: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        region: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        cluster: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        namespace: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        type: global___Eks.TaskType.ValueType = ...,
+        command: global___Eks.Command | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "command_type", b"command_type", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["command", b"command", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["command", b"command", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["command"] | None: ...
 
-global___PlaybookEksDataFetchTask = PlaybookEksDataFetchTask
+global___Eks = Eks

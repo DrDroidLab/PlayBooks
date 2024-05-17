@@ -1,9 +1,11 @@
 from google.protobuf.wrappers_pb2 import StringValue
 
 from executor.task_executor_facade import executor_facade
-from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult
+from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult, \
+    transform_old_task_definition_to_new
 from playbooks.utils.decorators import deprecated
-from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, DeprecatedPlaybookTaskExecutionResult
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, \
+    DeprecatedPlaybookTaskExecutionResult
 
 
 @deprecated
@@ -21,21 +23,24 @@ def deprecated_execute_task(account_id, time_range, playbook_task: DeprecatedPla
             print("Playbook Task Execution: Type -> {}, Account -> {}, Time Range -> {}, Global Variable Set -> {}, "
                   "Task -> {}".format("Metric", account_id, time_range, global_variable_set, metric_task),
                   flush=True)
+            new_metric_task = transform_old_task_definition_to_new(metric_task)
             task_result = executor_facade.execute_task(account_id, time_range, global_variable_set,
-                                                       metric_task)
+                                                       new_metric_task)
         elif task_type == DeprecatedPlaybookTaskDefinition.Type.DATA_FETCH:
             data_fetch_task = playbook_task.data_fetch_task
             print("Playbook Task Execution: Type -> {}, Account -> {}, Global Variable Set -> {}, "
                   "Task -> {}".format("Data_Fetch", account_id, global_variable_set, data_fetch_task),
                   flush=True)
+            new_data_fetch_task = transform_old_task_definition_to_new(data_fetch_task)
             task_result = executor_facade.execute_task(account_id, time_range, global_variable_set,
-                                                       data_fetch_task)
+                                                       new_data_fetch_task)
         elif task_type == DeprecatedPlaybookTaskDefinition.Type.ACTION:
             action_task = playbook_task.action_task
             print("Playbook Task Execution: Type -> {}, Account -> {}, Global Variable Set -> {}, "
                   "Task -> {}".format("Data_Fetch", account_id, global_variable_set, action_task),
                   flush=True)
-            task_result = executor_facade.execute_task(account_id, time_range, global_variable_set, action_task)
+            new_action_task = transform_old_task_definition_to_new(action_task)
+            task_result = executor_facade.execute_task(account_id, time_range, global_variable_set, new_action_task)
         elif task_type == DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION:
             return DeprecatedPlaybookTaskExecutionResult(
                 message=StringValue(value="Documentation task executed successfully"))

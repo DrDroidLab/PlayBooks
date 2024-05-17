@@ -11,19 +11,8 @@ import google.protobuf.message
 import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
-import protos.playbooks.decision_task_definitions.decision_task_pb2
 import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_commons_pb2
-import protos.playbooks.source_task_definitions.api_call_task_pb2
-import protos.playbooks.source_task_definitions.bash_command_task_pb2
-import protos.playbooks.source_task_definitions.cloudwatch_task_pb2
-import protos.playbooks.source_task_definitions.datadog_task_pb2
-import protos.playbooks.source_task_definitions.documentation_task_pb2
-import protos.playbooks.source_task_definitions.eks_task_pb2
-import protos.playbooks.source_task_definitions.grafana_task_pb2
-import protos.playbooks.source_task_definitions.new_relic_task_pb2
-import protos.playbooks.source_task_definitions.promql_task_pb2
-import protos.playbooks.source_task_definitions.sql_database_task_pb2
 import sys
 import typing
 
@@ -35,9 +24,534 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
-    """////////////// Playbook Metric Task Execution Protos ////////////////"""
+class DeprecatedPlaybookCloudwatchTask(google.protobuf.message.Message):
+    """////////////// Playbook Metric Task Execution Protos ////////////////
+    Metric Task Definition Protos //
+    """
 
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookCloudwatchTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookCloudwatchTask._TaskType.ValueType  # 0
+        METRIC_EXECUTION: DeprecatedPlaybookCloudwatchTask._TaskType.ValueType  # 1
+        FILTER_LOG_EVENTS: DeprecatedPlaybookCloudwatchTask._TaskType.ValueType  # 2
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookCloudwatchTask.TaskType.ValueType  # 0
+    METRIC_EXECUTION: DeprecatedPlaybookCloudwatchTask.TaskType.ValueType  # 1
+    FILTER_LOG_EVENTS: DeprecatedPlaybookCloudwatchTask.TaskType.ValueType  # 2
+
+    @typing_extensions.final
+    class DeprecatedCloudwatchMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        @typing_extensions.final
+        class Dimension(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            NAME_FIELD_NUMBER: builtins.int
+            VALUE_FIELD_NUMBER: builtins.int
+            @property
+            def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            @property
+            def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            def __init__(
+                self,
+                *,
+                name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                value: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> None: ...
+
+        NAMESPACE_FIELD_NUMBER: builtins.int
+        REGION_FIELD_NUMBER: builtins.int
+        METRIC_NAME_FIELD_NUMBER: builtins.int
+        DIMENSIONS_FIELD_NUMBER: builtins.int
+        STATISTIC_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def namespace(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def region(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def dimensions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchMetricExecutionTask.Dimension]: ...
+        @property
+        def statistic(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            namespace: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            region: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            dimensions: collections.abc.Iterable[global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchMetricExecutionTask.Dimension] | None = ...,
+            statistic: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "namespace", b"namespace", "process_function", b"process_function", "region", b"region", "statistic", b"statistic"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dimensions", b"dimensions", "metric_name", b"metric_name", "namespace", b"namespace", "process_function", b"process_function", "region", b"region", "statistic", b"statistic"]) -> None: ...
+
+    @typing_extensions.final
+    class DeprecatedCloudwatchFilterLogEventsTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        REGION_FIELD_NUMBER: builtins.int
+        LOG_GROUP_NAME_FIELD_NUMBER: builtins.int
+        FILTER_QUERY_FIELD_NUMBER: builtins.int
+        @property
+        def region(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def log_group_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            region: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            log_group_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_group_name", b"log_group_name", "region", b"region"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_group_name", b"log_group_name", "region", b"region"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    FILTER_LOG_EVENTS_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookCloudwatchTask.TaskType.ValueType
+    @property
+    def metric_execution_task(self) -> global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchMetricExecutionTask: ...
+    @property
+    def filter_log_events_task(self) -> global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchFilterLogEventsTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookCloudwatchTask.TaskType.ValueType = ...,
+        metric_execution_task: global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchMetricExecutionTask | None = ...,
+        filter_log_events_task: global___DeprecatedPlaybookCloudwatchTask.DeprecatedCloudwatchFilterLogEventsTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "metric_execution_task", b"metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "metric_execution_task", b"metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["metric_execution_task", "filter_log_events_task"] | None: ...
+
+global___DeprecatedPlaybookCloudwatchTask = DeprecatedPlaybookCloudwatchTask
+
+@typing_extensions.final
+class DeprecatedPlaybookGrafanaTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookGrafanaTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookGrafanaTask._TaskType.ValueType  # 0
+        PROMQL_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask._TaskType.ValueType  # 1
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookGrafanaTask.TaskType.ValueType  # 0
+    PROMQL_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class DeprecatedPromQlMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        @typing_extensions.final
+        class LabelValue(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            NAME_FIELD_NUMBER: builtins.int
+            VALUE_FIELD_NUMBER: builtins.int
+            @property
+            def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            @property
+            def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            def __init__(
+                self,
+                *,
+                name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                value: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "value", b"value"]) -> None: ...
+
+        PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        PROMQL_LABEL_OPTION_VALUES_FIELD_NUMBER: builtins.int
+        DASHBOARD_UID_FIELD_NUMBER: builtins.int
+        DASHBOARD_TITLE_FIELD_NUMBER: builtins.int
+        PANEL_ID_FIELD_NUMBER: builtins.int
+        PANEL_TITLE_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        PANEL_PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        @property
+        def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def promql_label_option_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask.LabelValue]: ...
+        @property
+        def dashboard_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def dashboard_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def panel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def panel_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def panel_promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            promql_label_option_values: collections.abc.Iterable[global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask.LabelValue] | None = ...,
+            dashboard_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            dashboard_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            panel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            panel_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            panel_promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    DATASOURCE_UID_FIELD_NUMBER: builtins.int
+    PROMQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookGrafanaTask.TaskType.ValueType
+    @property
+    def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def promql_metric_execution_task(self) -> global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookGrafanaTask.TaskType.ValueType = ...,
+        datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        promql_metric_execution_task: global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task"] | None: ...
+
+global___DeprecatedPlaybookGrafanaTask = DeprecatedPlaybookGrafanaTask
+
+@typing_extensions.final
+class DeprecatedPlaybookNewRelicTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookNewRelicTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookNewRelicTask._TaskType.ValueType  # 0
+        ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask._TaskType.ValueType  # 1
+        ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask._TaskType.ValueType  # 2
+        NRQL_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask._TaskType.ValueType  # 3
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookNewRelicTask.TaskType.ValueType  # 0
+    ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask.TaskType.ValueType  # 1
+    ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask.TaskType.ValueType  # 2
+    NRQL_METRIC_EXECUTION: DeprecatedPlaybookNewRelicTask.TaskType.ValueType  # 3
+
+    @typing_extensions.final
+    class DeprecatedEntityApplicationGoldenMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        APPLICATION_ENTITY_GUID_FIELD_NUMBER: builtins.int
+        APPLICATION_ENTITY_NAME_FIELD_NUMBER: builtins.int
+        GOLDEN_METRIC_NAME_FIELD_NUMBER: builtins.int
+        GOLDEN_METRIC_UNIT_FIELD_NUMBER: builtins.int
+        GOLDEN_METRIC_NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def application_entity_guid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def application_entity_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def golden_metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def golden_metric_unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def golden_metric_nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            application_entity_guid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            application_entity_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            golden_metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            golden_metric_unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            golden_metric_nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["application_entity_guid", b"application_entity_guid", "application_entity_name", b"application_entity_name", "golden_metric_name", b"golden_metric_name", "golden_metric_nrql_expression", b"golden_metric_nrql_expression", "golden_metric_unit", b"golden_metric_unit", "process_function", b"process_function"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["application_entity_guid", b"application_entity_guid", "application_entity_name", b"application_entity_name", "golden_metric_name", b"golden_metric_name", "golden_metric_nrql_expression", b"golden_metric_nrql_expression", "golden_metric_unit", b"golden_metric_unit", "process_function", b"process_function"]) -> None: ...
+
+    @typing_extensions.final
+    class DeprecatedEntityDashboardWidgetNRQLMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        DASHBOARD_GUID_FIELD_NUMBER: builtins.int
+        DASHBOARD_NAME_FIELD_NUMBER: builtins.int
+        PAGE_GUID_FIELD_NUMBER: builtins.int
+        PAGE_NAME_FIELD_NUMBER: builtins.int
+        WIDGET_ID_FIELD_NUMBER: builtins.int
+        WIDGET_TITLE_FIELD_NUMBER: builtins.int
+        WIDGET_TYPE_FIELD_NUMBER: builtins.int
+        WIDGET_NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        UNIT_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def dashboard_guid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def dashboard_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def page_guid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def page_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def widget_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def widget_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def widget_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def widget_nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            dashboard_guid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            dashboard_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            page_guid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            page_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            widget_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            widget_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            widget_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            widget_nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["dashboard_guid", b"dashboard_guid", "dashboard_name", b"dashboard_name", "page_guid", b"page_guid", "page_name", b"page_name", "process_function", b"process_function", "unit", b"unit", "widget_id", b"widget_id", "widget_nrql_expression", b"widget_nrql_expression", "widget_title", b"widget_title", "widget_type", b"widget_type"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dashboard_guid", b"dashboard_guid", "dashboard_name", b"dashboard_name", "page_guid", b"page_guid", "page_name", b"page_name", "process_function", b"process_function", "unit", b"unit", "widget_id", b"widget_id", "widget_nrql_expression", b"widget_nrql_expression", "widget_title", b"widget_title", "widget_type", b"widget_type"]) -> None: ...
+
+    @typing_extensions.final
+    class DeprecatedNRQLMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        METRIC_NAME_FIELD_NUMBER: builtins.int
+        NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        UNIT_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "nrql_expression", b"nrql_expression", "process_function", b"process_function", "unit", b"unit"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "nrql_expression", b"nrql_expression", "process_function", b"process_function", "unit", b"unit"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    NRQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookNewRelicTask.TaskType.ValueType
+    @property
+    def entity_application_golden_metric_execution_task(self) -> global___DeprecatedPlaybookNewRelicTask.DeprecatedEntityApplicationGoldenMetricExecutionTask: ...
+    @property
+    def entity_dashboard_widget_nrql_metric_execution_task(self) -> global___DeprecatedPlaybookNewRelicTask.DeprecatedEntityDashboardWidgetNRQLMetricExecutionTask: ...
+    @property
+    def nrql_metric_execution_task(self) -> global___DeprecatedPlaybookNewRelicTask.DeprecatedNRQLMetricExecutionTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookNewRelicTask.TaskType.ValueType = ...,
+        entity_application_golden_metric_execution_task: global___DeprecatedPlaybookNewRelicTask.DeprecatedEntityApplicationGoldenMetricExecutionTask | None = ...,
+        entity_dashboard_widget_nrql_metric_execution_task: global___DeprecatedPlaybookNewRelicTask.DeprecatedEntityDashboardWidgetNRQLMetricExecutionTask | None = ...,
+        nrql_metric_execution_task: global___DeprecatedPlaybookNewRelicTask.DeprecatedNRQLMetricExecutionTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["entity_application_golden_metric_execution_task", b"entity_application_golden_metric_execution_task", "entity_dashboard_widget_nrql_metric_execution_task", b"entity_dashboard_widget_nrql_metric_execution_task", "nrql_metric_execution_task", b"nrql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["entity_application_golden_metric_execution_task", b"entity_application_golden_metric_execution_task", "entity_dashboard_widget_nrql_metric_execution_task", b"entity_dashboard_widget_nrql_metric_execution_task", "nrql_metric_execution_task", b"nrql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["entity_application_golden_metric_execution_task", "entity_dashboard_widget_nrql_metric_execution_task", "nrql_metric_execution_task"] | None: ...
+
+global___DeprecatedPlaybookNewRelicTask = DeprecatedPlaybookNewRelicTask
+
+@typing_extensions.final
+class DeprecatedPlaybookDatadogTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookDatadogTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookDatadogTask._TaskType.ValueType  # 0
+        SERVICE_METRIC_EXECUTION: DeprecatedPlaybookDatadogTask._TaskType.ValueType  # 1
+        QUERY_METRIC_EXECUTION: DeprecatedPlaybookDatadogTask._TaskType.ValueType  # 2
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookDatadogTask.TaskType.ValueType  # 0
+    SERVICE_METRIC_EXECUTION: DeprecatedPlaybookDatadogTask.TaskType.ValueType  # 1
+    QUERY_METRIC_EXECUTION: DeprecatedPlaybookDatadogTask.TaskType.ValueType  # 2
+
+    @typing_extensions.final
+    class DeprecatedServiceMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        SERVICE_NAME_FIELD_NUMBER: builtins.int
+        ENVIRONMENT_NAME_FIELD_NUMBER: builtins.int
+        METRIC_FAMILY_FIELD_NUMBER: builtins.int
+        METRIC_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def service_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def environment_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def metric_family(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def metric(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            service_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            environment_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            metric_family: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            metric: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "process_function", b"process_function", "service_name", b"service_name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "process_function", b"process_function", "service_name", b"service_name"]) -> None: ...
+
+    @typing_extensions.final
+    class DeprecatedQueryMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        QUERIES_FIELD_NUMBER: builtins.int
+        FORMULA_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def queries(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        @property
+        def formula(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            queries: collections.abc.Iterable[builtins.str] | None = ...,
+            formula: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["formula", b"formula", "process_function", b"process_function"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["formula", b"formula", "process_function", b"process_function", "queries", b"queries"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    SERVICE_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    QUERY_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookDatadogTask.TaskType.ValueType
+    @property
+    def service_metric_execution_task(self) -> global___DeprecatedPlaybookDatadogTask.DeprecatedServiceMetricExecutionTask: ...
+    @property
+    def query_metric_execution_task(self) -> global___DeprecatedPlaybookDatadogTask.DeprecatedQueryMetricExecutionTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookDatadogTask.TaskType.ValueType = ...,
+        service_metric_execution_task: global___DeprecatedPlaybookDatadogTask.DeprecatedServiceMetricExecutionTask | None = ...,
+        query_metric_execution_task: global___DeprecatedPlaybookDatadogTask.DeprecatedQueryMetricExecutionTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["query_metric_execution_task", b"query_metric_execution_task", "service_metric_execution_task", b"service_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["query_metric_execution_task", b"query_metric_execution_task", "service_metric_execution_task", b"service_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["service_metric_execution_task", "query_metric_execution_task"] | None: ...
+
+global___DeprecatedPlaybookDatadogTask = DeprecatedPlaybookDatadogTask
+
+@typing_extensions.final
+class DeprecatedPlaybookPromQLTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookPromQLTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookPromQLTask._TaskType.ValueType  # 0
+        PROMQL_METRIC_EXECUTION: DeprecatedPlaybookPromQLTask._TaskType.ValueType  # 1
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookPromQLTask.TaskType.ValueType  # 0
+    PROMQL_METRIC_EXECUTION: DeprecatedPlaybookPromQLTask.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class DeprecatedPromQlMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    PROMQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookPromQLTask.TaskType.ValueType
+    @property
+    def promql_metric_execution_task(self) -> global___DeprecatedPlaybookPromQLTask.DeprecatedPromQlMetricExecutionTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookPromQLTask.TaskType.ValueType = ...,
+        promql_metric_execution_task: global___DeprecatedPlaybookPromQLTask.DeprecatedPromQlMetricExecutionTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task"] | None: ...
+
+global___DeprecatedPlaybookPromQLTask = DeprecatedPlaybookPromQLTask
+
+@typing_extensions.final
+class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     SOURCE_FIELD_NUMBER: builtins.int
@@ -48,24 +562,24 @@ class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
     MIMIR_TASK_FIELD_NUMBER: builtins.int
     source: protos.base_pb2.Source.ValueType
     @property
-    def cloudwatch_task(self) -> protos.playbooks.source_task_definitions.cloudwatch_task_pb2.PlaybookCloudwatchTask: ...
+    def cloudwatch_task(self) -> global___DeprecatedPlaybookCloudwatchTask: ...
     @property
-    def grafana_task(self) -> protos.playbooks.source_task_definitions.grafana_task_pb2.PlaybookGrafanaTask: ...
+    def grafana_task(self) -> global___DeprecatedPlaybookGrafanaTask: ...
     @property
-    def new_relic_task(self) -> protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask: ...
+    def new_relic_task(self) -> global___DeprecatedPlaybookNewRelicTask: ...
     @property
-    def datadog_task(self) -> protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask: ...
+    def datadog_task(self) -> global___DeprecatedPlaybookDatadogTask: ...
     @property
-    def mimir_task(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask: ...
+    def mimir_task(self) -> global___DeprecatedPlaybookPromQLTask: ...
     def __init__(
         self,
         *,
         source: protos.base_pb2.Source.ValueType = ...,
-        cloudwatch_task: protos.playbooks.source_task_definitions.cloudwatch_task_pb2.PlaybookCloudwatchTask | None = ...,
-        grafana_task: protos.playbooks.source_task_definitions.grafana_task_pb2.PlaybookGrafanaTask | None = ...,
-        new_relic_task: protos.playbooks.source_task_definitions.new_relic_task_pb2.PlaybookNewRelicTask | None = ...,
-        datadog_task: protos.playbooks.source_task_definitions.datadog_task_pb2.PlaybookDatadogTask | None = ...,
-        mimir_task: protos.playbooks.source_task_definitions.promql_task_pb2.PlaybookPromQLTask | None = ...,
+        cloudwatch_task: global___DeprecatedPlaybookCloudwatchTask | None = ...,
+        grafana_task: global___DeprecatedPlaybookGrafanaTask | None = ...,
+        new_relic_task: global___DeprecatedPlaybookNewRelicTask | None = ...,
+        datadog_task: global___DeprecatedPlaybookDatadogTask | None = ...,
+        mimir_task: global___DeprecatedPlaybookPromQLTask | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
@@ -140,156 +654,42 @@ class DeprecatedPlaybookMetricTaskExecutionResult(google.protobuf.message.Messag
 global___DeprecatedPlaybookMetricTaskExecutionResult = DeprecatedPlaybookMetricTaskExecutionResult
 
 @typing_extensions.final
-class DeprecatedPlaybookDecisionTaskDefinition(google.protobuf.message.Message):
-    """////////////// Playbook Decision Task Execution Protos ////////////////"""
+class DeprecatedPlaybookDocumentationTaskDefinition(google.protobuf.message.Message):
+    """////////////// Playbook Documentation Task Execution Protos ////////////////"""
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _EvaluationType:
+    class _Type:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _EvaluationTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookDecisionTaskDefinition._EvaluationType.ValueType], builtins.type):  # noqa: F821
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN_ET: DeprecatedPlaybookDecisionTaskDefinition._EvaluationType.ValueType  # 0
-        ELSE: DeprecatedPlaybookDecisionTaskDefinition._EvaluationType.ValueType  # 1
-        TIMESERIES: DeprecatedPlaybookDecisionTaskDefinition._EvaluationType.ValueType  # 2
+        UNKNOWN: DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType  # 0
+        MARKDOWN: DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType  # 1
 
-    class EvaluationType(_EvaluationType, metaclass=_EvaluationTypeEnumTypeWrapper): ...
-    UNKNOWN_ET: DeprecatedPlaybookDecisionTaskDefinition.EvaluationType.ValueType  # 0
-    ELSE: DeprecatedPlaybookDecisionTaskDefinition.EvaluationType.ValueType  # 1
-    TIMESERIES: DeprecatedPlaybookDecisionTaskDefinition.EvaluationType.ValueType  # 2
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType  # 0
+    MARKDOWN: DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType  # 1
 
-    EVALUATION_TYPE_FIELD_NUMBER: builtins.int
-    ELSE_EVALUATION_TASK_FIELD_NUMBER: builtins.int
-    TIMESERIES_EVALUATION_TASK_FIELD_NUMBER: builtins.int
-    evaluation_type: global___DeprecatedPlaybookDecisionTaskDefinition.EvaluationType.ValueType
+    TYPE_FIELD_NUMBER: builtins.int
+    DOCUMENTATION_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType
     @property
-    def else_evaluation_task(self) -> protos.playbooks.decision_task_definitions.decision_task_pb2.ElseEvaluationTask: ...
-    @property
-    def timeseries_evaluation_task(self) -> protos.playbooks.decision_task_definitions.decision_task_pb2.TimeseriesEvaluationTask: ...
+    def documentation(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
-        evaluation_type: global___DeprecatedPlaybookDecisionTaskDefinition.EvaluationType.ValueType = ...,
-        else_evaluation_task: protos.playbooks.decision_task_definitions.decision_task_pb2.ElseEvaluationTask | None = ...,
-        timeseries_evaluation_task: protos.playbooks.decision_task_definitions.decision_task_pb2.TimeseriesEvaluationTask | None = ...,
+        type: global___DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType = ...,
+        documentation: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["condition", b"condition", "else_evaluation_task", b"else_evaluation_task", "timeseries_evaluation_task", b"timeseries_evaluation_task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["condition", b"condition", "else_evaluation_task", b"else_evaluation_task", "evaluation_type", b"evaluation_type", "timeseries_evaluation_task", b"timeseries_evaluation_task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["condition", b"condition"]) -> typing_extensions.Literal["else_evaluation_task", "timeseries_evaluation_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["documentation", b"documentation"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["documentation", b"documentation", "type", b"type"]) -> None: ...
 
-global___DeprecatedPlaybookDecisionTaskDefinition = DeprecatedPlaybookDecisionTaskDefinition
-
-@typing_extensions.final
-class DeprecatedPlaybookDecisionTaskExecutionResult(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    @typing_extensions.final
-    class Result(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        class _Type:
-            ValueType = typing.NewType("ValueType", builtins.int)
-            V: typing_extensions.TypeAlias = ValueType
-
-        class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookDecisionTaskExecutionResult.Result._Type.ValueType], builtins.type):  # noqa: F821
-            DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-            UNKNOWN: DeprecatedPlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 0
-            ELSE_EVALUATION_CONDITION: DeprecatedPlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 1
-            TIMESERIES_EVALUATION_CONDITION: DeprecatedPlaybookDecisionTaskExecutionResult.Result._Type.ValueType  # 2
-
-        class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-        UNKNOWN: DeprecatedPlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 0
-        ELSE_EVALUATION_CONDITION: DeprecatedPlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 1
-        TIMESERIES_EVALUATION_CONDITION: DeprecatedPlaybookDecisionTaskExecutionResult.Result.Type.ValueType  # 2
-
-        @typing_extensions.final
-        class ElseEvaluation(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            EVALUATION_FIELD_NUMBER: builtins.int
-            @property
-            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-            def __init__(
-                self,
-                *,
-                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation"]) -> None: ...
-
-        @typing_extensions.final
-        class TimeseriesEvaluation(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-            EVALUATION_FIELD_NUMBER: builtins.int
-            RULE_FIELD_NUMBER: builtins.int
-            VALUE_FIELD_NUMBER: builtins.int
-            @property
-            def evaluation(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-            @property
-            def rule(self) -> protos.playbooks.decision_task_definitions.decision_task_pb2.TimeseriesEvaluationTask.Rule: ...
-            @property
-            def value(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
-            def __init__(
-                self,
-                *,
-                evaluation: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-                rule: protos.playbooks.decision_task_definitions.decision_task_pb2.TimeseriesEvaluationTask.Rule | None = ...,
-                value: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
-            ) -> None: ...
-            def HasField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> builtins.bool: ...
-            def ClearField(self, field_name: typing_extensions.Literal["evaluation", b"evaluation", "rule", b"rule", "value", b"value"]) -> None: ...
-
-        TYPE_FIELD_NUMBER: builtins.int
-        NEXT_TASK_FIELD_NUMBER: builtins.int
-        ELSE_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
-        TIMESERIES_EVALUATION_CONDITION_FIELD_NUMBER: builtins.int
-        type: global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.Type.ValueType
-        @property
-        def next_task(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def else_evaluation_condition(self) -> global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.ElseEvaluation: ...
-        @property
-        def timeseries_evaluation_condition(self) -> global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation: ...
-        def __init__(
-            self,
-            *,
-            type: global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.Type.ValueType = ...,
-            next_task: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            else_evaluation_condition: global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.ElseEvaluation | None = ...,
-            timeseries_evaluation_condition: global___DeprecatedPlaybookDecisionTaskExecutionResult.Result.TimeseriesEvaluation | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["else_evaluation_condition", b"else_evaluation_condition", "next_task", b"next_task", "result", b"result", "timeseries_evaluation_condition", b"timeseries_evaluation_condition", "type", b"type"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["else_evaluation_condition", "timeseries_evaluation_condition"] | None: ...
-
-    DECISION_TASK_ID_FIELD_NUMBER: builtins.int
-    DECISION_TASK_NAME_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def decision_task_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    @property
-    def decision_task_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def result(self) -> global___DeprecatedPlaybookDecisionTaskExecutionResult.Result: ...
-    def __init__(
-        self,
-        *,
-        decision_task_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        decision_task_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        result: global___DeprecatedPlaybookDecisionTaskExecutionResult.Result | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["decision_task_id", b"decision_task_id", "decision_task_name", b"decision_task_name", "result", b"result"]) -> None: ...
-
-global___DeprecatedPlaybookDecisionTaskExecutionResult = DeprecatedPlaybookDecisionTaskExecutionResult
+global___DeprecatedPlaybookDocumentationTaskDefinition = DeprecatedPlaybookDocumentationTaskDefinition
 
 @typing_extensions.final
 class DeprecatedPlaybookDocumentationTaskExecutionResult(google.protobuf.message.Message):
-    """////////////// Playbook Documentation Task Execution Protos ////////////////"""
-
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     @typing_extensions.final
@@ -361,9 +761,119 @@ class DeprecatedPlaybookDocumentationTaskExecutionResult(google.protobuf.message
 global___DeprecatedPlaybookDocumentationTaskExecutionResult = DeprecatedPlaybookDocumentationTaskExecutionResult
 
 @typing_extensions.final
-class DeprecatedPlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
+class DeprecatedPlaybookClickhouseDataFetchTask(google.protobuf.message.Message):
     """////////////// Playbook Data Fetch Task Execution Protos ////////////////"""
 
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    DATABASE_FIELD_NUMBER: builtins.int
+    QUERY_FIELD_NUMBER: builtins.int
+    @property
+    def database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        database: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["database", b"database", "query", b"query"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "query", b"query"]) -> None: ...
+
+global___DeprecatedPlaybookClickhouseDataFetchTask = DeprecatedPlaybookClickhouseDataFetchTask
+
+@typing_extensions.final
+class DeprecatedPlaybookPostgresDataFetchTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    DATABASE_FIELD_NUMBER: builtins.int
+    QUERY_FIELD_NUMBER: builtins.int
+    @property
+    def database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        database: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["database", b"database", "query", b"query"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "query", b"query"]) -> None: ...
+
+global___DeprecatedPlaybookPostgresDataFetchTask = DeprecatedPlaybookPostgresDataFetchTask
+
+@typing_extensions.final
+class DeprecatedPlaybookEksDataFetchTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _CommandType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _CommandTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType  # 0
+        GET_PODS: DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType  # 1
+        GET_DEPLOYMENTS: DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType  # 2
+        GET_EVENTS: DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType  # 3
+        GET_SERVICES: DeprecatedPlaybookEksDataFetchTask._CommandType.ValueType  # 4
+
+    class CommandType(_CommandType, metaclass=_CommandTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType  # 0
+    GET_PODS: DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType  # 1
+    GET_DEPLOYMENTS: DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType  # 2
+    GET_EVENTS: DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType  # 3
+    GET_SERVICES: DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType  # 4
+
+    COMMAND_TYPE_FIELD_NUMBER: builtins.int
+    DESCRIPTION_FIELD_NUMBER: builtins.int
+    REGION_FIELD_NUMBER: builtins.int
+    CLUSTER_FIELD_NUMBER: builtins.int
+    NAMESPACE_FIELD_NUMBER: builtins.int
+    command_type: global___DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType
+    @property
+    def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def region(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def cluster(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def namespace(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        command_type: global___DeprecatedPlaybookEksDataFetchTask.CommandType.ValueType = ...,
+        description: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        region: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        cluster: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        namespace: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cluster", b"cluster", "command_type", b"command_type", "description", b"description", "namespace", b"namespace", "region", b"region"]) -> None: ...
+
+global___DeprecatedPlaybookEksDataFetchTask = DeprecatedPlaybookEksDataFetchTask
+
+@typing_extensions.final
+class DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    QUERY_FIELD_NUMBER: builtins.int
+    @property
+    def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["query", b"query"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["query", b"query"]) -> None: ...
+
+global___DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask = DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask
+
+@typing_extensions.final
+class DeprecatedPlaybookDataFetchTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     SOURCE_FIELD_NUMBER: builtins.int
@@ -382,13 +892,13 @@ class DeprecatedPlaybookDataFetchTaskDefinition(google.protobuf.message.Message)
     @property
     def offset(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def clickhouse_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def clickhouse_data_fetch_task(self) -> global___DeprecatedPlaybookClickhouseDataFetchTask: ...
     @property
-    def postgres_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def postgres_data_fetch_task(self) -> global___DeprecatedPlaybookPostgresDataFetchTask: ...
     @property
-    def eks_data_fetch_task(self) -> protos.playbooks.source_task_definitions.eks_task_pb2.PlaybookEksDataFetchTask: ...
+    def eks_data_fetch_task(self) -> global___DeprecatedPlaybookEksDataFetchTask: ...
     @property
-    def sql_database_connection_data_fetch_task(self) -> protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask: ...
+    def sql_database_connection_data_fetch_task(self) -> global___DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask: ...
     def __init__(
         self,
         *,
@@ -396,10 +906,10 @@ class DeprecatedPlaybookDataFetchTaskDefinition(google.protobuf.message.Message)
         order_by_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
         limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        clickhouse_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
-        postgres_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
-        eks_data_fetch_task: protos.playbooks.source_task_definitions.eks_task_pb2.PlaybookEksDataFetchTask | None = ...,
-        sql_database_connection_data_fetch_task: protos.playbooks.source_task_definitions.sql_database_task_pb2.SqlDataFetchTask | None = ...,
+        clickhouse_data_fetch_task: global___DeprecatedPlaybookClickhouseDataFetchTask | None = ...,
+        postgres_data_fetch_task: global___DeprecatedPlaybookPostgresDataFetchTask | None = ...,
+        eks_data_fetch_task: global___DeprecatedPlaybookEksDataFetchTask | None = ...,
+        sql_database_connection_data_fetch_task: global___DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["clickhouse_data_fetch_task", b"clickhouse_data_fetch_task", "eks_data_fetch_task", b"eks_data_fetch_task", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "postgres_data_fetch_task", b"postgres_data_fetch_task", "source", b"source", "sql_database_connection_data_fetch_task", b"sql_database_connection_data_fetch_task", "task", b"task"]) -> None: ...
@@ -470,9 +980,89 @@ class DeprecatedPlaybookDataFetchTaskExecutionResult(google.protobuf.message.Mes
 global___DeprecatedPlaybookDataFetchTaskExecutionResult = DeprecatedPlaybookDataFetchTaskExecutionResult
 
 @typing_extensions.final
-class DeprecatedPlaybookActionTaskDefinition(google.protobuf.message.Message):
-    """////////////// Playbook Action Task Execution Protos ////////////////"""
+class DeprecatedPlaybookApiCallTask(google.protobuf.message.Message):
+    """////////////// Playbook Action Task Execution Protos ////////////////
+    Action Task Definition Proto //
+    """
 
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _Method:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _MethodEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookApiCallTask._Method.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookApiCallTask._Method.ValueType  # 0
+        GET: DeprecatedPlaybookApiCallTask._Method.ValueType  # 1
+        POST: DeprecatedPlaybookApiCallTask._Method.ValueType  # 2
+        PUT: DeprecatedPlaybookApiCallTask._Method.ValueType  # 3
+        PATCH: DeprecatedPlaybookApiCallTask._Method.ValueType  # 4
+        DELETE: DeprecatedPlaybookApiCallTask._Method.ValueType  # 5
+
+    class Method(_Method, metaclass=_MethodEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookApiCallTask.Method.ValueType  # 0
+    GET: DeprecatedPlaybookApiCallTask.Method.ValueType  # 1
+    POST: DeprecatedPlaybookApiCallTask.Method.ValueType  # 2
+    PUT: DeprecatedPlaybookApiCallTask.Method.ValueType  # 3
+    PATCH: DeprecatedPlaybookApiCallTask.Method.ValueType  # 4
+    DELETE: DeprecatedPlaybookApiCallTask.Method.ValueType  # 5
+
+    METHOD_FIELD_NUMBER: builtins.int
+    URL_FIELD_NUMBER: builtins.int
+    HEADERS_FIELD_NUMBER: builtins.int
+    PAYLOAD_FIELD_NUMBER: builtins.int
+    TIMEOUT_FIELD_NUMBER: builtins.int
+    COOKIES_FIELD_NUMBER: builtins.int
+    method: global___DeprecatedPlaybookApiCallTask.Method.ValueType
+    @property
+    def url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def headers(self) -> google.protobuf.struct_pb2.Struct: ...
+    @property
+    def payload(self) -> google.protobuf.struct_pb2.Struct: ...
+    @property
+    def timeout(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def cookies(self) -> google.protobuf.struct_pb2.Struct: ...
+    def __init__(
+        self,
+        *,
+        method: global___DeprecatedPlaybookApiCallTask.Method.ValueType = ...,
+        url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        headers: google.protobuf.struct_pb2.Struct | None = ...,
+        payload: google.protobuf.struct_pb2.Struct | None = ...,
+        timeout: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        cookies: google.protobuf.struct_pb2.Struct | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "method", b"method", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> None: ...
+
+global___DeprecatedPlaybookApiCallTask = DeprecatedPlaybookApiCallTask
+
+@typing_extensions.final
+class DeprecatedPlaybookBashCommandTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    COMMAND_FIELD_NUMBER: builtins.int
+    REMOTE_SERVER_FIELD_NUMBER: builtins.int
+    @property
+    def command(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def remote_server(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        command: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        remote_server: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["command", b"command", "remote_server", b"remote_server"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["command", b"command", "remote_server", b"remote_server"]) -> None: ...
+
+global___DeprecatedPlaybookBashCommandTask = DeprecatedPlaybookBashCommandTask
+
+@typing_extensions.final
+class DeprecatedPlaybookActionTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     SOURCE_FIELD_NUMBER: builtins.int
@@ -489,9 +1079,9 @@ class DeprecatedPlaybookActionTaskDefinition(google.protobuf.message.Message):
     @property
     def metadata(self) -> google.protobuf.struct_pb2.Struct: ...
     @property
-    def api_call_task(self) -> protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask: ...
+    def api_call_task(self) -> global___DeprecatedPlaybookApiCallTask: ...
     @property
-    def bash_command_task(self) -> protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask: ...
+    def bash_command_task(self) -> global___DeprecatedPlaybookBashCommandTask: ...
     def __init__(
         self,
         *,
@@ -499,8 +1089,8 @@ class DeprecatedPlaybookActionTaskDefinition(google.protobuf.message.Message):
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         metadata: google.protobuf.struct_pb2.Struct | None = ...,
-        api_call_task: protos.playbooks.source_task_definitions.api_call_task_pb2.PlaybookApiCallTask | None = ...,
-        bash_command_task: protos.playbooks.source_task_definitions.bash_command_task_pb2.PlaybookBashCommandTask | None = ...,
+        api_call_task: global___DeprecatedPlaybookApiCallTask | None = ...,
+        bash_command_task: global___DeprecatedPlaybookBashCommandTask | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "id", b"id", "metadata", b"metadata", "name", b"name", "task", b"task"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["api_call_task", b"api_call_task", "bash_command_task", b"bash_command_task", "id", b"id", "metadata", b"metadata", "name", b"name", "source", b"source", "task", b"task"]) -> None: ...
@@ -608,7 +1198,6 @@ class DeprecatedPlaybookTaskDefinition(google.protobuf.message.Message):
     TYPE_FIELD_NUMBER: builtins.int
     INTERPRETER_TYPE_FIELD_NUMBER: builtins.int
     METRIC_TASK_FIELD_NUMBER: builtins.int
-    DECISION_TASK_FIELD_NUMBER: builtins.int
     DATA_FETCH_TASK_FIELD_NUMBER: builtins.int
     DOCUMENTATION_TASK_FIELD_NUMBER: builtins.int
     ACTION_TASK_FIELD_NUMBER: builtins.int
@@ -627,11 +1216,9 @@ class DeprecatedPlaybookTaskDefinition(google.protobuf.message.Message):
     @property
     def metric_task(self) -> global___DeprecatedPlaybookMetricTaskDefinition: ...
     @property
-    def decision_task(self) -> global___DeprecatedPlaybookDecisionTaskDefinition: ...
-    @property
     def data_fetch_task(self) -> global___DeprecatedPlaybookDataFetchTaskDefinition: ...
     @property
-    def documentation_task(self) -> protos.playbooks.source_task_definitions.documentation_task_pb2.PlaybookDocumentationTaskDefinition: ...
+    def documentation_task(self) -> global___DeprecatedPlaybookDocumentationTaskDefinition: ...
     @property
     def action_task(self) -> global___DeprecatedPlaybookActionTaskDefinition: ...
     def __init__(
@@ -645,14 +1232,13 @@ class DeprecatedPlaybookTaskDefinition(google.protobuf.message.Message):
         type: global___DeprecatedPlaybookTaskDefinition.Type.ValueType = ...,
         interpreter_type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType = ...,
         metric_task: global___DeprecatedPlaybookMetricTaskDefinition | None = ...,
-        decision_task: global___DeprecatedPlaybookDecisionTaskDefinition | None = ...,
         data_fetch_task: global___DeprecatedPlaybookDataFetchTaskDefinition | None = ...,
-        documentation_task: protos.playbooks.source_task_definitions.documentation_task_pb2.PlaybookDocumentationTaskDefinition | None = ...,
+        documentation_task: global___DeprecatedPlaybookDocumentationTaskDefinition | None = ...,
         action_task: global___DeprecatedPlaybookActionTaskDefinition | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_task", b"action_task", "data_fetch_task", b"data_fetch_task", "decision_task", b"decision_task", "description", b"description", "documentation_task", b"documentation_task", "global_variable_set", b"global_variable_set", "id", b"id", "metric_task", b"metric_task", "name", b"name", "notes", b"notes", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_task", b"action_task", "data_fetch_task", b"data_fetch_task", "decision_task", b"decision_task", "description", b"description", "documentation_task", b"documentation_task", "global_variable_set", b"global_variable_set", "id", b"id", "interpreter_type", b"interpreter_type", "metric_task", b"metric_task", "name", b"name", "notes", b"notes", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["metric_task", "decision_task", "data_fetch_task", "documentation_task", "action_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_task", b"action_task", "data_fetch_task", b"data_fetch_task", "description", b"description", "documentation_task", b"documentation_task", "global_variable_set", b"global_variable_set", "id", b"id", "metric_task", b"metric_task", "name", b"name", "notes", b"notes", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_task", b"action_task", "data_fetch_task", b"data_fetch_task", "description", b"description", "documentation_task", b"documentation_task", "global_variable_set", b"global_variable_set", "id", b"id", "interpreter_type", b"interpreter_type", "metric_task", b"metric_task", "name", b"name", "notes", b"notes", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["metric_task", "data_fetch_task", "documentation_task", "action_task"] | None: ...
 
 global___DeprecatedPlaybookTaskDefinition = DeprecatedPlaybookTaskDefinition
 
@@ -663,7 +1249,6 @@ class DeprecatedPlaybookTaskExecutionResult(google.protobuf.message.Message):
     ERROR_FIELD_NUMBER: builtins.int
     MESSAGE_FIELD_NUMBER: builtins.int
     METRIC_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
-    DECISION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     DATA_FETCH_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     DOCUMENTATION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
     ACTION_TASK_EXECUTION_RESULT_FIELD_NUMBER: builtins.int
@@ -673,8 +1258,6 @@ class DeprecatedPlaybookTaskExecutionResult(google.protobuf.message.Message):
     def message(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def metric_task_execution_result(self) -> global___DeprecatedPlaybookMetricTaskExecutionResult: ...
-    @property
-    def decision_task_execution_result(self) -> global___DeprecatedPlaybookDecisionTaskExecutionResult: ...
     @property
     def data_fetch_task_execution_result(self) -> global___DeprecatedPlaybookDataFetchTaskExecutionResult: ...
     @property
@@ -687,14 +1270,13 @@ class DeprecatedPlaybookTaskExecutionResult(google.protobuf.message.Message):
         error: google.protobuf.wrappers_pb2.StringValue | None = ...,
         message: google.protobuf.wrappers_pb2.StringValue | None = ...,
         metric_task_execution_result: global___DeprecatedPlaybookMetricTaskExecutionResult | None = ...,
-        decision_task_execution_result: global___DeprecatedPlaybookDecisionTaskExecutionResult | None = ...,
         data_fetch_task_execution_result: global___DeprecatedPlaybookDataFetchTaskExecutionResult | None = ...,
         documentation_task_execution_result: global___DeprecatedPlaybookDocumentationTaskExecutionResult | None = ...,
         action_task_execution_result: global___DeprecatedPlaybookActionTaskExecutionResult | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "decision_task_execution_result", b"decision_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["metric_task_execution_result", "decision_task_execution_result", "data_fetch_task_execution_result", "documentation_task_execution_result", "action_task_execution_result"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_task_execution_result", b"action_task_execution_result", "data_fetch_task_execution_result", b"data_fetch_task_execution_result", "documentation_task_execution_result", b"documentation_task_execution_result", "error", b"error", "message", b"message", "metric_task_execution_result", b"metric_task_execution_result", "result", b"result"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["metric_task_execution_result", "data_fetch_task_execution_result", "documentation_task_execution_result", "action_task_execution_result"] | None: ...
 
 global___DeprecatedPlaybookTaskExecutionResult = DeprecatedPlaybookTaskExecutionResult
 

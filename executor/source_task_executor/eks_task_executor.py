@@ -12,7 +12,7 @@ from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_ins
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.eks_task_pb2 import PlaybookEksDataFetchTask
+from protos.playbooks.source_task_definitions.eks_task_pb2 import Eks
 
 
 class EksTaskExecutor(PlaybookTaskExecutor):
@@ -21,10 +21,10 @@ class EksTaskExecutor(PlaybookTaskExecutor):
         self.source = Source.EKS
         self.__account_id = account_id
         self.task_type_callable_map = {
-            PlaybookEksDataFetchTask.CommandType.GET_PODS: self.get_pods,
-            PlaybookEksDataFetchTask.CommandType.GET_DEPLOYMENTS: self.get_deployments,
-            PlaybookEksDataFetchTask.CommandType.GET_EVENTS: self.get_events,
-            PlaybookEksDataFetchTask.CommandType.GET_SERVICES: self.get_services,
+            Eks.TaskType.GET_PODS: self.get_pods,
+            Eks.TaskType.GET_DEPLOYMENTS: self.get_deployments,
+            Eks.TaskType.GET_EVENTS: self.get_events,
+            Eks.TaskType.GET_SERVICES: self.get_services,
         }
         try:
             eks_connector = Connector.objects.get(account_id=account_id,
@@ -55,21 +55,22 @@ class EksTaskExecutor(PlaybookTaskExecutor):
                 "EKS AWS access key, secret key, eks role arn not found for ""account: {}".format(account_id))
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        eks_data_fetch_task = task.eks_data_fetch_task
-        aws_region = eks_data_fetch_task.region.value
-        cluster_name = eks_data_fetch_task.cluster.value
-        namespace = eks_data_fetch_task.namespace.value
-        command_type = eks_data_fetch_task.command_type
-        if command_type in self.task_type_callable_map:
+        eks_task = task.eks
+        task_type = eks_task.type
+        if task_type in self.task_type_callable_map:
             try:
-                return self.task_type_callable_map[command_type](global_variable_set, aws_region, cluster_name,
-                                                                 namespace)
+                return self.task_type_callable_map[task_type](time_range, global_variable_set, eks_task)
             except Exception as e:
                 raise Exception(f"Failed to execute EKS data fetch task: {e}")
         else:
-            raise Exception(f"Unsupported EKS data fetch task command type: {command_type}")
+            raise Exception(f"Task type {task_type} not supported")
 
-    def get_pods(self, global_variable_set: Dict, aws_region, cluster_name, namespace) -> PlaybookTaskResult:
+    def get_pods(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks) -> PlaybookTaskResult:
+        eks_command = eks_task.command
+        aws_region = eks_command.region.value
+        cluster_name = eks_command.cluster.value
+        namespace = eks_command.namespace.value
+
         current_time = datetime.now(timezone.utc)
         try:
             eks_api_instance = get_eks_api_instance(self.__aws_access_key, self.__aws_secret_key, aws_region,
@@ -113,7 +114,12 @@ class EksTaskExecutor(PlaybookTaskExecutor):
         except Exception as e:
             raise Exception(f"Failed to get pods in eks: {e}")
 
-    def get_deployments(self, global_variable_set: Dict, aws_region, cluster_name, namespace) -> PlaybookTaskResult:
+    def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks) -> PlaybookTaskResult:
+        eks_command = eks_task.command
+        aws_region = eks_command.region.value
+        cluster_name = eks_command.cluster.value
+        namespace = eks_command.namespace.value
+
         current_time = datetime.now(timezone.utc)
         try:
             eks_app_instance = get_eks_api_instance(self.__aws_access_key, self.__aws_secret_key, aws_region,
@@ -159,7 +165,12 @@ class EksTaskExecutor(PlaybookTaskExecutor):
         except Exception as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
 
-    def get_events(self, global_variable_set: Dict, aws_region, cluster_name, namespace) -> PlaybookTaskResult:
+    def get_events(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks) -> PlaybookTaskResult:
+        eks_command = eks_task.command
+        aws_region = eks_command.region.value
+        cluster_name = eks_command.cluster.value
+        namespace = eks_command.namespace.value
+
         current_time = datetime.now(timezone.utc)
         try:
             table_rows: [TableResult.TableRow] = []
@@ -204,7 +215,12 @@ class EksTaskExecutor(PlaybookTaskExecutor):
         except Exception as e:
             raise Exception(f"Failed to get events in eks: {e}")
 
-    def get_services(self, global_variable_set: Dict, aws_region, cluster_name, namespace) -> PlaybookTaskResult:
+    def get_services(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks) -> PlaybookTaskResult:
+        eks_command = eks_task.command
+        aws_region = eks_command.region.value
+        cluster_name = eks_command.cluster.value
+        namespace = eks_command.namespace.value
+
         current_time = datetime.now(timezone.utc)
         try:
             eks_api_instance = get_eks_api_instance(self.__aws_access_key, self.__aws_secret_key, aws_region,

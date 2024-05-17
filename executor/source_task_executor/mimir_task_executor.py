@@ -11,18 +11,17 @@ from protos.base_pb2 import Source
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.promql_task_pb2 import PlaybookPromQLTask
+from protos.playbooks.source_task_definitions.promql_task_pb2 import PromQl
 
 
 class MimirTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.GRAFANA_MIMIR
-        self.task_type_callable_map = {
-            PlaybookPromQLTask.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution_task
-        }
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            PromQl.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution
+        }
 
         try:
             mimir_connector = Connector.objects.get(account_id=account_id,
@@ -49,18 +48,18 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
             raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        mimir_task = task.promql_task
-        task_type = mimir_task.type
+        grafana_mimir_task = task.grafana_mimir
+        task_type = grafana_mimir_task.type
         if task_type in self.task_type_callable_map:
             try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, mimir_task)
+                return self.task_type_callable_map[task_type](time_range, global_variable_set, grafana_mimir_task)
             except Exception as e:
                 raise Exception(f"Error while executing Mimir task: {e}")
         else:
             raise Exception(f"Task type {task_type} not supported")
 
-    def execute_promql_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                             mimir_task: PlaybookPromQLTask) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                        mimir_task: PromQl) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         tr_start_time = time_range.time_geq
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
@@ -72,7 +71,7 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
 
         task_result = PlaybookTaskResult()
 
-        task = mimir_task.promql_metric_execution_task
+        task = mimir_task.promql_metric_execution
         process_function = task.process_function.value
         promql_metric_query = task.promql_expression.value
         # promql_label_option_values = task.promql_label_option_values

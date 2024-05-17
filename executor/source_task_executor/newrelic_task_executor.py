@@ -12,7 +12,7 @@ from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.new_relic_task_pb2 import PlaybookNewRelicTask
+from protos.playbooks.source_task_definitions.new_relic_task_pb2 import NewRelic
 
 
 def get_nrql_expression_result_alias(nrql_expression):
@@ -27,13 +27,12 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.NEW_RELIC
-        self.task_type_callable_map = {
-            PlaybookNewRelicTask.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: self.execute_entity_application_golden_metric_execution_task,
-            PlaybookNewRelicTask.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: self.execute_entity_dashboard_widget_nrql_metric_execution_task,
-            PlaybookNewRelicTask.TaskType.NRQL_METRIC_EXECUTION: self.execute_nrql_metric_execution_task
-        }
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: self.execute_entity_application_golden_metric_execution,
+            NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: self.execute_entity_dashboard_widget_nrql_metric_execution,
+            NewRelic.TaskType.NRQL_METRIC_EXECUTION: self.execute_nrql_metric_execution
+        }
 
         try:
             nr_connector = Connector.objects.get(account_id=account_id,
@@ -64,7 +63,7 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
             self.__nr_api_domain = 'api.newrelic.com'
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        nr_task = task.new_relic_task
+        nr_task: NewRelic = task.new_relic
         task_type = nr_task.type
         if task_type in self.task_type_callable_map:
             try:
@@ -74,11 +73,11 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
         else:
             raise Exception(f"Task type {task_type} not supported")
 
-    def execute_entity_application_golden_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                                                nr_task: PlaybookNewRelicTask) -> PlaybookTaskResult:
+    def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                                           nr_task: NewRelic) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
-        task = nr_task.entity_application_golden_metric_execution_task
+        task = nr_task.entity_application_golden_metric_execution
         name = task.golden_metric_name.value
         unit = task.golden_metric_unit.value
 
@@ -140,12 +139,12 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
         return task_result
 
-    def execute_entity_dashboard_widget_nrql_metric_execution_task(self, time_range: TimeRange,
-                                                                   global_variable_set: Dict,
-                                                                   nr_task: PlaybookNewRelicTask) -> PlaybookTaskResult:
+    def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange,
+                                                              global_variable_set: Dict,
+                                                              nr_task: NewRelic) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
-        task = nr_task.entity_dashboard_widget_nrql_metric_execution_task
+        task = nr_task.entity_dashboard_widget_nrql_metric_execution
         metric_name = task.widget_title.value
         if task.unit and task.unit.value:
             unit = task.unit.value
@@ -234,11 +233,11 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
         return task_result
 
-    def execute_nrql_metric_execution_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                           nr_task: PlaybookNewRelicTask) -> PlaybookTaskResult:
+    def execute_nrql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
+                                      nr_task: NewRelic) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
-        task = nr_task.nrql_metric_execution_task
+        task = nr_task.nrql_metric_execution
         metric_name = task.metric_name.value
         if task.unit and task.unit.value:
             unit = task.unit.value

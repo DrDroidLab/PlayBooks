@@ -17,7 +17,7 @@ from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connect
 from protos.connectors.assets import asset_pb2 as protos_dot_connectors_dot_assets_dot_asset__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"protos/connectors/assets/api.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\x1a$protos/connectors/assets/asset.proto\"\xb0\x01\n\'GetConnectorsAssetsModelsOptionsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12\x41\n\nmodel_type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\"\xf0\x01\n(GetConnectorsAssetsModelsOptionsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12Y\n\x13\x61sset_model_options\x18\x04 \x03(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelOptions\"x\n)GetConnectorsAssetsModelsOptionsV2Request\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tconnector\x18\x02 \x01(\x0b\x32\x1c.protos.connectors.Connector\"\xe9\x01\n*GetConnectorsAssetsModelsOptionsV2Response\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12P\n\x13\x61sset_model_options\x18\x04 \x03(\x0b\x32\x33.protos.connectors.assets.ConnectorModelTypeOptions\"\xf2\x01\n GetConnectorsAssetsModelsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12M\n\x07\x66ilters\x18\x04 \x01(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelFilters\"\xd0\x01\n!GetConnectorsAssetsModelsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x30.protos.connectors.assets.AccountConnectorAssets\"\xfd\x01\n\"GetConnectorsAssetsModelsV2Request\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tconnector\x18\x02 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12M\n\x07\x66ilters\x18\x04 \x01(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelFilters\"\xd2\x01\n#GetConnectorsAssetsModelsV2Response\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x30.protos.connectors.assets.AccountConnectorAssets\"y\n\'GetConnectorsAssetsModelsRefreshRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x32\n\x0c\x63onnector_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\x95\x01\n(GetConnectorsAssetsModelsRefreshResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Messageb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"protos/connectors/assets/api.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\x1a$protos/connectors/assets/asset.proto\"\x9a\x01\n\'GetConnectorsAssetsModelsOptionsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12+\n\nmodel_type\x18\x03 \x01(\x0e\x32\x17.protos.SourceModelType\"\xf0\x01\n(GetConnectorsAssetsModelsOptionsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12Y\n\x13\x61sset_model_options\x18\x04 \x03(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelOptions\"x\n)GetConnectorsAssetsModelsOptionsV2Request\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tconnector\x18\x02 \x01(\x0b\x32\x1c.protos.connectors.Connector\"\xe9\x01\n*GetConnectorsAssetsModelsOptionsV2Response\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12P\n\x13\x61sset_model_options\x18\x04 \x03(\x0b\x32\x33.protos.connectors.assets.ConnectorModelTypeOptions\"\xdc\x01\n GetConnectorsAssetsModelsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12%\n\x04type\x18\x03 \x01(\x0e\x32\x17.protos.SourceModelType\x12M\n\x07\x66ilters\x18\x04 \x01(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelFilters\"\xd0\x01\n!GetConnectorsAssetsModelsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x30.protos.connectors.assets.AccountConnectorAssets\"\xe7\x01\n\"GetConnectorsAssetsModelsV2Request\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tconnector\x18\x02 \x01(\x0b\x32\x1c.protos.connectors.Connector\x12%\n\x04type\x18\x03 \x01(\x0e\x32\x17.protos.SourceModelType\x12M\n\x07\x66ilters\x18\x04 \x01(\x0b\x32<.protos.connectors.assets.AccountConnectorAssetsModelFilters\"\xd2\x01\n#GetConnectorsAssetsModelsV2Response\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12@\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x30.protos.connectors.assets.AccountConnectorAssets\"y\n\'GetConnectorsAssetsModelsRefreshRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x32\n\x0c\x63onnector_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"\x95\x01\n(GetConnectorsAssetsModelsRefreshResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Messageb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.assets.api_pb2', globals())
@@ -25,23 +25,23 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _GETCONNECTORSASSETSMODELSOPTIONSREQUEST._serialized_start=189
-  _GETCONNECTORSASSETSMODELSOPTIONSREQUEST._serialized_end=365
-  _GETCONNECTORSASSETSMODELSOPTIONSRESPONSE._serialized_start=368
-  _GETCONNECTORSASSETSMODELSOPTIONSRESPONSE._serialized_end=608
-  _GETCONNECTORSASSETSMODELSOPTIONSV2REQUEST._serialized_start=610
-  _GETCONNECTORSASSETSMODELSOPTIONSV2REQUEST._serialized_end=730
-  _GETCONNECTORSASSETSMODELSOPTIONSV2RESPONSE._serialized_start=733
-  _GETCONNECTORSASSETSMODELSOPTIONSV2RESPONSE._serialized_end=966
-  _GETCONNECTORSASSETSMODELSREQUEST._serialized_start=969
-  _GETCONNECTORSASSETSMODELSREQUEST._serialized_end=1211
-  _GETCONNECTORSASSETSMODELSRESPONSE._serialized_start=1214
-  _GETCONNECTORSASSETSMODELSRESPONSE._serialized_end=1422
-  _GETCONNECTORSASSETSMODELSV2REQUEST._serialized_start=1425
-  _GETCONNECTORSASSETSMODELSV2REQUEST._serialized_end=1678
-  _GETCONNECTORSASSETSMODELSV2RESPONSE._serialized_start=1681
-  _GETCONNECTORSASSETSMODELSV2RESPONSE._serialized_end=1891
-  _GETCONNECTORSASSETSMODELSREFRESHREQUEST._serialized_start=1893
-  _GETCONNECTORSASSETSMODELSREFRESHREQUEST._serialized_end=2014
-  _GETCONNECTORSASSETSMODELSREFRESHRESPONSE._serialized_start=2017
-  _GETCONNECTORSASSETSMODELSREFRESHRESPONSE._serialized_end=2166
+  _GETCONNECTORSASSETSMODELSOPTIONSREQUEST._serialized_end=343
+  _GETCONNECTORSASSETSMODELSOPTIONSRESPONSE._serialized_start=346
+  _GETCONNECTORSASSETSMODELSOPTIONSRESPONSE._serialized_end=586
+  _GETCONNECTORSASSETSMODELSOPTIONSV2REQUEST._serialized_start=588
+  _GETCONNECTORSASSETSMODELSOPTIONSV2REQUEST._serialized_end=708
+  _GETCONNECTORSASSETSMODELSOPTIONSV2RESPONSE._serialized_start=711
+  _GETCONNECTORSASSETSMODELSOPTIONSV2RESPONSE._serialized_end=944
+  _GETCONNECTORSASSETSMODELSREQUEST._serialized_start=947
+  _GETCONNECTORSASSETSMODELSREQUEST._serialized_end=1167
+  _GETCONNECTORSASSETSMODELSRESPONSE._serialized_start=1170
+  _GETCONNECTORSASSETSMODELSRESPONSE._serialized_end=1378
+  _GETCONNECTORSASSETSMODELSV2REQUEST._serialized_start=1381
+  _GETCONNECTORSASSETSMODELSV2REQUEST._serialized_end=1612
+  _GETCONNECTORSASSETSMODELSV2RESPONSE._serialized_start=1615
+  _GETCONNECTORSASSETSMODELSV2RESPONSE._serialized_end=1825
+  _GETCONNECTORSASSETSMODELSREFRESHREQUEST._serialized_start=1827
+  _GETCONNECTORSASSETSMODELSREFRESHREQUEST._serialized_end=1948
+  _GETCONNECTORSASSETSMODELSREFRESHRESPONSE._serialized_start=1951
+  _GETCONNECTORSASSETSMODELSREFRESHRESPONSE._serialized_end=2100
 # @@protoc_insertion_point(module_scope)

@@ -11,25 +11,24 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n>protos/playbooks/source_task_definitions/cloudwatch_task.proto\x12\x10protos.playbooks\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xcf\x03\n\x1d\x43loudwatchMetricExecutionTask\x12/\n\tnamespace\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06region\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bmetric_name\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12M\n\ndimensions\x18\x04 \x03(\x0b\x32\x39.protos.playbooks.CloudwatchMetricExecutionTask.Dimension\x12/\n\tstatistic\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x64\n\tDimension\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xb7\x01\n\x1d\x43loudwatchFilterLogEventsTask\x12,\n\x06region\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0elog_group_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0c\x66ilter_query\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xcc\x02\n\x16PlaybookCloudwatchTask\x12?\n\x04type\x18\x01 \x01(\x0e\x32\x31.protos.playbooks.PlaybookCloudwatchTask.TaskType\x12P\n\x15metric_execution_task\x18\x02 \x01(\x0b\x32/.protos.playbooks.CloudwatchMetricExecutionTaskH\x00\x12Q\n\x16\x66ilter_log_events_task\x18\x03 \x01(\x0b\x32/.protos.playbooks.CloudwatchFilterLogEventsTaskH\x00\"D\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x14\n\x10METRIC_EXECUTION\x10\x01\x12\x15\n\x11\x46ILTER_LOG_EVENTS\x10\x02\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n>protos/playbooks/source_task_definitions/cloudwatch_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\x91\x07\n\nCloudwatch\x12\x33\n\x04type\x18\x01 \x01(\x0e\x32%.protos.playbooks.Cloudwatch.TaskType\x12H\n\x10metric_execution\x18\x02 \x01(\x0b\x32,.protos.playbooks.Cloudwatch.MetricExecutionH\x00\x12I\n\x11\x66ilter_log_events\x18\x03 \x01(\x0b\x32,.protos.playbooks.Cloudwatch.FilterLogEventsH\x00\x1a\xbe\x03\n\x0fMetricExecution\x12/\n\tnamespace\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06region\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bmetric_name\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12J\n\ndimensions\x18\x04 \x03(\x0b\x32\x36.protos.playbooks.Cloudwatch.MetricExecution.Dimension\x12/\n\tstatistic\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x64\n\tDimension\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xa9\x01\n\x0f\x46ilterLogEvents\x12,\n\x06region\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0elog_group_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0c\x66ilter_query\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"D\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x14\n\x10METRIC_EXECUTION\x10\x01\x12\x15\n\x11\x46ILTER_LOG_EVENTS\x10\x02\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.cloudwatch_task_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _CLOUDWATCHMETRICEXECUTIONTASK._serialized_start=136
-  _CLOUDWATCHMETRICEXECUTIONTASK._serialized_end=599
-  _CLOUDWATCHMETRICEXECUTIONTASK_DIMENSION._serialized_start=499
-  _CLOUDWATCHMETRICEXECUTIONTASK_DIMENSION._serialized_end=599
-  _CLOUDWATCHFILTERLOGEVENTSTASK._serialized_start=602
-  _CLOUDWATCHFILTERLOGEVENTSTASK._serialized_end=785
-  _PLAYBOOKCLOUDWATCHTASK._serialized_start=788
-  _PLAYBOOKCLOUDWATCHTASK._serialized_end=1120
-  _PLAYBOOKCLOUDWATCHTASK_TASKTYPE._serialized_start=1044
-  _PLAYBOOKCLOUDWATCHTASK_TASKTYPE._serialized_end=1112
+  _CLOUDWATCH._serialized_start=117
+  _CLOUDWATCH._serialized_end=1030
+  _CLOUDWATCH_METRICEXECUTION._serialized_start=334
+  _CLOUDWATCH_METRICEXECUTION._serialized_end=780
+  _CLOUDWATCH_METRICEXECUTION_DIMENSION._serialized_start=680
+  _CLOUDWATCH_METRICEXECUTION_DIMENSION._serialized_end=780
+  _CLOUDWATCH_FILTERLOGEVENTS._serialized_start=783
+  _CLOUDWATCH_FILTERLOGEVENTS._serialized_end=952
+  _CLOUDWATCH_TASKTYPE._serialized_start=954
+  _CLOUDWATCH_TASKTYPE._serialized_end=1022
 # @@protoc_insertion_point(module_scope)

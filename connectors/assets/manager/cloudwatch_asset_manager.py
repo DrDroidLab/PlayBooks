@@ -4,28 +4,27 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
-from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
+from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto, AccountConnectorAssets, \
     ConnectorModelTypeOptions
 from protos.connectors.assets.cloudwatch_asset_pb2 import CloudwatchLogGroupAssetOptions, CloudwatchMetricAssetOptions, \
     CloudwatchAssets, CloudwatchMetricAssetModel as CloudwatchMetricAssetProto, \
     CloudwatchAssetModel as CloudwatchAssetModelProto, CloudwatchLogGroupAssetModel as CloudwatchLogGroupAssetModelProto
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
 class CloudwatchAssetManager(ConnectorAssetManager):
     def __init__(self):
-        self.connector_type = ConnectorType.CLICKHOUSE
+        self.source = Source.CLICKHOUSE
 
-    def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
-        if model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP:
+    def get_asset_model_options(self, model_type: SourceModelType, model_uid_metadata_list):
+        if model_type == SourceModelType.CLOUDWATCH_LOG_GROUP:
             all_regions = []
             for item in model_uid_metadata_list:
                 all_regions.append(item['model_uid'])
             options = CloudwatchLogGroupAssetOptions(regions=all_regions)
             return ConnectorModelTypeOptions(model_type=model_type, cloudwatch_log_group_model_options=options)
-        elif model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC:
+        elif model_type == SourceModelType.CLOUDWATCH_METRIC:
             all_namespaces = []
             for item in model_uid_metadata_list:
                 all_namespaces.append(item['model_uid'])
@@ -34,27 +33,27 @@ class CloudwatchAssetManager(ConnectorAssetManager):
         else:
             return None
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
+    def get_asset_model_values(self, account: Account, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFiltersProto, cloudwatch_models):
         which_one_of = filters.WhichOneof('filters')
-        if model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP and (
+        if model_type == SourceModelType.CLOUDWATCH_LOG_GROUP and (
                 not which_one_of or which_one_of == 'cloudwatch_log_group_model_filters'):
             options: CloudwatchLogGroupAssetOptions = filters.cloudwatch_log_group_model_filters
             filter_regions = options.regions
             cloudwatch_models = cloudwatch_models.filter(
-                model_type=ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP)
+                model_type=SourceModelType.CLOUDWATCH_LOG_GROUP)
             if filter_regions:
                 cloudwatch_models = cloudwatch_models.filter(model_uid__in=filter_regions)
-        elif model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC and (
+        elif model_type == SourceModelType.CLOUDWATCH_METRIC and (
                 not which_one_of or which_one_of == 'cloudwatch_metric_model_filters'):
             options: CloudwatchMetricAssetOptions = filters.cloudwatch_metric_model_filters
             namespaces = options.namespaces
-            cloudwatch_models = cloudwatch_models.filter(model_type=ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC)
+            cloudwatch_models = cloudwatch_models.filter(model_type=SourceModelType.CLOUDWATCH_METRIC)
             if namespaces:
                 cloudwatch_models = cloudwatch_models.filter(model_uid__in=namespaces)
         cw_asset_protos = []
         for asset in cloudwatch_models:
-            if asset.model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC:
+            if asset.model_type == SourceModelType.CLOUDWATCH_METRIC:
                 all_metrics = []
                 all_region_dimension_map: [CloudwatchMetricAssetProto.RegionDimensionMap] = []
                 for region, metric_dict in asset.metadata.items():
@@ -91,7 +90,7 @@ class CloudwatchAssetManager(ConnectorAssetManager):
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
                     cloudwatch_metric=cloudwatch_metric_proto))
-            elif asset.model_type == ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP:
+            elif asset.model_type == SourceModelType.CLOUDWATCH_LOG_GROUP:
                 for region, log_groups in asset.metadata.items():
                     cw_asset_protos.append(CloudwatchAssetModelProto(
                         id=UInt64Value(value=asset.id), connector_type=asset.connector_type,

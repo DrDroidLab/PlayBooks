@@ -8,16 +8,16 @@ from executor.playbook_task_executor import PlaybookTaskExecutor
 from protos.base_pb2 import Source, TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
-from protos.playbooks.source_task_definitions.api_call_task_pb2 import PlaybookApiCallTask
+from protos.playbooks.source_task_definitions.api_task_pb2 import Api
 
 from utils.proto_utils import proto_to_dict
 
 method_proto_string_mapping = {
-    PlaybookApiCallTask.Method.GET: "GET",
-    PlaybookApiCallTask.Method.POST: "POST",
-    PlaybookApiCallTask.Method.PUT: "PUT",
-    PlaybookApiCallTask.Method.PATCH: "PATCH",
-    PlaybookApiCallTask.Method.DELETE: "DELETE",
+    Api.HttpRequest.Method.GET: "GET",
+    Api.HttpRequest.Method.POST: "POST",
+    Api.HttpRequest.Method.PUT: "PUT",
+    Api.HttpRequest.Method.PATCH: "PATCH",
+    Api.HttpRequest.Method.DELETE: "DELETE",
 }
 
 
@@ -25,20 +25,32 @@ class ApiTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.API
-
         self.__account_id = account_id
+        self.task_type_callable_map = {
+            Api.TaskType.HTTP_REQUEST: self.execute_http_request,
+        }
 
     def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+        api_task: Api = task.api
+        task_type = api_task.type
+        task_callable = self.task_type_callable_map.get(task_type)
+        if task_callable:
+            return task_callable(time_range, global_variable_set, api_task)
+        else:
+            raise Exception(f"Unsupported task type: {task_type}")
+
+    def execute_http_request(self, time_range: TimeRange, global_variable_set: Dict,
+                             api_task: Api) -> PlaybookTaskResult:
         try:
-            api_action_task: PlaybookApiCallTask = task.api_call_task
-            method = api_action_task.method
-            url = api_action_task.url.value
+            http_request = api_task.http_request
+            method = http_request.method
+            url = http_request.url.value
             for key, value in global_variable_set.items():
                 url = url.replace(f"{{{key}}}", value)
-            headers = proto_to_dict(api_action_task.headers) if api_action_task.headers else {}
-            payload = proto_to_dict(api_action_task.payload) if api_action_task.payload else {}
-            timeout = api_action_task.timeout.value if api_action_task.timeout else 120
-            cookies = proto_to_dict(api_action_task.cookies) if api_action_task.cookies else {}
+            headers = proto_to_dict(http_request.headers) if http_request.headers else {}
+            payload = proto_to_dict(http_request.payload) if http_request.payload else {}
+            timeout = http_request.timeout.value if http_request.timeout else 120
+            cookies = proto_to_dict(http_request.cookies) if http_request.cookies else {}
 
             request_method = method_proto_string_mapping.get(method)
             request_arguments = {

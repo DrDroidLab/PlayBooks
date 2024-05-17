@@ -30,13 +30,13 @@ class GetConnectorsAssetsModelsOptionsRequest(google.protobuf.message.Message):
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     connector_type: protos.base_pb2.Source.ValueType
-    model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    model_type: protos.base_pb2.SourceModelType.ValueType
     def __init__(
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
         connector_type: protos.base_pb2.Source.ValueType = ...,
-        model_type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        model_type: protos.base_pb2.SourceModelType.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "meta", b"meta", "model_type", b"model_type"]) -> None: ...
@@ -133,7 +133,7 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     connector_type: protos.base_pb2.Source.ValueType
-    type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    type: protos.base_pb2.SourceModelType.ValueType
     @property
     def filters(self) -> protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters: ...
     def __init__(
@@ -141,7 +141,7 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
         *,
         meta: protos.base_pb2.Meta | None = ...,
         connector_type: protos.base_pb2.Source.ValueType = ...,
-        type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        type: protos.base_pb2.SourceModelType.ValueType = ...,
         filters: protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["filters", b"filters", "meta", b"meta"]) -> builtins.bool: ...
@@ -190,7 +190,7 @@ class GetConnectorsAssetsModelsV2Request(google.protobuf.message.Message):
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
     def connector(self) -> protos.connectors.connector_pb2.Connector: ...
-    type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    type: protos.base_pb2.SourceModelType.ValueType
     @property
     def filters(self) -> protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters: ...
     def __init__(
@@ -198,7 +198,7 @@ class GetConnectorsAssetsModelsV2Request(google.protobuf.message.Message):
         *,
         meta: protos.base_pb2.Meta | None = ...,
         connector: protos.connectors.connector_pb2.Connector | None = ...,
-        type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        type: protos.base_pb2.SourceModelType.ValueType = ...,
         filters: protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["connector", b"connector", "filters", b"filters", "meta", b"meta"]) -> builtins.bool: ...

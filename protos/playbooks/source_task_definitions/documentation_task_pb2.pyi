@@ -18,34 +18,50 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class PlaybookDocumentationTaskDefinition(google.protobuf.message.Message):
+class Documentation(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    class _Type:
+    class _TaskType:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PlaybookDocumentationTaskDefinition._Type.ValueType], builtins.type):  # noqa: F821
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Documentation._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: PlaybookDocumentationTaskDefinition._Type.ValueType  # 0
-        MARKDOWN: PlaybookDocumentationTaskDefinition._Type.ValueType  # 1
+        UNKNOWN: Documentation._TaskType.ValueType  # 0
+        MARKDOWN: Documentation._TaskType.ValueType  # 1
 
-    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-    UNKNOWN: PlaybookDocumentationTaskDefinition.Type.ValueType  # 0
-    MARKDOWN: PlaybookDocumentationTaskDefinition.Type.ValueType  # 1
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: Documentation.TaskType.ValueType  # 0
+    MARKDOWN: Documentation.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class Markdown(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        CONTENT_FIELD_NUMBER: builtins.int
+        @property
+        def content(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            content: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["content", b"content"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["content", b"content"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
-    DOCUMENTATION_FIELD_NUMBER: builtins.int
-    type: global___PlaybookDocumentationTaskDefinition.Type.ValueType
+    MARKDOWN_FIELD_NUMBER: builtins.int
+    type: global___Documentation.TaskType.ValueType
     @property
-    def documentation(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def markdown(self) -> global___Documentation.Markdown: ...
     def __init__(
         self,
         *,
-        type: global___PlaybookDocumentationTaskDefinition.Type.ValueType = ...,
-        documentation: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        type: global___Documentation.TaskType.ValueType = ...,
+        markdown: global___Documentation.Markdown | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["documentation", b"documentation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["documentation", b"documentation", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["markdown", b"markdown", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["markdown", b"markdown", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["markdown"] | None: ...
 
-global___PlaybookDocumentationTaskDefinition = PlaybookDocumentationTaskDefinition
+global___Documentation = Documentation

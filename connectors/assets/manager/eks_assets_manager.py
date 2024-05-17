@@ -10,10 +10,9 @@ from connectors.crud.connectors_crud import get_db_account_connectors, get_db_ac
 from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksClusterAssetModel, EksAssetModel, \
     EksAssets, RegionCluster, Cluster, Command, Namespace
-from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, AccountConnectorAssetsModelFilters, \
-    AccountConnectorAssets, ConnectorModelTypeOptions
-from protos.base_pb2 import Source, SourceKeyType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
+    ConnectorModelTypeOptions
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType as SourceModelType
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +27,10 @@ allowed_commands = [
 class EKSAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.connector_type = Source.EKS
+        self.source = Source.EKS
 
-    def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
-        if model_type == ConnectorMetadataModelTypeProto.EKS_CLUSTER:
+    def get_asset_model_options(self, model_type: SourceModelType, model_uid_metadata_list):
+        if model_type == SourceModelType.EKS_CLUSTER:
             all_region_clusters: [RegionCluster] = []
             for item in model_uid_metadata_list:
                 clusters: [Cluster] = [Cluster(name=StringValue(value=cluster)) for cluster in
@@ -43,16 +42,16 @@ class EKSAssetManager(ConnectorAssetManager):
         else:
             return None
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
+    def get_asset_model_values(self, account: Account, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFilters, eks_models):
         which_one_of = filters.WhichOneof('filters')
 
         region_cluster_filters = {}
-        if model_type == ConnectorMetadataModelTypeProto.EKS_CLUSTER and (
+        if model_type == SourceModelType.EKS_CLUSTER and (
                 not which_one_of or which_one_of == 'eks_cluster_model_filters'):
             options: EksClusterAssetOptions = filters.eks_cluster_model_filters
             filter_regions: [RegionCluster] = options.regions
-            eks_models = eks_models.filter(model_type=ConnectorMetadataModelTypeProto.EKS_CLUSTER)
+            eks_models = eks_models.filter(model_type=SourceModelType.EKS_CLUSTER)
             if filter_regions:
                 regions = []
                 for fr in filter_regions:
@@ -89,7 +88,7 @@ class EKSAssetManager(ConnectorAssetManager):
                 "EKS AWS access key, secret key, eks role arn not found for ""account: {}".format(account.id))
 
         for asset in eks_models:
-            if asset.model_type == ConnectorMetadataModelTypeProto.EKS_CLUSTER:
+            if asset.model_type == SourceModelType.EKS_CLUSTER:
                 region_name = asset.model_uid
                 filter_clusters = region_cluster_filters.get(region_name, asset.metadata['clusters']) if \
                     region_cluster_filters else asset.metadata['clusters']

@@ -1,18 +1,17 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
-class ClickhouseConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class ClickhouseSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, interface, host, port, user, password, account_id=None, connector_id=None):
         self.__ch_db_processor = ClickhouseDBProcessor(interface, host, port, user, password)
 
-        super().__init__(account_id, connector_id, ConnectorType.CLICKHOUSE)
+        super().__init__(account_id, connector_id, Source.CLICKHOUSE)
 
     def extract_database(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.CLICKHOUSE_DATABASE
+        model_type = SourceModelType.CLICKHOUSE_DATABASE
         try:
             databases = self.__ch_db_processor.fetch_databases()
         except Exception as e:

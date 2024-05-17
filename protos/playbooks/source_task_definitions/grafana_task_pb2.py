@@ -11,23 +11,22 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/source_task_definitions/grafana_task.proto\x12\x10protos.playbooks\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xdd\x04\n\x19PromQlMetricExecutionTask\x12\x37\n\x11promql_expression\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12Z\n\x1apromql_label_option_values\x18\x02 \x03(\x0b\x32\x36.protos.playbooks.PromQlMetricExecutionTask.LabelValue\x12\x33\n\rdashboard_uid\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0f\x64\x61shboard_title\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08panel_id\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bpanel_title\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\x17panel_promql_expression\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x65\n\nLabelValue\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\x9c\x02\n\x13PlaybookGrafanaTask\x12<\n\x04type\x18\x01 \x01(\x0e\x32..protos.playbooks.PlaybookGrafanaTask.TaskType\x12\x34\n\x0e\x64\x61tasource_uid\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12S\n\x1cpromql_metric_execution_task\x18\x03 \x01(\x0b\x32+.protos.playbooks.PromQlMetricExecutionTaskH\x00\"4\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1b\n\x17PROMQL_METRIC_EXECUTION\x10\x01\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/source_task_definitions/grafana_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xe3\x06\n\x07Grafana\x12\x30\n\x04type\x18\x01 \x01(\x0e\x32\".protos.playbooks.Grafana.TaskType\x12R\n\x17promql_metric_execution\x18\x03 \x01(\x0b\x32/.protos.playbooks.Grafana.PromQlMetricExecutionH\x00\x1a\x93\x05\n\x15PromQlMetricExecution\x12\x34\n\x0e\x64\x61tasource_uid\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x37\n\x11promql_expression\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12^\n\x1apromql_label_option_values\x18\x03 \x03(\x0b\x32:.protos.playbooks.Grafana.PromQlMetricExecution.LabelValue\x12\x33\n\rdashboard_uid\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0f\x64\x61shboard_title\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08panel_id\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0bpanel_title\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\x17panel_promql_expression\x18\t \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x65\n\nLabelValue\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"4\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1b\n\x17PROMQL_METRIC_EXECUTION\x10\x01\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.grafana_task_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _PROMQLMETRICEXECUTIONTASK._serialized_start=133
-  _PROMQLMETRICEXECUTIONTASK._serialized_end=738
-  _PROMQLMETRICEXECUTIONTASK_LABELVALUE._serialized_start=637
-  _PROMQLMETRICEXECUTIONTASK_LABELVALUE._serialized_end=738
-  _PLAYBOOKGRAFANATASK._serialized_start=741
-  _PLAYBOOKGRAFANATASK._serialized_end=1025
-  _PLAYBOOKGRAFANATASK_TASKTYPE._serialized_start=965
-  _PLAYBOOKGRAFANATASK_TASKTYPE._serialized_end=1017
+  _GRAFANA._serialized_start=114
+  _GRAFANA._serialized_end=981
+  _GRAFANA_PROMQLMETRICEXECUTION._serialized_start=260
+  _GRAFANA_PROMQLMETRICEXECUTION._serialized_end=919
+  _GRAFANA_PROMQLMETRICEXECUTION_LABELVALUE._serialized_start=818
+  _GRAFANA_PROMQLMETRICEXECUTION_LABELVALUE._serialized_end=919
+  _GRAFANA_TASKTYPE._serialized_start=921
+  _GRAFANA_TASKTYPE._serialized_end=973
 # @@protoc_insertion_point(module_scope)
