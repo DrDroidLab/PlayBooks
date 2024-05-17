@@ -5,9 +5,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 from connectors.models import Connector, ConnectorKey
 from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
     PlaybookDatadogTask as PlaybookDatadogTaskProto, PlaybookMetricTaskExecutionResult, \
     TimeseriesResult as TimeseriesResultProto, LabelValuePair as LabelValuePairProto
@@ -41,13 +39,13 @@ class DatadogMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         self.__dd_connector_type = dd_connector.connector_type
         for key in dd_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.DATADOG_APP_KEY:
+            if key.key_type == SourceKeyType.DATADOG_APP_KEY:
                 self.__dd_app_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.DATADOG_API_KEY:
+            elif key.key_type == SourceKeyType.DATADOG_API_KEY:
                 self.__dd_api_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.DATADOG_API_DOMAIN:
+            elif key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 self.__dd_api_domain = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN:
+            elif key.key_type == SourceKeyType.DATADOG_AUTH_TOKEN:
                 self.__dd_api_key = key.key
 
         if not self.__dd_app_key or not self.__dd_api_key:

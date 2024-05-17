@@ -1,13 +1,31 @@
-import React from 'react';
-import styles from './index.module.css';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef } from "react";
+import styles from "./index.module.css";
 
-const Overlay = props => {
-  const { children, visible } = props;
+const Overlay = (props) => {
+  const { children, visible, close } = props;
+  const overlayRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (overlayRef?.current && !overlayRef?.current?.contains(event.target)) {
+        close();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [overlayRef]);
+
   return (
     <>
       {visible && (
         <div className={styles.overlay}>
-          <div className={styles.children}>{children}</div>
+          <div ref={overlayRef} className={styles.children}>
+            {children}
+          </div>
         </div>
       )}
     </>

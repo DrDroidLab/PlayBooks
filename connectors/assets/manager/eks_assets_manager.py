@@ -12,9 +12,8 @@ from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksCl
     EksAssets, RegionCluster, Cluster, Command, Namespace
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, AccountConnectorAssetsModelFilters, \
     AccountConnectorAssets
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, \
-    ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceKeyType
+from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ allowed_commands = [
 class EKSAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.connector_type = ConnectorType.EKS
+        self.connector_type = Source.EKS
 
     def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
         if model_type == ConnectorMetadataModelTypeProto.EKS_CLUSTER:
@@ -63,7 +62,7 @@ class EKSAssetManager(ConnectorAssetManager):
                         region_cluster_filters[fr.region.value] = [cluster.name.value for cluster in fr.clusters]
                 eks_models = eks_models.filter(model_uid__in=regions)
         eks_asset_protos = []
-        eks_connectors = get_db_account_connectors(account, connector_type=ConnectorType.EKS, is_active=True)
+        eks_connectors = get_db_account_connectors(account, connector_type=Source.EKS, is_active=True)
         if not eks_connectors:
             raise Exception("Active EKS connector not found for account: {}".format(account.id))
         eks_connector = eks_connectors.first()
@@ -80,11 +79,11 @@ class EKSAssetManager(ConnectorAssetManager):
         aws_secret_key = None
         eks_role_arn = None
         for key in eks_connector_keys:
-            if key.key_type == ConnectorKeyProto.KeyType.AWS_ACCESS_KEY:
+            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 aws_access_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AWS_SECRET_KEY:
+            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 aws_secret_key = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.EKS_ROLE_ARN:
+            elif key.key_type == SourceKeyType.EKS_ROLE_ARN:
                 eks_role_arn = key.key
         if not aws_access_key or not aws_secret_key or not eks_role_arn:
             raise Exception(
