@@ -97,9 +97,7 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.GRAFANA_HOST,
             SourceKeyType.GRAFANA_API_KEY,
             SourceKeyType.SSL_VERIFY,
-        ]
-    ],
-    Source.GRAFANA: [
+        ],
         [
             SourceKeyType.GRAFANA_HOST,
             SourceKeyType.GRAFANA_API_KEY
@@ -165,9 +163,7 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID,
             SourceKeyType.SSL_VERIFY,
-        ]
-    ],
-    Source.GRAFANA_MIMIR: [
+        ],
         [
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID
