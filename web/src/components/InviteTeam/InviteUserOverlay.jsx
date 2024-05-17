@@ -58,7 +58,7 @@ const InviteUserOverlay = ({ isOpen, toggleOverlay }) => {
               <button
                 className={styles["submitButton"]}
                 onClick={toggleOverlay}>
-                Ok
+                OK
               </button>
               {/* {loading ? (
                 <CircularProgress

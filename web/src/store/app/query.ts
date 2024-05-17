@@ -57,6 +57,10 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
     }
   }
 
+  if (result.error?.status === 403) {
+    api.dispatch(showSnackbar("This action not allowed on Sandbox."));
+  }
+
   if (result?.error?.originalStatus === 502) {
     const retryCount = extraOptions?.retryCount || 0;
     if (retryCount < 3) {

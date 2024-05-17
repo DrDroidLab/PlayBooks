@@ -69,15 +69,6 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    if (!accessToken) {
-      navigate("/signup", {
-        replace: true,
-        state: { from: location.pathname },
-      });
-    }
-  }, [accessToken]);
-
-  useEffect(() => {
     const loader = document.querySelector(".loader-container");
     if (loader) {
       loader.style.display = "none";
@@ -86,12 +77,6 @@ const App = () => {
 
   return (
     <Routes>
-      <Route element={<BaseLayout />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Route>
-
-      <Route element={<RequireAuth />}>
         <Route path="/playbooks/create" element={<CreatePlaybookBeta />} />
         <Route
           path="/playbooks/:playbook_id"
@@ -105,9 +90,7 @@ const App = () => {
           path="/playbooks/edit/:playbook_id"
           element={<CreatePlaybookBeta />}
         />
-      </Route>
 
-      <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Playbooks />} />
           <Route path="/playbooks" element={<Playbooks />} />
@@ -148,7 +131,6 @@ const App = () => {
           <Route path="/invite-team" element={<InviteTeam />} />
           <Route path="/support" element={<Support />} />
         </Route>
-      </Route>
 
       <Route path="*" element={<NotFound />} />
     </Routes>

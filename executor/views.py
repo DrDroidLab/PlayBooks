@@ -29,8 +29,8 @@ from intelligence_layer.result_interpreters.result_interpreter_facade import tas
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
-from playbooks.utils.decorators import web_api, account_post_api, account_get_api, get_proto_schema_validator, \
-    deprecated
+from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, get_proto_schema_validator, deprecated
+from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, get_proto_schema_validator
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Source as ConnectorType
@@ -391,6 +391,7 @@ def playbooks_get_v2(request_message: GetPlaybooksRequestV2) -> Union[GetPlayboo
     return GetPlaybooksResponseV2(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
 
 
+@api_blocked
 @web_api(CreatePlaybookRequest)
 @deprecated
 def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:
@@ -407,6 +408,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
 
 
 @web_api(CreatePlaybookRequestV2)
+@api_blocked
 def playbooks_create_v2(request_message: CreatePlaybookRequestV2) -> Union[CreatePlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
@@ -421,6 +423,7 @@ def playbooks_create_v2(request_message: CreatePlaybookRequestV2) -> Union[Creat
     return CreatePlaybookResponseV2(success=BoolValue(value=True), playbook=playbook.proto)
 
 
+@api_blocked
 @web_api(UpdatePlaybookRequest)
 @deprecated
 def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlaybookResponse, HttpResponse]:
@@ -451,6 +454,7 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
 
 
 @web_api(UpdatePlaybookRequestV2)
+@api_blocked
 def playbooks_update_v2(request_message: UpdatePlaybookRequestV2) -> Union[UpdatePlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()

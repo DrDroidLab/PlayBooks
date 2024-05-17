@@ -12,14 +12,14 @@ from google.protobuf.wrappers_pb2 import BoolValue
 from rest_framework.decorators import authentication_classes, api_view
 
 from accounts.authentication import AccountApiTokenAuthentication
+from accounts.models import Account
 from protos.base_pb2 import ErrorMessage, Message
 from google.protobuf.message import Message as ProtoMessage
-from playbooks.threadlocal import get_current_request
+from playbooks.threadlocal import get_current_request, set_current_request_account, set_current_request_user
 from utils.error_utils import error_dict
 from utils.proto_utils import json_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
-
 
 def skip_signal():
     def _skip_signal(signal_func):
@@ -109,8 +109,6 @@ def web_api(request_schema):
         @functools.wraps(func)
         @csrf_exempt
         @api_view(['POST'])
-        @authentication_classes([JWTCookieAuthentication])
-        @login_required
         @post_proto_schema_validator(request_schema)
         def wrapper(message):
             return func(message)
@@ -133,6 +131,14 @@ def check_user_email_verified(func):
                 status=200
             )
         return func(message)
+
+    return _wrapped_view
+
+
+def api_blocked(func):
+    @functools.wraps(func)
+    def _wrapped_view(request, *args, **kwargs):
+        return HttpResponse(status=403)
 
     return _wrapped_view
 

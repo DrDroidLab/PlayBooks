@@ -96,16 +96,6 @@ function Sidebar() {
             </ListItemIcon>
             <p style={{ fontSize: "14px" }}>All Executions</p>
           </NavLink>
-          <NavLink className={activeStyle} to="/playgrounds">
-            <ListItemIcon
-              sx={{ minWidth: "44px" }}
-              onClick={(event) => handleListItemClick(event, 7)}>
-              <Terminal />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px" }} className="sample_playbooks">
-              Sample Playbooks
-            </p>
-          </NavLink>
           <NavLink className={activeStyle} to="/integrations">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
@@ -113,14 +103,6 @@ function Sidebar() {
               <DataThresholdingIcon />
             </ListItemIcon>
             <p style={{ fontSize: "14px" }}>Integrations</p>
-          </NavLink>
-          <hr></hr>
-
-          <NavLink className={activeStyle} to="/api-keys">
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <Key />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>API keys</p>
           </NavLink>
         </List>
       </div>
@@ -148,38 +130,6 @@ function Sidebar() {
           </p>
         </ListItemButton>
 
-        <NavLink to="/invite-team">
-          <ListItemButton
-            selected={selectedIndex === 3}
-            onClick={(event) => handleListItemClick(event, 3)}
-            sx={{
-              padding: 0,
-              ":hover": {
-                backgroundColor: "transparent",
-              },
-            }}>
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <GroupAddIcon />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px", width: "100%" }}>Team</p>
-          </ListItemButton>
-        </NavLink>
-
-        <NavLink>
-          <ListItemButton
-            sx={{
-              padding: 0,
-              ":hover": {
-                backgroundColor: "transparent",
-              },
-            }}
-            onClick={signOut}>
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>Logout</p>
-          </ListItemButton>
-        </NavLink>
       </List>
 
       <SlackConnectOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
