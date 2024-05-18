@@ -77,11 +77,14 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     META_FIELD_NUMBER: builtins.int
+    CONNECTOR_ID_FIELD_NUMBER: builtins.int
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     FILTERS_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     connector_type: protos.base_pb2.Source.ValueType
     type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
     @property
@@ -90,12 +93,13 @@ class GetConnectorsAssetsModelsRequest(google.protobuf.message.Message):
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
+        connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
         filters: protos.connectors.assets.asset_pb2.AccountConnectorAssetsModelFilters | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["filters", b"filters", "meta", b"meta"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "filters", b"filters", "meta", b"meta", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "filters", b"filters", "meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "connector_type", b"connector_type", "filters", b"filters", "meta", b"meta", "type", b"type"]) -> None: ...
 
 global___GetConnectorsAssetsModelsRequest = GetConnectorsAssetsModelsRequest
 
