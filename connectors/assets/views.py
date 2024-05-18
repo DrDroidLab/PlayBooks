@@ -38,12 +38,17 @@ def assets_models_options(request_message: GetConnectorsAssetsModelsOptionsReque
 def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
         Union[GetConnectorsAssetsModelsResponse, HttpResponse]:
     account: Account = get_request_account()
-    if not request_message.connector_type:
+    if not request_message.connector_type and not request_message.connector_id.value:
         return GetConnectorsAssetsModelsResponse(success=BoolValue(value=False),
                                                  message=Message(title="Invalid Request",
-                                                                 description="Missing connector_type"))
+                                                                 description="Missing connector_type/connector id"))
     try:
-        account_connector_assets = asset_manager_facade.get_asset_model_values(account, request_message.connector_type,
+        if request_message.connector_id:
+            connector = get_db_account_connectors(account, request_message.connector_id.value).first()
+            connector_type = connector.connector_type
+        else:
+            connector_type = request_message.connector_type
+        account_connector_assets = asset_manager_facade.get_asset_model_values(account, connector_type,
                                                                                request_message.type,
                                                                                request_message.filters)
     except Exception as err:
