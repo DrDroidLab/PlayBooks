@@ -126,14 +126,14 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     panel_title=StringValue(value=prom_ql_data_list[0]['metadata'].get('panel_title', '')),
                     promql_metrics=promql_metrics)
                 panel_promql_map_list.append(panel_promql_map)
-            connector_type = self.connector_type
+            connector_type = self.source
             dashboard_asset = get_db_account_connector_metadata_models(account, model_uid=dashboard,
                                                                        connector_type=connector_type,
                                                                        model_type=SourceModelType.GRAFANA_DASHBOARD,
                                                                        is_active=True).first()
             grafana_asset_protos.append(GrafanaAssetModelProto(
                 id=UInt64Value(value=dashboard_asset.id),
-                connector_type=self.connector_type,
+                connector_type=self.source,
                 type=SourceModelType.GRAFANA_TARGET_METRIC_PROMQL,
                 last_updated=int(dashboard_asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                     dashboard_asset.updated_at) else None,

@@ -34,9 +34,10 @@ message GetConnectorsAssetsModelsOptionsV2Response {
 
 message GetConnectorsAssetsModelsRequest {
   Meta meta = 1;
-  Source connector_type = 2;
-  SourceModelType type = 3;
-  AccountConnectorAssetsModelFilters filters = 4;
+  google.protobuf.UInt64Value connector_id = 2;
+  Source connector_type = 3;
+  SourceModelType type = 4;
+  AccountConnectorAssetsModelFilters filters = 5;
 }
 
 message GetConnectorsAssetsModelsResponse {
