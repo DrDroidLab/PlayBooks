@@ -8,19 +8,20 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import { CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 
-function SelectInterpreterDropdown() {
+function SelectInterpreterDropdown({ index }) {
   const { data, isFetching } = useGetBuilderOptionsQuery();
   const { steps, currentStepIndex } = useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+  const currentIndex = index ?? currentStepIndex;
+  const step = steps[currentIndex];
   const isPrefetched = useIsPrefetched();
 
   const handleInterpreterChange = (value) => {
-    updateCardByIndex("interpreter", value?.interpreter);
+    updateCardByIndex("interpreter", value?.interpreter, currentIndex);
   };
 
   useEffect(() => {
     return () => {
-      updateCardByIndex("interpreter", undefined, currentStepIndex);
+      updateCardByIndex("interpreter", undefined, currentIndex);
     };
   }, []);
 
