@@ -66,7 +66,7 @@ function Step({ step, index }) {
           </div>
           <Notes step={step} index={index} />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation />
+            <Interpretation index={index} />
           )}
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
