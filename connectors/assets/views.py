@@ -6,8 +6,9 @@ from google.protobuf.wrappers_pb2 import BoolValue
 
 from accounts.models import Account, get_request_account
 from connectors.assets.manager.asset_manager_facade import asset_manager_facade
-from connectors.crud.connectors_crud import get_db_account_connectors, trigger_connector_metadata_fetch
+from connectors.crud.connectors_crud import get_db_account_connectors
 from connectors.models import integrations_connector_type_connector_keys_map
+from connectors.utils import trigger_connector_metadata_fetch
 from playbooks.utils.decorators import web_api
 from protos.base_pb2 import Message
 from protos.connectors.assets.api_pb2 import GetConnectorsAssetsModelsOptionsRequest, \
@@ -40,7 +41,7 @@ def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
     if not request_message.connector_type and not request_message.connector_id.value:
         return GetConnectorsAssetsModelsResponse(success=BoolValue(value=False),
                                                  message=Message(title="Invalid Request",
-                                                                 description="Missing connector_type"))
+                                                                 description="Missing connector_type/connector id"))
     try:
         if request_message.connector_id.value:
             connector_id = request_message.connector_id.value

@@ -16,7 +16,7 @@ from protos import base_pb2 as protos_dot_base__pb2
 from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connector__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n,protos/connectors/assets/datadog_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"\x9d\x02\n\x18\x44\x61tadogServiceAssetModel\x12\x32\n\x0cservice_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x14\n\x0c\x65nvironments\x18\x02 \x03(\t\x12J\n\x07metrics\x18\x03 \x03(\x0b\x32\x39.protos.connectors.assets.DatadogServiceAssetModel.Metric\x1ak\n\x06Metric\x12\x33\n\rmetric_family\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06metric\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xe0\x01\n\x1a\x44\x61tadogServiceAssetOptions\x12`\n\x08services\x18\x01 \x03(\x0b\x32N.protos.connectors.assets.DatadogServiceAssetOptions.DatadogServiceAssetOption\x1a`\n\x19\x44\x61tadogServiceAssetOption\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x17\n\x0fmetric_families\x18\x02 \x03(\t\"\x90\x02\n\x11\x44\x61tadogAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12M\n\x0f\x64\x61tadog_service\x18\x05 \x01(\x0b\x32\x32.protos.connectors.assets.DatadogServiceAssetModelH\x00\x42\x07\n\x05\x61sset\"L\n\rDatadogAssets\x12;\n\x06\x61ssets\x18\x01 \x03(\x0b\x32+.protos.connectors.assets.DatadogAssetModelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n,protos/connectors/assets/datadog_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"\x9d\x02\n\x18\x44\x61tadogServiceAssetModel\x12\x32\n\x0cservice_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x14\n\x0c\x65nvironments\x18\x02 \x03(\t\x12J\n\x07metrics\x18\x03 \x03(\x0b\x32\x39.protos.connectors.assets.DatadogServiceAssetModel.Metric\x1ak\n\x06Metric\x12\x33\n\rmetric_family\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06metric\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xe0\x01\n\x1a\x44\x61tadogServiceAssetOptions\x12`\n\x08services\x18\x01 \x03(\x0b\x32N.protos.connectors.assets.DatadogServiceAssetOptions.DatadogServiceAssetOption\x1a`\n\x19\x44\x61tadogServiceAssetOption\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x17\n\x0fmetric_families\x18\x02 \x03(\t\"\xfa\x01\n\x11\x44\x61tadogAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12%\n\x04type\x18\x03 \x01(\x0e\x32\x17.protos.SourceModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12M\n\x0f\x64\x61tadog_service\x18\x05 \x01(\x0b\x32\x32.protos.connectors.assets.DatadogServiceAssetModelH\x00\x42\x07\n\x05\x61sset\"L\n\rDatadogAssets\x12;\n\x06\x61ssets\x18\x01 \x03(\x0b\x32+.protos.connectors.assets.DatadogAssetModelb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.assets.datadog_asset_pb2', globals())
@@ -32,7 +32,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _DATADOGSERVICEASSETOPTIONS_DATADOGSERVICEASSETOPTION._serialized_start=577
   _DATADOGSERVICEASSETOPTIONS_DATADOGSERVICEASSETOPTION._serialized_end=673
   _DATADOGASSETMODEL._serialized_start=676
-  _DATADOGASSETMODEL._serialized_end=948
-  _DATADOGASSETS._serialized_start=950
-  _DATADOGASSETS._serialized_end=1026
+  _DATADOGASSETMODEL._serialized_end=926
+  _DATADOGASSETS._serialized_start=928
+  _DATADOGASSETS._serialized_end=1004
 # @@protoc_insertion_point(module_scope)

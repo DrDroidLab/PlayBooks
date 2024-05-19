@@ -5,6 +5,7 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 
 import "protos/base.proto";
+import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
 
 ///////////////////// Workflow Scheduling /////////////////////
@@ -199,7 +200,6 @@ message UpdateWorkflowOp {
 }
 
 
-///////////////////// Workflow Executions Proto /////////////////////
 message WorkflowExecutionLog {
   google.protobuf.UInt64Value id = 1;
   PlaybookExecution playbook_execution = 2;
@@ -220,4 +220,28 @@ message WorkflowExecution {
   sfixed64 finished_at = 11;
   google.protobuf.StringValue created_by = 12;
   repeated WorkflowExecutionLog workflow_logs = 13;
+}
+
+
+///////////////////// Deprecated Workflow Executions Proto /////////////////////
+message DeprecatedWorkflowExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  DeprecatedPlaybookExecution playbook_execution = 2;
+  sfixed64 created_at = 3;
+}
+
+message DeprecatedWorkflowExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+  Workflow workflow = 3;
+  WorkflowExecutionStatusType status = 4;
+  sfixed64 scheduled_at = 5;
+  sfixed64 expiry_at = 6;
+  google.protobuf.UInt64Value interval = 7;
+  google.protobuf.UInt64Value total_executions = 8;
+  sfixed64 created_at = 9;
+  sfixed64 started_at = 10;
+  sfixed64 finished_at = 11;
+  google.protobuf.StringValue created_by = 12;
+  repeated DeprecatedWorkflowExecutionLog workflow_logs = 13;
 }

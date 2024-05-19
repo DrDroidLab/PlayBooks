@@ -6,19 +6,17 @@ from google.protobuf.wrappers_pb2 import StringValue
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
 from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
 from protos.base_pb2 import Source as ConnectorType, SourceKeyType
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookStepDefinition as PlaybookStepDefinitionProto
+from protos.playbooks.playbook_pb2 import PlaybookStep
 
 logger = logging.getLogger(__name__)
 
 
-def basic_step_summariser(step: PlaybookStepDefinitionProto,
-                          task_interpretations: [InterpretationProto]) -> InterpretationProto:
+def basic_step_summariser(step: PlaybookStep, task_interpretations: [InterpretationProto]) -> InterpretationProto:
     return InterpretationProto()
 
 
-def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
+def llm_chat_gpt_step_summariser(step: PlaybookStep,
                                  task_interpretations: [InterpretationProto]) -> InterpretationProto:
     if len(task_interpretations) <= 1:
         return InterpretationProto()
@@ -75,7 +73,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStepDefinitionProto,
                 })
 
         if not gpt_prompt:
-            return task_interpretations
+            return InterpretationProto()
 
         gpt_prompt.append({
             "type": "text",

@@ -7,8 +7,7 @@ from executor.crud.playbooks_crud import get_db_playbooks
 from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowAction, WorkflowEntryPointMapping, \
     WorkflowActionMapping, WorkflowPlayBookMapping
 
-from utils.time_utils import current_milli_time
-from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import proto_to_dict
@@ -55,7 +54,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     wf_entry_point_protos: [WorkflowEntryPointProto] = workflow_proto.entry_points
     wf_action_protos: [WorkflowActionProto] = workflow_proto.actions
 
-    playbooks: [PlaybookProto] = workflow_proto.playbooks
+    playbooks: [DeprecatedPlaybook] = workflow_proto.playbooks
     playbook_ids = [pb.id.value for pb in playbooks]
     db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids)
     if db_playbooks.count() != len(playbook_ids):

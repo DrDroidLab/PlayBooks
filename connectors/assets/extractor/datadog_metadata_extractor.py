@@ -1,19 +1,18 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
-class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, dd_app_key, dd_api_key, dd_api_domain='datadoghq.com', dd_connector_type=None, account_id=None,
                  connector_id=None):
         self.__dd_api_processor = DatadogApiProcessor(dd_app_key, dd_api_key, dd_api_domain, dd_connector_type)
 
-        super().__init__(account_id, connector_id, ConnectorType.DATADOG)
+        super().__init__(account_id, connector_id, Source.DATADOG)
 
     def extract_services(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_SERVICE
+        model_type = SourceModelType.DATADOG_SERVICE
         model_data = {}
         prod_env_tags = ['prod', 'production']
         for tag in prod_env_tags:
@@ -62,7 +61,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_monitor(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_MONITOR
+        model_type = SourceModelType.DATADOG_MONITOR
         model_data = {}
         try:
             monitors = self.__dd_api_processor.fetch_monitors()
@@ -79,7 +78,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboard(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_DASHBOARD
+        model_type = SourceModelType.DATADOG_DASHBOARD
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_dashboards()
@@ -104,7 +103,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_aws_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_AWS
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AWS
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_aws_integrations()
@@ -126,7 +125,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_aws_log_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_AWS_LOG
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AWS_LOG
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_aws_log_integrations()
@@ -143,7 +142,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_azure_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_AZURE
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AZURE
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_azure_integrations()
@@ -160,7 +159,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_cloudflare_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_CLOUDFLARE
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_CLOUDFLARE
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_cloudflare_integrations()
@@ -177,7 +176,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_confluent_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_CONFLUENT
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_CONFLUENT
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_confluent_integrations()
@@ -194,7 +193,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_fastly_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_FASTLY
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_FASTLY
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_fastly_integrations()
@@ -211,7 +210,7 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_active_gcp_integrations(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.DATADOG_LIVE_INTEGRATION_GCP
+        model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_GCP
         model_data = {}
         try:
             response = self.__dd_api_processor.fetch_gcp_integrations()
@@ -247,6 +246,6 @@ class DatadogConnectorMetadataExtractor(ConnectorMetadataExtractor):
             family = mt['id'].split('.')[0]
             model_data[mt['id']] = {**mt, 'tags': tags, 'family': family}
             if save_to_db:
-                self.create_or_update_model_metadata(ConnectorMetadataModelTypeProto.DATADOG_METRIC, mt['id'],
+                self.create_or_update_model_metadata(SourceModelType.DATADOG_METRIC, mt['id'],
                                                      model_data[mt['id']])
         return model_data
