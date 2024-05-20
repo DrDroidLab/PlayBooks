@@ -14,5 +14,5 @@ export const models = {
   EKS_CLUSTER: "EKS_CLUSTER",
   API: "API",
   GRAFANA_MIMIR_PROMQL: "GRAFANA_MIMIR_PROMQL",
-  BASH: "BASH",
+  BASH: "SSH_SERVER",
 };

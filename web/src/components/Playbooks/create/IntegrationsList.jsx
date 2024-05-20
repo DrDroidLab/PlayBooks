@@ -1,28 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/index.ts";
-import {
-  integrationSentenceMap,
-  integrations,
-} from "../../../utils/integrationOptions/index.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import { integrations } from "../../../utils/integrationOptions/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
 function IntegrationsList({ setIsOpen }) {
-  const { data: connectorData, isFetching: connectorLoading } =
-    useGetConnectorTypesQuery();
+  const { data, isLoading } = usePlaybookBuilderOptionsQuery();
+  const supportedTaskTypes = data?.supportedTaskTypes;
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState(connectorData || []);
+  const [items, setItems] = useState(supportedTaskTypes || []);
 
-  const search = (e) => {
+  const search = () => {
     if (!query) {
       setItems([]);
     }
-    const filteredItems = connectorData?.filter(
+    const filteredItems = supportedTaskTypes?.filter(
       (item) =>
-        item?.connector_type?.toLowerCase().includes(query) ||
-        item?.display_name?.toLowerCase().includes(query) ||
-        integrationSentenceMap[item.model_type]?.toLowerCase().includes(query),
+        item?.source?.toLowerCase().includes(query) ||
+        item?.display_name?.toLowerCase().includes(query),
     );
     setItems(filteredItems || []);
   };
@@ -31,18 +27,14 @@ function IntegrationsList({ setIsOpen }) {
     ...group,
     options: group.options
       .map((modelType) => {
-        const item = connectorData?.find(
-          (item) => item.model_type === modelType,
+        return supportedTaskTypes?.find((item) =>
+          item?.supported_model_types?.length > 0
+            ? item?.supported_model_types[0]?.model_type === modelType ||
+              item?.source === modelType
+            : item?.source === modelType,
         );
-        return item
-          ? {
-              ...item,
-              label: integrationSentenceMap[modelType],
-              model_type: modelType,
-            }
-          : { label: integrationSentenceMap[modelType], model_type: modelType };
       })
-      .filter((option) => option !== null),
+      .filter((item) => item !== undefined),
   }));
 
   useEffect(() => {
@@ -63,7 +55,7 @@ function IntegrationsList({ setIsOpen }) {
           value={query}
         />
       </div>
-      {connectorLoading && (
+      {isLoading && (
         <div className="flex items-center gap-4 text-sm">
           <CircularProgress color="primary" size={20} />
           Looking for integrations...
@@ -74,13 +66,15 @@ function IntegrationsList({ setIsOpen }) {
           items.length === 0 ? (
             <p className="text-sm">No integrations found.</p>
           ) : (
-            items.map((option, index) => (
-              <IntegrationOption
-                key={index}
-                option={option}
-                setIsOpen={setIsOpen}
-              />
-            ))
+            items.map((option, index) => {
+              return (
+                <IntegrationOption
+                  key={index}
+                  option={option}
+                  setIsOpen={setIsOpen}
+                />
+              );
+            })
           )
         ) : (
           integrationGroups.map((group) => (
