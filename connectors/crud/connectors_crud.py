@@ -117,14 +117,14 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
     db_connectors = get_db_account_connectors(account, connector_type=connector_type)
     if not connector_name and not update_mode:
         count = db_connectors.count()
-        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, connector_proto.type)}-{count + 1}'
+        connector_name = f'{integrations_connector_type_display_name_map.get(connector_proto.type, Source.Name(connector_proto.type))}-{count + 1}'
     try:
         db_connectors = db_connectors.filter(name=connector_name)
         if db_connectors.exists() and not update_mode:
             db_connector = db_connectors.first()
             if db_connector.is_active:
                 return db_connector, f'Active Connector type ' \
-                                     f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)} ' \
+                                     f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} ' \
                                      f'with name {connector_name} already exists'
             else:
                 current_millis = current_milli_time()
@@ -142,7 +142,7 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
             break
     if not all_keys_found:
         return None, f'Missing Required Connector Keys for Connector Type: ' \
-                     f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
+                     f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
 
     with dj_transaction.atomic():
         try:

@@ -52,7 +52,7 @@ def get_all_available_connectors(all_active_connectors):
     for c in all_connectors:
         all_available_connectors.append(
             ConnectorProto(type=c, display_name=StringValue(value=integrations_connector_type_display_name_map.get(c)),
-                           category=StringValue(value=integrations_connector_type_category_map.get(c))))
+                           category=StringValue(value=integrations_connector_type_category_map.get(c, Source.Name(c)))))
     return all_available_connectors
 
 
@@ -83,7 +83,7 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['nr_app_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
                 credentials_dict['nr_api_domain'] = conn_key.key.value
-    elif connector_type == Source.DATADOG:
+    elif connector_type == Source.DATADOG or connector_type == Source.DATADOG_OAUTH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.DATADOG_API_KEY:
                 credentials_dict['dd_api_key'] = conn_key.key.value
@@ -91,17 +91,8 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['dd_app_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 credentials_dict['dd_api_domain'] = conn_key.key.value
-    elif connector_type == Source.CLOUDWATCH:
-        for conn_key in connector_keys:
-            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
-                credentials_dict['aws_access_key'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
-                credentials_dict['aws_secret_key'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.AWS_REGION:
-                regions = credentials_dict.get('regions', [])
-                regions.append(conn_key.key.value)
-                credentials_dict['regions'] = regions
-    elif connector_type == Source.EKS:
+            credentials_dict['dd_connector_type'] = connector_type
+    elif connector_type == Source.CLOUDWATCH or connector_type == Source.EKS:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
@@ -202,7 +193,7 @@ def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto
                 except Exception as e:
                     logger.error(f"Exception occurred while saving task run for account: {account.id}, "
                                  f"connector_type: "
-                                 f"{integrations_connector_type_display_name_map.get(connector_type, connector_type)} "
+                                 f"{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} "
                                  f"with error: {e}")
     else:
         logger.error(f'Invalid Credentials for Connector: {connector_id}')
@@ -223,7 +214,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
             break
     if not all_keys_found:
         return False, f'Missing Required Connector Keys for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
+                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
     print('credentials_dict', credentials_dict)
     try:
@@ -263,10 +254,10 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
             connection_state = api_processor(**credentials_dict).test_connection()
         if not connection_state:
             return False, f'Error testing connection for Connector Type: ' \
-                          f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
+                          f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
     except Exception as e:
         logger.error(f'Error testing connection for Connector Type: {str(e)}')
         return False, f'Error testing connection for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)} ' \
+                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} ' \
                       f'with error: {str(e)}'
     return True, 'Source Connection Successful'

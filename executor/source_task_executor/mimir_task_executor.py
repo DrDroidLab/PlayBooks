@@ -3,63 +3,37 @@ from typing import Dict
 
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
 from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from protos.base_pb2 import SourceKeyType, TimeRange
+from protos.base_pb2 import TimeRange
 from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.promql_task_pb2 import PromQl
 
 
-class MimirTaskExecutor(PlaybookTaskExecutor):
+class MimirSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.GRAFANA_MIMIR
-        self.__account_id = account_id
+        self.task_proto = PromQl
         self.task_type_callable_map = {
-            PromQl.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution
+            PromQl.TaskType.PROMQL_METRIC_EXECUTION: {
+                'display_name': 'PromQL Metric Execution',
+                'task_type': 'PROMQL_METRIC_EXECUTION',
+                'model_types': [],
+                'executor': self.execute_promql_metric_execution
+            },
         }
 
-        try:
-            mimir_connector = Connector.objects.get(account_id=account_id,
-                                                    connector_type=Source.GRAFANA_MIMIR,
-                                                    is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("Active Mimir connector not found for account: {}".format(account_id))
-        if not mimir_connector:
-            raise Exception("Active Mimir connector not found for account: {}".format(account_id))
+    def get_connector_processor(self, grafana_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+        return MimirApiProcessor(**generated_credentials)
 
-        mimir_connector_keys = ConnectorKey.objects.filter(connector_id=mimir_connector.id,
-                                                           account_id=account_id,
-                                                           is_active=True)
-        if not mimir_connector_keys:
-            raise Exception("Active Mimir connector keys not found for account: {}".format(account_id))
-
-        for key in mimir_connector_keys:
-            if key.key_type == SourceKeyType.MIMIR_HOST:
-                self.__mimir_host = key.key
-            if key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
-                self.__x_scope_org_id = key.key
-
-        if not self.__mimir_host or not self.__x_scope_org_id:
-            raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        grafana_mimir_task = task.grafana_mimir
-        task_type = grafana_mimir_task.type
-        if task_type in self.task_type_callable_map:
-            try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, grafana_mimir_task)
-            except Exception as e:
-                raise Exception(f"Error while executing Mimir task: {e}")
-        else:
-            raise Exception(f"Task type {task_type} not supported")
-
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                        mimir_task: PromQl) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, mimir_task: PromQl,
+                                        mimir_connector: ConnectorProto) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         tr_start_time = time_range.time_geq
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
@@ -81,13 +55,12 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        mimir_api_processor = MimirApiProcessor(self.__mimir_host, self.__x_scope_org_id)
+        mimir_api_processor = self.get_connector_processor(mimir_connector)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "
-            "-> {}, End_Time -> {}, Period -> {}".format(
-                "Mimir", self.__account_id, promql_metric_query, start_time, end_time, period
-            ), flush=True)
+            "-> {}, End_Time -> {}, Period -> {}".format("Mimir", mimir_connector.account_id.value, promql_metric_query,
+                                                         start_time, end_time, period), flush=True)
 
         response = mimir_api_processor.fetch_promql_metric_timeseries(promql_metric_query,
                                                                       start_time, end_time, period)

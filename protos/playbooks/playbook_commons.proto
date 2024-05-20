@@ -93,3 +93,26 @@ message PlaybookTaskResult {
     BashCommandOutputResult bash_command_output = 104;
   }
 }
+
+message PlaybookSourceOptions {
+  message ConnectorOption {
+    google.protobuf.UInt64Value connector_id = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+
+  message TaskTypeOption {
+    message SourceModelTypeMap {
+      SourceModelType model_type = 1;
+      google.protobuf.StringValue display_name = 2;
+    }
+
+    google.protobuf.StringValue display_name = 1;
+    google.protobuf.StringValue task_type = 2;
+    repeated SourceModelTypeMap supported_model_types = 3;
+  }
+
+  Source source = 1;
+  google.protobuf.StringValue display_name = 2;
+  repeated TaskTypeOption supported_task_type_options = 3;
+  repeated ConnectorOption connector_options = 4;
+}

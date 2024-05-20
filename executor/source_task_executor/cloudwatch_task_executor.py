@@ -4,68 +4,46 @@ from typing import Dict
 import pytz
 from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
 
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from protos.base_pb2 import TimeRange, Source, SourceKeyType
+from protos.base_pb2 import TimeRange, Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
 
 
-class CloudwatchTaskExecutor(PlaybookTaskExecutor):
+class CloudwatchSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.CLOUDWATCH
+        self.task_proto = Cloudwatch
         self.task_type_callable_map = {
-            Cloudwatch.TaskType.METRIC_EXECUTION: self.execute_metric_execution,
-            Cloudwatch.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events
+            Cloudwatch.TaskType.METRIC_EXECUTION: {
+                'display_name': 'Cloudwatch Metrics',
+                'task_type': 'METRIC_EXECUTION',
+                'model_types': [SourceModelType.CLOUDWATCH_METRIC],
+                'executor': self.execute_metric_execution
+            },
+            Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
+                'display_name': 'Cloudwatch Logs',
+                'task_type': 'FILTER_LOG_EVENTS',
+                'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
+                'executor': self.execute_filter_log_events
+            },
         }
 
-        self.__account_id = account_id
+    def get_connector_processor(self, cloudwatch_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(cloudwatch_connector.type, cloudwatch_connector.keys)
+        if 'regions' in generated_credentials:
+            generated_credentials.pop('regions', None)
+        generated_credentials['region'] = kwargs.get('region')
+        generated_credentials['client_type'] = kwargs.get('client_type')
+        return AWSBoto3ApiProcessor(**generated_credentials)
 
-        try:
-            cloudwatch_connector = Connector.objects.get(account_id=account_id,
-                                                         connector_type=Source.CLOUDWATCH,
-                                                         is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("Cloudwatch connector not found")
-        if not cloudwatch_connector:
-            raise Exception("Cloudwatch connector not found")
-
-        cloudwatch_connector_key = ConnectorKey.objects.filter(connector_id=cloudwatch_connector.id,
-                                                               account_id=account_id,
-                                                               is_active=True)
-        if not cloudwatch_connector_key:
-            raise Exception("Cloudwatch connector key not found")
-
-        self.__aws_session_token = None
-        for key in cloudwatch_connector_key:
-            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
-                self.__aws_access_key = key.key
-            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
-                self.__aws_secret_key = key.key
-
-        if not self.__aws_access_key or not self.__aws_secret_key:
-            raise Exception("AWS credentials not found")
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        try:
-            cloudwatch_task: Cloudwatch = task.cloudwatch
-            task_type = cloudwatch_task.type
-            if task_type in self.task_type_callable_map:
-                try:
-                    return self.task_type_callable_map[task_type](time_range, global_variable_set, cloudwatch_task)
-                except Exception as e:
-                    raise Exception(f"Error while executing Cloudwatch task: {e}")
-            else:
-                raise Exception(f"Task type {task_type} not supported")
-        except Exception as e:
-            raise Exception(f"Error while executing Cloudwatch task: {e}")
-
-    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                 cloudwatch_task: Cloudwatch) -> PlaybookTaskResult:
+    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, cloudwatch_task: Cloudwatch,
+                                 cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
         tr_end_time = time_range.time_lt
         end_time = datetime.utcfromtimestamp(tr_end_time)
@@ -87,15 +65,14 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
         for td in task_dimensions:
             dimensions.append({'Name': td.name.value, 'Value': td.value.value})
 
-        cloudwatch_boto3_processor = AWSBoto3ApiProcessor('cloudwatch', region, self.__aws_access_key,
-                                                          self.__aws_secret_key, self.__aws_session_token)
+        cloudwatch_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
+                                                                  client_type='cloudwatch')
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Region -> {}, Namespace -> {}, Metric -> {}, Start_Time "
             "-> {}, End_Time -> {}, Period -> {}, Statistic -> {}, Dimensions -> {}".format(
-                "Cloudwatch_Metrics", self.__account_id, region, namespace, metric_name, start_time, end_time, period,
-                statistic, dimensions
-            ), flush=True)
+                "Cloudwatch_Metrics", cloudwatch_connector.account_id.value, region, namespace, metric_name, start_time,
+                end_time, period, statistic, dimensions), flush=True)
 
         response = cloudwatch_boto3_processor.cloudwatch_get_metric_statistics(namespace, metric_name,
                                                                                start_time, end_time,
@@ -138,9 +115,10 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
 
         return task_result
 
-    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict,
-                                  cloudwatch_task: Cloudwatch) -> PlaybookTaskResult:
+    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict, cloudwatch_task: Cloudwatch,
+                                  cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
+
         tr_end_time = time_range.time_lt
         end_time = int(tr_end_time * 1000)
         tr_start_time = time_range.time_geq
@@ -153,13 +131,13 @@ class CloudwatchTaskExecutor(PlaybookTaskExecutor):
         for key, value in global_variable_set.items():
             query_pattern = query_pattern.replace(key, str(value))
 
-        logs_boto3_processor = AWSBoto3ApiProcessor('logs', region, self.__aws_access_key,
-                                                    self.__aws_secret_key, self.__aws_session_token)
+        logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
+                                                            client_type='logs')
 
         print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Region -> {}, Log_Group -> {}, Query -> "
-              "{}, Start_Time -> {}, End_Time -> {}".format(
-            "Cloudwatch_Logs", self.__account_id, region, log_group, query_pattern, start_time, end_time
-        ), flush=True)
+              "{}, Start_Time -> {}, End_Time -> {}".format("Cloudwatch_Logs", cloudwatch_connector.account_id.value,
+                                                            region, log_group, query_pattern, start_time, end_time),
+              flush=True)
 
         response = logs_boto3_processor.logs_filter_events(log_group, query_pattern, start_time, end_time)
         if not response:

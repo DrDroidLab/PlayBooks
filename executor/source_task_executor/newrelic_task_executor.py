@@ -5,13 +5,13 @@ from typing import Dict
 import pytz
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
 from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from protos.base_pb2 import TimeRange, Source, SourceKeyType
+from protos.base_pb2 import TimeRange, Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.new_relic_task_pb2 import NewRelic
 
 
@@ -23,58 +23,39 @@ def get_nrql_expression_result_alias(nrql_expression):
     return 'result'
 
 
-class NewRelicTaskExecutor(PlaybookTaskExecutor):
+class NewRelicSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.NEW_RELIC
-        self.__account_id = account_id
+        self.task_proto = NewRelic
         self.task_type_callable_map = {
-            NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: self.execute_entity_application_golden_metric_execution,
-            NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: self.execute_entity_dashboard_widget_nrql_metric_execution,
-            NewRelic.TaskType.NRQL_METRIC_EXECUTION: self.execute_nrql_metric_execution
+            NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: {
+                'display_name': 'Entity Application Golden Metric Execution',
+                'task_type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
+                'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
+                'executor': self.execute_entity_application_golden_metric_execution
+            },
+            NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
+                'display_name': 'Entity Dashboard Widget NRQL Metric Execution',
+                'task_type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
+                'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
+                'executor': self.execute_entity_dashboard_widget_nrql_metric_execution
+            },
+            NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
+                'display_name': 'NRQL Metric Execution',
+                'task_type': 'NRQL_METRIC_EXECUTION',
+                'model_types': [],
+                'executor': self.execute_nrql_metric_execution
+            },
         }
 
-        try:
-            nr_connector = Connector.objects.get(account_id=account_id,
-                                                 connector_type=Source.NEW_RELIC,
-                                                 is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("New Relic connector not found for account: " + account_id)
-        if not nr_connector:
-            raise Exception("New Relic connector not found for account: " + account_id)
-
-        nr_connector_keys = ConnectorKey.objects.filter(connector_id=nr_connector.id,
-                                                        account_id=account_id,
-                                                        is_active=True)
-        if not nr_connector_keys:
-            raise Exception("New Relic connector key not found for account: " + account_id)
-
-        for key in nr_connector_keys:
-            if key.key_type == SourceKeyType.NEWRELIC_API_KEY:
-                self.__nr_api_key = key.key
-            elif key.key_type == SourceKeyType.NEWRELIC_APP_ID:
-                self.__nr_app_id = key.key
-            elif key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
-                self.__nr_api_domain = key.key
-
-        if not self.__nr_api_key or not self.__nr_app_id:
-            raise Exception("New Relic credentials not found for account: " + account_id)
-        if not self.__nr_api_domain:
-            self.__nr_api_domain = 'api.newrelic.com'
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        nr_task: NewRelic = task.new_relic
-        task_type = nr_task.type
-        if task_type in self.task_type_callable_map:
-            try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, nr_task)
-            except Exception as e:
-                raise Exception(f"Error while executing New Relic task: {e}")
-        else:
-            raise Exception(f"Task type {task_type} not supported")
+    def get_connector_processor(self, grafana_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+        return NewRelicGraphQlConnector(**generated_credentials)
 
     def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                                           nr_task: NewRelic) -> PlaybookTaskResult:
+                                                           nr_task: NewRelic,
+                                                           nr_connector: ConnectorProto) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
         task = nr_task.entity_application_golden_metric_execution
@@ -97,12 +78,11 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
         result_alias = get_nrql_expression_result_alias(nrql_expression)
 
-        nr_gql_processor = NewRelicGraphQlConnector(self.__nr_api_key, self.__nr_app_id, self.__nr_api_domain)
+        nr_gql_processor = self.get_connector_processor(nr_connector)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Nrql_Expression -> {}".format(
-                "NewRelic", self.__account_id, nrql_expression
-            ), flush=True)
+                "NewRelic", nr_connector.account_id.value, nrql_expression), flush=True)
 
         response = nr_gql_processor.execute_nrql_query(nrql_expression)
         if not response or 'results' not in response:
@@ -141,7 +121,8 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
     def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange,
                                                               global_variable_set: Dict,
-                                                              nr_task: NewRelic) -> PlaybookTaskResult:
+                                                              nr_task: NewRelic,
+                                                              nr_connector: ConnectorProto) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
         task = nr_task.entity_dashboard_widget_nrql_metric_execution
@@ -165,7 +146,7 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
             total_seconds = (time_until - time_since)
             nrql_expression = nrql_expression + f' SINCE {total_seconds} SECONDS AGO'
 
-        nr_gql_processor = NewRelicGraphQlConnector(self.__nr_api_key, self.__nr_app_id, self.__nr_api_domain)
+        nr_gql_processor = self.get_connector_processor(nr_connector)
         response = nr_gql_processor.execute_nrql_query(nrql_expression)
         if not response:
             raise Exception("No data returned from New Relic")
@@ -233,8 +214,8 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
 
         return task_result
 
-    def execute_nrql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                      nr_task: NewRelic) -> PlaybookTaskResult:
+    def execute_nrql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, nr_task: NewRelic,
+                                      nr_connector: ConnectorProto) -> PlaybookTaskResult:
         task_result = PlaybookTaskResult()
 
         task = nr_task.nrql_metric_execution
@@ -260,7 +241,7 @@ class NewRelicTaskExecutor(PlaybookTaskExecutor):
             total_seconds = (time_until - time_since)
             nrql_expression = nrql_expression + f' SINCE {total_seconds} SECONDS AGO'
 
-        nr_gql_processor = NewRelicGraphQlConnector(self.__nr_api_key, self.__nr_app_id, self.__nr_api_domain)
+        nr_gql_processor = self.get_connector_processor(nr_connector)
         response = nr_gql_processor.execute_nrql_query(nrql_expression)
         if not response:
             raise Exception("No data returned from New Relic")

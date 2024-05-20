@@ -10,41 +10,42 @@ logger = logging.getLogger(__name__)
 class NewRelicGraphQlConnector(object):
 
     def __init__(self, nr_api_key, nr_app_id, nr_api_domain=None):
-        try:
-            if nr_api_domain is None:
-                nr_api_domain = "api.newrelic.com"
-            self.__nr_api_key = nr_api_key
-            self.__nr_account_id = nr_app_id
-            self.__nr_api_domain = nr_api_domain
+        if nr_api_domain is None:
+            nr_api_domain = "api.newrelic.com"
+        self.__nr_api_key = nr_api_key
+        self.nr_account_id = nr_app_id
+        self.nr_api_domain = nr_api_domain
 
+    def get_connection(self):
+        try:
             headers = {
                 "Api-Key": self.__nr_api_key,
                 "Content-Type": "application/json",
             }
 
-            graphql_endpoint = "https://{}/graphql".format(self.__nr_api_domain)
+            graphql_endpoint = "https://{}/graphql".format(self.nr_api_domain)
             transport = RequestsHTTPTransport(url=graphql_endpoint, use_json=True, headers=headers, verify=True,
                                               retries=3)
 
             # Create a GraphQL client
-            self.client = Client(transport=transport, fetch_schema_from_transport=False)
-
+            client = Client(transport=transport, fetch_schema_from_transport=False)
+            return client
         except Exception as e:
             logger.error(f"Exception occurred while creating NewRelic client with error: {e}")
-            raise Exception(
-                "NewRelic connection failed for nr account: {} with error: {}".format(self.__nr_account_id, e))
+            raise e
 
     def test_connection(self):
         query = gql(f"""{{
                             actor {{
-                                account(id: {self.__nr_account_id}) {{
+                                account(id: {self.nr_account_id}) {{
                                     name
                                 }}
                             }}
                         }}""")
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {})
                 if output:
@@ -56,7 +57,7 @@ class NewRelicGraphQlConnector(object):
     def create_r2d2_webhook_destination(self, drd_api_token):
         mutation = gql(f"""mutation {{
                             aiNotificationsCreateDestination(
-                                accountId: {self.__nr_account_id}
+                                accountId: {self.nr_account_id}
                                 destination: {{auth: {{token: {{token: "{drd_api_token}"}}, type: TOKEN}}, name: "Doctor Droid", properties: [{{displayValue: "", key: "url", value: "https://app.drdroid.io/connectors/integrations/handlers/newrelic/r2d2/handle_alert"}},{{key: "two_way_integration", value: "true"}}], type: WEBHOOK}}
                             ) {{
                                 destination {{
@@ -66,7 +67,8 @@ class NewRelicGraphQlConnector(object):
                             }}
                         }}""")
 
-        result = self.client.execute(mutation)
+        client = self.get_connection()
+        result = client.execute(mutation)
         if result:
             try:
                 output = result.get('data', {}).get('aiNotificationsCreateDestination', {})
@@ -80,7 +82,7 @@ class NewRelicGraphQlConnector(object):
         query = gql(f"""
                     {{
                         actor {{
-                            account(id: {self.__nr_account_id}) {{
+                            account(id: {self.nr_account_id}) {{
                                 aiIssues {{
                                     issues(filter: {{ids: \"{issue_id}\" }}) {{
                                         issues {{
@@ -97,7 +99,8 @@ class NewRelicGraphQlConnector(object):
                 """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('aiIssues', {}).get('issues', {}).get('issues',
                                                                                                               [])
@@ -111,7 +114,7 @@ class NewRelicGraphQlConnector(object):
         query = gql(f"""
                     {{
                         actor {{
-                            account(id: {self.__nr_account_id}) {{
+                            account(id: {self.nr_account_id}) {{
                                 aiIssues {{
                                     incidents(filter: {{ids: \"{incident_id}\" }}) {{
                                         incidents {{
@@ -128,7 +131,8 @@ class NewRelicGraphQlConnector(object):
                 """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('aiIssues', {}).get('incidents', {}).get(
                     'incidents', [])
@@ -142,7 +146,7 @@ class NewRelicGraphQlConnector(object):
         query = gql(f"""
                     {{
                         actor {{
-                            account(id: {self.__nr_account_id}) {{
+                            account(id: {self.nr_account_id}) {{
                                 alerts {{
                                     nrqlCondition(id: {condition_id}) {{
                                           name
@@ -160,7 +164,8 @@ class NewRelicGraphQlConnector(object):
                 """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('alerts', {}).get('nrqlCondition', {})
                 return output
@@ -173,7 +178,7 @@ class NewRelicGraphQlConnector(object):
         query = gql(f"""
                     {{
                         actor {{
-                            account(id: {self.__nr_account_id}) {{
+                            account(id: {self.nr_account_id}) {{
                                 alerts {{
                                     policy(id: {policy_id}) {{
                                       incidentPreference
@@ -186,7 +191,8 @@ class NewRelicGraphQlConnector(object):
                 """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('alerts', {}).get('policy', {})
                 return output
@@ -212,7 +218,8 @@ class NewRelicGraphQlConnector(object):
                 """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('entity', {})
                 return output
@@ -314,7 +321,8 @@ class NewRelicGraphQlConnector(object):
         """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('entity', {})
                 return output
@@ -326,7 +334,7 @@ class NewRelicGraphQlConnector(object):
     def execute_nrql_query(self, query):
         query = gql(f"""{{
                                 actor {{
-                                    account(id: {self.__nr_account_id}) {{
+                                    account(id: {self.nr_account_id}) {{
                                         nrql(query: "{query}") {{
                                             metadata {{
                                                 eventTypes
@@ -353,7 +361,8 @@ class NewRelicGraphQlConnector(object):
                         """)
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('nrql', {})
                 return output
@@ -366,7 +375,7 @@ class NewRelicGraphQlConnector(object):
             cursor = f'"{cursor}"'
         query = gql(f"""{{
                             actor {{
-                                account(id: {self.__nr_account_id}) {{
+                                account(id: {self.nr_account_id}) {{
                                     alerts {{
                                         policiesSearch(cursor: {cursor}) {{
                                             nextCursor
@@ -383,7 +392,8 @@ class NewRelicGraphQlConnector(object):
                     }}""")
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('alerts', {}).get('policiesSearch', {})
                 return output
@@ -397,7 +407,7 @@ class NewRelicGraphQlConnector(object):
             cursor = f'"{cursor}"'
         query = gql(f"""{{
                             actor {{
-                                account(id: {self.__nr_account_id}) {{
+                                account(id: {self.nr_account_id}) {{
                                     alerts {{
                                         nrqlConditionsSearch(cursor: {cursor}) {{
                                             nextCursor
@@ -460,7 +470,8 @@ class NewRelicGraphQlConnector(object):
                         }}""")
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('account', {}).get('alerts', {}).get('nrqlConditionsSearch', {})
                 return output
@@ -633,7 +644,8 @@ class NewRelicGraphQlConnector(object):
                 }}""")
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('entitySearch', {})
                 return output
@@ -828,7 +840,8 @@ class NewRelicGraphQlConnector(object):
                         }}""")
 
         try:
-            result = self.client.execute(query)
+            client = self.get_connection()
+            result = client.execute(query)
             if result:
                 output = result.get('actor', {}).get('entities', {})
                 return output

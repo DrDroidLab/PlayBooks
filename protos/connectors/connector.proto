@@ -15,15 +15,16 @@ message PeriodicRunStatus {
 
 message Connector {
   google.protobuf.UInt64Value id = 1;
-  Source type = 2;
-  google.protobuf.BoolValue is_active = 3;
-  google.protobuf.StringValue name = 4;
-  google.protobuf.StringValue created_by = 5;
-  sfixed64 created_at = 6;
-  sfixed64 updated_at = 7;
-  google.protobuf.StringValue display_name = 8;
-  google.protobuf.StringValue category = 9;
-  repeated ConnectorKey keys = 10;
+  google.protobuf.UInt64Value account_id = 2;
+  Source type = 3;
+  google.protobuf.BoolValue is_active = 4;
+  google.protobuf.StringValue name = 5;
+  google.protobuf.StringValue created_by = 6;
+  sfixed64 created_at = 7;
+  sfixed64 updated_at = 8;
+  google.protobuf.StringValue display_name = 9;
+  google.protobuf.StringValue category = 10;
+  repeated ConnectorKey keys = 11;
 }
 
 message ConnectorKey {

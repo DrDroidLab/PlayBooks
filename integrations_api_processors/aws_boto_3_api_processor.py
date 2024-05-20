@@ -64,31 +64,35 @@ def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn
 
 
 class AWSBoto3ApiProcessor:
-    client = None
-
     def __init__(self, client_type, region, aws_access_key, aws_secret_key, aws_session_token=None):
-        self.__aws_access_key_id = aws_access_key
-        self.__aws_secret_access_key = aws_secret_key
-        self.__client_type = client_type
+        self.client_type = client_type
+        self.__aws_access_key = aws_access_key
+        self.__aws_secret_key = aws_secret_key
+        self.region = region
+        self.__aws_session_token = aws_session_token
+
+    def get_connection(self):
         try:
-            self.__client = boto3.client(client_type, aws_access_key_id=aws_access_key,
-                                         aws_secret_access_key=aws_secret_key, region_name=region,
-                                         aws_session_token=aws_session_token)
+            client = boto3.client(self.client_type, aws_access_key_id=self.__aws_access_key,
+                                  aws_secret_access_key=self.__aws_secret_key, region_name=self.region,
+                                  aws_session_token=self.__aws_session_token)
+            return client
         except Exception as e:
             logger.error(f"Exception occurred while creating boto3 client with error: {e}")
             raise e
 
     def test_connection(self):
         try:
-            if self.__client_type == 'eks':
+            if self.client_type == 'eks':
                 clusters = self.eks_list_clusters()
                 print("Connection to Amazon EKS successful.")
                 return True
-            elif self.__client_type == 'cloudwatch':
-                response = self.__client.list_metrics()
+            elif self.client_type == 'cloudwatch':
+                client = self.get_connection()
+                response = client.list_metrics()
                 print("Connection to Amazon CloudWatch successful.")
                 return True
-            elif self.__client_type == 'logs':
+            elif self.client_type == 'logs':
                 log_groups = self.logs_describe_log_groups()
                 print("Connection to Amazon CloudWatch Logs successful.")
                 return True
@@ -98,7 +102,8 @@ class AWSBoto3ApiProcessor:
 
     def cloudwatch_describe_alarms(self, alarm_names):
         try:
-            response = self.__client.describe_alarms(AlarmNames=alarm_names)
+            client = self.get_connection()
+            response = client.describe_alarms(AlarmNames=alarm_names)
             if response['ResponseMetadata']['HTTPStatusCode'] == 200 and response['MetricAlarms']:
                 return response['MetricAlarms']
             else:
@@ -111,7 +116,8 @@ class AWSBoto3ApiProcessor:
     def cloudwatch_list_metrics(self):
         try:
             all_metrics = []
-            paginator = self.__client.get_paginator('list_metrics')
+            client = self.get_connection()
+            paginator = client.get_paginator('list_metrics')
             for response in paginator.paginate():
                 metrics = response['Metrics']
                 all_metrics.extend(metrics)
@@ -122,7 +128,8 @@ class AWSBoto3ApiProcessor:
 
     def cloudwatch_get_metric_statistics(self, namespace, metric, start_time, end_time, period, statistics, dimensions):
         try:
-            response = self.__client.get_metric_statistics(
+            client = self.get_connection()
+            response = client.get_metric_statistics(
                 Namespace=namespace,
                 MetricName=metric,
                 StartTime=start_time,
@@ -139,7 +146,8 @@ class AWSBoto3ApiProcessor:
 
     def logs_describe_log_groups(self):
         try:
-            paginator = self.__client.get_paginator('describe_log_groups')
+            client = self.get_connection()
+            paginator = client.get_paginator('describe_log_groups')
             log_groups = []
             for page in paginator.paginate():
                 for log_group in page['logGroups']:
@@ -151,7 +159,8 @@ class AWSBoto3ApiProcessor:
 
     def logs_filter_events(self, log_group, query_pattern, start_time, end_time):
         try:
-            start_query_response = self.__client.start_query(
+            client = self.get_connection()
+            start_query_response = client.start_query(
                 logGroupName=log_group,
                 startTime=start_time,
                 endTime=end_time,
@@ -164,13 +173,13 @@ class AWSBoto3ApiProcessor:
             query_start_time = current_milli_time()
             while status == 'Running' or status == 'Scheduled':
                 print("Waiting for query to complete...")
-                response = self.__client.get_query_results(queryId=query_id)
+                response = client.get_query_results(queryId=query_id)
                 status = response['status']
                 if status == 'Complete':
                     return response['results']
                 elif current_milli_time() - query_start_time > 60000:
                     print("Query took too long to complete. Aborting...")
-                    stop_query_response = self.__client.stop_query(queryId=query_id)
+                    stop_query_response = client.stop_query(queryId=query_id)
                     print(f"Query stopped with response: {stop_query_response}")
                     return None
             return None
@@ -180,7 +189,8 @@ class AWSBoto3ApiProcessor:
 
     def eks_list_clusters(self):
         try:
-            clusters = self.__client.list_clusters()['clusters']
+            client = self.get_connection()
+            clusters = client.list_clusters()['clusters']
             return clusters
         except Exception as e:
             logger.error(f"Exception occurred while fetching EKS clusters with error: {e}")
@@ -188,7 +198,8 @@ class AWSBoto3ApiProcessor:
 
     def eks_describe_cluster(self, cluster_name):
         try:
-            cluster_details = self.__client.describe_cluster(name=cluster_name)['cluster']
+            client = self.get_connection()
+            cluster_details = client.describe_cluster(name=cluster_name)['cluster']
             return cluster_details
         except Exception as e:
             logger.error(f"Exception occurred while fetching EKS clusters with error: {e}")
