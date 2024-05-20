@@ -43,9 +43,14 @@ def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
                                                  message=Message(title="Invalid Request",
                                                                  description="Missing connector_type/connector id"))
     try:
-        if request_message.connector_id:
-            connector = get_db_account_connectors(account, request_message.connector_id.value).first()
-            connector_type = connector.connector_type
+        if request_message.connector_id.value:
+            connector_id = request_message.connector_id.value
+            connector = get_db_account_connectors(account, connector_id)
+            if not connector.exists() or not connector:
+                return GetConnectorsAssetsModelsResponse(success=BoolValue(value=False),
+                                                         message=Message(title="Invalid Request",
+                                                                         description="Connector not found"))
+            connector_type = connector.first().connector_type
         else:
             connector_type = request_message.connector_type
         account_connector_assets = asset_manager_facade.get_asset_model_values(account, connector_type,

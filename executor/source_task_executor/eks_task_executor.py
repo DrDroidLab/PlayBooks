@@ -10,7 +10,7 @@ from connectors.models import Connector, ConnectorKey
 from executor.playbook_task_executor import PlaybookTaskExecutor
 from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.base_pb2 import Source, SourceKeyType, TimeRange
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.eks_task_pb2 import Eks
 
@@ -108,7 +108,7 @@ class EksTaskExecutor(PlaybookTaskExecutor):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
             table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows)
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResult.Type.TABLE_RESULT, table=table)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get pods in eks: {e}")
         except Exception as e:
@@ -159,7 +159,7 @@ class EksTaskExecutor(PlaybookTaskExecutor):
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
             table = TableResult(raw_query=StringValue(value='Get Deployments'), rows=table_rows)
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResult.Type.TABLE_RESULT, table=table)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
         except Exception as e:
@@ -209,7 +209,7 @@ class EksTaskExecutor(PlaybookTaskExecutor):
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows)
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResult.Type.TABLE_RESULT, table=table)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get events in eks: {e}")
         except Exception as e:
@@ -258,7 +258,7 @@ class EksTaskExecutor(PlaybookTaskExecutor):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
             table = TableResult(raw_query=StringValue(value='Get Services'), rows=table_rows)
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResult.Type.TABLE_RESULT, table=table)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get services in eks: {e}")
         except Exception as e:
