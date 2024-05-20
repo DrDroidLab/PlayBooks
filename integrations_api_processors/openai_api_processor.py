@@ -10,11 +10,11 @@ class OpenAiApiProcessor:
 
     def __init__(self, open_ai_api_key):
         self.__open_ai_api_key = open_ai_api_key
-        self.client = OpenAI(api_key=open_ai_api_key)
 
     def chat_completions_create(self, model, response_format, messages):
         try:
-            response = self.client.chat.completions.create(
+            client = OpenAI(api_key=self.__open_ai_api_key)
+            response = client.chat.completions.create(
                 model=model,
                 response_format=response_format,
                 messages=messages

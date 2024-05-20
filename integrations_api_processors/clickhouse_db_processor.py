@@ -6,27 +6,30 @@ logger = logging.getLogger(__name__)
 
 
 class ClickhouseDBProcessor:
-    client = None
-
     def __init__(self, interface, host, port, user, password, database=None):
-        config = {
+        self.config = {
             'interface': interface,
             'host': host,
-            'port': int(port),
+            'port': port,
             'user': user,
             'password': password,
             'database': database
         }
+
+    def get_connection(self):
         try:
-            self.__client = clickhouse_connect.get_client(**config)
+            client = clickhouse_connect.get_client(**self.config)
+            return client
         except Exception as e:
-            logger.error(f"Exception occurred while connecting to clickhouse with error: {e}")
+            logger.error(f"Exception occurred while creating clickhouse connection with error: {e}")
             raise e
 
     def test_connection(self):
         try:
+            client = self.get_connection()
             query = 'SELECT 1'
-            result = self.__client.query(query)
+            result = client.query(query)
+            client.close()
             if result:
                 return True
             return False
@@ -37,10 +40,12 @@ class ClickhouseDBProcessor:
     def fetch_databases(self):
         try:
             db_databases = []
-            databases = self.__client.query('SHOW DATABASES')
+            client = self.get_connection()
+            databases = client.query('SHOW DATABASES')
             for database in databases.result_set:
                 if database[0] not in ['system', 'INFORMATION_SCHEMA', 'information_schema']:
                     db_databases.append(database[0])
+            client.close()
             return db_databases
         except Exception as e:
             logger.error(f"Exception occurred while fetching clickhouse databases with error: {e}")
@@ -49,12 +54,14 @@ class ClickhouseDBProcessor:
     def fetch_tables(self, databases: []):
         try:
             database_tables = {}
+            client = self.get_connection()
             for database in databases:
-                tables = self.__client.query(f'SHOW TABLES FROM {database}')
+                tables = client.query(f'SHOW TABLES FROM {database}')
                 db_tables = []
                 for table in tables.result_set:
                     db_tables.append(table[0])
                 database_tables[database] = db_tables
+            client.close()
             return database_tables
         except Exception as e:
             logger.error(f"Exception occurred while fetching clickhouse tables with error: {e}")
@@ -63,11 +70,12 @@ class ClickhouseDBProcessor:
     def fetch_table_details(self, database_table_details):
         try:
             database_table_metadata = {}
+            client = self.get_connection()
             for database, tables in database_table_details.items():
                 database_tables = []
                 for table in tables:
                     table_details = {}
-                    details = self.__client.query(f'DESCRIBE TABLE {database}.{table}')
+                    details = client.query(f'DESCRIBE TABLE {database}.{table}')
                     columns = details.column_names
                     db_columns = []
                     for row in details.result_set:
@@ -83,6 +91,7 @@ class ClickhouseDBProcessor:
                     for table, columns in db_tables.items():
                         database_table_metadata_dict[table] = columns
                 database_table_metadata[database] = database_table_metadata_dict
+            client.close()
             return database_table_metadata
         except Exception as e:
             logger.error(f"Exception occurred while fetching clickhouse table details with error: {e}")
@@ -90,7 +99,9 @@ class ClickhouseDBProcessor:
 
     def get_query_result(self, query):
         try:
-            result = self.__client.query(query)
+            client = self.get_connection()
+            result = client.query(query)
+            client.close()
             return result
         except Exception as e:
             logger.error(f"Exception occurred while fetching clickhouse query result with error: {e}")

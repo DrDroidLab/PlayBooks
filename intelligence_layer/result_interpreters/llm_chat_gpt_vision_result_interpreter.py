@@ -10,7 +10,7 @@ from intelligence_layer.result_interpreters.result_interpreter import ResultInte
 from intelligence_layer.utils import generate_graph_for_metric_timeseries_result
 
 from media.utils import generate_local_image_path
-from protos.base_pb2 import Source as ConnectorType, SourceKeyType
+from protos.base_pb2 import Source as ConnectorType, SourceKeyType, Source
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType, \
     Interpretation
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TimeseriesResult
@@ -118,7 +118,8 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
                 metric_expression = timeseries_result.metric_expression.value
                 metric_expression = metric_expression.replace('`', '')
                 metric_name = timeseries_result.metric_name.value
-                metric_source = integrations_connector_type_display_name_map.get(task_result.source, 'Metric Source')
+                metric_source = integrations_connector_type_display_name_map.get(task_result.source,
+                                                                                 Source.Name(task_result.source))
                 object_url = generate_graph_for_metric_timeseries_result(timeseries_result, file_key, metric_expression)
                 if not object_url:
                     return Interpretation()

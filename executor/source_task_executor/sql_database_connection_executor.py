@@ -1,65 +1,35 @@
 from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
-from protos.base_pb2 import Source, SourceKeyType, TimeRange
+from protos.base_pb2 import Source, TimeRange
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
 
 
-class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
+class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.SQL_DATABASE_CONNECTION
-        self.__account_id = account_id
+        self.task_proto = SqlDataFetch
         self.task_type_callable_map = {
-            SqlDataFetch.TaskType.SQL_QUERY: self.execute_sql_query
+            SqlDataFetch.TaskType.SQL_QUERY: {
+                'display_name': 'SQL Query',
+                'task_type': 'SQL_QUERY',
+                'model_types': [],
+                'executor': self.execute_sql_query
+            },
         }
 
-        try:
-            sql_database_connector = Connector.objects.get(account_id=account_id,
-                                                           connector_type=Source.SQL_DATABASE_CONNECTION,
-                                                           is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("Active SQL Database connector not found for account: {}".format(account_id))
-        if not sql_database_connector:
-            raise Exception("Active SQL Database connector not found for account: {}".format(account_id))
-
-        sql_database_connector_keys = ConnectorKey.objects.filter(connector_id=sql_database_connector.id,
-                                                                  account_id=account_id,
-                                                                  is_active=True)
-        if not sql_database_connector_keys:
-            raise Exception("Active SQL Database connector keys not found for account: {}".format(account_id))
-
-        for key in sql_database_connector_keys:
-            if key.key_type == SourceKeyType.SQL_DATABASE_CONNECTION_STRING_URI:
-                self.__connection_string = key.key
-
-        if not self.__connection_string:
-            raise Exception("SQL Database connection string not found for account: {}".format(account_id))
-
-        try:
-            self.client = DBConnectionStringProcessor(self.__connection_string)
-            self.client.test_connection()
-        except Exception as e:
-            raise Exception(f"Error while connecting to SQL Database: {e}")
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        sql_database_connection: SqlDataFetch = task.sql_database_connection
-        task_type = sql_database_connection.type
-        if task_type in self.task_type_callable_map:
-            try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, sql_database_connection)
-            except Exception as e:
-                raise Exception(f"Error while executing SQL Database task: {e}")
-        else:
-            raise Exception(f"Task type {task_type} not supported")
+    def get_connector_processor(self, sql_database_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(sql_database_connector.type, sql_database_connector.keys)
+        return DBConnectionStringProcessor(**generated_credentials)
 
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
-                          sql_data_fetch_task: SqlDataFetch) -> PlaybookTaskResult:
+                          sql_data_fetch_task: SqlDataFetch, sql_db_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             sql_query = sql_data_fetch_task.sql_query
             order_by_column = sql_query.order_by_column.value
@@ -81,15 +51,16 @@ class SqlDatabaseConnectionTaskExecutor(PlaybookTaskExecutor):
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
 
-            count_result = self.client.get_query_result(count_query).fetchone()[0]
+            sql_db_processor = self.get_connector_processor(sql_db_connector)
+            count_result = sql_db_processor.get_query_result(count_query).fetchone()[0]
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
-                "SQL Database", self.__account_id, query), flush=True)
+                "SQL Database", sql_db_connector.account_id.value, query), flush=True)
 
-            query_result = self.client.get_query_result(query).fetchall()
+            query_result = sql_db_processor.get_query_result(query).fetchall()
 
             table_rows: [TableResult.TableRow] = []
-            col_names = list(self.client.get_query_result(query).keys())
+            col_names = list(query_result.keys())
             for row in query_result:
                 table_columns = []
                 for i, value in enumerate(row):

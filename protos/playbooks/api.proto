@@ -9,6 +9,7 @@ import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
 import "protos/playbooks/workflow.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
+import "protos/playbooks/playbook_commons.proto";
 
 
 ///////////////////// PlayBooks Run APIs /////////////////////
@@ -326,16 +327,9 @@ message PlaybooksBuilderOptionsResponse {
     google.protobuf.StringValue display_name = 2;
   }
 
-  message ConnectorOptions {
-    Source connector_type = 1;
-    google.protobuf.UInt64Value connector_id = 2;
-    google.protobuf.StringValue display_name = 3;
-    repeated google.protobuf.StringValue supported_task_types = 4;
-  }
-
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
   repeated InterpreterTypeOption interpreter_types = 4;
-  repeated ConnectorOptions connector_options = 5;
+  repeated PlaybookSourceOptions source_options = 5;
 }

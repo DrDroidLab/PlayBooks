@@ -18,9 +18,19 @@ class PostgresDBProcessor:
             'port': port
         }
 
+    def get_connection(self):
+        try:
+            if 'database' not in self.config:
+                raise Exception("Database name is required to connect to postgres")
+            client = psycopg2.connect(**self.config)
+            return client
+        except Exception as e:
+            logger.error(f"Exception occurred while testing postgres connection with error: {e}")
+            raise e
+
     def test_connection(self):
         try:
-            client = psycopg2.connect(**self.config)
+            client = self.get_connection()
             cursor = client.cursor()
             cursor.execute("SELECT 1")
             cursor.close()
@@ -33,7 +43,7 @@ class PostgresDBProcessor:
     def fetch_databases(self):
         try:
             all_databases = []
-            client = psycopg2.connect(**self.config)
+            client = self.get_connection()
             cursor = client.cursor()
             cursor.execute("SELECT datname FROM pg_database WHERE datistemplate = false;")
             databases = cursor.fetchall()
@@ -51,9 +61,7 @@ class PostgresDBProcessor:
             database_metadata = {}
             for db_name in databases:
                 try:
-                    client_config = self.config
-                    client_config['database'] = db_name
-                    client = psycopg2.connect(**client_config)
+                    client = self.get_connection()
                     cursor = client.cursor(cursor_factory=extras.DictCursor)
                     cursor.execute(
                         f"SELECT table_name FROM information_schema.tables WHERE table_catalog='{db_name}' AND table_schema='public';")
@@ -88,12 +96,23 @@ class PostgresDBProcessor:
 
     def get_query_result(self, query):
         try:
-            if 'database' not in self.config:
-                raise Exception("Database not provided in the config")
-            client = psycopg2.connect(**self.config)
+            client = self.get_connection()
             cursor = client.cursor(cursor_factory=extras.DictCursor)
             cursor.execute(query)
             result = cursor.fetchall()
+            cursor.close()
+            client.close()
+            return result
+        except Exception as e:
+            logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
+            raise e
+
+    def get_query_result_fetch_one(self, query):
+        try:
+            client = self.get_connection()
+            cursor = client.cursor(cursor_factory=extras.DictCursor)
+            cursor.execute(query)
+            result = cursor.fetchone()[0]
             cursor.close()
             client.close()
             return result

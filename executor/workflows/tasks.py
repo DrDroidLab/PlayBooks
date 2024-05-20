@@ -9,7 +9,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.task_executor_facade import executor_facade
+from executor.playbook_source_facade import playbook_source_facade
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor import action_executor
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
@@ -266,7 +266,7 @@ def test_workflow_notification(account_id, workflow, message_type):
             tasks = step.tasks
             pe_logs = []
             for task_proto in tasks:
-                task_result = executor_facade.execute_task(account.id, tr, global_variable_set, task_proto)
+                task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set, task_proto)
                 playbook_execution_log = PlaybookTaskExecutionLogProto(task=task_proto, result=task_result)
                 pe_logs.append(playbook_execution_log)
             step_execution_log = PlaybookStepExecutionLogProto(step=step, task_execution_logs=pe_logs)

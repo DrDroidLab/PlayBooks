@@ -3,63 +3,36 @@ from typing import Dict
 
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
 from integrations_api_processors.vpc_api_processor import VpcApiProcessor
-from protos.base_pb2 import TimeRange, Source, SourceKeyType
+from protos.base_pb2 import TimeRange, Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
 
 
-class GrafanaVpcTaskExecutor(PlaybookTaskExecutor):
+class GrafanaVpcSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.GRAFANA_VPC
+        self.task_proto = Grafana
         self.task_type_callable_map = {
-            Grafana.TaskType.PROMQL_METRIC_EXECUTION: self.execute_promql_metric_execution
+            Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
+                'display_name': 'PromQL Metric Execution',
+                'task_type': 'PROMQL_METRIC_EXECUTION',
+                'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+                'executor': self.execute_promql_metric_execution
+            },
         }
 
-        self.__account_id = account_id
+    def get_connector_processor(self, grafana_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+        return VpcApiProcessor(**generated_credentials)
 
-        try:
-            agent_proxy_connector = Connector.objects.get(account_id=account_id,
-                                                          connector_type=Source.AGENT_PROXY,
-                                                          is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("Active Grafana Agent Proxy not found for account: {}".format(account_id))
-        if not agent_proxy_connector:
-            raise Exception("Active Grafana Agent Proxy not found for account: {}".format(account_id))
-
-        grafana_connector_keys = ConnectorKey.objects.filter(connector_id=agent_proxy_connector.id,
-                                                             account_id=account_id,
-                                                             is_active=True)
-        if not grafana_connector_keys:
-            raise Exception("Active Grafana Agent Proxy keys not found for account: {}".format(account_id))
-
-        for key in grafana_connector_keys:
-            if key.key_type == SourceKeyType.AGENT_PROXY_API_KEY:
-                self.__api_key = key.key
-            elif key.key_type == SourceKeyType.AGENT_PROXY_HOST:
-                self.__host = key.key
-
-        if not self.__api_key or not self.__host:
-            raise Exception("Grafana Agent Proxy API key or host not found for account: {}".format(account_id))
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        grafana_task: Grafana = task.grafana
-        task_type = grafana_task.type
-        if task_type in self.task_type_callable_map:
-            try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, grafana_task)
-            except Exception as e:
-                raise Exception(f"Error while executing Grafana task: {e}")
-        else:
-            raise Exception(f"Task type {task_type} not supported")
-
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                        grafana_task: Grafana) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, grafana_task: Grafana,
+                                        vpc_connector: ConnectorProto) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         tr_start_time = time_range.time_geq
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
@@ -83,13 +56,12 @@ class GrafanaVpcTaskExecutor(PlaybookTaskExecutor):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        grafana_api_processor = VpcApiProcessor(self.__host, self.__api_key)
+        grafana_api_processor = self.get_connector_processor(vpc_connector)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
-            "-> {}, End_Time -> {}, Period -> {}".format(
-                "Grafana", self.__account_id, datasource_uid, promql_metric_query, start_time, end_time, period
-            ), flush=True)
+            "-> {}, End_Time -> {}, Period -> {}".format("Grafana", vpc_connector.account_id.value, datasource_uid,
+                                                         promql_metric_query, start_time, end_time, period), flush=True)
 
         path = 'api/datasources/proxy/uid/{}/api/v1/query_range?query={}&start={}&end={}&step={}'.format(
             datasource_uid, promql_metric_query, start_time, end_time, period)

@@ -1,66 +1,37 @@
 from typing import Dict
 
-import clickhouse_connect
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
-from connectors.models import Connector, ConnectorKey
-from executor.playbook_task_executor import PlaybookTaskExecutor
-from protos.base_pb2 import Source, SourceKeyType, TimeRange
+from connectors.utils import generate_credentials_dict
+from executor.playbook_source_manager import PlaybookSourceManager
+from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
+from protos.base_pb2 import Source, TimeRange, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
 
 
-class ClickhouseTaskExecutor(PlaybookTaskExecutor):
+class ClickhouseSourceManager(PlaybookSourceManager):
 
-    def __init__(self, account_id):
+    def __init__(self):
         self.source = Source.CLICKHOUSE
-        self.__account_id = account_id
+        self.task_proto = SqlDataFetch
         self.task_type_callable_map = {
-            SqlDataFetch.TaskType.SQL_QUERY: self.execute_sql_query
+            SqlDataFetch.TaskType.SQL_QUERY: {
+                'display_name': 'SQL Query',
+                'task_type': 'SQL_QUERY',
+                'model_types': [SourceModelType.CLICKHOUSE_DATABASE],
+                'executor': self.execute_sql_query
+            },
         }
 
-        try:
-            clickhouse_connector = Connector.objects.get(account_id=account_id,
-                                                         connector_type=Source.CLICKHOUSE,
-                                                         is_active=True)
-        except Connector.DoesNotExist:
-            raise Exception("Active Clickhouse connector not found for account: {}".format(account_id))
-        if not clickhouse_connector:
-            raise Exception("Active Clickhouse connector not found for account: {}".format(account_id))
-
-        clickhouse_connector_keys = ConnectorKey.objects.filter(connector_id=clickhouse_connector.id,
-                                                                account_id=account_id,
-                                                                is_active=True)
-        if not clickhouse_connector_keys:
-            raise Exception("Active Clickhouse connector keys not found for account: {}".format(account_id))
-
-        for key in clickhouse_connector_keys:
-            if key.key_type == SourceKeyType.CLICKHOUSE_HOST:
-                self.__host = key.key
-            elif key.key_type == SourceKeyType.CLICKHOUSE_PORT:
-                self.__port = key.key
-            elif key.key_type == SourceKeyType.CLICKHOUSE_USER:
-                self.__user = key.key
-            elif key.key_type == SourceKeyType.CLICKHOUSE_PASSWORD:
-                self.__password = key.key
-            elif key.key_type == SourceKeyType.CLICKHOUSE_INTERFACE:
-                self.__interface = key.key
-
-        if not self.__host or not self.__port or not self.__user or not self.__password:
-            raise Exception("Clickhouse host, port, user or password not found for account: {}".format(account_id))
-
-    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
-        clickhouse_task: SqlDataFetch = task.clickhouse
-        task_type = clickhouse_task.type
-        task_callable = self.task_type_callable_map.get(task_type)
-        if task_callable:
-            return task_callable(time_range, global_variable_set, clickhouse_task)
-        else:
-            raise Exception(f"Unsupported task type: {task_type}")
+    def get_connector_processor(self, clickhouse_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(clickhouse_connector.type, clickhouse_connector.keys)
+        generated_credentials['database'] = kwargs.get('database')
+        return ClickhouseDBProcessor(**generated_credentials)
 
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
-                          clickhouse_task: SqlDataFetch) -> PlaybookTaskResult:
+                          clickhouse_task: SqlDataFetch, clickhouse_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             sql_query = clickhouse_task.sql_query
             order_by_column = sql_query.order_by_column.value
@@ -82,22 +53,15 @@ class ClickhouseTaskExecutor(PlaybookTaskExecutor):
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
             database = sql_query.database.value
-            config = {
-                'interface': self.__interface,
-                'host': self.__host,
-                'port': int(self.__port),
-                'user': self.__user,
-                'password': self.__password,
-                'database': database
-            }
-            query_client = clickhouse_connect.get_client(**config)
-            count_result = query_client.query(count_query)
+
+            query_client = self.get_connector_processor(clickhouse_connector, database=database)
+
+            count_result = query_client.get_query_result(count_query)
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
-                "Clickhouse", self.__account_id, query
-            ), flush=True)
+                "Clickhouse", clickhouse_connector.account_id.value, query), flush=True)
 
-            result = query_client.query(query)
+            result = query_client.get_query_result(query)
             columns = result.column_names
             table_rows: [TableResult.TableRow] = []
             for row in result.result_set:
