@@ -45,9 +45,14 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                 for workflow_playbook_mapping in all_workflow_playbook_mappings:
                     workflow_playbook_mapping.is_active = False
                     workflow_playbook_mapping.save(update_fields=['is_active'])
+                all_playbook_step_task_connector_mappings = elem.playbooksteptaskconnectormapping_set.all()
+                for mapping in all_playbook_step_task_connector_mappings:
+                    mapping.is_active = False
+                    mapping.save(update_fields=['is_active'])
                 random_generated_str = str(uuid.uuid4())
                 elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
                 elem.save(update_fields=['is_active', 'name'])
+
         except Exception as ex:
             logger.exception(f"Error occurred updating playbook status for {elem.name}, {ex}")
             raise Exception(f"Error occurred updating playbook status for {elem.name}")
@@ -60,6 +65,10 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
         try:
             all_playbook_step_mappings = elem.playbookstepmapping_set.all()
             for mapping in all_playbook_step_mappings:
+                mapping.is_active = False
+                mapping.save(update_fields=['is_active'])
+            all_playbook_step_task_connector_mappings = elem.playbooksteptaskconnectormapping_set.all()
+            for mapping in all_playbook_step_task_connector_mappings:
                 mapping.is_active = False
                 mapping.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook

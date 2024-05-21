@@ -51,7 +51,14 @@ class PlaybookSourceManager:
     def execute_task(self, account_id, time_range: TimeRange, global_variable_set: Dict,
                      task: PlaybookTask) -> PlaybookTaskResult:
         try:
-            all_active_valid_connectors = self.get_active_connectors(account_id=account_id)
+            if task.task_connector_sources:
+                # TODO: Handle multiple connectors in future
+                task_connector_source = task.task_connector_sources[0]
+                connector_id = task_connector_source.id.value
+                all_active_valid_connectors = self.get_active_connectors(account_id=account_id,
+                                                                         connector_id=connector_id)
+            else:
+                all_active_valid_connectors = self.get_active_connectors(account_id=account_id)
             source_connector_proto: ConnectorProto = all_active_valid_connectors[0] if len(
                 all_active_valid_connectors) > 0 else None
 

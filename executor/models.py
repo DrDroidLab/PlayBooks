@@ -206,11 +206,13 @@ class PlayBook(models.Model):
                 )
                 all_playbook_step_task_connectors = all_playbook_step_task_connectors.select_related('connector')
                 all_playbook_step_task_connectors = all_playbook_step_task_connectors.values('connector_id',
-                                                                                             'connector__name')
+                                                                                             'connector__name',
+                                                                                             'connector__connector_type')
                 connector_source: [PlaybookTaskProto.PlaybookTaskConnectorSource] = []
                 for connector in all_playbook_step_task_connectors:
                     connector_source.append(
                         PlaybookTaskProto.PlaybookTaskConnectorSource(id=UInt64Value(value=connector['connector_id']),
+                                                                      source=connector['connector__connector_type'],
                                                                       name=StringValue(
                                                                           value=connector['connector__name'])))
                 t.task_connector_sources.extend(connector_source)
