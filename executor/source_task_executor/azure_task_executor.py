@@ -2,25 +2,26 @@ import logging
 from datetime import timedelta
 from typing import Dict
 
-from google.protobuf.wrappers_pb2 import StringValue
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from connectors.models import Connector, ConnectorKey
-from executor.metric_task_executor.playbook_metric_task_executor import PlaybookMetricTaskExecutor
+
+from executor.playbook_task_executor import PlaybookTaskExecutor
 from integrations_api_processors.azure_api_processor import AzureApiProcessor
-from protos.base_pb2 import TimeRange, Source
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
-from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition as PlaybookMetricTaskDefinitionProto, \
-    PlaybookAzureTask as PlaybookAzureTaskProto, PlaybookMetricTaskExecutionResult, TableResult as TableResultProto
+from protos.base_pb2 import TimeRange, Source, SourceKeyType
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
+from protos.playbooks.playbook_pb2 import PlaybookTask
+from protos.playbooks.source_task_definitions.azure_task_pb2 import Azure
 
 logger = logging.getLogger(__name__)
 
 
-class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
+class AzureTaskExecutor(PlaybookTaskExecutor):
 
     def __init__(self, account_id):
         self.source = Source.AZURE
         self.task_type_callable_map = {
-            PlaybookAzureTaskProto.TaskType.FILTER_LOG_EVENTS: self.execute_filter_log_events_task
+            Azure.TaskType.FILTER_LOG_EVENTS: self.filter_log_events
         }
 
         self.__account_id = account_id
@@ -41,39 +42,41 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
             raise Exception("Azure connector key not found")
 
         for key in azure_connector_key:
-            if key.key_type == ConnectorKeyProto.KeyType.AZURE_CLIENT_ID:
+            if key.key_type == SourceKeyType.AZURE_CLIENT_ID:
                 self.__azure_client_id = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AZURE_CLIENT_SECRET:
+            elif key.key_type == SourceKeyType.AZURE_CLIENT_SECRET:
                 self.__azure_client_secret = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AZURE_TENANT_ID:
+            elif key.key_type == SourceKeyType.AZURE_TENANT_ID:
                 self.__azure_tenant_id = key.key
-            elif key.key_type == ConnectorKeyProto.KeyType.AZURE_SUBSCRIPTION_ID:
+            elif key.key_type == SourceKeyType.AZURE_SUBSCRIPTION_ID:
                 self.__azure_subscription_id = key.key
 
         if not self.__azure_client_id or not self.__azure_client_secret or not self.__azure_tenant_id or \
                 not self.__azure_subscription_id:
             raise Exception("Azure credentials not found")
 
-    def execute(self, time_range: TimeRange, global_variable_set: Dict,
-                task: PlaybookMetricTaskDefinitionProto) -> PlaybookMetricTaskExecutionResult:
-        azure_task = task.azure_task
-        task_type = azure_task.type
-        if task_type in self.task_type_callable_map:
-            try:
-                return self.task_type_callable_map[task_type](time_range, global_variable_set, azure_task)
-            except Exception as e:
-                raise Exception(f"Error while executing Azure task: {e}")
-        else:
-            raise Exception(f"Task type {task_type} not supported")
+    def execute(self, time_range: TimeRange, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+        try:
+            azure_task: Azure = task.azure
+            task_type = azure_task.type
+            if task_type in self.task_type_callable_map:
+                try:
+                    return self.task_type_callable_map[task_type](time_range, global_variable_set, azure_task)
+                except Exception as e:
+                    raise Exception(f"Error while executing Azure task: {e}")
+            else:
+                raise Exception(f"Task type {task_type} not supported")
+        except Exception as e:
+            raise Exception(f"Error while executing Azure task: {e}")
 
-    def execute_filter_log_events_task(self, time_range: TimeRange, global_variable_set: Dict,
-                                       azure_task: PlaybookAzureTaskProto) -> PlaybookMetricTaskExecutionResult:
+    def filter_log_events(self, time_range: TimeRange, global_variable_set: Dict,
+                          azure_task: Azure) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         end_time = int(tr_end_time * 1000)
         tr_start_time = time_range.time_geq
         start_time = int(tr_start_time * 1000)
 
-        task = azure_task.filter_log_events_task
+        task: Azure.FilterLogEvents = azure_task.filter_log_events
         workspace_id = task.workspace_id.value
         timespan_delta = task.timespan.value
         timespan = timedelta(seconds=int(timespan_delta)) if timespan_delta else timedelta(
@@ -89,28 +92,25 @@ class AzureMetricTaskExecutor(PlaybookMetricTaskExecutor):
 
         response = azure_api_processor.query_log_analytics(workspace_id, query_pattern, timespan=timespan)
         if not response:
-            raise Exception("No data returned from Cloudwatch Logs")
+            raise Exception("No data returned from Azure Analytics workspace Logs")
 
-        table_rows: [TableResultProto.TableRow] = []
+        table_rows: [TableResult.TableRow] = []
         for table, rows in response.items():
-            table_columns: [TableResultProto.TableRow.TableColumn] = []
+            table_columns: [TableResult.TableRow.TableColumn] = []
             for i in rows:
                 for key, value in i.items():
                     table_column_name = f'{table}.{key}'
-                    table_column = TableResultProto.TableColumn(
+                    table_column = TableResult.TableColumn(
                         name=StringValue(value=table_column_name), value=StringValue(value=str(value)))
                     table_columns.append(table_column)
-            table_row = TableResultProto.TableRow(columns=table_columns)
+            table_row = TableResult.TableRow(columns=table_columns)
             table_rows.append(table_row)
 
-        result = PlaybookMetricTaskExecutionResult.Result(
-            type=PlaybookMetricTaskExecutionResult.Result.Type.TABLE_RESULT,
-            table_result=TableResultProto(rows=table_rows))
+        result = TableResult(
+            raw_query=StringValue(value=query_pattern),
+            rows=table_rows,
+            total_count=UInt64Value(value=len(table_rows)),
+        )
 
-        task_execution_result = PlaybookMetricTaskExecutionResult(
-            metric_source=Source.AZURE,
-            metric_expression=StringValue(value=query_pattern),
-            metric_name=StringValue(value='log_analytics_events'),
-            result=result)
-
-        return task_execution_result
+        task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=result, source=self.source)
+        return task_result

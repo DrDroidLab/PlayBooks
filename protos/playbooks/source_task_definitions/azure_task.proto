@@ -18,6 +18,6 @@ message Azure {
 
   TaskType type = 1;
   oneof task {
-    FilterLogEvents filter_log_events_task = 2;
+    FilterLogEvents filter_log_events = 2;
   }
 }
