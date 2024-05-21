@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
-import { integrations } from "../../../utils/integrationOptions/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
 function IntegrationsList({ setIsOpen }) {
@@ -23,19 +22,19 @@ function IntegrationsList({ setIsOpen }) {
     setItems(filteredItems || []);
   };
 
-  const integrationGroups = integrations.map((group) => ({
-    ...group,
-    options: group.options
-      .map((modelType) => {
-        return supportedTaskTypes?.find((item) =>
-          item?.supported_model_types?.length > 0
-            ? item?.supported_model_types[0]?.model_type === modelType ||
-              item?.source === modelType
-            : item?.source === modelType,
-        );
-      })
-      .filter((item) => item !== undefined),
-  }));
+  const integrationGroups = supportedTaskTypes?.reduce((groups, item) => {
+    const category = item.category ?? "Others";
+    const group = groups[category];
+    if (group) {
+      group.options.push(item);
+    } else {
+      groups[category] = {
+        category: category,
+        options: [item],
+      };
+    }
+    return groups;
+  }, {});
 
   useEffect(() => {
     if (query) {
@@ -77,14 +76,14 @@ function IntegrationsList({ setIsOpen }) {
             })
           )
         ) : (
-          integrationGroups.map((group) => (
-            <div key={group.id}>
-              <p className="font-bold text-sm mb-1">{group.label}</p>
+          Object.keys(integrationGroups ?? {})?.map((group) => (
+            <div key={group}>
+              <p className="font-bold text-sm mb-1">{group}</p>
               <div className="flex flex-col gap-2">
-                {group.options.length === 0 && (
+                {integrationGroups[group].options.length === 0 && (
                   <p className="text-xs">No integrations yet.</p>
                 )}
-                {group.options.map((option, index) => (
+                {integrationGroups[group].options.map((option, index) => (
                   <IntegrationOption
                     key={index}
                     option={option}

@@ -15,6 +15,7 @@ function IntegrationOption({ option, setIsOpen }) {
               ? option.supported_model_types[0].model_type
               : option.source,
           key: option.id,
+          description: option.display_name,
         }),
       );
       setIsOpen(false);
@@ -42,7 +43,9 @@ function IntegrationOption({ option, setIsOpen }) {
                     <p className="text-xs font-bold text-gray-500">{data.source}</p>
                     <p className="font-semibold">{data.display_name}</p>
                   </div> */}
-      <p className="text-sm">{option?.display_name}</p>
+      <p className="text-sm">
+        {option?.display_name ?? `${option?.source} ${option?.task_type}`}
+      </p>
     </div>
   );
 }

@@ -195,6 +195,7 @@ const playbookSlice = createSlice({
           selectedSource: payload.key,
           description:
             state?.steps[index]?.description ??
+            payload.description ??
             integrationSentenceMap[payload.modelType],
           notes: state?.steps[index]?.notes,
           assets: [],
