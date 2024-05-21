@@ -1,4 +1,4 @@
-import { models } from "../constants/index.ts";
+import { taskTypes } from "../constants/index.ts";
 import * as Builders from "./builders/index.ts";
 import handleModelOptions from "./handleModelOptions.ts";
 
@@ -15,22 +15,22 @@ export enum OptionType {
 export const constructBuilder = (task: any, index) => {
   if (!(task?.modelTypeOptions?.length > 0)) {
     switch (task.modelType) {
-      case models.NEW_RELIC_NRQL:
+      case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
         return Builders.newRelicNRQLBuilder(task, index);
 
-      case models.DATADOG_QUERY:
+      case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
         return Builders.datadogRawQueryBuilder(task, index);
 
-      case models.API:
+      case taskTypes.API_HTTP_REQUEST:
         return Builders.apiBuilder(task, index);
 
-      case models.SQL_DATABASE_CONNECTION:
+      case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
         return Builders.sqlRawQueryBuilder(task, index);
 
-      case models.GRAFANA_MIMIR_PROMQL:
+      case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
         return Builders.mimirBuilder(task, index);
-        
-      case models.BASH:
+
+      case taskTypes.BASH_COMMAND:
         return Builders.bashBuilder(task, index);
 
       default:
@@ -47,36 +47,42 @@ export const constructBuilder = (task: any, index) => {
     task.modelType.toLowerCase(),
   );
 
-  switch (task.modelType) {
-    case models.CLICKHOUSE:
+  switch (`${task.source} ${task.taskType}`) {
+    case taskTypes.CLICKHOUSE_SQL_QUERY:
       return Builders.clickhouseBuilder(task, index, ops?.databases);
-    case models.CLOUDWATCH_LOG_GROUP:
+    case taskTypes.CLOUDWATCH_LOG_GROUP:
       return Builders.cloudwatchLogGroupBuilder(task, index, ops?.regions);
-    case models.CLOUDWATCH_METRIC:
+    case taskTypes.CLOUDWATCH_METRIC:
       return Builders.cloudwatchMetricBuilder(task, index, ops?.namespaces);
-    case models.DATADOG:
+    case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       return Builders.datadogBuilder(task, index, ops?.services);
-    case models.GRAFANA:
+    case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
       return Builders.grafanaBuilder(task, index, ops?.dashboards);
-    case models.NEW_RELIC_NRQL:
+    case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return Builders.newRelicNRQLBuilder(task, index);
-    case models.NEW_RELIC_ENTITY_APPLICATION:
+    case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
       return Builders.newRelicEntityApplicationBuilder(
         task,
         index,
         ops?.application_names,
       );
-    case models.NEW_RELIC_ENTITY_DASHBOARD:
+    case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
       return Builders.newRelicEntityDashboardBuilder(
         task,
         index,
         ops?.dashboards,
       );
-    case models.POSTGRES_DATABASE:
+    case taskTypes.POSTGRES_SQL_QUERY:
       return Builders.postgresBuilder(task, index, ops?.databases);
-    case models.EKS_CLUSTER:
+    case taskTypes.EKS_GET_DEPLOYMENTS:
       return Builders.eksBuilder(task, index, ops?.regions);
-    case models.BASH:
+    case taskTypes.EKS_GET_EVENTS:
+      return Builders.eksBuilder(task, index, ops?.regions);
+    case taskTypes.EKS_GET_PODS:
+      return Builders.eksBuilder(task, index, ops?.regions);
+    case taskTypes.EKS_GET_SERVICES:
+      return Builders.eksBuilder(task, index, ops?.regions);
+    case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(task, index, ops?.ssh_servers);
     default:
       return [];

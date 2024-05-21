@@ -191,6 +191,7 @@ const playbookSlice = createSlice({
       state.steps.push({
         ...{
           source: payload.source,
+          taskType: payload.taskType,
           modelType: payload.modelType,
           selectedSource: payload.key,
           description:

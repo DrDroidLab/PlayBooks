@@ -14,6 +14,7 @@ function IntegrationOption({ option, setIsOpen }) {
             option.supported_model_types?.length > 0
               ? option.supported_model_types[0].model_type
               : option.source,
+          taskType: option.task_type,
           key: option.id,
           description: option.display_name,
         }),

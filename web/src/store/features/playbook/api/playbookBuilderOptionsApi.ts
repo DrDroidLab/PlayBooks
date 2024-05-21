@@ -30,9 +30,16 @@ export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
           });
         });
 
+        const connectorOptions = data.map((item) => ({
+          id: item.source,
+          label: item.display_name,
+          connector: item,
+        }));
+
         return {
           connectorOptionsMap,
           supportedTaskTypes,
+          connectorOptions,
         };
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -48,6 +55,12 @@ export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
             setPlaybookKey({
               key: "supportedTaskTypes",
               value: data.supportedTaskTypes,
+            }),
+          );
+          dispatch(
+            setPlaybookKey({
+              key: "connectorOptions",
+              value: data.connectorOptions,
             }),
           );
         } catch (error) {
