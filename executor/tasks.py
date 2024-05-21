@@ -54,7 +54,7 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
             tasks = step.tasks
             all_task_executions = []
             for task_proto in tasks:
-                task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task_proto)
+                task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set, task_proto)
                 task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
                                                                                  task_result)
                 all_task_executions.append({

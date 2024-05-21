@@ -55,6 +55,31 @@ class PlayBookTask(models.Model):
         playbook_task.created_by.value = self.created_by if self.created_by else ''
         return playbook_task
 
+    def proto_with_connector_source(self, playbook_id, playbook_step_id) -> PlaybookTaskProto:
+        playbook_task = dict_to_proto(self.task, PlaybookTaskProto)
+        playbook_task.id.value = self.id
+        playbook_task.name.value = self.name
+        playbook_task.description.value = self.description
+        playbook_task.notes.value = self.notes
+        playbook_task.created_by.value = self.created_by if self.created_by else ''
+        all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
+            account=self.account, playbook_id=playbook_id, playbook_step_id=playbook_step_id, playbook_task=self,
+            is_active=True
+        )
+        all_playbook_step_task_connectors = all_playbook_step_task_connectors.select_related('connector')
+        all_playbook_step_task_connectors = all_playbook_step_task_connectors.values('connector_id',
+                                                                                     'connector__name',
+                                                                                     'connector__connector_type')
+        connector_source: [PlaybookTaskProto.PlaybookTaskConnectorSource] = []
+        for connector in all_playbook_step_task_connectors:
+            connector_source.append(
+                PlaybookTaskProto.PlaybookTaskConnectorSource(id=UInt64Value(value=connector['connector_id']),
+                                                              source=connector['connector__connector_type'],
+                                                              name=StringValue(
+                                                                  value=connector['connector__name'])))
+        playbook_task.task_connector_sources.extend(connector_source)
+        return playbook_task
+
     @property
     def proto_partial(self) -> PlaybookTaskProto:
         return PlaybookTaskProto(
@@ -471,7 +496,7 @@ class PlayBookTaskExecutionLog(models.Model):
 
     @property
     def proto(self) -> PlaybookTaskExecutionLogProto:
-        task = self.playbook_task_definition.proto
+        task = self.playbook_task_definition.proto_with_connector_source(self.playbook.id, self.playbook_step.id)
         return PlaybookTaskExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),

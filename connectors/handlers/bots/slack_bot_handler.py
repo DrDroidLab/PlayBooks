@@ -10,8 +10,7 @@ from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from utils.time_utils import current_datetime
-from protos.base_pb2 import Source, SourceModelType
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceModelType, SourceKeyType
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +80,7 @@ def handle_slack_event_callback(data: Dict):
         try:
             bot_auth_token = get_db_connector_keys(account_id=slack_connector.account_id,
                                                    connector_id=slack_connector.id,
-                                                   key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN)
+                                                   key_type=SourceKeyType.SLACK_BOT_AUTH_TOKEN)
             if not bot_auth_token:
                 logger.error(
                     f"Error while registering slack channel for connector: {team_id}: bot_auth_token not found")
