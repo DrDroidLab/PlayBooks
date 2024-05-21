@@ -7,7 +7,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
@@ -30,19 +30,22 @@ class NewRelicSourceManager(PlaybookSourceManager):
         self.task_proto = NewRelic
         self.task_type_callable_map = {
             NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: {
-                'display_name': 'Entity Application Golden Metric Execution',
+                'display_name': 'Fetch a New Relic golden metric',
+                'category': 'Metrics',
                 'task_type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
                 'executor': self.execute_entity_application_golden_metric_execution
             },
             NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
-                'display_name': 'Entity Dashboard Widget NRQL Metric Execution',
+                'display_name': 'Fetch a metric from New Relic dashboard',
+                'category': 'Metrics',
                 'task_type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
                 'executor': self.execute_entity_dashboard_widget_nrql_metric_execution
             },
             NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
-                'display_name': 'NRQL Metric Execution',
+                'display_name': 'Fetch a custom NRQL query',
+                'category': 'Metrics',
                 'task_type': 'NRQL_METRIC_EXECUTION',
                 'model_types': [],
                 'executor': self.execute_nrql_metric_execution

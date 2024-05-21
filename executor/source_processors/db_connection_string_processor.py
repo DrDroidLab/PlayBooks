@@ -2,10 +2,12 @@ import logging
 
 from sqlalchemy import create_engine, text
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class DBConnectionStringProcessor:
+class DBConnectionStringProcessor(Processor):
     client = None
 
     def __init__(self, connection_string: str):

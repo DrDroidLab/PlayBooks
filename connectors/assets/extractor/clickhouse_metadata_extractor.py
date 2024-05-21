@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
+from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 

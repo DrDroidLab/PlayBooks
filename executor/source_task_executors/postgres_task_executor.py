@@ -1,37 +1,41 @@
 from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
-from protos.base_pb2 import Source, TimeRange
+from executor.source_processors.postgres_db_processor import PostgresDBProcessor
+from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
 
 
-class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
+class PostgresSourceManager(PlaybookSourceManager):
 
     def __init__(self):
-        self.source = Source.SQL_DATABASE_CONNECTION
+        self.source = Source.POSTGRES
         self.task_proto = SqlDataFetch
         self.task_type_callable_map = {
             SqlDataFetch.TaskType.SQL_QUERY: {
-                'display_name': 'SQL Query',
+                'display_name': 'Query a Postgres Database',
+                'category': 'Database',
                 'task_type': 'SQL_QUERY',
-                'model_types': [],
+                'model_types': [SourceModelType.POSTGRES_QUERY],
                 'executor': self.execute_sql_query
             },
         }
 
-    def get_connector_processor(self, sql_database_connector, **kwargs):
-        generated_credentials = generate_credentials_dict(sql_database_connector.type, sql_database_connector.keys)
-        return DBConnectionStringProcessor(**generated_credentials)
+    def get_connector_processor(self, grafana_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+        if kwargs and 'database' in kwargs:
+            generated_credentials['database'] = kwargs['database']
+        return PostgresDBProcessor(**generated_credentials)
 
-    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
-                          sql_data_fetch_task: SqlDataFetch, sql_db_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict, pg_task: SqlDataFetch,
+                          pg_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            sql_query = sql_data_fetch_task.sql_query
+            sql_query = pg_task.sql_query
             order_by_column = sql_query.order_by_column.value
             limit = sql_query.limit.value
             offset = sql_query.offset.value
@@ -50,21 +54,21 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                 limit = 10
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
+            database = sql_query.database.value
 
-            sql_db_processor = self.get_connector_processor(sql_db_connector)
-            count_result = sql_db_processor.get_query_result(count_query).fetchone()[0]
+            pg_db_processor = self.get_connector_processor(pg_connector, database=database)
 
-            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
-                "SQL Database", sql_db_connector.account_id.value, query), flush=True)
+            count_result = pg_db_processor.get_query_result_fetch_one(count_query)
 
-            query_result = sql_db_processor.get_query_result(query).fetchall()
-
+            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format("Postgres",
+                                                                                                    pg_connector.account_id.value,
+                                                                                                    query), flush=True)
+            result = pg_db_processor.get_query_result(query)
             table_rows: [TableResult.TableRow] = []
-            col_names = list(query_result.keys())
-            for row in query_result:
+            for row in result:
                 table_columns = []
-                for i, value in enumerate(row):
-                    table_column = TableResult.TableColumn(name=StringValue(value=col_names[i]),
+                for column, value in row.items():
+                    table_column = TableResult.TableColumn(name=StringValue(value=column),
                                                            value=StringValue(value=str(value)))
                     table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
@@ -75,4 +79,4 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
         except Exception as e:
-            raise Exception(f"Error while executing Sql Database task: {e}")
+            raise Exception(f"Error while executing Postgres task: {e}")

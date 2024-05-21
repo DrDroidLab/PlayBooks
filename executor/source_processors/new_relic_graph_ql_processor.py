@@ -4,10 +4,12 @@ import logging
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class NewRelicGraphQlConnector(object):
+class NewRelicGraphQlConnector(Processor):
 
     def __init__(self, nr_api_key, nr_app_id, nr_api_domain=None):
         if nr_api_domain is None:

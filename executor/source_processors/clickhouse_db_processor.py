@@ -2,10 +2,12 @@ import logging
 
 import clickhouse_connect
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class ClickhouseDBProcessor:
+class ClickhouseDBProcessor(Processor):
     def __init__(self, interface, host, port, user, password, database=None):
         self.config = {
             'interface': interface,

@@ -4,7 +4,7 @@ import os
 from accounts.models import Account
 from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
 from executor.workflows.action.notify_action_executor.notifier import Notifier
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
 from protos.base_pb2 import Source, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.workflow_pb2 import WorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto, \

@@ -3,10 +3,12 @@ import time
 
 import requests
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class SentryApiProcessor:
+class SentryApiProcessor(Processor):
     client = None
 
     def __init__(self, api_key):

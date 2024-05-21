@@ -7,6 +7,7 @@ import boto3
 import kubernetes
 from awscli.customizations.eks.get_token import TokenGenerator, TOKEN_EXPIRATION_MINS, STSClientFactory
 
+from executor.source_processors.processor import Processor
 from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
@@ -63,7 +64,7 @@ def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn
             return app_instance
 
 
-class AWSBoto3ApiProcessor:
+class AWSBoto3ApiProcessor(Processor):
     def __init__(self, client_type, region, aws_access_key, aws_secret_key, aws_session_token=None):
         self.client_type = client_type
         self.__aws_access_key = aws_access_key

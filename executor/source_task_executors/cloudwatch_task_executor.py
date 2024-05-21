@@ -6,7 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
+from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
@@ -21,13 +21,15 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         self.task_proto = Cloudwatch
         self.task_type_callable_map = {
             Cloudwatch.TaskType.METRIC_EXECUTION: {
-                'display_name': 'Cloudwatch Metrics',
+                'display_name': 'Fetch a Metric from Cloudwatch',
+                'category': 'Metrics',
                 'task_type': 'METRIC_EXECUTION',
                 'model_types': [SourceModelType.CLOUDWATCH_METRIC],
                 'executor': self.execute_metric_execution
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
-                'display_name': 'Cloudwatch Logs',
+                'display_name': 'Fetch Logs from Cloudwatch',
+                'category': 'Logs',
                 'task_type': 'FILTER_LOG_EVENTS',
                 'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
                 'executor': self.execute_filter_log_events

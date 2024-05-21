@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.remote_server_processor import RemoteServerProcessor
+from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
@@ -19,7 +19,8 @@ class BashSourceManager(PlaybookSourceManager):
         self.task_proto = Bash
         self.task_type_callable_map = {
             Bash.TaskType.COMMAND: {
-                'display_name': 'Command',
+                'display_name': 'Execute a BASH Command',
+                'category': 'Actions',
                 'task_type': 'COMMAND',
                 'model_types': [SourceModelType.SSH_SERVER],
                 'executor': self.execute_command

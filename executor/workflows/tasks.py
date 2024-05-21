@@ -17,7 +17,7 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
     get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
     update_db_account_workflow_execution_count_increment
 from executor.workflows.crud.workflows_crud import get_db_workflows
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus

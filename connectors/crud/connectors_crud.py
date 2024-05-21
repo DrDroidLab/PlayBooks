@@ -141,13 +141,12 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
             all_keys_found = True
             break
     if not all_keys_found:
-        return None, f'Missing Required Connector Keys for Connector Type: ' \
-                     f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
+        return None, f'Missing Required Connector Keys for Connector Type: {connector_name}'
 
     with dj_transaction.atomic():
         try:
             db_connector, _ = Connector.objects.update_or_create(account=account,
-                                                                 name=connector_proto.name.value,
+                                                                 name=connector_name,
                                                                  connector_type=connector_type,
                                                                  defaults={'is_active': True, 'created_by': created_by})
             for c_key in connector_keys:
@@ -159,5 +158,5 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'
-    trigger_connector_metadata_fetch(account, connector_proto, connector_keys)
+    trigger_connector_metadata_fetch(account, db_connector.unmasked_proto, connector_keys)
     return db_connector, None

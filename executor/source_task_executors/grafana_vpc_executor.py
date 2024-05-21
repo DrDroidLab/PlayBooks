@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.vpc_api_processor import VpcApiProcessor
+from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
@@ -20,7 +20,8 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
         self.task_proto = Grafana
         self.task_type_callable_map = {
             Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
-                'display_name': 'PromQL Metric Execution',
+                'display_name': 'Query any of your Prometheus based dashboard panels from Grafana VPC',
+                'category': 'Metrics',
                 'task_type': 'PROMQL_METRIC_EXECUTION',
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
                 'executor': self.execute_promql_metric_execution

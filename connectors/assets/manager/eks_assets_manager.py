@@ -7,7 +7,7 @@ from kubernetes.client import V1NamespaceList
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from connectors.crud.connectors_crud import get_db_account_connectors, get_db_account_connector_keys
-from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance
+from executor.source_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksClusterAssetModel, EksAssetModel, \
     EksAssets, RegionCluster, Cluster, Command, Namespace
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
