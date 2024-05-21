@@ -20,7 +20,8 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
         self.task_proto = Grafana
         self.task_type_callable_map = {
             Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
-                'display_name': 'PromQL Metric Execution',
+                'display_name': 'Query any of your Prometheus based dashboard panels from Grafana VPC',
+                'category': 'Metrics',
                 'task_type': 'PROMQL_METRIC_EXECUTION',
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
                 'executor': self.execute_promql_metric_execution

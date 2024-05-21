@@ -18,7 +18,8 @@ class ClickhouseSourceManager(PlaybookSourceManager):
         self.task_proto = SqlDataFetch
         self.task_type_callable_map = {
             SqlDataFetch.TaskType.SQL_QUERY: {
-                'display_name': 'SQL Query',
+                'display_name': 'Query a Clickhouse Database',
+                'category': 'Database',
                 'task_type': 'SQL_QUERY',
                 'model_types': [SourceModelType.CLICKHOUSE_DATABASE],
                 'executor': self.execute_sql_query

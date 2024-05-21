@@ -17,7 +17,8 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
         self.task_proto = SqlDataFetch
         self.task_type_callable_map = {
             SqlDataFetch.TaskType.SQL_QUERY: {
-                'display_name': 'SQL Query',
+                'display_name': 'Query any SQL Database',
+                'category': 'Database',
                 'task_type': 'SQL_QUERY',
                 'model_types': [],
                 'executor': self.execute_sql_query

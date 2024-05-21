@@ -19,13 +19,15 @@ class DatadogSourceManager(PlaybookSourceManager):
         self.task_proto = Datadog
         self.task_type_callable_map = {
             Datadog.TaskType.SERVICE_METRIC_EXECUTION: {
-                'display_name': 'Datadog Service Metric',
+                'display_name': 'Fetch a Datadog Metric by service',
+                'category': 'Metrics',
                 'task_type': 'SERVICE_METRIC_EXECUTION',
                 'model_types': [SourceModelType.DATADOG_SERVICE],
                 'executor': self.execute_service_metric_execution
             },
             Datadog.TaskType.QUERY_METRIC_EXECUTION: {
-                'display_name': 'Custom Query',
+                'display_name': 'Fetch a Datadog custom metric',
+                'category': 'Metrics',
                 'task_type': 'QUERY_METRIC_EXECUTION',
                 'model_types': [],
                 'executor': self.execute_query_metric_execution

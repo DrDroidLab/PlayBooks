@@ -6,6 +6,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 from connectors.models import integrations_connector_type_display_name_map
 from executor.source_task_executors.api_task_executor import ApiSourceManager
 from executor.source_task_executors.bash_task_executor import BashSourceManager
+from executor.source_task_executors.documentation_task_executor import DocumentationSourceManager
 from executor.source_task_executors.grafana_executor import GrafanaSourceManager
 from executor.source_task_executors.grafana_vpc_executor import GrafanaVpcSourceManager
 from executor.source_task_executors.mimir_task_executor import MimirSourceManager
@@ -102,3 +103,5 @@ playbook_source_facade.register(Source.SQL_DATABASE_CONNECTION, SqlDatabaseConne
 
 playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
+
+playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())
