@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'celery-beat'
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celery-beat
+  template:
+    metadata:
+      labels:
+        app: celery-beat
+    spec:
+      containers:
+        - name: celery-beat
+          image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+          env:
+            - name: CELERY_BROKER_URL
+              value: {{ .Values.redisUrl }}
+            - name: CELERY_RESULT_BACKEND
+              value: {{ .Values.redisUrl }}
+            - name: DJANGO_DEBUG
+              value: "{{ .Values.debug }}"
+            - name: POSTGRES_HOST
+              value: {{ .Values.djangoDatabaseHost }}
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "db"
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.djangoDatabasePassword }}
+            - name: POSTGRES_USER
+              value: {{ .Values.djangoDatabaseUsername }}
+            - name: REDIS_URL
+              value: {{ .Values.redisUrl }}
+          command: ["/bin/sh","-c"]
+          args: ["./start-celery-beat.sh"]
+

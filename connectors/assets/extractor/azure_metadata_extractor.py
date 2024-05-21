@@ -1,17 +1,16 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.azure_api_processor import AzureApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
-class AzureConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class AzureConnectorMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, subscription_id, tenant_id, client_id, client_secret, account_id=None, connector_id=None):
         self.__client = AzureApiProcessor(subscription_id, tenant_id, client_id, client_secret)
-        super().__init__(account_id, connector_id, ConnectorType.AZURE)
+        super().__init__(account_id, connector_id, Source.AZURE)
 
     def extract_workspaces(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.AZURE_WORKSPACE
+        model_type = SourceModelType.AZURE_WORKSPACE
         try:
             workspaces = self.__client.fetch_workspaces()
         except Exception as e:

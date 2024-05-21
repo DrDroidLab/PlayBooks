@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_POSTHOG_ENABLED
+              value: "{{ .Values.posthog }}"

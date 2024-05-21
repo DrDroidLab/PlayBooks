@@ -379,4 +379,12 @@ export const cardsData = [
     url: "/integrations/bash_logo.svg",
     enum: "BASH",
   },
+  {
+    id: 45,
+    url: "/integrations/mimir_logo.png",
+    title: "GRAFANA MIMIR",
+    enum: "GRAFANA_MIMIR",
+    desc: "Connect Metrics from Grafana Mimir",
+    buttonTitle: "Connect",
+  }
 ];

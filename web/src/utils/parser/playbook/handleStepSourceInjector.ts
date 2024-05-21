@@ -24,6 +24,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.GRAFANA:
       tasks = Injector.injectGrafanaTasks(step, baseTask);
       break;
+    case SOURCES.GRAFANA_MIMIR:
+      tasks = Injector.injectMimirTasks(step, baseTask);
+      break;
     case SOURCES.CLICKHOUSE:
       tasks = Injector.injectClickhouseTasks(step, baseTask);
       break;

@@ -10,9 +10,8 @@ from integrations_api_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from utils.time_utils import current_datetime
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +23,8 @@ def create_or_update_slack_channel_metadata(account_id, account_slack_connector_
         if inviter_id:
             metadata['inviter_id'] = inviter_id
         return create_or_update_model_metadata(account_id=account_id, connector_id=account_slack_connector_id,
-                                               connector_type=ConnectorType.SLACK,
-                                               model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                               connector_type=Source.SLACK,
+                                               model_type=SourceModelType.SLACK_CHANNEL,
                                                model_uid=channel_id, is_active=True, metadata=metadata)
     except Exception as e:
         logger.error(
@@ -39,7 +38,7 @@ def handle_slack_event_callback(data: Dict):
         raise Exception("Invalid data received")
     team_id = data['team_id']
     event = data['event']
-    active_account_slack_connectors = get_db_connectors(connector_type=ConnectorType.SLACK, is_active=True)
+    active_account_slack_connectors = get_db_connectors(connector_type=Source.SLACK, is_active=True)
     if not active_account_slack_connectors:
         logger.error(f"Error handling slack event callback api for {team_id}: active slack connector not found")
         raise Exception("No active slack connector found")
@@ -71,8 +70,8 @@ def handle_slack_event_callback(data: Dict):
     if event_subtype == 'channel_join':
         slack_channel_model = get_db_connector_metadata_models(account_id=slack_connector.account_id,
                                                                connector_id=slack_connector.id,
-                                                               connector_type=ConnectorType.SLACK,
-                                                               model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL,
+                                                               connector_type=Source.SLACK,
+                                                               model_type=SourceModelType.SLACK_CHANNEL,
                                                                model_uid=channel_id, is_active=True)
         if slack_channel_model:
             logger.info(

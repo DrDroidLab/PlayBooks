@@ -2,7 +2,7 @@ from datetime import timezone
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
-from protos.base_pb2 import Source, SourceKeyType
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 from utils.model_utils import generate_choices
 
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -10,7 +10,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
+    PeriodicRunStatus
 
 integrations_connector_type_display_name_map = {
     Source.SLACK: 'SLACK',
@@ -35,6 +35,7 @@ integrations_connector_type_display_name_map = {
     Source.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
     Source.OPEN_AI: 'OPEN AI',
     Source.REMOTE_SERVER: 'REMOTE SERVER',
+    Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
     Source.AZURE: 'AZURE',
 }
 
@@ -62,6 +63,7 @@ integrations_connector_type_category_map = {
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
+    Source.GRAFANA_MIMIR: 'APM Tools',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -153,6 +155,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.OPEN_AI_API_KEY,
         ]
     ],
+    Source.GRAFANA_MIMIR: [
+        [
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID,
+        ]
+    ],
     Source.REMOTE_SERVER: [
         [
             SourceKeyType.REMOTE_SERVER_USER,
@@ -229,6 +237,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_USER: 'User',
     SourceKeyType.REMOTE_SERVER_HOST: 'Host',
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
+    SourceKeyType.MIMIR_HOST: 'Host',
+    SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
     SourceKeyType.AZURE_CLIENT_ID: 'Client ID',
     SourceKeyType.AZURE_CLIENT_SECRET: 'Client Secret',
     SourceKeyType.AZURE_TENANT_ID: 'Tenant ID',
@@ -370,8 +380,8 @@ class ConnectorMetadataModelStore(models.Model):
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE, null=True, blank=True, db_index=True)
     connector_type = models.IntegerField(choices=generate_choices(Source), default=Source.UNKNOWN,
                                          db_index=True)
-    model_type = models.IntegerField(choices=generate_choices(ConnectorMetadataModelTypeProto),
-                                     default=ConnectorMetadataModelTypeProto.UNKNOWN_MT, db_index=True)
+    model_type = models.IntegerField(choices=generate_choices(SourceModelType), default=SourceModelType.UNKNOWN_MT,
+                                     db_index=True)
 
     model_uid = models.TextField(db_index=True)
 

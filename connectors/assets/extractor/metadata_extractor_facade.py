@@ -1,40 +1,40 @@
 from connectors.assets.extractor.azure_metadata_extractor import AzureConnectorMetadataExtractor
-from connectors.assets.extractor.clickhouse_metadata_extractor import ClickhouseConnectorMetadataExtractor
-from connectors.assets.extractor.cloudwatch_metadata_extractor import CloudwatchConnectorMetadataExtractor
-from connectors.assets.extractor.datadog_metadata_extractor import DatadogConnectorMetadataExtractor
-from connectors.assets.extractor.eks_metadata_extractor import EksConnectorMetadataExtractor
-from connectors.assets.extractor.grafana_metadata_extractor import GrafanaConnectorMetadataExtractor
-from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVpcConnectorMetadataExtractor
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from connectors.assets.extractor.newrelic_metadata_extractor import NewrelicConnectorMetadataExtractor
-from connectors.assets.extractor.postgres_metadata_extractor import PostgresConnectorMetadataExtractor
-from connectors.assets.extractor.remote_server_metadata_extractor import RemoteServerConnectorMetadataExtractor
-from protos.base_pb2 import Source as ConnectorType
+from connectors.assets.extractor.clickhouse_metadata_extractor import ClickhouseSourceMetadataExtractor
+from connectors.assets.extractor.cloudwatch_metadata_extractor import CloudwatchSourceMetadataExtractor
+from connectors.assets.extractor.datadog_metadata_extractor import DatadogSourceMetadataExtractor
+from connectors.assets.extractor.eks_metadata_extractor import EksSourceMetadataExtractor
+from connectors.assets.extractor.grafana_metadata_extractor import GrafanaSourceMetadataExtractor
+from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVpcSourceMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from connectors.assets.extractor.mimir_metadata_extractor import MimirSourceMetadataExtractor
+from connectors.assets.extractor.newrelic_metadata_extractor import NewrelicSourceMetadataExtractor
+from connectors.assets.extractor.remote_server_metadata_extractor import RemoteServerSourceMetadataExtractor
+from protos.base_pb2 import Source
 
 
-class ConnectorMetadataExtractorFacade:
+class SourceMetadataExtractorFacade:
 
     def __init__(self):
         self._map = {}
 
-    def register(self, connector_type: ConnectorType, metadata_extractor: ConnectorMetadataExtractor.__class__):
-        self._map[connector_type] = metadata_extractor
+    def register(self, source: Source, metadata_extractor: SourceMetadataExtractor.__class__):
+        self._map[source] = metadata_extractor
 
-    def get_connector_metadata_extractor_class(self, connector_type: ConnectorType):
+    def get_connector_metadata_extractor_class(self, connector_type: Source):
         if connector_type not in self._map:
             raise ValueError(f'No metadata extractor found for connector type: {connector_type}')
         return self._map[connector_type]
 
 
-connector_metadata_extractor_facade = ConnectorMetadataExtractorFacade()
-connector_metadata_extractor_facade.register(ConnectorType.NEW_RELIC, NewrelicConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.DATADOG, DatadogConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.DATADOG_OAUTH, DatadogConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.CLOUDWATCH, CloudwatchConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.GRAFANA, GrafanaConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.GRAFANA_VPC, GrafanaVpcConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.CLICKHOUSE, ClickhouseConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.POSTGRES, PostgresConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.EKS, EksConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.REMOTE_SERVER, RemoteServerConnectorMetadataExtractor)
-connector_metadata_extractor_facade.register(ConnectorType.AZURE, AzureConnectorMetadataExtractor)
+source_metadata_extractor_facade = SourceMetadataExtractorFacade()
+source_metadata_extractor_facade.register(Source.NEW_RELIC, NewrelicSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.DATADOG, DatadogSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.DATADOG_OAUTH, DatadogSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.CLOUDWATCH, CloudwatchSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.GRAFANA, GrafanaSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.GRAFANA_VPC, GrafanaVpcSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.CLICKHOUSE, ClickhouseSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.EKS, EksSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.REMOTE_SERVER, RemoteServerSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.GRAFANA_MIMIR, MimirSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.AZURE, AzureConnectorMetadataExtractor)

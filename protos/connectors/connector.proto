@@ -13,67 +13,6 @@ message PeriodicRunStatus {
   }
 }
 
-enum ConnectorMetadataModelType {
-  UNKNOWN_MT = 0;
-  // New Relic Models
-  NEW_RELIC_POLICY = 1;
-  NEW_RELIC_CONDITION = 2;
-  NEW_RELIC_ENTITY = 3;
-  NEW_RELIC_ENTITY_DASHBOARD = 4;
-  NEW_RELIC_ENTITY_APPLICATION = 5;
-  NEW_RELIC_NRQL = 6;
-
-  //Datadog Models
-  DATADOG_MONITOR = 101;
-  DATADOG_DASHBOARD = 102;
-  DATADOG_LIVE_INTEGRATION_AWS = 103;
-  DATADOG_LIVE_INTEGRATION_AWS_LOG = 104;
-  DATADOG_LIVE_INTEGRATION_AZURE = 105;
-  DATADOG_LIVE_INTEGRATION_CLOUDFLARE = 106;
-  DATADOG_LIVE_INTEGRATION_FASTLY = 107;
-  DATADOG_LIVE_INTEGRATION_GCP = 108;
-  DATADOG_LIVE_INTEGRATION_CONFLUENT = 109;
-  DATADOG_SERVICE = 110;
-  DATADOG_METRIC = 111;
-  DATADOG_QUERY = 112;
-
-
-  //Cloudwatch Models
-  CLOUDWATCH_METRIC = 201;
-  CLOUDWATCH_LOG_GROUP = 202;
-
-
-  //Grafana Models
-  GRAFANA_DATASOURCE = 301;
-  GRAFANA_DASHBOARD = 302;
-  GRAFANA_TARGET_METRIC_PROMQL = 303;
-
-  //Clickhouse Models
-  CLICKHOUSE_DATABASE = 401;
-
-  //Slack Models
-  SLACK_CHANNEL = 501;
-
-  //Documentation Models
-  MARKDOWN = 601;
-
-  //Postgres Models
-  POSTGRES_DATABASE = 701;
-
-  //EKS Models
-  EKS_CLUSTER = 801;
-
-  //Sql Database Connection Models
-  SQL_DATABASE_CONNECTION_RAW_QUERY = 901;
-
-  // Azure Models
-  AZURE_WORKSPACE = 1001;
-
-  //Remote Server Models
-  SSH_SERVER = 1100;
-}
-
-
 message Connector {
   google.protobuf.UInt64Value id = 1;
   Source type = 2;
@@ -128,7 +67,7 @@ message UpdateConnectorOp {
 
 message AccountActiveConnectorModelTypes {
   message ConnectorMetadataModelTypeMap {
-    ConnectorMetadataModelType model_type = 1;
+    SourceModelType model_type = 1;
     google.protobuf.StringValue display_name = 2;
   }
   Source connector_type = 1;

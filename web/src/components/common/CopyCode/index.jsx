@@ -4,6 +4,7 @@ import hljs from "highlight.js/lib/core";
 import yaml from "highlight.js/lib/languages/yaml";
 import json from "highlight.js/lib/languages/json";
 import curl from "highlight.js/lib/languages/bash";
+import unsecuredCopyToClipboard from "../../../utils/unsecuredCopy.ts";
 
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("curl", curl);
@@ -11,7 +12,11 @@ hljs.registerLanguage("json", json);
 
 function CopyCode({ content, language }) {
   const handleCopy = () => {
-    navigator.clipboard.writeText(content);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(content);
+    } else {
+      unsecuredCopyToClipboard(content);
+    }
   };
 
   return (

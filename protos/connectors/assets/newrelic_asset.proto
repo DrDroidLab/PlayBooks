@@ -56,7 +56,7 @@ message NewRelicDashboardEntityAssetOptions {
 message NewRelicAssetModel {
   google.protobuf.UInt64Value id = 1;
   Source connector_type = 2;
-  ConnectorMetadataModelType type = 3;
+  SourceModelType type = 3;
   sfixed64 last_updated = 4;
 
   oneof asset {

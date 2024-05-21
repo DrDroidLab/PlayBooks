@@ -9,17 +9,16 @@ from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssets
 from protos.connectors.assets.azure_asset_pb2 import AzureWorkspaceAssetOptions, AzureAssetModel, \
     AzureWorkspaceAssetModel, AzureAssets
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
 class AzureAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.connector_type = ConnectorType.AZURE
+        self.connector_type = Source.AZURE
 
-    def get_asset_model_options(self, model_type: ConnectorMetadataModelTypeProto, model_uid_metadata_list):
-        if model_type == ConnectorMetadataModelTypeProto.AZURE_WORKSPACE:
+    def get_asset_model_options(self, model_type: SourceModelType, model_uid_metadata_list):
+        if model_type == SourceModelType.AZURE_WORKSPACE:
             all_workspaces = []
             for item in model_uid_metadata_list:
                 all_workspaces.append(item['model_uid'])
@@ -29,19 +28,19 @@ class AzureAssetManager(ConnectorAssetManager):
         else:
             return None
 
-    def get_asset_model_values(self, account: Account, model_type: ConnectorMetadataModelTypeProto,
+    def get_asset_model_values(self, account: Account, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFiltersProto, azure_models):
         which_one_of = filters.WhichOneof('filters')
-        if model_type == ConnectorMetadataModelTypeProto.AZURE_WORKSPACE and (
+        if model_type == SourceModelType.AZURE_WORKSPACE and (
                 not which_one_of or which_one_of == 'azure_workspace_model_filters'):
             options: AzureWorkspaceAssetOptions = filters.azure_workspace_model_filters
             filter_workspaces = options.workspaces
-            azure_models = azure_models.filter(model_type=ConnectorMetadataModelTypeProto.AZURE_WORKSPACE)
+            azure_models = azure_models.filter(model_type=SourceModelType.AZURE_WORKSPACE)
             if filter_workspaces:
                 azure_models = azure_models.filter(model_uid__in=filter_workspaces)
         azure_asset_protos = []
         for asset in azure_models:
-            if asset.model_type == ConnectorMetadataModelTypeProto.AZURE_WORKSPACE:
+            if asset.model_type == SourceModelType.AZURE_WORKSPACE:
                 metadata = asset.metadata
                 name = metadata.get('name', asset.model_uid)
                 azure_asset_protos.append(AzureAssetModel(
