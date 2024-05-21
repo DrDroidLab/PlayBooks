@@ -3,6 +3,7 @@ from django.db import models
 from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 
+from connectors.models import Connector
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult
 from executor.utils.deprecated_playbooks_protos_utils import get_playbook_task_definition_proto
 from playbooks.utils.decorators import deprecated
@@ -37,6 +38,9 @@ class PlayBookTask(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+    task_connector_source = models.ManyToManyField(Connector, through='PlayBookStepTaskConnectorMapping',
+                                                   related_name='task_source')
 
     class Meta:
         unique_together = [['account', 'name', 'task_md5', 'created_by']]
@@ -194,6 +198,22 @@ class PlayBook(models.Model):
         if self.is_active:
             all_steps = all_steps.filter(playbookstepmapping__is_active=True)
         steps = [pbs.proto for pbs in all_steps]
+        for st in steps:
+            for t in st.tasks:
+                all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
+                    account=self.account, playbook=self, playbook_step_id=st.id.value, playbook_task_id=t.id.value,
+                    is_active=True
+                )
+                all_playbook_step_task_connectors = all_playbook_step_task_connectors.select_related('connector')
+                all_playbook_step_task_connectors = all_playbook_step_task_connectors.values('connector_id',
+                                                                                             'connector__name')
+                connector_source: [PlaybookTaskProto.PlaybookTaskConnectorSource] = []
+                for connector in all_playbook_step_task_connectors:
+                    connector_source.append(
+                        PlaybookTaskProto.PlaybookTaskConnectorSource(id=UInt64Value(value=connector['connector_id']),
+                                                                      name=StringValue(
+                                                                          value=connector['connector__name'])))
+                t.task_connector_sources.extend(connector_source)
 
         global_variable_set_proto = Struct()
         if self.global_variable_set:
@@ -272,6 +292,16 @@ class PlayBookStepMapping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
+
+
+class PlayBookStepTaskConnectorMapping(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
+    playbook_task = models.ForeignKey(PlayBookTask, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE, db_index=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
 

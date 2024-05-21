@@ -2,7 +2,7 @@ import re
 import time
 
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
+from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from protos.base_pb2 import Source, SourceModelType as SourceModelType
 
 

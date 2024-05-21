@@ -2,10 +2,12 @@ import logging
 
 import requests
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class VpcApiProcessor:
+class VpcApiProcessor(Processor):
     client = None
 
     def __init__(self, agent_proxy_host, agent_proxy_api_key):

@@ -3,10 +3,12 @@ import logging
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class SlackApiProcessor:
+class SlackApiProcessor(Processor):
     client = None
 
     def __init__(self, bot_auth_token):

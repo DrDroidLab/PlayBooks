@@ -3,10 +3,12 @@ import logging
 import psycopg2
 from psycopg2 import extras
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class PostgresDBProcessor:
+class PostgresDBProcessor(Processor):
     client = None
 
     def __init__(self, host, user, password, database, port='5432'):

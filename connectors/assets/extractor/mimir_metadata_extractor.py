@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.mimir_api_processor import MimirApiProcessor
+from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 

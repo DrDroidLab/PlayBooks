@@ -4,19 +4,19 @@ from typing import Dict
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.models import integrations_connector_type_display_name_map
-from executor.source_task_executor.api_task_executor import ApiSourceManager
-from executor.source_task_executor.bash_task_executor import BashSourceManager
-from executor.source_task_executor.grafana_executor import GrafanaSourceManager
-from executor.source_task_executor.grafana_vpc_executor import GrafanaVpcSourceManager
-from executor.source_task_executor.mimir_task_executor import MimirSourceManager
-from executor.source_task_executor.newrelic_task_executor import NewRelicSourceManager
-from executor.source_task_executor.clickhouse_task_executor import ClickhouseSourceManager
-from executor.source_task_executor.cloudwatch_task_executor import CloudwatchSourceManager
+from executor.source_task_executors.api_task_executor import ApiSourceManager
+from executor.source_task_executors.bash_task_executor import BashSourceManager
+from executor.source_task_executors.grafana_executor import GrafanaSourceManager
+from executor.source_task_executors.grafana_vpc_executor import GrafanaVpcSourceManager
+from executor.source_task_executors.mimir_task_executor import MimirSourceManager
+from executor.source_task_executors.newrelic_task_executor import NewRelicSourceManager
+from executor.source_task_executors.clickhouse_task_executor import ClickhouseSourceManager
+from executor.source_task_executors.cloudwatch_task_executor import CloudwatchSourceManager
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_task_executor.datadog_task_executor import DatadogSourceManager
-from executor.source_task_executor.eks_task_executor import EksSourceManager
-from executor.source_task_executor.postgres_task_executor import PostgresSourceManager
-from executor.source_task_executor.sql_database_connection_executor import SqlDatabaseConnectionSourceManager
+from executor.source_task_executors.datadog_task_executor import DatadogSourceManager
+from executor.source_task_executors.eks_task_executor import EksSourceManager
+from executor.source_task_executors.postgres_task_executor import PostgresSourceManager
+from executor.source_task_executors.sql_database_connection_executor import SqlDatabaseConnectionSourceManager
 from executor.utils.playbooks_builder_utils import model_type_display_name_maps
 
 from protos.base_pb2 import Source, SourceModelType
@@ -33,8 +33,13 @@ class PlaybookSourceFacade:
     def __init__(self):
         self._map = {}
 
-    def register(self, source: Source, manager: PlaybookSourceManager.__class__):
+    def register(self, source: Source, manager: PlaybookSourceManager):
         self._map[source] = manager
+
+    def get_source_manager(self, source: Source):
+        if source not in self._map:
+            raise ValueError(f'No executor found for source: {source}')
+        return self._map.get(source)
 
     def get_source_options(self, account_id) -> [PlaybookSourceOptions]:
         source_options: [PlaybookSourceOptions] = []
@@ -51,7 +56,7 @@ class PlaybookSourceFacade:
             all_task_types = []
             for task_type, task_info in st_map.items():
                 display_name = task_info['display_name']
-                task_type_name = task_info['task_type']
+                task_type_name = task_info.get('task_type', task_type)
                 model_types = task_info['model_types']
                 model_options: [PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] = []
                 for m in model_types:

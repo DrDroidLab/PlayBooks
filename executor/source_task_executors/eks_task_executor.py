@@ -8,7 +8,7 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.aws_boto_3_api_processor import get_eks_api_instance, AWSBoto3ApiProcessor
+from executor.source_processors.aws_boto_3_api_processor import get_eks_api_instance
 from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType

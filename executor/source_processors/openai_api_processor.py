@@ -2,10 +2,12 @@ import logging
 
 from openai import OpenAI
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
-class OpenAiApiProcessor:
+class OpenAiApiProcessor(Processor):
     client = None
 
     def __init__(self, open_ai_api_key):

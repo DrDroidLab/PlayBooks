@@ -4,7 +4,7 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
+from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
@@ -27,7 +27,7 @@ class ClickhouseSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, clickhouse_connector, **kwargs):
         generated_credentials = generate_credentials_dict(clickhouse_connector.type, clickhouse_connector.keys)
-        generated_credentials['database'] = kwargs.get('database')
+        generated_credentials['database'] = kwargs.get('database', None)
         return ClickhouseDBProcessor(**generated_credentials)
 
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,

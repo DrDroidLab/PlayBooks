@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models, create_or_update_model_metadata
 from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
 from connectors.handlers.tasks import slack_bot_data_fetch_job, slack_bot_handle_receive_message
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from utils.time_utils import current_datetime

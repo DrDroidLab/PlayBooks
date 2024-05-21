@@ -4,6 +4,8 @@ import subprocess
 
 import paramiko
 
+from executor.source_processors.processor import Processor
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +23,7 @@ def reconstruct_rsa_key(key_string):
     return reconstructed_key
 
 
-class RemoteServerProcessor:
+class RemoteServerProcessor(Processor):
     client = None
 
     def __init__(self, remote_host=None, remote_user=None, remote_password=None, remote_pem=None):

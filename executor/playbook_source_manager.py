@@ -2,7 +2,8 @@ from typing import Dict
 
 from connectors.crud.connectors_crud import get_db_connectors
 from connectors.models import integrations_connector_type_connector_keys_map
-from integrations_api_processors.no_op_processor import NoOpProcessor
+from executor.source_processors.no_op_processor import NoOpProcessor
+from executor.source_processors.processor import Processor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
@@ -29,6 +30,10 @@ class PlaybookSourceManager:
 
     def get_connector_processor(self, connector: ConnectorProto, **kwargs):
         return NoOpProcessor()
+
+    def test_connector_processor(self, connector: ConnectorProto, **kwargs):
+        processor: Processor = self.get_connector_processor(connector, **kwargs)
+        return processor.test_connection()
 
     def get_task_type_callable_map(self):
         return self.task_type_callable_map

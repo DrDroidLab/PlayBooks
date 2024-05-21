@@ -29,13 +29,14 @@ from datadog_api_client.v2.model.timeseries_formula_request_attributes import Ti
 from datadog_api_client.v2.model.timeseries_formula_request_queries import TimeseriesFormulaRequestQueries
 from datadog_api_client.v2.model.timeseries_formula_request_type import TimeseriesFormulaRequestType
 
+from executor.source_processors.processor import Processor
 from protos.base_pb2 import TimeRange
 from protos.base_pb2 import Source
 
 logger = logging.getLogger(__name__)
 
 
-class DatadogApiProcessor(object):
+class DatadogApiProcessor(Processor):
     def __init__(self, dd_app_key, dd_api_key, dd_api_domain=None, dd_connector_type=None):
         self.__dd_app_key = dd_app_key
         self.__dd_api_key = dd_api_key

@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
 from connectors.models import integrations_connector_type_display_name_map
-from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
+from executor.source_processors.openai_api_processor import OpenAiApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter import ResultInterpreter
 from intelligence_layer.utils import generate_graph_for_metric_timeseries_result
 

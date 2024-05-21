@@ -7,7 +7,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \

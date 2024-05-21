@@ -5,35 +5,34 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from protos.base_pb2 import TimeRange
-from protos.base_pb2 import Source
+from executor.source_processors.vpc_api_processor import VpcApiProcessor
+from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.source_task_definitions.promql_task_pb2 import PromQl
+from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
 
 
-class MimirSourceManager(PlaybookSourceManager):
+class GrafanaVpcSourceManager(PlaybookSourceManager):
 
     def __init__(self):
-        self.source = Source.GRAFANA_MIMIR
-        self.task_proto = PromQl
+        self.source = Source.GRAFANA_VPC
+        self.task_proto = Grafana
         self.task_type_callable_map = {
-            PromQl.TaskType.PROMQL_METRIC_EXECUTION: {
+            Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
                 'display_name': 'PromQL Metric Execution',
                 'task_type': 'PROMQL_METRIC_EXECUTION',
-                'model_types': [],
+                'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
                 'executor': self.execute_promql_metric_execution
             },
         }
 
     def get_connector_processor(self, grafana_connector, **kwargs):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
-        return MimirApiProcessor(**generated_credentials)
+        return VpcApiProcessor(**generated_credentials)
 
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, mimir_task: PromQl,
-                                        mimir_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, grafana_task: Grafana,
+                                        vpc_connector: ConnectorProto) -> PlaybookTaskResult:
         tr_end_time = time_range.time_lt
         tr_start_time = time_range.time_geq
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
@@ -41,31 +40,34 @@ class MimirSourceManager(PlaybookSourceManager):
 
         end_time = current_datetime.isoformat() + "Z"
         start_time = evaluation_time.isoformat() + "Z"
-        period = '300s'
+        period = 300
 
         task_result = PlaybookTaskResult()
+        task = grafana_task.promql_metric_execution
 
-        task = mimir_task.promql_metric_execution
+        datasource_uid = task.datasource_uid.value
         process_function = task.process_function.value
         promql_metric_query = task.promql_expression.value
-        # promql_label_option_values = task.promql_label_option_values
-        # for label_option in promql_label_option_values:
-        #     promql_metric_query = promql_metric_query.replace(label_option.name.value,
-        #                                                       label_option.value.value)
+        promql_label_option_values = task.promql_label_option_values
+
+        for label_option in promql_label_option_values:
+            promql_metric_query = promql_metric_query.replace(label_option.name.value,
+                                                              label_option.value.value)
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        mimir_api_processor = self.get_connector_processor(mimir_connector)
+        grafana_api_processor = self.get_connector_processor(vpc_connector)
 
         print(
-            "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "
-            "-> {}, End_Time -> {}, Period -> {}".format("Mimir", mimir_connector.account_id.value, promql_metric_query,
-                                                         start_time, end_time, period), flush=True)
+            "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
+            "-> {}, End_Time -> {}, Period -> {}".format("Grafana", vpc_connector.account_id.value, datasource_uid,
+                                                         promql_metric_query, start_time, end_time, period), flush=True)
 
-        response = mimir_api_processor.fetch_promql_metric_timeseries(promql_metric_query,
-                                                                      start_time, end_time, period)
+        path = 'api/datasources/proxy/uid/{}/api/v1/query_range?query={}&start={}&end={}&step={}'.format(
+            datasource_uid, promql_metric_query, start_time, end_time, period)
+        response = grafana_api_processor.v1_api_grafana(path=path)
         if not response:
-            raise Exception("No data returned from Mimir")
+            raise Exception("No data returned from Grafana")
 
         if process_function == 'timeseries':
             if 'data' in response and 'result' in response['data']:

@@ -4,7 +4,7 @@ from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
+from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
