@@ -54,13 +54,6 @@ function SelectConnectorOption() {
             searchable={true}
             disabled={isPrefetched}
           />
-          {!isPrefetched && (
-            <button onClick={refetch}>
-              <RefreshRounded
-                className={`text-gray-400 hover:text-gray-600 transition-all`}
-              />
-            </button>
-          )}
         </div>
       ) : (
         <>
@@ -73,6 +66,13 @@ function SelectConnectorOption() {
             + Add New Source
           </button>
         </>
+      )}
+      {!isPrefetched && (
+        <button onClick={refetch}>
+          <RefreshRounded
+            className={`text-gray-400 hover:text-gray-600 transition-all`}
+          />
+        </button>
       )}
       {isFetching && <CircularProgress size={20} />}
       <CustomDrawer
