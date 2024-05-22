@@ -14,11 +14,11 @@ class DocumentationSourceManager(PlaybookSourceManager):
         self.task_proto = Documentation
         self.task_type_callable_map = {
             Documentation.TaskType.MARKDOWN: {
-                'display_name': 'Write Markdown Documentation',
-                'category': 'Documentation',
                 'task_type': 'MARKDOWN',
+                'executor': self.execute_markdown,
                 'model_types': [],
-                'executor': self.execute_markdown
+                'display_name': 'Write Markdown Documentation',
+                'category': 'Documentation'
             },
         }
 

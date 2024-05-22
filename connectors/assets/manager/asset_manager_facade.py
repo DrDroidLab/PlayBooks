@@ -12,10 +12,10 @@ from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
 from connectors.assets.manager.remote_server_assets_manager import RemoteServetAssetManager
 from connectors.assets.manager.slack_assets_manager import SlackAssetManager
-from connectors.crud.connector_asset_model_crud import get_db_account_connector_metadata_models
-from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelOptions, \
+from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto
 from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 logger = logging.getLogger(__name__)
 
@@ -28,47 +28,24 @@ class AssetManagerFacade:
     def register(self, source: Source, manager: ConnectorAssetManager):
         self._map[source] = manager
 
-    def get_asset_model_options(self, account: Account, source: Source, model_type: SourceModelType):
-        assets_options: [AccountConnectorAssetsModelOptions] = []
-        connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=source,
-                                                                             model_type=model_type)
-        models = connector_metadata_models.values_list('connector_type', 'model_type', 'model_uid', 'metadata',
-                                                       named=True)
-        connector_type_asset_type_model_map = {}
-        for mtu in models:
-            connector_type_map = connector_type_asset_type_model_map.get(mtu.connector_type, {})
-            asset_type_list = connector_type_map.get(mtu.model_type, [])
-            asset_type_list.append({'model_uid': mtu.model_uid, 'metadata': mtu.metadata})
-            connector_type_map[mtu.model_type] = asset_type_list
-            connector_type_asset_type_model_map[mtu.connector_type] = connector_type_map
-        for source, connector_type_map in connector_type_asset_type_model_map.items():
-            model_type_options = []
-            if source not in self._map:
-                logger.error(f'No asset manager found for connector_type: {source}')
-                continue
-            manager: ConnectorAssetManager = self._map[source]
-            for model_type, asset_type_list in connector_type_map.items():
-                options = manager.get_asset_model_options(model_type, asset_type_list)
-                if options:
-                    model_type_options.append(options)
-            assets_options.append(AccountConnectorAssetsModelOptions(connector_type=source,
-                                                                     model_types_options=model_type_options))
-        return assets_options
+    def get_asset_model_options(self, connector: ConnectorProto, model_types: [SourceModelType]):
+        if not connector or not model_types:
+            raise ValueError("Account, Connector and SourceModelTypes are required to fetch asset options")
 
-    def get_asset_model_values(self, account: Account, connector_type: Source,
-                               model_type: SourceModelType,
+        if connector.type not in self._map:
+            raise ValueError(f"No asset manager found for connector_type: {connector.type}")
+        manager: ConnectorAssetManager = self._map[connector.type]
+
+        return manager.get_asset_model_options(connector=connector, model_types=model_types)
+
+    def get_asset_model_values(self, connector: ConnectorProto, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFiltersProto):
-        if not connector_type:
-            raise ValueError(f"Missing ConnectorType in request")
-        manager: ConnectorAssetManager = self._map.get(connector_type)
+        if not connector:
+            raise ValueError("ConnectorProto is required to fetch assets")
+        manager: ConnectorAssetManager = self._map.get(connector.type)
         if not manager:
-            raise ValueError(f"No asset manager found for connector_type: {connector_type}")
-        if not model_type:
-            connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type)
-        else:
-            connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type,
-                                                                                 model_type=model_type)
-        assets = manager.get_asset_model_values(account, model_type, filters, connector_metadata_models)
+            raise ValueError(f"No asset manager found for connector_type: {connector.type}")
+        assets = manager.get_asset_model_values(connector, model_type, filters)
         return [assets]
 
 

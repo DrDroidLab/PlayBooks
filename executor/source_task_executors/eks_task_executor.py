@@ -22,32 +22,32 @@ class EksSourceManager(PlaybookSourceManager):
         self.task_proto = Eks
         self.task_type_callable_map = {
             Eks.TaskType.GET_PODS: {
-                'display_name': 'Get Pods from EKS Cluster',
-                'category': 'Deployment',
                 'task_type': 'GET_PODS',
+                'executor': self.get_pods,
                 'model_types': [SourceModelType.EKS_CLUSTER],
-                'executor': self.get_pods
+                'display_name': 'Get Pods from EKS Cluster',
+                'category': 'Deployment'
             },
             Eks.TaskType.GET_DEPLOYMENTS: {
-                'display_name': 'Get Deployments from EKS Cluster',
-                'category': 'Deployment',
                 'task_type': 'GET_DEPLOYMENTS',
+                'executor': self.get_deployments,
                 'model_types': [SourceModelType.EKS_CLUSTER],
-                'executor': self.get_deployments
+                'display_name': 'Get Deployments from EKS Cluster',
+                'category': 'Deployment'
             },
             Eks.TaskType.GET_EVENTS: {
-                'display_name': 'Get Events from EKS Cluster',
-                'category': 'Deployment',
                 'task_type': 'GET_EVENTS',
+                'executor': self.get_events,
                 'model_types': [SourceModelType.EKS_CLUSTER],
-                'executor': self.get_events
+                'display_name': 'Get Events from EKS Cluster',
+                'category': 'Deployment'
             },
             Eks.TaskType.GET_SERVICES: {
-                'display_name': 'Get Services from EKS Cluster',
                 'category': 'Deployment',
-                'task_type': 'GET_SERVICES',
+                'executor': self.get_services,
                 'model_types': [SourceModelType.EKS_CLUSTER],
-                'executor': self.get_services
+                'display_name': 'Get Services from EKS Cluster',
+                'task_type': 'GET_SERVICES'
             },
         }
 

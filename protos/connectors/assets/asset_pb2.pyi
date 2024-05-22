@@ -31,7 +31,6 @@ DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 class ConnectorModelTypeOptions(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    CONNECTOR_FIELD_NUMBER: builtins.int
     MODEL_TYPE_FIELD_NUMBER: builtins.int
     CLOUDWATCH_LOG_GROUP_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     CLOUDWATCH_METRIC_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
@@ -44,8 +43,6 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     POSTGRES_DATABASE_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     EKS_CLUSTER_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     SSH_SERVER_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
-    @property
-    def connector(self) -> protos.connectors.connector_pb2.Connector: ...
     model_type: protos.base_pb2.SourceModelType.ValueType
     @property
     def cloudwatch_log_group_model_options(self) -> protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions: ...
@@ -72,7 +69,6 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        connector: protos.connectors.connector_pb2.Connector | None = ...,
         model_type: protos.base_pb2.SourceModelType.ValueType = ...,
         cloudwatch_log_group_model_options: protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions | None = ...,
         cloudwatch_metric_model_options: protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchMetricAssetOptions | None = ...,
@@ -86,8 +82,8 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
         eks_cluster_model_options: protos.connectors.assets.eks_asset_pb2.EksClusterAssetOptions | None = ...,
         ssh_server_model_options: protos.connectors.assets.remote_server_asset_pb2.SshServerAssetOptions | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "connector", b"connector", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "connector", b"connector", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "model_type", b"model_type", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "model_type", b"model_type", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["options", b"options"]) -> typing_extensions.Literal["cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", "grafana_target_metric_promql_model_options", "clickhouse_database_model_options", "slack_channel_model_options", "new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", "datadog_service_model_options", "postgres_database_model_options", "eks_cluster_model_options", "ssh_server_model_options"] | None: ...
 
 global___ConnectorModelTypeOptions = ConnectorModelTypeOptions
@@ -97,17 +93,22 @@ class AccountConnectorAssetsModelOptions(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+    CONNECTOR_FIELD_NUMBER: builtins.int
     MODEL_TYPES_OPTIONS_FIELD_NUMBER: builtins.int
     connector_type: protos.base_pb2.Source.ValueType
+    @property
+    def connector(self) -> protos.connectors.connector_pb2.Connector: ...
     @property
     def model_types_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ConnectorModelTypeOptions]: ...
     def __init__(
         self,
         *,
         connector_type: protos.base_pb2.Source.ValueType = ...,
+        connector: protos.connectors.connector_pb2.Connector | None = ...,
         model_types_options: collections.abc.Iterable[global___ConnectorModelTypeOptions] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type", "model_types_options", b"model_types_options"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector", b"connector"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector", b"connector", "connector_type", b"connector_type", "model_types_options", b"model_types_options"]) -> None: ...
 
 global___AccountConnectorAssetsModelOptions = AccountConnectorAssetsModelOptions
 
