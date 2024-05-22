@@ -5,8 +5,10 @@ import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-export default function OptionRender({ data, removeErrors, task, stepIndex }) {
+export default function OptionRender({ data, removeErrors }) {
+  const [step, currentStepIndex] = useCurrentStep();
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
 
@@ -14,7 +16,9 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: args[0] }));
+      dispatch(
+        updateStep({ index: currentStepIndex, key: data.key, value: args[0] }),
+      );
     }
 
     removeErrors(data.key);
@@ -25,7 +29,9 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     if (data.handleChange) {
       data.handleChange(e);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: val }));
+      dispatch(
+        updateStep({ index: currentStepIndex, key: data.key, value: val }),
+      );
     }
 
     removeErrors(data.key);
@@ -35,14 +41,16 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: args[0] }));
+      dispatch(
+        updateStep({ index: currentStepIndex, key: data.key, value: args[0] }),
+      );
     }
 
     removeErrors(data.key);
   };
 
   const error = data.key
-    ? task.showError && !data.selected && !task[`${data.key}`]
+    ? step.showError && !data.selected && !step[`${data.key}`]
     : false;
 
   switch (data.type) {
@@ -62,7 +70,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             data={data.options ?? []}
             placeholder={`Select ${data.label}`}
             onSelectionChange={handleChange}
-            selected={data.selected ?? task[`${data.key}`]}
+            selected={data.selected ?? step[`${data.key}`]}
             searchable={true}
             disabled={isPrefetched || data.disabled}
             error={error}
@@ -93,7 +101,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             placeHolder={`Enter ${data?.label}`}
             valueType={"STRING"}
             onValueChange={handleChange}
-            value={data.selected || task[`${data.key}`]}
+            value={data.selected || step[`${data.key}`]}
             error={error}
             disabled={isPrefetched}
             {...data.additionalProps}
@@ -111,7 +119,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
               "w-full border border-gray-300 p-1 rounded mt-1 text-sm resize-none text-[#676666] h-32"
             }
             rows={4}
-            value={data.value ?? data.selected ?? task[`${data.key}`]}
+            value={data.value ?? data.selected ?? step[`${data.key}`]}
             onChange={handleTextAreaChange}
             disabled={isPrefetched || data.disabled}
             style={error ? { borderColor: "red" } : {}}
@@ -142,7 +150,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             selectedDisplayKey={data.selectedDisplayKey}
             multiSelectChange={multiSelectChange}
             selectedValuesKey={data.selectedValuesKey ?? data.key}
-            task={task}
+            task={step}
           />
         </div>
       );

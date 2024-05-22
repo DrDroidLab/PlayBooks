@@ -81,9 +81,9 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource step={step} />
-          <PlaybookStep card={step} index={currentStepIndex} />
-          <Notes step={step} index={currentStepIndex} />
+          <AddSource />
+          <PlaybookStep />
+          <Notes />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation />
           )}

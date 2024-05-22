@@ -20,7 +20,7 @@ import { executeStep } from "../../../utils/execution/executeStep.ts";
 import Interpretation from "./Interpretation.jsx";
 import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 
-function Step({ step, index }) {
+function Step({ step }) {
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -28,16 +28,16 @@ function Step({ step, index }) {
   const dispatch = useDispatch();
   const { data } = useGetBuilderOptionsQuery();
 
-  function handleDeleteClick(index) {
-    dispatch(deleteStep(index));
+  function handleDeleteClick() {
+    dispatch(deleteStep());
   }
 
   const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility({ index }));
+    dispatch(toggleExternalLinkVisibility());
   };
 
   const setLinks = (links) => {
-    dispatch(addExternalLinks({ index, externalLinks: links }));
+    dispatch(addExternalLinks(links));
   };
 
   return (
@@ -61,12 +61,12 @@ function Step({ step, index }) {
                 <b className="add_data">{!addQuery ? "+ Add Data" : "Data"}</b>
               </div>
 
-              {addQuery && <Query step={step} index={index} />}
+              {addQuery && <Query />}
             </div>
           </div>
-          <Notes step={step} index={index} />
+          <Notes />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation index={index} />
+            <Interpretation />
           )}
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
@@ -83,7 +83,7 @@ function Step({ step, index }) {
               )}
               <button
                 className={styles["pb-button"]}
-                onClick={() => handleDeleteClick(index)}>
+                onClick={handleDeleteClick}>
                 <Tooltip title="Remove this Step">
                   <DeleteIcon />
                 </Tooltip>

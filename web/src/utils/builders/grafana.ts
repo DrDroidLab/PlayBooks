@@ -6,13 +6,15 @@ import {
   updateStep,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 import {
   grafanaOptionsList,
   setGrafanaOptionsFunction,
 } from "../setGrafanaOptionsFunction.ts";
 
-export const grafanaBuilder = (task, index, options: any) => {
+export const grafanaBuilder = (options: any) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "panel",
     assetFilterQuery: {

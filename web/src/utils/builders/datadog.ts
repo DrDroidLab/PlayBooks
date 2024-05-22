@@ -1,13 +1,10 @@
 import { store } from "../../store/index.ts";
-import {
-  setDataDogEnvironment,
-  setDatadogMetric,
-  setDatadogMetricFamily,
-  setDatadogService,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { setDatadogMetric } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 
-export const datadogBuilder = (task, index, options) => {
+export const datadogBuilder = (options) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "datadogMetricFamily",
     assetFilterQuery: {
@@ -36,9 +33,6 @@ export const datadogBuilder = (task, index, options) => {
             service: x,
           })),
           selected: task.datadogService?.name,
-          handleChange: (_, val) => {
-            store.dispatch(setDatadogService({ index, service: val.service }));
-          },
         },
         {
           key: "datadogMetricFamily",
@@ -47,11 +41,6 @@ export const datadogBuilder = (task, index, options) => {
           options: options
             ?.find((e) => e.name === task?.datadogService?.name)
             ?.metric_families?.map((x) => ({ id: x, label: x })),
-          // requires: ['datadogService'],
-          selected: task.datadogMetricFamily,
-          handleChange: (_, val) => {
-            store.dispatch(setDatadogMetricFamily({ index, metric: val.id }));
-          },
         },
         {
           key: "datadogEnvironment",
@@ -63,13 +52,6 @@ export const datadogBuilder = (task, index, options) => {
               label: e,
             };
           }),
-          // requires: ['datadogMetricFamily'],
-          selected: task?.datadogEnvironment,
-          handleChange: (_, val) => {
-            store.dispatch(
-              setDataDogEnvironment({ index, environment: val.id }),
-            );
-          },
         },
         {
           key: "datadogMetric",
@@ -83,7 +65,6 @@ export const datadogBuilder = (task, index, options) => {
                 label: e.metric,
               };
             }),
-          // requires: ['datadogEnvironment'],
           selected: task?.datadogMetric,
           handleChange: (val) => {
             if (val)

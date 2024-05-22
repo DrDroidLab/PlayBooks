@@ -1,14 +1,10 @@
 import { store } from "../../store/index.ts";
-import {
-  selectCluster,
-  selectEksNamespace,
-  selectEksRegion,
-  setCommand,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
-import { Step } from "../../types.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 
-export const eksBuilder = (task: Step, index, options: any) => {
+export const eksBuilder = (options: any) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "cluster",
     assetFilterQuery: {
@@ -35,26 +31,18 @@ export const eksBuilder = (task: Step, index, options: any) => {
           key: "eksRegion",
           label: "Region",
           type: OptionType.OPTIONS,
-          selected: task.eksRegion,
           value: task.eksRegion,
           options:
             options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
-          handleChange: (_, val) => {
-            store.dispatch(selectEksRegion({ index, region: val.label }));
-          },
         },
         {
           key: "cluster",
           label: "Cluster",
           type: OptionType.OPTIONS,
-          selected: task.cluster,
           value: task.cluster,
           options: options
             ?.find((e) => e.region === task.eksRegion)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
-          handleChange: (_, val) => {
-            store.dispatch(selectCluster({ index, cluster: val.label }));
-          },
         },
         {
           key: "eksNamespace",
@@ -66,12 +54,6 @@ export const eksBuilder = (task: Step, index, options: any) => {
                   return { id: el.name, label: el.name };
                 })
               : [],
-          handleChange: (_, val) => {
-            store.dispatch(selectEksNamespace({ index, namespace: val.label }));
-          },
-          value: task.eksNamespace,
-          selected: task.eksNamespace,
-          // requires: ['cluster']
         },
         {
           key: "command",
@@ -85,7 +67,6 @@ export const eksBuilder = (task: Step, index, options: any) => {
           },
           value: task.command?.type,
           selected: task.command?.type,
-          // requires: ['eksNamespace']
         },
       ],
     ],

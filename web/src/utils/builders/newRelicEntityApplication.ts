@@ -1,11 +1,10 @@
-import {
-  setApplicationName,
-  setGoldenMetrics,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { setGoldenMetrics } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const newRelicEntityApplicationBuilder = (task, index, options) => {
+export const newRelicEntityApplicationBuilder = (options) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "application_name",
     assetFilterQuery: {
@@ -29,12 +28,6 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
               label: e,
             };
           }),
-          selected: task?.application_name,
-          handleChange: (_, val) => {
-            store.dispatch(
-              setApplicationName({ index, application_name: val.label }),
-            );
-          },
         },
         {
           key: "golden_metric",
@@ -51,8 +44,6 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
             if (val) store.dispatch(setGoldenMetrics({ index, metric: val }));
           },
           selectedValuesKey: "golden_metrics",
-          // requires: ['application_name'],
-          // selected: task?.golden_metric?.golden_metric_name,
         },
         {
           label: "Unit",
@@ -63,7 +54,6 @@ export const newRelicEntityApplicationBuilder = (task, index, options) => {
               label: task.golden_metric?.golden_metric_unit,
             },
           ],
-          // requires: ['golden_metric'],
           disabled: true,
           selected:
             task?.golden_metrics?.length === 1

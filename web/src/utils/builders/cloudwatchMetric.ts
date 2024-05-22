@@ -1,21 +1,19 @@
-import {
-  selectNamespace,
-  setDimensionIndex,
-  setRegion,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { setDimensionIndex } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-const getDimensions = (task) => {
+const getDimensions = () => {
+  const [task] = getCurrentTask();
   const dimensions: any =
     task?.assets?.region_dimension_map?.find((el) => el.region === task.region)
       ?.dimensions ?? {};
   const list: any = [];
   for (let [idx, dimension] of Object.entries(dimensions)) {
-    for (let val of dimension.values) {
+    for (let val of (dimension as any).values) {
       list.push({
-        id: `${dimension.name}: ${val}`,
-        label: `${dimension.name}: ${val}`,
+        id: `${(dimension as any).name}: ${val}`,
+        label: `${(dimension as any).name}: ${val}`,
         dimensionIndex: idx,
       });
     }
@@ -24,7 +22,8 @@ const getDimensions = (task) => {
   return list;
 };
 
-const getMetrics = (task) => {
+const getMetrics = () => {
+  const [task] = getCurrentTask();
   return (
     task?.assets?.region_dimension_map
       ?.find((el) => el.region === task.region)
@@ -38,7 +37,8 @@ const getMetrics = (task) => {
   );
 };
 
-export const cloudwatchMetricBuilder = (task, index, options) => {
+export const cloudwatchMetricBuilder = (options) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "namespaceName",
     assetFilterQuery: {
@@ -63,9 +63,6 @@ export const cloudwatchMetricBuilder = (task, index, options) => {
             };
           }),
           selected: task.namespaceName,
-          handleChange: (_, val) => {
-            store.dispatch(selectNamespace({ index, namespace: val.label }));
-          },
         },
         {
           key: "region",
@@ -74,17 +71,12 @@ export const cloudwatchMetricBuilder = (task, index, options) => {
           options: task.assets?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
-          handleChange: (_, val) => {
-            store.dispatch(setRegion({ index, region: val.label }));
-          },
-          // requires: ['namespaceName']
         },
         {
           key: "dimensionName",
           label: "Dimension",
           type: OptionType.OPTIONS,
-          options: getDimensions(task),
-          // requires: ['region'],
+          options: getDimensions(),
           handleChange: (_, value) => {
             store.dispatch(
               setDimensionIndex({
@@ -102,8 +94,7 @@ export const cloudwatchMetricBuilder = (task, index, options) => {
           key: "metric",
           label: "Metric",
           type: OptionType.MULTI_SELECT,
-          options: getMetrics(task),
-          // requires: ['dimensionName'],
+          options: getMetrics(),
           selected: task?.metric?.id,
         },
       ],

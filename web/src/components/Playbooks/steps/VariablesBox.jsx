@@ -2,16 +2,14 @@
 import React, { useEffect } from "react";
 import SelectComponent from "../../SelectComponent";
 import styles from "./index.module.css";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setSelectedGrafanaOptions,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch } from "react-redux";
+import { setSelectedGrafanaOptions } from "../../../store/features/playbook/playbookSlice.ts";
 import ValueComponent from "../../ValueComponent";
 import { setGrafanaOptionsFunction } from "../../../utils/setGrafanaOptionsFunction.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function VariablesBox({ task }) {
-  const { currentStepIndex } = useSelector(playbookSelector);
+function VariablesBox() {
+  const [step, currentStepIndex] = useCurrentStep();
   const dispatch = useDispatch();
   const handleVariableChange = (_, val) => {
     if (val)
@@ -21,19 +19,19 @@ function VariablesBox({ task }) {
   };
 
   useEffect(() => {
-    if (task.grafanaQuery && task.assets) {
+    if (step.grafanaQuery && step.assets) {
       setGrafanaOptionsFunction(currentStepIndex);
     }
-  }, [task.assets]);
+  }, [step.assets]);
 
   return (
     <div className={styles["variables-box"]}>
-      {task?.options && task?.options?.length > 0 && (
+      {step?.options && step?.options?.length > 0 && (
         <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
           <p style={{ fontSize: "12px", color: "darkgray", marginTop: "5px" }}>
             Variables
           </p>
-          {task?.options?.map((option, i) => {
+          {step?.options?.map((option, i) => {
             return (
               <div
                 key={currentStepIndex}
@@ -50,8 +48,8 @@ function VariablesBox({ task }) {
                     placeholder={`Select ${option?.label?.label}`}
                     onSelectionChange={handleVariableChange}
                     selected={
-                      task?.selectedOptions
-                        ? task?.selectedOptions[option?.variable]
+                      step?.selectedOptions
+                        ? step?.selectedOptions[option?.variable]
                         : ""
                     }
                     searchable={true}
@@ -67,8 +65,8 @@ function VariablesBox({ task }) {
                       })
                     }
                     value={
-                      task?.selectedOptions
-                        ? task?.selectedOptions[option?.variable]
+                      step?.selectedOptions
+                        ? step?.selectedOptions[option?.variable]
                         : ""
                     }
                   />

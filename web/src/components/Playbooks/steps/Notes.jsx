@@ -1,9 +1,12 @@
 import MDEditor, { EditorContext } from "@uiw/react-md-editor";
 import { useContext } from "react";
-import { addNotes } from "../../../store/features/playbook/playbookSlice.ts";
+import {
+  addNotes,
+  playbookSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import rehypeSanitize from "rehype-sanitize";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "../playbooks.module.css";
 
 const Button = () => {
@@ -35,7 +38,9 @@ const codePreview = {
   icon: <Button />,
 };
 
-function Notes({ step, index }) {
+function Notes() {
+  const { currentStepIndex, steps } = useSelector(playbookSelector);
+  const step = steps[currentStepIndex];
   const dispatch = useDispatch();
   return (
     <>
@@ -92,7 +97,7 @@ function Notes({ step, index }) {
               <MDEditor
                 value={step.notes}
                 onChange={(val) => {
-                  dispatch(addNotes({ index, notes: val }));
+                  dispatch(addNotes(val));
                 }}
                 height={100}
                 style={{

@@ -5,13 +5,15 @@ import styles from "../playbooks.module.css";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import AddSource from "./AddSource.jsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function Query({ step, index }) {
+function Query() {
+  const [step, currentStepIndex] = useCurrentStep();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (step.isPrefetched) {
-      fetchData({ index });
+      fetchData({ currentStepIndex });
     }
   }, [step.isPrefetched]);
 
@@ -24,13 +26,11 @@ function Query({ step, index }) {
           position: "relative",
         }}>
         <div className="flex items-center gap-2">
-          <AddSource step={step} index={index} />
+          <AddSource />
         </div>
       </div>
 
-      {step.source && (
-        <PlaybookStep card={step} index={index} assetsList={step.assets} />
-      )}
+      {step.source && <PlaybookStep />}
       <CustomDrawer
         isOpen={isDrawerOpen}
         setIsOpen={setDrawerOpen}

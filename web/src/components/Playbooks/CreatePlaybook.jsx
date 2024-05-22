@@ -129,9 +129,11 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 key={index}
                 style={{ borderRadius: "5px" }}
                 className="collapsible_option"
-                defaultExpanded={index === currentStepIndex ? false : true}
-                expanded={step.isOpen}
-                onChange={() => dispatch(toggleStep({ index }))}>
+                defaultExpanded={
+                  index.toString() === currentStepIndex ? false : true
+                }
+                expanded={index.toString() === currentStepIndex ? true : false}
+                onChange={() => dispatch(toggleStep(index))}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon />}
                   aria-controls="panel1-content"
@@ -139,12 +141,11 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                   style={{ borderRadius: "5px", backgroundColor: "#f5f5f5" }}>
                   <PlaybookTitle
                     step={step}
-                    index={index}
                     updateCardByIndex={updateCardByIndex}
                   />
                 </AccordionSummary>
                 <AccordionDetails sx={{ padding: "0" }}>
-                  <Step key={index} step={step} index={index} />
+                  <Step key={index} step={step} />
                 </AccordionDetails>
               </Accordion>
             ))}
