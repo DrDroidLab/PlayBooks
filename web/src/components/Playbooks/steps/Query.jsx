@@ -12,10 +12,10 @@ function Query() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    if (step.isPrefetched) {
+    if (step?.isPrefetched) {
       fetchData({ currentStepIndex });
     }
-  }, [step.isPrefetched]);
+  }, [step?.isPrefetched]);
 
   return (
     <div className={styles["step-fields"]}>
@@ -30,7 +30,7 @@ function Query() {
         </div>
       </div>
 
-      {step.source && <PlaybookStep />}
+      {step?.source && <PlaybookStep />}
       <CustomDrawer
         isOpen={isDrawerOpen}
         setIsOpen={setDrawerOpen}

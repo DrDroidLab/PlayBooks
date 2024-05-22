@@ -26,7 +26,7 @@ function SelectConnectorOption() {
   }
 
   const currentConnectorOptions =
-    connectorOptions?.find((e) => e.id === step.source)?.connector
+    connectorOptions?.find((e) => e.id === step?.source)?.connector
       ?.connector_options ?? [];
 
   return (
@@ -41,7 +41,7 @@ function SelectConnectorOption() {
             }))}
             placeholder="Select Connector"
             onSelectionChange={handleConnectorOptionChange}
-            selected={step.connectorType}
+            selected={step?.connectorType}
             searchable={true}
             disabled={isPrefetched}
           />

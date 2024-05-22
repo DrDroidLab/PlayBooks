@@ -29,7 +29,7 @@ function SelectSource() {
       data={connectorOptions}
       placeholder="Select Data Source"
       onSelectionChange={handleSourceChange}
-      selected={step.source}
+      selected={step?.source}
       searchable={true}
       disabled={isPrefetched}
     />

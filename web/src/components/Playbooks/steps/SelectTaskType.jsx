@@ -44,7 +44,7 @@ function SelectTaskType() {
       }))}
       placeholder="Select Task Type"
       onSelectionChange={handleTaskTypeChange}
-      selected={step.taskType}
+      selected={step?.taskType}
       searchable={true}
       disabled={isPrefetched}
     />

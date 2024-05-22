@@ -22,8 +22,7 @@ export const extractCloudwatchTasks = (step: any) => {
     modelType,
     connectorType,
     namespaceName: cloudwatchStep?.namespace,
-    region:
-      cloudwatchStep?.region ?? cloudwatchStep?.filter_log_events_task?.region,
+    region: cloudwatchStep?.region,
     dimensionName: cloudwatchStep?.dimensions[0].name,
     dimensionValue: cloudwatchStep?.dimensions[0].value,
     metric: tasks.map((task) => {
@@ -34,8 +33,8 @@ export const extractCloudwatchTasks = (step: any) => {
         label: cloudwatchTaskInStep?.metric_name,
       };
     }),
-    logGroup: cloudwatchStep?.filter_log_events_task?.log_group_name,
-    cw_log_query: cloudwatchStep?.filter_log_events_task?.filter_query,
+    logGroup: cloudwatchStep?.log_group_name,
+    cw_log_query: cloudwatchStep?.filter_query,
   };
 
   return stepData;
