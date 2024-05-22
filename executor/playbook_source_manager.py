@@ -58,7 +58,8 @@ class PlaybookSourceManager:
                 all_active_valid_connectors = self.get_active_connectors(account_id=account_id,
                                                                          connector_id=connector_id)
             else:
-                all_active_valid_connectors = self.get_active_connectors(account_id=account_id)
+                raise Exception("No active connectors found for task")
+
             source_connector_proto: ConnectorProto = all_active_valid_connectors[0] if len(
                 all_active_valid_connectors) > 0 else None
 
