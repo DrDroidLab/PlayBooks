@@ -9,6 +9,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
     getAssets: builder.query<AssetsResponse, { filter: any }>({
       query: ({ filter }) => {
         const [task] = getCurrentTask();
+        console.log("as", task);
         return {
           url: GET_ASSETS,
           method: "POST",

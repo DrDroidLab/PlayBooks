@@ -8,6 +8,7 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
   BASH_COMMAND_OUTPUT: "BASH_COMMAND_OUTPUT",
+  TIMESERIES: "TIMESERIES",
 };
 
 const PlaybookStepOutput = ({ stepOutput }) => {
@@ -20,6 +21,17 @@ const PlaybookStepOutput = ({ stepOutput }) => {
       return <PlaybookAPIActionOutput output={out.api_response} />;
     case OutputTypes.BASH_COMMAND_OUTPUT:
       return <PlaybookBashActionOutput output={out.bash_command_output} />;
+    case OutputTypes.TIMESERIES:
+      return (
+        <PlayBookRunMetricGraph
+          result={out}
+          timestamp={out.timestamp}
+          step={step}
+          title={
+            error ? "Error from Source" : "No data available for this step"
+          }
+        />
+      );
     default:
       return (
         <PlayBookRunMetricGraph

@@ -5,8 +5,9 @@ export const extractCloudwatchTasks = (step: any) => {
   const taskType = tasks[0][stepSource.toLowerCase()]?.type;
   const cloudwatchStep =
     tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType = tasks[0]?.task_connector_sources[0]?.id;
 
-  switch (cloudwatchStep.type) {
+  switch (taskType) {
     case "FILTER_LOG_EVENTS":
       modelType = "CLOUDWATCH_LOG_GROUP";
       break;
@@ -15,18 +16,19 @@ export const extractCloudwatchTasks = (step: any) => {
   }
 
   const stepData = {
-    modelType,
     source: stepSource,
     connector_type: stepSource,
     taskType,
-    model_type: modelType,
+    modelType,
+    connectorType,
     namespaceName: cloudwatchStep?.namespace,
     region:
       cloudwatchStep?.region ?? cloudwatchStep?.filter_log_events_task?.region,
     dimensionName: cloudwatchStep?.dimensions[0].name,
     dimensionValue: cloudwatchStep?.dimensions[0].value,
     metric: tasks.map((task) => {
-      const cloudwatchTaskInStep = task?.metric_task?.cloudwatch_task;
+      const cloudwatchTaskInStep =
+        task[stepSource.toLowerCase()][taskType.toLowerCase()];
       return {
         id: cloudwatchTaskInStep?.metric_name,
         label: cloudwatchTaskInStep?.metric_name,
