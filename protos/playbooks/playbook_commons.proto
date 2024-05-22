@@ -108,7 +108,8 @@ message PlaybookSourceOptions {
 
     google.protobuf.StringValue display_name = 1;
     google.protobuf.StringValue task_type = 2;
-    repeated SourceModelTypeMap supported_model_types = 3;
+    google.protobuf.StringValue category = 3;
+    repeated SourceModelTypeMap supported_model_types = 4;
   }
 
   Source source = 1;
