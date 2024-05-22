@@ -52,7 +52,7 @@ class PlaybookSourceManager:
                      task: PlaybookTask) -> PlaybookTaskResult:
         try:
             if task.task_connector_sources:
-                # TODO: Handle multiple connectors in future
+                # TODO: Handle multiple connectors within task in future
                 task_connector_source = task.task_connector_sources[0]
                 connector_id = task_connector_source.id.value
                 all_active_valid_connectors = self.get_active_connectors(account_id=account_id,
@@ -61,6 +61,9 @@ class PlaybookSourceManager:
                 all_active_valid_connectors = self.get_active_connectors(account_id=account_id)
             source_connector_proto: ConnectorProto = all_active_valid_connectors[0] if len(
                 all_active_valid_connectors) > 0 else None
+
+            if not source_connector_proto:
+                raise Exception("No active connectors found for task")
 
             task_dict = proto_to_dict(task)
             source = task_dict.get('source', '')
