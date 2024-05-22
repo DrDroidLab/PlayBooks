@@ -13,39 +13,13 @@ export enum OptionType {
 }
 
 export const constructBuilder = (task: any, index) => {
-  if (!(task?.modelTypeOptions?.length > 0)) {
-    switch (task.modelType) {
-      case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
-        return Builders.newRelicNRQLBuilder(task, index);
-
-      case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
-        return Builders.datadogRawQueryBuilder(task, index);
-
-      case taskTypes.API_HTTP_REQUEST:
-        return Builders.apiBuilder(task, index);
-
-      case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
-        return Builders.sqlRawQueryBuilder(task, index);
-
-      case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
-        return Builders.mimirBuilder(task, index);
-
-      case taskTypes.BASH_COMMAND:
-        return Builders.bashBuilder(task, index);
-
-      default:
-        break;
-    }
-    return [];
-  }
-  let ops: any = handleModelOptions(
-    task?.modelTypeOptions[0]?.model_types_options[0],
-    task.modelType.toLowerCase(),
-  );
-  ops = handleModelOptions(
-    task?.modelTypeOptions[0]?.model_types_options[0],
-    task.modelType.toLowerCase(),
-  );
+  let ops: any =
+    task?.modelTypeOptions?.length > 0
+      ? handleModelOptions(
+          task?.modelTypeOptions[0]?.model_types_options[0],
+          task.modelType.toLowerCase(),
+        )
+      : [];
 
   switch (`${task.source} ${task.taskType}`) {
     case taskTypes.CLICKHOUSE_SQL_QUERY:
@@ -84,6 +58,14 @@ export const constructBuilder = (task: any, index) => {
       return Builders.eksBuilder(task, index, ops?.regions);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(task, index, ops?.ssh_servers);
+    case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
+      return Builders.datadogRawQueryBuilder(task, index);
+    case taskTypes.API_HTTP_REQUEST:
+      return Builders.apiBuilder(task, index);
+    case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
+      return Builders.sqlRawQueryBuilder(task, index);
+    case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
+      return Builders.mimirBuilder(task, index);
     default:
       return [];
   }

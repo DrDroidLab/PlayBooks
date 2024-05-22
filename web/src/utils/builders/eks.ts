@@ -50,7 +50,7 @@ export const eksBuilder = (task: Step, index, options: any) => {
           selected: task.cluster,
           value: task.cluster,
           options: options
-            .find((e) => e.region === task.eksRegion)
+            ?.find((e) => e.region === task.eksRegion)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
           handleChange: (_, val) => {
             store.dispatch(selectCluster({ index, cluster: val.label }));

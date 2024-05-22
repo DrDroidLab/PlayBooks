@@ -7,32 +7,40 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
-function AddSource({ step, isDataFetching }) {
+function AddSource({ step, isDataFetching, index }) {
   const dispatch = useDispatch();
   const { currentStepIndex, connectorOptions, steps } =
     useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
 
   const taskTypes =
-    connectorOptions.find((e) => e.id === steps[currentStepIndex]?.source)
-      ?.connector?.supported_task_type_options ?? [];
+    connectorOptions.find(
+      (e) => e.id === steps[index ?? currentStepIndex]?.source,
+    )?.connector?.supported_task_type_options ?? [];
 
   function handleSourceChange(id) {
     dispatch(
       updateStep({
-        index: currentStepIndex,
+        index: index ?? currentStepIndex,
         key: "source",
         value: id,
       }),
     );
   }
 
-  function handleTaskTypeChange(id) {
+  function handleTaskTypeChange(id, val) {
     dispatch(
       updateStep({
-        index: currentStepIndex,
+        index: index ?? currentStepIndex,
         key: "taskType",
         value: id,
+      }),
+    );
+    dispatch(
+      updateStep({
+        index: index ?? currentStepIndex,
+        key: "description",
+        value: val.type.display_name,
       }),
     );
   }
