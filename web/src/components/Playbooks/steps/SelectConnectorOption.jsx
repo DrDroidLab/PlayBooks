@@ -1,22 +1,19 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  updateStep,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
 import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
+import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 
 function SelectConnectorOption() {
   const { currentStepIndex, steps, connectorOptions } =
     useSelector(playbookSelector);
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
-  const dispatch = useDispatch();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = useGetBuilderOptionsQuery();
 
@@ -25,13 +22,7 @@ function SelectConnectorOption() {
   };
 
   function handleConnectorOptionChange(id) {
-    dispatch(
-      updateStep({
-        currentStepIndex,
-        key: "connectorType",
-        value: id,
-      }),
-    );
+    updateCardByIndex("connectorType", id);
   }
 
   const currentConnectorOptions =

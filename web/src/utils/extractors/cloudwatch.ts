@@ -1,37 +1,35 @@
 export const extractCloudwatchTasks = (step: any) => {
   let stepSource = "CLOUDWATCH";
-  let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const cloudwatchStep = tasks[0]?.cloudwatch_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const cloudwatchStep =
+    tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
 
   switch (cloudwatchStep.type) {
     case "FILTER_LOG_EVENTS":
-      selected = "CLOUDWATCH Log Group";
       modelType = "CLOUDWATCH_LOG_GROUP";
       break;
     case "METRIC_EXECUTION":
-      selected = "CLOUDWATCH Metric";
       modelType = "CLOUDWATCH_METRIC";
   }
 
   const stepData = {
     modelType,
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
+    taskType,
     model_type: modelType,
-    namespaceName: cloudwatchStep?.metric_execution_task?.namespace,
+    namespaceName: cloudwatchStep?.namespace,
     region:
-      cloudwatchStep?.metric_execution_task?.region ??
-      cloudwatchStep?.filter_log_events_task?.region,
-    dimensionName: cloudwatchStep?.metric_execution_task?.dimensions[0].name,
-    dimensionValue: cloudwatchStep?.metric_execution_task?.dimensions[0].value,
+      cloudwatchStep?.region ?? cloudwatchStep?.filter_log_events_task?.region,
+    dimensionName: cloudwatchStep?.dimensions[0].name,
+    dimensionValue: cloudwatchStep?.dimensions[0].value,
     metric: tasks.map((task) => {
       const cloudwatchTaskInStep = task?.metric_task?.cloudwatch_task;
       return {
-        id: cloudwatchTaskInStep?.metric_execution_task?.metric_name,
-        label: cloudwatchTaskInStep?.metric_execution_task?.metric_name,
+        id: cloudwatchTaskInStep?.metric_name,
+        label: cloudwatchTaskInStep?.metric_name,
       };
     }),
     logGroup: cloudwatchStep?.filter_log_events_task?.log_group_name,

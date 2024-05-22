@@ -70,6 +70,7 @@ export interface Step {
   interpreter?: any;
   promql_expression?: string;
   remote_server?: string;
+  taskType?: string;
 }
 
 export interface GoldenMetric {
@@ -241,6 +242,7 @@ export interface PlaybookTask {
   documentation_task?: DocumentationTask;
   global_variable_set?: any;
   interpreter_type?: string;
+  task_connector_sources: any;
 }
 
 export interface GlobalVariable {
