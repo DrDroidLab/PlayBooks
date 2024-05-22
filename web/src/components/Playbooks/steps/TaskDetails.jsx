@@ -54,10 +54,10 @@ function TaskDetails() {
   };
 
   useEffect(() => {
-    if (step[data?.triggerGetAssetsKey]) {
+    if (step[data?.triggerGetAssetsKey] && step.connectorType) {
       getAssets();
     }
-  }, [step[data?.triggerGetAssetsKey]]);
+  }, [step[data?.triggerGetAssetsKey], step.connectorType]);
 
   useEffect(() => {
     const errorChanged = prevError.current === step.errors;

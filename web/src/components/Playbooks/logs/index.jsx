@@ -86,16 +86,9 @@ function PlaybookLogs() {
     dispatch(setSteps(pbData));
     const assetModelPromises = pbData.map((el, i) =>
       dispatch(
-        getAssetModelOptions.initiate(
-          {
-            connector_type: el.source,
-            model_type: el.modelType,
-            stepIndex: i,
-          },
-          {
-            forceRefetch: true,
-          },
-        ),
+        getAssetModelOptions.initiate({
+          forceRefetch: true,
+        }),
       ).unwrap(),
     );
 

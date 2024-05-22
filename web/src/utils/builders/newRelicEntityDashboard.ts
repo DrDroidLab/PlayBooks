@@ -12,8 +12,6 @@ export const newRelicEntityDashboardBuilder = (options) => {
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         new_relic_entity_dashboard_model_filters: {
           dashboards: [

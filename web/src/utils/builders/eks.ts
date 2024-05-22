@@ -8,8 +8,6 @@ export const eksBuilder = (options: any) => {
   return {
     triggerGetAssetsKey: "cluster",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         eks_cluster_model_filters: {
           regions: [

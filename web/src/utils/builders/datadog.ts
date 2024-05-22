@@ -8,8 +8,6 @@ export const datadogBuilder = (options) => {
   return {
     triggerGetAssetsKey: "datadogMetricFamily",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         datadog_service_model_filters: {
           services: [

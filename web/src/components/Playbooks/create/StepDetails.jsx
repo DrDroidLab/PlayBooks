@@ -37,10 +37,15 @@ function StepDetails() {
   };
 
   useEffect(() => {
-    if (currentStepIndex !== null && step?.source && step?.modelType) {
+    if (
+      currentStepIndex !== null &&
+      step?.source &&
+      step?.modelType &&
+      step.connectorType
+    ) {
       fetchData();
     }
-  }, [currentStepIndex, step?.source, step?.modelType]);
+  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));

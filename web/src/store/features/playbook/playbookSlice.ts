@@ -287,7 +287,11 @@ const playbookSlice = createSlice({
       state.steps[payload.index].metric = undefined;
     },
     setModelTypeOptions: (state, { payload }) => {
-      state.steps[payload.index].modelTypeOptions = payload.options;
+      if (
+        state.currentStepIndex !== undefined &&
+        state.currentStepIndex !== null
+      )
+        state.steps[state.currentStepIndex].modelTypeOptions = payload;
     },
     setAssets(state, { payload }) {
       if (

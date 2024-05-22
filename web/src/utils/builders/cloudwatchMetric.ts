@@ -42,8 +42,6 @@ export const cloudwatchMetricBuilder = (options) => {
   return {
     triggerGetAssetsKey: "namespaceName",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         cloudwatch_metric_model_filters: {
           namespaces: [task.namespaceName],

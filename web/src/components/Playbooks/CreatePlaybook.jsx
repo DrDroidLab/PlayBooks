@@ -41,16 +41,9 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
     const data = playbookToSteps(playbook);
     const assetModelPromises = data.map((el, i) =>
       dispatch(
-        getAssetModelOptions.initiate(
-          {
-            connector_type: el.source,
-            model_type: el.modelType,
-            stepIndex: i,
-          },
-          {
-            forceRefetch: true,
-          },
-        ),
+        getAssetModelOptions.initiate({
+          forceRefetch: true,
+        }),
       ).unwrap(),
     );
 

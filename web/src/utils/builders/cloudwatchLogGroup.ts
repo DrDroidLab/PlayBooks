@@ -6,8 +6,6 @@ export const cloudwatchLogGroupBuilder = (options: any) => {
   return {
     triggerGetAssetsKey: "region",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         cloudwatch_log_group_model_filters: {
           regions: [task.region],
