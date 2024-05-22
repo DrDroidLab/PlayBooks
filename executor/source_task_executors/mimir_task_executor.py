@@ -21,11 +21,11 @@ class MimirSourceManager(PlaybookSourceManager):
         self.task_proto = PromQl
         self.task_type_callable_map = {
             PromQl.TaskType.PROMQL_METRIC_EXECUTION: {
-                'display_name': 'Query any of your Prometheus from Mimir',
-                'category': 'Metrics',
                 'task_type': 'PROMQL_METRIC_EXECUTION',
+                'executor': self.execute_promql_metric_execution,
                 'model_types': [],
-                'executor': self.execute_promql_metric_execution
+                'display_name': 'Query any of your Prometheus from Mimir',
+                'category': 'Metrics'
             },
         }
 

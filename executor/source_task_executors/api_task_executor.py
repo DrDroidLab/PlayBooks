@@ -28,11 +28,11 @@ class ApiSourceManager(PlaybookSourceManager):
         self.task_proto = Api
         self.task_type_callable_map = {
             Api.TaskType.HTTP_REQUEST: {
-                'display_name': 'Trigger an API',
-                'category': 'Actions',
                 'task_type': 'HTTP_REQUEST',
+                'executor': self.execute_http_request,
                 'model_types': [],
-                'executor': self.execute_http_request
+                'display_name': 'Trigger an API',
+                'category': 'Actions'
             },
         }
 
