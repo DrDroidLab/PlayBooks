@@ -9,7 +9,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.task_executor import execute_task
+from executor.task_executor_facade import executor_facade
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor import action_executor
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
@@ -22,11 +22,12 @@ from intelligence_layer.result_interpreters.result_interpreter_facade import pla
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
+from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
 from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.playbook_pb2 import PlaybookExecution as PlaybookExecutionProto, PlaybookExecutionLog, \
-    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookExecution
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
 from protos.base_pb2 import Source
@@ -188,7 +189,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
             thread_ts = workflow_execution.metadata.get('thread_ts', None)
 
         playbook_execution = playbook_executions.first()
-        pe_proto: PlaybookExecutionProto = playbook_execution.proto
+        pe_proto: DeprecatedPlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
@@ -260,21 +261,15 @@ def test_workflow_notification(account_id, workflow, message_type):
         return
     step_execution_logs: [PlaybookStepExecutionLogProto] = []
     try:
+        global_variable_set = pb_proto.global_variable_set
         for step in playbook_steps:
             tasks = step.tasks
             pe_logs = []
             for task_proto in tasks:
-                if pb_proto.global_variable_set:
-                    task_proto.global_variable_set.update(pb_proto.global_variable_set)
-                task_result = execute_task(account_id, tr, task_proto)
-                playbook_execution_log = PlaybookExecutionLog(
-                    playbook=pb_proto,
-                    step=step,
-                    task=task_proto,
-                    task_execution_result=task_result,
-                )
+                task_result = executor_facade.execute_task(account.id, tr, global_variable_set, task_proto)
+                playbook_execution_log = PlaybookTaskExecutionLogProto(task=task_proto, result=task_result)
                 pe_logs.append(playbook_execution_log)
-            step_execution_log = PlaybookStepExecutionLogProto(step=step, logs=pe_logs)
+            step_execution_log = PlaybookStepExecutionLogProto(step=step, task_execution_logs=pe_logs)
             step_execution_logs.append(step_execution_log)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")

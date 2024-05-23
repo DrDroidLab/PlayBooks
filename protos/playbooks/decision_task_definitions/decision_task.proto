@@ -1,0 +1,57 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "protos/playbooks/playbook_commons.proto";
+
+
+enum EvaluationConditionFunction {
+  UNKNOWN_ECF = 0;
+  ECF_AVG = 1;
+  ECF_SUM = 2;
+  ECF_MIN = 3;
+  ECF_MAX = 4;
+}
+
+enum EvaluationConditionOperator {
+  UNKNOWN_ECO = 0;
+  GREATER_THAN = 1;
+  LESS_THAN = 2;
+  GREATER_THAN_EQUAL = 3;
+  LESS_THAN_EQUAL = 4;
+  EQUAL = 5;
+  NOT_EQUAL = 6;
+}
+
+message TimeseriesEvaluationTask {
+  enum InputType {
+    UNKNOWN = 0;
+    METRIC_TIMESERIES = 1;
+  }
+  message Rule {
+    enum Type {
+      UNKNOWN_TEC = 0;
+      ROLLING = 1;
+      CUMULATIVE = 2;
+    }
+    Type type = 1;
+    EvaluationConditionFunction function = 2;
+    EvaluationConditionOperator operator = 3;
+    google.protobuf.DoubleValue window = 4;
+    google.protobuf.DoubleValue threshold = 5;
+    google.protobuf.StringValue next_task = 6;
+    repeated LabelValuePair label_values = 7;
+  }
+
+  repeated Rule rules = 1;
+  InputType input_type = 2;
+  oneof input {
+    TimeseriesResult timeseries_input = 3;
+  }
+
+}
+
+message ElseEvaluationTask {
+  google.protobuf.StringValue next_task = 1;
+}

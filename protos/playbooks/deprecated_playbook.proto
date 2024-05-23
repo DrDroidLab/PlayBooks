@@ -1,0 +1,473 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+import "protos/playbooks/playbook_commons.proto";
+import "protos/playbooks/intelligence_layer/interpreter.proto";
+
+//////////////// Playbook Metric Task Execution Protos ////////////////
+// Metric Task Definition Protos //
+message DeprecatedPlaybookCloudwatchTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    METRIC_EXECUTION = 1;
+    FILTER_LOG_EVENTS = 2;
+  }
+
+  message DeprecatedCloudwatchMetricExecutionTask {
+    message Dimension {
+      google.protobuf.StringValue name = 1;
+      google.protobuf.StringValue value = 2;
+    }
+    google.protobuf.StringValue namespace = 1;
+    google.protobuf.StringValue region = 2;
+    google.protobuf.StringValue metric_name = 3;
+    repeated Dimension dimensions = 4;
+    google.protobuf.StringValue statistic = 5;
+    google.protobuf.StringValue process_function = 6;
+  }
+
+  message DeprecatedCloudwatchFilterLogEventsTask {
+    google.protobuf.StringValue region = 1;
+    google.protobuf.StringValue log_group_name = 2;
+    google.protobuf.StringValue filter_query = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    DeprecatedCloudwatchMetricExecutionTask metric_execution_task = 2;
+    DeprecatedCloudwatchFilterLogEventsTask filter_log_events_task = 3;
+  }
+}
+
+message DeprecatedPlaybookGrafanaTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    PROMQL_METRIC_EXECUTION = 1;
+  }
+
+  message DeprecatedPromQlMetricExecutionTask {
+    message LabelValue {
+      google.protobuf.StringValue name = 1;
+      google.protobuf.StringValue value = 2;
+    }
+    google.protobuf.StringValue promql_expression = 1;
+    repeated LabelValue promql_label_option_values = 2;
+    google.protobuf.StringValue dashboard_uid = 3;
+    google.protobuf.StringValue dashboard_title = 4;
+    google.protobuf.StringValue panel_id = 5;
+    google.protobuf.StringValue panel_title = 6;
+    google.protobuf.StringValue process_function = 7;
+    google.protobuf.StringValue panel_promql_expression = 8;
+  }
+
+  TaskType type = 1;
+  google.protobuf.StringValue datasource_uid = 2;
+  oneof task {
+    DeprecatedPromQlMetricExecutionTask promql_metric_execution_task = 3;
+  }
+}
+
+message DeprecatedPlaybookNewRelicTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION = 1;
+    ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION = 2;
+    NRQL_METRIC_EXECUTION = 3;
+  }
+
+  message DeprecatedEntityApplicationGoldenMetricExecutionTask {
+    google.protobuf.StringValue application_entity_guid = 1;
+    google.protobuf.StringValue application_entity_name = 2;
+    google.protobuf.StringValue golden_metric_name = 3;
+    google.protobuf.StringValue golden_metric_unit = 4;
+    google.protobuf.StringValue golden_metric_nrql_expression = 5;
+    google.protobuf.StringValue process_function = 6;
+  }
+
+  message DeprecatedEntityDashboardWidgetNRQLMetricExecutionTask {
+    google.protobuf.StringValue dashboard_guid = 1;
+    google.protobuf.StringValue dashboard_name = 2;
+    google.protobuf.StringValue page_guid = 3;
+    google.protobuf.StringValue page_name = 4;
+    google.protobuf.StringValue widget_id = 5;
+    google.protobuf.StringValue widget_title = 6;
+    google.protobuf.StringValue widget_type = 7;
+    google.protobuf.StringValue widget_nrql_expression = 8;
+    google.protobuf.StringValue unit = 9;
+    google.protobuf.StringValue process_function = 10;
+  }
+
+  message DeprecatedNRQLMetricExecutionTask {
+    google.protobuf.StringValue metric_name = 1;
+    google.protobuf.StringValue nrql_expression = 2;
+    google.protobuf.StringValue unit = 3;
+    google.protobuf.StringValue process_function = 4;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    DeprecatedEntityApplicationGoldenMetricExecutionTask entity_application_golden_metric_execution_task = 2;
+    DeprecatedEntityDashboardWidgetNRQLMetricExecutionTask entity_dashboard_widget_nrql_metric_execution_task = 3;
+    DeprecatedNRQLMetricExecutionTask nrql_metric_execution_task = 4;
+  }
+}
+
+message DeprecatedPlaybookDatadogTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    SERVICE_METRIC_EXECUTION = 1;
+    QUERY_METRIC_EXECUTION = 2;
+  }
+
+  message DeprecatedServiceMetricExecutionTask {
+    google.protobuf.StringValue service_name = 1;
+    google.protobuf.StringValue environment_name = 2;
+    google.protobuf.StringValue metric_family = 3;
+    google.protobuf.StringValue metric = 4;
+    google.protobuf.StringValue process_function = 5;
+  }
+
+  message DeprecatedQueryMetricExecutionTask {
+    repeated string queries = 1;
+    google.protobuf.StringValue formula = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    DeprecatedServiceMetricExecutionTask service_metric_execution_task = 2;
+    DeprecatedQueryMetricExecutionTask query_metric_execution_task = 3;
+  }
+}
+
+message DeprecatedPlaybookPromQLTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    PROMQL_METRIC_EXECUTION = 1;
+  }
+
+  message DeprecatedPromQlMetricExecutionTask {
+    google.protobuf.StringValue promql_expression = 1;
+    google.protobuf.StringValue process_function = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    DeprecatedPromQlMetricExecutionTask promql_metric_execution_task = 3;
+  }
+}
+
+message DeprecatedPlaybookMetricTaskDefinition {
+  Source source = 1;
+  oneof task {
+    DeprecatedPlaybookCloudwatchTask cloudwatch_task = 6;
+    DeprecatedPlaybookGrafanaTask grafana_task = 7;
+    DeprecatedPlaybookNewRelicTask new_relic_task = 8;
+    DeprecatedPlaybookDatadogTask datadog_task = 9;
+    DeprecatedPlaybookPromQLTask mimir_task = 10;
+  }
+}
+
+message DeprecatedPlaybookMetricTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TIMESERIES = 1;
+      TABLE_RESULT = 2;
+    }
+
+    Type type = 1;
+    oneof result {
+      TimeseriesResult timeseries = 2;
+      TableResult table_result = 3;
+    }
+  }
+
+  Source metric_source = 1;
+  google.protobuf.StringValue metric_name = 2;
+  google.protobuf.StringValue metric_expression = 3;
+  Result result = 5;
+}
+
+
+//////////////// Playbook Documentation Task Execution Protos ////////////////
+message DeprecatedPlaybookDocumentationTaskDefinition {
+  enum Type {
+    UNKNOWN = 0;
+    MARKDOWN = 1;
+  }
+  Type type = 1;
+  google.protobuf.StringValue documentation = 2;
+}
+
+message DeprecatedPlaybookDocumentationTaskExecutionResult {
+
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      MARKDOWN = 1;
+    }
+
+    message MarkdownResult {
+      google.protobuf.Struct text = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      MarkdownResult markdown_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value documentation_task_id = 1;
+  google.protobuf.StringValue documentation_task_name = 2;
+  Result result = 3;
+}
+
+
+//////////////// Playbook Data Fetch Task Execution Protos ////////////////
+message DeprecatedPlaybookClickhouseDataFetchTask {
+  google.protobuf.StringValue database = 1;
+  google.protobuf.StringValue query = 2;
+}
+
+message DeprecatedPlaybookPostgresDataFetchTask {
+  google.protobuf.StringValue database = 1;
+  google.protobuf.StringValue query = 2;
+}
+
+message DeprecatedPlaybookEksDataFetchTask {
+  enum CommandType {
+    UNKNOWN = 0;
+    GET_PODS = 1;
+    GET_DEPLOYMENTS = 2;
+    GET_EVENTS = 3;
+    GET_SERVICES = 4;
+  }
+  CommandType command_type = 1;
+  google.protobuf.StringValue description = 2;
+  google.protobuf.StringValue region = 3;
+  google.protobuf.StringValue cluster = 4;
+  google.protobuf.StringValue namespace = 5;
+}
+
+message DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask {
+  google.protobuf.StringValue query = 1;
+}
+
+message DeprecatedPlaybookDataFetchTaskDefinition {
+  Source source = 1;
+  google.protobuf.StringValue order_by_column = 2;
+  google.protobuf.UInt64Value limit = 3;
+  google.protobuf.UInt64Value offset = 4;
+  oneof task {
+    DeprecatedPlaybookClickhouseDataFetchTask clickhouse_data_fetch_task = 5;
+    DeprecatedPlaybookPostgresDataFetchTask postgres_data_fetch_task = 6;
+    DeprecatedPlaybookEksDataFetchTask eks_data_fetch_task = 7;
+    DeprecatedPlaybookSqlDatabaseConnectionDataFetchTask sql_database_connection_data_fetch_task = 8;
+  }
+}
+
+// Data Fetch Task Result Protos //
+message DeprecatedPlaybookDataFetchTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      TABLE_RESULT = 1;
+    }
+
+    Type type = 1;
+    oneof result {
+      TableResult table_result = 2;
+    }
+  }
+
+  google.protobuf.UInt64Value data_fetch_task_id = 1;
+  google.protobuf.StringValue data_fetch_task_name = 2;
+  Source data_source = 3;
+  Result result = 4;
+}
+
+
+//////////////// Playbook Action Task Execution Protos ////////////////
+// Action Task Definition Proto //
+message DeprecatedPlaybookApiCallTask {
+  enum Method {
+    UNKNOWN = 0;
+    GET = 1;
+    POST = 2;
+    PUT = 3;
+    PATCH = 4;
+    DELETE = 5;
+  }
+  Method method = 1;
+  google.protobuf.StringValue url = 2;
+  google.protobuf.Struct headers = 3;
+  google.protobuf.Struct payload = 4;
+  google.protobuf.UInt64Value timeout = 5;
+  google.protobuf.Struct cookies = 6;
+}
+
+message DeprecatedPlaybookBashCommandTask {
+  google.protobuf.StringValue command = 1;
+  google.protobuf.StringValue remote_server = 2;
+}
+
+message DeprecatedPlaybookActionTaskDefinition {
+  Source source = 1;
+  google.protobuf.UInt64Value id = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.Struct metadata = 4;
+  oneof task {
+    DeprecatedPlaybookApiCallTask api_call_task = 5;
+    DeprecatedPlaybookBashCommandTask bash_command_task = 6;
+  }
+}
+
+// Action Task Result Proto //
+message DeprecatedPlaybookActionTaskExecutionResult {
+  message Result {
+    enum Type {
+      UNKNOWN = 0;
+      API_RESPONSE = 1;
+      BASH_COMMAND_OUTPUT = 2;
+    }
+
+    Type type = 1;
+    oneof result {
+      ApiResponseResult api_response = 2;
+      BashCommandOutputResult bash_command_output = 3;
+    }
+  }
+
+  google.protobuf.UInt64Value action_task_id = 1;
+  google.protobuf.StringValue action_task_name = 2;
+  Result result = 3;
+}
+
+
+// Playbook Protos
+message DeprecatedPlaybookTaskDefinition {
+
+  enum Type {
+    UNKNOWN = 0;
+    METRIC = 1;
+    DECISION = 2;
+    DATA_FETCH = 3;
+    DOCUMENTATION = 4;
+    ACTION = 5;
+  }
+
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue notes = 4;
+  google.protobuf.Struct global_variable_set = 5;
+  Type type = 6;
+  InterpreterType interpreter_type = 7;
+  oneof task {
+    DeprecatedPlaybookMetricTaskDefinition metric_task = 8;
+    DeprecatedPlaybookDataFetchTaskDefinition data_fetch_task = 10;
+    DeprecatedPlaybookDocumentationTaskDefinition documentation_task = 11;
+    DeprecatedPlaybookActionTaskDefinition action_task = 12;
+  }
+}
+
+message DeprecatedPlaybookTaskExecutionResult  {
+  google.protobuf.StringValue error = 1;
+  google.protobuf.StringValue message = 2;
+  oneof result {
+    DeprecatedPlaybookMetricTaskExecutionResult metric_task_execution_result = 3;
+    DeprecatedPlaybookDataFetchTaskExecutionResult data_fetch_task_execution_result = 4;
+    DeprecatedPlaybookDocumentationTaskExecutionResult documentation_task_execution_result = 5;
+    DeprecatedPlaybookActionTaskExecutionResult action_task_execution_result = 6;
+  }
+}
+
+message DeprecatedPlaybookStepDefinition {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.StringValue notes = 4;
+  repeated ExternalLink external_links = 5;
+  InterpreterType interpreter_type = 6;
+  repeated DeprecatedPlaybookTaskDefinition tasks = 7;
+}
+
+message DeprecatedPlaybook {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.BoolValue is_active = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  sfixed64 last_run_at = 7;
+  PlaybookExecutionStatusType status = 8;
+  repeated DeprecatedPlaybookStepDefinition steps = 9;
+  google.protobuf.Struct global_variable_set = 10;
+}
+
+
+message DeprecatedPlaybookExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  google.protobuf.StringValue playbook_run_id = 3;
+  DeprecatedPlaybook playbook = 4;
+  DeprecatedPlaybookStepDefinition step = 5;
+  DeprecatedPlaybookTaskDefinition task = 6;
+  DeprecatedPlaybookTaskExecutionResult task_execution_result = 7;
+  Interpretation task_interpretation = 8;
+}
+
+message DeprecatedPlaybookStepExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  sfixed64 timestamp = 2;
+  DeprecatedPlaybookStepDefinition step = 3;
+  repeated DeprecatedPlaybookExecutionLog logs = 4;
+  Interpretation step_interpretation = 5;
+}
+
+message DeprecatedPlaybookExecution {
+  google.protobuf.UInt64Value id = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+  DeprecatedPlaybook playbook = 3;
+  PlaybookExecutionStatusType status = 4;
+  sfixed64 created_at = 5;
+  sfixed64 started_at = 6;
+  sfixed64 finished_at = 7;
+  TimeRange time_range = 8;
+  google.protobuf.StringValue created_by = 9;
+  repeated DeprecatedPlaybookExecutionLog logs = 10;
+  repeated DeprecatedPlaybookStepExecutionLog step_execution_logs = 11;
+}
+
+// Crud Protos
+message DeprecatedUpdatePlaybookOp {
+  enum Op {
+    UNKNOWN = 0;
+    UPDATE_PLAYBOOK_NAME = 1;
+    UPDATE_PLAYBOOK_STATUS = 2;
+    UPDATE_PLAYBOOK = 3;
+  }
+
+  message UpdatePlaybookName {
+    google.protobuf.StringValue name = 1;
+  }
+
+  message UpdatePlaybookStatus {
+    google.protobuf.BoolValue is_active = 1;
+  }
+
+  message UpdatePlaybook {
+    DeprecatedPlaybook playbook = 1;
+  }
+
+  Op op = 1;
+  oneof update {
+    UpdatePlaybookName update_playbook_name = 2;
+    UpdatePlaybookStatus update_playbook_status = 3;
+    UpdatePlaybook update_playbook = 4;
+  }
+}

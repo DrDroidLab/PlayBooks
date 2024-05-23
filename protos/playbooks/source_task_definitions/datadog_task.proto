@@ -1,0 +1,33 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message Datadog {
+  message ServiceMetricExecutionTask {
+    google.protobuf.StringValue service_name = 1;
+    google.protobuf.StringValue environment_name = 2;
+    google.protobuf.StringValue metric_family = 3;
+    google.protobuf.StringValue metric = 4;
+    google.protobuf.StringValue process_function = 5;
+  }
+
+  message QueryMetricExecutionTask {
+    repeated string queries = 1;
+    google.protobuf.StringValue formula = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SERVICE_METRIC_EXECUTION = 1;
+    QUERY_METRIC_EXECUTION = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    ServiceMetricExecutionTask service_metric_execution = 2;
+    QueryMetricExecutionTask query_metric_execution = 3;
+  }
+}

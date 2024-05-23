@@ -6,13 +6,13 @@ from accounts.models import Account
 from executor.crud.playbook_execution_crud import get_db_playbook_execution, update_db_playbook_execution_status, \
     update_db_account_playbook_execution_status, bulk_create_playbook_execution_log
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.task_executor import execute_task
+from executor.task_executor_facade import executor_facade
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType
-from protos.playbooks.playbook_pb2 import PlaybookExecutionStatusType
+from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,7 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
     pb_proto = pb.proto
     try:
+        global_variable_set = pb_proto.global_variable_set
         steps = pb_proto.steps
         all_step_executions = {}
         task_interpretations = []
@@ -53,14 +54,12 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
             tasks = step.tasks
             all_task_executions = []
             for task_proto in tasks:
-                if pb_proto.global_variable_set:
-                    task_proto.global_variable_set.update(pb_proto.global_variable_set)
-                task_execution_result = execute_task(account_id, tr, task_proto)
+                task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task_proto)
                 task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
-                                                                                 task_execution_result)
+                                                                                 task_result)
                 all_task_executions.append({
                     'task_id': task_proto.id.value,
-                    'task_result': proto_to_dict(task_execution_result),
+                    'task_result': proto_to_dict(task_result),
                     'task_interpretation': proto_to_dict(task_interpretation),
                 })
                 task_interpretations.append(task_interpretation)
