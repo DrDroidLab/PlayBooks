@@ -37,11 +37,15 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
         if not grafana_connector_keys:
             raise Exception("Active Grafana connector keys not found for account: {}".format(account_id))
 
+        self.__ssl_verify = True
         for key in grafana_connector_keys:
             if key.key_type == SourceKeyType.GRAFANA_API_KEY:
                 self.__grafana_api_key = key.key
             elif key.key_type == SourceKeyType.GRAFANA_HOST:
                 self.__grafana_host = key.key
+            elif key.key_type == SourceKeyType.SSL_VERIFY:
+                verify = key.key == "true"
+                self.__ssl_verify = verify
 
         if not self.__grafana_api_key or not self.__grafana_host:
             raise Exception("Grafana API key or host not found for account: {}".format(account_id))
@@ -82,7 +86,7 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        grafana_api_processor = GrafanaApiProcessor(self.__grafana_host, self.__grafana_api_key)
+        grafana_api_processor = GrafanaApiProcessor(self.__grafana_host, self.__grafana_api_key, self.__ssl_verify)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "

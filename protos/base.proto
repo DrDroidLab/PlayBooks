@@ -170,6 +170,8 @@ enum SourceKeyType {
 
   MIMIR_HOST = 53;
   X_SCOPE_ORG_ID = 54;
+  
+  SSL_VERIFY = 55;
 }
 
 enum SourceModelType {
