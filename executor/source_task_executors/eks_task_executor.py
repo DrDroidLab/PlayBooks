@@ -68,7 +68,7 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_pods(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                  eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.command
+        eks_command = eks_task.get_pods
         aws_region = eks_command.region.value
         cluster_name = eks_command.cluster.value
         namespace = eks_command.namespace.value
@@ -118,7 +118,7 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                         eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.command
+        eks_command = eks_task.get_deployments
         aws_region = eks_command.region.value
         cluster_name = eks_command.cluster.value
         namespace = eks_command.namespace.value
@@ -169,7 +169,7 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_events(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                    eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.command
+        eks_command = eks_task.get_events
         aws_region = eks_command.region.value
         cluster_name = eks_command.cluster.value
         namespace = eks_command.namespace.value
@@ -220,7 +220,7 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_services(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                      eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.command
+        eks_command = eks_task.get_services
         aws_region = eks_command.region.value
         cluster_name = eks_command.cluster.value
         namespace = eks_command.namespace.value
