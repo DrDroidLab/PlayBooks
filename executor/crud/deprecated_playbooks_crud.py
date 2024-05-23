@@ -183,8 +183,8 @@ def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: D
                                                         task_md5=task_md5,
                                                         created_by=created_by,
                                                         defaults={'task': new_task,
-                                                                  'description': task.description.value,
-                                                                  'notes': task.notes.value})
+                                                                  'description': task_proto.description.value,
+                                                                  'notes': task_proto.notes.value})
         return db_task, None
     except IntegrityError:
         db_task = PlayBookTask.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
