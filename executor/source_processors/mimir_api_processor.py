@@ -9,14 +9,15 @@ logger = logging.getLogger(__name__)
 class MimirApiProcessor(Processor):
     client = None
 
-    def __init__(self, mimir_host, x_scope_org_id='anonymous'):
+    def __init__(self, mimir_host, x_scope_org_id='anonymous', ssl_verify='true'):
         self.__host = mimir_host
+        self.__ssl_verify = False if ssl_verify == 'false' else True
         self.headers = {'X-Scope-OrgID': x_scope_org_id}
 
     def test_connection(self):
         try:
             url = '{}/config'.format(self.__host)
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify)
             if response and response.status_code == 200:
                 return True
             else:
@@ -32,7 +33,7 @@ class MimirApiProcessor(Processor):
         try:
             url = '{}/api/datasources/proxy/uid/{}/api/v1/labels?match[]={}'.format(self.__host, promql_datasource_uid,
                                                                                     metric_name)
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify)
             if response and response.status_code == 200:
                 return response.json()
         except Exception as e:
@@ -44,7 +45,7 @@ class MimirApiProcessor(Processor):
             url = '{}/api/datasources/proxy/uid/{}/api/v1/label/{}/values?match[]={}'.format(self.__host,
                                                                                              promql_datasource_uid,
                                                                                              label_name, metric_name)
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify)
             if response and response.status_code == 200:
                 return response.json()
         except Exception as e:
@@ -55,7 +56,7 @@ class MimirApiProcessor(Processor):
         try:
             url = '{}/prometheus/api/v1/query_range?query={}&start={}&end={}&step={}'.format(
                 self.__host, query, start, end, step)
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify)
             if response and response.status_code == 200:
                 return response.json()
         except Exception as e:

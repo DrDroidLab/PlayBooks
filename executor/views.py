@@ -401,7 +401,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     playbook, error = deprecated_update_or_create_db_playbook(account, user.email, playbook)
     if error:
         return CreatePlaybookResponse(success=BoolValue(value=False), message=Message(title="Error", description=error))
-    return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.proto)
+    return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.deprecated_proto)
 
 
 @web_api(CreatePlaybookRequestV2)

@@ -57,7 +57,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        grafana_api_processor = GrafanaApiProcessor(self.__grafana_host, self.__grafana_api_key)
+        grafana_api_processor = self.get_connector_processor(grafana_connector)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
