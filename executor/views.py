@@ -8,13 +8,12 @@ from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
-from connectors.models import integrations_connector_type_display_name_map
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
@@ -24,7 +23,6 @@ from executor.deprecated_task_executor import deprecated_execute_task
 from executor.playbook_source_facade import playbook_source_facade
 from executor.tasks import execute_playbook
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
-from executor.utils.playbooks_builder_utils import playbooks_supported_sources
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task

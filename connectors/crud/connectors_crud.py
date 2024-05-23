@@ -107,6 +107,23 @@ def get_db_connector_keys(account_id, connector_id, key_type=None):
         return None, f'Error fetching Connector Keys: {str(e)}'
 
 
+def get_db_account_connector_connected_playbooks(account: Account, connector_id=None):
+    filters = {}
+    if connector_id:
+        filters['id'] = connector_id
+    try:
+        connectors = account.connector_set.filter(**filters)
+        if connectors.exists():
+            connector = connectors.first()
+            connected_playbooks = connector.playbooksteptaskconnectormapping_set.filter(is_active=True)
+            connected_playbooks = connected_playbooks.select_related('playbook')
+            connected_playbooks = connected_playbooks.values('playbook_id', 'playbook__name')
+            return connected_playbooks
+    except Exception as e:
+        logger.error(f'Error fetching Connectors: {str(e)}')
+    return None
+
+
 def update_or_create_connector(account: Account, created_by, connector_proto: ConnectorProto,
                                connector_keys: [SourceKeyType], update_mode: bool = False) -> (Connector, str):
     if not connector_proto.type:
