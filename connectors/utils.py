@@ -118,7 +118,9 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.GRAFANA_HOST:
                 credentials_dict['grafana_host'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
-                credentials_dict['ssl_verify'] = conn_key.key.value
+                credentials_dict['ssl_verify'] = 'true'
+                if conn_key.key.value.lower() == 'false':
+                    credentials_dict['ssl_verify'] = 'false'
     elif connector_type == Source.GRAFANA_VPC:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AGENT_PROXY_API_KEY:
@@ -132,7 +134,9 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 credentials_dict['x_scope_org_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
-                credentials_dict['ssl_verify'] = conn_key.key.value
+                credentials_dict['ssl_verify'] = 'true'
+                if conn_key.key.value.lower() == 'false':
+                    credentials_dict['ssl_verify'] = 'false'
     elif connector_type == Source.CLICKHOUSE:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.CLICKHOUSE_HOST:
@@ -263,6 +267,13 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 connection_state = True
             else:
                 connection_state = False
+        elif connector_type == Source.GRAFANA_MIMIR or connector_type == Source.GRAFANA:
+            if 'ssl_verify' in credentials_dict:
+                verify = credentials_dict.get('ssl_verify', 'true')
+                credentials_dict['ssl_verify'] = True
+                if verify.lower() == 'false':
+                    credentials_dict['ssl_verify'] = False
+                connection_state = api_processor(**credentials_dict).test_connection()
         else:
             connection_state = api_processor(**credentials_dict).test_connection()
         if not connection_state:
