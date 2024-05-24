@@ -52,12 +52,18 @@ class AzureApiProcessor:
             if not credentials:
                 logger.error("Azure Connection Error:: Failed to get credentials")
                 return None
+            print("Fetching Azure Workspaces...")
             log_analytics_client = LogAnalyticsManagementClient(credentials, self.__subscription_id)
             workspaces = log_analytics_client.workspaces.list()
             if not workspaces:
                 logger.error("Azure Connection Error:: No Workspaces Found")
                 return False
-            az_workspaces = [workspace.as_dict() for workspace in workspaces]
+            az_workspaces = []
+            print("Printing Workspaces")
+            for workspace in workspaces:
+                print(f"Workspace: {workspace.as_dict()}")
+                az_workspaces.append(workspace.as_dict())
+            print(f"Total Workspaces found: {len(az_workspaces)}")
             return len(az_workspaces) > 0
         except Exception as e:
             logger.error(f"Failed to fetch workspaces with error: {e}")
