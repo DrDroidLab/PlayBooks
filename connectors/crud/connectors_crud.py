@@ -159,5 +159,5 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'
-    trigger_connector_metadata_fetch(account, db_connector.unmaksed_proto, connector_keys)
+    trigger_connector_metadata_fetch(account, db_connector.unmasked_proto, connector_keys)
     return db_connector, None

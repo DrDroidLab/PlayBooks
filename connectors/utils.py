@@ -273,6 +273,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 credentials_dict['ssl_verify'] = True
                 if verify.lower() == 'false':
                     credentials_dict['ssl_verify'] = False
+                connection_state = api_processor(**credentials_dict).test_connection()
         else:
             connection_state = api_processor(**credentials_dict).test_connection()
         if not connection_state:
