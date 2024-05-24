@@ -9,11 +9,7 @@ class MimirApiProcessor:
 
     def __init__(self, mimir_host, x_scope_org_id='anonymous', ssl_verify=True):
         self.__host = mimir_host
-        self.__ssl_verify = True
-        if not ssl_verify:
-            self.__ssl_verify = False
-        if ssl_verify and ssl_verify.lower() == 'false':
-            self.__ssl_verify = False
+        self.__ssl_verify = ssl_verify
         self.headers = {'X-Scope-OrgID': x_scope_org_id}
 
     def test_connection(self):

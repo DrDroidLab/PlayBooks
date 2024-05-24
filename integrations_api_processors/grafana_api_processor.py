@@ -11,11 +11,7 @@ class GrafanaApiProcessor:
     def __init__(self, grafana_host, grafana_api_key, ssl_verify=True):
         self.__host = grafana_host
         self.__api_key = grafana_api_key
-        self.__ssl_verify = True
-        if not ssl_verify:
-            self.__ssl_verify = False
-        if ssl_verify and ssl_verify.lower() == 'false':
-            self.__ssl_verify = False
+        self.__ssl_verify = ssl_verify
         self.headers = {
             'Authorization': f'Bearer {self.__api_key}'
         }
