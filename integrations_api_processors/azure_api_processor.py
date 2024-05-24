@@ -57,7 +57,8 @@ class AzureApiProcessor:
             if not workspaces:
                 logger.error("Azure Connection Error:: No Workspaces Found")
                 return False
-            return True
+            az_workspaces = [workspace.as_dict() for workspace in workspaces]
+            return len(az_workspaces) > 0
         except Exception as e:
             logger.error(f"Failed to fetch workspaces with error: {e}")
         return False
