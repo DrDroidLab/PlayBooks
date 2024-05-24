@@ -94,6 +94,7 @@ class AzureTaskExecutor(PlaybookTaskExecutor):
         if not response:
             raise Exception("No data returned from Azure Analytics workspace Logs")
 
+        print(f"Response: {response}")
         table_rows: [TableResult.TableRow] = []
         for table, rows in response.items():
             table_columns: [TableResult.TableRow.TableColumn] = []
