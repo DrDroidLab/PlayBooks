@@ -44,8 +44,8 @@ class GrafanaTaskExecutor(PlaybookTaskExecutor):
             elif key.key_type == SourceKeyType.GRAFANA_HOST:
                 self.__grafana_host = key.key
             elif key.key_type == SourceKeyType.SSL_VERIFY:
-                verify = key.key == "true"
-                self.__ssl_verify = verify
+                if key.key.lower() == 'false':
+                    self.__ssl_verify = False
 
         if not self.__grafana_api_key or not self.__grafana_host:
             raise Exception("Grafana API key or host not found for account: {}".format(account_id))

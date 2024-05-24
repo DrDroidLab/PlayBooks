@@ -45,8 +45,8 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
             if key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 self.__x_scope_org_id = key.key
             elif key.key_type == SourceKeyType.SSL_VERIFY:
-                verify = key.key == "true"
-                self.__ssl_verify = verify
+                if key.key.lower() == 'false':
+                    self.__ssl_verify = False
 
         if not self.__mimir_host or not self.__x_scope_org_id:
             raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))
