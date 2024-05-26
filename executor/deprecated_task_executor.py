@@ -48,8 +48,8 @@ def deprecated_execute_task(account_id, time_range, playbook_task: DeprecatedPla
             action_task_dict = proto_to_dict(action_task)
             new_action_task = transform_old_task_definition_to_new(action_task_dict)
             new_action_task_proto = dict_to_proto(new_action_task, PlaybookTask)
-            new_action_task = transform_old_task_definition_to_new(new_action_task_proto)
-            task_result = executor_facade.execute_task(account_id, time_range, global_variable_set, new_action_task)
+            task_result = executor_facade.execute_task(account_id, time_range, global_variable_set,
+                                                       new_action_task_proto)
         elif task_type == DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION:
             return DeprecatedPlaybookTaskExecutionResult(
                 message=StringValue(value="Documentation task executed successfully"))
