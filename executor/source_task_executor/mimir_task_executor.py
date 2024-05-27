@@ -38,11 +38,15 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
         if not mimir_connector_keys:
             raise Exception("Active Mimir connector keys not found for account: {}".format(account_id))
 
+        self.__ssl_verify = True
         for key in mimir_connector_keys:
             if key.key_type == SourceKeyType.MIMIR_HOST:
                 self.__mimir_host = key.key
             if key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
                 self.__x_scope_org_id = key.key
+            elif key.key_type == SourceKeyType.SSL_VERIFY:
+                if key.key.lower() == 'false':
+                    self.__ssl_verify = False
 
         if not self.__mimir_host or not self.__x_scope_org_id:
             raise Exception("Mimir host or Scope Org ID not found for account: {}".format(account_id))
@@ -81,7 +85,7 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
         for key, value in global_variable_set.items():
             promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        mimir_api_processor = MimirApiProcessor(self.__mimir_host, self.__x_scope_org_id)
+        mimir_api_processor = MimirApiProcessor(self.__mimir_host, self.__x_scope_org_id, self.__ssl_verify)
 
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "

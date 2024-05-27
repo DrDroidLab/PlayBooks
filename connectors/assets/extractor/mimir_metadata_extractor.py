@@ -5,8 +5,11 @@ from protos.base_pb2 import Source, SourceModelType
 
 class MimirSourceMetadataExtractor(SourceMetadataExtractor):
 
-    def __init__(self, mimir_host, x_scope_org_id, account_id=None, connector_id=None):
-        self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id)
+    def __init__(self, mimir_host, x_scope_org_id, ssl_verify="true", account_id=None, connector_id=None):
+        verify = True
+        if ssl_verify and ssl_verify.lower() == "false":
+            verify = False
+        self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id, ssl_verify=verify)
 
         super().__init__(account_id, connector_id, Source.GRAFANA_MIMIR)
 

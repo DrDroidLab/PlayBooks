@@ -167,7 +167,7 @@ def get_playbook_task_definition_proto(db_task_definition):
     new_definition_task = db_task_definition.task
     task = transform_new_task_definition_to_old(new_definition_task)
     source = task.get('source', None)
-    if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG']:
+    if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG', 'GRAFANA_MIMIR']:
         if source == 'CLOUDWATCH':
             metric_task_proto = get_cloudwatch_task_execution_proto(task)
         elif source == 'GRAFANA':

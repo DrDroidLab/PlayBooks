@@ -176,10 +176,11 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
     MIMIR_HOST: _SourceKeyType.ValueType  # 53
     X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
-    AZURE_SUBSCRIPTION_ID: _SourceKeyType.ValueType  # 55
-    AZURE_TENANT_ID: _SourceKeyType.ValueType  # 56
-    AZURE_CLIENT_ID: _SourceKeyType.ValueType  # 57
-    AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 58
+    SSL_VERIFY: _SourceKeyType.ValueType  # 55
+    AZURE_SUBSCRIPTION_ID: _SourceKeyType.ValueType  # 56
+    AZURE_TENANT_ID: _SourceKeyType.ValueType  # 57
+    AZURE_CLIENT_ID: _SourceKeyType.ValueType  # 58
+    AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -237,10 +238,11 @@ REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 MIMIR_HOST: SourceKeyType.ValueType  # 53
 X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
-AZURE_SUBSCRIPTION_ID: SourceKeyType.ValueType  # 55
-AZURE_TENANT_ID: SourceKeyType.ValueType  # 56
-AZURE_CLIENT_ID: SourceKeyType.ValueType  # 57
-AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 58
+SSL_VERIFY: SourceKeyType.ValueType  # 55
+AZURE_SUBSCRIPTION_ID: SourceKeyType.ValueType  # 56
+AZURE_TENANT_ID: SourceKeyType.ValueType  # 57
+AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
+AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
