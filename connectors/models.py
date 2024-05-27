@@ -239,7 +239,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
-    SourceKeyType.SSL_VERIFY: "SSL Verify",
+    SourceKeyType.SSL_VERIFY: "Enable TLS certificate validation",
 }
 
 

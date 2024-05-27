@@ -7,7 +7,6 @@ class MimirSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, mimir_host, x_scope_org_id, ssl_verify="true", account_id=None, connector_id=None):
         self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id, ssl_verify)
-
         super().__init__(account_id, connector_id, Source.GRAFANA_MIMIR)
 
     def extract_data_source(self, save_to_db=False):

@@ -28,7 +28,7 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
           className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[500px] resize-none text-xs outline-none"
         />
       );
-    case "SSL Verify":
+    case "Enable TLS certificate validation":
       return (
         <Checkbox
           id="ssl-verify"
