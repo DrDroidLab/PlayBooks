@@ -1,6 +1,5 @@
 import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph";
 import PlayBookRunDataTable from "../PlayBookRunDataTable";
-import PlaybookActionOutput from "../PlaybookActionOutput";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput";
 import PlaybookBashActionOutput from "../PlaybookBashActionOutput";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
@@ -9,6 +8,7 @@ const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
   BASH_COMMAND_OUTPUT: "BASH_COMMAND_OUTPUT",
   TIMESERIES: "TIMESERIES",
+  TABLE: "TABLE",
 };
 
 const PlaybookStepOutput = ({ stepOutput }) => {
@@ -30,6 +30,15 @@ const PlaybookStepOutput = ({ stepOutput }) => {
           title={
             error ? "Error from Source" : "No data available for this step"
           }
+        />
+      );
+    case OutputTypes.TABLE:
+      return (
+        <PlayBookRunDataTable
+          title={"Results"}
+          result={out}
+          timestamp={out.timestamp}
+          step={step}
         />
       );
     default:

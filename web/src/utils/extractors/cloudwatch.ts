@@ -23,8 +23,12 @@ export const extractCloudwatchTasks = (step: any) => {
     connectorType,
     namespaceName: cloudwatchStep?.namespace,
     region: cloudwatchStep?.region,
-    dimensionName: cloudwatchStep?.dimensions[0].name,
-    dimensionValue: cloudwatchStep?.dimensions[0].value,
+    dimensionName: cloudwatchStep?.dimensions
+      ? cloudwatchStep?.dimensions[0]?.name
+      : "",
+    dimensionValue: cloudwatchStep?.dimensions
+      ? cloudwatchStep?.dimensions[0]?.value
+      : "",
     metric: tasks.map((task) => {
       const cloudwatchTaskInStep =
         task[stepSource.toLowerCase()][taskType.toLowerCase()];
