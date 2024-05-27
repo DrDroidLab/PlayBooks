@@ -9,9 +9,11 @@ from executor.models import PlayBook, PlayBookExecution
 from playbooks.utils.decorators import deprecated
 from protos.playbooks.workflow_pb2 import DeprecatedWorkflowExecutionLog, DeprecatedWorkflowExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
+    DeprecatedWorkflowAction, WorkflowSchedule as WorkflowScheduleProto, \
+    Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
     WorkflowExecutionLog as WorkflowExecutionLogProto
+from protos.playbooks.workflow_v2_pb2 import WorkflowAction as WorkflowActionProto
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -70,10 +72,10 @@ class WorkflowAction(models.Model):
         super().save(**kwargs)
 
     @property
-    def proto(self) -> WorkflowActionProto:
-        wf_action_proto = dict_to_proto(self.action, WorkflowActionProto)
-        if wf_action_proto.type == WorkflowActionProto.Type.NOTIFY:
-            return WorkflowActionProto(
+    def proto(self) -> DeprecatedWorkflowAction:
+        wf_action_proto = dict_to_proto(self.action, DeprecatedWorkflowAction)
+        if wf_action_proto.type == DeprecatedWorkflowAction.Type.NOTIFY:
+            return DeprecatedWorkflowAction(
                 id=UInt64Value(value=self.id),
                 type=wf_action_proto.type,
                 notification_config=wf_action_proto.notification_config

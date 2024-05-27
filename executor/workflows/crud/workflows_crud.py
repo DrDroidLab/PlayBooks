@@ -9,7 +9,7 @@ from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowActi
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowEntryPoint as WorkflowEntryPointProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto
+    DeprecatedWorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)

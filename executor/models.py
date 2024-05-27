@@ -279,6 +279,8 @@ class PlayBookStepMapping(models.Model):
 class PlayBookExecution(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE)
+    playbook_global_variable_set = models.JSONField(null=True, blank=True)
+
     playbook_run_id = models.CharField(max_length=255)
     status = models.IntegerField(null=True, blank=True, choices=generate_choices(PlaybookExecutionStatusType),
                                  default=PlaybookExecutionStatusType.CREATED, db_index=True)

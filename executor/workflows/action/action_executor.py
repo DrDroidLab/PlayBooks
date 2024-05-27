@@ -1,15 +1,8 @@
-import logging
-
 from accounts.models import Account
-from executor.workflows.action.notify_action_executor.notify_facade import notifier_facade
-from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.workflow_pb2 import WorkflowAction as WorkflowActionProto
-
-logger = logging.getLogger(__name__)
+from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation
+from protos.playbooks.workflow_v2_pb2 import WorkflowAction
 
 
-def action_executor(account: Account, action: WorkflowActionProto, execution_output: [InterpretationProto]):
-    if action.type == WorkflowActionProto.Type.NOTIFY:
-        notifier_facade.notify(account, action.notification_config, execution_output)
-    else:
-        raise NotImplementedError(f'Action type {action.type} is not supported')
+class WorkflowActionExecutor:
+    def execute(self, account: Account, action: WorkflowAction, execution_output: [Interpretation]):
+        pass

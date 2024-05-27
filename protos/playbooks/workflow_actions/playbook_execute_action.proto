@@ -1,0 +1,10 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+message PlaybookExecute {
+  google.protobuf.StringValue playbook_id = 1;
+  google.protobuf.Struct global_variable_set = 2;
+}

@@ -4,7 +4,7 @@ from accounts.models import Account
 from executor.workflows.action.notify_action_executor.notifier import Notifier
 from executor.workflows.action.notify_action_executor.slack_notifier import SlackNotifier
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.workflow_pb2 import WorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto
+from protos.playbooks.workflow_pb2 import DeprecatedWorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,5 @@
 from accounts.models import Account
-from protos.playbooks.workflow_pb2 import WorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto
+from protos.playbooks.workflow_pb2 import DeprecatedWorkflowActionNotificationConfig as WorkflowActionNotificationConfigProto
 
 
 class Notifier:

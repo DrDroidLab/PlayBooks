@@ -178,7 +178,7 @@ class WorkflowEntryPointAlertConfig(google.protobuf.message.Message):
 global___WorkflowEntryPointAlertConfig = WorkflowEntryPointAlertConfig
 
 @typing_extensions.final
-class WorkflowActionWebhookNotificationConfig(google.protobuf.message.Message):
+class DeprecatedWorkflowActionWebhookNotificationConfig(google.protobuf.message.Message):
     """/////////////////// Workflow Actions /////////////////////"""
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
@@ -206,31 +206,31 @@ class WorkflowActionWebhookNotificationConfig(google.protobuf.message.Message):
     def HasField(self, field_name: typing_extensions.Literal["body", b"body", "endpoint", b"endpoint", "headers", b"headers", "method", b"method"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["body", b"body", "endpoint", b"endpoint", "headers", b"headers", "method", b"method"]) -> None: ...
 
-global___WorkflowActionWebhookNotificationConfig = WorkflowActionWebhookNotificationConfig
+global___DeprecatedWorkflowActionWebhookNotificationConfig = DeprecatedWorkflowActionWebhookNotificationConfig
 
 @typing_extensions.final
-class WorkflowActionSlackNotificationConfig(google.protobuf.message.Message):
+class DeprecatedWorkflowActionSlackNotificationConfig(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _MessageType:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _MessageTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionSlackNotificationConfig._MessageType.ValueType], builtins.type):  # noqa: F821
+    class _MessageTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedWorkflowActionSlackNotificationConfig._MessageType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN_SNT: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 0
-        MESSAGE: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 1
-        THREAD_REPLY: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 2
+        UNKNOWN_SNT: DeprecatedWorkflowActionSlackNotificationConfig._MessageType.ValueType  # 0
+        MESSAGE: DeprecatedWorkflowActionSlackNotificationConfig._MessageType.ValueType  # 1
+        THREAD_REPLY: DeprecatedWorkflowActionSlackNotificationConfig._MessageType.ValueType  # 2
 
     class MessageType(_MessageType, metaclass=_MessageTypeEnumTypeWrapper): ...
-    UNKNOWN_SNT: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 0
-    MESSAGE: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 1
-    THREAD_REPLY: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 2
+    UNKNOWN_SNT: DeprecatedWorkflowActionSlackNotificationConfig.MessageType.ValueType  # 0
+    MESSAGE: DeprecatedWorkflowActionSlackNotificationConfig.MessageType.ValueType  # 1
+    THREAD_REPLY: DeprecatedWorkflowActionSlackNotificationConfig.MessageType.ValueType  # 2
 
     MESSAGE_TYPE_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_ID_FIELD_NUMBER: builtins.int
     THREAD_TS_FIELD_NUMBER: builtins.int
-    message_type: global___WorkflowActionSlackNotificationConfig.MessageType.ValueType
+    message_type: global___DeprecatedWorkflowActionSlackNotificationConfig.MessageType.ValueType
     @property
     def slack_channel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -238,54 +238,54 @@ class WorkflowActionSlackNotificationConfig(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        message_type: global___WorkflowActionSlackNotificationConfig.MessageType.ValueType = ...,
+        message_type: global___DeprecatedWorkflowActionSlackNotificationConfig.MessageType.ValueType = ...,
         slack_channel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         thread_ts: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["slack_channel_id", b"slack_channel_id", "thread_ts", b"thread_ts"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["message_type", b"message_type", "slack_channel_id", b"slack_channel_id", "thread_ts", b"thread_ts"]) -> None: ...
 
-global___WorkflowActionSlackNotificationConfig = WorkflowActionSlackNotificationConfig
+global___DeprecatedWorkflowActionSlackNotificationConfig = DeprecatedWorkflowActionSlackNotificationConfig
 
 @typing_extensions.final
-class WorkflowActionNotificationConfig(google.protobuf.message.Message):
+class DeprecatedWorkflowActionNotificationConfig(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _Type:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionNotificationConfig._Type.ValueType], builtins.type):  # noqa: F821
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedWorkflowActionNotificationConfig._Type.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: WorkflowActionNotificationConfig._Type.ValueType  # 0
-        WEBHOOK: WorkflowActionNotificationConfig._Type.ValueType  # 1
-        SLACK: WorkflowActionNotificationConfig._Type.ValueType  # 2
+        UNKNOWN: DeprecatedWorkflowActionNotificationConfig._Type.ValueType  # 0
+        WEBHOOK: DeprecatedWorkflowActionNotificationConfig._Type.ValueType  # 1
+        SLACK: DeprecatedWorkflowActionNotificationConfig._Type.ValueType  # 2
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-    UNKNOWN: WorkflowActionNotificationConfig.Type.ValueType  # 0
-    WEBHOOK: WorkflowActionNotificationConfig.Type.ValueType  # 1
-    SLACK: WorkflowActionNotificationConfig.Type.ValueType  # 2
+    UNKNOWN: DeprecatedWorkflowActionNotificationConfig.Type.ValueType  # 0
+    WEBHOOK: DeprecatedWorkflowActionNotificationConfig.Type.ValueType  # 1
+    SLACK: DeprecatedWorkflowActionNotificationConfig.Type.ValueType  # 2
 
     TYPE_FIELD_NUMBER: builtins.int
     WEBHOOK_CONFIG_FIELD_NUMBER: builtins.int
     SLACK_CONFIG_FIELD_NUMBER: builtins.int
-    type: global___WorkflowActionNotificationConfig.Type.ValueType
+    type: global___DeprecatedWorkflowActionNotificationConfig.Type.ValueType
     @property
-    def webhook_config(self) -> global___WorkflowActionWebhookNotificationConfig: ...
+    def webhook_config(self) -> global___DeprecatedWorkflowActionWebhookNotificationConfig: ...
     @property
-    def slack_config(self) -> global___WorkflowActionSlackNotificationConfig: ...
+    def slack_config(self) -> global___DeprecatedWorkflowActionSlackNotificationConfig: ...
     def __init__(
         self,
         *,
-        type: global___WorkflowActionNotificationConfig.Type.ValueType = ...,
-        webhook_config: global___WorkflowActionWebhookNotificationConfig | None = ...,
-        slack_config: global___WorkflowActionSlackNotificationConfig | None = ...,
+        type: global___DeprecatedWorkflowActionNotificationConfig.Type.ValueType = ...,
+        webhook_config: global___DeprecatedWorkflowActionWebhookNotificationConfig | None = ...,
+        slack_config: global___DeprecatedWorkflowActionSlackNotificationConfig | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "webhook_config", b"webhook_config"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "type", b"type", "webhook_config", b"webhook_config"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["webhook_config", "slack_config"] | None: ...
 
-global___WorkflowActionNotificationConfig = WorkflowActionNotificationConfig
+global___DeprecatedWorkflowActionNotificationConfig = DeprecatedWorkflowActionNotificationConfig
 
 @typing_extensions.final
 class WorkflowSchedule(google.protobuf.message.Message):
@@ -374,42 +374,42 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
 global___WorkflowEntryPoint = WorkflowEntryPoint
 
 @typing_extensions.final
-class WorkflowAction(google.protobuf.message.Message):
+class DeprecatedWorkflowAction(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _Type:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowAction._Type.ValueType], builtins.type):  # noqa: F821
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedWorkflowAction._Type.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: WorkflowAction._Type.ValueType  # 0
-        NOTIFY: WorkflowAction._Type.ValueType  # 1
+        UNKNOWN: DeprecatedWorkflowAction._Type.ValueType  # 0
+        NOTIFY: DeprecatedWorkflowAction._Type.ValueType  # 1
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-    UNKNOWN: WorkflowAction.Type.ValueType  # 0
-    NOTIFY: WorkflowAction.Type.ValueType  # 1
+    UNKNOWN: DeprecatedWorkflowAction.Type.ValueType  # 0
+    NOTIFY: DeprecatedWorkflowAction.Type.ValueType  # 1
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     NOTIFICATION_CONFIG_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    type: global___WorkflowAction.Type.ValueType
+    type: global___DeprecatedWorkflowAction.Type.ValueType
     @property
-    def notification_config(self) -> global___WorkflowActionNotificationConfig: ...
+    def notification_config(self) -> global___DeprecatedWorkflowActionNotificationConfig: ...
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        type: global___WorkflowAction.Type.ValueType = ...,
-        notification_config: global___WorkflowActionNotificationConfig | None = ...,
+        type: global___DeprecatedWorkflowAction.Type.ValueType = ...,
+        notification_config: global___DeprecatedWorkflowActionNotificationConfig | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["action", b"action"]) -> typing_extensions.Literal["notification_config"] | None: ...
 
-global___WorkflowAction = WorkflowAction
+global___DeprecatedWorkflowAction = DeprecatedWorkflowAction
 
 @typing_extensions.final
 class Workflow(google.protobuf.message.Message):
@@ -445,7 +445,7 @@ class Workflow(google.protobuf.message.Message):
     @property
     def entry_points(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowEntryPoint]: ...
     @property
-    def actions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WorkflowAction]: ...
+    def actions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___DeprecatedWorkflowAction]: ...
     last_execution_time: builtins.int
     last_execution_status: global___WorkflowExecutionStatusType.ValueType
     def __init__(
@@ -460,7 +460,7 @@ class Workflow(google.protobuf.message.Message):
         schedule: global___WorkflowSchedule | None = ...,
         playbooks: collections.abc.Iterable[protos.playbooks.playbook_pb2.Playbook] | None = ...,
         entry_points: collections.abc.Iterable[global___WorkflowEntryPoint] | None = ...,
-        actions: collections.abc.Iterable[global___WorkflowAction] | None = ...,
+        actions: collections.abc.Iterable[global___DeprecatedWorkflowAction] | None = ...,
         last_execution_time: builtins.int = ...,
         last_execution_status: global___WorkflowExecutionStatusType.ValueType = ...,
     ) -> None: ...

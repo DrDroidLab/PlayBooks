@@ -11,7 +11,7 @@ from executor.crud.playbook_execution_crud import create_playbook_execution, get
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.task_executor_facade import executor_facade
 from executor.tasks import execute_playbook
-from executor.workflows.action.action_executor import action_executor
+from executor.workflows.action.action_executor_facade import action_executor
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
     update_db_account_workflow_execution_status, \
     get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
@@ -29,7 +29,7 @@ from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookExecution
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
+    DeprecatedWorkflowAction as WorkflowActionProto, DeprecatedWorkflowActionSlackNotificationConfig
 from protos.base_pb2 import Source
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
@@ -235,7 +235,7 @@ def test_workflow_notification(account_id, workflow, message_type):
     playbook = playbooks.first()
     pb_proto = playbook.proto
     playbook_steps = pb_proto.steps
-    if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
+    if message_type == DeprecatedWorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
         logger.info("Sending test thread reply message")
         channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
         slack_connectors = get_db_connectors(account, connector_type=Source.SLACK, is_active=True)
@@ -254,7 +254,7 @@ def test_workflow_notification(account_id, workflow, message_type):
         message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id,
                                                                         'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
         workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
-    elif message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
+    elif message_type == DeprecatedWorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
         logger.info("Sending test message")
     else:
         logger.error(f"Invalid message type: {message_type}")

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+message WebhookCall {
+  google.protobuf.StringValue endpoint = 1;
+  google.protobuf.StringValue method = 2;
+  google.protobuf.Struct headers = 3;
+  google.protobuf.Struct body = 4;
+}

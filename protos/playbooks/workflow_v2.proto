@@ -1,0 +1,31 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+import "protos/playbooks/deprecated_playbook.proto";
+import "protos/playbooks/playbook.proto";
+import "protos/playbooks/workflow_actions/playbook_execute_action.proto";
+import "protos/playbooks/workflow_actions/slack_message_notify_action.proto";
+import "protos/playbooks/workflow_actions/slack_thread_reply_action.proto";
+import "protos/playbooks/workflow_actions/webhook_call_action.proto";
+
+message WorkflowAction {
+  enum Type {
+    UNKNOWN = 0;
+    PLAYBOOK_EXECUTE = 1;
+    WEBHOOK_CALL = 2;
+    SLACK_MESSAGE_NOTIFY = 3;
+    SLACK_THREAD_REPLY = 4;
+  }
+  google.protobuf.UInt64Value id = 1;
+  Type type = 2;
+  oneof action {
+    PlaybookExecute playbook_execute = 101;
+    SlackMessageNotify slack_message_notify = 102;
+    SlackThreadReply slack_thread_reply = 103;
+    WebhookCall webhook_call = 104;
+  }
+}
