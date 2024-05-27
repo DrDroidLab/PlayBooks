@@ -562,10 +562,7 @@ def transform_new_task_definition_to_old(task):
         bash_command_task = task.get('bash', {})
         updated_task_def = {
             'source': 'BASH',
-            'bash_command_task': {
-                'command': bash_command_task.get('command', None),
-                'remote_server': bash_command_task.get('remote_server', None),
-            }
+            'bash_command_task': bash_command_task.get('command', {})
         }
     elif source == 'DOCUMENTATION':
         documentation_task = task.get('documentation', {})
