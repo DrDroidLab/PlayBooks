@@ -62,8 +62,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
         print(
             "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
             "-> {}, End_Time -> {}, Period -> {}".format(
-                "Grafana", self.account_id, datasource_uid, promql_metric_query, start_time, end_time, period
-            ), flush=True)
+                "Grafana", grafana_connector.account_id.value, datasource_uid, promql_metric_query, start_time,
+                end_time, period), flush=True)
 
         response = grafana_api_processor.fetch_promql_metric_timeseries(datasource_uid, promql_metric_query,
                                                                         start_time, end_time, period)
