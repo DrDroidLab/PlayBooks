@@ -61,7 +61,7 @@ class CloudwatchAssetManager(ConnectorAssetManager):
                         log_groups=log_groups)
                 ))
 
-        return AccountConnectorAssets(connector=connector, cloudwatch=CloudwatchAssets(assets=cw_log_group_protos))
+        return AccountConnectorAssets(cloudwatch=CloudwatchAssets(assets=cw_log_group_protos))
 
     @staticmethod
     def get_cw_metric_options(cw_metric_assets):
@@ -122,4 +122,4 @@ class CloudwatchAssetManager(ConnectorAssetManager):
                     asset.updated_at) else None,
                 cloudwatch_metric=cloudwatch_metric_proto))
 
-        return AccountConnectorAssets(connector=connector, cloudwatch=CloudwatchAssets(assets=cw_metric_asset_protos))
+        return AccountConnectorAssets(cloudwatch=CloudwatchAssets(assets=cw_metric_asset_protos))

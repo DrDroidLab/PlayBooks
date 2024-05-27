@@ -51,4 +51,4 @@ class ClickhouseAssetManager(ConnectorAssetManager):
                 last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                     asset.updated_at) else None,
                 clickhouse_database=ClickhouseDatabaseAssetModel(database=StringValue(value=asset.model_uid))))
-        return AccountConnectorAssets(connector=connector, clickhouse=ClickhouseAssets(assets=assets))
+        return AccountConnectorAssets(clickhouse=ClickhouseAssets(assets=assets))

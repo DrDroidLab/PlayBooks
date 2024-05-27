@@ -50,4 +50,4 @@ class RemoteServetAssetManager(ConnectorAssetManager):
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
                     ssh_server=SshServerAssetModel(name=StringValue(value=asset.model_uid))))
-        return AccountConnectorAssets(connector=connector, remote_server=RemoteServerAssets(assets=rm_asset_protos))
+        return AccountConnectorAssets(remote_server=RemoteServerAssets(assets=rm_asset_protos))

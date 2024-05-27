@@ -72,7 +72,7 @@ class NewRelicAssetManager(ConnectorAssetManager):
                     golden_metrics=asset_golden_metrics
                 )))
 
-        return AccountConnectorAssets(connector=connector, new_relic=NewRelicAssets(assets=nr_asset_protos))
+        return AccountConnectorAssets(new_relic=NewRelicAssets(assets=nr_asset_protos))
 
     @staticmethod
     def get_nr_entity_dashboard_options(nr_entity_dashboard_assets):
@@ -192,4 +192,4 @@ class NewRelicAssetManager(ConnectorAssetManager):
                     pages=pages
                 )))
 
-        return AccountConnectorAssets(connector=connector, new_relic=NewRelicAssets(assets=nr_asset_protos))
+        return AccountConnectorAssets(new_relic=NewRelicAssets(assets=nr_asset_protos))

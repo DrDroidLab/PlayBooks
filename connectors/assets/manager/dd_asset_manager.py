@@ -98,4 +98,4 @@ class DatadogAssetManager(ConnectorAssetManager):
                     service_name=StringValue(value=asset.model_uid),
                     environments=env_list,
                     metrics=metric_protos)))
-        return AccountConnectorAssets(connector=connector, datadog=DatadogAssets(assets=dd_asset_protos))
+        return AccountConnectorAssets(datadog=DatadogAssets(assets=dd_asset_protos))

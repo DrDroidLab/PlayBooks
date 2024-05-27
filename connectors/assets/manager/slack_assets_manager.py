@@ -60,4 +60,4 @@ class SlackAssetManager(ConnectorAssetManager):
                     )
                 )))
 
-        return AccountConnectorAssets(connector=connector, slack=SlackAssets(assets=channel_protos))
+        return AccountConnectorAssets(slack=SlackAssets(assets=channel_protos))

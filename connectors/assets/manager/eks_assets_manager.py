@@ -107,4 +107,4 @@ class EKSAssetManager(ConnectorAssetManager):
                     asset.updated_at) else None,
                 eks_cluster=EksClusterAssetModel(region=StringValue(value=region_name), clusters=region_clusters,
                                                  commands=allowed_commands)))
-        return AccountConnectorAssets(connector=connector, eks=EksAssets(assets=eks_asset_protos))
+        return AccountConnectorAssets(eks=EksAssets(assets=eks_asset_protos))

@@ -49,4 +49,4 @@ class PostgresAssetManager(ConnectorAssetManager):
                     last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                         asset.updated_at) else None,
                     postgres_database=PostgresDatabaseAssetModel(database=StringValue(value=asset.model_uid))))
-        return AccountConnectorAssets(connector=connector, postgres=PostgresAssets(assets=postgres_asset_protos))
+        return AccountConnectorAssets(postgres=PostgresAssets(assets=postgres_asset_protos))
