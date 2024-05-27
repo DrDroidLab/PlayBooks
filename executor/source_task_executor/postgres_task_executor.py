@@ -43,6 +43,8 @@ class PostgresTaskExecutor(PlaybookTaskExecutor):
                 self.__user = key.key
             elif key.key_type == SourceKeyType.POSTGRES_PASSWORD:
                 self.__password = key.key
+            elif key.key_type == SourceKeyType.POSTGRES_DATABASE:
+                self.__database = key.key
 
         if not self.__host or not self.__user or not self.__password:
             raise Exception("Postgres host, db, user or password not found for account: {}".format(account_id))
@@ -65,6 +67,11 @@ class PostgresTaskExecutor(PlaybookTaskExecutor):
             order_by_column = sql_query.order_by_column.value
             limit = sql_query.limit.value
             offset = sql_query.offset.value
+            database = sql_query.database.value
+            if not database and not self.__database:
+                raise Exception("No Database found for Postgres task")
+            if not database:
+                database = self.__database
             query = sql_query.query.value
             query = query.strip()
             if query[-1] == ';':
@@ -80,7 +87,6 @@ class PostgresTaskExecutor(PlaybookTaskExecutor):
                 limit = 10
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
-            database = sql_query.database.value
             config = {
                 'host': self.__host,
                 'user': self.__user,
