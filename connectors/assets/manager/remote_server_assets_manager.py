@@ -14,7 +14,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 class RemoteServetAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.source = Source.SLACK
+        self.source = Source.REMOTE_SERVER
         self.asset_type_callable_map = {
             SourceModelType.SSH_SERVER: {
                 'options': self.get_ssh_server_asset_options,
