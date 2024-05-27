@@ -72,11 +72,8 @@ def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
                                                                             description="Connector not found"))
         connector_proto: ConnectorProto = connector.first().unmasked_proto
     try:
-        model_types = []
-        if request_message.type:
-            model_types.append(request_message.type)
         account_connector_assets = asset_manager_facade.get_asset_model_values(connector_proto,
-                                                                               model_types,
+                                                                               request_message.type,
                                                                                request_message.filters)
         return GetConnectorsAssetsModelsResponse(success=BoolValue(value=True), assets=account_connector_assets)
     except Exception as e:

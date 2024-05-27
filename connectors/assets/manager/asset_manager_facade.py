@@ -38,14 +38,14 @@ class AssetManagerFacade:
 
         return manager.get_asset_model_options(connector=connector, model_types=model_types)
 
-    def get_asset_model_values(self, connector: ConnectorProto, model_types: [SourceModelType],
+    def get_asset_model_values(self, connector: ConnectorProto, model_type: SourceModelType,
                                filters: AccountConnectorAssetsModelFiltersProto):
         if not connector:
             raise ValueError("ConnectorProto is required to fetch assets")
         manager: ConnectorAssetManager = self._map.get(connector.type)
         if not manager:
             raise ValueError(f"No asset manager found for connector_type: {connector.type}")
-        assets = manager.get_asset_model_values(connector, model_types, filters)
+        assets = manager.get_asset_model_values(connector, model_type, filters)
         return [assets]
 
 

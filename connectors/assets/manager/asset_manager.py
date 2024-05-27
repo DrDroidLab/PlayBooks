@@ -77,7 +77,7 @@ class ConnectorAssetManager:
         except Exception as e:
             raise ValueError(f"Error while fetching asset options: {str(e)}")
 
-    def get_asset_model_values(self, connector: ConnectorProto, model_types: [SourceModelType],
+    def get_asset_model_values(self, connector: ConnectorProto, model_type: SourceModelType,
                                asset_filter: AccountConnectorAssetsModelFilters) -> AccountConnectorAssets:
         try:
             if not connector:
@@ -92,10 +92,13 @@ class ConnectorAssetManager:
 
             assets = get_db_connector_metadata_models(account_id=connector.account_id.value,
                                                       connector_id=connector.id.value,
-                                                      model_types=model_types,
+                                                      model_type=model_type,
                                                       is_active=True)
 
-            model_type_asset_map = get_model_type_asset_model_map(assets)
+            if model_type:
+                model_type_asset_map = {model_type: assets}
+            else:
+                model_type_asset_map = get_model_type_asset_model_map(assets)
 
             all_asset_protos = []
             for model_type, assets in model_type_asset_map.items():
