@@ -23,8 +23,8 @@ export const injectGrafanaTasks = (
             ? step.assets.panel_promql_map[0].promql_metrics[0].datasource_uid
             : "",
         promql_metric_execution_task: {
-          promql_expression: e.expression,
-          panel_promql_expression: e?.originalExpression,
+          promql_expression: e.query?.expression ? e.query?.expression : e.expression,
+          panel_promql_expression: e?.query?.originalExpression ? e?.query?.originalExpression : e.originalExpression,
           process_function: "timeseries",
           promql_label_option_values: [],
           panel_id: step.panel.panel_id,
