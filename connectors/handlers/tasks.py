@@ -19,7 +19,7 @@ from management.crud.task_crud import check_scheduled_or_running_task_run_for_ta
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import get_current_time
-from protos.base_pb2 import Source, SourceModelType
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowEntryPointAlertConfig as WorkflowEntryPointAlertConfigProto
@@ -212,7 +212,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
         slack_connector = slack_connector.first()
         account_id = slack_connector.account_id
         bot_auth_token = get_db_connector_keys(account_id=account_id, connector_id=slack_connector.id,
-                                               key_type=ConnectorKeyProto.SLACK_BOT_AUTH_TOKEN)
+                                               key_type=SourceKeyType.SLACK_BOT_AUTH_TOKEN)
         if not bot_auth_token:
             print(f"Error while handling slack handle_receive_message: Bot auth token not found for connector_id: "
                   f"{slack_connector_id}")

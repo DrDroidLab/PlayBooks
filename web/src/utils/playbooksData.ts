@@ -33,6 +33,9 @@ export const constructBuilder = (task: any, index) => {
       case models.BASH:
         return Builders.bashBuilder(task, index);
 
+      case models.POSTGRES_QUERY:
+        return Builders.postgresBuilder(task, index);
+
       default:
         break;
     }
@@ -72,7 +75,7 @@ export const constructBuilder = (task: any, index) => {
         index,
         ops?.dashboards,
       );
-    case models.POSTGRES_DATABASE:
+    case models.POSTGRES_QUERY:
       return Builders.postgresBuilder(task, index, ops?.databases);
     case models.EKS_CLUSTER:
       return Builders.eksBuilder(task, index, ops?.regions);

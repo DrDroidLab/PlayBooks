@@ -60,6 +60,13 @@ def playbooks_builder_get_connector_sources_options(account: Account):
             model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=amt,
                                                                                                   display_name=StringValue(
                                                                                                       value=display_name)))
+        if connector.connector_type == Source.POSTGRES:
+            model_type = SourceModelType.POSTGRES_QUERY
+            display_name = model_type_display_name_maps.get(model_type, "")
+            model_types_map.append(AccountActiveConnectorModelTypes.ConnectorMetadataModelTypeMap(model_type=model_type,
+                                                                                                  display_name=StringValue(
+                                                                                                      value=display_name)))
+        
         if connector.connector_type == Source.NEW_RELIC:
             model_type = SourceModelType.NEW_RELIC_NRQL
             display_name = model_type_display_name_maps.get(model_type, "")

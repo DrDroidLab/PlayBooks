@@ -7,7 +7,6 @@ export const injectPostgresTasks = (
   let data_fetch_task = {
     source: step.source.toUpperCase(),
     postgres_data_fetch_task: {
-      database: step.database!,
       query: step.dbQuery!,
     },
   };
