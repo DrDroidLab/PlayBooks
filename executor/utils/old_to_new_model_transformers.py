@@ -550,12 +550,12 @@ def transform_new_task_definition_to_old(task):
         updated_task_def = {
             'source': 'API',
             'api_call_task': {
-                'method': api_call_task.get('method', None),
-                'url': api_call_task.get('url', None),
-                'headers': api_call_task.get('headers', None),
-                'payload': api_call_task.get('payload', None),
-                'timeout': api_call_task.get('timeout', None),
-                'cookies': api_call_task.get('cookies', None),
+                'method': api_call_task.get('http_request', {}).get('method', None),
+                'url': api_call_task.get('http_request', {}).get('url', None),
+                'headers': api_call_task.get('http_request', {}).get('headers', None),
+                'payload': api_call_task.get('http_request', {}).get('payload', None),
+                'timeout': api_call_task.get('http_request', {}).get('timeout', None),
+                'cookies': api_call_task.get('http_request', {}).get('cookies', None),
             }
         }
     elif source == 'BASH':
