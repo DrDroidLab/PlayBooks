@@ -539,7 +539,7 @@ def transform_new_task_definition_to_old(task):
         updated_task_def = {
             'source': 'EKS',
             'eks_data_fetch_task': {
-                'command_type': command.get('type', None),
+                'command_type': eks_data_fetch_task.get('type', None),
                 'description': command.get('description', None),
                 'region': command.get('region', None),
                 'cluster': command.get('cluster', None),
