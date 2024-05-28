@@ -4,14 +4,17 @@ export const injectSqlRawQueryTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let sql_database_connection_data_fetch_task = {
+  let task = {
     query: step.query!,
   };
 
   return [
     {
       ...baseTask,
-      sql_database_connection_data_fetch_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };

@@ -4,7 +4,7 @@ export const injectEksTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let eks_data_fetch_task = {
+  let task = {
     region: step.eksRegion!,
     cluster: step.cluster!,
     command_type: step.command?.type!,
@@ -15,8 +15,10 @@ export const injectEksTasks = (
   return [
     {
       ...baseTask,
-      source: step.source.toUpperCase(),
-      eks_data_fetch_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };

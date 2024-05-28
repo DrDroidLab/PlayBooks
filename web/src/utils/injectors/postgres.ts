@@ -4,7 +4,7 @@ export const injectPostgresTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let postgres_data_fetch_task = {
+  let task = {
     database: step.database!,
     query: step.dbQuery!,
   };
@@ -12,8 +12,10 @@ export const injectPostgresTasks = (
   return [
     {
       ...baseTask,
-      source: step.source.toUpperCase(),
-      postgres_data_fetch_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };
