@@ -1,17 +1,21 @@
 export const extractTextTasks = (step: any) => {
   let stepSource = "DOCUMENTATION";
   let modelType = "MARKDOWN";
-  let selected = "DOCUMENTATION";
   const tasks = step.tasks;
-  const documentationTask = tasks[0].documentation_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const textStep = tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    connectorType,
+    taskType,
     modelType,
-    notes: documentationTask.documentation,
+    notes: textStep.documentation,
   };
 
   return stepData;
