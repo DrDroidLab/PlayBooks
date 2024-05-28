@@ -125,7 +125,7 @@ export const grafanaBuilder = (task, index, options: any) => {
           type: OptionType.MULTILINE,
           value:
             task?.grafanaQuery?.length > 0
-              ? task?.grafanaQuery[0]?.expression
+              ? ( task?.grafanaQuery[0]?.query?.expression ? task?.grafanaQuery[0]?.query?.expression : task?.grafanaQuery[0]?.expression )
               : "",
           handleChange: (e) => {
             store.dispatch(
