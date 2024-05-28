@@ -16,7 +16,8 @@ export enum OptionType {
 export const constructBuilder = () => {
   const [task] = getCurrentTask();
   let ops: any =
-    task?.modelTypeOptions?.length > 0
+    task?.modelTypeOptions?.length > 0 &&
+    task?.modelTypeOptions[0]?.model_types_options?.length > 0
       ? handleModelOptions(
           task?.modelTypeOptions[0]?.model_types_options[0],
           task?.modelType.toLowerCase(),
