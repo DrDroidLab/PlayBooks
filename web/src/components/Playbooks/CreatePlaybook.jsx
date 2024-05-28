@@ -134,6 +134,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                   style={{ borderRadius: "5px", backgroundColor: "#f5f5f5" }}>
                   <PlaybookTitle
                     step={step}
+                    index={index}
                     updateCardByIndex={updateCardByIndex}
                   />
                 </AccordionSummary>

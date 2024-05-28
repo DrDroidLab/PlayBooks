@@ -5,12 +5,9 @@ import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
-function PlaybookTitle({ step }) {
+function PlaybookTitle({ step, index }) {
   const isPrefetched = useIsPrefetched();
-  const { currentStepIndex } = useSelector(playbookSelector);
   const editCardTitle = (e) => {
     e.stopPropagation();
     updateCardByIndex("editTitle", true);
@@ -45,8 +42,7 @@ function PlaybookTitle({ step }) {
         {!step.editTitle && (
           <div onClick={editCardTitle}>
             <b>
-              {currentStepIndex + 1}:{" "}
-              {step.description || `Step - ${currentStepIndex + 1}`}
+              {index + 1}: {step.description || `Step - ${index + 1}`}
             </b>
             {!isPrefetched && (
               <button>
