@@ -564,11 +564,20 @@ def transform_new_task_definition_to_old(task):
         }
     elif source == 'EKS':
         eks_data_fetch_task = task.get('eks', {})
-        command = eks_data_fetch_task.get('command', {})
+        if eks_data_fetch_task.get('type') == 'GET_PODS':
+            command = eks_data_fetch_task.get('get_pods', {})
+        elif eks_data_fetch_task.get('type') == 'GET_SERVICES':
+            command = eks_data_fetch_task.get('get_services', {})
+        elif eks_data_fetch_task.get('type') == 'GET_DEPLOYMENTS':
+            command = eks_data_fetch_task.get('get_deployments', {})
+        elif eks_data_fetch_task.get('type') == 'GET_EVENTS':
+            command = eks_data_fetch_task.get('get_events', {})
+        else:
+            raise ValueError(f"Invalid command type: {eks_data_fetch_task.get('type')}")
         updated_task_def = {
             'source': 'EKS',
             'eks_data_fetch_task': {
-                'command_type': command.get('type', None),
+                'command_type': eks_data_fetch_task.get('type', None),
                 'description': command.get('description', None),
                 'region': command.get('region', None),
                 'cluster': command.get('cluster', None),
