@@ -564,14 +564,15 @@ def transform_new_task_definition_to_old(task):
         }
     elif source == 'EKS':
         eks_data_fetch_task = task.get('eks', {})
+        command = eks_data_fetch_task.get('command', {})
         updated_task_def = {
             'source': 'EKS',
             'eks_data_fetch_task': {
-                'command_type': eks_data_fetch_task.get('type', None),
-                'description': eks_data_fetch_task.get('description', None),
-                'region': eks_data_fetch_task.get('region', None),
-                'cluster': eks_data_fetch_task.get('cluster', None),
-                'namespace': eks_data_fetch_task.get('namespace', None),
+                'command_type': command.get('type', None),
+                'description': command.get('description', None),
+                'region': command.get('region', None),
+                'cluster': command.get('cluster', None),
+                'namespace': command.get('namespace', None),
             }
         }
     elif source == 'API':
