@@ -40,15 +40,14 @@ class BashSourceManager(PlaybookSourceManager):
             bash_command: Bash = bash_task.command
             remote_server_str = bash_command.remote_server.value if bash_command.remote_server else None
             if remote_server_str and not remote_server_connector:
-                ssh_server_asset = get_db_connector_metadata_models(remote_server_connector.account_id.value,
-                                                                    model_type=SourceModelType.SSH_SERVER,
+                ssh_server_asset = get_db_connector_metadata_models(model_type=SourceModelType.SSH_SERVER,
                                                                     model_uid=remote_server_str)
                 if not ssh_server_asset:
                     raise Exception("No remote servers assets found")
                 ssh_server_asset = ssh_server_asset.first()
 
                 db_remote_server_connector = ssh_server_asset.connector
-                remote_server_connector = db_remote_server_connector.proto
+                remote_server_connector = db_remote_server_connector.unmasked_proto
 
             command_str = bash_command.command.value
             commands = command_str.split('\n')

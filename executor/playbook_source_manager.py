@@ -76,7 +76,7 @@ class PlaybookSourceManager:
                     return self.task_type_callable_map[task_type]['executor'](time_range, global_variable_set,
                                                                               source_task_proto, source_connector_proto)
                 except Exception as e:
-                    raise Exception(f"Error while executing task: {e} for source: {source_str}")
+                    raise Exception(f"Error while executing task for source: {source_str} with error: {e}")
             else:
                 raise Exception(f"Task type {task_type} not supported for source: {source_str}")
         except Exception as e:
