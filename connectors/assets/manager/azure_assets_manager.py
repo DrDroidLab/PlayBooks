@@ -6,7 +6,7 @@ from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto, AccountConnectorAssetsModelOptions, \
-    AccountConnectorAssets
+    AccountConnectorAssets, ConnectorModelTypeOptions
 from protos.connectors.assets.azure_asset_pb2 import AzureWorkspaceAssetOptions, AzureAssetModel, \
     AzureWorkspaceAssetModel, AzureAssets
 from protos.base_pb2 import Source, SourceModelType
@@ -23,8 +23,7 @@ class AzureAssetManager(ConnectorAssetManager):
             for item in model_uid_metadata_list:
                 all_workspaces.append(item['model_uid'])
             options = AzureWorkspaceAssetOptions(workspaces=all_workspaces)
-            return AccountConnectorAssetsModelOptions.ModelTypeOption(model_type=model_type,
-                                                                      azure_workspace_model_options=options)
+            return ConnectorModelTypeOptions(model_type=model_type, azure_workspace_model_options=options)
         else:
             return None
 
