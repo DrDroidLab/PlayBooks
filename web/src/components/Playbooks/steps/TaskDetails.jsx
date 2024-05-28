@@ -54,7 +54,7 @@ function TaskDetails() {
   };
 
   useEffect(() => {
-    if (step[data?.triggerGetAssetsKey] && step.connectorType) {
+    if (step[data?.triggerGetAssetsKey]) {
       getAssets();
     }
   }, [step[data?.triggerGetAssetsKey], step.connectorType]);
@@ -73,7 +73,7 @@ function TaskDetails() {
   }, [step]);
 
   return (
-    <div className="mt-2">
+    <div className="relative mt-2">
       {data?.builder?.map((step) => (
         <div
           className={`flex gap-2 flex-wrap ${

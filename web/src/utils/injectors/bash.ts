@@ -4,7 +4,7 @@ export const injectBashTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let bash_command_task = {
+  let task = {
     command: step.command,
     remote_server: step.remote_server,
   };
@@ -12,8 +12,10 @@ export const injectBashTasks = (
   return [
     {
       ...baseTask,
-      source: step.source.toUpperCase(),
-      bash_command_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };

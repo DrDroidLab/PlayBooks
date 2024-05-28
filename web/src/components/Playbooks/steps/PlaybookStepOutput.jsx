@@ -14,9 +14,9 @@ const OutputTypes = {
 const PlaybookStepOutput = ({ stepOutput }) => {
   const [step] = useCurrentStep();
   const error = step.outputError;
-  const out = stepOutput.result;
+  const out = stepOutput?.result;
 
-  switch (out.type) {
+  switch (out?.type) {
     case OutputTypes.API_RESPONSE:
       return <PlaybookAPIActionOutput output={out.api_response} />;
     case OutputTypes.BASH_COMMAND_OUTPUT:

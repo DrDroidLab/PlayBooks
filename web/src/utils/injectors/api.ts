@@ -4,7 +4,7 @@ export const injectApiTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let api_call_task = {
+  let task = {
     method: step.action?.method?.toUpperCase(),
     url: step.action?.url,
     headers: JSON.parse(step.action?.headers ?? "{}"),
@@ -15,8 +15,10 @@ export const injectApiTasks = (
   return [
     {
       ...baseTask,
-      source: step.source.toUpperCase(),
-      api_call_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };
