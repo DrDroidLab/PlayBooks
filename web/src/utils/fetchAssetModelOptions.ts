@@ -21,7 +21,9 @@ export const fetchData = async (val: any = undefined) => {
 
 export const getAssetModelOptionsFunction = async () => {
   try {
-    const res = await store.dispatch(getAssetModelOptions.initiate());
+    const res = await store.dispatch(
+      getAssetModelOptions.initiate(undefined, { forceRefetch: true }),
+    );
     const data = res.data;
     if ((data?.asset_model_options?.length ?? 0) > 0)
       store.dispatch(setModelTypeOptions(data?.asset_model_options));

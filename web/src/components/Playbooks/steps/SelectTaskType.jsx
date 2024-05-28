@@ -1,38 +1,23 @@
 import React from "react";
 import SelectComponent from "../../SelectComponent";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  updateStep,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 
 function SelectTaskType() {
   const { currentStepIndex, connectorOptions, steps } =
     useSelector(playbookSelector);
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
-  const dispatch = useDispatch();
 
   const taskTypes =
     connectorOptions.find((e) => e.id === step?.source)?.connector
       ?.supported_task_type_options ?? [];
 
   function handleTaskTypeChange(id, val) {
-    dispatch(
-      updateStep({
-        currentStepIndex,
-        key: "taskType",
-        value: id,
-      }),
-    );
-    dispatch(
-      updateStep({
-        currentStepIndex,
-        key: "description",
-        value: val.type.display_name,
-      }),
-    );
+    updateCardByIndex("taskType", id);
+    updateCardByIndex("description", val.type.display_name);
   }
 
   return (
