@@ -550,22 +550,19 @@ def transform_new_task_definition_to_old(task):
         updated_task_def = {
             'source': 'API',
             'api_call_task': {
-                'method': api_call_task.get('method', None),
-                'url': api_call_task.get('url', None),
-                'headers': api_call_task.get('headers', None),
-                'payload': api_call_task.get('payload', None),
-                'timeout': api_call_task.get('timeout', None),
-                'cookies': api_call_task.get('cookies', None),
+                'method': api_call_task.get('http_request', {}).get('method', None),
+                'url': api_call_task.get('http_request', {}).get('url', None),
+                'headers': api_call_task.get('http_request', {}).get('headers', None),
+                'payload': api_call_task.get('http_request', {}).get('payload', None),
+                'timeout': api_call_task.get('http_request', {}).get('timeout', None),
+                'cookies': api_call_task.get('http_request', {}).get('cookies', None),
             }
         }
     elif source == 'BASH':
         bash_command_task = task.get('bash', {})
         updated_task_def = {
             'source': 'BASH',
-            'bash_command_task': {
-                'command': bash_command_task.get('command', None),
-                'remote_server': bash_command_task.get('remote_server', None),
-            }
+            'bash_command_task': bash_command_task.get('command', {})
         }
     elif source == 'DOCUMENTATION':
         documentation_task = task.get('documentation', {})
