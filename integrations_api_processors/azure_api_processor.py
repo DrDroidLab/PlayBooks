@@ -14,12 +14,12 @@ def query_response_to_dict(response):
     Function to convert query response tables to dictionaries.
     """
     result = {}
-    for table in response:
+    for table in response.tables:
         result[table.name] = []
         for row in table.rows:
             row_dict = {}
             for i, column in enumerate(table.columns):
-                row_dict[column.name] = row[i]
+                row_dict[column] = str(row[i])
             result[table.name].append(row_dict)
     return result
 

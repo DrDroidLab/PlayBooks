@@ -79,7 +79,7 @@ class AzureTaskExecutor(PlaybookTaskExecutor):
         task: Azure.FilterLogEvents = azure_task.filter_log_events
         workspace_id = task.workspace_id.value
         timespan_delta = task.timespan.value
-        timespan = timedelta(seconds=int(timespan_delta)) if timespan_delta else timedelta(
+        timespan = timedelta(hours=int(timespan_delta)) if timespan_delta else timedelta(
             seconds=end_time - start_time)
         query_pattern = task.filter_query.value
         for key, value in global_variable_set.items():
@@ -97,15 +97,15 @@ class AzureTaskExecutor(PlaybookTaskExecutor):
         print(f"Response: {response}")
         table_rows: [TableResult.TableRow] = []
         for table, rows in response.items():
-            table_columns: [TableResult.TableRow.TableColumn] = []
             for i in rows:
+                table_columns: [TableResult.TableRow.TableColumn] = []
                 for key, value in i.items():
                     table_column_name = f'{table}.{key}'
                     table_column = TableResult.TableColumn(
                         name=StringValue(value=table_column_name), value=StringValue(value=str(value)))
                     table_columns.append(table_column)
-            table_row = TableResult.TableRow(columns=table_columns)
-            table_rows.append(table_row)
+                table_row = TableResult.TableRow(columns=table_columns)
+                table_rows.append(table_row)
 
         result = TableResult(
             raw_query=StringValue(value=query_pattern),
