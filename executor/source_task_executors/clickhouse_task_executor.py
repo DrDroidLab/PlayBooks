@@ -34,6 +34,9 @@ class ClickhouseSourceManager(PlaybookSourceManager):
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
                           clickhouse_task: SqlDataFetch, clickhouse_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
+            if not clickhouse_connector:
+                raise Exception("Task execution Failed:: No Clickhouse source found")
+
             sql_query = clickhouse_task.sql_query
             order_by_column = sql_query.order_by_column.value
             limit = sql_query.limit.value

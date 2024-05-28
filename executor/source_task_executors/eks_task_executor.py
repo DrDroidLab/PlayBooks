@@ -68,13 +68,17 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_pods(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                  eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.get_pods
-        aws_region = eks_command.region.value
-        cluster_name = eks_command.cluster.value
-        namespace = eks_command.namespace.value
-
-        current_time = datetime.now(timezone.utc)
         try:
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            eks_command = eks_task.get_pods
+            aws_region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
+
+            current_time = datetime.now(timezone.utc)
+
             eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
                                                             cluster_name=cluster_name, client='api')
             table_rows: [TableResult.TableRow] = []
@@ -118,13 +122,17 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                         eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.get_deployments
-        aws_region = eks_command.region.value
-        cluster_name = eks_command.cluster.value
-        namespace = eks_command.namespace.value
-
-        current_time = datetime.now(timezone.utc)
         try:
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            eks_command = eks_task.get_deployments
+            aws_region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
+
+            current_time = datetime.now(timezone.utc)
+
             eks_app_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
                                                             cluster_name=cluster_name, client='app')
             table_rows: [TableResult.TableRow] = []
@@ -169,13 +177,17 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_events(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                    eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.get_events
-        aws_region = eks_command.region.value
-        cluster_name = eks_command.cluster.value
-        namespace = eks_command.namespace.value
-
-        current_time = datetime.now(timezone.utc)
         try:
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            eks_command = eks_task.get_events
+            aws_region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
+
+            current_time = datetime.now(timezone.utc)
+
             table_rows: [TableResult.TableRow] = []
             eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
                                                             cluster_name=cluster_name, client='api')
@@ -220,15 +232,19 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_services(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                      eks_connector: ConnectorProto) -> PlaybookTaskResult:
-        eks_command = eks_task.get_services
-        aws_region = eks_command.region.value
-        cluster_name = eks_command.cluster.value
-        namespace = eks_command.namespace.value
-
-        current_time = datetime.now(timezone.utc)
         try:
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            eks_command = eks_task.get_services
+            aws_region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
+
+            current_time = datetime.now(timezone.utc)
             eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
                                                             cluster_name=cluster_name, client='api')
+
             table_rows: [TableResult.TableRow] = []
             services: V1ServiceList = eks_api_instance.list_namespaced_service(namespace)
             for service in services.items:

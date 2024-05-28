@@ -5,7 +5,7 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
-from protos.base_pb2 import Source, TimeRange, SourceModelType
+from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
@@ -35,12 +35,25 @@ class PostgresSourceManager(PlaybookSourceManager):
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict, pg_task: SqlDataFetch,
                           pg_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
+            if not pg_connector:
+                raise Exception("Task execution Failed:: No Postgres source found")
+
             sql_query = pg_task.sql_query
             order_by_column = sql_query.order_by_column.value
             limit = sql_query.limit.value
             offset = sql_query.offset.value
             query = sql_query.query.value
             query = query.strip()
+            database = sql_query.database.value
+            if not database:
+                pg_keys = pg_connector.keys
+                for key in pg_keys:
+                    if key.key_type == SourceKeyType.POSTGRES_DATABASE:
+                        database = key.key.value
+                        break
+            if not database:
+                raise Exception("Task execution Failed:: No Postgres database found")
+
             if query[-1] == ';':
                 query = query[:-1]
             for key, value in global_variable_set.items():
@@ -54,7 +67,6 @@ class PostgresSourceManager(PlaybookSourceManager):
                 limit = 10
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
-            database = sql_query.database.value
 
             pg_db_processor = self.get_connector_processor(pg_connector, database=database)
 

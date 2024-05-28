@@ -32,6 +32,9 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
                           sql_data_fetch_task: SqlDataFetch, sql_db_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
+            if not sql_db_connector:
+                raise Exception("Task execution Failed:: No SQL Database source found")
+
             sql_query = sql_data_fetch_task.sql_query
             order_by_column = sql_query.order_by_column.value
             limit = sql_query.limit.value

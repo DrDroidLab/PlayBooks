@@ -77,14 +77,13 @@ def deprecated_execute_task(account_id, time_range, playbook_task: DeprecatedPla
             all_active_valid_connectors = manager.get_active_connectors(account_id=account_id)
             source_connector_proto: ConnectorProto = all_active_valid_connectors[0] if len(
                 all_active_valid_connectors) > 0 else None
-            if not source_connector_proto:
-                raise ValueError(f'No active connector found for account_id: {account_id}')
-            new_action_task['task_connector_sources'] = [{
-                'id': source_connector_proto.id.value,
-                'source': source_connector_proto.type,
-                'name': 'Default Connector'
-            }]
-            new_action_task_proto = dict_to_proto(new_action_task, PlaybookTask)
+            if source_connector_proto:
+                new_action_task['task_connector_sources'] = [{
+                    'id': source_connector_proto.id.value,
+                    'source': source_connector_proto.type,
+                    'name': 'Default Connector'
+                }]
+                new_action_task_proto = dict_to_proto(new_action_task, PlaybookTask)
             task_result = playbook_source_facade.execute_task(account_id, time_range, global_variable_set,
                                                               new_action_task_proto)
         elif task_type == DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION:

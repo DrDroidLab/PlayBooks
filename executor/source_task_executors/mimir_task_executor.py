@@ -35,68 +35,75 @@ class MimirSourceManager(PlaybookSourceManager):
 
     def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, mimir_task: PromQl,
                                         mimir_connector: ConnectorProto) -> PlaybookTaskResult:
-        tr_end_time = time_range.time_lt
-        tr_start_time = time_range.time_geq
-        current_datetime = datetime.utcfromtimestamp(tr_end_time)
-        evaluation_time = datetime.utcfromtimestamp(tr_start_time)
+        try:
+            if not mimir_connector:
+                raise Exception("Task execution Failed:: No Mimir source found")
 
-        end_time = current_datetime.isoformat() + "Z"
-        start_time = evaluation_time.isoformat() + "Z"
-        period = '300s'
+            tr_end_time = time_range.time_lt
+            tr_start_time = time_range.time_geq
+            current_datetime = datetime.utcfromtimestamp(tr_end_time)
+            evaluation_time = datetime.utcfromtimestamp(tr_start_time)
 
-        task_result = PlaybookTaskResult()
+            end_time = current_datetime.isoformat() + "Z"
+            start_time = evaluation_time.isoformat() + "Z"
+            period = '300s'
 
-        task = mimir_task.promql_metric_execution
-        process_function = task.process_function.value
-        promql_metric_query = task.promql_expression.value
-        # promql_label_option_values = task.promql_label_option_values
-        # for label_option in promql_label_option_values:
-        #     promql_metric_query = promql_metric_query.replace(label_option.name.value,
-        #                                                       label_option.value.value)
-        for key, value in global_variable_set.items():
-            promql_metric_query = promql_metric_query.replace(key, str(value))
+            task_result = PlaybookTaskResult()
 
-        mimir_api_processor = self.get_connector_processor(mimir_connector)
+            task = mimir_task.promql_metric_execution
+            process_function = task.process_function.value
+            promql_metric_query = task.promql_expression.value
+            # promql_label_option_values = task.promql_label_option_values
+            # for label_option in promql_label_option_values:
+            #     promql_metric_query = promql_metric_query.replace(label_option.name.value,
+            #                                                       label_option.value.value)
+            for key, value in global_variable_set.items():
+                promql_metric_query = promql_metric_query.replace(key, str(value))
 
-        print(
-            "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "
-            "-> {}, End_Time -> {}, Period -> {}".format("Mimir", mimir_connector.account_id.value, promql_metric_query,
-                                                         start_time, end_time, period), flush=True)
+            mimir_api_processor = self.get_connector_processor(mimir_connector)
 
-        response = mimir_api_processor.fetch_promql_metric_timeseries(promql_metric_query,
-                                                                      start_time, end_time, period)
-        if not response:
-            raise Exception("No data returned from Mimir")
+            print(
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Promql_Metric_Query -> {}, Start_Time "
+                "-> {}, End_Time -> {}, Period -> {}".format("Mimir", mimir_connector.account_id.value,
+                                                             promql_metric_query,
+                                                             start_time, end_time, period), flush=True)
 
-        if process_function == 'timeseries':
-            if 'data' in response and 'result' in response['data']:
-                labeled_metric_timeseries_list = []
-                for item in response['data']['result']:
-                    metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                    for value in item['values']:
-                        utc_timestamp = value[0]
-                        utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
-                        val = value[1]
-                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
-                        metric_datapoints.append(datapoint)
-                    item_metrics = item['metric']
-                    metric_label_values = []
-                    for key, value in item_metrics.items():
-                        metric_label_values.append(
-                            LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
-                    labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
-                        metric_label_values=metric_label_values, unit=StringValue(value=""),
-                        datapoints=metric_datapoints)
-                    labeled_metric_timeseries_list.append(labeled_metric_timeseries)
+            response = mimir_api_processor.fetch_promql_metric_timeseries(promql_metric_query,
+                                                                          start_time, end_time, period)
+            if not response:
+                raise Exception("No data returned from Mimir")
 
-                timeseries_result = TimeseriesResult(
-                    metric_expression=StringValue(value=promql_metric_query),
-                    labeled_metric_timeseries=labeled_metric_timeseries_list)
+            if process_function == 'timeseries':
+                if 'data' in response and 'result' in response['data']:
+                    labeled_metric_timeseries_list = []
+                    for item in response['data']['result']:
+                        metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                        for value in item['values']:
+                            utc_timestamp = value[0]
+                            utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
+                            val = value[1]
+                            datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                                timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
+                            metric_datapoints.append(datapoint)
+                        item_metrics = item['metric']
+                        metric_label_values = []
+                        for key, value in item_metrics.items():
+                            metric_label_values.append(
+                                LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
+                        labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
+                            metric_label_values=metric_label_values, unit=StringValue(value=""),
+                            datapoints=metric_datapoints)
+                        labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
-                task_result = PlaybookTaskResult(
-                    source=self.source,
-                    type=PlaybookTaskResultType.TIMESERIES,
-                    timeseries=timeseries_result
-                )
-        return task_result
+                    timeseries_result = TimeseriesResult(
+                        metric_expression=StringValue(value=promql_metric_query),
+                        labeled_metric_timeseries=labeled_metric_timeseries_list)
+
+                    task_result = PlaybookTaskResult(
+                        source=self.source,
+                        type=PlaybookTaskResultType.TIMESERIES,
+                        timeseries=timeseries_result
+                    )
+            return task_result
+        except Exception as e:
+            raise Exception(f"Error while executing Mimir task: {e}")

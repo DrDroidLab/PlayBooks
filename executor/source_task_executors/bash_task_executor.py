@@ -39,7 +39,7 @@ class BashSourceManager(PlaybookSourceManager):
         try:
             bash_command: Bash = bash_task.command
             remote_server_str = bash_command.remote_server.value if bash_command.remote_server else None
-            if not remote_server_connector and remote_server_str:
+            if remote_server_str and not remote_server_connector:
                 ssh_server_asset = get_db_connector_metadata_models(remote_server_connector.account_id.value,
                                                                     model_type=SourceModelType.SSH_SERVER,
                                                                     model_uid=remote_server_str)
