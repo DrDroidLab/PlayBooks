@@ -14,9 +14,9 @@ export const extractApiTasks = (step: any) => {
     action: {
       method: apiTask.method,
       url: apiTask.url,
-      headers: JSON.stringify(apiTask.headers ?? {}),
+      headers: apiTask.headers ? apiTask.headers : {},
       timeout: apiTask.timeout,
-      payload: JSON.stringify(apiTask.payload ?? {}),
+      payload: apiTask.payload ? apiTask.payload : {},
     },
   };
 
