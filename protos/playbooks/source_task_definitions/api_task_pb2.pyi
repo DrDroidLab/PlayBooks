@@ -6,7 +6,6 @@ import builtins
 import google.protobuf.descriptor
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
-import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import sys
 import typing
@@ -70,22 +69,22 @@ class Api(google.protobuf.message.Message):
         @property
         def url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def headers(self) -> google.protobuf.struct_pb2.Struct: ...
+        def headers(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def payload(self) -> google.protobuf.struct_pb2.Struct: ...
+        def payload(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def timeout(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
         @property
-        def cookies(self) -> google.protobuf.struct_pb2.Struct: ...
+        def cookies(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
             method: global___Api.HttpRequest.Method.ValueType = ...,
             url: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            headers: google.protobuf.struct_pb2.Struct | None = ...,
-            payload: google.protobuf.struct_pb2.Struct | None = ...,
+            headers: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            payload: google.protobuf.wrappers_pb2.StringValue | None = ...,
             timeout: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-            cookies: google.protobuf.struct_pb2.Struct | None = ...,
+            cookies: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "method", b"method", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> None: ...
