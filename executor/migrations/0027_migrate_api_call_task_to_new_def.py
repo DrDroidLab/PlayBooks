@@ -17,11 +17,11 @@ def transform_playbook_api_task(apps, schema_editor):
             api_task = task.get('api')
             api_task_type = api_task.get('type', '')
             http_request = api_task.pop('http_request', {})
-            if 'headers' in http_request and http_request['headers']:
+            if 'headers' in http_request and http_request['headers'] is not None:
                 http_request['headers'] = json.dumps(http_request['headers'])
-            if 'payload' in http_request and http_request['payload']:
+            if 'payload' in http_request and http_request['payload'] is not None:
                 http_request['payload'] = json.dumps(http_request['payload'])
-            if 'cookies' in http_request and http_request['cookies']:
+            if 'cookies' in http_request and http_request['cookies'] is not None:
                 http_request['cookies'] = json.dumps(http_request['cookies'])
 
             new_task_def = {
