@@ -36,11 +36,14 @@ integrations_connector_type_display_name_map = {
     Source.OPEN_AI: 'OPEN AI',
     Source.REMOTE_SERVER: 'REMOTE SERVER',
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
+    Source.AZURE: 'AZURE',
 }
 
 integrations_connector_type_category_map = {
     Source.SLACK: 'Alert Channels',
     Source.GOOGLE_CHAT: 'Alert Channels',
+    Source.PAGER_DUTY: 'Alert Channels',
+    Source.OPS_GENIE: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
     Source.DATADOG: 'APM Tools',
@@ -53,11 +56,10 @@ integrations_connector_type_category_map = {
     Source.PROMETHEUS: 'APM Tools',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
+    Source.EKS: 'Cloud',
+    Source.AZURE: 'Cloud',
     Source.CLICKHOUSE: 'Database',
     Source.POSTGRES: 'Database',
-    Source.PAGER_DUTY: 'Alert Channels',
-    Source.OPS_GENIE: 'Alert Channels',
-    Source.EKS: 'Cloud',
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
@@ -190,6 +192,14 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PASSWORD
         ]
+    ],
+    Source.AZURE: [
+        [
+            SourceKeyType.AZURE_CLIENT_ID,
+            SourceKeyType.AZURE_CLIENT_SECRET,
+            SourceKeyType.AZURE_TENANT_ID,
+            SourceKeyType.AZURE_SUBSCRIPTION_ID,
+        ]
     ]
 }
 
@@ -240,6 +250,10 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
     SourceKeyType.SSL_VERIFY: "Enable TLS certificate validation",
+    SourceKeyType.AZURE_CLIENT_ID: 'Client ID',
+    SourceKeyType.AZURE_CLIENT_SECRET: 'Client Secret',
+    SourceKeyType.AZURE_TENANT_ID: 'Tenant ID',
+    SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
 }
 
 
@@ -347,7 +361,8 @@ class ConnectorKey(models.Model):
                              SourceKeyType.OPS_GENIE_API_KEY,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
-                             SourceKeyType.REMOTE_SERVER_PEM]:
+                             SourceKeyType.REMOTE_SERVER_PEM,
+                             SourceKeyType.AZURE_CLIENT_SECRET]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

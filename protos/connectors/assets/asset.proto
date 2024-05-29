@@ -12,6 +12,7 @@ import "protos/connectors/assets/newrelic_asset.proto";
 import "protos/connectors/assets/datadog_asset.proto";
 import "protos/connectors/assets/postgres_asset.proto";
 import "protos/connectors/assets/eks_asset.proto";
+import "protos/connectors/assets/azure_asset.proto";
 import "protos/connectors/assets/remote_server_asset.proto";
 
 message ConnectorModelTypeOptions {
@@ -29,6 +30,7 @@ message ConnectorModelTypeOptions {
     PostgresDatabaseAssetOptions postgres_database_model_options = 11;
     EksClusterAssetOptions eks_cluster_model_options = 12;
     SshServerAssetOptions ssh_server_model_options = 13;
+    AzureWorkspaceAssetOptions azure_workspace_model_options = 14;
   }
 }
 
@@ -49,7 +51,8 @@ message AccountConnectorAssetsModelFilters {
     DatadogServiceAssetOptions datadog_service_model_filters = 8;
     PostgresDatabaseAssetOptions postgres_database_model_filters = 9;
     EksClusterAssetOptions eks_cluster_model_filters = 10;
-    SshServerAssetOptions ssh_server_model_filters = 11;
+    AzureWorkspaceAssetOptions azure_workspace_model_filters = 11;
+    SshServerAssetOptions ssh_server_model_filters = 12;
   }
 }
 
@@ -65,5 +68,6 @@ message AccountConnectorAssets {
     PostgresAssets postgres = 8;
     EksAssets eks = 9;
     RemoteServerAssets remote_server = 10;
+    AzureAssets azure = 11;
   }
 }
