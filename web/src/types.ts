@@ -109,7 +109,6 @@ export interface ClickhouseDataFetchTask {
 }
 
 export interface PostgresDataFetchTask {
-  database: string;
   query: string;
 }
 
@@ -135,7 +134,6 @@ export interface CloudWatchTask {
 
 export interface GrafanaTask {
   type: string;
-  datasource_uid: string;
   promql_metric_execution_task: PromqlMetricExecutionTask;
 }
 

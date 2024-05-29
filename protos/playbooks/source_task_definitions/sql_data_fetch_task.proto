@@ -1,0 +1,25 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message SqlDataFetch {
+  message SqlQuery {
+    google.protobuf.StringValue database = 1;
+    google.protobuf.StringValue query = 2;
+    google.protobuf.StringValue order_by_column = 3;
+    google.protobuf.UInt64Value limit = 4;
+    google.protobuf.UInt64Value offset = 5;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SQL_QUERY = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SqlQuery sql_query = 2;
+  }
+}

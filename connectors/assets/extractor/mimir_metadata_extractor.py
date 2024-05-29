@@ -1,22 +1,20 @@
-import re
-import time
-
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from protos.base_pb2 import Source
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 
-class MimirConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class MimirSourceMetadataExtractor(SourceMetadataExtractor):
 
-    def __init__(self, mimir_host, x_scope_org_id, account_id=None, connector_id=None):
-        self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id)
+    def __init__(self, mimir_host, x_scope_org_id, ssl_verify="true", account_id=None, connector_id=None):
+        verify = True
+        if ssl_verify and ssl_verify.lower() == "false":
+            verify = False
+        self.__mimir_api_processor = MimirApiProcessor(mimir_host, x_scope_org_id, ssl_verify=verify)
 
         super().__init__(account_id, connector_id, Source.GRAFANA_MIMIR)
 
     def extract_data_source(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL
+        model_type = SourceModelType.GRAFANA_TARGET_METRIC_PROMQL
         # try:
         #     datasources = self.__grafana_api_processor.fetch_data_sources()
         # except Exception as e:

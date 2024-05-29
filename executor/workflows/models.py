@@ -6,6 +6,8 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookExecution
+from playbooks.utils.decorators import deprecated
+from protos.playbooks.workflow_pb2 import DeprecatedWorkflowExecutionLog, DeprecatedWorkflowExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
@@ -268,6 +270,27 @@ class WorkflowExecution(models.Model):
             created_by=StringValue(value=self.created_by) if self.created_by else None,
         )
 
+    @property
+    @deprecated
+    def deprecated_proto(self) -> DeprecatedWorkflowExecution:
+        workflow_execution_logs = self.workflowexecutionlog_set.all()
+        wf_logs = [wel.deprecated_proto for wel in workflow_execution_logs]
+        return DeprecatedWorkflowExecution(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto_partial,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            interval=UInt64Value(value=self.interval),
+            total_executions=UInt64Value(value=self.total_executions),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            workflow_logs=wf_logs
+        )
+
 
 class WorkflowExecutionLog(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
@@ -289,5 +312,15 @@ class WorkflowExecutionLog(models.Model):
     def proto_partial(self) -> WorkflowExecutionLogProto:
         return WorkflowExecutionLogProto(
             id=UInt64Value(value=self.id),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+        )
+
+    @property
+    @deprecated
+    def deprecated_proto(self) -> DeprecatedWorkflowExecutionLog:
+        playbook_execution_proto = self.playbook_execution.deprecated_proto
+        return DeprecatedWorkflowExecutionLog(
+            id=UInt64Value(value=self.id),
+            playbook_execution=playbook_execution_proto,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
         )

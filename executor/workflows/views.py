@@ -16,7 +16,7 @@ from executor.workflows.crud.workflow_execution_utils import create_workflow_exe
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
 from executor.workflows.tasks import test_workflow_notification
-from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api
+from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, deprecated
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from utils.time_utils import current_datetime
@@ -24,7 +24,7 @@ from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
-    ExecutionsWorkflowsListRequest
+    ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequestV2, ExecutionWorkflowGetResponseV2
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import dict_to_proto
 from utils.uri_utils import construct_curl, build_absolute_uri
@@ -141,6 +141,7 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
 
 
 @web_api(ExecutionWorkflowGetRequest)
+@deprecated
 def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
         Union[ExecutionWorkflowGetResponse, HttpResponse]:
     account: Account = get_request_account()
@@ -157,8 +158,29 @@ def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
         return ExecutionWorkflowGetResponse(success=BoolValue(value=False),
                                             message=Message(title="Error", description=str(e)))
 
-    workflow_execution_protos = [we.proto for we in workflow_execution]
+    workflow_execution_protos = [we.deprecated_proto for we in workflow_execution]
     return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+
+
+@web_api(ExecutionWorkflowGetRequestV2)
+def workflows_execution_get_v2(request_message: ExecutionWorkflowGetRequestV2) -> \
+        Union[ExecutionWorkflowGetResponseV2, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False), message=Message(title="Invalid Request",
+                                                                                              description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                  description="Workflow Execution not found"))
+    except Exception as e:
+        return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False),
+                                              message=Message(title="Error", description=str(e)))
+
+    workflow_execution_protos = [we.proto for we in workflow_execution]
+    return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
 
 
 @web_api(ExecutionsWorkflowsListRequest)
@@ -205,7 +227,8 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         account_workflow = account_workflows.first()
     except Exception as e:
         logger.error(f"Error fetching workflow: {str(e)}")
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
+                            status=500,
                             content_type='application/json')
     try:
         schedule_type = account_workflow.schedule_type
@@ -227,11 +250,13 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                             content_type='application/json')
     except Exception as e:
         logger.error(f'Error executing workflow: {str(e)}')
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
+                            status=500,
                             content_type='application/json')
 
 
 @account_get_api()
+@deprecated
 def workflows_execution_api_get(request_message: HttpRequest) -> Union[ExecutionWorkflowGetResponse, HttpResponse]:
     account: Account = get_request_account()
     query_dict = request_message.GET
@@ -254,11 +279,43 @@ def workflows_execution_api_get(request_message: HttpRequest) -> Union[Execution
                                 status=404, content_type='application/json')
     except Exception as e:
         logger.error(traceback.format_exc())
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}), status=500,
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
+                            status=500,
+                            content_type='application/json')
+
+    workflow_execution_protos = [we.deprecated_proto for we in workflow_executions]
+    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+
+
+@account_get_api()
+def workflows_execution_api_get_v2(request_message: HttpRequest) -> Union[ExecutionWorkflowGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    query_dict = request_message.GET
+    if 'workflow_run_id' not in query_dict:
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'Request Workflow params not found.'}),
+                            status=400, content_type='application/json')
+    request_dict = dict(query_dict)
+    workflow_run_id = request_dict.get('workflow_run_id')
+    if not workflow_run_id:
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'Request Workflow params not found.'}),
+                            status=400, content_type='application/json')
+    if isinstance(workflow_run_id, list):
+        workflow_run_ids = workflow_run_id
+    else:
+        workflow_run_ids = [workflow_run_id]
+    try:
+        workflow_executions = get_db_workflow_executions(account, workflow_run_ids=workflow_run_ids)
+        if not workflow_executions:
+            return HttpResponse(json.dumps({'success': False, 'error_message': 'Workflow Executions not found.'}),
+                                status=404, content_type='application/json')
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
+                            status=500,
                             content_type='application/json')
 
     workflow_execution_protos = [we.proto for we in workflow_executions]
-    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+    return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
 
 
 @web_api(CreateWorkflowRequest)

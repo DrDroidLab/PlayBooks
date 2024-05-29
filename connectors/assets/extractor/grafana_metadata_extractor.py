@@ -1,10 +1,9 @@
 import re
 import time
 
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType as SourceModelType
 
 
 def promql_get_metric_name(promql):
@@ -30,15 +29,18 @@ def promql_get_metric_optional_label_variable_pairs(promql):
     return label_value_pairs
 
 
-class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class GrafanaSourceMetadataExtractor(SourceMetadataExtractor):
 
-    def __init__(self, grafana_host, grafana_api_key, account_id=None, connector_id=None):
-        self.__grafana_api_processor = GrafanaApiProcessor(grafana_host, grafana_api_key)
+    def __init__(self, grafana_host, grafana_api_key, ssl_verify="true", account_id=None, connector_id=None):
+        verify = True
+        if ssl_verify and ssl_verify.lower() == "false":
+            verify = False
+        self.__grafana_api_processor = GrafanaApiProcessor(grafana_host, grafana_api_key, ssl_verify=verify)
 
-        super().__init__(account_id, connector_id, ConnectorType.GRAFANA)
+        super().__init__(account_id, connector_id, Source.GRAFANA)
 
     def extract_data_source(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DATASOURCE
+        model_type = SourceModelType.GRAFANA_DATASOURCE
         try:
             datasources = self.__grafana_api_processor.fetch_data_sources()
         except Exception as e:
@@ -55,7 +57,7 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboards(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DASHBOARD
+        model_type = SourceModelType.GRAFANA_DASHBOARD
         try:
             all_dashboards = self.__grafana_api_processor.fetch_dashboards()
         except Exception as e:
@@ -83,7 +85,7 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboard_target_metric_promql(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL
+        model_type = SourceModelType.GRAFANA_TARGET_METRIC_PROMQL
         try:
             all_data_sources = self.__grafana_api_processor.fetch_data_sources()
         except Exception as e:
@@ -113,59 +115,52 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
                 continue
             if not dashboard_details:
                 continue
+            try:
+                if 'dashboard' in dashboard_details and 'panels' in dashboard_details['dashboard']:
+                    dashboard_title = ''
+                    if 'title' in dashboard_details['dashboard']:
+                        dashboard_title = dashboard_details['dashboard']['title']
+                    panels = dashboard_details['dashboard']['panels']
+                    for p in panels:
+                        panel_title = ''
+                        if 'title' in p:
+                            panel_title = p['title']
+                        if 'targets' in p:
+                            targets = p['targets']
+                            for t in targets:
+                                if 'expr' in t:
+                                    # datasource = p['datasource']
+                                    # datasource_uid = None
+                                    # if isinstance(datasource, dict):
+                                    #     datasource_uid = datasource['uid']
+                                    # else:
+                                    #     for promql_datasource in promql_datasources:
+                                    #         if promql_datasource['typeName'] == datasource:
+                                    #             datasource_uid = promql_datasource['uid']
+                                    #             break
+                                    # if not datasource_uid:
+                                    #     datasource_uid = promql_datasources[0]['uid']
+                                    # TODO(MG): Check how to remove data source hard coding
+                                    datasource_uid = promql_datasources[0]['uid']
 
-            if 'dashboard' in dashboard_details and 'panels' in dashboard_details['dashboard']:
-                dashboard_title = ''
-                if 'title' in dashboard_details['dashboard']:
-                    dashboard_title = dashboard_details['dashboard']['title']
-                panels = dashboard_details['dashboard']['panels']
-                for p in panels:
-                    panel_title = ''
-                    if 'title' in p:
-                        panel_title = p['title']
-                    if 'targets' in p:
-                        targets = p['targets']
-                        for t in targets:
-                            if 'expr' in t:
-                                # datasource = p['datasource']
-                                # datasource_uid = None
-                                # if isinstance(datasource, dict):
-                                #     datasource_uid = datasource['uid']
-                                # else:
-                                #     for promql_datasource in promql_datasources:
-                                #         if promql_datasource['typeName'] == datasource:
-                                #             datasource_uid = promql_datasource['uid']
-                                #             break
-                                # if not datasource_uid:
-                                #     datasource_uid = promql_datasources[0]['uid']
-                                # TODO(MG): Check how to remove data source hard coding
-                                datasource_uid = promql_datasources[0]['uid']
-
-                                model_uid = f"{uid}#{p['id']}#{t['refId']}"
-                                expr = t['expr'].replace('$__rate_interval', '5m')
-                                expr = expr.replace('$__interval', '5m')
-                                model_data[model_uid] = {'expr': expr, 'dashboard_id': uid, 'panel_id': p['id'],
-                                                         'panel_title': panel_title, 'dashboard_title': dashboard_title,
-                                                         'target_metric_ref_id': t['refId'],
-                                                         'datasource_uid': datasource_uid}
-                                if '$' in expr:
-                                    metric_name = promql_get_metric_name(expr)
-                                    if metric_name:
-                                        model_data[model_uid]['metric_name'] = metric_name
-                                        optional_label_variable_pairs = promql_get_metric_optional_label_variable_pairs(
-                                            expr)
-                                        if optional_label_variable_pairs:
-                                            model_data[model_uid][
-                                                'optional_label_variable_pairs'] = optional_label_variable_pairs
-                                            retry_attempts = 0
-                                            try:
-                                                response = self.__grafana_api_processor.fetch_promql_metric_labels(
-                                                    datasource_uid, metric_name)
-                                            except Exception as e:
-                                                print(
-                                                    f"Exception occurred while fetching promql metric labels with error: {e}")
-                                                response = None
-                                            while not response and retry_attempts < 3:
+                                    model_uid = f"{uid}#{p['id']}#{t.get('refId', 'A')}"
+                                    expr = t['expr'].replace('$__rate_interval', '5m')
+                                    expr = expr.replace('$__interval', '5m')
+                                    model_data[model_uid] = {'expr': expr, 'dashboard_id': uid, 'panel_id': p['id'],
+                                                             'panel_title': panel_title,
+                                                             'dashboard_title': dashboard_title,
+                                                             'target_metric_ref_id': t.get('refId', 'A'),
+                                                             'datasource_uid': datasource_uid}
+                                    if '$' in expr:
+                                        metric_name = promql_get_metric_name(expr)
+                                        if metric_name:
+                                            model_data[model_uid]['metric_name'] = metric_name
+                                            optional_label_variable_pairs = promql_get_metric_optional_label_variable_pairs(
+                                                expr)
+                                            if optional_label_variable_pairs:
+                                                model_data[model_uid][
+                                                    'optional_label_variable_pairs'] = optional_label_variable_pairs
+                                                retry_attempts = 0
                                                 try:
                                                     response = self.__grafana_api_processor.fetch_promql_metric_labels(
                                                         datasource_uid, metric_name)
@@ -173,39 +168,252 @@ class GrafanaConnectorMetadataExtractor(ConnectorMetadataExtractor):
                                                     print(
                                                         f"Exception occurred while fetching promql metric labels with error: {e}")
                                                     response = None
-                                                time.sleep(5)
-                                                retry_attempts += 1
-                                            if response and 'data' in response:
-                                                promql_labels = response['data']
-                                                label_value_options = {}
-                                                for lb in promql_labels:
-                                                    if lb in optional_label_variable_pairs:
-                                                        optional_variable_name = optional_label_variable_pairs[lb]
-                                                        retry_attempts = 0
-                                                        try:
-                                                            response = self.__grafana_api_processor.fetch_promql_metric_label_values(
-                                                                datasource_uid, metric_name, lb)
-                                                        except Exception as e:
-                                                            print(
-                                                                f"Exception occurred while fetching promql metric label values with error: {e}")
-                                                            response = None
-                                                        while not response and retry_attempts < 3:
+                                                while not response and retry_attempts < 3:
+                                                    try:
+                                                        response = self.__grafana_api_processor.fetch_promql_metric_labels(
+                                                            datasource_uid, metric_name)
+                                                    except Exception as e:
+                                                        print(
+                                                            f"Exception occurred while fetching promql metric labels with error: {e}")
+                                                        response = None
+                                                    time.sleep(5)
+                                                    retry_attempts += 1
+                                                if response and 'data' in response:
+                                                    promql_labels = response['data']
+                                                    label_value_options = {}
+                                                    for lb in promql_labels:
+                                                        if lb in optional_label_variable_pairs:
+                                                            optional_variable_name = optional_label_variable_pairs[lb]
+                                                            retry_attempts = 0
                                                             try:
                                                                 response = self.__grafana_api_processor.fetch_promql_metric_label_values(
-                                                                    datasource_uid, metric_name)
+                                                                    datasource_uid, metric_name, lb)
                                                             except Exception as e:
                                                                 print(
                                                                     f"Exception occurred while fetching promql metric label values with error: {e}")
                                                                 response = None
+                                                            while not response and retry_attempts < 3:
+                                                                try:
+                                                                    response = self.__grafana_api_processor.fetch_promql_metric_label_values(
+                                                                        datasource_uid, metric_name)
+                                                                except Exception as e:
+                                                                    print(
+                                                                        f"Exception occurred while fetching promql metric label values with error: {e}")
+                                                                    response = None
+                                                                time.sleep(5)
+                                                                retry_attempts += 1
+                                                            if response and 'data' in response:
+                                                                label_values = response['data']
+                                                                label_value_options[
+                                                                    optional_variable_name] = label_values
+                                                    if label_value_options:
+                                                        model_data[model_uid][
+                                                            'optional_label_options'] = label_value_options
+                                    if save_to_db:
+                                        self.create_or_update_model_metadata(model_type, model_uid,
+                                                                             model_data[model_uid])
+                if 'dashboard' in dashboard_details and 'rows' in dashboard_details['dashboard']:
+                    rows = dashboard_details['dashboard']['rows']
+                    for r in rows:
+                        if 'panels' in r:
+                            panels = r['panels']
+                            dashboard_title = ''
+                            if 'title' in dashboard_details['dashboard']:
+                                dashboard_title = dashboard_details['dashboard']['title']
+                            for p in panels:
+                                panel_title = ''
+                                if 'title' in p:
+                                    panel_title = p['title']
+                                if 'targets' in p:
+                                    targets = p['targets']
+                                    for t in targets:
+                                        if 'expr' in t:
+                                            # datasource = p['datasource']
+                                            # datasource_uid = None
+                                            # if isinstance(datasource, dict):
+                                            #     datasource_uid = datasource['uid']
+                                            # else:
+                                            #     for promql_datasource in promql_datasources:
+                                            #         if promql_datasource['typeName'] == datasource:
+                                            #             datasource_uid = promql_datasource['uid']
+                                            #             break
+                                            # if not datasource_uid:
+                                            #     datasource_uid = promql_datasources[0]['uid']
+                                            # TODO(MG): Check how to remove data source hard coding
+                                            datasource_uid = promql_datasources[0]['uid']
+
+                                            model_uid = f"{uid}#{p['id']}#{t.get('refId', 'A')}"
+                                            expr = t['expr'].replace('$__rate_interval', '5m')
+                                            expr = expr.replace('$__interval', '5m')
+                                            model_data[model_uid] = {'expr': expr, 'dashboard_id': uid,
+                                                                     'panel_id': p['id'],
+                                                                     'panel_title': panel_title,
+                                                                     'dashboard_title': dashboard_title,
+                                                                     'target_metric_ref_id': t.get('refId', 'A'),
+                                                                     'datasource_uid': datasource_uid}
+                                            if '$' in expr:
+                                                metric_name = promql_get_metric_name(expr)
+                                                if metric_name:
+                                                    model_data[model_uid]['metric_name'] = metric_name
+                                                    optional_label_variable_pairs = promql_get_metric_optional_label_variable_pairs(
+                                                        expr)
+                                                    if optional_label_variable_pairs:
+                                                        model_data[model_uid][
+                                                            'optional_label_variable_pairs'] = optional_label_variable_pairs
+                                                        retry_attempts = 0
+                                                        try:
+                                                            response = self.__grafana_api_processor.fetch_promql_metric_labels(
+                                                                datasource_uid, metric_name)
+                                                        except Exception as e:
+                                                            print(
+                                                                f"Exception occurred while fetching promql metric labels with error: {e}")
+                                                            response = None
+                                                        while not response and retry_attempts < 3:
+                                                            try:
+                                                                response = self.__grafana_api_processor.fetch_promql_metric_labels(
+                                                                    datasource_uid, metric_name)
+                                                            except Exception as e:
+                                                                print(
+                                                                    f"Exception occurred while fetching promql metric labels with error: {e}")
+                                                                response = None
                                                             time.sleep(5)
                                                             retry_attempts += 1
                                                         if response and 'data' in response:
-                                                            label_values = response['data']
-                                                            label_value_options[
-                                                                optional_variable_name] = label_values
-                                                if label_value_options:
-                                                    model_data[model_uid][
-                                                        'optional_label_options'] = label_value_options
-                                if save_to_db:
-                                    self.create_or_update_model_metadata(model_type, model_uid, model_data[model_uid])
+                                                            promql_labels = response['data']
+                                                            label_value_options = {}
+                                                            for lb in promql_labels:
+                                                                if lb in optional_label_variable_pairs:
+                                                                    optional_variable_name = \
+                                                                        optional_label_variable_pairs[lb]
+                                                                    retry_attempts = 0
+                                                                    try:
+                                                                        response = self.__grafana_api_processor.fetch_promql_metric_label_values(
+                                                                            datasource_uid, metric_name, lb)
+                                                                    except Exception as e:
+                                                                        print(
+                                                                            f"Exception occurred while fetching promql metric label values with error: {e}")
+                                                                        response = None
+                                                                    while not response and retry_attempts < 3:
+                                                                        try:
+                                                                            response = self.__grafana_api_processor.fetch_promql_metric_label_values(
+                                                                                datasource_uid, metric_name)
+                                                                        except Exception as e:
+                                                                            print(
+                                                                                f"Exception occurred while fetching promql metric label values with error: {e}")
+                                                                            response = None
+                                                                        time.sleep(5)
+                                                                        retry_attempts += 1
+                                                                    if response and 'data' in response:
+                                                                        label_values = response['data']
+                                                                        label_value_options[
+                                                                            optional_variable_name] = label_values
+                                                            if label_value_options:
+                                                                model_data[model_uid][
+                                                                    'optional_label_options'] = label_value_options
+                                            if save_to_db:
+                                                self.create_or_update_model_metadata(model_type, model_uid,
+                                                                                     model_data[model_uid])
+                if 'dashboard' in dashboard_details and 'panels' in dashboard_details['dashboard']:
+                    panels = dashboard_details['dashboard']['panels']
+                    for p in panels:
+                        if 'panels' in p:
+                            panels = p['panels']
+                            dashboard_title = ''
+                            if 'title' in dashboard_details['dashboard']:
+                                dashboard_title = dashboard_details['dashboard']['title']
+                            for p in panels:
+                                panel_title = ''
+                                if 'title' in p:
+                                    panel_title = p['title']
+                                if 'targets' in p:
+                                    targets = p['targets']
+                                    for t in targets:
+                                        if 'expr' in t:
+                                            # datasource = p['datasource']
+                                            # datasource_uid = None
+                                            # if isinstance(datasource, dict):
+                                            #     datasource_uid = datasource['uid']
+                                            # else:
+                                            #     for promql_datasource in promql_datasources:
+                                            #         if promql_datasource['typeName'] == datasource:
+                                            #             datasource_uid = promql_datasource['uid']
+                                            #             break
+                                            # if not datasource_uid:
+                                            #     datasource_uid = promql_datasources[0]['uid']
+                                            # TODO(MG): Check how to remove data source hard coding
+                                            datasource_uid = promql_datasources[0]['uid']
+
+                                            model_uid = f"{uid}#{p['id']}#{t.get('refId', 'A')}"
+                                            expr = t['expr'].replace('$__rate_interval', '5m')
+                                            expr = expr.replace('$__interval', '5m')
+                                            model_data[model_uid] = {'expr': expr, 'dashboard_id': uid,
+                                                                     'panel_id': p['id'],
+                                                                     'panel_title': panel_title,
+                                                                     'dashboard_title': dashboard_title,
+                                                                     'target_metric_ref_id': t.get('refId', 'A'),
+                                                                     'datasource_uid': datasource_uid}
+                                            if '$' in expr:
+                                                metric_name = promql_get_metric_name(expr)
+                                                if metric_name:
+                                                    model_data[model_uid]['metric_name'] = metric_name
+                                                    optional_label_variable_pairs = promql_get_metric_optional_label_variable_pairs(
+                                                        expr)
+                                                    if optional_label_variable_pairs:
+                                                        model_data[model_uid][
+                                                            'optional_label_variable_pairs'] = optional_label_variable_pairs
+                                                        retry_attempts = 0
+                                                        try:
+                                                            response = self.__grafana_api_processor.fetch_promql_metric_labels(
+                                                                datasource_uid, metric_name)
+                                                        except Exception as e:
+                                                            print(
+                                                                f"Exception occurred while fetching promql metric labels with error: {e}")
+                                                            response = None
+                                                        while not response and retry_attempts < 3:
+                                                            try:
+                                                                response = self.__grafana_api_processor.fetch_promql_metric_labels(
+                                                                    datasource_uid, metric_name)
+                                                            except Exception as e:
+                                                                print(
+                                                                    f"Exception occurred while fetching promql metric labels with error: {e}")
+                                                                response = None
+                                                            time.sleep(5)
+                                                            retry_attempts += 1
+                                                        if response and 'data' in response:
+                                                            promql_labels = response['data']
+                                                            label_value_options = {}
+                                                            for lb in promql_labels:
+                                                                if lb in optional_label_variable_pairs:
+                                                                    optional_variable_name = \
+                                                                        optional_label_variable_pairs[lb]
+                                                                    retry_attempts = 0
+                                                                    try:
+                                                                        response = self.__grafana_api_processor.fetch_promql_metric_label_values(
+                                                                            datasource_uid, metric_name, lb)
+                                                                    except Exception as e:
+                                                                        print(
+                                                                            f"Exception occurred while fetching promql metric label values with error: {e}")
+                                                                        response = None
+                                                                    while not response and retry_attempts < 3:
+                                                                        try:
+                                                                            response = self.__grafana_api_processor.fetch_promql_metric_label_values(
+                                                                                datasource_uid, metric_name)
+                                                                        except Exception as e:
+                                                                            print(
+                                                                                f"Exception occurred while fetching promql metric label values with error: {e}")
+                                                                            response = None
+                                                                        time.sleep(5)
+                                                                        retry_attempts += 1
+                                                                    if response and 'data' in response:
+                                                                        label_values = response['data']
+                                                                        label_value_options[
+                                                                            optional_variable_name] = label_values
+                                                            if label_value_options:
+                                                                model_data[model_uid][
+                                                                    'optional_label_options'] = label_value_options
+                                            if save_to_db:
+                                                self.create_or_update_model_metadata(model_type, model_uid,
+                                                                                     model_data[model_uid])
+            except Exception as e:
+                print(f"Exception occurred while processing dashboard details with error: {e}, {e.__traceback__}")
         return model_data

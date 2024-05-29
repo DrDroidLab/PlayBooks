@@ -132,7 +132,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     NEWRELIC_QUERY_KEY: _SourceKeyType.ValueType  # 7
     NEWRELIC_API_DOMAIN: _SourceKeyType.ValueType  # 19
     SLACK_BOT_AUTH_TOKEN: _SourceKeyType.ValueType  # 8
-    SLACK_CHANNEL: _SourceKeyType.ValueType  # 9
+    SLACK_CHANNEL_ID: _SourceKeyType.ValueType  # 9
+    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     HONEYBADGER_USERNAME: _SourceKeyType.ValueType  # 10
     HONEYBADGER_PASSWORD: _SourceKeyType.ValueType  # 11
     HONEYBADGER_PROJECT_ID: _SourceKeyType.ValueType  # 12
@@ -166,7 +167,6 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AGENT_PROXY_HOST: _SourceKeyType.ValueType  # 43
     AGENT_PROXY_API_KEY: _SourceKeyType.ValueType  # 44
     GITHUB_ACTIONS_TOKEN: _SourceKeyType.ValueType  # 45
-    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     OPEN_AI_API_KEY: _SourceKeyType.ValueType  # 47
     REMOTE_SERVER_PEM: _SourceKeyType.ValueType  # 49
     REMOTE_SERVER_USER: _SourceKeyType.ValueType  # 50
@@ -174,6 +174,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
     MIMIR_HOST: _SourceKeyType.ValueType  # 53
     X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
+    SSL_VERIFY: _SourceKeyType.ValueType  # 55
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -189,7 +190,8 @@ NEWRELIC_APP_ID: SourceKeyType.ValueType  # 5
 NEWRELIC_QUERY_KEY: SourceKeyType.ValueType  # 7
 NEWRELIC_API_DOMAIN: SourceKeyType.ValueType  # 19
 SLACK_BOT_AUTH_TOKEN: SourceKeyType.ValueType  # 8
-SLACK_CHANNEL: SourceKeyType.ValueType  # 9
+SLACK_CHANNEL_ID: SourceKeyType.ValueType  # 9
+SLACK_APP_ID: SourceKeyType.ValueType  # 46
 HONEYBADGER_USERNAME: SourceKeyType.ValueType  # 10
 HONEYBADGER_PASSWORD: SourceKeyType.ValueType  # 11
 HONEYBADGER_PROJECT_ID: SourceKeyType.ValueType  # 12
@@ -223,7 +225,6 @@ OPS_GENIE_API_KEY: SourceKeyType.ValueType  # 42
 AGENT_PROXY_HOST: SourceKeyType.ValueType  # 43
 AGENT_PROXY_API_KEY: SourceKeyType.ValueType  # 44
 GITHUB_ACTIONS_TOKEN: SourceKeyType.ValueType  # 45
-SLACK_APP_ID: SourceKeyType.ValueType  # 46
 OPEN_AI_API_KEY: SourceKeyType.ValueType  # 47
 REMOTE_SERVER_PEM: SourceKeyType.ValueType  # 49
 REMOTE_SERVER_USER: SourceKeyType.ValueType  # 50
@@ -231,7 +232,107 @@ REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 MIMIR_HOST: SourceKeyType.ValueType  # 53
 X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
+SSL_VERIFY: SourceKeyType.ValueType  # 55
 global___SourceKeyType = SourceKeyType
+
+class _SourceModelType:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SourceModelType.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_MT: _SourceModelType.ValueType  # 0
+    NEW_RELIC_POLICY: _SourceModelType.ValueType  # 1
+    """New Relic Models"""
+    NEW_RELIC_CONDITION: _SourceModelType.ValueType  # 2
+    NEW_RELIC_ENTITY: _SourceModelType.ValueType  # 3
+    NEW_RELIC_ENTITY_DASHBOARD: _SourceModelType.ValueType  # 4
+    NEW_RELIC_ENTITY_APPLICATION: _SourceModelType.ValueType  # 5
+    NEW_RELIC_NRQL: _SourceModelType.ValueType  # 6
+    DATADOG_MONITOR: _SourceModelType.ValueType  # 101
+    """Datadog Models"""
+    DATADOG_DASHBOARD: _SourceModelType.ValueType  # 102
+    DATADOG_LIVE_INTEGRATION_AWS: _SourceModelType.ValueType  # 103
+    DATADOG_LIVE_INTEGRATION_AWS_LOG: _SourceModelType.ValueType  # 104
+    DATADOG_LIVE_INTEGRATION_AZURE: _SourceModelType.ValueType  # 105
+    DATADOG_LIVE_INTEGRATION_CLOUDFLARE: _SourceModelType.ValueType  # 106
+    DATADOG_LIVE_INTEGRATION_FASTLY: _SourceModelType.ValueType  # 107
+    DATADOG_LIVE_INTEGRATION_GCP: _SourceModelType.ValueType  # 108
+    DATADOG_LIVE_INTEGRATION_CONFLUENT: _SourceModelType.ValueType  # 109
+    DATADOG_SERVICE: _SourceModelType.ValueType  # 110
+    DATADOG_METRIC: _SourceModelType.ValueType  # 111
+    DATADOG_QUERY: _SourceModelType.ValueType  # 112
+    CLOUDWATCH_METRIC: _SourceModelType.ValueType  # 201
+    """Cloudwatch Models"""
+    CLOUDWATCH_LOG_GROUP: _SourceModelType.ValueType  # 202
+    GRAFANA_DATASOURCE: _SourceModelType.ValueType  # 301
+    """Grafana Models"""
+    GRAFANA_DASHBOARD: _SourceModelType.ValueType  # 302
+    GRAFANA_TARGET_METRIC_PROMQL: _SourceModelType.ValueType  # 303
+    CLICKHOUSE_DATABASE: _SourceModelType.ValueType  # 401
+    """Clickhouse Models"""
+    SLACK_CHANNEL: _SourceModelType.ValueType  # 501
+    """Slack Models"""
+    MARKDOWN: _SourceModelType.ValueType  # 601
+    """Documentation Models"""
+    POSTGRES_QUERY: _SourceModelType.ValueType  # 701
+    """Postgres Models"""
+    EKS_CLUSTER: _SourceModelType.ValueType  # 801
+    """EKS Models"""
+    SQL_DATABASE_CONNECTION_RAW_QUERY: _SourceModelType.ValueType  # 901
+    """Sql Database Connection Models"""
+    SSH_SERVER: _SourceModelType.ValueType  # 1100
+    """Remote Server Models"""
+    GRAFANA_MIMIR_PROMQL: _SourceModelType.ValueType  # 1201
+    """Mimir Server Models"""
+
+class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
+
+UNKNOWN_MT: SourceModelType.ValueType  # 0
+NEW_RELIC_POLICY: SourceModelType.ValueType  # 1
+"""New Relic Models"""
+NEW_RELIC_CONDITION: SourceModelType.ValueType  # 2
+NEW_RELIC_ENTITY: SourceModelType.ValueType  # 3
+NEW_RELIC_ENTITY_DASHBOARD: SourceModelType.ValueType  # 4
+NEW_RELIC_ENTITY_APPLICATION: SourceModelType.ValueType  # 5
+NEW_RELIC_NRQL: SourceModelType.ValueType  # 6
+DATADOG_MONITOR: SourceModelType.ValueType  # 101
+"""Datadog Models"""
+DATADOG_DASHBOARD: SourceModelType.ValueType  # 102
+DATADOG_LIVE_INTEGRATION_AWS: SourceModelType.ValueType  # 103
+DATADOG_LIVE_INTEGRATION_AWS_LOG: SourceModelType.ValueType  # 104
+DATADOG_LIVE_INTEGRATION_AZURE: SourceModelType.ValueType  # 105
+DATADOG_LIVE_INTEGRATION_CLOUDFLARE: SourceModelType.ValueType  # 106
+DATADOG_LIVE_INTEGRATION_FASTLY: SourceModelType.ValueType  # 107
+DATADOG_LIVE_INTEGRATION_GCP: SourceModelType.ValueType  # 108
+DATADOG_LIVE_INTEGRATION_CONFLUENT: SourceModelType.ValueType  # 109
+DATADOG_SERVICE: SourceModelType.ValueType  # 110
+DATADOG_METRIC: SourceModelType.ValueType  # 111
+DATADOG_QUERY: SourceModelType.ValueType  # 112
+CLOUDWATCH_METRIC: SourceModelType.ValueType  # 201
+"""Cloudwatch Models"""
+CLOUDWATCH_LOG_GROUP: SourceModelType.ValueType  # 202
+GRAFANA_DATASOURCE: SourceModelType.ValueType  # 301
+"""Grafana Models"""
+GRAFANA_DASHBOARD: SourceModelType.ValueType  # 302
+GRAFANA_TARGET_METRIC_PROMQL: SourceModelType.ValueType  # 303
+CLICKHOUSE_DATABASE: SourceModelType.ValueType  # 401
+"""Clickhouse Models"""
+SLACK_CHANNEL: SourceModelType.ValueType  # 501
+"""Slack Models"""
+MARKDOWN: SourceModelType.ValueType  # 601
+"""Documentation Models"""
+POSTGRES_QUERY: SourceModelType.ValueType  # 701
+"""Postgres Models"""
+EKS_CLUSTER: SourceModelType.ValueType  # 801
+"""EKS Models"""
+SQL_DATABASE_CONNECTION_RAW_QUERY: SourceModelType.ValueType  # 901
+"""Sql Database Connection Models"""
+SSH_SERVER: SourceModelType.ValueType  # 1100
+"""Remote Server Models"""
+GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
+"""Mimir Server Models"""
+global___SourceModelType = SourceModelType
 
 @typing_extensions.final
 class TimeRange(google.protobuf.message.Message):
