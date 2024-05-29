@@ -1,0 +1,51 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message NewRelic {
+  message EntityApplicationGoldenMetricExecutionTask {
+    google.protobuf.StringValue application_entity_guid = 1;
+    google.protobuf.StringValue application_entity_name = 2;
+    google.protobuf.StringValue golden_metric_name = 3;
+    google.protobuf.StringValue golden_metric_unit = 4;
+    google.protobuf.StringValue golden_metric_nrql_expression = 5;
+    google.protobuf.StringValue process_function = 6;
+  }
+
+  message EntityDashboardWidgetNRQLMetricExecutionTask {
+    google.protobuf.StringValue dashboard_guid = 1;
+    google.protobuf.StringValue dashboard_name = 2;
+    google.protobuf.StringValue page_guid = 3;
+    google.protobuf.StringValue page_name = 4;
+    google.protobuf.StringValue widget_id = 5;
+    google.protobuf.StringValue widget_title = 6;
+    google.protobuf.StringValue widget_type = 7;
+    google.protobuf.StringValue widget_nrql_expression = 8;
+    google.protobuf.StringValue unit = 9;
+    google.protobuf.StringValue process_function = 10;
+  }
+
+  message NRQLMetricExecutionTask {
+    google.protobuf.StringValue metric_name = 1;
+    google.protobuf.StringValue nrql_expression = 2;
+    google.protobuf.StringValue unit = 3;
+    google.protobuf.StringValue process_function = 4;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION = 1;
+    ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION = 2;
+    NRQL_METRIC_EXECUTION = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    EntityApplicationGoldenMetricExecutionTask entity_application_golden_metric_execution = 2;
+    EntityDashboardWidgetNRQLMetricExecutionTask entity_dashboard_widget_nrql_metric_execution = 3;
+    NRQLMetricExecutionTask nrql_metric_execution = 4;
+  }
+}
+

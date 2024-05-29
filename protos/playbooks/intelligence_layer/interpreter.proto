@@ -21,9 +21,10 @@ message Interpretation {
     CSV_FILE = 3;
   }
   Type type = 1;
-  google.protobuf.StringValue title = 2;
-  google.protobuf.StringValue description = 3;
-  google.protobuf.StringValue summary = 4;
-  google.protobuf.StringValue image_url = 5;
-  google.protobuf.StringValue file_path = 6;
+  InterpreterType interpreter_type = 2;
+  google.protobuf.StringValue title = 3;
+  google.protobuf.StringValue description = 4;
+  google.protobuf.StringValue summary = 5;
+  google.protobuf.StringValue image_url = 6;
+  google.protobuf.StringValue file_path = 7;
 }

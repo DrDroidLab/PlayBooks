@@ -3,9 +3,9 @@ import logging
 from django.utils import timezone
 
 from accounts.models import Account
-from executor.models import PlayBookExecution, PlayBookExecutionLog, PlayBookStepExecutionLog
+from executor.models import PlayBookExecution, PlayBookTaskExecutionLog, PlayBookStepExecutionLog
 from protos.base_pb2 import TimeRange
-from protos.playbooks.playbook_pb2 import PlaybookExecutionStatusType
+from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType
 from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -82,23 +82,6 @@ def update_db_playbook_execution_status(playbook_execution_id: int, status: Play
     return False
 
 
-def create_db_playbook_execution_log(account, playbook, playbook_execution, playbook_step, playbook_task_definition,
-                                     playbook_task_result):
-    try:
-        playbook_execution_log = PlayBookExecutionLog.objects.create(
-            account=account,
-            playbook=playbook,
-            playbook_execution=playbook_execution,
-            playbook_step=playbook_step,
-            playbook_task_definition=playbook_task_definition,
-            playbook_task_result=playbook_task_result
-        )
-        return playbook_execution_log
-    except Exception as e:
-        logger.error(f"Failed to create playbook execution log with error: {e}")
-        raise e
-
-
 def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results):
     all_db_playbook_execution_logs = []
     for step_id, all_results in all_step_results.items():
@@ -118,7 +101,7 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
             raise e
 
         for result in all_task_executions:
-            playbook_execution_log = PlayBookExecutionLog(
+            playbook_execution_log = PlayBookTaskExecutionLog(
                 account=account,
                 playbook=playbook,
                 playbook_execution=playbook_execution,
@@ -130,7 +113,7 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)
     try:
-        PlayBookExecutionLog.objects.bulk_create(all_db_playbook_execution_logs)
+        PlayBookTaskExecutionLog.objects.bulk_create(all_db_playbook_execution_logs)
     except Exception as e:
         logger.error(f"Failed to bulk create playbook execution logs with error: {e}")
         raise e

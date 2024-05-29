@@ -3,8 +3,8 @@ from celery import shared_task
 from utils.time_utils import current_datetime
 
 from connectors.models import integrations_connector_type_display_name_map
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from connectors.assets.extractor.metadata_extractor_facade import connector_metadata_extractor_facade
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from connectors.assets.extractor.metadata_extractor_facade import source_metadata_extractor_facade
 
 from management.crud.task_crud import get_or_create_task
 from management.models import PeriodicTaskStatus, TaskRun
@@ -14,7 +14,7 @@ from management.utils.celery_task_signal_utils import publish_task_failure, publ
 @shared_task(max_retries=3, default_retry_delay=10)
 def populate_connector_metadata(account_id, connector_id, connector_type, connector_credentials_dict):
     try:
-        extractor_class = connector_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
+        extractor_class = source_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
     except Exception as e:
         print(
             f"Exception occurred while fetching extractor class for account: {account_id}, connector: {connector_id}, "
@@ -22,7 +22,7 @@ def populate_connector_metadata(account_id, connector_id, connector_type, connec
         return False
     extractor = extractor_class(**connector_credentials_dict, account_id=account_id, connector_id=connector_id)
     extractor_methods = [method for method in dir(extractor) if
-                         callable(getattr(extractor, method)) and method not in dir(ConnectorMetadataExtractor)]
+                         callable(getattr(extractor, method)) and method not in dir(SourceMetadataExtractor)]
     for method in extractor_methods:
         print(f"Running method: {method} for account: {account_id}, connector: {connector_id}")
         try:
@@ -55,7 +55,7 @@ populate_connector_metadata_postrun_notifier = publish_post_run_task(populate_co
 def extractor_async_method_call(account_id, connector_id, connector_credentials_dict, connector_type, extractor_method):
     print(f"Running method: {extractor_method} for account: {account_id}, connector: {connector_id} and "
           f"connector_type: {integrations_connector_type_display_name_map.get(connector_type)}")
-    extractor_class = connector_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
+    extractor_class = source_metadata_extractor_facade.get_connector_metadata_extractor_class(connector_type)
     extractor = extractor_class(**connector_credentials_dict, account_id=account_id, connector_id=connector_id)
     method = getattr(extractor, extractor_method)
     try:

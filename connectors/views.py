@@ -6,12 +6,12 @@ from django.http import HttpResponse
 from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
-from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, \
-    get_all_available_connectors, \
-    get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
+from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
+from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
+from connectors.utils import test_connection_connector, get_all_available_connectors, get_all_request_connectors, \
+    get_connector_keys_options
 from playbooks.utils.decorators import api_blocked, web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
@@ -27,9 +27,8 @@ from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorRes
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
     SlackAlert as SlackAlertProto
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 
 @api_blocked
@@ -42,11 +41,11 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
     connector_keys = request_message.connector_keys
 
     created_by = user.email
-    if connector.type in [ConnectorType.GRAFANA_VPC]:
-        db_agent_proxy_connector = get_db_account_connectors(account=account, connector_type=ConnectorType.AGENT_PROXY,
+    if connector.type in [Source.GRAFANA_VPC]:
+        db_agent_proxy_connector = get_db_account_connectors(account=account, connector_type=Source.AGENT_PROXY,
                                                              is_active=True)
         if not db_agent_proxy_connector or not db_agent_proxy_connector.exists():
-            agent_proxy_vpc_connector_proto = ConnectorProto(type=ConnectorType.AGENT_PROXY)
+            agent_proxy_vpc_connector_proto = ConnectorProto(type=Source.AGENT_PROXY)
             db_agent_proxy_connector, err = update_or_create_connector(account, created_by,
                                                                        agent_proxy_vpc_connector_proto,
                                                                        connector_keys)
@@ -185,8 +184,8 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
         for connector in active_connectors:
             active_channels = []
             active_comm_channels = account.connectormetadatamodelstore_set.filter(connector=connector, is_active=True,
-                                                                                  connector_type=ConnectorType.SLACK,
-                                                                                  model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL)
+                                                                                  connector_type=Source.SLACK,
+                                                                                  model_type=SourceModelType.SLACK_CHANNEL)
             active_comm_channels_id = []
             for channel in active_comm_channels:
                 channel_name = None

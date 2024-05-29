@@ -1,9 +1,8 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from protos.base_pb2 import Source as Source, SourceModelType
 
 
-class RemoteServerConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class RemoteServerSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, remote_host, remote_user, remote_password, remote_pem, account_id=None, connector_id=None):
         self.__remote_host = remote_host
@@ -11,10 +10,10 @@ class RemoteServerConnectorMetadataExtractor(ConnectorMetadataExtractor):
         self.__remote_password = remote_password
         self.__remote_pem = remote_pem
 
-        super().__init__(account_id, connector_id, ConnectorType.REMOTE_SERVER)
+        super().__init__(account_id, connector_id, Source.REMOTE_SERVER)
 
     def extract_remote_server(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.SSH_SERVER
+        model_type = SourceModelType.SSH_SERVER
         key = f'{self.__remote_user}@{self.__remote_host}'
         if self.__remote_password:
             value = {'password': self.__remote_password}

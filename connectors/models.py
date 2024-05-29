@@ -2,7 +2,7 @@ from datetime import timezone
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
-from protos.base_pb2 import Source, SourceKeyType
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 from utils.model_utils import generate_choices
 
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -10,7 +10,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
+    PeriodicRunStatus
 
 integrations_connector_type_display_name_map = {
     Source.SLACK: 'SLACK',
@@ -95,6 +95,11 @@ integrations_connector_type_connector_keys_map = {
     Source.GRAFANA: [
         [
             SourceKeyType.GRAFANA_HOST,
+            SourceKeyType.GRAFANA_API_KEY,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.GRAFANA_HOST,
             SourceKeyType.GRAFANA_API_KEY
         ]
     ],
@@ -157,6 +162,11 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
     Source.REMOTE_SERVER: [
@@ -229,6 +239,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
+    SourceKeyType.SSL_VERIFY: "Enable TLS certificate validation",
 }
 
 
@@ -313,15 +324,38 @@ class ConnectorKey(models.Model):
         unique_together = [['account', 'connector', 'key_type', 'key']]
 
     @property
-    def get_proto(self):
-        # Hard Coded Key Masking for sensitive keys
-        if self.key_type in [ConnectorKeyProto.KeyType.DATADOG_APP_KEY, ConnectorKeyProto.KeyType.DATADOG_API_KEY,
+    def proto(self):
+        key_value = self.key
+        if self.key_type in [SourceKeyType.DATADOG_APP_KEY, SourceKeyType.DATADOG_API_KEY,
+                             SourceKeyType.NEWRELIC_API_KEY, SourceKeyType.NEWRELIC_APP_ID,
+                             SourceKeyType.NEWRELIC_QUERY_KEY,
+                             SourceKeyType.SLACK_BOT_AUTH_TOKEN,
+                             SourceKeyType.HONEYBADGER_USERNAME,
+                             SourceKeyType.HONEYBADGER_PASSWORD,
+                             SourceKeyType.HONEYBADGER_PROJECT_ID, SourceKeyType.AWS_ACCESS_KEY,
+                             SourceKeyType.AWS_SECRET_KEY, SourceKeyType.DATADOG_AUTH_TOKEN,
+                             SourceKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
+                             SourceKeyType.GRAFANA_API_KEY,
+                             SourceKeyType.AGENT_PROXY_API_KEY,
+                             SourceKeyType.GITHUB_ACTIONS_TOKEN,
+                             SourceKeyType.AGENT_PROXY_HOST,
+                             SourceKeyType.AWS_ASSUMED_ROLE_ARN,
+                             SourceKeyType.CLICKHOUSE_USER, SourceKeyType.CLICKHOUSE_PASSWORD,
+                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
+                             SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
+                             SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
+                             SourceKeyType.OPS_GENIE_API_KEY,
+                             SourceKeyType.OPEN_AI_API_KEY,
+                             SourceKeyType.REMOTE_SERVER_PASSWORD,
+                             SourceKeyType.REMOTE_SERVER_PEM,
+                             ConnectorKeyProto.KeyType.DATADOG_APP_KEY, ConnectorKeyProto.KeyType.DATADOG_API_KEY,
                              ConnectorKeyProto.KeyType.NEWRELIC_API_KEY, ConnectorKeyProto.KeyType.NEWRELIC_APP_ID,
                              ConnectorKeyProto.KeyType.NEWRELIC_QUERY_KEY,
                              ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
                              ConnectorKeyProto.KeyType.HONEYBADGER_USERNAME,
                              ConnectorKeyProto.KeyType.HONEYBADGER_PASSWORD,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_PROJECT_ID, ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
+                             ConnectorKeyProto.KeyType.HONEYBADGER_PROJECT_ID,
+                             ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
                              ConnectorKeyProto.KeyType.AWS_SECRET_KEY, ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN,
                              ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
                              ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
@@ -372,8 +406,8 @@ class ConnectorMetadataModelStore(models.Model):
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE, null=True, blank=True, db_index=True)
     connector_type = models.IntegerField(choices=generate_choices(Source), default=Source.UNKNOWN,
                                          db_index=True)
-    model_type = models.IntegerField(choices=generate_choices(ConnectorMetadataModelTypeProto),
-                                     default=ConnectorMetadataModelTypeProto.UNKNOWN_MT, db_index=True)
+    model_type = models.IntegerField(choices=generate_choices(SourceModelType), default=SourceModelType.UNKNOWN_MT,
+                                     db_index=True)
 
     model_uid = models.TextField(db_index=True)
 

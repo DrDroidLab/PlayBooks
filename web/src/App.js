@@ -12,6 +12,8 @@ import {
   selectEmail,
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
+import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
+import Loading from "./components/common/Loading/index.tsx";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -61,6 +63,7 @@ const App = () => {
   const location = useLocation();
   const email = useSelector(selectEmail);
   const accessToken = useSelector(selectAccessToken);
+  const { isLoading, data, isError } = useGetUserQuery();
 
   useEffect(() => {
     if (email) {
@@ -74,6 +77,10 @@ const App = () => {
       loader.style.display = "none";
     }
   }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Routes>

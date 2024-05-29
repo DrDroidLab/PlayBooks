@@ -16,7 +16,7 @@ from protos import base_pb2 as protos_dot_base__pb2
 from protos.connectors import connector_pb2 as protos_dot_connectors_dot_connector__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n-protos/connectors/assets/postgres_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"L\n\x1aPostgresDatabaseAssetModel\x12.\n\x08\x64\x61tabase\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"1\n\x1cPostgresDatabaseAssetOptions\x12\x11\n\tdatabases\x18\x01 \x03(\t\"\x95\x02\n\x12PostgresAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12;\n\x04type\x18\x03 \x01(\x0e\x32-.protos.connectors.ConnectorMetadataModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12Q\n\x11postgres_database\x18\x05 \x01(\x0b\x32\x34.protos.connectors.assets.PostgresDatabaseAssetModelH\x00\x42\x07\n\x05\x61sset\"N\n\x0ePostgresAssets\x12<\n\x06\x61ssets\x18\x01 \x03(\x0b\x32,.protos.connectors.assets.PostgresAssetModelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n-protos/connectors/assets/postgres_asset.proto\x12\x18protos.connectors.assets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a!protos/connectors/connector.proto\"L\n\x1aPostgresDatabaseAssetModel\x12.\n\x08\x64\x61tabase\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"1\n\x1cPostgresDatabaseAssetOptions\x12\x11\n\tdatabases\x18\x01 \x03(\t\"\xff\x01\n\x12PostgresAssetModel\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12&\n\x0e\x63onnector_type\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12%\n\x04type\x18\x03 \x01(\x0e\x32\x17.protos.SourceModelType\x12\x14\n\x0clast_updated\x18\x04 \x01(\x10\x12Q\n\x11postgres_database\x18\x05 \x01(\x0b\x32\x34.protos.connectors.assets.PostgresDatabaseAssetModelH\x00\x42\x07\n\x05\x61sset\"N\n\x0ePostgresAssets\x12<\n\x06\x61ssets\x18\x01 \x03(\x0b\x32,.protos.connectors.assets.PostgresAssetModelb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.connectors.assets.postgres_asset_pb2', globals())
@@ -28,7 +28,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _POSTGRESDATABASEASSETOPTIONS._serialized_start=239
   _POSTGRESDATABASEASSETOPTIONS._serialized_end=288
   _POSTGRESASSETMODEL._serialized_start=291
-  _POSTGRESASSETMODEL._serialized_end=568
-  _POSTGRESASSETS._serialized_start=570
-  _POSTGRESASSETS._serialized_end=648
+  _POSTGRESASSETMODEL._serialized_end=546
+  _POSTGRESASSETS._serialized_start=548
+  _POSTGRESASSETS._serialized_end=626
 # @@protoc_insertion_point(module_scope)
