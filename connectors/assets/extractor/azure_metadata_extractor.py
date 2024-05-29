@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.azure_api_processor import AzureApiProcessor
+from executor.source_processors.azure_api_processor import AzureApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 
