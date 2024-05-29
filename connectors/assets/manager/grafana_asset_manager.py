@@ -58,7 +58,8 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     datasource_name=StringValue(value=metadata.get('name', ''))
                 ))
             return ConnectorModelTypeOptions(model_type=model_type,
-                                             grafana_prometheus_datasource_model_options=prometheus_data_source_options)
+                                             grafana_prometheus_datasource_model_options=GrafanaDatasourceAssetOptions(
+                                                 prometheus_datasources=prometheus_data_source_options))
         else:
             return None
 

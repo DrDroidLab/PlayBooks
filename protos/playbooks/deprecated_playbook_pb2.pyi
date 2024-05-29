@@ -156,10 +156,12 @@ class DeprecatedPlaybookGrafanaTask(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: DeprecatedPlaybookGrafanaTask._TaskType.ValueType  # 0
         PROMQL_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask._TaskType.ValueType  # 1
+        PROMETHEUS_DATASOURCE_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: DeprecatedPlaybookGrafanaTask.TaskType.ValueType  # 0
     PROMQL_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask.TaskType.ValueType  # 1
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION: DeprecatedPlaybookGrafanaTask.TaskType.ValueType  # 2
 
     @typing_extensions.final
     class DeprecatedPromQlMetricExecutionTask(google.protobuf.message.Message):
@@ -223,24 +225,51 @@ class DeprecatedPlaybookGrafanaTask(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values"]) -> None: ...
 
+    @typing_extensions.final
+    class DeprecatedPrometheusDataSourceMetricExecutionTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        DATASOURCE_UID_FIELD_NUMBER: builtins.int
+        PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
+
     TYPE_FIELD_NUMBER: builtins.int
     DATASOURCE_UID_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION_TASK_FIELD_NUMBER: builtins.int
     type: global___DeprecatedPlaybookGrafanaTask.TaskType.ValueType
     @property
     def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def promql_metric_execution_task(self) -> global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask: ...
+    @property
+    def prometheus_datasource_metric_execution_task(self) -> global___DeprecatedPlaybookGrafanaTask.DeprecatedPrometheusDataSourceMetricExecutionTask: ...
     def __init__(
         self,
         *,
         type: global___DeprecatedPlaybookGrafanaTask.TaskType.ValueType = ...,
         datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
         promql_metric_execution_task: global___DeprecatedPlaybookGrafanaTask.DeprecatedPromQlMetricExecutionTask | None = ...,
+        prometheus_datasource_metric_execution_task: global___DeprecatedPlaybookGrafanaTask.DeprecatedPrometheusDataSourceMetricExecutionTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "prometheus_datasource_metric_execution_task", b"prometheus_datasource_metric_execution_task", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "prometheus_datasource_metric_execution_task", b"prometheus_datasource_metric_execution_task", "promql_metric_execution_task", b"promql_metric_execution_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution_task", "prometheus_datasource_metric_execution_task"] | None: ...
 
 global___DeprecatedPlaybookGrafanaTask = DeprecatedPlaybookGrafanaTask
 
