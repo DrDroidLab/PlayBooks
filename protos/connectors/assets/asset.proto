@@ -29,6 +29,7 @@ message ConnectorModelTypeOptions {
     PostgresDatabaseAssetOptions postgres_database_model_options = 11;
     EksClusterAssetOptions eks_cluster_model_options = 12;
     SshServerAssetOptions ssh_server_model_options = 13;
+    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 14;
   }
 }
 
@@ -50,6 +51,7 @@ message AccountConnectorAssetsModelFilters {
     PostgresDatabaseAssetOptions postgres_database_model_filters = 9;
     EksClusterAssetOptions eks_cluster_model_filters = 10;
     SshServerAssetOptions ssh_server_model_filters = 11;
+    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 12;
   }
 }
 
