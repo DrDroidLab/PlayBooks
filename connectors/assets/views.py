@@ -87,11 +87,11 @@ def assets_models_get(request_message: GetConnectorsAssetsModelsRequest) -> \
 def assets_models_refresh(request_message: GetConnectorsAssetsModelsRefreshRequest) -> \
         Union[GetConnectorsAssetsModelsRefreshResponse, HttpResponse]:
     account: Account = get_request_account()
-    connector_id = request_message.connector_id
-    if not connector_id or not connector_id.value:
+    if not request_message.connector_id or not request_message.connector_id.value:
         return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),
                                                         message=Message(title="Invalid Request",
                                                                         description="Missing connector details"))
+    connector_id = request_message.connector_id.value
     db_connectors = get_db_account_connectors(account, connector_id)
     if not db_connectors.exists() or not db_connectors:
         return GetConnectorsAssetsModelsRefreshResponse(success=BoolValue(value=False),

@@ -2,12 +2,13 @@ import logging
 from datetime import timezone
 
 from django.db.models import Q
-from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
+from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from protos.connectors.assets.grafana_asset_pb2 import GrafanaTargetMetricPromQlAssetOptions, \
-    GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets
+    GrafanaAssetModel as GrafanaAssetModelProto, GrafanaTargetMetricPromQlAssetModel, GrafanaAssets, \
+    GrafanaDatasourceAssetOptions, GrafanaDatasourceAssetModel
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
     ConnectorModelTypeOptions
 from protos.base_pb2 import Source as Source, SourceModelType as SourceModelType
@@ -24,6 +25,10 @@ class GrafanaAssetManager(ConnectorAssetManager):
             SourceModelType.GRAFANA_TARGET_METRIC_PROMQL: {
                 'options': self.get_grafana_target_metric_promql_options,
                 'values': self.get_grafana_target_metric_promql_values,
+            },
+            SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE: {
+                'options': self.get_grafana_prometheus_datasource_options,
+                'values': self.get_grafana_prometheus_datasource_values,
             }
         }
 
@@ -82,7 +87,6 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     startswith_conditions |= Q(model_uid__startswith=string)
                 grafana_target_metric_promql_metric_assets = grafana_target_metric_promql_metric_assets.filter(
                     startswith_conditions)
-
         grafana_asset_protos = []
         target_metric_promql_dashboard_panel_map = {}
         for asset in grafana_target_metric_promql_metric_assets:
@@ -95,7 +99,6 @@ class GrafanaAssetManager(ConnectorAssetManager):
             dashboards['panels'] = panel_dict
             dashboards['dashboard_title'] = asset.metadata.get('dashboard_title')
             target_metric_promql_dashboard_panel_map[asset.metadata.get('dashboard_id')] = dashboards
-
         for dashboard, dashboard_dict in target_metric_promql_dashboard_panel_map.items():
             panel_promql_map_list = []
             panels = dashboard_dict.get('panels', {})
@@ -152,4 +155,63 @@ class GrafanaAssetManager(ConnectorAssetManager):
                     dashboard_title=StringValue(value=dashboard_title),
                     dashboard_url=StringValue(value=dashboard_asset.metadata.get('meta', {}).get('url', '')),
                     panel_promql_map=panel_promql_map_list)))
+        return AccountConnectorAssets(grafana=GrafanaAssets(assets=grafana_asset_protos))
+
+    @staticmethod
+    def get_grafana_prometheus_datasource_options(grafana_prometheus_datasource_assets):
+        prometheus_data_source_options: [GrafanaDatasourceAssetOptions] = []
+        for asset in grafana_prometheus_datasource_assets:
+            model_uid = asset['model_uid']
+            metadata = asset['metadata']
+            prometheus_data_source_options.append(GrafanaDatasourceAssetOptions.GrafanaDatasourceOptions(
+                datasource_id=UInt64Value(value=metadata.get('id', None)),
+                datasource_uid=StringValue(value=model_uid),
+                datasource_name=StringValue(value=metadata.get('name', ''))
+            ))
+        return ConnectorModelTypeOptions(model_type=SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE,
+                                         grafana_prometheus_datasource_model_options=GrafanaDatasourceAssetOptions(
+                                             prometheus_datasources=prometheus_data_source_options))
+
+    @staticmethod
+    def get_grafana_prometheus_datasource_values(connector: ConnectorProto,
+                                                 filters: AccountConnectorAssetsModelFilters,
+                                                 grafana_prometheus_datasource_assets):
+        which_one_of = filters.WhichOneof('filters')
+        if which_one_of and which_one_of != 'grafana_prometheus_datasource_model_filters':
+            raise ValueError(f"Invalid filter: {which_one_of}")
+
+        options: GrafanaDatasourceAssetOptions = filters.grafana_prometheus_datasource_model_filters
+        filter_sources: [GrafanaDatasourceAssetOptions.GrafanaDatasourceOptions] = options.prometheus_datasources
+        filter_model_uids = []
+        for item in filter_sources:
+            model_uid = item.datasource_uid.value
+            filter_model_uids.append(model_uid)
+        if filter_model_uids:
+            grafana_prometheus_datasource_assets = grafana_prometheus_datasource_assets.filter(
+                model_uid__in=filter_model_uids)
+
+        grafana_asset_protos = []
+        for asset in grafana_prometheus_datasource_assets:
+            if asset.model_type == SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE:
+                grafana_asset_protos.append(GrafanaAssetModelProto(
+                    id=UInt64Value(value=asset.id),
+                    connector_type=connector.type,
+                    type=SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE,
+                    last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
+                        asset.updated_at) else None,
+                    grafana_prometheus_datasource=GrafanaDatasourceAssetModel(
+                        datasource_id=UInt64Value(value=asset.metadata.get('id', None)),
+                        datasource_uid=StringValue(value=asset.model_uid),
+                        datasource_name=StringValue(value=asset.metadata.get('name', '')),
+                        datasource_url=StringValue(value=asset.metadata.get('url', '')),
+                        datasource_type=StringValue(value=asset.metadata.get('type', '')),
+                        datasource_orgId=UInt64Value(value=asset.metadata.get('orgId', '')),
+                        datasource_access=StringValue(value=asset.metadata.get('access', '')),
+                        datasource_database=StringValue(value=asset.metadata.get('database', '')),
+                        datasource_readonly=BoolValue(value=asset.metadata.get('readonly', None)),
+                        datasource_typeName=StringValue(value=asset.metadata.get('typeName', '')),
+                        datasource_basicAuth=BoolValue(value=asset.metadata.get('basicAuth', None)),
+                        datasource_isDefault=BoolValue(value=asset.metadata.get('isDefault', None))
+                    )
+                ))
         return AccountConnectorAssets(grafana=GrafanaAssets(assets=grafana_asset_protos))

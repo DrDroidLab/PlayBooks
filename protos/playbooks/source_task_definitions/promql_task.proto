@@ -6,8 +6,9 @@ import "google/protobuf/wrappers.proto";
 
 message PromQl {
   message PromQlMetricExecution {
-    google.protobuf.StringValue promql_expression = 1;
-    google.protobuf.StringValue process_function = 2;
+    google.protobuf.StringValue datasource_uid = 1;
+    google.protobuf.StringValue promql_expression = 2;
+    google.protobuf.StringValue process_function = 3;
   }
 
   enum TaskType {
