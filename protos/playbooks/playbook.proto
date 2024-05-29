@@ -19,6 +19,7 @@ import "protos/playbooks/source_task_definitions/api_task.proto";
 import "protos/playbooks/source_task_definitions/bash_task.proto";
 import "protos/playbooks/source_task_definitions/documentation_task.proto";
 import "protos/playbooks/source_task_definitions/promql_task.proto";
+import "protos/playbooks/source_task_definitions/azure_task.proto";
 
 
 // Playbook Task Protos
@@ -50,6 +51,7 @@ message PlaybookTask {
     Api api = 110;
     Bash bash = 111;
     PromQl grafana_mimir = 112;
+    Azure azure = 113;
   }
 }
 

@@ -7,8 +7,8 @@ export const injectApiTasks = (
   let api_call_task = {
     method: step.action?.method?.toUpperCase(),
     url: step.action?.url,
-    headers: JSON.parse(step.action?.headers ?? "{}"),
-    payload: JSON.parse(step.action?.payload ?? "{}"),
+    headers: step.action?.headers ? step.action?.headers : "{}",
+    payload: step.action?.payload ? step.action?.payload : "{}",
     timeout: step.action?.timeout,
   };
 

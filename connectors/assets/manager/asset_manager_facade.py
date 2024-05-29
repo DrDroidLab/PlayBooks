@@ -2,6 +2,7 @@ import logging
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
+from connectors.assets.manager.azure_assets_manager import AzureAssetManager
 from connectors.assets.manager.clickhouse_assets_manager import ClickhouseAssetManager
 from connectors.assets.manager.cloudwatch_asset_manager import CloudwatchAssetManager
 from connectors.assets.manager.dd_asset_manager import DatadogAssetManager
@@ -60,3 +61,4 @@ asset_manager_facade.register(Source.POSTGRES, PostgresAssetManager())
 asset_manager_facade.register(Source.SLACK, SlackAssetManager())
 asset_manager_facade.register(Source.REMOTE_SERVER, RemoteServetAssetManager())
 asset_manager_facade.register(Source.GRAFANA_MIMIR, MimirAssetManager())
+asset_manager_facade.register(Source.AZURE, AzureAssetManager())

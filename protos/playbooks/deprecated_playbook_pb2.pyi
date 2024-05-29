@@ -551,6 +551,63 @@ class DeprecatedPlaybookPromQLTask(google.protobuf.message.Message):
 global___DeprecatedPlaybookPromQLTask = DeprecatedPlaybookPromQLTask
 
 @typing_extensions.final
+class DeprecatedPlaybookAzureTask(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _TaskType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DeprecatedPlaybookAzureTask._TaskType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: DeprecatedPlaybookAzureTask._TaskType.ValueType  # 0
+        FILTER_LOG_EVENTS: DeprecatedPlaybookAzureTask._TaskType.ValueType  # 1
+
+    class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
+    UNKNOWN: DeprecatedPlaybookAzureTask.TaskType.ValueType  # 0
+    FILTER_LOG_EVENTS: DeprecatedPlaybookAzureTask.TaskType.ValueType  # 1
+
+    @typing_extensions.final
+    class FilterLogEventsTask(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        WORKSPACE_ID_FIELD_NUMBER: builtins.int
+        FILTER_QUERY_FIELD_NUMBER: builtins.int
+        TIMESPAN_FIELD_NUMBER: builtins.int
+        @property
+        def workspace_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timespan(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            workspace_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timespan: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "timespan", b"timespan", "workspace_id", b"workspace_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "timespan", b"timespan", "workspace_id", b"workspace_id"]) -> None: ...
+
+    TYPE_FIELD_NUMBER: builtins.int
+    FILTER_LOG_EVENTS_TASK_FIELD_NUMBER: builtins.int
+    type: global___DeprecatedPlaybookAzureTask.TaskType.ValueType
+    @property
+    def filter_log_events_task(self) -> global___DeprecatedPlaybookAzureTask.FilterLogEventsTask: ...
+    def __init__(
+        self,
+        *,
+        type: global___DeprecatedPlaybookAzureTask.TaskType.ValueType = ...,
+        filter_log_events_task: global___DeprecatedPlaybookAzureTask.FilterLogEventsTask | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_events_task", b"filter_log_events_task", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["filter_log_events_task"] | None: ...
+
+global___DeprecatedPlaybookAzureTask = DeprecatedPlaybookAzureTask
+
+@typing_extensions.final
 class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -560,6 +617,7 @@ class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
     NEW_RELIC_TASK_FIELD_NUMBER: builtins.int
     DATADOG_TASK_FIELD_NUMBER: builtins.int
     MIMIR_TASK_FIELD_NUMBER: builtins.int
+    AZURE_TASK_FIELD_NUMBER: builtins.int
     source: protos.base_pb2.Source.ValueType
     @property
     def cloudwatch_task(self) -> global___DeprecatedPlaybookCloudwatchTask: ...
@@ -571,6 +629,8 @@ class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
     def datadog_task(self) -> global___DeprecatedPlaybookDatadogTask: ...
     @property
     def mimir_task(self) -> global___DeprecatedPlaybookPromQLTask: ...
+    @property
+    def azure_task(self) -> global___DeprecatedPlaybookAzureTask: ...
     def __init__(
         self,
         *,
@@ -580,10 +640,11 @@ class DeprecatedPlaybookMetricTaskDefinition(google.protobuf.message.Message):
         new_relic_task: global___DeprecatedPlaybookNewRelicTask | None = ...,
         datadog_task: global___DeprecatedPlaybookDatadogTask | None = ...,
         mimir_task: global___DeprecatedPlaybookPromQLTask | None = ...,
+        azure_task: global___DeprecatedPlaybookAzureTask | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "mimir_task"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["azure_task", b"azure_task", "cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["azure_task", b"azure_task", "cloudwatch_task", b"cloudwatch_task", "datadog_task", b"datadog_task", "grafana_task", b"grafana_task", "mimir_task", b"mimir_task", "new_relic_task", b"new_relic_task", "source", b"source", "task", b"task"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["cloudwatch_task", "grafana_task", "new_relic_task", "datadog_task", "mimir_task", "azure_task"] | None: ...
 
 global___DeprecatedPlaybookMetricTaskDefinition = DeprecatedPlaybookMetricTaskDefinition
 
@@ -1018,22 +1079,22 @@ class DeprecatedPlaybookApiCallTask(google.protobuf.message.Message):
     @property
     def url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def headers(self) -> google.protobuf.struct_pb2.Struct: ...
+    def headers(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def payload(self) -> google.protobuf.struct_pb2.Struct: ...
+    def payload(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def timeout(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
-    def cookies(self) -> google.protobuf.struct_pb2.Struct: ...
+    def cookies(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
         method: global___DeprecatedPlaybookApiCallTask.Method.ValueType = ...,
         url: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        headers: google.protobuf.struct_pb2.Struct | None = ...,
-        payload: google.protobuf.struct_pb2.Struct | None = ...,
+        headers: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        payload: google.protobuf.wrappers_pb2.StringValue | None = ...,
         timeout: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        cookies: google.protobuf.struct_pb2.Struct | None = ...,
+        cookies: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "method", b"method", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> None: ...
