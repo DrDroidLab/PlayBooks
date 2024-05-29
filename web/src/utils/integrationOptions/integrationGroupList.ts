@@ -3,8 +3,11 @@ import { models } from "../../constants/index.ts";
 export const integrations = [
   {
     id: "documentation",
-    label: "Documentation",
-    options: [models.TEXT],
+    label: "View",
+    options: [
+      models.TEXT,
+      models.IFRAME
+    ],
   },
   {
     id: "actions",

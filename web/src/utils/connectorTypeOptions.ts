@@ -14,6 +14,13 @@ export const connectorTypeOptions = [
     display_name: "Documentation",
   },
   {
+    id: "IFRAME",
+    label: "Iframe",
+    connector_type: "IFRAME",
+    model_type: "IFRAME",
+    display_name: "Iframe",
+  },
+  {
     id: "BASH",
     label: "Bash",
     connector_type: "BASH",

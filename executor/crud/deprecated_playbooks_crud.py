@@ -160,7 +160,9 @@ def deprecated_create_db_step(account: Account, created_by, playbook_step: Depre
 @deprecated
 def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: DeprecatedPlaybookTaskDefinition) -> \
         (PlayBookTask, str):
+    print('$$$$$$$$$$$$ task_proto:', task_proto)
     task_type = task_proto.type
+    print('$$$$$$$$$$$$ task_type:', task_type)
     task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
     if task_type == DeprecatedPlaybookTaskDefinition.Type.METRIC:
         task = task_proto.metric_task
@@ -174,6 +176,7 @@ def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: D
         task = task_proto.action_task
     else:
         return None, f"Invalid Task Type Received: {task_type_display}"
+    print('$$$$$$$$$$$$ task:', task)
     task_dict = proto_to_dict(task)
     new_task = transform_old_task_definition_to_new(task_dict)
     task_md5 = md5(str(new_task).encode('utf-8')).hexdigest()

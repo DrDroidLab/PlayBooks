@@ -214,6 +214,7 @@ def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(
 
 
 def transform_old_task_definition_to_new(task):
+    print('########### - task:', task)
     source = task.get('source', None)
     if source == 'CLOUDWATCH':
         cloudwatch_task = task.get('cloudwatch_task')
@@ -397,16 +398,21 @@ def transform_old_task_definition_to_new(task):
                 'type': 'MARKDOWN',
                 'markdown': {
                     'content': task.get('documentation_task', {}).get('documentation', None)
+                },
+                'iframe': {
+                    'iframe_url': task.get('documentation_task', {}).get('iframe_url', None)
                 }
             }
         }
     else:
+        print('#################### - 5')
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def
 
 
 def transform_new_task_definition_to_old(task):
     source = task.get('source', None)
+    print('########### - source:', source)
     if source == 'CLOUDWATCH':
         cloudwatch_task = task.get('cloudwatch', {})
         if cloudwatch_task.get('type') == 'METRIC_EXECUTION':
@@ -573,6 +579,15 @@ def transform_new_task_definition_to_old(task):
                 'documentation': documentation_task.get('content', None)
             }
         }
+    elif source == 'IFRAME':
+        iframe_task = task.get('iframe_task', {})
+        updated_task_def = {
+            'source': 'DOCUMENTATION',
+            'iframe_task': {
+                'iframe_url': iframe_task.get('iframe_url', None)
+            }
+        }
     else:
+        print('#################### - 6')
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def

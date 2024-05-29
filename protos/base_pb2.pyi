@@ -66,6 +66,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     API: _Source.ValueType  # 40
     BASH: _Source.ValueType  # 41
     GRAFANA_MIMIR: _Source.ValueType  # 43
+    IFRAME: _Source.ValueType  # 44
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -112,6 +113,7 @@ REMOTE_SERVER: Source.ValueType  # 39
 API: Source.ValueType  # 40
 BASH: Source.ValueType  # 41
 GRAFANA_MIMIR: Source.ValueType  # 43
+IFRAME: Source.ValueType  # 44
 global___Source = Source
 
 class _SourceKeyType:

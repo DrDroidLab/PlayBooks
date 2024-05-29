@@ -1,1 +1,1 @@
-export const unsupportedRunners = ["DOCUMENTATION"];
+export const unsupportedRunners = ["DOCUMENTATION", "IFRAME"];

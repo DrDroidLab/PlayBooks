@@ -9,6 +9,7 @@ export interface PlaybookTask {
   metric_task?: MetricTask;
   data_fetch_task?: DataFetchTask;
   documentation_task?: DocumentationTask;
+  iframe?: IframeTask;
 }
 
 export interface DataFetchTask {
@@ -19,4 +20,8 @@ export interface DataFetchTask {
 export interface DocumentationTask {
   type: string;
   documentation: any;
+}
+
+export interface IframeTask {
+  iframe_url: string;
 }

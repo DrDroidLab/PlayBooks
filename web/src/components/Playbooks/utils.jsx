@@ -101,6 +101,18 @@ const formatMetricTask = step => {
     };
   }
 
+  if (step.source.toUpperCase() === 'IFRAME') {
+    task = {
+      name: uuidv4(),
+      type: 'IFRAME',
+      description: step.description,
+      notes: step.notes,
+      iframe: {
+        iframe_url: step.url
+      }
+    };
+  }
+
   return task;
 };
 
