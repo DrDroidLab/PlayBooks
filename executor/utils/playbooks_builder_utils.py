@@ -7,7 +7,7 @@ from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import AccountActiveConnectorModelTypes
 
 playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA_VPC,
-                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC,
+                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC, Source.AZURE,
                                Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION, Source.GRAFANA_MIMIR]
 
 supported_connectors_model_maps = {
@@ -23,6 +23,7 @@ supported_connectors_model_maps = {
     Source.SQL_DATABASE_CONNECTION: [SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY],
     Source.GRAFANA_MIMIR: [],
     Source.POSTGRES: [SourceModelType.POSTGRES_QUERY],
+    Source.AZURE: [SourceModelType.AZURE_WORKSPACE],
 }
 
 model_type_display_name_maps = {
@@ -39,6 +40,7 @@ model_type_display_name_maps = {
     SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
     SourceModelType.GRAFANA_MIMIR_PROMQL: "PromQL",
     SourceModelType.POSTGRES_QUERY: "Sql Query",
+    SourceModelType.AZURE_WORKSPACE: "Log Analytics Workspace",
 }
 
 

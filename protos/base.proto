@@ -93,7 +93,7 @@ enum Source {
   REMOTE_SERVER = 39;
   API = 40;
   BASH = 41;
-
+  AZURE = 42;
   GRAFANA_MIMIR = 43;
 }
 
@@ -172,6 +172,11 @@ enum SourceKeyType {
   X_SCOPE_ORG_ID = 54;
 
   SSL_VERIFY = 55;
+
+  AZURE_SUBSCRIPTION_ID = 56;
+  AZURE_TENANT_ID = 57;
+  AZURE_CLIENT_ID = 58;
+  AZURE_CLIENT_SECRET = 59;
 }
 
 enum SourceModelType {
@@ -228,6 +233,8 @@ enum SourceModelType {
   //Sql Database Connection Models
   SQL_DATABASE_CONNECTION_RAW_QUERY = 901;
 
+  //Azure Models
+  AZURE_WORKSPACE = 1001;
 
   //Remote Server Models
   SSH_SERVER = 1100;

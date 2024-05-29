@@ -65,6 +65,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     REMOTE_SERVER: _Source.ValueType  # 39
     API: _Source.ValueType  # 40
     BASH: _Source.ValueType  # 41
+    AZURE: _Source.ValueType  # 42
     GRAFANA_MIMIR: _Source.ValueType  # 43
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
@@ -111,6 +112,7 @@ OPEN_AI: Source.ValueType  # 38
 REMOTE_SERVER: Source.ValueType  # 39
 API: Source.ValueType  # 40
 BASH: Source.ValueType  # 41
+AZURE: Source.ValueType  # 42
 GRAFANA_MIMIR: Source.ValueType  # 43
 global___Source = Source
 
@@ -175,6 +177,10 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     MIMIR_HOST: _SourceKeyType.ValueType  # 53
     X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
     SSL_VERIFY: _SourceKeyType.ValueType  # 55
+    AZURE_SUBSCRIPTION_ID: _SourceKeyType.ValueType  # 56
+    AZURE_TENANT_ID: _SourceKeyType.ValueType  # 57
+    AZURE_CLIENT_ID: _SourceKeyType.ValueType  # 58
+    AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -233,6 +239,10 @@ REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 MIMIR_HOST: SourceKeyType.ValueType  # 53
 X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
 SSL_VERIFY: SourceKeyType.ValueType  # 55
+AZURE_SUBSCRIPTION_ID: SourceKeyType.ValueType  # 56
+AZURE_TENANT_ID: SourceKeyType.ValueType  # 57
+AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
+AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -282,6 +292,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """EKS Models"""
     SQL_DATABASE_CONNECTION_RAW_QUERY: _SourceModelType.ValueType  # 901
     """Sql Database Connection Models"""
+    AZURE_WORKSPACE: _SourceModelType.ValueType  # 1001
+    """Azure Models"""
     SSH_SERVER: _SourceModelType.ValueType  # 1100
     """Remote Server Models"""
     GRAFANA_MIMIR_PROMQL: _SourceModelType.ValueType  # 1201
@@ -330,6 +342,8 @@ EKS_CLUSTER: SourceModelType.ValueType  # 801
 """EKS Models"""
 SQL_DATABASE_CONNECTION_RAW_QUERY: SourceModelType.ValueType  # 901
 """Sql Database Connection Models"""
+AZURE_WORKSPACE: SourceModelType.ValueType  # 1001
+"""Azure Models"""
 SSH_SERVER: SourceModelType.ValueType  # 1100
 """Remote Server Models"""
 GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
