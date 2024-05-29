@@ -304,10 +304,10 @@ message DeprecatedPlaybookApiCallTask {
   }
   Method method = 1;
   google.protobuf.StringValue url = 2;
-  google.protobuf.Struct headers = 3;
-  google.protobuf.Struct payload = 4;
+  google.protobuf.StringValue headers = 3;
+  google.protobuf.StringValue payload = 4;
   google.protobuf.UInt64Value timeout = 5;
-  google.protobuf.Struct cookies = 6;
+  google.protobuf.StringValue cookies = 6;
 }
 
 message DeprecatedPlaybookBashCommandTask {
