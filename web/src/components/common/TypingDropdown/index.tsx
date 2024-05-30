@@ -1,41 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const Dropdown = ({ step }: any) => {
+const TypingDropdown = ({
+  data,
+  selected,
+  error,
+  handleChange: change,
+  disabled,
+  placeholder,
+}: any) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [filteredOptions, setFilteredOptions] = useState(step.options);
+  const [filteredOptions, setFilteredOptions] = useState(data);
   const dropdownRef = useRef<any>(null);
-  const error = "";
 
   useEffect(() => {
-    if (!value) {
-      setFilteredOptions(step.options);
+    if (!selected) {
+      setFilteredOptions(data);
       return;
     }
-    const filtered = step.options.filter((option: any) =>
-      option.label.toLowerCase().includes(value.toLowerCase()),
+    const filtered = data?.filter((option: any) =>
+      option.label.toLowerCase().includes(selected.toLowerCase()),
     );
     setFilteredOptions(filtered);
-  }, [value, step.options]);
-
-  const resetState = () => {
-    setValue("");
-    setIsOpen(false);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    addToArray(value);
-  };
-
-  const addToArray = (value: string) => {
-    resetState();
-  };
+  }, [selected, data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setValue(val);
+    change(val);
     setIsOpen(true);
+  };
+
+  const handleSelect = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    option: any,
+  ) => {
+    e.preventDefault();
+    change(option.label, option);
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -59,36 +59,31 @@ const Dropdown = ({ step }: any) => {
       <div
         className={`${
           error ? "border-red" : ""
-        } flex flex-wrap items-center gap-2 justify-between w-full rounded border border-lightgray px-4 py-3 bg-white text-lg font-medium text-gray-700 focus:outline-none`}>
-        <p className="text-lg">Selected</p>
-        <form className="h-full rounded flex-1" onSubmit={handleSubmit}>
-          <input
-            className="w-full h-full rounded outline-none min-w-[200px]"
-            type="text"
-            placeholder={step.placeholder}
-            value={value}
-            onChange={handleChange}
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        </form>
+        } flex flex-wrap items-center gap-2 justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none`}>
+        <input
+          className="w-full h-full rounded outline-none min-w-[200px] font-medium"
+          type="text"
+          placeholder={placeholder}
+          value={selected}
+          onChange={handleChange}
+          onClick={() => setIsOpen(!isOpen)}
+          disabled={disabled}
+        />
       </div>
 
-      {isOpen && filteredOptions.length > 0 && (
-        <div className="origin-top-right absolute left-0 mt-2 w-full max-h-36 overflow-scroll rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+      {isOpen && filteredOptions?.length > 0 && !disabled && (
+        <div className="origin-top-right absolute left-0 w-full max-h-[200px] overflow-scroll rounded-md shadow-lg bg-white ring-1 ring-gray-200 ring-opacity-5 z-10">
           <div
-            className="py-1"
+            className="flex flex-col gap-3 p-2"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu">
             {filteredOptions?.map((option: any, index: number) => (
               <div
                 key={index}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="block p-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer rounded-md"
                 role="menuitem"
-                onClick={(e) => {
-                  e.preventDefault();
-                  addToArray(option.label);
-                }}>
+                onClick={(e) => handleSelect(e, option)}>
                 {option.label}
               </div>
             ))}
@@ -99,4 +94,4 @@ const Dropdown = ({ step }: any) => {
   );
 };
 
-export default Dropdown;
+export default TypingDropdown;

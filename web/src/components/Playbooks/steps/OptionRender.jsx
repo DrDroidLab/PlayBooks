@@ -6,6 +6,7 @@ import ValueComponent from "../../ValueComponent";
 import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 
 export default function OptionRender({ data, removeErrors }) {
   const [step, currentStepIndex] = useCurrentStep();
@@ -49,6 +50,16 @@ export default function OptionRender({ data, removeErrors }) {
     removeErrors(data.key);
   };
 
+  const handleTypingDropdownChange = (value, option) => {
+    if (data.handleChange) {
+      data.handleChange(value, option);
+    } else {
+      dispatch(updateStep({ index: currentStepIndex, key: data.key, value }));
+    }
+
+    removeErrors(data.key);
+  };
+
   const error = data.key
     ? step.showError && !data.selected && !step[`${data.key}`]
     : false;
@@ -57,7 +68,7 @@ export default function OptionRender({ data, removeErrors }) {
     case "options":
       // if (!(data.options?.length > 0)) return;
       return (
-        <div className={`flex flex-col`}>
+        <div key={data.key} className={`flex flex-col`}>
           <p
             style={{
               fontSize: "13px",
@@ -151,6 +162,28 @@ export default function OptionRender({ data, removeErrors }) {
             multiSelectChange={multiSelectChange}
             selectedValuesKey={data.selectedValuesKey ?? data.key}
             task={step}
+          />
+        </div>
+      );
+
+    case "typing-dropdown":
+      return (
+        <div key={data.key} className={`flex flex-col`}>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#676666",
+            }}>
+            <b>{data.label}</b>
+          </p>
+          <TypingDropdown
+            data={data.options ?? []}
+            selected={data.selected ?? step[`${data.key}`]}
+            placeholder={data.placeholder ?? `Select ${data.label}`}
+            handleChange={handleTypingDropdownChange}
+            disabled={isPrefetched || data.disabled}
+            error={error}
+            {...data.additionalProps}
           />
         </div>
       );

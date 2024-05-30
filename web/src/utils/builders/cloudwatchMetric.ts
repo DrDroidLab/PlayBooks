@@ -58,7 +58,6 @@ export const cloudwatchMetricBuilder = (options) => {
               label: namespace,
             };
           }),
-          selected: task.namespaceName,
         },
         {
           key: "region",
