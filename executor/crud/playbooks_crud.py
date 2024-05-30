@@ -188,4 +188,4 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task name {task.name.value} with error {e}")
-    return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"
+        return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"
