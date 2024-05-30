@@ -27,6 +27,7 @@ export const integrations = [
       models.DATADOG_QUERY,
       models.CLOUDWATCH_METRIC,
       models.GRAFANA,
+      models.GRAFANA_DATASOURCE,
       models.GRAFANA_MIMIR_PROMQL
     ],
   },

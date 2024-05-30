@@ -33,6 +33,7 @@ export interface Step {
   cw_log_query?: any;
   tasks?: PlaybookTask[];
   dashboard?: any;
+  datasource?: any;
   panel?: any;
   grafanaQuery?: any;
   options?: any;
@@ -134,7 +135,9 @@ export interface CloudWatchTask {
 
 export interface GrafanaTask {
   type: string;
-  promql_metric_execution_task: PromqlMetricExecutionTask;
+  datasource_uid?: string;
+  promql_metric_execution_task?: PromqlMetricExecutionTask;
+  prometheus_datasource_metric_execution_task?: any;
 }
 
 export interface NewRelicTask {
