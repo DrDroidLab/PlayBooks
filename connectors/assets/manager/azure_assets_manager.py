@@ -40,7 +40,6 @@ class AzureAssetManager(ConnectorAssetManager):
             raise ValueError(f"Invalid filter: {which_one_of}")
         options: AzureWorkspaceAssetOptions = filters.azure_workspace_model_filters
         filter_workspaces = options.workspaces
-        workspace_assets = workspace_assets.filter(model_type=SourceModelType.AZURE_WORKSPACE)
         if filter_workspaces:
             workspace_assets = workspace_assets.filter(model_uid__in=filter_workspaces)
         azure_asset_protos = []
