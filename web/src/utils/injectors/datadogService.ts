@@ -7,7 +7,7 @@ export const injectDatadogServiceTasks = (
   const tasks = (step.datadogMetric ?? []).map((metric) => ({
     service_name: step.datadogService?.name,
     environment_name: step?.datadogEnvironment ?? "",
-    metric: metric ?? "",
+    metric: metric?.label ?? metric ?? "",
     metric_family: step.datadogMetricFamily ?? "",
     process_function: "timeseries",
   }));
