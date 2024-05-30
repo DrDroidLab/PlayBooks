@@ -153,8 +153,8 @@ export interface DataFetchTask {
 
 export interface DocumentationTask {
   type: string;
-  documentation: any;
-  iframe_url: any;
+  documentation?: any;
+  iframe_url?: any;
 }
 
 export interface ApiCallTask {
@@ -230,7 +230,6 @@ export interface PlaybookTask {
   metric_task?: MetricTask;
   data_fetch_task?: DataFetchTask;
   documentation_task?: DocumentationTask;
-  iframe?: DocumentationTask;
   action_task?: ActionTask;
   global_variable_set?: any;
   interpreter_type?: string;

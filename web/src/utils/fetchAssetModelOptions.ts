@@ -20,6 +20,8 @@ export const fetchData = async (val: any = undefined) => {
     );
     return;
   }
+  console.log('val', val);
+  console.log('step', step);
   await getAssetModelOptionsFunction(
     val?.connector_type ?? step?.source,
     val?.model_type ?? step?.modelType,

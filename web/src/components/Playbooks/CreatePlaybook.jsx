@@ -39,6 +39,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
 
   const populateData = () => {
     const data = playbookToSteps(playbook);
+    console.log('data', data);
     const assetModelPromises = data.map((el, i) =>
       dispatch(
         getAssetModelOptions.initiate(

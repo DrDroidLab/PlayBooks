@@ -95,7 +95,7 @@ enum Source {
   BASH = 41;
 
   GRAFANA_MIMIR = 43;
-  IFRAME = 44;
+  IFRAME_RENDER = 44;
 }
 
 enum SourceKeyType {
@@ -218,6 +218,7 @@ enum SourceModelType {
 
   //Documentation Models
   MARKDOWN = 601;
+  IFRAME = 602;
 
   //Postgres Models
   POSTGRES_QUERY = 701;

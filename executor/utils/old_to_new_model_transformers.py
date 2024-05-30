@@ -214,7 +214,6 @@ def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(
 
 
 def transform_old_task_definition_to_new(task):
-    print('########### - task:', task)
     source = task.get('source', None)
     if source == 'CLOUDWATCH':
         cloudwatch_task = task.get('cloudwatch_task')
@@ -391,28 +390,34 @@ def transform_old_task_definition_to_new(task):
                 }
             }
         }
-    elif task.get('documentation_task', None):
-        updated_task_def = {
-            'source': 'DOCUMENTATION',
-            'documentation': {
-                'type': 'MARKDOWN',
-                'markdown': {
-                    'content': task.get('documentation_task', {}).get('documentation', None)
-                },
-                'iframe': {
-                    'iframe_url': task.get('documentation_task', {}).get('iframe_url', None)
+    elif task.get('documentation', None):
+        task_type = task.get('type', None)
+        if task_type == 'MARKDOWN':
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
+                'documentation': {
+                    'type': 'MARKDOWN',
+                    'markdown': {
+                        'content': task.get('documentation', None)
+                    }
                 }
             }
-        }
+        elif task_type == 'IFRAME':
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
+                'iframe': {
+                    'iframe_url': task.get('iframe_url', None)
+                }
+            }
+        else:
+            raise ValueError(f"Invalid task type: {task_type}")
     else:
-        print('#################### - 5')
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def
 
 
 def transform_new_task_definition_to_old(task):
     source = task.get('source', None)
-    print('########### - source:', source)
     if source == 'CLOUDWATCH':
         cloudwatch_task = task.get('cloudwatch', {})
         if cloudwatch_task.get('type') == 'METRIC_EXECUTION':
@@ -576,7 +581,8 @@ def transform_new_task_definition_to_old(task):
         updated_task_def = {
             'source': 'DOCUMENTATION',
             'documentation_task': {
-                'documentation': documentation_task.get('content', None)
+                'type': 'MARKDOWN',
+                'documentation': documentation_task.get('markdown', {}).get('content', None)
             }
         }
     elif source == 'IFRAME':
@@ -584,10 +590,10 @@ def transform_new_task_definition_to_old(task):
         updated_task_def = {
             'source': 'DOCUMENTATION',
             'iframe_task': {
+                'type': 'IFRAME',
                 'iframe_url': iframe_task.get('iframe_url', None)
             }
         }
     else:
-        print('#################### - 6')
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def

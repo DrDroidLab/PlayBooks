@@ -16,7 +16,7 @@ export const connectorTypeOptions = [
   {
     id: "IFRAME",
     label: "Iframe",
-    connector_type: "IFRAME",
+    connector_type: "DOCUMENTATION",
     model_type: "IFRAME",
     display_name: "Iframe",
   },

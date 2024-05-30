@@ -198,9 +198,11 @@ message DeprecatedPlaybookDocumentationTaskDefinition {
   enum Type {
     UNKNOWN = 0;
     MARKDOWN = 1;
+    IFRAME = 2;
   }
   Type type = 1;
   google.protobuf.StringValue documentation = 2;
+  google.protobuf.StringValue iframe_url = 3;
 }
 
 message DeprecatedPlaybookDocumentationTaskExecutionResult {

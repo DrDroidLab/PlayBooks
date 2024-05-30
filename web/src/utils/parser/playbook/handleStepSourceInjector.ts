@@ -16,6 +16,8 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
 
   let tasks: PlaybookTask[] = [];
 
+  console.log("I am definitely here: ", step);
+
   switch (step.source) {
     case SOURCES.CLOUDWATCH:
       tasks = Injector.injectCloudwatchTasks(step, baseTask);
@@ -47,6 +49,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       break;
     case SOURCES.TEXT:
       tasks = Injector.injectTextTasks(step, baseTask);
+      break;
+    case SOURCES.IFRAME:
+      tasks = Injector.injectIframeTasks(step, baseTask);
       break;
     case SOURCES.BASH:
       tasks = Injector.injectBashTasks(step, baseTask);

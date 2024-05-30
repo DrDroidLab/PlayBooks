@@ -84,6 +84,7 @@ function PlaybookLogs() {
   const populateData = () => {
     const pbData = executionToPlaybook(data?.playbook_execution);
     dispatch(setSteps(pbData));
+    console.log('pbData - 2', pbData);
     const assetModelPromises = pbData.map((el, i) =>
       dispatch(
         getAssetModelOptions.initiate(

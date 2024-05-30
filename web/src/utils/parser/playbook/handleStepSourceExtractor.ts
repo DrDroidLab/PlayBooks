@@ -11,6 +11,8 @@ export const handleStepSourceExtractor = (step) => {
       : step.tasks[0].action_task?.source ?? step?.tasks[0].type
     : "";
 
+  console.log('stepSource', stepSource);
+
   switch (stepSource) {
     case SOURCES.CLOUDWATCH:
       data = Extractor.extractCloudwatchTasks(step);
@@ -41,7 +43,7 @@ export const handleStepSourceExtractor = (step) => {
       data = Extractor.extractTextTasks(step);
       break;
     case SOURCES.IFRAME:
-      data = Extractor.extractTextTasks(step);
+      data = Extractor.extractIframeTasks(step);
       break;
     case SOURCES.GRAFANA_MIMIR:
       data = Extractor.extractMimirTasks(step);

@@ -104,10 +104,11 @@ const formatMetricTask = step => {
   if (step.source.toUpperCase() === 'IFRAME') {
     task = {
       name: uuidv4(),
-      type: 'IFRAME',
+      type: 'DOCUMENTATION',
       description: step.description,
       notes: step.notes,
-      iframe: {
+      documentation_task: {
+        type: 'MARKDOWN',
         iframe_url: step.url
       }
     };

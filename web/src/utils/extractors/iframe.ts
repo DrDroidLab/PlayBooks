@@ -1,18 +1,20 @@
 export const extractIframeTasks = (step: any) => {
-    let stepSource = "IFRAME";
+    let stepSource = "DOCUMENTATION";
     let modelType = "IFRAME";
-    let selected = "IFRAME";
+    let selected = "DOCUMENTATION";
     const tasks = step.tasks;
-    const iframeTask = tasks[0].iframe;
+    const iframeTask = tasks[0].documentation_task;
   
     const stepData = {
-      source: stepSource,
+      source: 'DOCUMENTATION', //stepSource,
       selectedSource: selected,
       connector_type: stepSource,
       model_type: modelType,
       modelType,
       iframe_url: iframeTask.iframe_url,
     };
+
+    console.log('stepData', stepData);
   
     return stepData;
   };

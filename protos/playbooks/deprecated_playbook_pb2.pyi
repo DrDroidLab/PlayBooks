@@ -667,24 +667,30 @@ class DeprecatedPlaybookDocumentationTaskDefinition(google.protobuf.message.Mess
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType  # 0
         MARKDOWN: DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType  # 1
+        IFRAME: DeprecatedPlaybookDocumentationTaskDefinition._Type.ValueType  # 2
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType  # 0
     MARKDOWN: DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType  # 1
+    IFRAME: DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType  # 2
 
     TYPE_FIELD_NUMBER: builtins.int
     DOCUMENTATION_FIELD_NUMBER: builtins.int
+    IFRAME_URL_FIELD_NUMBER: builtins.int
     type: global___DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType
     @property
     def documentation(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def iframe_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
         type: global___DeprecatedPlaybookDocumentationTaskDefinition.Type.ValueType = ...,
         documentation: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        iframe_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["documentation", b"documentation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["documentation", b"documentation", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["documentation", b"documentation", "iframe_url", b"iframe_url"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["documentation", b"documentation", "iframe_url", b"iframe_url", "type", b"type"]) -> None: ...
 
 global___DeprecatedPlaybookDocumentationTaskDefinition = DeprecatedPlaybookDocumentationTaskDefinition
 

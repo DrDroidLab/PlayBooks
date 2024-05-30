@@ -165,9 +165,7 @@ def get_bash_command_task_execution_proto(task) -> DeprecatedPlaybookActionTaskD
 @deprecated
 def get_playbook_task_definition_proto(db_task_definition):
     new_definition_task = db_task_definition.task
-    print('###### new_definition_task', new_definition_task)
     task = transform_new_task_definition_to_old(new_definition_task)
-    print('###### task', task)
     source = task.get('source', None)
     if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG', 'GRAFANA_MIMIR']:
         if source == 'CLOUDWATCH':
@@ -181,7 +179,6 @@ def get_playbook_task_definition_proto(db_task_definition):
         elif source == 'GRAFANA_MIMIR':
             metric_task_proto = get_grafana_mimir_task_execution_proto(task)
         else:
-            print('#################### - 1')
             raise ValueError(f"Invalid source: {source}")
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
@@ -202,7 +199,6 @@ def get_playbook_task_definition_proto(db_task_definition):
         elif source == 'SQL_DATABASE_CONNECTION':
             data_fetch_task_proto = get_sql_database_connection_task_execution_proto(task)
         else:
-            print('#################### - 2')
             raise ValueError(f"Invalid source: {source}")
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
@@ -219,7 +215,6 @@ def get_playbook_task_definition_proto(db_task_definition):
         elif source == 'BASH':
             action_task_proto = get_bash_command_task_execution_proto(task)
         else:
-            print('#################### - 3')
             raise ValueError(f"Invalid source: {source}")
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
@@ -230,7 +225,7 @@ def get_playbook_task_definition_proto(db_task_definition):
             notes=StringValue(value=db_task_definition.notes)
         )
     elif task.get('documentation_task', None):
-        documentation_task_proto = dict_to_proto(db_task_definition.task, DeprecatedPlaybookDocumentationTaskDefinition)
+        documentation_task_proto = dict_to_proto(task.get('documentation_task'), DeprecatedPlaybookDocumentationTaskDefinition)
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
@@ -250,5 +245,4 @@ def get_playbook_task_definition_proto(db_task_definition):
             notes=StringValue(value=db_task_definition.notes),
         )
     else:
-        print('#################### - 4')
         raise ValueError(f"Invalid source: {source}")
