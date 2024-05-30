@@ -13,7 +13,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
           url: GET_ASSETS,
           method: "POST",
           body: {
-            connector_type: task?.source,
+            connector_id: task?.connectorType,
             type: task?.modelType,
             filters: filter,
           },

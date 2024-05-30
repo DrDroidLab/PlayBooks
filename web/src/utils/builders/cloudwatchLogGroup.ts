@@ -6,10 +6,8 @@ export const cloudwatchLogGroupBuilder = (options: any) => {
   return {
     triggerGetAssetsKey: "region",
     assetFilterQuery: {
-      filters: {
-        cloudwatch_log_group_model_filters: {
-          regions: [task.region],
-        },
+      cloudwatch_log_group_model_filters: {
+        regions: [task.region],
       },
     },
     builder: [

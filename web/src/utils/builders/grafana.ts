@@ -18,20 +18,18 @@ export const grafanaBuilder = (options: any) => {
   return {
     triggerGetAssetsKey: "panel",
     assetFilterQuery: {
-      filters: {
-        grafana_target_metric_promql_model_filters: {
-          dashboards: [
-            {
-              dashboard_id: task?.dashboard?.id,
-              datasource_uid: task?.dashboard_uid,
-              panel_options: [
-                {
-                  panel_id: task?.panel?.panel_id,
-                },
-              ],
-            },
-          ],
-        },
+      grafana_target_metric_promql_model_filters: {
+        dashboards: [
+          {
+            dashboard_id: task?.dashboard?.id,
+            datasource_uid: task?.dashboard_uid,
+            panel_options: [
+              {
+                panel_id: task?.panel?.panel_id,
+              },
+            ],
+          },
+        ],
       },
     },
     builder: [

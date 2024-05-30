@@ -25,8 +25,6 @@ function SelectConnectorOption() {
     updateCardByIndex("connectorType", id);
   }
 
-  console.log("connectorOptions", connectorOptions);
-
   const currentConnectorOptions =
     connectorOptions?.find((e) => e.id === step?.source)?.connector
       ?.connector_options ?? [];

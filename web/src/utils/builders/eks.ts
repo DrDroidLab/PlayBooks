@@ -8,19 +8,17 @@ export const eksBuilder = (options: any) => {
   return {
     triggerGetAssetsKey: "cluster",
     assetFilterQuery: {
-      filters: {
-        eks_cluster_model_filters: {
-          regions: [
-            {
-              region: task.eksRegion,
-              clusters: [
-                {
-                  name: task.cluster,
-                },
-              ],
-            },
-          ],
-        },
+      eks_cluster_model_filters: {
+        regions: [
+          {
+            region: task.eksRegion,
+            clusters: [
+              {
+                name: task.cluster,
+              },
+            ],
+          },
+        ],
       },
     },
     builder: [

@@ -8,10 +8,8 @@ export const newRelicEntityApplicationBuilder = (options) => {
   return {
     triggerGetAssetsKey: "application_name",
     assetFilterQuery: {
-      filters: {
-        new_relic_entity_application_model_filters: {
-          application_names: [task.application_name],
-        },
+      new_relic_entity_application_model_filters: {
+        application_names: [task.application_name],
       },
     },
     builder: [

@@ -12,21 +12,19 @@ export const newRelicEntityDashboardBuilder = (options) => {
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
-      filters: {
-        new_relic_entity_dashboard_model_filters: {
-          dashboards: [
-            {
-              dashboard_guid: task?.dashboard?.id,
-              dashboard_name: task?.dashboard?.label,
-              page_options: [
-                {
-                  page_guid: task?.page?.page_guid,
-                  page_name: task?.page?.page_name,
-                },
-              ],
-            },
-          ],
-        },
+      new_relic_entity_dashboard_model_filters: {
+        dashboards: [
+          {
+            dashboard_guid: task?.dashboard?.id,
+            dashboard_name: task?.dashboard?.label,
+            page_options: [
+              {
+                page_guid: task?.page?.page_guid,
+                page_name: task?.page?.page_name,
+              },
+            ],
+          },
+        ],
       },
     },
     builder: [
