@@ -4,14 +4,14 @@ import {
   setWidget,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const newRelicEntityDashboardBuilder = (task, index, options) => {
+export const newRelicEntityDashboardBuilder = (options) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         new_relic_entity_dashboard_model_filters: {
           dashboards: [

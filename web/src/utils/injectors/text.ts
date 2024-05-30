@@ -4,16 +4,17 @@ export const injectTextTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let documentation_task = {
-    type: "MARKDOWN",
+  let task = {
     documentation: step.notes!,
   };
 
   return [
     {
       ...baseTask,
-      type: "DOCUMENTATION",
-      documentation_task: documentation_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };

@@ -37,10 +37,15 @@ function StepDetails() {
   };
 
   useEffect(() => {
-    if (currentStepIndex !== null && step?.source && step?.modelType) {
+    if (
+      currentStepIndex !== null &&
+      step?.source &&
+      step?.modelType &&
+      step.connectorType
+    ) {
       fetchData();
     }
-  }, [currentStepIndex, step?.source, step?.modelType]);
+  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
@@ -81,9 +86,9 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource step={step} />
-          <PlaybookStep card={step} index={currentStepIndex} />
-          <Notes step={step} index={currentStepIndex} />
+          <AddSource />
+          <PlaybookStep />
+          <Notes />
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation />
           )}

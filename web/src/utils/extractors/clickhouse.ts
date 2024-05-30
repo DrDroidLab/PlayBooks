@@ -3,7 +3,7 @@ export const extractClickhouseTasks = (step: any) => {
   let modelType = "CLICKHOUSE_DATABASE";
   let selected = "CLICKHOUSE Database";
   const tasks = step.tasks;
-  const clickhouseTask = tasks[0].data_fetch_task?.clickhouse_data_fetch_task;
+  const clickhouseTask = tasks[0]?.clickhouse_data_fetch_task;
 
   const stepData = {
     source: stepSource,

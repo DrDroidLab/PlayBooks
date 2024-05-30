@@ -8,7 +8,7 @@ export const extractGrafanaTasks = (step: any) => {
       ? "GRAFANA_VPC PromQL"
       : "GRAFANA PromQL";
   const tasks = step.tasks;
-  const grafanaTask = tasks[0]?.metric_task?.grafana_task;
+  const grafanaTask = tasks[0]?.grafana_task;
 
   const options = {};
   for (let { name, value } of grafanaTask?.promql_metric_execution_task

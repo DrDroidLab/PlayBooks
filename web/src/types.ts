@@ -70,6 +70,7 @@ export interface Step {
   interpreter?: any;
   promql_expression?: string;
   remote_server?: string;
+  taskType?: string;
 }
 
 export interface GoldenMetric {
@@ -109,6 +110,7 @@ export interface ClickhouseDataFetchTask {
 }
 
 export interface PostgresDataFetchTask {
+  database: string;
   query: string;
 }
 
@@ -134,6 +136,7 @@ export interface CloudWatchTask {
 
 export interface GrafanaTask {
   type: string;
+  datasource_uid: string;
   promql_metric_execution_task: PromqlMetricExecutionTask;
 }
 
@@ -223,14 +226,23 @@ export interface NrApplicationEntityTask {
 export interface PlaybookTask {
   name?: string;
   id?: string;
-  type: string;
+  source: string;
   description: string;
-  metric_task?: MetricTask;
-  data_fetch_task?: DataFetchTask;
+  api_call_task?: ApiCallTask;
+  bash_command_task?: BashCommandTask;
+  clickhouse_data_fetch_task?: ClickhouseDataFetchTask;
+  cloudwatch_task?: CloudWatchTask;
+  datadog_task?: DatadogTask;
+  eks_data_fetch_task?: KubernetesDataFetchTask;
+  grafana_task?: GrafanaTask;
+  mimir_task?: any;
+  new_relic_task?: NewRelicTask;
+  postgres_data_fetch_task?: PostgresDataFetchTask;
+  sql_database_connection_data_fetch_task?: any;
   documentation_task?: DocumentationTask;
-  action_task?: ActionTask;
   global_variable_set?: any;
   interpreter_type?: string;
+  task_connector_sources: any;
 }
 
 export interface GlobalVariable {

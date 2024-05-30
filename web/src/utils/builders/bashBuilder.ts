@@ -1,8 +1,6 @@
-import { store } from "../../store/index.ts";
-import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const bashBuilder = (task: any, index: number, options?: any) => {
+export const bashBuilder = (options?: any) => {
   return {
     builder: [
       [
@@ -19,9 +17,6 @@ export const bashBuilder = (task: any, index: number, options?: any) => {
           key: "command",
           label: "Command",
           type: OptionType.MULTILINE,
-          handleChange: (e) => {
-            store.dispatch(setCommand({ index, command: e.target.value }));
-          },
         },
       ],
     ],

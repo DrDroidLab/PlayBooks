@@ -53,7 +53,7 @@ function StepActions({ allowSave }) {
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
       setIsSaved(true);
-      navigate(`/playbooks/edit/${response.playbook?.id}`, { replace: true });
+      navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
     } catch (e) {
       console.error(e);
     }

@@ -3,8 +3,7 @@ export const extractSqlRawQueryTasks = (step: any) => {
   let modelType = "SQL_DATABASE_CONNECTION_RAW_QUERY";
   let selected = "SQL_DATABASE_CONNECTION Query";
   const tasks = step.tasks;
-  const sqlTask =
-    tasks[0].data_fetch_task?.sql_database_connection_data_fetch_task;
+  const sqlTask = tasks[0]?.sql_database_connection_data_fetch_task;
 
   const stepData = {
     source: stepSource,

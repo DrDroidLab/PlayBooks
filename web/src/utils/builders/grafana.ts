@@ -6,18 +6,18 @@ import {
   updateStep,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 import {
   grafanaOptionsList,
   setGrafanaOptionsFunction,
 } from "../setGrafanaOptionsFunction.ts";
 
-export const grafanaBuilder = (task, index, options: any) => {
+export const grafanaBuilder = (options: any) => {
+  const [task, index] = getCurrentTask();
   return {
     triggerGetAssetsKey: "panel",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
       filters: {
         grafana_target_metric_promql_model_filters: {
           dashboards: [
@@ -96,7 +96,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 store.dispatch(
                   setGrafanaQuery({
                     index,
-                    query: val.map((e) => e.query ?? e),
+                    query: val,
                   }),
                 );
                 setGrafanaOptionsFunction(index);
@@ -111,9 +111,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 );
               }
             } else {
-              store.dispatch(
-                setGrafanaQuery({ index, query: val.map((e) => e.query) }),
-              );
+              store.dispatch(setGrafanaQuery({ index, query: val }));
               setGrafanaOptionsFunction(index);
             }
           },
@@ -125,7 +123,7 @@ export const grafanaBuilder = (task, index, options: any) => {
           type: OptionType.MULTILINE,
           value:
             task?.grafanaQuery?.length > 0
-              ? ( task?.grafanaQuery[0]?.query?.expression ? task?.grafanaQuery[0]?.query?.expression : task?.grafanaQuery[0]?.expression )
+              ? task?.grafanaQuery[0]?.query?.expression
               : "",
           handleChange: (e) => {
             store.dispatch(

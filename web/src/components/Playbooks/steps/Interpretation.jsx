@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import SelectInterpreterDropdown from "./SelectInterpreterDropdown";
 
-function Interpretation({ index }) {
+function Interpretation() {
   const [selectInterpretation, setSelectInterpretation] = useState(false);
 
   const toggleInterpretation = () => {
@@ -18,7 +18,7 @@ function Interpretation({ index }) {
         onChange={toggleInterpretation}
       />
 
-      {selectInterpretation && <SelectInterpreterDropdown index={index} />}
+      {selectInterpretation && <SelectInterpreterDropdown />}
     </div>
   );
 }

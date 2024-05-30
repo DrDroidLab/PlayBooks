@@ -5,14 +5,18 @@ import { createStepWithSource } from "../../../store/features/playbook/playbookS
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
-
-  const handleClick = (item) => {
-    if (item.connector_type) {
+  const handleClick = () => {
+    if (option.source) {
       dispatch(
         createStepWithSource({
-          source: item.connector_type,
-          modelType: item.model_type,
-          key: item.id,
+          source: option.source,
+          modelType:
+            option.supported_model_types?.length > 0
+              ? option.supported_model_types[0].model_type
+              : option.source,
+          taskType: option.task_type,
+          key: option.id,
+          description: option.display_name,
         }),
       );
       setIsOpen(false);
@@ -23,30 +27,26 @@ function IntegrationOption({ option, setIsOpen }) {
     <div
       className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px]  hover:bg-gray-200 cursor-pointer transition-all`}
       key={option.id}
-      onClick={() => handleClick(option)}>
-      <div
-        className={`${
-          option?.connector_type ? "hidden" : "block"
-        } bg-white w-full h-full absolute opacity-75 top-0 left-0`}
-      />
+      onClick={handleClick}>
+      {/* <div
+        className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
+      /> */}
       <img
         className="w-10 h-10"
         src={
-          cardsData.find(
-            (e) =>
-              e.enum === option?.connector_type?.replace("_VPC", "")
-          )?.url ?? cardsData.find(
-            (e) =>
-              option?.model_type?.includes(e.enum)
-          )?.url
+          cardsData.find((e) => e.enum === option?.source?.replace("_VPC", ""))
+            ?.url ??
+          cardsData.find((e) => option?.model_type?.includes(e.enum))?.url
         }
         alt="logo"
       />
       {/* <div>
-                    <p className="text-xs font-bold text-gray-500">{data.connector_type}</p>
+                    <p className="text-xs font-bold text-gray-500">{data.source}</p>
                     <p className="font-semibold">{data.display_name}</p>
                   </div> */}
-      <p className="text-sm">{option.label}</p>
+      <p className="text-sm">
+        {option?.display_name ?? `${option?.source} ${option?.task_type}`}
+      </p>
     </div>
   );
 }
