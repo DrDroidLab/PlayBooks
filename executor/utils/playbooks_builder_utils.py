@@ -12,8 +12,8 @@ playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA
 
 supported_connectors_model_maps = {
     Source.CLOUDWATCH: [SourceModelType.CLOUDWATCH_METRIC, SourceModelType.CLOUDWATCH_LOG_GROUP],
-    Source.GRAFANA: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL, SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
-    Source.GRAFANA_VPC: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL, SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
+    Source.GRAFANA: [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
+    Source.GRAFANA_VPC: [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
     Source.NEW_RELIC: [SourceModelType.NEW_RELIC_ENTITY_APPLICATION, SourceModelType.NEW_RELIC_ENTITY_DASHBOARD,
                        SourceModelType.NEW_RELIC_NRQL],
     Source.CLICKHOUSE: [SourceModelType.CLICKHOUSE_DATABASE],

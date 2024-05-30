@@ -8,8 +8,6 @@ export const integrationSentenceMap = {
   [models.DATADOG]: "Fetch a metric by service",
   [models.DATADOG_QUERY]: "Fetch a custom metric",
   [models.CLOUDWATCH_METRIC]: "Fetch a metric from Cloudwatch",
-  [models.GRAFANA]:
-    "Query any of your Prometheus based dashboard panels from Grafana",
   [models.GRAFANA_DATASOURCE]:
     "Query any of your Prometheus based Grafana Data Sources",
   [models.CLICKHOUSE]: "Query a Clickhouse Database",
