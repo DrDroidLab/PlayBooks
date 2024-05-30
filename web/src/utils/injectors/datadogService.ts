@@ -12,7 +12,7 @@ export const injectDatadogServiceTasks = (
         service_metric_execution_task: {
           service_name: step.datadogService?.name,
           environment_name: step?.datadogEnvironment ?? "",
-          metric: metric ?? "",
+          metric: metric?.label ?? metric ?? "",
           metric_family: step.datadogMetricFamily ?? "",
           process_function: "timeseries",
         },
