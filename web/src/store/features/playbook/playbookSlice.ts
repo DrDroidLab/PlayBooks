@@ -328,7 +328,8 @@ const playbookSlice = createSlice({
       state.steps[payload.index].selectedOptions = null;
     },
     setGrafanaExpression(state, { payload }) {
-      state.steps[payload.index].grafanaQuery.expression = payload.expression;
+      state.steps[payload.index].grafanaQuery[0].expression =
+        payload.expression;
     },
     setGrafanaOptions(state, { payload }) {
       if (payload.options && payload.index)
