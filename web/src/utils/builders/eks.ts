@@ -26,7 +26,7 @@ export const eksBuilder = (options: any) => {
         {
           key: "eksRegion",
           label: "Region",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           value: task.eksRegion,
           options:
             options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
@@ -34,7 +34,7 @@ export const eksBuilder = (options: any) => {
         {
           key: "cluster",
           label: "Cluster",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           value: task.cluster,
           options: options
             ?.find((e) => e.region === task.eksRegion)
@@ -43,7 +43,7 @@ export const eksBuilder = (options: any) => {
         {
           key: "eksNamespace",
           label: "Namespace",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options:
             task.assets?.clusters?.length > 0
               ? task.assets?.clusters[0].namespaces?.map((el) => {
@@ -54,7 +54,7 @@ export const eksBuilder = (options: any) => {
         {
           key: "command",
           label: "Command Type",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: task.assets?.commands?.map((el) => {
             return { id: el.type, label: el.description, command: el };
           }),

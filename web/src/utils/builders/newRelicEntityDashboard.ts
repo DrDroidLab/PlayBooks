@@ -32,7 +32,7 @@ export const newRelicEntityDashboardBuilder = (options) => {
         {
           key: "dashboard",
           label: "Dashboard",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.dashboard_guid,
@@ -47,7 +47,7 @@ export const newRelicEntityDashboardBuilder = (options) => {
         {
           key: "page",
           label: "Page",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.dashboard_guid === task?.dashboard?.id)
             ?.page_options?.map((page) => {

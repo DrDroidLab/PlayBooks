@@ -7,7 +7,7 @@ export const postgresBuilder = (options: any) => {
         {
           key: "database",
           label: "Database",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
         },
       ],

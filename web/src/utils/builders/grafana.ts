@@ -37,7 +37,7 @@ export const grafanaBuilder = (options: any) => {
         {
           key: "dashboard",
           label: "Dashboard",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.dashboard_id,
@@ -52,7 +52,7 @@ export const grafanaBuilder = (options: any) => {
         {
           key: "panel",
           label: "Panel",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.dashboard_id === task?.dashboard?.id)
             ?.panel_options?.map((panel) => {

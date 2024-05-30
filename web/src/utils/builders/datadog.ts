@@ -22,7 +22,7 @@ export const datadogBuilder = (options) => {
         {
           key: "datadogService",
           label: "Service",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({
             id: x.name,
             label: x.name,
@@ -33,7 +33,7 @@ export const datadogBuilder = (options) => {
         {
           key: "datadogMetricFamily",
           label: "Metric Family",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.name === task?.datadogService?.name)
             ?.metric_families?.map((x) => ({ id: x, label: x })),
@@ -41,7 +41,7 @@ export const datadogBuilder = (options) => {
         {
           key: "datadogEnvironment",
           label: "Environment",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: task?.assets?.environments?.map((e) => {
             return {
               id: e,

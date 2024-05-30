@@ -51,7 +51,7 @@ export default function OptionRender({ data, removeErrors }) {
   };
 
   const handleTypingDropdownChange = (value, option) => {
-    if (data.handleChange) {
+    if (data.handleChange && option) {
       data.handleChange(value, option);
     } else {
       dispatch(updateStep({ index: currentStepIndex, key: data.key, value }));

@@ -11,6 +11,7 @@ export enum OptionType {
   BUTTON = "button",
   MULTI_OPTIONS = "multi-options",
   MULTI_SELECT = "multi-select",
+  TYPING_DROPDOWN = "typing-dropdown",
 }
 
 export const constructBuilder = () => {

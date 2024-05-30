@@ -17,7 +17,7 @@ export const newRelicEntityApplicationBuilder = (options) => {
         {
           key: "application_name",
           label: "Application",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e,
@@ -43,7 +43,7 @@ export const newRelicEntityApplicationBuilder = (options) => {
         },
         {
           label: "Unit",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: [
             {
               id: task.golden_metric?.golden_metric_unit,

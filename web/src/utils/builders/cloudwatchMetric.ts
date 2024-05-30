@@ -51,7 +51,7 @@ export const cloudwatchMetricBuilder = (options) => {
         {
           key: "namespaceName",
           label: "Namespace",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((namespace, i) => {
             return {
               id: namespace,
@@ -62,7 +62,7 @@ export const cloudwatchMetricBuilder = (options) => {
         {
           key: "region",
           label: "Region",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: task.assets?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
@@ -70,7 +70,7 @@ export const cloudwatchMetricBuilder = (options) => {
         {
           key: "dimensionName",
           label: "Dimension",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: getDimensions(),
           handleChange: (_, value) => {
             store.dispatch(

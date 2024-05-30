@@ -7,7 +7,7 @@ export const bashBuilder = (options?: any) => {
         {
           key: "remote_server",
           label: "Remote Server",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
           isOptional: true,
         },

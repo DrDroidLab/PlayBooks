@@ -15,7 +15,7 @@ export const cloudwatchLogGroupBuilder = (options: any) => {
         {
           key: "region",
           label: "Region",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((region) => {
             return {
               id: region,
@@ -27,7 +27,7 @@ export const cloudwatchLogGroupBuilder = (options: any) => {
         {
           key: "logGroup",
           label: "Log Group",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: task?.assets?.log_groups?.map((e) => {
             return {
               id: e,
