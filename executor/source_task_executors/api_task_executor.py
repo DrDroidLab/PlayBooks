@@ -11,8 +11,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.api_task_pb2 import Api
 
-from utils.proto_utils import proto_to_dict
-
 method_proto_string_mapping = {
     Api.HttpRequest.Method.GET: "GET",
     Api.HttpRequest.Method.POST: "POST",
