@@ -4,7 +4,7 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
@@ -15,7 +15,7 @@ function SelectConnectorOption() {
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const { isFetching, refetch } = useGetBuilderOptionsQuery();
+  const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -24,6 +24,8 @@ function SelectConnectorOption() {
   function handleConnectorOptionChange(id) {
     updateCardByIndex("connectorType", id);
   }
+
+  console.log("connectorOptions", connectorOptions);
 
   const currentConnectorOptions =
     connectorOptions?.find((e) => e.id === step?.source)?.connector

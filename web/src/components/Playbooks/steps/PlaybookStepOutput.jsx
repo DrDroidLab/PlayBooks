@@ -13,8 +13,8 @@ const OutputTypes = {
 
 const PlaybookStepOutput = ({ stepOutput }) => {
   const [step] = useCurrentStep();
-  const error = step.outputError;
   const out = stepOutput?.result;
+  const error = step.outputError ?? out.error;
 
   switch (out?.type) {
     case OutputTypes.API_RESPONSE:
