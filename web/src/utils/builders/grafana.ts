@@ -96,7 +96,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 store.dispatch(
                   setGrafanaQuery({
                     index,
-                    query: val.map((e) => e.query ?? e),
+                    query: val,
                   }),
                 );
                 setGrafanaOptionsFunction(index);
@@ -111,9 +111,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 );
               }
             } else {
-              store.dispatch(
-                setGrafanaQuery({ index, query: val.map((e) => e.query) }),
-              );
+              store.dispatch(setGrafanaQuery({ index, query: val }));
               setGrafanaOptionsFunction(index);
             }
           },
