@@ -25,7 +25,7 @@ function IntegrationOption({ option, setIsOpen }) {
 
   return (
     <div
-      className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px]  hover:bg-gray-200 cursor-pointer transition-all`}
+      className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px] hover:bg-gray-200 cursor-pointer transition-all`}
       key={option.id}
       onClick={handleClick}>
       {/* <div

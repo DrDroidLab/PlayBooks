@@ -4,8 +4,7 @@ import IntegrationsList from "./IntegrationsList";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 
 function Sidebar({ setIsOpen }) {
-  const heightList =
-    window.innerHeight * (window.innerHeight > 900 ? 0.03 : 0.04);
+  const heightList = window.innerHeight * 0.05;
   const length = Object.keys(integrationSentenceMap).length * heightList;
   return (
     <div
