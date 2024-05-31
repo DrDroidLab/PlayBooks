@@ -14,3 +14,4 @@ export * from "./mimir.ts";
 export * from "./bashBuilder.ts";
 export * from "./sqlRawQuery.ts";
 export * from "./azureLogs.ts";
+export * from "./grafanaDataSource.ts";

@@ -308,6 +308,9 @@ const playbookSlice = createSlice({
       state.steps[payload.index].page = null;
       state.steps[payload.index].widget = null;
     },
+    setDataSource(state, { payload }) {
+      state.steps[payload.index].datasource = payload.datasource;
+    },
     setApplicationName(state, { payload }) {
       state.steps[payload.index].application_name = payload.application_name;
 
@@ -502,6 +505,7 @@ export const {
   setLogGroup,
   setLogQuery,
   setDashboard,
+  setDataSource,
   setPanel,
   setGrafanaQuery,
   setGrafanaExpression,

@@ -59,6 +59,14 @@ def get_grafana_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefini
             datasource_uid=StringValue(
                 value=grafana_task.get('datasource_uid', '')),
             promql_metric_execution_task=promql_metric_execution_task_proto)
+    elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+        prometheus_datasource_metric_execution_task_proto = dict_to_proto(grafana_task.get('prometheus_datasource_metric_execution_task', {}),
+                                                           DeprecatedPlaybookGrafanaTask.DeprecatedPrometheusDataSourceMetricExecutionTask)
+        grafana_task_proto = DeprecatedPlaybookGrafanaTask(
+            type=DeprecatedPlaybookGrafanaTask.TaskType.PROMETHEUS_DATASOURCE_METRIC_EXECUTION,
+            datasource_uid=StringValue(
+                value=grafana_task.get('datasource_uid', '')),
+            prometheus_datasource_metric_execution_task=prometheus_datasource_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     return DeprecatedPlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)

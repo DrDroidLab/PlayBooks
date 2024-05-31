@@ -292,7 +292,7 @@ export const cardsData = [
     url: "/integrations/grafana_logo.png",
     title: "GRAFANA",
     enum: "GRAFANA",
-    desc: "Share Dashboards & Metrics from Grafana",
+    desc: "Share Data Sources, Dashboards & Metrics from Grafana",
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/grafana",

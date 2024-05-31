@@ -31,6 +31,7 @@ message ConnectorModelTypeOptions {
     EksClusterAssetOptions eks_cluster_model_options = 12;
     SshServerAssetOptions ssh_server_model_options = 13;
     AzureWorkspaceAssetOptions azure_workspace_model_options = 14;
+    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 15;
   }
 }
 
@@ -53,6 +54,7 @@ message AccountConnectorAssetsModelFilters {
     EksClusterAssetOptions eks_cluster_model_filters = 10;
     AzureWorkspaceAssetOptions azure_workspace_model_filters = 11;
     SshServerAssetOptions ssh_server_model_filters = 12;
+    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 13;
   }
 }
 
