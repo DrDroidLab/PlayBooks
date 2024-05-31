@@ -57,6 +57,7 @@ const CreatePlaybookBeta = React.lazy(() =>
 const PlaybookLog = React.lazy(() =>
   import("./components/Playbooks/logs/index.jsx"),
 );
+const DataSources = React.lazy(() => import("./pages/DataSources.tsx"));
 
 const App = () => {
   const navigate = useNavigate();
@@ -150,6 +151,7 @@ const App = () => {
           />
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />
+          <Route path="/integrations" element={<DataSources />} />
           <Route path="/integrations/:id" element={<ConnectorPage />} />
           <Route path="/api-keys" element={<ApiTokens />} />
           <Route path="/invite-team" element={<InviteTeam />} />
