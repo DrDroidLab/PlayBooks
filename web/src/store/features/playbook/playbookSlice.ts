@@ -31,7 +31,7 @@ const initialState: Playbook = {
   isEditing: false,
   lastUpdatedAt: null,
   currentStepIndex: null,
-  view: "builder",
+  view: "step",
 };
 
 const playbookSlice = createSlice({

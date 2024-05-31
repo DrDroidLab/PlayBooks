@@ -8,6 +8,7 @@ export const iframeBuilder = (task: any, index: number) => {
           key: "iframe_url",
           label: "Iframe URL",
           type: OptionType.TEXT_ROW,
+          value: task.iframe_url,
         },
       ],
     ],

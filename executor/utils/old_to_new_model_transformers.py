@@ -412,7 +412,7 @@ def transform_old_task_definition_to_new(task):
                 }
             }
         }
-    elif task.get('documentation', None):
+    elif task.get('type', None) in ['IFRAME', 'MARKDOWN']:
         task_type = task.get('type', None)
         if task_type == 'MARKDOWN':
             updated_task_def = {
@@ -622,23 +622,20 @@ def transform_new_task_definition_to_old(task):
             'bash_command_task': bash_command_task.get('command', {})
         }
     elif source == 'DOCUMENTATION':
-        documentation_task = task.get('documentation', {})
-        updated_task_def = {
-            'source': 'DOCUMENTATION',
-            'documentation_task': {
+        if task.get('documentation', None):
+            documentation_task = task.get('documentation', {})
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
                 'type': 'MARKDOWN',
                 'documentation': documentation_task.get('markdown', {}).get('content', None)
             }
-        }
-    elif source == 'IFRAME':
-        iframe_task = task.get('iframe_task', {})
-        updated_task_def = {
-            'source': 'DOCUMENTATION',
-            'iframe_task': {
+        elif task.get('iframe', None):
+            iframe_task = task.get('iframe', {})
+            updated_task_def = {
+                'source': 'IFRAME',
                 'type': 'IFRAME',
                 'iframe_url': iframe_task.get('iframe_url', None)
             }
-        }
     else:
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def

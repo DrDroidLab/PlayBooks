@@ -48,10 +48,8 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       tasks = Injector.injectApiTasks(step, baseTask);
       break;
     case SOURCES.TEXT:
+      // Handling iframe also
       tasks = Injector.injectTextTasks(step, baseTask);
-      break;
-    case SOURCES.IFRAME:
-      tasks = Injector.injectIframeTasks(step, baseTask);
       break;
     case SOURCES.BASH:
       tasks = Injector.injectBashTasks(step, baseTask);
