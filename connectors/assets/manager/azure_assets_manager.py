@@ -21,7 +21,9 @@ class AzureAssetManager(ConnectorAssetManager):
         if model_type == SourceModelType.AZURE_WORKSPACE:
             all_workspaces = []
             for item in model_uid_metadata_list:
-                all_workspaces.append(item['model_uid'])
+                metadata = item['metadata']
+                workspace_name = metadata.get('name', item['model_uid'])
+                all_workspaces.append(workspace_name)
             options = AzureWorkspaceAssetOptions(workspaces=all_workspaces)
             return ConnectorModelTypeOptions(model_type=model_type, azure_workspace_model_options=options)
         else:
@@ -36,7 +38,7 @@ class AzureAssetManager(ConnectorAssetManager):
             filter_workspaces = options.workspaces
             azure_models = azure_models.filter(model_type=SourceModelType.AZURE_WORKSPACE)
             if filter_workspaces:
-                azure_models = azure_models.filter(model_uid__in=filter_workspaces)
+                azure_models = azure_models.filter(metadata__name__in=filter_workspaces)
         azure_asset_protos = []
         for asset in azure_models:
             if asset.model_type == SourceModelType.AZURE_WORKSPACE:
