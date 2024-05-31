@@ -3,6 +3,13 @@ import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
+
+  return currentAsset;
+};
+
 export const eksBuilder = (options: any) => {
   const [task, index] = getCurrentTask();
   return {
@@ -45,8 +52,8 @@ export const eksBuilder = (options: any) => {
           label: "Namespace",
           type: OptionType.TYPING_DROPDOWN,
           options:
-            task.assets?.clusters?.length > 0
-              ? task.assets?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset()?.clusters?.length > 0
+              ? getCurrentAsset()?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],
@@ -55,7 +62,7 @@ export const eksBuilder = (options: any) => {
           key: "command",
           label: "Command Type",
           type: OptionType.TYPING_DROPDOWN,
-          options: task.assets?.commands?.map((el) => {
+          options: getCurrentAsset()?.commands?.map((el) => {
             return { id: el.type, label: el.description, command: el };
           }),
           handleChange: (_, val) => {

@@ -3,6 +3,15 @@ import { setDatadogMetric } from "../../store/features/playbook/playbookSlice.ts
 import { OptionType } from "../playbooksData.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.service_name === task?.datadogService,
+  );
+
+  return currentAsset;
+};
+
 export const datadogBuilder = (options) => {
   const [task, index] = getCurrentTask();
   return {
@@ -28,21 +37,21 @@ export const datadogBuilder = (options) => {
             label: x.name,
             service: x,
           })),
-          selected: task.datadogService?.name,
+          selected: task.datadogService,
         },
         {
           key: "datadogMetricFamily",
           label: "Metric Family",
           type: OptionType.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.name === task?.datadogService?.name)
+            ?.find((e) => e.name === task?.datadogService)
             ?.metric_families?.map((x) => ({ id: x, label: x })),
         },
         {
           key: "datadogEnvironment",
           label: "Environment",
           type: OptionType.TYPING_DROPDOWN,
-          options: task?.assets?.environments?.map((e) => {
+          options: getCurrentAsset()?.environments?.map((e) => {
             return {
               id: e,
               label: e,
@@ -53,8 +62,10 @@ export const datadogBuilder = (options) => {
           key: "datadogMetric",
           label: "Metric",
           type: OptionType.MULTI_SELECT,
-          options: task.assets?.metrics
-            ?.filter((e) => e.metric_family === task.datadogMetricFamily)
+          options: getCurrentAsset()
+            ?.metrics?.filter(
+              (e) => e.metric_family === task.datadogMetricFamily,
+            )
             ?.map((e) => {
               return {
                 id: e.metric,
@@ -63,10 +74,7 @@ export const datadogBuilder = (options) => {
             }),
           selected: task?.datadogMetric,
           handleChange: (val) => {
-            if (val)
-              store.dispatch(
-                setDatadogMetric({ index, metric: val.map((e) => e.id) }),
-              );
+            if (val) store.dispatch(setDatadogMetric({ index, metric: val }));
           },
         },
       ],

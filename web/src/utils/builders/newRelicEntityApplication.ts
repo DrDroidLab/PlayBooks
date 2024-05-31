@@ -3,6 +3,15 @@ import { store } from "../../store/index.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.application_name === task?.application_name,
+  );
+
+  return currentAsset;
+};
+
 export const newRelicEntityApplicationBuilder = (options) => {
   const [task, index] = getCurrentTask();
   return {
@@ -29,7 +38,7 @@ export const newRelicEntityApplicationBuilder = (options) => {
           key: "golden_metric",
           label: "Metric",
           type: OptionType.MULTI_SELECT,
-          options: task.assets?.golden_metrics?.map((e) => {
+          options: getCurrentAsset()?.golden_metrics?.map((e) => {
             return {
               id: e.golden_metric_name,
               label: e.golden_metric_name,
@@ -43,7 +52,7 @@ export const newRelicEntityApplicationBuilder = (options) => {
         },
         {
           label: "Unit",
-          type: OptionType.TYPING_DROPDOWN,
+          type: OptionType.OPTIONS,
           options: [
             {
               id: task.golden_metric?.golden_metric_unit,

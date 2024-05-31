@@ -60,7 +60,12 @@ function Config({ keyOptions }) {
         keyOptions.forEach((e) => {
           formattedKeys.push({
             key_type: e.key_type,
-            key: currentConnector[e.key_type],
+            key: (currentConnector[e.key_type] === "SSL_VERIFY"
+              ? currentConnector[e.key_type] !== ""
+                ? currentConnector[e.key_type]
+                : false
+              : currentConnector[e.key_type]
+            ).toString(),
           });
         });
       }
@@ -126,7 +131,9 @@ function Config({ keyOptions }) {
           </div>
 
           {keyOptions?.map((option, i) => (
-            <div key={i} className={styles["eventTypeSelectionSection"]}>
+            <div
+              key={i}
+              className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
               <div className={styles["content"]}>
                 {option?.display_name || option?.key_type}
               </div>

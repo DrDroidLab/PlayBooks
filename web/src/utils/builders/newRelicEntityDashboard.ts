@@ -7,6 +7,15 @@ import { store } from "../../store/index.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.dashboard_guid === task?.dashboard?.id,
+  );
+
+  return currentAsset;
+};
+
 export const newRelicEntityDashboardBuilder = (options) => {
   const [task, index] = getCurrentTask();
   return {
@@ -42,7 +51,7 @@ export const newRelicEntityDashboardBuilder = (options) => {
           handleChange: (_, val) => {
             store.dispatch(setDashboard({ index, dashboard: val }));
           },
-          selected: task?.dashboard?.id,
+          selected: task?.dashboard?.label,
         },
         {
           key: "page",
@@ -58,7 +67,7 @@ export const newRelicEntityDashboardBuilder = (options) => {
               };
             }),
           // requires: ['dashboard'],
-          selected: task?.page?.page_guid,
+          selected: task?.page?.page_name,
           handleChange: (_, val) => {
             store.dispatch(setPage({ index, page: val.page }));
           },
@@ -68,8 +77,8 @@ export const newRelicEntityDashboardBuilder = (options) => {
           label: "Widget",
           type: OptionType.MULTI_SELECT,
           options:
-            task.assets?.pages?.length > 0
-              ? task.assets?.pages[0].widgets?.map((e) => {
+            getCurrentAsset()?.pages?.length > 0
+              ? getCurrentAsset()?.pages[0].widgets?.map((e) => {
                   return {
                     id: e.widget_id,
                     label: e.widget_title || e.widget_nrql_expression,
@@ -82,7 +91,7 @@ export const newRelicEntityDashboardBuilder = (options) => {
               store.dispatch(
                 setWidget({
                   index,
-                  widget: val?.length > 0 ? val?.map((e) => e.widget) : [],
+                  widget: val,
                 }),
               );
           },
@@ -93,7 +102,9 @@ export const newRelicEntityDashboardBuilder = (options) => {
         {
           label: "Selected Query",
           type: OptionType.MULTILINE,
-          value: task?.widget ? task?.widget[0]?.widget_nrql_expression : "",
+          value: task?.widget
+            ? task?.widget[0]?.widget?.widget_nrql_expression
+            : "",
           disabled: true,
           condition: !task.widget || task.widget.length < 2,
           // requires: ['widget']

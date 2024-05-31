@@ -13,6 +13,15 @@ import {
   setGrafanaOptionsFunction,
 } from "../setGrafanaOptionsFunction.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.dashboard_id === task?.dashboard?.id,
+  );
+
+  return currentAsset;
+};
+
 export const grafanaBuilder = (options: any) => {
   const [task, index] = getCurrentTask();
   return {
@@ -73,17 +82,19 @@ export const grafanaBuilder = (options: any) => {
           label: "Query",
           type: OptionType.MULTI_SELECT,
           options:
-            task.assets?.panel_promql_map?.length > 0
-              ? task.assets?.panel_promql_map[0]?.promql_metrics?.map((e) => {
-                  return {
-                    id: e.expression,
-                    label: e.expression,
-                    query: {
-                      ...e,
-                      originalExpression: e.expression,
-                    },
-                  };
-                })
+            getCurrentAsset()?.panel_promql_map?.length > 0
+              ? getCurrentAsset()?.panel_promql_map[0]?.promql_metrics?.map(
+                  (e) => {
+                    return {
+                      id: e.expression,
+                      label: e.expression,
+                      query: {
+                        ...e,
+                        originalExpression: e.expression,
+                      },
+                    };
+                  },
+                )
               : [],
           // requires: ['panel'],
           selected: task?.grafanaQuery,

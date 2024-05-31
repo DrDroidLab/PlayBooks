@@ -9,9 +9,9 @@ export const injectNewRelicEntityDashboardTasks = (
     dashboard_name: step.dashboard.label,
     page_guid: step.page.page_guid,
     page_name: step.page.page_name,
-    widget_id: w.widget_id,
-    widget_title: w.widget_title,
-    widget_nrql_expression: w.widget_nrql_expression,
+    widget_id: w.widget?.widget_id,
+    widget_title: w.widget?.widget_title,
+    widget_nrql_expression: w.widget?.widget_nrql_expression,
     process_function: "timeseries",
   }));
 

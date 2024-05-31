@@ -5,7 +5,7 @@ export const injectDatadogServiceTasks = (
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   const tasks = (step.datadogMetric ?? []).map((metric) => ({
-    service_name: step.datadogService?.name,
+    service_name: step.datadogService,
     environment_name: step?.datadogEnvironment ?? "",
     metric: metric?.label ?? metric ?? "",
     metric_family: step.datadogMetricFamily ?? "",

@@ -60,7 +60,7 @@ const PlaybookStep = () => {
                     <PlaybookStepOutput stepOutput={output} />
                   </div>
                   {Object.keys(output?.interpretation).length > 0 && (
-                    <div className="w-2/5 h-full">
+                    <div className="lg:w-2/5 w-full h-full">
                       <Interpretation
                         title={output?.task_interpretation?.title}
                         description={output?.task_interpretation?.description}
