@@ -6,6 +6,7 @@ import { updateCardByIndex } from "./updateCardByIndex.ts";
 
 export async function executeStep(step: Step) {
   if (Object.keys(step.errors ?? {}).length > 0) {
+    updateCardByIndex("showError", true);
     return;
   }
 
