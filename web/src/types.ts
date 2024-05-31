@@ -257,6 +257,7 @@ export interface Playbook {
   currentPlaybook?: any;
   currentStepIndex?: string | null;
   steps: Step[];
+  stepsWithTasks: any[];
   playbooks: any;
   meta: any;
   globalVariables: GlobalVariable[] | null;

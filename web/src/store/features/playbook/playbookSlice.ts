@@ -20,6 +20,7 @@ const initialState: Playbook = {
   globalVariables: [],
   interpreterTypes: [],
   steps: [],
+  stepsWithTasks: [],
   playbooks: [],
   currentPlaybook: {},
   meta: {
@@ -186,6 +187,35 @@ const playbookSlice = createSlice({
     setCurrentStepIndex(state, { payload }) {
       if (payload !== null) state.currentStepIndex = payload.toString();
       else state.currentStepIndex = null;
+    },
+    createTaskWithSource(state, { payload }) {
+      const index = state.steps.length;
+      state.stepsWithTasks.push({
+        description:
+          state?.steps[index]?.description ??
+          payload.description ??
+          integrationSentenceMap[payload.modelType],
+        notes: state?.steps[index]?.notes,
+        tasks: [
+          {
+            name: "",
+            id: "0",
+            source: payload.source,
+            description:
+              state?.steps[index]?.description ??
+              payload.description ??
+              integrationSentenceMap[payload.modelType],
+            interpreter_type: "",
+            globalVariables: state.globalVariables ?? [],
+            task_connector_sources: [],
+            [payload.source?.toLowerCase()]: {
+              type: payload.taskType,
+              [(payload.taskType ?? "").toLowerCase()]: {},
+            },
+            showError: false,
+          },
+        ],
+      });
     },
     createStepWithSource(state, { payload }) {
       state.steps.forEach((step) => {
@@ -554,11 +584,12 @@ export const {
   setStepType,
   setActionKey,
   setPlaybookKey,
+  createTaskWithSource,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
 
 export const playbookSelector = (state) => state.playbook;
-export const stepsSelector = (state) => state.playbook?.steps ?? [];
+export const stepsSelector = (state) => state.playbook?.stepsWithTasks ?? [];
 export const playbooksSelector = (state) => state.playbook.playbooks;
 export const metaSelector = (state) => state.playbook.meta;

@@ -1,21 +1,35 @@
 import React from "react";
 import { cardsData } from "../../../utils/cardsData";
 import { useDispatch } from "react-redux";
-import { createStepWithSource } from "../../../store/features/playbook/playbookSlice.ts";
+import {
+  createStepWithSource,
+  createTaskWithSource,
+} from "../../../store/features/playbook/playbookSlice.ts";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
   const handleClick = () => {
     if (option.source) {
+      // dispatch(
+      //   createStepWithSource({
+      //     source: option.source,
+      //     modelType:
+      //       option.supported_model_types?.length > 0
+      //         ? option.supported_model_types[0].model_type
+      //         : option.source,
+      //     taskType: option.task_type,
+      //     key: option.id,
+      //     description: option.display_name,
+      //   }),
+      // );
       dispatch(
-        createStepWithSource({
+        createTaskWithSource({
           source: option.source,
           modelType:
             option.supported_model_types?.length > 0
               ? option.supported_model_types[0].model_type
               : option.source,
           taskType: option.task_type,
-          key: option.id,
           description: option.display_name,
         }),
       );

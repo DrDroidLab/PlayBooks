@@ -4,15 +4,15 @@ import { useSelector } from "react-redux";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import useStepDetails from "../../../hooks/useStepDetails.ts";
 
 function SelectTaskType() {
-  const { currentStepIndex, connectorOptions, steps } =
-    useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+  const { connectorOptions } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
+  const { source, taskType } = useStepDetails();
 
   const taskTypes =
-    connectorOptions.find((e) => e.id === step?.source)?.connector
+    connectorOptions.find((e) => e.id === source)?.connector
       ?.supported_task_type_options ?? [];
 
   function handleTaskTypeChange(id, val) {
@@ -29,7 +29,7 @@ function SelectTaskType() {
       }))}
       placeholder="Select Task Type"
       onSelectionChange={handleTaskTypeChange}
-      selected={step?.taskType}
+      selected={taskType}
       searchable={true}
       disabled={isPrefetched}
     />

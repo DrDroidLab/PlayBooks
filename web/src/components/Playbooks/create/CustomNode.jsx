@@ -40,12 +40,13 @@ export default function CustomNode({ data }) {
       </div>
 
       <div className="flex flex-col items-center gap-4">
-        {data?.step?.source && (
+        {data?.step?.tasks[0].source && (
           <img
             className="w-10 h-10"
             src={
               cardsData.find(
-                (e) => e.enum === data?.step?.source.replace("_VPC", ""),
+                (e) =>
+                  e.enum === data?.step?.tasks[0].source.replace("_VPC", ""),
               )?.url ?? ""
             }
             alt="logo"

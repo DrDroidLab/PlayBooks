@@ -8,6 +8,7 @@ import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import useStepDetails from "../../../hooks/useStepDetails.ts";
 
 function SelectConnectorOption() {
   const { currentStepIndex, steps, connectorOptions } =
@@ -16,6 +17,7 @@ function SelectConnectorOption() {
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
+  const { taskConnectorSources } = useStepDetails();
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -41,7 +43,7 @@ function SelectConnectorOption() {
             }))}
             placeholder="Select Connector"
             onSelectionChange={handleConnectorOptionChange}
-            selected={step?.connectorType}
+            selected={taskConnectorSources[0]?.connector_id}
             searchable={true}
             disabled={isPrefetched}
           />

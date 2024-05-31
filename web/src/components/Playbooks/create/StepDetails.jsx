@@ -39,9 +39,9 @@ function StepDetails() {
   useEffect(() => {
     if (
       currentStepIndex !== null &&
-      step?.source &&
-      step?.modelType &&
-      step.connectorType
+      step?.tasks[0]?.source &&
+      step?.tasks[0]?.modelType &&
+      step?.tasks[0]?.connectorType
     ) {
       fetchData();
     }
