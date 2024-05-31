@@ -248,6 +248,17 @@ def transform_old_task_definition_to_new(task):
                     'promql_metric_execution': promql_metric_execution
                 }
             }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            datasource_uid = grafana_task.get('datasource_uid', None)
+            promql_metric_execution = grafana_task.get('prometheus_datasource_metric_execution_task', None)
+            promql_metric_execution['datasource_uid'] = datasource_uid
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'prometheus_datasource_metric_execution': promql_metric_execution
+                }
+            }
         else:
             raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     elif source == 'NEW_RELIC':
@@ -449,6 +460,17 @@ def transform_new_task_definition_to_old(task):
                     'type': 'PROMQL_METRIC_EXECUTION',
                     'datasource_uid': datasource_uid,
                     'promql_metric_execution_task': promql_metric_execution_task
+                }
+            }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            prometheus_datasource_metric_execution_task = grafana_task.get('prometheus_datasource_metric_execution', {})
+            datasource_uid = prometheus_datasource_metric_execution_task.pop('datasource_uid', None)
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana_task': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'datasource_uid': datasource_uid,
+                    'prometheus_datasource_metric_execution_task': prometheus_datasource_metric_execution_task
                 }
             }
         else:

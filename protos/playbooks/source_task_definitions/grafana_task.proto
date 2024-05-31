@@ -2,6 +2,7 @@ syntax = "proto3";
 package protos.playbooks;
 
 import "google/protobuf/wrappers.proto";
+import "protos/playbooks/source_task_definitions/promql_task.proto";
 
 
 message Grafana {
@@ -24,9 +25,12 @@ message Grafana {
   enum TaskType {
     UNKNOWN = 0;
     PROMQL_METRIC_EXECUTION = 1;
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION = 2;
   }
+
   TaskType type = 1;
   oneof task {
     PromQlMetricExecution promql_metric_execution = 3;
+    PromQl.PromQlMetricExecution prometheus_datasource_metric_execution = 4;
   }
 }
