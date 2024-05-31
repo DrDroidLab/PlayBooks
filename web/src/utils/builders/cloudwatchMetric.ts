@@ -3,10 +3,20 @@ import { store } from "../../store/index.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.namespace === task.namespaceName,
+  );
+
+  return currentAsset;
+};
+
 const getDimensions = () => {
   const [task] = getCurrentTask();
+  const currentAsset = getCurrentAsset();
   const dimensions: any =
-    task?.assets?.region_dimension_map?.find((el) => el.region === task.region)
+    currentAsset?.region_dimension_map?.find((el) => el.region === task.region)
       ?.dimensions ?? {};
   const list: any = [];
   for (let [idx, dimension] of Object.entries(dimensions)) {
@@ -24,8 +34,9 @@ const getDimensions = () => {
 
 const getMetrics = () => {
   const [task] = getCurrentTask();
+  const currentAsset = getCurrentAsset();
   return (
-    task?.assets?.region_dimension_map
+    currentAsset?.region_dimension_map
       ?.find((el) => el.region === task.region)
       ?.dimensions?.find((el) => el.name === task.dimensionName)
       ?.metrics?.map((el) => {
@@ -63,7 +74,7 @@ export const cloudwatchMetricBuilder = (options) => {
           key: "region",
           label: "Region",
           type: OptionType.TYPING_DROPDOWN,
-          options: task.assets?.region_dimension_map?.map((el) => {
+          options: getCurrentAsset()?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
         },

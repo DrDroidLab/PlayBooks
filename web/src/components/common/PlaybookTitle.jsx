@@ -30,14 +30,16 @@ function PlaybookTitle({ step, index }) {
         {(step.outputLoading || step.inprogress) && (
           <CircularProgress size={20} />
         )}
-        {(step.outputError || step.showError) && (
+        {(step.outputError || Object.keys(step?.errors ?? {}).length > 0) && (
           <ErrorOutline color="error" size={20} />
         )}
         {!step.outputError &&
           !step.outputLoading &&
           step.showOutput &&
           step.outputs?.data?.length > 0 &&
-          !step.showError && <CheckCircleOutline color="success" size={20} />}
+          Object.keys(step?.errors ?? {}).length === 0 && (
+            <CheckCircleOutline color="success" size={20} />
+          )}
 
         {!step.editTitle && (
           <div onClick={editCardTitle}>

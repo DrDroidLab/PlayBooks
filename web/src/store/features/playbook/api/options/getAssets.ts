@@ -19,23 +19,26 @@ export const getAssetApi = apiSlice.injectEndpoints({
           },
         };
       },
+      transformResponse: (response: any) => {
+        const [task] = getCurrentTask();
+        const data = response?.assets;
+        if (data?.length === 0) return [];
+        let connector_type = task.source;
+        if (connector_type?.includes("_VPC"))
+          connector_type = connector_type.replace("_VPC", "");
+
+        const assets = data[0][connector_type.toLowerCase()].assets?.map(
+          (e) => e[task.modelType.toLowerCase()],
+        );
+
+        return assets;
+      },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
-          const [task] = getCurrentTask();
           const { data } = await queryFulfilled;
-          if (data.assets.length === 0) return;
-          let connector_type = task.source;
-          if (connector_type?.includes("_VPC"))
-            connector_type = connector_type.replace("_VPC", "");
           // Dispatch an action to update the global state
-          dispatch(
-            setAssets(
-              data?.assets[0][connector_type.toLowerCase()].assets[0][
-                task.modelType.toLowerCase()
-              ],
-            ),
-          );
+          dispatch(setAssets(data));
         } catch (error) {
           // Handle any errors
           console.log(error);
@@ -45,4 +48,6 @@ export const getAssetApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLazyGetAssetsQuery } = getAssetApi;
+export const {
+  endpoints: { getAssets },
+} = getAssetApi;

@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircularProgress } from "@mui/material";
-import { useLazyGetAssetsQuery } from "../../../store/features/playbook/api/index.ts";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,28 +14,23 @@ import { constructBuilder } from "../../../utils/playbooksData.ts";
 function TaskDetails() {
   const data = constructBuilder();
   const [step] = useCurrentStep();
-  const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
   const dispatch = useDispatch();
   const prevError = useRef(null);
   const { view } = useSelector(playbookSelector);
 
-  const getAssets = () => {
-    triggerGetAssets({
-      filter: data?.assetFilterQuery,
-    });
-  };
-
   const setDefaultErrors = () => {
     const errors = {};
-    for (let step of data?.builder) {
-      for (let value of step) {
+    for (let buildStep of data?.builder) {
+      for (let value of buildStep) {
         if (value.isOptional) continue;
         if (!value.key || value.selected) {
           break;
         }
-        errors[value.key] = {
-          message: "Please enter a value",
-        };
+        if (!step[value.key]) {
+          errors[value.key] = {
+            message: "Please enter a value",
+          };
+        }
       }
     }
 
@@ -52,12 +45,6 @@ function TaskDetails() {
     prevError.current = errors;
     dispatch(setErrors(errors));
   };
-
-  useEffect(() => {
-    if (step[data?.triggerGetAssetsKey]) {
-      getAssets();
-    }
-  }, [step[data?.triggerGetAssetsKey], step.connectorType]);
 
   useEffect(() => {
     const errorChanged = prevError.current === step.errors;
@@ -99,7 +86,6 @@ function TaskDetails() {
               <></>
             ),
           )}
-          {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
       {step.message && (
