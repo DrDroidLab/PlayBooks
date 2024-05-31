@@ -15,7 +15,7 @@ export const grafanaDataSourceBuilder = (options: any) => {
         {
           key: "datasource",
           label: "Data Source",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.datasource_uid,
