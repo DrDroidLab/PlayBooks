@@ -3,10 +3,10 @@ import { useDispatch } from "react-redux";
 import { updateStep } from "../../../store/features/playbook/playbookSlice.ts";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
-import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
+import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.tsx";
 
 export default function OptionRender({ data, removeErrors }) {
   const [step, currentStepIndex] = useCurrentStep();
@@ -150,18 +150,24 @@ export default function OptionRender({ data, removeErrors }) {
     case "multi-select":
       // if (!(data.options?.length > 0)) return;
       return (
-        <div key={data.id}>
-          <MultiSelectDropdown
-            label={data.label}
-            options={data.options}
-            error={data.error}
+        <div key={data.key} className={`flex flex-col`}>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#676666",
+            }}>
+            <b>{data.label}</b>
+          </p>
+          <TypingDropdownMultiple
+            data={data.options ?? []}
+            selected={data.selected ?? step[`${data.key}`]}
+            placeholder={data.placeholder ?? `Select ${data.label}`}
+            handleChange={multiSelectChange}
             disabled={isPrefetched || data.disabled}
-            additionalProps={data.additionalProps}
-            placeholder={data.placeholder}
+            error={error}
             selectedDisplayKey={data.selectedDisplayKey}
-            multiSelectChange={multiSelectChange}
             selectedValuesKey={data.selectedValuesKey ?? data.key}
-            task={step}
+            {...data.additionalProps}
           />
         </div>
       );

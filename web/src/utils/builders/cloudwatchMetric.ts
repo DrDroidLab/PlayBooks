@@ -101,7 +101,7 @@ export const cloudwatchMetricBuilder = (options) => {
           label: "Metric",
           type: OptionType.MULTI_SELECT,
           options: getMetrics(),
-          selected: task?.metric?.id,
+          selected: task?.metric,
         },
       ],
     ],

@@ -45,20 +45,23 @@ export const newRelicEntityApplicationBuilder = (options) => {
               metric: e,
             };
           }),
+          selected: task.golden_metrics,
           handleChange: (val) => {
             if (val) store.dispatch(setGoldenMetrics({ index, metric: val }));
           },
-          selectedValuesKey: "golden_metrics",
         },
         {
           label: "Unit",
           type: OptionType.OPTIONS,
-          options: [
-            {
-              id: task.golden_metric?.golden_metric_unit,
-              label: task.golden_metric?.golden_metric_unit,
-            },
-          ],
+          options:
+            task?.golden_metrics.length === 1
+              ? [
+                  {
+                    id: task?.golden_metrics[0]?.metric?.golden_metric_unit,
+                    label: task?.golden_metrics[0]?.metric?.golden_metric_unit,
+                  },
+                ]
+              : [],
           disabled: true,
           selected:
             task?.golden_metrics?.length === 1

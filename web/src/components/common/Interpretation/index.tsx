@@ -16,7 +16,7 @@ function Interpretation({
   summary,
 }: InterpretationPropTypes) {
   return (
-    <div className="flex-[0.4] bg-pink-50 m-1 rounded ml-0 p-2 flex flex-col gap-2 overflow-scroll">
+    <div className="flex-[0.4] bg-pink-50 m-1 rounded ml-0 p-2 flex flex-col gap-2 overflow-scroll max-w-full">
       <h1 className="font-bold lg:text-lg text-violet-600 flex gap-2 items-center">
         <TipsAndUpdatesRounded /> {type} Insights
       </h1>

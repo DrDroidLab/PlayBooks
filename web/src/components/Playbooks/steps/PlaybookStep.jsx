@@ -62,9 +62,9 @@ const PlaybookStep = () => {
                   {Object.keys(output?.interpretation).length > 0 && (
                     <div className="lg:w-2/5 w-full h-full">
                       <Interpretation
-                        title={output?.task_interpretation?.title}
-                        description={output?.task_interpretation?.description}
-                        summary={output?.task_interpretation?.summary}
+                        title={output?.interpretation?.title}
+                        description={output?.interpretation?.description}
+                        summary={output?.interpretation?.summary}
                       />
                     </div>
                   )}

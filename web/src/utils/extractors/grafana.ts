@@ -12,7 +12,7 @@ export const extractGrafanaTasks = (step: any) => {
   let modelType = grafanaTask.type;
   let stepData = {};
 
-  if (modelType == "GRAFANA_TARGET_METRIC_PROMQL") {
+  if (modelType === "GRAFANA_TARGET_METRIC_PROMQL") {
     const options = {};
     for (let { name, value } of grafanaTask?.promql_metric_execution_task
       ?.promql_label_option_values ?? []) {
@@ -51,21 +51,25 @@ export const extractGrafanaTasks = (step: any) => {
     };
   }
 
-  if (modelType == "PROMETHEUS_DATASOURCE_METRIC_EXECUTION") {
-
+  if (modelType === "PROMETHEUS_DATASOURCE_METRIC_EXECUTION") {
     selected = "GRAFANA Data Sources";
     stepData = {
-      modelType: 'GRAFANA_PROMETHEUS_DATASOURCE',
+      modelType: "GRAFANA_PROMETHEUS_DATASOURCE",
       source: stepSource,
       selectedSource: selected,
       connector_type: stepSource,
-      model_type: 'GRAFANA_PROMETHEUS_DATASOURCE',
+      model_type: "GRAFANA_PROMETHEUS_DATASOURCE",
       type: "METRIC",
-      grafanaQuery: { expression : tasks && tasks.length ? tasks[0].metric_task?.grafana_task?.prometheus_datasource_metric_execution_task?.promql_expression : ''},
+      grafanaQuery: {
+        expression:
+          tasks && tasks.length
+            ? tasks[0].metric_task?.grafana_task
+                ?.prometheus_datasource_metric_execution_task?.promql_expression
+            : "",
+      },
       datasource_uid: grafanaTask.datasource_uid,
-      datasource: {id: grafanaTask.datasource_uid}
+      datasource: { id: grafanaTask.datasource_uid },
     };
-
   }
 
   return stepData;
