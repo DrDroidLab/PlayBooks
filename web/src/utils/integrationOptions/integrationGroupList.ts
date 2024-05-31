@@ -17,7 +17,10 @@ export const integrations = [
   {
     id: "logs",
     label: "Logs",
-    options: [models.CLOUDWATCH_LOG_GROUP],
+    options: [
+      models.CLOUDWATCH_LOG_GROUP, 
+      models.AZURE_WORKSPACE
+    ],
   },
   {
     id: "metrics",

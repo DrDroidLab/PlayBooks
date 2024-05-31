@@ -389,6 +389,14 @@ export const cardsData = [
   },
   {
     id: 46,
+    url: "/integrations/azure_logo.png",
+    title: "MICROSOFT AZURE",
+    enum: "AZURE",
+    desc: "Connect Logs from Microsoft Azure Log Analytics",
+    buttonTitle: "Connect",
+  },
+  {
+    id: 47,
     url: "/integrations/code.png",
     enum: "IFRAME",
   },
