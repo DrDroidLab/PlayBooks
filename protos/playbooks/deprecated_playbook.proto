@@ -46,6 +46,7 @@ message DeprecatedPlaybookGrafanaTask {
   enum TaskType {
     UNKNOWN = 0;
     PROMQL_METRIC_EXECUTION = 1;
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION = 2;
   }
 
   message DeprecatedPromQlMetricExecutionTask {
@@ -63,10 +64,17 @@ message DeprecatedPlaybookGrafanaTask {
     google.protobuf.StringValue panel_promql_expression = 8;
   }
 
+  message DeprecatedPrometheusDataSourceMetricExecutionTask {
+    google.protobuf.StringValue datasource_uid = 1;
+    google.protobuf.StringValue promql_expression = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
   TaskType type = 1;
   google.protobuf.StringValue datasource_uid = 2;
   oneof task {
     DeprecatedPromQlMetricExecutionTask promql_metric_execution_task = 3;
+    DeprecatedPrometheusDataSourceMetricExecutionTask prometheus_datasource_metric_execution_task = 4;
   }
 }
 
@@ -160,6 +168,24 @@ message DeprecatedPlaybookPromQLTask {
   }
 }
 
+message DeprecatedPlaybookAzureTask {
+  enum TaskType {
+    UNKNOWN = 0;
+    FILTER_LOG_EVENTS = 1;
+  }
+
+  message FilterLogEventsTask {
+    google.protobuf.StringValue workspace_id = 1;
+    google.protobuf.StringValue filter_query = 2;
+    google.protobuf.StringValue timespan = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    FilterLogEventsTask filter_log_events_task = 2;
+  }
+}
+
 message DeprecatedPlaybookMetricTaskDefinition {
   Source source = 1;
   oneof task {
@@ -168,6 +194,7 @@ message DeprecatedPlaybookMetricTaskDefinition {
     DeprecatedPlaybookNewRelicTask new_relic_task = 8;
     DeprecatedPlaybookDatadogTask datadog_task = 9;
     DeprecatedPlaybookPromQLTask mimir_task = 10;
+    DeprecatedPlaybookAzureTask azure_task = 11;
   }
 }
 

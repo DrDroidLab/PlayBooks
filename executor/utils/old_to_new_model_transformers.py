@@ -248,6 +248,17 @@ def transform_old_task_definition_to_new(task):
                     'promql_metric_execution': promql_metric_execution
                 }
             }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            datasource_uid = grafana_task.get('datasource_uid', None)
+            promql_metric_execution = grafana_task.get('prometheus_datasource_metric_execution_task', None)
+            promql_metric_execution['datasource_uid'] = datasource_uid
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'prometheus_datasource_metric_execution': promql_metric_execution
+                }
+            }
         else:
             raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     elif source == 'NEW_RELIC':
@@ -312,7 +323,18 @@ def transform_old_task_definition_to_new(task):
             }
         else:
             raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
-
+    elif source == 'AZURE':
+        azure_task = task.get('azure_task', {})
+        if azure_task.get('type', None) == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'AZURE',
+                'azure': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events': azure_task.get('filter_log_events_task', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {azure_task.get('type', None)} not supported")
     elif source == 'CLICKHOUSE':
         clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
         updated_task_def = {
@@ -440,6 +462,17 @@ def transform_new_task_definition_to_old(task):
                     'promql_metric_execution_task': promql_metric_execution_task
                 }
             }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            prometheus_datasource_metric_execution_task = grafana_task.get('prometheus_datasource_metric_execution', {})
+            datasource_uid = prometheus_datasource_metric_execution_task.pop('datasource_uid', None)
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana_task': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'datasource_uid': datasource_uid,
+                    'prometheus_datasource_metric_execution_task': prometheus_datasource_metric_execution_task
+                }
+            }
         else:
             raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     elif source == 'NEW_RELIC':
@@ -504,6 +537,18 @@ def transform_new_task_definition_to_old(task):
             }
         else:
             raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
+    elif source == 'AZURE':
+        azure_task = task.get('azure', {})
+        if azure_task.get('type', None) == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'AZURE',
+                'azure_task': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events_task': azure_task.get('filter_log_events', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {azure_task.get('type', None)} not supported")
     elif source == 'CLICKHOUSE':
         clickhouse_task = task.get('clickhouse', {})
         sql_query_task = clickhouse_task.get('sql_query', None)
