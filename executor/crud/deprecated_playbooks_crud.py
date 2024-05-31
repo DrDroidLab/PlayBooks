@@ -39,13 +39,13 @@ def populate_task_connector_mapping():
                 source = playbook_task.source
                 connector = Connector.objects.filter(connector_type=source, is_active=True).values_list('id', flat=True)
                 if connector:
-                    PlayBookStepTaskConnectorMapping.objects.create(
+                    PlayBookStepTaskConnectorMapping.objects.get_or_create(
                         account_id=db_task.account.id,
                         playbook_id=playbook.id,
                         playbook_step_id=step,
                         playbook_task_id=task,
                         connector_id=connector[0],
-                        is_active=True
+                        defaults={'is_active': True}
                     )
 
 

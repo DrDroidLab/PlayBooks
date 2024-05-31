@@ -332,6 +332,9 @@ class PlayBookStepTaskConnectorMapping(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
 
+    class Meta:
+        unique_together = [['account', 'playbook', 'playbook_step', 'playbook_task', 'connector']]
+
 
 class PlayBookExecution(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
