@@ -4,6 +4,7 @@ from django.db import IntegrityError
 
 from connectors.crud.connectors_crud import update_or_create_connector
 from connectors.models import Connector, integrations_connector_type_connector_keys_map
+from executor.models import PlayBookStepTaskConnectorMapping
 from utils.time_utils import current_milli_time
 from protos.connectors.connector_pb2 import UpdateConnectorOp
 from utils.update_processor_mixin import UpdateProcessorMixin
@@ -46,6 +47,10 @@ class ConnectorUpdateProcessor(UpdateProcessorMixin):
                 for cm in all_connector_metadata:
                     cm.is_active = False
                     cm.save(update_fields=['is_active'])
+                all_connected_playbooks = elem.playbooksteptaskconnectormapping_set.filter(is_active=True)
+                for cp in all_connected_playbooks:
+                    cp.is_active = False
+                    cp.save(update_fields=['is_active'])
                 elem.name = f"{elem.name}###(inactive)###{current_millis}"
                 elem.save(update_fields=['is_active', 'name'])
         except Exception as ex:

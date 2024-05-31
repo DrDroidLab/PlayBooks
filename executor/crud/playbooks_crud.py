@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
-    PlayBookStepMapping
+    PlayBookStepMapping, PlayBookStepTaskConnectorMapping
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
     Playbook as PlaybookProto
@@ -62,10 +62,12 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     try:
         playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
+        step_task_connector_map = {}
         for step in playbook_steps:
-            db_step, err = create_db_step(account, created_by, step)
-            if not db_step or err:
+            db_step, task_connectors_map, err = create_db_step(account, created_by, step)
+            if not db_step or not task_connectors_map or err:
                 return None, f"Failed to create playbook step with error: {err}"
+            step_task_connector_map[db_step.id] = task_connectors_map
             db_steps.append(db_step)
     except Exception as e:
         return None, f"Failed to create playbook steps with error: {e}"
@@ -95,19 +97,38 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                                                is_active=True)
         except Exception as e:
             logger.error(f"Failed to add step {db_step.name} to playbook {db_playbook.name} with error {e}")
+    for step_id, tc_map in step_task_connector_map.items():
+        for task_id, connector_ids in tc_map.items():
+            for connector_id in connector_ids:
+                try:
+                    PlayBookStepTaskConnectorMapping.objects.get_or_create(account=account,
+                                                                           playbook=db_playbook,
+                                                                           playbook_step_id=step_id,
+                                                                           playbook_task_id=task_id,
+                                                                           connector_id=connector_id,
+                                                                           is_active=True)
+                except Exception as e:
+                    logger.error(
+                        f"Failed to add task connector mapping for task {task_id} with connector {connector_id} "
+                        f"to playbook {db_playbook.name} with error {e}")
     return db_playbook, None
 
 
-def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, str):
+def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, dict, str):
     try:
         tasks: [PlayBookTask] = step.tasks
         db_tasks = []
+        task_connectors_map = {}
         for task in tasks:
             db_task, err = get_or_create_db_task(account, created_by, task)
             if not db_task or err:
-                return None, f"Failed to create task: {task.name.value} for " \
-                             f"playbook step {step.name.value} with error {err}"
+                return None, None, f"Failed to create task: {task.name.value} for " \
+                                   f"playbook step {step.name.value} with error {err}"
             db_tasks.append(db_task)
+            connector_ids = []
+            for tc in task.task_connector_sources:
+                connector_ids.append(tc.id.value)
+            task_connectors_map[db_task.id] = connector_ids
 
         metadata = {}
         external_links = step.external_links
@@ -126,7 +147,7 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
                                                   interpreter_type=step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I,
                                                   created_by=created_by)
         except Exception as e:
-            return None, f"Failed to create playbook step with error: {e}"
+            return None, None, f"Failed to create playbook step with error: {e}"
         for db_task in db_tasks:
             try:
                 PlayBookStepTaskDefinitionMapping.objects.get_or_create(account=account,
@@ -135,10 +156,10 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
             except Exception as e:
                 logger.error(f"Failed to create playbook step task definition mapping for task {db_task.name} "
                              f"with error {e}")
-                return None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
-        return db_step, None
+                return None, None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
+        return db_step, task_connectors_map, None
     except Exception as e:
-        return None, f"Failed to create playbook step with error: {e}"
+        return None, None, f"Failed to create playbook step with error: {e}"
 
 
 def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto) -> (PlaybookTaskProto, str):
@@ -150,6 +171,7 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
     task_dict.pop('created_by', None)
     task_dict.pop('global_variable_set', None)
     task_dict.pop('interpreter_type', None)
+    task_dict.pop('task_connector_sources', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
         db_task, _ = PlayBookTask.objects.get_or_create(account=account,
@@ -166,4 +188,4 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task name {task.name.value} with error {e}")
-    return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"
+        return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"

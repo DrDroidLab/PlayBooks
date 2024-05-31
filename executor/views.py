@@ -8,23 +8,21 @@ from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
-from connectors.models import integrations_connector_type_display_name_map
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.crud.playbooks_crud import update_or_create_db_playbook
 from executor.deprecated_task_executor import deprecated_execute_task
-from executor.task_executor_facade import executor_facade
+from executor.playbook_source_facade import playbook_source_facade
 from executor.tasks import execute_playbook
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
-from executor.utils.playbooks_builder_utils import playbooks_supported_sources
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
@@ -128,7 +126,7 @@ def task_run_v3(request_message: RunPlaybookTaskRequestV3) -> Union[RunPlaybookT
         global_variable_set = proto_to_dict(task.global_variable_set)
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
     try:
-        task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
+        task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
         interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
         playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                interpretation=interpretation)
@@ -227,7 +225,7 @@ def step_run_v3(request_message: RunPlaybookStepRequestV3) -> Union[RunPlaybookS
             global_variable_set = {}
             if task.global_variable_set:
                 global_variable_set = proto_to_dict(task.global_variable_set)
-            task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
+            task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
             playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                    interpretation=interpretation)
@@ -319,7 +317,7 @@ def playbook_run_v2(request_message: RunPlaybookRequestV2) -> Union[RunPlaybookR
                 global_variable_set = {}
                 if task.global_variable_set:
                     global_variable_set = proto_to_dict(task.global_variable_set)
-                task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
+                task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
                 interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
                 playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                        interpretation=interpretation)
@@ -732,20 +730,8 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
     try:
         account: Account = get_request_account()
         interpreter_type_options = []
-        db_connectors = get_db_account_connectors(account, is_active=True,
-                                                  connector_type_list=playbooks_supported_sources)
-        connector_options: [PlaybooksBuilderOptionsResponse.ConnectorOptions] = []
-        for dbc in db_connectors:
-            connector_type_name = integrations_connector_type_display_name_map.get(dbc.connector_type,
-                                                                                   dbc.connector_type)
-            display_name = f'{connector_type_name}'
-            if dbc.name:
-                display_name = f'{connector_type_name} - {dbc.name}'
-            connector_options.append(PlaybooksBuilderOptionsResponse.ConnectorOptions(
-                connector_id=UInt64Value(value=dbc.id),
-                display_name=StringValue(value=display_name),
-                connector_type=dbc.connector_type
-            ))
+
+        source_options = playbook_source_facade.get_source_options(account.id)
         open_ai_connector = get_db_account_connectors(account, connector_type=ConnectorType.OPEN_AI, is_active=True)
         if open_ai_connector.exists():
             interpreter_type_options.append(
@@ -755,7 +741,7 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
 
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=True),
                                                interpreter_types=interpreter_type_options,
-                                               connector_options=connector_options)
+                                               source_options=source_options)
     except Exception as e:
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))

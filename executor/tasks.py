@@ -6,7 +6,7 @@ from accounts.models import Account
 from executor.crud.playbook_execution_crud import get_db_playbook_execution, update_db_playbook_execution_status, \
     update_db_account_playbook_execution_status, bulk_create_playbook_execution_log
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.task_executor_facade import executor_facade
+from executor.playbook_source_facade import playbook_source_facade
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
@@ -54,7 +54,7 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
             tasks = step.tasks
             all_task_executions = []
             for task_proto in tasks:
-                task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task_proto)
+                task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set, task_proto)
                 task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
                                                                                  task_result)
                 all_task_executions.append({

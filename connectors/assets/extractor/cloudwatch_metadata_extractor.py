@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
+from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 

@@ -109,3 +109,19 @@ message GetSlackAppManifestResponse {
   Message message = 2;
   google.protobuf.StringValue app_manifest = 3;
 }
+
+message GetConnectedPlaybooksRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value connector_id = 2;
+}
+
+message GetConnectedPlaybooksResponse {
+  message Playbook {
+    google.protobuf.UInt64Value playbook_id = 1;
+    google.protobuf.StringValue playbook_name = 2;
+  }
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated Playbook connected_playbooks = 4;
+}

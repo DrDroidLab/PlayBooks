@@ -372,18 +372,47 @@ def transform_old_task_definition_to_new(task):
         }
     elif source == 'EKS':
         eks_data_fetch_task = task.get('eks_data_fetch_task', {})
-        updated_task_def = {
-            'source': 'EKS',
-            'eks': {
-                'type': eks_data_fetch_task.get('command_type', None),
-                'command': {
-                    'description': eks_data_fetch_task.get('description', None),
-                    'region': eks_data_fetch_task.get('region', None),
-                    'cluster': eks_data_fetch_task.get('cluster', None),
-                    'namespace': eks_data_fetch_task.get('namespace', None),
+        command_type = eks_data_fetch_task.get('command_type', None)
+        command_specs = {
+            'description': eks_data_fetch_task.get('description', None),
+            'region': eks_data_fetch_task.get('region', None),
+            'cluster': eks_data_fetch_task.get('cluster', None),
+            'namespace': eks_data_fetch_task.get('namespace', None),
+        }
+        if command_type == 'GET_PODS':
+            updated_task_def = {
+                'source': 'EKS',
+                'eks': {
+                    'type': eks_data_fetch_task.get('command_type', None),
+                    'get_pods': command_specs
                 }
             }
-        }
+        elif command_type == 'GET_SERVICES':
+            updated_task_def = {
+                'source': 'EKS',
+                'eks': {
+                    'type': eks_data_fetch_task.get('command_type', None),
+                    'get_services': command_specs
+                }
+            }
+        elif command_type == 'GET_DEPLOYMENTS':
+            updated_task_def = {
+                'source': 'EKS',
+                'eks': {
+                    'type': eks_data_fetch_task.get('command_type', None),
+                    'get_deployments': command_specs
+                }
+            }
+        elif command_type == 'GET_EVENTS':
+            updated_task_def = {
+                'source': 'EKS',
+                'eks': {
+                    'type': eks_data_fetch_task.get('command_type', None),
+                    'get_events': command_specs
+                }
+            }
+        else:
+            raise ValueError(f"Invalid command type: {command_type}")
     elif source == 'API':
         api_call_task = task.get('api_call_task', {})
         updated_task_def = {
@@ -580,7 +609,16 @@ def transform_new_task_definition_to_old(task):
         }
     elif source == 'EKS':
         eks_data_fetch_task = task.get('eks', {})
-        command = eks_data_fetch_task.get('command', {})
+        if eks_data_fetch_task.get('type') == 'GET_PODS':
+            command = eks_data_fetch_task.get('get_pods', {})
+        elif eks_data_fetch_task.get('type') == 'GET_SERVICES':
+            command = eks_data_fetch_task.get('get_services', {})
+        elif eks_data_fetch_task.get('type') == 'GET_DEPLOYMENTS':
+            command = eks_data_fetch_task.get('get_deployments', {})
+        elif eks_data_fetch_task.get('type') == 'GET_EVENTS':
+            command = eks_data_fetch_task.get('get_events', {})
+        else:
+            raise ValueError(f"Invalid command type: {eks_data_fetch_task.get('type')}")
         updated_task_def = {
             'source': 'EKS',
             'eks_data_fetch_task': {

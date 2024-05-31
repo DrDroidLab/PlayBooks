@@ -14,13 +14,12 @@ from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceive
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_points
 from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows
 from executor.workflows.entry_point.entry_point_evaluator import get_entry_point_evaluator
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import get_current_time
-from protos.base_pb2 import Source, SourceKeyType, SourceModelType
-from protos.connectors.connector_pb2 import ConnectorKey as ConnectorKeyProto
+from protos.base_pb2 import Source, SourceModelType, SourceKeyType
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowEntryPointAlertConfig as WorkflowEntryPointAlertConfigProto
 
@@ -220,7 +219,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
         bot_auth_token = bot_auth_token.first().key
         doctor_droid_app_id = None
         app_id = get_db_connector_keys(account_id=account_id, connector_id=slack_connector.id,
-                                       key_type=ConnectorKeyProto.SLACK_APP_ID)
+                                       key_type=SourceKeyType.SLACK_APP_ID)
         if app_id:
             doctor_droid_app_id = app_id.first().key
 

@@ -52,6 +52,7 @@ class Connector(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
+    ACCOUNT_ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     IS_ACTIVE_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
@@ -63,6 +64,8 @@ class Connector(google.protobuf.message.Message):
     KEYS_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def account_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: protos.base_pb2.Source.ValueType
     @property
     def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
@@ -82,6 +85,7 @@ class Connector(google.protobuf.message.Message):
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        account_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: protos.base_pb2.Source.ValueType = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
@@ -92,8 +96,8 @@ class Connector(google.protobuf.message.Message):
         category: google.protobuf.wrappers_pb2.StringValue | None = ...,
         keys: collections.abc.Iterable[global___ConnectorKey] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["category", b"category", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "keys", b"keys", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["account_id", b"account_id", "category", b"category", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "name", b"name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["account_id", b"account_id", "category", b"category", "created_at", b"created_at", "created_by", b"created_by", "display_name", b"display_name", "id", b"id", "is_active", b"is_active", "keys", b"keys", "name", b"name", "type", b"type", "updated_at", b"updated_at"]) -> None: ...
 
 global___Connector = Connector
 

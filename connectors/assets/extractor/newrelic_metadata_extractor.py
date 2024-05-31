@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from protos.base_pb2 import Source, SourceModelType
 
 

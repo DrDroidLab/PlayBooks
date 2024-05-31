@@ -1,5 +1,5 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
+from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 
