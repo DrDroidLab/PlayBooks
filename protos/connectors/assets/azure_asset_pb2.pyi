@@ -45,11 +45,11 @@ class AzureWorkspaceAssetOptions(google.protobuf.message.Message):
 
     WORKSPACES_FIELD_NUMBER: builtins.int
     @property
-    def workspaces(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+    def workspaces(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___AzureWorkspaceAssetModel]: ...
     def __init__(
         self,
         *,
-        workspaces: collections.abc.Iterable[builtins.str] | None = ...,
+        workspaces: collections.abc.Iterable[global___AzureWorkspaceAssetModel] | None = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["workspaces", b"workspaces"]) -> None: ...
 

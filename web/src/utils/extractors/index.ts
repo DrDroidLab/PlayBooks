@@ -10,3 +10,4 @@ export * from "./text.ts";
 export * from "./mimir.ts";
 export * from "./bash.ts";
 export * from "./sqlRawQuery.ts";
+export * from "./azure.ts";
