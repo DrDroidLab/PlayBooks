@@ -27,7 +27,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'category': 'Metrics'
             },
             Grafana.TaskType.PROMETHEUS_DATASOURCE_METRIC_EXECUTION: {
-                'task_type': 'PROMQL_METRIC_EXECUTION',
+                'task_type': 'GRAFANA_PROMETHEUS_DATASOURCE',
                 'executor': self.execute_prometheus_datasource_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
                 'display_name': 'Query any of your Prometheus Data Sources from Grafana',
