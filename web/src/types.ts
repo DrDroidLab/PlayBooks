@@ -31,6 +31,7 @@ export interface Step {
   textNotes?: string;
   logGroup?: any;
   cw_log_query?: any;
+  filter_query?: any;
   tasks?: PlaybookTask[];
   dashboard?: any;
   panel?: any;
@@ -40,6 +41,8 @@ export interface Step {
   dbQuery?: string;
   page?: any;
   widget?: any;
+  workspaceId? : string;
+  timespan?: string;
   application_name?: string;
   golden_metric?: GoldenMetric;
   golden_metrics?: any[];
@@ -123,6 +126,12 @@ export interface KubernetesDataFetchTask {
 export interface FilterLogEventsTask {
   region: string;
   log_group_name: string;
+  filter_query: string;
+}
+
+export interface AzureFilterLogEventsTask {
+  workspace_id: string;
+  timespan: string;
   filter_query: string;
 }
 
@@ -320,6 +329,7 @@ export interface ModelTypesOption {
   model_type: string;
   cloudwatch_metric_model_options?: CloudwatchMetricModelOptions;
   cloudwatch_log_group_model_options?: CloudwatchLogGroupModelOptions;
+  azure_workspace_model_options?: AzureWorkspaceModelOptions;
 }
 
 export interface CloudwatchMetricModelOptions {
@@ -328,6 +338,10 @@ export interface CloudwatchMetricModelOptions {
 
 export interface CloudwatchLogGroupModelOptions {
   regions: string[];
+}
+
+export interface AzureWorkspaceModelOptions {
+  workspaces: string[];
 }
 
 // Request types for the second API

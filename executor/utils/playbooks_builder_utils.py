@@ -40,7 +40,7 @@ model_type_display_name_maps = {
     SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
     SourceModelType.GRAFANA_MIMIR_PROMQL: "PromQL",
     SourceModelType.POSTGRES_QUERY: "Sql Query",
-    SourceModelType.AZURE_WORKSPACE: "Log Analytics Workspace",
+    SourceModelType.AZURE_WORKSPACE: "Log Analytics",
 }
 
 
