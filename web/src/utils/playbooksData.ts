@@ -63,6 +63,7 @@ export const constructBuilder = () => {
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
       return Builders.mimirBuilder();
     default:
-      return [];
+      break;
   }
+  return [];
 };
