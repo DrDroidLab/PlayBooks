@@ -15,7 +15,7 @@ export const extractTextTasks = (step: any) => {
     connectorType,
     taskType,
     modelType,
-    notes: textStep?.documentation,
+    notes: textStep?.content,
   };
 
   return stepData;

@@ -5,7 +5,7 @@ export const injectTextTasks = (
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   let task = {
-    documentation: step.notes!,
+    content: step.notes!,
   };
 
   return [
