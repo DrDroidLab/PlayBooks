@@ -5,9 +5,10 @@ from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.models import integrations_connector_type_display_name_map
 from executor.source_task_executors.api_task_executor import ApiSourceManager
+from executor.source_task_executors.azure_task_executor import AzureSourceManager
 from executor.source_task_executors.bash_task_executor import BashSourceManager
 from executor.source_task_executors.documentation_task_executor import DocumentationSourceManager
-from executor.source_task_executors.grafana_executor import GrafanaSourceManager
+from executor.source_task_executors.grafana_task_executor import GrafanaSourceManager
 from executor.source_task_executors.grafana_vpc_executor import GrafanaVpcSourceManager
 from executor.source_task_executors.mimir_task_executor import MimirSourceManager
 from executor.source_task_executors.newrelic_task_executor import NewRelicSourceManager
@@ -98,6 +99,7 @@ playbook_source_facade.register(Source.NEW_RELIC, NewRelicSourceManager())
 playbook_source_facade.register(Source.GRAFANA, GrafanaSourceManager())
 playbook_source_facade.register(Source.GRAFANA_VPC, GrafanaVpcSourceManager())
 playbook_source_facade.register(Source.GRAFANA_MIMIR, MimirSourceManager())
+playbook_source_facade.register(Source.AZURE, AzureSourceManager())
 
 playbook_source_facade.register(Source.POSTGRES, PostgresSourceManager())
 playbook_source_facade.register(Source.CLICKHOUSE, ClickhouseSourceManager())
