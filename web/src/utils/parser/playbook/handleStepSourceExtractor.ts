@@ -11,8 +11,6 @@ export const handleStepSourceExtractor = (step) => {
       : step.tasks[0].action_task?.source ?? step?.tasks[0].type
     : "";
 
-  console.log('stepSource', stepSource);
-
   switch (stepSource) {
     case SOURCES.CLOUDWATCH:
       data = Extractor.extractCloudwatchTasks(step);

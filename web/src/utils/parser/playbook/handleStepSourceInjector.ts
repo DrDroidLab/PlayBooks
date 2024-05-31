@@ -16,8 +16,6 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
 
   let tasks: PlaybookTask[] = [];
 
-  console.log("I am definitely here: ", step);
-
   switch (step.source) {
     case SOURCES.CLOUDWATCH:
       tasks = Injector.injectCloudwatchTasks(step, baseTask);

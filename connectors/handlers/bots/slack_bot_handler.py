@@ -123,7 +123,6 @@ def handle_slack_event_callback(data: Dict):
                 logger.error(f"Error while saving SlackBotConfig for connector: {team_id}:{channel_id}:{event_ts}")
                 return False
         except Exception as e:
-            print(traceback.format_exc())
             logger.error(
                 f"Error while registering slack bot config for connector: {team_id} with error: {e}")
             return False

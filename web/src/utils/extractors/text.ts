@@ -6,7 +6,6 @@ export const extractTextTasks = (step: any) => {
   const documentationTask = tasks[0].documentation_task;
 
   if (documentationTask.type === 'IFRAME') {
-    console.log('Inside', documentationTask);
     modelType = "IFRAME";
     selected = "IFRAME";
   }
