@@ -38,7 +38,7 @@ class AzureAssetManager(ConnectorAssetManager):
             filter_workspaces = options.workspaces
             azure_models = azure_models.filter(model_type=SourceModelType.AZURE_WORKSPACE)
             if filter_workspaces:
-                azure_models = azure_models.filter(model_uid__in=filter_workspaces)
+                azure_models = azure_models.filter(metadata__name__in=filter_workspaces)
         azure_asset_protos = []
         for asset in azure_models:
             if asset.model_type == SourceModelType.AZURE_WORKSPACE:
