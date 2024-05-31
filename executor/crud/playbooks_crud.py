@@ -106,7 +106,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                                                                            playbook_step_id=step_id,
                                                                            playbook_task_id=task_id,
                                                                            connector_id=connector_id,
-                                                                           is_active=True)
+                                                                           defaults={'is_active': True})
                 except Exception as e:
                     logger.error(
                         f"Failed to add task connector mapping for task {task_id} with connector {connector_id} "
