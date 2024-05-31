@@ -16,8 +16,8 @@ export const azureLogsBuilder = (task, index, options: any) => {
           type: OptionType.OPTIONS,
           options: options?.map(op => {
             return {
-              id: op,
-              label: op
+              id: op.workspace,
+              label: op.name
             };
           }),
           selected: task.workspaceId,

@@ -22,8 +22,8 @@ class AzureAssetManager(ConnectorAssetManager):
             all_workspaces = []
             for item in model_uid_metadata_list:
                 metadata = item['metadata']
-                workspace_name = metadata.get('name', item['model_uid'])
-                all_workspaces.append(workspace_name)
+                workspace = AzureWorkspaceAssetModel(name=StringValue(value=metadata.get('name', item['model_uid'])), workspace=StringValue(value=item['model_uid']))
+                all_workspaces.append(workspace)
             options = AzureWorkspaceAssetOptions(workspaces=all_workspaces)
             return ConnectorModelTypeOptions(model_type=model_type, azure_workspace_model_options=options)
         else:
