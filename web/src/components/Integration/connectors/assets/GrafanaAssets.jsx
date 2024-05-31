@@ -69,43 +69,85 @@ export const GrafanaAssets = ({ assets }) => {
               <Table stickyHeader>
                 <TableBody>
                   {assets?.map((item, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        '&:last-child td, &:last-child th': { border: 0 }
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        <Accordion
-                          style={{ borderRadius: '5px', marginTop: '10px' }}
-                          className="collapsible_option"
-                        >
-                          <AccordionSummary
-                            expandIcon={<ArrowDropDownIcon />}
-                            aria-controls="panel1-content"
-                            id="panel1-header"
-                            style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
+                    <>
+                      {
+                        item.type === 'GRAFANA_PROMETHEUS_DATASOURCE' && (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              '&:last-child td, &:last-child th': { border: 0 }
+                            }}
                           >
-                            <Typography>
-                              <b style={{ fontSize: '16px' }}>
-                                {item.grafana_target_metric_promql?.dashboard_title}
-                              </b>
-                              &nbsp;&nbsp;
-                              <i style={{ fontSize: '14px' }}>(Click for details)</i>{' '}
-                            </Typography>
-                          </AccordionSummary>
+                            <TableCell component="th" scope="row">
+                              <Accordion
+                                style={{ borderRadius: '5px', marginTop: '10px' }}
+                                className="collapsible_option"
+                              >
+                                <AccordionSummary
+                                  expandIcon={<ArrowDropDownIcon />}
+                                  aria-controls="panel1-content"
+                                  id="panel1-header"
+                                  style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
+                                >
+                                  <Typography>
+                                  Data Source: <b style={{ fontSize: '16px' }}>
+                                      {item.grafana_prometheus_datasource?.datasource_name}
+                                    </b>
+                                    &nbsp;&nbsp;
+                                  </Typography>
+                                </AccordionSummary>
 
-                          <AccordionDetails>
-                            {item?.grafana_target_metric_promql?.panel_promql_map?.length > 0 && (
-                              <TableComponent
-                                panels={item?.grafana_target_metric_promql?.panel_promql_map}
-                                dataType={'Prometheus Queries'}
-                              />
-                            )}
-                          </AccordionDetails>
-                        </Accordion>
-                      </TableCell>
-                    </TableRow>
+                                <AccordionDetails>
+                                <p><b>Type: </b>{item.grafana_prometheus_datasource?.datasource_typeName}</p>
+                                <p><b>UID: </b>{item.grafana_prometheus_datasource?.datasource_uid}</p>
+                                <p><b>URL: </b>{item.grafana_prometheus_datasource?.datasource_url}</p>
+                                </AccordionDetails>
+                              </Accordion>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      }
+                      {
+                        item.type === 'GRAFANA_TARGET_METRIC_PROMQL' && (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              '&:last-child td, &:last-child th': { border: 0 }
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              <Accordion
+                                style={{ borderRadius: '5px', marginTop: '10px' }}
+                                className="collapsible_option"
+                              >
+                                <AccordionSummary
+                                  expandIcon={<ArrowDropDownIcon />}
+                                  aria-controls="panel1-content"
+                                  id="panel1-header"
+                                  style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
+                                >
+                                  <Typography>
+                                  Dashboard: <b style={{ fontSize: '16px' }}>
+                                      {item.grafana_target_metric_promql?.dashboard_title}
+                                    </b>
+                                    &nbsp;&nbsp;
+                                  </Typography>
+                                </AccordionSummary>
+
+                                <AccordionDetails>
+                                  {item?.grafana_target_metric_promql?.panel_promql_map?.length > 0 && (
+                                    <TableComponent
+                                      panels={item?.grafana_target_metric_promql?.panel_promql_map}
+                                      dataType={'Prometheus Queries'}
+                                    />
+                                  )}
+                                </AccordionDetails>
+                              </Accordion>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      }
+                    </>
                   ))}
                 </TableBody>
               </Table>

@@ -64,6 +64,8 @@ export const constructBuilder = (task: any, index) => {
       return Builders.datadogBuilder(task, index, ops?.services);
     case models.GRAFANA:
       return Builders.grafanaBuilder(task, index, ops?.dashboards);
+    case models.GRAFANA_DATASOURCE:
+      return Builders.grafanaDataSourceBuilder(task, index, ops?.prometheus_datasources);
     case models.NEW_RELIC_NRQL:
       return Builders.newRelicNRQLBuilder(task, index);
     case models.NEW_RELIC_ENTITY_APPLICATION:
