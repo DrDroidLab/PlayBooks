@@ -37,6 +37,8 @@ export const constructBuilder = () => {
     case taskTypes.GRAFANA_VPC_PROMQL_METRIC_EXECUTION:
     case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
       return Builders.grafanaBuilder(ops?.dashboards);
+    case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
+      return Builders.grafanaDataSourceBuilder(ops?.prometheus_datasources);
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return Builders.newRelicNRQLBuilder();
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
