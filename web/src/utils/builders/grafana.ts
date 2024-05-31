@@ -96,7 +96,7 @@ export const grafanaBuilder = (task, index, options: any) => {
                 store.dispatch(
                   setGrafanaQuery({
                     index,
-                    query: val,
+                    query: val.map((e) => e.query ?? e),
                   }),
                 );
                 setGrafanaOptionsFunction(index);
@@ -111,7 +111,9 @@ export const grafanaBuilder = (task, index, options: any) => {
                 );
               }
             } else {
-              store.dispatch(setGrafanaQuery({ index, query: val }));
+              store.dispatch(
+                setGrafanaQuery({ index, query: val.map((e) => e.query) }),
+              );
               setGrafanaOptionsFunction(index);
             }
           },
@@ -124,6 +126,8 @@ export const grafanaBuilder = (task, index, options: any) => {
           value:
             task?.grafanaQuery?.length > 0
               ? task?.grafanaQuery[0]?.query?.expression
+                ? task?.grafanaQuery[0]?.query?.expression
+                : task?.grafanaQuery[0]?.expression
               : "",
           handleChange: (e) => {
             store.dispatch(
