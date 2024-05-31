@@ -8,6 +8,7 @@ from connectors.models import integrations_connector_type_display_name_map, \
     integrations_connector_key_display_name_map
 from connectors.tasks import populate_connector_metadata
 from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
+from integrations_api_processors.azure_api_processor import AzureApiProcessor
 from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
 from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
@@ -36,7 +37,8 @@ connector_type_api_processor_map = {
     Source.GRAFANA_VPC: VpcApiProcessor,
     Source.SLACK: SlackApiProcessor,
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
-    Source.GRAFANA_MIMIR: MimirApiProcessor
+    Source.GRAFANA_MIMIR: MimirApiProcessor,
+    Source.AZURE: AzureApiProcessor,
 }
 
 
@@ -183,6 +185,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['remote_pem'] = None
             if 'remote_password' not in credentials_dict:
                 credentials_dict['remote_password'] = None
+    elif connector_type == Source.AZURE:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.AZURE_CLIENT_ID:
+                credentials_dict['client_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AZURE_CLIENT_SECRET:
+                credentials_dict['client_secret'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AZURE_TENANT_ID:
+                credentials_dict['tenant_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AZURE_SUBSCRIPTION_ID:
+                credentials_dict['subscription_id'] = conn_key.key.value
     else:
         return None
     return credentials_dict
