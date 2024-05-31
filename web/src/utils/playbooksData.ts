@@ -55,6 +55,8 @@ export const constructBuilder = (task: any, index) => {
       return Builders.clickhouseBuilder(task, index, ops?.databases);
     case models.CLOUDWATCH_LOG_GROUP:
       return Builders.cloudwatchLogGroupBuilder(task, index, ops?.regions);
+    case models.AZURE_WORKSPACE:
+      return Builders.azureLogsBuilder(task, index, ops?.workspaces);
     case models.CLOUDWATCH_METRIC:
       return Builders.cloudwatchMetricBuilder(task, index, ops?.namespaces);
     case models.DATADOG:
