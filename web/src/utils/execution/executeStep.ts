@@ -20,7 +20,7 @@ export async function executeStep(step: Step) {
       .unwrap();
     const outputList: any = [];
     const output = res?.step_execution_log;
-    for (let outputData of output.task_execution_logs) {
+    for (let outputData of output?.task_execution_logs ?? []) {
       outputList.push(outputData);
     }
     updateCardByIndex("showOutput", true);

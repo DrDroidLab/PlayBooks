@@ -18,7 +18,7 @@ const TypingDropdown = ({
       return;
     }
     const filtered = data?.filter((option: any) =>
-      option.label.toLowerCase().includes(selected.toLowerCase()),
+      option?.label?.toLowerCase().includes(selected?.toLowerCase()),
     );
     setFilteredOptions(filtered);
   }, [selected, data]);

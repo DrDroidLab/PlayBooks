@@ -99,6 +99,7 @@ export const grafanaBuilder = (options: any) => {
           // requires: ['panel'],
           selected: task?.grafanaQuery,
           handleChange: (val) => {
+            console.log("val", val);
             if (task?.grafanaQuery?.length > 0) {
               const options = grafanaOptionsList(index);
               if (options?.length === 0) {
@@ -120,9 +121,7 @@ export const grafanaBuilder = (options: any) => {
                 );
               }
             } else {
-              store.dispatch(
-                setGrafanaQuery({ index, query: val.map((e) => e.query) }),
-              );
+              store.dispatch(setGrafanaQuery({ index, query: val }));
               setGrafanaOptionsFunction(index);
             }
           },
@@ -136,7 +135,7 @@ export const grafanaBuilder = (options: any) => {
             task?.grafanaQuery?.length > 0
               ? task?.grafanaQuery[0]?.query?.expression
                 ? task?.grafanaQuery[0]?.query?.expression
-                : task?.grafanaQuery[0]?.expression
+                : task?.grafanaQuery[0]?.label
               : "",
           handleChange: (e) => {
             store.dispatch(
