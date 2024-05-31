@@ -59,6 +59,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.SQL_DATABASE_CONNECTION:
       tasks = Injector.injectSqlRawQueryTasks(step, baseTask);
       break;
+    case SOURCES.AZURE:
+      tasks = Injector.injectAzureLogTasks(step, baseTask);
+      break;
     default:
       break;
   }
