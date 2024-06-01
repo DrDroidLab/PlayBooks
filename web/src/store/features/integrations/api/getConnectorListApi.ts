@@ -29,6 +29,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
         const integrations: IntegrationType = {};
         const allAvailableConnectors: CardData[] = [];
         const vpcConnectors: any = [];
+        const connectedConnectors: CardData[] = [];
         let agentProxy: any = {};
 
         for (let integration of response?.available_connectors ?? []) {
@@ -88,6 +89,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           integrations[integration.category] =
             integrations[integration.category] || []; // Check if the key exists, if not create an empty array
           integrations[integration.category].push(cardData);
+          connectedConnectors.push(cardData);
           allAvailableConnectors.push(cardData);
         }
 
@@ -130,7 +132,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           }
         }
 
-        return { integrations, vpcConnectors, agentProxy };
+        return { integrations, vpcConnectors, agentProxy, connectedConnectors };
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
