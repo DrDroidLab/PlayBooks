@@ -12,7 +12,7 @@ message AzureWorkspaceAssetModel {
 }
 
 message AzureWorkspaceAssetOptions {
-  repeated string workspaces = 1;
+  repeated AzureWorkspaceAssetModel workspaces = 1;
 }
 
 

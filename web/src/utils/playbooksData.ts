@@ -34,10 +34,15 @@ export const constructBuilder = () => {
       return Builders.cloudwatchMetricBuilder(ops?.namespaces);
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       return Builders.datadogBuilder(ops?.services);
+    case taskTypes.GRAFANA_VPC_PROMQL_METRIC_EXECUTION:
     case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
       return Builders.grafanaBuilder(ops?.dashboards);
+    case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
+      return Builders.grafanaDataSourceBuilder(ops?.prometheus_datasources);
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return Builders.newRelicNRQLBuilder();
+    case taskTypes.AZURE_FILTER_LOG_EVENTS:
+      return Builders.azureLogsBuilder(ops?.workspaces);
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
       return Builders.newRelicEntityApplicationBuilder(ops?.application_names);
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:

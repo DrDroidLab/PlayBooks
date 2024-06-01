@@ -2,18 +2,22 @@ import { models } from "../../constants/index.ts";
 
 export const extracDatadogTasks = (step: any) => {
   let stepSource = "DATADOG";
-  let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const datadogTask = tasks[0]?.datadog_task;
+  console.log("step", step);
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const datadogTask =
+    tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
-  switch (datadogTask.type) {
+  switch (taskType) {
     case "SERVICE_METRIC_EXECUTION":
-      selected = "DATADOG Service";
       modelType = models.DATADOG;
       break;
     case "QUERY_METRIC_EXECUTION":
-      selected = "DATADOG Custom Query";
       modelType = models.DATADOG_QUERY;
       break;
     default:
@@ -22,28 +26,23 @@ export const extracDatadogTasks = (step: any) => {
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    taskType,
     modelType,
-    datadogService: {
-      name: datadogTask?.service_metric_execution_task?.service_name,
-    },
-    datadogMetricFamily:
-      datadogTask?.service_metric_execution_task?.metric_family,
-    datadogEnvironment:
-      datadogTask?.service_metric_execution_task?.environment_name,
-    datadogMetric: tasks.map((ddTask) => {
-      const datadogTask = ddTask?.metric_task?.datadog_task;
+    connectorType,
+    datadogService: datadogTask?.service_name,
+    datadogMetricFamily: datadogTask?.metric_family,
+    datadogEnvironment: datadogTask?.environment_name,
+    datadogMetric: tasks.map(() => {
       return {
-        id: datadogTask?.service_metric_execution_task?.metric,
-        label: datadogTask?.service_metric_execution_task?.metric,
+        id: datadogTask?.metric,
+        label: datadogTask?.metric,
       };
     }),
-    query1: datadogTask?.query_metric_execution_task?.queries[0],
-    query2: datadogTask?.query_metric_execution_task?.queries[1],
-    formula: datadogTask?.query_metric_execution_task?.formula,
-    requiresFormula: datadogTask?.query_metric_execution_task?.formula,
+    query1: datadogTask?.queries?.length > 0 ? datadogTask?.queries[0] : "",
+    query2: datadogTask?.queries?.length > 1 ? datadogTask?.queries[1] : "",
+    formula: datadogTask?.formula,
+    requiresFormula: datadogTask?.formula,
   };
 
   return stepData;

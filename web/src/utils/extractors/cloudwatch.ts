@@ -5,7 +5,10 @@ export const extractCloudwatchTasks = (step: any) => {
   const taskType = tasks[0][stepSource.toLowerCase()]?.type;
   const cloudwatchStep =
     tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
-  const connectorType = tasks[0]?.task_connector_sources[0]?.id;
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
   switch (taskType) {
     case "FILTER_LOG_EVENTS":

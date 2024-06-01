@@ -4,7 +4,6 @@ from django.db import IntegrityError
 
 from connectors.crud.connectors_crud import update_or_create_connector
 from connectors.models import Connector, integrations_connector_type_connector_keys_map
-from executor.models import PlayBookStepTaskConnectorMapping
 from utils.time_utils import current_milli_time
 from protos.connectors.connector_pb2 import UpdateConnectorOp
 from utils.update_processor_mixin import UpdateProcessorMixin

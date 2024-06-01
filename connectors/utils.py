@@ -48,6 +48,7 @@ def get_all_request_connectors():
 
 def get_all_available_connectors(all_active_connectors):
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
+    print(all_connectors);
     for ac in all_active_connectors:
         all_connectors.remove(ac.connector_type)
     all_available_connectors = []
@@ -270,13 +271,6 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 connection_state = True
             else:
                 connection_state = False
-        elif connector_type == Source.GRAFANA_MIMIR or connector_type == Source.GRAFANA:
-            if 'ssl_verify' in credentials_dict:
-                verify = credentials_dict.get('ssl_verify', 'true')
-                credentials_dict['ssl_verify'] = True
-                if verify.lower() == 'false':
-                    credentials_dict['ssl_verify'] = False
-                connection_state = api_processor(**credentials_dict).test_connection()
         else:
             connection_state = api_processor(**credentials_dict).test_connection()
         if not connection_state:

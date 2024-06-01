@@ -5,6 +5,7 @@ import { OptionType } from "../playbooksData.ts";
 
 const getCurrentAsset = () => {
   const [task] = getCurrentTask();
+  if (!Array.isArray(task?.assets)) return [];
   const currentAsset = task?.assets?.find(
     (e) => e.application_name === task?.application_name,
   );
@@ -54,7 +55,7 @@ export const newRelicEntityApplicationBuilder = (options) => {
           label: "Unit",
           type: OptionType.OPTIONS,
           options:
-            task?.golden_metrics.length === 1
+            task?.golden_metrics?.length === 1
               ? [
                   {
                     id: task?.golden_metrics[0]?.metric?.golden_metric_unit,

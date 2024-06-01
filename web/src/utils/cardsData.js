@@ -386,5 +386,13 @@ export const cardsData = [
     enum: "GRAFANA_MIMIR",
     desc: "Connect Metrics from Grafana Mimir",
     buttonTitle: "Connect",
+  },
+  {
+    id: 46,
+    url: "/integrations/azure_logo.png",
+    title: "MICROSOFT AZURE",
+    enum: "AZURE",
+    desc: "Connect Logs from Microsoft Azure Log Analytics",
+    buttonTitle: "Connect",
   }
 ];

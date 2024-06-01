@@ -21,7 +21,7 @@ const TypingDropdownMultiple = ({
       return;
     }
     const filtered = data?.filter((option: any) =>
-      option.label.toLowerCase().includes(value.toLowerCase()),
+      option?.label?.toLowerCase()?.includes(value?.toLowerCase()),
     );
     setFilteredOptions(filtered);
   }, [value, data]);

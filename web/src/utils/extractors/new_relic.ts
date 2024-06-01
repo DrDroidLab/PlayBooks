@@ -2,22 +2,24 @@ import { models } from "../../constants/index.ts";
 
 export const extractNewRelicTasks = (step: any) => {
   let stepSource = "NEW_RELIC";
-  let selected = "";
   let modelType = "";
   const tasks = step.tasks;
-  const newRelicTask = tasks[0]?.new_relic_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const newRelicTask =
+    tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
-  switch (newRelicTask.type) {
+  switch (taskType) {
     case "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION":
-      selected = "NEW_RELIC Entity Application";
       modelType = models.NEW_RELIC_ENTITY_APPLICATION;
       break;
     case "ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION":
-      selected = "NEW_RELIC Entity Dashboard";
       modelType = models.NEW_RELIC_ENTITY_DASHBOARD;
       break;
     case "NRQL_METRIC_EXECUTION":
-      selected = "NEW_RELIC Raw NRQL";
       modelType = models.NEW_RELIC_NRQL;
       break;
     default:
@@ -26,70 +28,46 @@ export const extractNewRelicTasks = (step: any) => {
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    taskType,
     modelType,
+    connectorType,
     dashboard: {
-      id: newRelicTask?.entity_dashboard_widget_nrql_metric_execution_task
-        ?.dashboard_guid,
-      title:
-        newRelicTask?.entity_dashboard_widget_nrql_metric_execution_task
-          ?.dashboard_name,
+      id: newRelicTask?.dashboard_guid,
+      label: newRelicTask?.dashboard_name,
     },
-    golden_metrics: tasks.map((nrTask) => {
-      const nrAppTask =
-        nrTask?.metric_task?.new_relic_task
-          ?.entity_application_golden_metric_execution_task;
+    golden_metrics: tasks.map(() => {
       return {
-        id: nrAppTask?.golden_metric_name,
-        label: nrAppTask?.golden_metric_name,
+        id: newRelicTask?.golden_metric_name,
+        label: newRelicTask?.golden_metric_name,
         metric: {
-          golden_metric_name: nrAppTask?.golden_metric_name,
-          golden_metric_unit: nrAppTask?.golden_metric_unit,
+          golden_metric_name: newRelicTask?.golden_metric_name,
+          golden_metric_unit: newRelicTask?.golden_metric_unit,
           golden_metric_nrql_expression:
-            nrAppTask?.golden_metric_nrql_expression,
+            newRelicTask?.golden_metric_nrql_expression,
         },
       };
     }),
-    application_name:
-      newRelicTask.entity_application_golden_metric_execution_task
-        ?.application_entity_name,
-    assets: {
-      application_entity_guid:
-        newRelicTask.entity_application_golden_metric_execution_task
-          ?.application_entity_guid,
-      application_name:
-        newRelicTask.entity_application_golden_metric_execution_task
-          ?.application_entity_name,
-    },
+    application_name: newRelicTask?.application_entity_name,
     page: {
-      page_guid:
-        newRelicTask?.entity_dashboard_widget_nrql_metric_execution_task
-          ?.page_guid,
-      page_name:
-        newRelicTask?.entity_dashboard_widget_nrql_metric_execution_task
-          ?.page_name,
+      page_guid: newRelicTask?.page_guid,
+      page_name: newRelicTask?.page_name,
     },
-    widget: tasks.map((nrTask) => {
-      const nrDashboardTask =
-        nrTask?.metric_task?.new_relic_task
-          ?.entity_dashboard_widget_nrql_metric_execution_task;
+    widget: tasks.map(() => {
       return {
-        id: nrDashboardTask?.widget_id,
-        label: nrDashboardTask?.widget_title,
+        id: newRelicTask?.widget_id,
+        label: newRelicTask?.widget_nrql_expression,
         widget: {
-          widget_id: nrDashboardTask?.widget_id,
-          widget_title: nrDashboardTask?.widget_title,
-          widget_nrql_expression: nrDashboardTask?.widget_nrql_expression,
+          widget_id: newRelicTask?.widget_id,
+          widget_title: newRelicTask?.widget_title,
+          widget_nrql_expression: newRelicTask?.widget_nrql_expression,
         },
       };
     }),
     nrqlData: {
-      metric_name: newRelicTask?.nrql_metric_execution_task?.metric_name,
-      unit: newRelicTask?.nrql_metric_execution_task?.unit,
-      nrql_expression:
-        newRelicTask?.nrql_metric_execution_task?.nrql_expression,
+      metric_name: newRelicTask?.metric_name,
+      unit: newRelicTask?.unit,
+      nrql_expression: newRelicTask?.nrql_expression,
     },
   };
 

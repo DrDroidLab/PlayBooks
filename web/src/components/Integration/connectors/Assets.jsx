@@ -10,6 +10,7 @@ import { NewRelicAssets } from './assets/NewRelicAssests.jsx';
 import { PostgresAssets } from './assets/PostgresAssets.jsx';
 import { useGetConnectorAssetsQuery } from '../../../store/features/integrations/api/index.ts';
 import { EksClusterAssets } from './assets/EksClusterAssets.jsx';
+import { AzureAssets } from './assets/AzureAssets.jsx'; 
 
 function Assets() {
   const currentConnector = useSelector(connectorSelector);
@@ -42,6 +43,9 @@ function Assets() {
     case connectors.GRAFANA_VPC:
     case connectors.GRAFANA:
       return <GrafanaAssets assets={assets} />;
+
+    case connectors.AZURE:
+      return <AzureAssets assets={assets} />;
 
     case connectors.NEW_RELIC:
       return <NewRelicAssets assets={assets} />;

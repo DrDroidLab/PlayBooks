@@ -1,13 +1,13 @@
 import { PlaybookTask, Step } from "../../types.ts";
 
-export const injectGrafanaDataSourceTasks = (
+export const injectAzureLogTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   let task = {
-    datasource_uid: step.datasource.id,
-    promql_expression: step.grafanaQuery?.expression,
-    process_function: "timeseries",
+    workspace_id: step.workspaceId!,
+    filter_query: step.filter_query!,
+    timespan: step.timespan!,
   };
 
   return [
