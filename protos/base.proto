@@ -95,6 +95,7 @@ enum Source {
   BASH = 41;
   AZURE = 42;
   GRAFANA_MIMIR = 43;
+  GKE = 44;
 }
 
 enum SourceKeyType {
@@ -177,6 +178,8 @@ enum SourceKeyType {
   AZURE_TENANT_ID = 57;
   AZURE_CLIENT_ID = 58;
   AZURE_CLIENT_SECRET = 59;
+
+  GKE_SERVICE_ACCOUNT_JSON = 60;
 }
 
 enum SourceModelType {
