@@ -65,6 +65,48 @@ class CreateConnectorResponse(google.protobuf.message.Message):
 global___CreateConnectorResponse = CreateConnectorResponse
 
 @typing_extensions.final
+class GetConnectorRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    CONNECTOR_ID_FIELD_NUMBER: builtins.int
+    @property
+    def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def __init__(
+        self,
+        *,
+        connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id"]) -> None: ...
+
+global___GetConnectorRequest = GetConnectorRequest
+
+@typing_extensions.final
+class GetConnectorResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    CONNECTOR_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def connector(self) -> protos.connectors.connector_pb2.Connector: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        connector: protos.connectors.connector_pb2.Connector | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector", b"connector", "message", b"message", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector", b"connector", "message", b"message", "success", b"success"]) -> None: ...
+
+global___GetConnectorResponse = GetConnectorResponse
+
+@typing_extensions.final
 class GetConnectorsListRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
