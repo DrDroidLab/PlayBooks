@@ -1,10 +1,16 @@
 import React from "react";
 import { cardsData } from "../../../utils/cardsData";
-import { useDispatch } from "react-redux";
-import { createStepWithSource } from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createStepWithSource,
+  playbookSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
+import { CheckCircleOutline } from "@mui/icons-material";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
+  const { connectorOptionsMap } = useSelector(playbookSelector);
+
   const handleClick = () => {
     if (option.source) {
       dispatch(
@@ -28,6 +34,11 @@ function IntegrationOption({ option, setIsOpen }) {
       className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px] hover:bg-gray-200 cursor-pointer transition-all`}
       key={option.id}
       onClick={handleClick}>
+      {connectorOptionsMap[option.source.toLowerCase()]?.length > 0 && (
+        <div className="absolute top-0 right-0 m-1 text-md">
+          <CheckCircleOutline color="success" fontSize="inherit" />
+        </div>
+      )}
       {/* <div
         className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
       /> */}
