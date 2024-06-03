@@ -73,7 +73,11 @@ def get_connector_keys_options(connector_type):
     for sk in all_keys:
         connector_key_option_protos.append(ConnectorKeyProto(key_type=sk, display_name=StringValue(
             value=integrations_connector_key_display_name_map.get(sk))))
-    return connector_key_option_protos
+    connector_display_name = integrations_connector_type_display_name_map.get(connector_type,
+                                                                              Source.Name(connector_type))
+    connector = ConnectorProto(type=connector_type, display_name=StringValue(value=connector_display_name),
+                               keys=connector_key_option_protos)
+    return connector, connector_key_option_protos
 
 
 def generate_credentials_dict(connector_type, connector_keys):
