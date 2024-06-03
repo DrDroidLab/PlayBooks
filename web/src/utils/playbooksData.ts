@@ -25,41 +25,42 @@ export const constructBuilder = () => {
   //     : [];
 
   let ops: any = task.modelOptions;
+  console.log("ops", ops);
 
   switch (`${task?.source} ${task?.taskType}`) {
     case taskTypes.CLICKHOUSE_SQL_QUERY:
-      return Builders.clickhouseBuilder(ops);
+      return Builders.clickhouseBuilder(ops?.databases);
     case taskTypes.CLOUDWATCH_LOG_GROUP:
-      return Builders.cloudwatchLogGroupBuilder(ops);
+      return Builders.cloudwatchLogGroupBuilder(ops?.regions);
     case taskTypes.CLOUDWATCH_METRIC:
-      return Builders.cloudwatchMetricBuilder(ops);
+      return Builders.cloudwatchMetricBuilder(ops?.namespaces);
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
-      return Builders.datadogBuilder(ops);
+      return Builders.datadogBuilder(ops?.services);
     case taskTypes.GRAFANA_VPC_PROMQL_METRIC_EXECUTION:
     case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
-      return Builders.grafanaBuilder(ops);
+      return Builders.grafanaBuilder(ops?.dashboards);
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
-      return Builders.grafanaDataSourceBuilder(ops);
+      return Builders.grafanaDataSourceBuilder(ops?.prometheus_datasources);
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return Builders.newRelicNRQLBuilder();
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
-      return Builders.azureLogsBuilder(ops);
+      return Builders.azureLogsBuilder(ops?.workspaces);
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
-      return Builders.newRelicEntityApplicationBuilder(ops);
+      return Builders.newRelicEntityApplicationBuilder(ops?.application_names);
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
-      return Builders.newRelicEntityDashboardBuilder(ops);
+      return Builders.newRelicEntityDashboardBuilder(ops?.dashboards);
     case taskTypes.POSTGRES_SQL_QUERY:
-      return Builders.postgresBuilder(ops);
+      return Builders.postgresBuilder(ops?.databases);
     case taskTypes.EKS_GET_DEPLOYMENTS:
-      return Builders.eksBuilder(ops);
+      return Builders.eksBuilder(ops?.regions);
     case taskTypes.EKS_GET_EVENTS:
-      return Builders.eksBuilder(ops);
+      return Builders.eksBuilder(ops?.regions);
     case taskTypes.EKS_GET_PODS:
-      return Builders.eksBuilder(ops);
+      return Builders.eksBuilder(ops?.regions);
     case taskTypes.EKS_GET_SERVICES:
-      return Builders.eksBuilder(ops);
+      return Builders.eksBuilder(ops?.regions);
     case taskTypes.BASH_COMMAND:
-      return Builders.bashBuilder(ops);
+      return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
       return Builders.datadogRawQueryBuilder();
     case taskTypes.API_HTTP_REQUEST:

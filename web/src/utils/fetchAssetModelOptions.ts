@@ -15,11 +15,11 @@ export const fetchData = async (val: any = undefined) => {
   const step = steps[val?.index ?? currentStepIndex];
 
   if (step?.source === "API" || val?.connector_type === "API") return;
-  if (step?.source === "BASH" || val?.connector_type === "BASH") {
-    await getAssetModelOptionsFunction();
-    return;
-  }
-  await getAssetModelOptionsFunction();
+  // if (step?.source === "BASH" || val?.connector_type === "BASH") {
+  //   await getAssetModelOptionsFunction();
+  //   return;
+  // }
+  // await getAssetModelOptionsFunction();
   await getAssetsFunction();
 };
 

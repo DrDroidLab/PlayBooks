@@ -33,7 +33,7 @@ export const grafanaDataSourceBuilder = (options: any) => {
               );
             }
           },
-          selected: task.datasource?.id,
+          selected: task.datasource?.label,
         },
       ],
       [

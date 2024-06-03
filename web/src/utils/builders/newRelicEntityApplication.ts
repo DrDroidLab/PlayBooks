@@ -30,8 +30,8 @@ export const newRelicEntityApplicationBuilder = (options) => {
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
-              id: e,
-              label: e,
+              id: e.application_name,
+              label: e.application_name,
             };
           }),
         },
