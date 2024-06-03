@@ -66,5 +66,10 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       break;
   }
 
-  return tasks;
+  const taskWithIds = tasks.map((task, i) => ({
+    ...task,
+    id: step.taskIds[i] ?? step.id ?? "0",
+  }));
+
+  return taskWithIds;
 };
