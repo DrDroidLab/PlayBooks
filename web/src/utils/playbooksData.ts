@@ -25,7 +25,6 @@ export const constructBuilder = () => {
   //     : [];
 
   let ops: any = task.modelOptions;
-  console.log("ops", ops);
 
   switch (`${task?.source} ${task?.taskType}`) {
     case taskTypes.CLICKHOUSE_SQL_QUERY:

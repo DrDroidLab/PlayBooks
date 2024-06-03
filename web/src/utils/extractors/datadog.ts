@@ -4,7 +4,6 @@ export const extracDatadogTasks = (step: any) => {
   let stepSource = "DATADOG";
   let modelType = "";
   const tasks = step.tasks;
-  console.log("step", step);
   const taskType = tasks[0][stepSource.toLowerCase()]?.type;
   const datadogTask =
     tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];

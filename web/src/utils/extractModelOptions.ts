@@ -1,7 +1,6 @@
 import { taskTypes } from "../constants/index.ts";
 
 export default function extractModelOptions(assets, task) {
-  console.log("ass", assets);
   switch (`${task?.source} ${task?.taskType}`) {
     case taskTypes.CLOUDWATCH_LOG_GROUP:
       return {
