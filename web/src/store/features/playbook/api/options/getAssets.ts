@@ -1,12 +1,13 @@
 import { GET_ASSETS } from "../../../../../constants/index.ts";
-import { AssetsResponse } from "../../../../../types";
+import { updateCardByIndex } from "../../../../../utils/execution/updateCardByIndex.ts";
+import extractModelOptions from "../../../../../utils/extractModelOptions.ts";
 import getCurrentTask from "../../../../../utils/getCurrentTask.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 import { setAssets } from "../../playbookSlice.ts";
 
 export const getAssetApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAssets: builder.query<AssetsResponse, { filter: any }>({
+    getAssets: builder.query<any, { filter: any }>({
       query: ({ filter }) => {
         const [task] = getCurrentTask();
         return {
@@ -31,6 +32,8 @@ export const getAssetApi = apiSlice.injectEndpoints({
           (e) => e[task.modelType.toLowerCase()],
         );
 
+        const modelOptions = extractModelOptions(assets, task);
+        updateCardByIndex("modelOptions", modelOptions);
         return assets;
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {

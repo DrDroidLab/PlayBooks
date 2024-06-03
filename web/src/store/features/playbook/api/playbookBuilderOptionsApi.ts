@@ -43,6 +43,7 @@ export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
           connectorOptionsMap,
           supportedTaskTypes,
           connectorOptions,
+          interpreterTypes: response.interpreter_types,
         };
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -64,6 +65,12 @@ export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
             setPlaybookKey({
               key: "connectorOptions",
               value: data.connectorOptions,
+            }),
+          );
+          dispatch(
+            setPlaybookKey({
+              key: "interpreterTypes",
+              value: data.interpreterTypes,
             }),
           );
         } catch (error) {

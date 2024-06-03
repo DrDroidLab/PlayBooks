@@ -42,7 +42,7 @@ export interface Step {
   dbQuery?: string;
   page?: any;
   widget?: any;
-  workspaceId? : string;
+  workspaceId?: string;
   timespan?: string;
   application_name?: string;
   golden_metric?: GoldenMetric;

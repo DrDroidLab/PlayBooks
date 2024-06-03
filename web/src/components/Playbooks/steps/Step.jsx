@@ -18,7 +18,6 @@ import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import Interpretation from "./Interpretation.jsx";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 
 function Step({ step }) {
   const isPrefetched = useIsPrefetched();
@@ -26,7 +25,6 @@ function Step({ step }) {
     step?.isPrefetched ?? step.source ?? false,
   );
   const dispatch = useDispatch();
-  const { data } = useGetBuilderOptionsQuery();
 
   function handleDeleteClick() {
     dispatch(deleteStep());
@@ -65,9 +63,7 @@ function Step({ step }) {
             </div>
           </div>
           <Notes />
-          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation />
-          )}
+          <Interpretation />
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
               {step.source && !unsupportedRunners.includes(step.source) && (

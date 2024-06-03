@@ -71,7 +71,7 @@ const CustomDrawer = ({
         {children && (
           <div className="pb-15 overflow-auto h-full">{children}</div>
         )}
-        {src && (
+        {src && isOpen && (
           <iframe
             src={src}
             id="drawer-iframe"

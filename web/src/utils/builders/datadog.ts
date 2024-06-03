@@ -20,7 +20,7 @@ export const datadogBuilder = (options) => {
       datadog_service_model_filters: {
         services: [
           {
-            name: task?.datadogService?.name,
+            name: task?.datadogService,
             metric_families: [task?.datadogMetricFamily],
           },
         ],

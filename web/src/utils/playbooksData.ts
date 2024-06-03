@@ -1,7 +1,6 @@
 import { taskTypes } from "../constants/index.ts";
 import * as Builders from "./builders/index.ts";
 import getCurrentTask from "./getCurrentTask.ts";
-import handleModelOptions from "./handleModelOptions.ts";
 
 export enum OptionType {
   OPTIONS = "options",
@@ -16,14 +15,16 @@ export enum OptionType {
 
 export const constructBuilder = () => {
   const [task] = getCurrentTask();
-  let ops: any =
-    task?.modelTypeOptions?.length > 0 &&
-    task?.modelTypeOptions[0]?.model_types_options?.length > 0
-      ? handleModelOptions(
-          task?.modelTypeOptions[0]?.model_types_options[0],
-          task?.modelType.toLowerCase(),
-        )
-      : [];
+  // let ops: any =
+  //   task?.modelTypeOptions?.length > 0 &&
+  //   task?.modelTypeOptions[0]?.model_types_options?.length > 0
+  //     ? handleModelOptions(
+  //         task?.modelTypeOptions[0]?.model_types_options[0],
+  //         task?.modelType.toLowerCase(),
+  //       )
+  //     : [];
+
+  let ops: any = task.modelOptions;
 
   switch (`${task?.source} ${task?.taskType}`) {
     case taskTypes.CLICKHOUSE_SQL_QUERY:

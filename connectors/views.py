@@ -24,7 +24,7 @@ from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorRes
     UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
     GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse, GetConnectedPlaybooksRequest, \
-    GetConnectedPlaybooksResponse
+    GetConnectedPlaybooksResponse, GetConnectorRequest, GetConnectorResponse
 
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
@@ -56,6 +56,19 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
+
+
+@web_api(GetConnectorRequest)
+def connectors_get(request_message: GetConnectorRequest) -> Union[GetConnectorResponse, HttpResponse]:
+    account: Account = get_request_account()
+    connector_id = request_message.connector_id
+    if not connector_id or not connector_id.value:
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector ID not found'))
+
+    db_connector = get_db_account_connectors(account=account, connector_id=connector_id.value, is_active=True)
+    if not db_connector or not db_connector.exists():
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector not found'))
+    return GetConnectorResponse(success=BoolValue(value=True), connector=db_connector.first().proto)
 
 
 @web_api(GetConnectorsListRequest)

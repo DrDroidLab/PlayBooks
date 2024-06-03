@@ -45,9 +45,11 @@ const TypingDropdownMultiple = ({
   ) => {
     e.preventDefault();
     const arr = structuredClone(selected ?? []);
-    if (arr?.findIndex((e) => e.label === (option?.label ?? value)) !== -1)
+    if (
+      arr?.findIndex((e) => e.label === (option?.label ?? value.trim())) !== -1
+    )
       return;
-    arr.push(option ?? { label: value, id: value });
+    arr.push(option ?? { label: value.trim(), id: value.trim() });
     change(arr);
     resetState();
   };

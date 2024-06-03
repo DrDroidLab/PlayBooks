@@ -17,6 +17,16 @@ message CreateConnectorResponse {
   Message message = 2;
 }
 
+message GetConnectorRequest {
+  google.protobuf.UInt64Value connector_id = 1;
+}
+
+message GetConnectorResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  Connector connector = 3;
+}
+
 message GetConnectorsListRequest {
 }
 

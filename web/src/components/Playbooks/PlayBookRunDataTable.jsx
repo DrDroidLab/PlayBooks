@@ -19,7 +19,6 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   const [open, setOpen] = useState(false);
 
   const [tableData, setTableData] = useState([]);
-  console.log("res", result);
 
   useEffect(() => {
     if (
