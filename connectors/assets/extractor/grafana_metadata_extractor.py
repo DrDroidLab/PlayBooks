@@ -56,6 +56,24 @@ class GrafanaSourceMetadataExtractor(SourceMetadataExtractor):
                 self.create_or_update_model_metadata(model_type, datasource_id, ds)
         return model_data
 
+    def extract_prometheus_data_source(self, save_to_db=False):
+        model_type = SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE
+        try:
+            all_data_sources = self.__grafana_api_processor.fetch_data_sources()
+            all_promql_data_sources = [ds for ds in all_data_sources if ds['type'] == 'prometheus']
+        except Exception as e:
+            print(f"Exception occurred while fetching grafana data sources with error: {e}")
+            return
+        if not all_promql_data_sources:
+            return
+        model_data = {}
+        for ds in all_promql_data_sources:
+            datasource_id = ds['uid']
+            model_data[datasource_id] = ds
+            if save_to_db:
+                self.create_or_update_model_metadata(model_type, datasource_id, ds)
+        return model_data
+
     def extract_dashboards(self, save_to_db=False):
         model_type = SourceModelType.GRAFANA_DASHBOARD
         try:

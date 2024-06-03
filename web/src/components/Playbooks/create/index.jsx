@@ -21,13 +21,13 @@ import TabsComponent from "../../common/TabsComponent/index.tsx";
 
 const viewOptions = [
   {
-    id: "builder",
-    label: "Builder",
-  },
-  {
     id: "step",
     label: "List",
   },
+  {
+    id: "builder",
+    label: "Builder",
+  }
 ];
 
 function CreatePlaybookBeta() {

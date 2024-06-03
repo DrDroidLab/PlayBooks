@@ -46,6 +46,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       tasks = Injector.injectApiTasks(step, baseTask);
       break;
     case SOURCES.TEXT:
+      // Handling iframe also
       tasks = Injector.injectTextTasks(step, baseTask);
       break;
     case SOURCES.BASH:
@@ -53,6 +54,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       break;
     case SOURCES.SQL_DATABASE_CONNECTION:
       tasks = Injector.injectSqlRawQueryTasks(step, baseTask);
+      break;
+    case SOURCES.AZURE:
+      tasks = Injector.injectAzureLogTasks(step, baseTask);
       break;
     default:
       break;

@@ -13,3 +13,6 @@ export * from "./apiBuilder.ts";
 export * from "./mimir.ts";
 export * from "./bashBuilder.ts";
 export * from "./sqlRawQuery.ts";
+export * from "./iframe.ts";
+export * from "./azureLogs.ts";
+export * from "./grafanaDataSource.ts";

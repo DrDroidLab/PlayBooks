@@ -292,7 +292,7 @@ export const cardsData = [
     url: "/integrations/grafana_logo.png",
     title: "GRAFANA",
     enum: "GRAFANA",
-    desc: "Share Dashboards & Metrics from Grafana",
+    desc: "Share Data Sources, Dashboards & Metrics from Grafana",
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/grafana",
@@ -386,5 +386,18 @@ export const cardsData = [
     enum: "GRAFANA_MIMIR",
     desc: "Connect Metrics from Grafana Mimir",
     buttonTitle: "Connect",
-  }
+  },
+  {
+    id: 46,
+    url: "/integrations/azure_logo.png",
+    title: "MICROSOFT AZURE",
+    enum: "AZURE",
+    desc: "Connect Logs from Microsoft Azure Log Analytics",
+    buttonTitle: "Connect",
+  },
+  {
+    id: 47,
+    url: "/integrations/code.png",
+    enum: "IFRAME",
+  },
 ];

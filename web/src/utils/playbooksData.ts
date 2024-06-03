@@ -10,6 +10,7 @@ export enum OptionType {
   BUTTON = "button",
   MULTI_OPTIONS = "multi-options",
   MULTI_SELECT = "multi-select",
+  IFRAME_RENDER = "iframe-render",
 }
 
 export const constructBuilder = (task: any, index) => {
@@ -26,6 +27,9 @@ export const constructBuilder = (task: any, index) => {
 
       case models.SQL_DATABASE_CONNECTION:
         return Builders.sqlRawQueryBuilder(task, index);
+
+      case models.IFRAME:
+        return Builders.iframeBuilder(task, index);
 
       case models.GRAFANA_MIMIR_PROMQL:
         return Builders.mimirBuilder(task, index);
@@ -55,12 +59,16 @@ export const constructBuilder = (task: any, index) => {
       return Builders.clickhouseBuilder(task, index, ops?.databases);
     case models.CLOUDWATCH_LOG_GROUP:
       return Builders.cloudwatchLogGroupBuilder(task, index, ops?.regions);
+    case models.AZURE_WORKSPACE:
+      return Builders.azureLogsBuilder(task, index, ops?.workspaces);
     case models.CLOUDWATCH_METRIC:
       return Builders.cloudwatchMetricBuilder(task, index, ops?.namespaces);
     case models.DATADOG:
       return Builders.datadogBuilder(task, index, ops?.services);
     case models.GRAFANA:
       return Builders.grafanaBuilder(task, index, ops?.dashboards);
+    case models.GRAFANA_DATASOURCE:
+      return Builders.grafanaDataSourceBuilder(task, index, ops?.prometheus_datasources);
     case models.NEW_RELIC_NRQL:
       return Builders.newRelicNRQLBuilder(task, index);
     case models.NEW_RELIC_ENTITY_APPLICATION:

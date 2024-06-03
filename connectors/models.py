@@ -36,11 +36,14 @@ integrations_connector_type_display_name_map = {
     Source.OPEN_AI: 'OPEN AI',
     Source.REMOTE_SERVER: 'REMOTE SERVER',
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
+    Source.AZURE: 'AZURE',
 }
 
 integrations_connector_type_category_map = {
     Source.SLACK: 'Alert Channels',
     Source.GOOGLE_CHAT: 'Alert Channels',
+    Source.PAGER_DUTY: 'Alert Channels',
+    Source.OPS_GENIE: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
     Source.DATADOG: 'APM Tools',
@@ -53,11 +56,10 @@ integrations_connector_type_category_map = {
     Source.PROMETHEUS: 'APM Tools',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
+    Source.EKS: 'Cloud',
+    Source.AZURE: 'Cloud',
     Source.CLICKHOUSE: 'Database',
     Source.POSTGRES: 'Database',
-    Source.PAGER_DUTY: 'Alert Channels',
-    Source.OPS_GENIE: 'Alert Channels',
-    Source.EKS: 'Cloud',
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
@@ -190,6 +192,14 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PASSWORD
         ]
+    ],
+    Source.AZURE: [
+        [
+            SourceKeyType.AZURE_CLIENT_ID,
+            SourceKeyType.AZURE_CLIENT_SECRET,
+            SourceKeyType.AZURE_TENANT_ID,
+            SourceKeyType.AZURE_SUBSCRIPTION_ID,
+        ]
     ]
 }
 
@@ -240,6 +250,10 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
     SourceKeyType.SSL_VERIFY: "Enable TLS certificate validation",
+    SourceKeyType.AZURE_CLIENT_ID: 'Client ID',
+    SourceKeyType.AZURE_CLIENT_SECRET: 'Client Secret',
+    SourceKeyType.AZURE_TENANT_ID: 'Tenant ID',
+    SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
 }
 
 
@@ -348,37 +362,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
-                             ConnectorKeyProto.KeyType.DATADOG_APP_KEY, ConnectorKeyProto.KeyType.DATADOG_API_KEY,
-                             ConnectorKeyProto.KeyType.NEWRELIC_API_KEY, ConnectorKeyProto.KeyType.NEWRELIC_APP_ID,
-                             ConnectorKeyProto.KeyType.NEWRELIC_QUERY_KEY,
-                             ConnectorKeyProto.KeyType.SLACK_BOT_AUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_USERNAME,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_PASSWORD,
-                             ConnectorKeyProto.KeyType.HONEYBADGER_PROJECT_ID,
-                             ConnectorKeyProto.KeyType.AWS_ACCESS_KEY,
-                             ConnectorKeyProto.KeyType.AWS_SECRET_KEY, ConnectorKeyProto.KeyType.DATADOG_AUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
-                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
-                             ConnectorKeyProto.KeyType.AGENT_PROXY_API_KEY,
-                             ConnectorKeyProto.KeyType.GITHUB_ACTIONS_TOKEN,
-                             ConnectorKeyProto.KeyType.AGENT_PROXY_HOST,
-                             ConnectorKeyProto.KeyType.AWS_ASSUMED_ROLE_ARN,
-                             ConnectorKeyProto.KeyType.CLICKHOUSE_USER, ConnectorKeyProto.KeyType.CLICKHOUSE_PASSWORD,
-                             ConnectorKeyProto.KeyType.GCM_PROJECT_ID, ConnectorKeyProto.KeyType.GCM_PRIVATE_KEY,
-                             ConnectorKeyProto.KeyType.GCM_CLIENT_EMAIL, ConnectorKeyProto.KeyType.PAGER_DUTY_API_KEY,
-                             ConnectorKeyProto.KeyType.POSTGRES_PASSWORD, ConnectorKeyProto.KeyType.POSTGRES_USER,
-                             ConnectorKeyProto.KeyType.GRAFANA_API_KEY,
-                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-                             ConnectorKeyProto.KeyType.OPEN_AI_API_KEY,
-                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PASSWORD,
-                             ConnectorKeyProto.KeyType.REMOTE_SERVER_PEM,
-                             ConnectorKeyProto.KeyType.GRAFANA_HOST,
-                             ConnectorKeyProto.KeyType.OPS_GENIE_API_KEY,
-                             ConnectorKeyProto.KeyType.EKS_ROLE_ARN,
-                             ConnectorKeyProto.KeyType.POSTGRES_HOST,
-                             ConnectorKeyProto.KeyType.CLICKHOUSE_HOST,
-                             ConnectorKeyProto.KeyType.SQL_DATABASE_CONNECTION_STRING_URI,
-                             ConnectorKeyProto.KeyType.SLACK_APP_ID]:
+                             SourceKeyType.AZURE_CLIENT_SECRET]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

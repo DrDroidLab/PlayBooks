@@ -7,13 +7,13 @@ from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import AccountActiveConnectorModelTypes
 
 playbooks_supported_sources = [Source.CLOUDWATCH, Source.GRAFANA, Source.GRAFANA_VPC,
-                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC,
+                               Source.CLICKHOUSE, Source.EKS, Source.NEW_RELIC, Source.AZURE,
                                Source.DATADOG, Source.POSTGRES, Source.SQL_DATABASE_CONNECTION, Source.GRAFANA_MIMIR]
 
 supported_connectors_model_maps = {
     Source.CLOUDWATCH: [SourceModelType.CLOUDWATCH_METRIC, SourceModelType.CLOUDWATCH_LOG_GROUP],
-    Source.GRAFANA: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
-    Source.GRAFANA_VPC: [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+    Source.GRAFANA: [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
+    Source.GRAFANA_VPC: [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
     Source.NEW_RELIC: [SourceModelType.NEW_RELIC_ENTITY_APPLICATION, SourceModelType.NEW_RELIC_ENTITY_DASHBOARD,
                        SourceModelType.NEW_RELIC_NRQL],
     Source.CLICKHOUSE: [SourceModelType.CLICKHOUSE_DATABASE],
@@ -23,12 +23,14 @@ supported_connectors_model_maps = {
     Source.SQL_DATABASE_CONNECTION: [SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY],
     Source.GRAFANA_MIMIR: [],
     Source.POSTGRES: [SourceModelType.POSTGRES_QUERY],
+    Source.AZURE: [SourceModelType.AZURE_WORKSPACE],
 }
 
 model_type_display_name_maps = {
     SourceModelType.CLOUDWATCH_METRIC: "Metric",
     SourceModelType.CLOUDWATCH_LOG_GROUP: "Log Group",
     SourceModelType.GRAFANA_TARGET_METRIC_PROMQL: "PromQL",
+    SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE: "Data Sources",
     SourceModelType.NEW_RELIC_ENTITY_APPLICATION: "Entity Application",
     SourceModelType.NEW_RELIC_ENTITY_DASHBOARD: "Entity Dashboard",
     SourceModelType.NEW_RELIC_NRQL: "Raw NRQL",
@@ -39,6 +41,7 @@ model_type_display_name_maps = {
     SourceModelType.SQL_DATABASE_CONNECTION_RAW_QUERY: "Query",
     SourceModelType.GRAFANA_MIMIR_PROMQL: "PromQL",
     SourceModelType.POSTGRES_QUERY: "Sql Query",
+    SourceModelType.AZURE_WORKSPACE: "Log Analytics",
 }
 
 

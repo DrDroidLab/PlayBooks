@@ -15,6 +15,9 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.CLOUDWATCH:
       data = Extractor.extractCloudwatchTasks(step);
       break;
+    case SOURCES.AZURE:
+      data = Extractor.extractAzureTasks(step);
+      break;
     case SOURCES.GRAFANA_VPC:
     case SOURCES.GRAFANA:
       data = Extractor.extractGrafanaTasks(step);
