@@ -58,8 +58,9 @@ function Config({ connector, connectorActive }) {
           keys: formattedKeys,
           name: currentConnector.name,
         });
-        console.log("res", res);
-        // window.location.reload();
+        if (res.success) {
+          window.location.reload();
+        }
       }
     }
   };
