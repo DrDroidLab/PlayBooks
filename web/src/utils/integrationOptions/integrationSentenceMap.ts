@@ -15,6 +15,7 @@ export const integrationSentenceMap = {
   [models.EKS_CLUSTER]: "Query Events from your EKS Cluster",
   [models.API]: "Trigger an API",
   [models.TEXT]: "Write documentation",
+  [models.IFRAME]: "Add an Iframe",
   [models.BASH]: "Execute a BASH command",
   [models.SQL_DATABASE_CONNECTION]: "Query from your configured SQL Database",
   [models.GRAFANA_MIMIR_PROMQL]: "Query Metrics from Mimir",

@@ -74,6 +74,7 @@ export interface Step {
   interpreter?: any;
   promql_expression?: string;
   remote_server?: string;
+  iframe_url? : string;
 }
 
 export interface GoldenMetric {
@@ -164,7 +165,8 @@ export interface DataFetchTask {
 
 export interface DocumentationTask {
   type: string;
-  documentation: any;
+  documentation?: any;
+  iframe_url?: any;
 }
 
 export interface ApiCallTask {

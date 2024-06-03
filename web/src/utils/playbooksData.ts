@@ -10,6 +10,7 @@ export enum OptionType {
   BUTTON = "button",
   MULTI_OPTIONS = "multi-options",
   MULTI_SELECT = "multi-select",
+  IFRAME_RENDER = "iframe-render",
 }
 
 export const constructBuilder = (task: any, index) => {
@@ -26,6 +27,9 @@ export const constructBuilder = (task: any, index) => {
 
       case models.SQL_DATABASE_CONNECTION:
         return Builders.sqlRawQueryBuilder(task, index);
+
+      case models.IFRAME:
+        return Builders.iframeBuilder(task, index);
 
       case models.GRAFANA_MIMIR_PROMQL:
         return Builders.mimirBuilder(task, index);

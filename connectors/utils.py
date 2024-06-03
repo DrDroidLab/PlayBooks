@@ -246,7 +246,6 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
         return False, f'Missing Required Connector Keys for Connector Type: ' \
                       f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
-    print('credentials_dict', credentials_dict)
     try:
         api_processor = connector_type_api_processor_map.get(connector_type)
         if not api_processor:

@@ -61,7 +61,7 @@ export const GrafanaAssets = ({ assets }) => {
               style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
             >
               <Typography>
-                <p style={{ fontSize: '16px' }}>Prometheus Metrics ({assets.length})</p>{' '}
+                <p style={{ fontSize: '16px' }}>Data Sources ({assets.length})</p>{' '}
               </Typography>
             </AccordionSummary>
 
@@ -90,7 +90,7 @@ export const GrafanaAssets = ({ assets }) => {
                                   style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
                                 >
                                   <Typography>
-                                  Data Source: <b style={{ fontSize: '16px' }}>
+                                  <b style={{ fontSize: '16px' }}>
                                       {item.grafana_prometheus_datasource?.datasource_name}
                                     </b>
                                     &nbsp;&nbsp;

@@ -64,6 +64,10 @@ class AssetManagerFacade:
         manager: ConnectorAssetManager = self._map.get(connector_type)
         if not manager:
             raise ValueError(f"No asset manager found for connector_type: {connector_type}")
+        
+        if connector_type in [Source.GRAFANA, Source.GRAFANA_VPC]:
+            model_type = SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE
+
         if not model_type:
             connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type)
         else:
