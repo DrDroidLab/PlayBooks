@@ -248,8 +248,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             action_task=action_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
-    elif task.get('documentation_task', None):
-        documentation_task_proto = dict_to_proto(db_task_definition.task, DeprecatedPlaybookDocumentationTaskDefinition)
+    elif source == 'DOCUMENTATION':
+        documentation_task_proto = dict_to_proto(task, DeprecatedPlaybookDocumentationTaskDefinition)
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
@@ -258,5 +258,15 @@ def get_playbook_task_definition_proto(db_task_definition):
             documentation_task=documentation_task_proto,
             notes=StringValue(value=db_task_definition.notes),
         )
+    elif source == 'IFRAME':
+        iframe_task_proto = dict_to_proto(task, DeprecatedPlaybookDocumentationTaskDefinition)
+        return DeprecatedPlaybookTaskDefinition(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION,
+            documentation_task=iframe_task_proto,
+            notes=StringValue(value=db_task_definition.notes),
+        )        
     else:
         raise ValueError(f"Invalid source: {source}")

@@ -20,6 +20,15 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     removeErrors(data.key);
   };
 
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   const handleTextAreaChange = (e) => {
     const val = e.target.value;
     if (data.handleChange) {
@@ -126,6 +135,25 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
           onClick={data.handleClick}>
           {data.label}
         </button>
+      );
+
+    case "iframe-render":
+      return (
+        <>
+          {
+            isValidUrl(data.value) ? (  
+              <iframe
+                src={data.value}
+                title="iframe"
+                className="w-full h-full"
+                style={{ height: "500px", marginTop: "10px", border: "1px solid #ccc"}}
+                allowFullScreen
+              />
+            ) : (
+              <p style={{ color: "red", marginTop: "10px", fontSize: '12px' }} >Invalid URL</p>
+            )
+          }
+        </>
       );
 
     case "multi-select":

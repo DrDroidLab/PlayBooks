@@ -29,10 +29,12 @@ class Documentation(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: Documentation._TaskType.ValueType  # 0
         MARKDOWN: Documentation._TaskType.ValueType  # 1
+        IFRAME: Documentation._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: Documentation.TaskType.ValueType  # 0
     MARKDOWN: Documentation.TaskType.ValueType  # 1
+    IFRAME: Documentation.TaskType.ValueType  # 2
 
     @typing_extensions.final
     class Markdown(google.protobuf.message.Message):
@@ -49,19 +51,38 @@ class Documentation(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["content", b"content"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["content", b"content"]) -> None: ...
 
+    @typing_extensions.final
+    class Iframe(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        IFRAME_URL_FIELD_NUMBER: builtins.int
+        @property
+        def iframe_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            iframe_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["iframe_url", b"iframe_url"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["iframe_url", b"iframe_url"]) -> None: ...
+
     TYPE_FIELD_NUMBER: builtins.int
     MARKDOWN_FIELD_NUMBER: builtins.int
+    IFRAME_FIELD_NUMBER: builtins.int
     type: global___Documentation.TaskType.ValueType
     @property
     def markdown(self) -> global___Documentation.Markdown: ...
+    @property
+    def iframe(self) -> global___Documentation.Iframe: ...
     def __init__(
         self,
         *,
         type: global___Documentation.TaskType.ValueType = ...,
         markdown: global___Documentation.Markdown | None = ...,
+        iframe: global___Documentation.Iframe | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["markdown", b"markdown", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["markdown", b"markdown", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["markdown"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["iframe", b"iframe", "markdown", b"markdown", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["iframe", b"iframe", "markdown", b"markdown", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["markdown", "iframe"] | None: ...
 
 global___Documentation = Documentation
