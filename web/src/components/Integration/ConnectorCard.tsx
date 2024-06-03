@@ -25,7 +25,7 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
       </div>
 
       <Link
-        to={`/integrations/${connector.id}`}
+        to={`/integrations/${connector.enum.toLowerCase()}/${connector.id}`}
         className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
         View
       </Link>

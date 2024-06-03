@@ -1,6 +1,6 @@
 import { GET_CONNECTOR_KEYS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setKey } from "../integrationsSlice.ts";
+import { setConnector, setKey } from "../integrationsSlice.ts";
 
 export const getConnectorKeysApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,6 +16,8 @@ export const getConnectorKeysApi = apiSlice.injectEndpoints({
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const connector = data?.connector;
+          dispatch(setConnector(connector));
           data?.connector_keys?.forEach((key) => {
             dispatch(setKey({ key: key.key_type, value: key.key }));
           });
@@ -27,4 +29,5 @@ export const getConnectorKeysApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLazyGetConnectorKeysQuery } = getConnectorKeysApi;
+export const { useLazyGetConnectorKeysQuery, useGetConnectorKeysQuery } =
+  getConnectorKeysApi;

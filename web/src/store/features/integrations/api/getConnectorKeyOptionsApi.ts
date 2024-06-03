@@ -9,7 +9,7 @@ export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
         url: GET_CONNECTOR_OPTIONS,
         method: "POST",
         body: {
-          connector_type: connectorType,
+          connector_type: connectorType.toUpperCase(),
         },
       }),
       providesTags: ["Integrations"],
@@ -28,4 +28,7 @@ export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLazyGetConnectorKeyOptionsQuery } = getConnectorKeyOptionsApi;
+export const {
+  useLazyGetConnectorKeyOptionsQuery,
+  useGetConnectorKeyOptionsQuery,
+} = getConnectorKeyOptionsApi;
