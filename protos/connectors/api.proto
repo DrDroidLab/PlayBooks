@@ -55,7 +55,8 @@ message GetConnectorKeysOptionsRequest {
 message GetConnectorKeysOptionsResponse {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
-  repeated ConnectorKey connector_key_options = 3;
+  Connector connector = 3;
+  repeated ConnectorKey connector_key_options = 4;
 }
 
 message GetConnectorKeysRequest {

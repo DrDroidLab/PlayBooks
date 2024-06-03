@@ -6,6 +6,7 @@ export const injectTextTasks = (
 ): PlaybookTask[] => {
   let task = {
     content: step.notes!,
+    iframe_url: step.iframe_url!,
   };
 
   return [

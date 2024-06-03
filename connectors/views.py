@@ -118,8 +118,9 @@ def connector_keys_options(request_message: GetConnectorKeysOptionsRequest) -> \
         return GetConnectorKeysOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title='Connector Type not found'))
 
-    connector_key_options = get_connector_keys_options(connector_type)
-    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector_key_options=connector_key_options)
+    connector, connector_key_options = get_connector_keys_options(connector_type)
+    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector=connector,
+                                           connector_key_options=connector_key_options)
 
 
 @web_api(GetConnectorKeysRequest)
