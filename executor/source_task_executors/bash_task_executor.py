@@ -3,6 +3,7 @@ from typing import Dict
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
+from connectors.crud.connectors_crud import get_db_connectors
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.remote_server_processor import RemoteServerProcessor
@@ -26,6 +27,16 @@ class BashSourceManager(PlaybookSourceManager):
                 'category': 'Actions'
             },
         }
+
+    def get_active_connectors(self, account_id, connector_id: int = None) -> [ConnectorProto]:
+        db_connectors = get_db_connectors(account_id=account_id, connector_type=Source.REMOTE_SERVER, is_active=True)
+        if connector_id:
+            db_connectors = db_connectors.filter(id=connector_id)
+        connector_protos: [ConnectorProto] = []
+        for dbc in db_connectors:
+            if self.validate_connector(dbc.unmasked_proto):
+                connector_protos.append(dbc.unmasked_proto)
+        return connector_protos
 
     def get_connector_processor(self, remote_server_connector, **kwargs):
         generated_credentials = {}
