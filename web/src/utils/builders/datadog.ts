@@ -12,6 +12,19 @@ const getCurrentAsset = () => {
   return currentAsset;
 };
 
+const getMetricFamilies = () => {
+  const metrics = getCurrentAsset()?.metrics ?? [];
+  const families = metrics.map((metric) => metric.metric_family);
+  const unique = [...new Set(families)];
+
+  const arr = unique.map((family) => ({
+    id: family,
+    label: family,
+  }));
+
+  return arr;
+};
+
 export const datadogBuilder = (options) => {
   const [task, index] = getCurrentTask();
   return {
@@ -33,8 +46,8 @@ export const datadogBuilder = (options) => {
           label: "Service",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({
-            id: x.name,
-            label: x.name,
+            id: x,
+            label: x,
             service: x,
           })),
           selected: task.datadogService,
@@ -43,9 +56,7 @@ export const datadogBuilder = (options) => {
           key: "datadogMetricFamily",
           label: "Metric Family",
           type: OptionType.TYPING_DROPDOWN,
-          options: options
-            ?.find((e) => e.name === task?.datadogService)
-            ?.metric_families?.map((x) => ({ id: x, label: x })),
+          options: getMetricFamilies(),
         },
         {
           key: "datadogEnvironment",

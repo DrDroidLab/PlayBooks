@@ -14,7 +14,9 @@ function Interpretation() {
     setSelectInterpretation(!selectInterpretation);
   };
 
-  if (data?.interpreterTypes > 0 && !unsupportedRunners.includes(step.source)) {
+  if (
+    !(data?.interpreterTypes > 0 && !unsupportedRunners.includes(step.source))
+  ) {
     return <></>;
   }
 
