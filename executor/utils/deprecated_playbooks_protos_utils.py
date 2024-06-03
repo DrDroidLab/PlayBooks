@@ -3,7 +3,7 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from executor.utils.old_to_new_model_transformers import transform_new_task_definition_to_old
 from playbooks.utils.decorators import deprecated
 from protos.base_pb2 import Source
-from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookMetricTaskDefinition, \
+from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookAzureTask, DeprecatedPlaybookMetricTaskDefinition, \
     DeprecatedPlaybookTaskDefinition, DeprecatedPlaybookCloudwatchTask, DeprecatedPlaybookGrafanaTask, \
     DeprecatedPlaybookNewRelicTask, DeprecatedPlaybookDatadogTask, DeprecatedPlaybookDataFetchTaskDefinition, \
     DeprecatedPlaybookClickhouseDataFetchTask, DeprecatedPlaybookPostgresDataFetchTask, \
@@ -35,6 +35,20 @@ def get_cloudwatch_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDef
 
 
 @deprecated
+def get_azure_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
+    azure_task = task.get('azure_task', {})
+    if azure_task.get('type', None) == 'FILTER_LOG_EVENTS':
+        filter_log_events_task_proto = dict_to_proto(azure_task.get('filter_log_events_task', {}),
+                                                     DeprecatedPlaybookAzureTask.FilterLogEventsTask)
+        azure_task_proto = DeprecatedPlaybookAzureTask(
+            type=DeprecatedPlaybookAzureTask.TaskType.FILTER_LOG_EVENTS,
+            filter_log_events_task=filter_log_events_task_proto)
+    else:
+        raise Exception(f"Task type {azure_task.get('type', None)} not supported")
+    return DeprecatedPlaybookMetricTaskDefinition(source=Source.AZURE, azure_task=azure_task_proto)
+
+
+@deprecated
 def get_grafana_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefinition:
     grafana_task = task.get('grafana_task', {})
     if grafana_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
@@ -45,6 +59,14 @@ def get_grafana_task_execution_proto(task) -> DeprecatedPlaybookMetricTaskDefini
             datasource_uid=StringValue(
                 value=grafana_task.get('datasource_uid', '')),
             promql_metric_execution_task=promql_metric_execution_task_proto)
+    elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+        prometheus_datasource_metric_execution_task_proto = dict_to_proto(grafana_task.get('prometheus_datasource_metric_execution_task', {}),
+                                                           DeprecatedPlaybookGrafanaTask.DeprecatedPrometheusDataSourceMetricExecutionTask)
+        grafana_task_proto = DeprecatedPlaybookGrafanaTask(
+            type=DeprecatedPlaybookGrafanaTask.TaskType.PROMETHEUS_DATASOURCE_METRIC_EXECUTION,
+            datasource_uid=StringValue(
+                value=grafana_task.get('datasource_uid', '')),
+            prometheus_datasource_metric_execution_task=prometheus_datasource_metric_execution_task_proto)
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     return DeprecatedPlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
@@ -167,7 +189,7 @@ def get_playbook_task_definition_proto(db_task_definition):
     new_definition_task = db_task_definition.task
     task = transform_new_task_definition_to_old(new_definition_task)
     source = task.get('source', None)
-    if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG', 'GRAFANA_MIMIR']:
+    if source in ['CLOUDWATCH', 'GRAFANA', 'NEW_RELIC', 'DATADOG', 'GRAFANA_MIMIR', 'AZURE']:
         if source == 'CLOUDWATCH':
             metric_task_proto = get_cloudwatch_task_execution_proto(task)
         elif source == 'GRAFANA':
@@ -178,6 +200,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_datadog_task_execution_proto(task)
         elif source == 'GRAFANA_MIMIR':
             metric_task_proto = get_grafana_mimir_task_execution_proto(task)
+        elif source == 'AZURE':
+            metric_task_proto = get_azure_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return DeprecatedPlaybookTaskDefinition(
@@ -224,8 +248,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             action_task=action_task_proto,
             notes=StringValue(value=db_task_definition.notes)
         )
-    elif task.get('documentation_task', None):
-        documentation_task_proto = dict_to_proto(db_task_definition.task, DeprecatedPlaybookDocumentationTaskDefinition)
+    elif source == 'DOCUMENTATION':
+        documentation_task_proto = dict_to_proto(task, DeprecatedPlaybookDocumentationTaskDefinition)
         return DeprecatedPlaybookTaskDefinition(
             id=UInt64Value(value=db_task_definition.id),
             name=StringValue(value=db_task_definition.name),
@@ -234,5 +258,15 @@ def get_playbook_task_definition_proto(db_task_definition):
             documentation_task=documentation_task_proto,
             notes=StringValue(value=db_task_definition.notes),
         )
+    elif source == 'IFRAME':
+        iframe_task_proto = dict_to_proto(task, DeprecatedPlaybookDocumentationTaskDefinition)
+        return DeprecatedPlaybookTaskDefinition(
+            id=UInt64Value(value=db_task_definition.id),
+            name=StringValue(value=db_task_definition.name),
+            description=StringValue(value=db_task_definition.description),
+            type=DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION,
+            documentation_task=iframe_task_proto,
+            notes=StringValue(value=db_task_definition.notes),
+        )        
     else:
         raise ValueError(f"Invalid source: {source}")

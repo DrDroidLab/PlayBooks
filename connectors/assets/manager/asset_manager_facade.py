@@ -2,6 +2,7 @@ import logging
 
 from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
+from connectors.assets.manager.azure_assets_manager import AzureAssetManager
 from connectors.assets.manager.clickhouse_assets_manager import ClickhouseAssetManager
 from connectors.assets.manager.cloudwatch_asset_manager import CloudwatchAssetManager
 from connectors.assets.manager.dd_asset_manager import DatadogAssetManager
@@ -63,6 +64,10 @@ class AssetManagerFacade:
         manager: ConnectorAssetManager = self._map.get(connector_type)
         if not manager:
             raise ValueError(f"No asset manager found for connector_type: {connector_type}")
+        
+        if connector_type in [Source.GRAFANA, Source.GRAFANA_VPC]:
+            model_type = SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE
+
         if not model_type:
             connector_metadata_models = get_db_account_connector_metadata_models(account, connector_type=connector_type)
         else:
@@ -83,3 +88,4 @@ asset_manager_facade.register(Source.POSTGRES, PostgresAssetManager())
 asset_manager_facade.register(Source.SLACK, SlackAssetManager())
 asset_manager_facade.register(Source.REMOTE_SERVER, RemoteServetAssetManager())
 asset_manager_facade.register(Source.GRAFANA_MIMIR, MimirAssetManager())
+asset_manager_facade.register(Source.AZURE, AzureAssetManager())

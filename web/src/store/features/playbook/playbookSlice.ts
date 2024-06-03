@@ -31,7 +31,7 @@ const initialState: Playbook = {
   isEditing: false,
   lastUpdatedAt: null,
   currentStepIndex: null,
-  view: "builder",
+  view: "step",
 };
 
 const playbookSlice = createSlice({
@@ -298,12 +298,18 @@ const playbookSlice = createSlice({
     setLogQuery(state, { payload }) {
       state.steps[payload.index].cw_log_query = payload.logQuery;
     },
+    setAzureLogQuery(state, { payload }) {
+      state.steps[payload.index].filter_query = payload.filterQuery;
+    },
     setDashboard(state, { payload }) {
       state.steps[payload.index].dashboard = payload.dashboard;
 
       state.steps[payload.index].panel = null;
       state.steps[payload.index].page = null;
       state.steps[payload.index].widget = null;
+    },
+    setDataSource(state, { payload }) {
+      state.steps[payload.index].datasource = payload.datasource;
     },
     setApplicationName(state, { payload }) {
       state.steps[payload.index].application_name = payload.application_name;
@@ -452,6 +458,12 @@ const playbookSlice = createSlice({
       state.steps[payload.index].eksNamespace = payload.namespace;
       state.steps[payload.index].command = undefined;
     },
+    setWorkspaceId(state, { payload }) {
+      state.steps[payload.index].workspaceId = payload.workspaceId;
+    },
+    setTimespan(state, { payload }) {
+      state.steps[payload.index].timespan = payload.timespan;
+    },
     setStepType(state, { payload }) {
       state.steps[payload.index].stepType = payload.stepType;
     },
@@ -493,6 +505,7 @@ export const {
   setLogGroup,
   setLogQuery,
   setDashboard,
+  setDataSource,
   setPanel,
   setGrafanaQuery,
   setGrafanaExpression,
@@ -532,6 +545,9 @@ export const {
   setStepType,
   setActionKey,
   setPlaybookKey,
+  setWorkspaceId,
+  setTimespan,
+  setAzureLogQuery,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

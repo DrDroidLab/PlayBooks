@@ -20,3 +20,7 @@ export interface DocumentationTask {
   type: string;
   documentation: any;
 }
+
+export interface IframeTask {
+  iframe_url: string;
+}

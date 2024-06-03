@@ -1,0 +1,32 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+
+message AzureWorkspaceAssetModel {
+  google.protobuf.StringValue workspace = 1;
+  google.protobuf.StringValue name = 2;
+}
+
+message AzureWorkspaceAssetOptions {
+  repeated AzureWorkspaceAssetModel workspaces = 1;
+}
+
+
+message AzureAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    AzureWorkspaceAssetModel azure_workspace = 5;
+  }
+}
+
+message AzureAssets {
+  repeated AzureAssetModel assets = 1;
+}

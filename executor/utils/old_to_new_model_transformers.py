@@ -248,6 +248,17 @@ def transform_old_task_definition_to_new(task):
                     'promql_metric_execution': promql_metric_execution
                 }
             }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            datasource_uid = grafana_task.get('datasource_uid', None)
+            promql_metric_execution = grafana_task.get('prometheus_datasource_metric_execution_task', None)
+            promql_metric_execution['datasource_uid'] = datasource_uid
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'prometheus_datasource_metric_execution': promql_metric_execution
+                }
+            }
         else:
             raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     elif source == 'NEW_RELIC':
@@ -312,7 +323,18 @@ def transform_old_task_definition_to_new(task):
             }
         else:
             raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
-
+    elif source == 'AZURE':
+        azure_task = task.get('azure_task', {})
+        if azure_task.get('type', None) == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'AZURE',
+                'azure': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events': azure_task.get('filter_log_events_task', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {azure_task.get('type', None)} not supported")
     elif source == 'CLICKHOUSE':
         clickhouse_data_fetch_task = task.get('clickhouse_data_fetch_task', {})
         updated_task_def = {
@@ -390,16 +412,27 @@ def transform_old_task_definition_to_new(task):
                 }
             }
         }
-    elif task.get('documentation_task', None):
-        updated_task_def = {
-            'source': 'DOCUMENTATION',
-            'documentation': {
-                'type': 'MARKDOWN',
-                'markdown': {
-                    'content': task.get('documentation_task', {}).get('documentation', None)
+    elif task.get('type', None) in ['IFRAME', 'MARKDOWN']:
+        task_type = task.get('type', None)
+        if task_type == 'MARKDOWN':
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
+                'documentation': {
+                    'type': 'MARKDOWN',
+                    'markdown': {
+                        'content': task.get('documentation', None)
+                    }
                 }
             }
-        }
+        elif task_type == 'IFRAME':
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
+                'iframe': {
+                    'iframe_url': task.get('iframe_url', None)
+                }
+            }
+        else:
+            raise ValueError(f"Invalid task type: {task_type}")
     else:
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def
@@ -438,6 +471,17 @@ def transform_new_task_definition_to_old(task):
                     'type': 'PROMQL_METRIC_EXECUTION',
                     'datasource_uid': datasource_uid,
                     'promql_metric_execution_task': promql_metric_execution_task
+                }
+            }
+        elif grafana_task.get('type', None) == 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION':
+            prometheus_datasource_metric_execution_task = grafana_task.get('prometheus_datasource_metric_execution', {})
+            datasource_uid = prometheus_datasource_metric_execution_task.pop('datasource_uid', None)
+            updated_task_def = {
+                'source': 'GRAFANA',
+                'grafana_task': {
+                    'type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
+                    'datasource_uid': datasource_uid,
+                    'prometheus_datasource_metric_execution_task': prometheus_datasource_metric_execution_task
                 }
             }
         else:
@@ -504,6 +548,18 @@ def transform_new_task_definition_to_old(task):
             }
         else:
             raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
+    elif source == 'AZURE':
+        azure_task = task.get('azure', {})
+        if azure_task.get('type', None) == 'FILTER_LOG_EVENTS':
+            updated_task_def = {
+                'source': 'AZURE',
+                'azure_task': {
+                    'type': 'FILTER_LOG_EVENTS',
+                    'filter_log_events_task': azure_task.get('filter_log_events', {})
+                }
+            }
+        else:
+            raise Exception(f"Task type {azure_task.get('type', None)} not supported")
     elif source == 'CLICKHOUSE':
         clickhouse_task = task.get('clickhouse', {})
         sql_query_task = clickhouse_task.get('sql_query', None)
@@ -566,13 +622,20 @@ def transform_new_task_definition_to_old(task):
             'bash_command_task': bash_command_task.get('command', {})
         }
     elif source == 'DOCUMENTATION':
-        documentation_task = task.get('documentation', {})
-        updated_task_def = {
-            'source': 'DOCUMENTATION',
-            'documentation_task': {
-                'documentation': documentation_task.get('content', None)
+        if task.get('documentation', None):
+            documentation_task = task.get('documentation', {})
+            updated_task_def = {
+                'source': 'DOCUMENTATION',
+                'type': 'MARKDOWN',
+                'documentation': documentation_task.get('markdown', {}).get('content', None)
             }
-        }
+        elif task.get('iframe', None):
+            iframe_task = task.get('iframe', {})
+            updated_task_def = {
+                'source': 'IFRAME',
+                'type': 'IFRAME',
+                'iframe_url': iframe_task.get('iframe_url', None)
+            }
     else:
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def

@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+message Azure {
+  enum TaskType {
+    UNKNOWN = 0;
+    FILTER_LOG_EVENTS = 1;
+  }
+
+  message FilterLogEvents {
+    google.protobuf.StringValue workspace_id = 1;
+    google.protobuf.StringValue filter_query = 2;
+    google.protobuf.StringValue timespan = 3;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    FilterLogEvents filter_log_events = 2;
+  }
+}

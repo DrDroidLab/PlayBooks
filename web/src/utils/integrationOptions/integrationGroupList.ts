@@ -3,8 +3,11 @@ import { models } from "../../constants/index.ts";
 export const integrations = [
   {
     id: "documentation",
-    label: "Documentation",
-    options: [models.TEXT],
+    label: "View",
+    options: [
+      models.TEXT,
+      models.IFRAME
+    ],
   },
   {
     id: "actions",
@@ -14,7 +17,10 @@ export const integrations = [
   {
     id: "logs",
     label: "Logs",
-    options: [models.CLOUDWATCH_LOG_GROUP],
+    options: [
+      models.CLOUDWATCH_LOG_GROUP, 
+      models.AZURE_WORKSPACE
+    ],
   },
   {
     id: "metrics",
@@ -26,7 +32,7 @@ export const integrations = [
       models.DATADOG,
       models.DATADOG_QUERY,
       models.CLOUDWATCH_METRIC,
-      models.GRAFANA,
+      models.GRAFANA_DATASOURCE,
       models.GRAFANA_MIMIR_PROMQL
     ],
   },

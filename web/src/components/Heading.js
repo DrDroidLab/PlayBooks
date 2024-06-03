@@ -18,7 +18,7 @@ import {
   setPlaybookKey,
 } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
@@ -50,6 +50,7 @@ const Heading = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const hasPreviousPage = useHasPreviousPage();
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
@@ -59,9 +60,12 @@ const Heading = ({
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
   };
-
   const goBack = () => {
-    navigate(-1);
+    if (location.key !== "default") {
+      navigate(-1);
+    } else {
+      navigate("/", { replace: true });
+    }
   };
 
   const handleDescription = (e) => {

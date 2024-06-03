@@ -4,6 +4,7 @@ from typing import Dict
 from google.protobuf.wrappers_pb2 import StringValue
 
 from executor.source_task_executor.api_task_executor import ApiTaskExecutor
+from executor.source_task_executor.azure_task_executor import AzureTaskExecutor
 from executor.source_task_executor.bash_task_executor import BashTaskExecutor
 from executor.source_task_executor.grafana_executor import GrafanaTaskExecutor
 from executor.source_task_executor.grafana_vpc_executor import GrafanaVpcTaskExecutor
@@ -53,6 +54,7 @@ executor_facade.register(Source.NEW_RELIC, NewRelicTaskExecutor)
 executor_facade.register(Source.GRAFANA, GrafanaTaskExecutor)
 executor_facade.register(Source.GRAFANA_VPC, GrafanaVpcTaskExecutor)
 executor_facade.register(Source.GRAFANA_MIMIR, MimirTaskExecutor)
+executor_facade.register(Source.AZURE, AzureTaskExecutor)
 
 executor_facade.register(Source.POSTGRES, PostgresTaskExecutor)
 executor_facade.register(Source.CLICKHOUSE, ClickhouseTaskExecutor)

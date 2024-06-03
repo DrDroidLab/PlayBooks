@@ -38,8 +38,11 @@ class PromQl(google.protobuf.message.Message):
     class PromQlMetricExecution(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+        DATASOURCE_UID_FIELD_NUMBER: builtins.int
         PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
         PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        @property
+        def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -47,11 +50,12 @@ class PromQl(google.protobuf.message.Message):
         def __init__(
             self,
             *,
+            datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
             promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
             process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

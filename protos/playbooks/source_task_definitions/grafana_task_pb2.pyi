@@ -9,6 +9,7 @@ import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
+import protos.playbooks.source_task_definitions.promql_task_pb2
 import sys
 import typing
 
@@ -31,10 +32,12 @@ class Grafana(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: Grafana._TaskType.ValueType  # 0
         PROMQL_METRIC_EXECUTION: Grafana._TaskType.ValueType  # 1
+        PROMETHEUS_DATASOURCE_METRIC_EXECUTION: Grafana._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: Grafana.TaskType.ValueType  # 0
     PROMQL_METRIC_EXECUTION: Grafana.TaskType.ValueType  # 1
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION: Grafana.TaskType.ValueType  # 2
 
     @typing_extensions.final
     class PromQlMetricExecution(google.protobuf.message.Message):
@@ -104,17 +107,21 @@ class Grafana(google.protobuf.message.Message):
 
     TYPE_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int
+    PROMETHEUS_DATASOURCE_METRIC_EXECUTION_FIELD_NUMBER: builtins.int
     type: global___Grafana.TaskType.ValueType
     @property
     def promql_metric_execution(self) -> global___Grafana.PromQlMetricExecution: ...
+    @property
+    def prometheus_datasource_metric_execution(self) -> protos.playbooks.source_task_definitions.promql_task_pb2.PromQl.PromQlMetricExecution: ...
     def __init__(
         self,
         *,
         type: global___Grafana.TaskType.ValueType = ...,
         promql_metric_execution: global___Grafana.PromQlMetricExecution | None = ...,
+        prometheus_datasource_metric_execution: protos.playbooks.source_task_definitions.promql_task_pb2.PromQl.PromQlMetricExecution | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["promql_metric_execution", b"promql_metric_execution", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["promql_metric_execution", b"promql_metric_execution", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["prometheus_datasource_metric_execution", b"prometheus_datasource_metric_execution", "promql_metric_execution", b"promql_metric_execution", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["prometheus_datasource_metric_execution", b"prometheus_datasource_metric_execution", "promql_metric_execution", b"promql_metric_execution", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["promql_metric_execution", "prometheus_datasource_metric_execution"] | None: ...
 
 global___Grafana = Grafana

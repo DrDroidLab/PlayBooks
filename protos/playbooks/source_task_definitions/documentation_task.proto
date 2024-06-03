@@ -8,14 +8,20 @@ message Documentation {
   enum TaskType {
     UNKNOWN = 0;
     MARKDOWN = 1;
+    IFRAME = 2;
   }
 
   message Markdown {
     google.protobuf.StringValue content = 1;
   }
 
+  message Iframe {
+    google.protobuf.StringValue iframe_url = 1;
+  }
+
   TaskType type = 1;
   oneof task {
     Markdown markdown = 2;
+    Iframe iframe = 3;
   }
 }
