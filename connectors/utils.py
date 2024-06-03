@@ -49,8 +49,8 @@ def get_all_request_connectors():
 def get_all_available_connectors(all_active_connectors):
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
     print(all_connectors);
-    for ac in all_active_connectors:
-        all_connectors.remove(ac.connector_type)
+    # for ac in all_active_connectors:
+    #     all_connectors.remove(ac.connector_type)
     all_available_connectors = []
     for c in all_connectors:
         all_available_connectors.append(
