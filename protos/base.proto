@@ -95,7 +95,6 @@ enum Source {
   BASH = 41;
   AZURE = 42;
   GRAFANA_MIMIR = 43;
-  IFRAME_RENDER = 44;
 }
 
 enum SourceKeyType {
