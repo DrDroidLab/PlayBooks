@@ -1,12 +1,9 @@
 import { Button } from "@mui/material";
 import styles from "./styles.module.css";
 import capitalizeFirstLetter from "../../../utils/capitalize";
-import { CheckCircle } from "@mui/icons-material";
 
 function IntegrationCard({ data }) {
   const handleClick = () => {};
-
-  const isActive = data?.status === "active" || data?.vpc?.status === "active";
 
   return (
     <div key={data.id} className={styles["tabContainer"]}>
@@ -25,35 +22,27 @@ function IntegrationCard({ data }) {
               src={data.imgUrl}
               alt="alternatetext"
             />
-            {isActive && <CheckCircle style={{ color: "green" }} />}
           </div>
           <h1>{data.title}</h1>
           <h6 className={styles.desc}>{data.desc}</h6>
         </div>
       </div>
-      {isActive ? (
-        <a
-          href={`/integrations/${data.enum.toLowerCase()}`}
-          className={styles.button}>
-          <div>View Details</div>
-        </a>
-      ) : (
-        <a
-          href={
-            data?.status === "request"
-              ? "https://github.com/DrDroidLab/PlayBooks/issues/new"
-              : data.buttonLink || `/integrations/${data.enum.toLowerCase()}`
-          }
-          target={data?.status === "request" ? "_blank" : "_self"}
-          rel="noreferrer">
-          <Button
-            type="link"
-            className={styles.buttonStyle}
-            onClick={handleClick}>
-            {capitalizeFirstLetter(data.buttonText.toLowerCase())}
-          </Button>
-        </a>
-      )}
+
+      <a
+        href={
+          data?.status === "request"
+            ? "https://github.com/DrDroidLab/PlayBooks/issues/new"
+            : data.buttonLink || `/integrations/${data.enum.toLowerCase()}`
+        }
+        target={data?.status === "request" ? "_blank" : "_self"}
+        rel="noreferrer">
+        <Button
+          type="link"
+          className={styles.buttonStyle}
+          onClick={handleClick}>
+          {capitalizeFirstLetter(data.buttonText.toLowerCase())}
+        </Button>
+      </a>
     </div>
   );
 }
