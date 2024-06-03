@@ -10,6 +10,7 @@ export enum OptionType {
   BUTTON = "button",
   MULTI_OPTIONS = "multi-options",
   MULTI_SELECT = "multi-select",
+  IFRAME_RENDER = "iframe-render",
 }
 
 export const constructBuilder = (task: any, index) => {
