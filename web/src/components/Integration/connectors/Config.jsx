@@ -6,11 +6,19 @@ import { useCreateConnectorMutation } from "../../../store/features/integrations
 import { useLazyTestConnectionQuery } from "../../../store/features/integrations/api/testConnectionApi.ts";
 import SlackManifestGenerator from "./SlackManifestGenerator.jsx";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
+import ValueComponent from "../../ValueComponent/index.jsx";
+import {
+  connectorSelector,
+  setKey,
+} from "../../../store/features/integrations/integrationsSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
 
 function Config({ connector, connectorActive }) {
   const keyOptions = connector?.keys ?? [];
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const dispatch = useDispatch();
+  const currentConnector = useSelector(connectorSelector);
   const [createConnector, { isLoading: saveLoading }] =
     useCreateConnectorMutation();
   const [
@@ -30,25 +38,28 @@ function Config({ connector, connectorActive }) {
       keyOptions?.forEach((e) => {
         formattedKeys.push({
           key_type: e.key_type,
-          key: (connector[e.key_type] === "SSL_VERIFY"
-            ? connector[e.key_type] !== ""
-              ? connector[e.key_type]
+          key: (currentConnector[e.key_type] === "SSL_VERIFY"
+            ? currentConnector[e.key_type] !== ""
+              ? currentConnector[e.key_type]
               : false
-            : connector[e.key_type]
-          ).toString(),
+            : currentConnector[e.key_type]
+          )?.toString(),
         });
       });
       if (test) {
         await triggerTestConnection({
           type: connector.type,
           keys: formattedKeys,
+          name: currentConnector.name,
         });
       } else {
-        await createConnector({
+        const res = await createConnector({
           type: connector.type,
           keys: formattedKeys,
+          name: currentConnector.name,
         });
-        window.location.reload();
+        console.log("res", res);
+        // window.location.reload();
       }
     }
   };
@@ -75,19 +86,35 @@ function Config({ connector, connectorActive }) {
           )}
         </div>
 
-        {keyOptions?.map((option, i) => (
+        <>
           <div
-            key={i}
             className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
-            <div className={styles["content"]}>
-              {option?.display_name || option?.key_type}
-            </div>
-            <HandleKeyOptions
-              connectorActive={connectorActive}
-              option={option}
+            <div className={styles["content"]}>Name</div>
+            <ValueComponent
+              valueType={"STRING"}
+              onValueChange={(val) => {
+                dispatch(setKey({ key: "name", value: val }));
+              }}
+              disabled={connectorActive}
+              value={currentConnector.name}
+              placeHolder={"Enter connector name"}
+              length={500}
             />
           </div>
-        ))}
+          {keyOptions?.map((option, i) => (
+            <div
+              key={i}
+              className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
+              <div className={styles["content"]}>
+                {option?.display_name || option?.key_type}
+              </div>
+              <HandleKeyOptions
+                connectorActive={connectorActive}
+                option={option}
+              />
+            </div>
+          ))}
+        </>
       </div>
 
       <button

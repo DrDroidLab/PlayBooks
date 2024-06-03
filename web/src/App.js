@@ -20,9 +20,6 @@ const SignUp = React.lazy(() => import("./pages/SignUp"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage"),
 );
-const ConnectorPageBeta = React.lazy(() =>
-  import("./components/Integration/connectors/ConnectorPageBeta"),
-);
 const Integrations = React.lazy(() => import("./components/Integration"));
 const Playbooks = React.lazy(() => import("./components/Playbooks"));
 const Workflows = React.lazy(() => import("./components/Workflows"));
@@ -157,11 +154,11 @@ const App = () => {
           <Route path="/data-sources" element={<DataSources />} />
           <Route
             path="/integrations/:connectorEnum"
-            element={<ConnectorPageBeta />}
+            element={<ConnectorPage />}
           />
           <Route
             path="/integrations/:connectorEnum/:id"
-            element={<ConnectorPageBeta />}
+            element={<ConnectorPage />}
           />
           <Route path="/api-keys" element={<ApiTokens />} />
           <Route path="/invite-team" element={<InviteTeam />} />

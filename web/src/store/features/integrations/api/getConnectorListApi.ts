@@ -86,11 +86,11 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
             enum: integration.type,
             status: IntegrationStatus.ACTIVE,
           };
-          integrations[integration.category] =
-            integrations[integration.category] || []; // Check if the key exists, if not create an empty array
-          integrations[integration.category].push(cardData);
+          // integrations[integration.category] =
+          //   integrations[integration.category] || []; // Check if the key exists, if not create an empty array
+          // integrations[integration.category].push(cardData);
           connectedConnectors.push(cardData);
-          allAvailableConnectors.push(cardData);
+          // allAvailableConnectors.push(cardData);
         }
 
         for (let integration of response?.request_connectors ?? []) {
@@ -123,14 +123,14 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
 
         integrations["allAvailableConnectors"] = allAvailableConnectors;
 
-        for (let vpcConnector of vpcConnectors) {
-          const integration = integrations.allAvailableConnectors.find(
-            (e) => e.enum === vpcConnector.enum.replace("_VPC", ""),
-          );
-          if (integration) {
-            integration.vpc = vpcConnector;
-          }
-        }
+        // for (let vpcConnector of vpcConnectors) {
+        //   const integration = integrations.allAvailableConnectors.find(
+        //     (e) => e.enum === vpcConnector.enum.replace("_VPC", ""),
+        //   );
+        //   if (integration) {
+        //     integration.vpc = vpcConnector;
+        //   }
+        // }
 
         return { integrations, vpcConnectors, agentProxy, connectedConnectors };
       },
