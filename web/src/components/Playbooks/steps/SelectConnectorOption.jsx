@@ -30,48 +30,51 @@ function SelectConnectorOption() {
       ?.connector_options ?? [];
 
   return (
-    <>
-      {currentConnectorOptions.length > 0 ? (
-        <div className="flex gap-2">
-          <SelectComponent
-            data={currentConnectorOptions.map((option) => ({
-              id: option.connector_id,
-              label: option.display_name,
-              option: option,
-            }))}
-            placeholder="Select Connector"
-            onSelectionChange={handleConnectorOptionChange}
-            selected={step?.connectorType}
-            searchable={true}
-            disabled={isPrefetched}
-          />
-        </div>
-      ) : (
-        <>
-          <button
-            href="/playbooks/create"
-            rel="noreferrer"
-            target="_blank"
-            onClick={toggleDrawer}
-            className="border border-violet-500 p-1 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs">
-            + Add New Source
+    <div className="flex flex-col">
+      <p className="text-xs text-gray-500 font-bold">Connector</p>
+      <div className="flex gap-1">
+        {currentConnectorOptions.length > 0 ? (
+          <div className="flex gap-2">
+            <SelectComponent
+              data={currentConnectorOptions.map((option) => ({
+                id: option.connector_id,
+                label: option.display_name,
+                option: option,
+              }))}
+              placeholder="Select Connector"
+              onSelectionChange={handleConnectorOptionChange}
+              selected={step?.connectorType}
+              searchable={true}
+              disabled={isPrefetched}
+            />
+          </div>
+        ) : (
+          <>
+            <button
+              href="/playbooks/create"
+              rel="noreferrer"
+              target="_blank"
+              onClick={toggleDrawer}
+              className="border border-violet-500 p-1 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs">
+              + Add New Source
+            </button>
+          </>
+        )}
+        {!isPrefetched && (
+          <button onClick={refetch}>
+            <RefreshRounded
+              className={`text-gray-400 hover:text-gray-600 transition-all`}
+            />
           </button>
-        </>
-      )}
-      {!isPrefetched && (
-        <button onClick={refetch}>
-          <RefreshRounded
-            className={`text-gray-400 hover:text-gray-600 transition-all`}
-          />
-        </button>
-      )}
-      {isFetching && <CircularProgress size={20} />}
-      <CustomDrawer
-        isOpen={isDrawerOpen}
-        setIsOpen={setDrawerOpen}
-        src={"/integrations"}
-      />
-    </>
+        )}
+        {isFetching && <CircularProgress size={20} />}
+        <CustomDrawer
+          isOpen={isDrawerOpen}
+          setIsOpen={setDrawerOpen}
+          src={"/integrations"}
+        />
+      </div>
+    </div>
   );
 }
 

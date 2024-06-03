@@ -25,14 +25,17 @@ function SelectSource() {
   }
 
   return (
-    <SelectComponent
-      data={connectorOptions}
-      placeholder="Select Data Source"
-      onSelectionChange={handleSourceChange}
-      selected={step?.source}
-      searchable={true}
-      disabled={isPrefetched}
-    />
+    <div className="flex flex-col">
+      <p className="text-xs text-gray-500 font-bold">Data Source</p>
+      <SelectComponent
+        data={connectorOptions}
+        placeholder="Select Data Source"
+        onSelectionChange={handleSourceChange}
+        selected={step?.source}
+        searchable={true}
+        disabled={isPrefetched}
+      />
+    </div>
   );
 }
 

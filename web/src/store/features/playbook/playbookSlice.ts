@@ -363,7 +363,6 @@ const playbookSlice = createSlice({
       };
     },
     setDimensionIndex(state, { payload }) {
-      console.log("dim", payload.dimension);
       state.steps[payload.index].dimensionIndex = payload.dimensionIndex;
       state.steps[payload.index].dimension = payload.dimension;
       state.steps[payload.index].dimensionName =

@@ -11,7 +11,6 @@ import {
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
@@ -30,7 +29,6 @@ function StepDetails() {
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
-  const { data } = useGetBuilderOptionsQuery();
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
@@ -89,9 +87,7 @@ function StepDetails() {
           <AddSource />
           <PlaybookStep />
           <Notes />
-          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation />
-          )}
+          <Interpretation />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}

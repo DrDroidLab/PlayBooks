@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import SelectInterpreterDropdown from "./SelectInterpreterDropdown";
+import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
 
 function Interpretation() {
+  const [step] = useCurrentStep();
   const [selectInterpretation, setSelectInterpretation] = useState(false);
+  const { data } = usePlaybookBuilderOptionsQuery();
 
   const toggleInterpretation = () => {
     setSelectInterpretation(!selectInterpretation);
   };
+
+  if (data?.interpreterTypes > 0 && !unsupportedRunners.includes(step.source)) {
+    return <></>;
+  }
 
   return (
     <div className="text-sm my-4 flex items-center gap-4 flex-wrap">
