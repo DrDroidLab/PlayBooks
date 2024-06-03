@@ -2,6 +2,7 @@ import { GET_ASSETS } from "../../../../../constants/index.ts";
 import { updateCardByIndex } from "../../../../../utils/execution/updateCardByIndex.ts";
 import extractModelOptions from "../../../../../utils/extractModelOptions.ts";
 import getCurrentTask from "../../../../../utils/getCurrentTask.ts";
+import handleAssets from "../../../../../utils/handleAssets.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 import { setAssets } from "../../playbookSlice.ts";
 
@@ -28,10 +29,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
         if (connector_type?.includes("_VPC"))
           connector_type = connector_type.replace("_VPC", "");
 
-        const assets = data[0][connector_type.toLowerCase()].assets?.map(
-          (e) => e[task.modelType.toLowerCase()],
-        );
-
+        const assets = handleAssets(data, connector_type);
         const modelOptions = extractModelOptions(assets, task);
         updateCardByIndex("modelOptions", modelOptions);
         return assets;

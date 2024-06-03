@@ -99,7 +99,9 @@ export default function extractModelOptions(assets, task) {
         })),
       };
     case taskTypes.BASH_COMMAND:
-      return {};
+      return {
+        ssh_servers: assets?.map((asset) => asset.name) ?? [],
+      };
     default:
       return [];
   }
