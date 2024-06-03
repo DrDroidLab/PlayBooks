@@ -150,14 +150,14 @@ const App = () => {
             element={<WorkflowExecutionLogs />}
           />
           <Route path="/playgrounds" element={<Playground />} />
-          <Route path="/integrations" element={<Integrations />} />
+          <Route path="/data-sources/add" element={<Integrations />} />
           <Route path="/data-sources" element={<DataSources />} />
           <Route
-            path="/integrations/:connectorEnum"
+            path="/data-sources/:connectorEnum"
             element={<ConnectorPage />}
           />
           <Route
-            path="/integrations/:connectorEnum/:id"
+            path="/data-sources/:connectorEnum/:id"
             element={<ConnectorPage />}
           />
           <Route path="/api-keys" element={<ApiTokens />} />

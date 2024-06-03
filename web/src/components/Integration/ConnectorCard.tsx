@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { CardData } from "../../store/features/integrations/types";
 import { Link } from "react-router-dom";
+import { Delete } from "@mui/icons-material";
+import ConnectorDeleteOverlay from "./connectors/ConnectorDeleteOverlay";
 
 type ConnectorCardPropTypes = {
   connector: CardData;
 };
 
 function ConnectorCard({ connector }: ConnectorCardPropTypes) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <div className="bg-gray-100 py-4 px-2 rounded flex justify-between items-center">
       <div className="flex items-center gap-3">
@@ -24,11 +28,28 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
         </div>
       </div>
 
-      <Link
-        to={`/integrations/${connector.enum.toLowerCase()}/${connector.id}`}
-        className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
-        View
-      </Link>
+      <div className="flex gap-2">
+        <button
+          onClick={() => setIsDeleting(true)}
+          className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
+          <Delete />
+        </button>
+
+        <Link
+          to={`/data-sources/${connector.enum.toLowerCase()}/${connector.id}`}
+          className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
+          View
+        </Link>
+      </div>
+
+      <ConnectorDeleteOverlay
+        isOpen={isDeleting}
+        toggleOverlay={() => setIsDeleting(!isDeleting)}
+        successCb={() => {
+          window.location.href = "/data-sources";
+        }}
+        connector={connector}
+      />
     </div>
   );
 }

@@ -56,7 +56,7 @@ function DataSources() {
             />
           </div>
           <Link
-            to={"/integrations"}
+            to={"/data-sources/add"}
             className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
             <Add fontSize="inherit" />
             <span>Add a new Data Source</span>
