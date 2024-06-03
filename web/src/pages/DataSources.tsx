@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Heading from "../components/Heading";
 import SuspenseLoader from "../components/Skeleton/SuspenseLoader";
 import TableSkeleton from "../components/Skeleton/TableLoader";
@@ -6,9 +6,34 @@ import { useGetConnectorListQuery } from "../store/features/integrations/api/ind
 import { Add, SearchRounded } from "@mui/icons-material";
 import ConnectorCard from "../components/Integration/ConnectorCard.tsx";
 import { Link } from "react-router-dom";
+import useDebounce from "../hooks/useDebounce.ts";
 
 function DataSources() {
   const { data: integrations, isFetching } = useGetConnectorListQuery();
+  const connectorList = integrations?.connectedConnectors;
+  const [query, setQuery] = useState("");
+  const [filteredIntegrations, setFilteredIntegrations] =
+    useState(connectorList);
+  const debouncedQuery = useDebounce(query, 0);
+
+  const searchIntegrations = () => {
+    if (debouncedQuery) {
+      return connectorList?.filter(
+        (connector) =>
+          connector.title
+            .toLowerCase()
+            .includes(debouncedQuery.toLowerCase()) ||
+          connector.enum.toLowerCase().includes(debouncedQuery.toLowerCase()),
+      );
+    } else {
+      return connectorList;
+    }
+  };
+
+  useEffect(() => {
+    setFilteredIntegrations(searchIntegrations());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery, connectorList]);
 
   return (
     <>
@@ -25,7 +50,10 @@ function DataSources() {
             <SearchRounded />
             <input
               className="w-full h-full text-base outline-none"
-              placeholder="Search by name"></input>
+              placeholder="Search by name or type..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
           <Link
             to={"/integrations"}
@@ -38,7 +66,7 @@ function DataSources() {
           <SuspenseLoader
             loading={isFetching}
             loader={<TableSkeleton noOfLines={7} />}>
-            {integrations?.connectedConnectors?.map((connector, i) => (
+            {filteredIntegrations?.map((connector, i) => (
               <ConnectorCard connector={connector} />
             ))}
           </SuspenseLoader>
