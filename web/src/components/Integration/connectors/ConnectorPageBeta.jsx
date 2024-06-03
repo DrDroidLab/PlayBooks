@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   connectorSelector,
-  integrationsSelector,
   setCurrentConnector,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,7 +16,7 @@ import { connectorsWithoutAssets } from "../../../utils/connectorsWithoutAssets.
 import { unsupportedConnectors } from "../../../utils/unsupportedConnectors.ts";
 import {
   useGetConnectorKeyOptionsQuery,
-  useGetConnectorKeysQuery,
+  useLazyGetConnectorKeysQuery,
 } from "../../../store/features/integrations/api/index.ts";
 import { ChevronLeft } from "@mui/icons-material";
 import GoogleChatIntegration from "./GoogleChatIntegration.jsx";
@@ -27,18 +26,19 @@ function ConnectorPageBeta() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const connectors = useSelector(integrationsSelector);
   const currentConnector = useSelector(connectorSelector);
   const [selectedTab, setSelectedTab] = useState(0);
-  const { data: keyOptions, isFetching: optionsLoading } =
+  const { data: connector, isFetching: optionsLoading } =
     useGetConnectorKeyOptionsQuery(connectorEnum);
-  const { isFetching: keysLoading } = useGetConnectorKeysQuery(id);
+  const [triggerGetKeys, { isFetching: keysLoading }] =
+    useLazyGetConnectorKeysQuery();
 
   useEffect(() => {
-    if (connectors?.length > 0 && id) {
+    if (id !== null && id !== undefined) {
       dispatch(setCurrentConnector(id));
+      triggerGetKeys(id);
     }
-  }, [connectors]);
+  }, [id]);
 
   const handleTabChange = (_, newValue) => {
     setSelectedTab(newValue);
@@ -75,7 +75,7 @@ function ConnectorPageBeta() {
     <div>
       <Heading
         heading={`${
-          currentConnector?.displayTitle ?? currentConnector?.type
+          connector?.display_name ?? currentConnector?.type
         } Integration Setup`}
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
@@ -103,7 +103,10 @@ function ConnectorPageBeta() {
         value={selectedTab}
         index={0}
         className={styles["config-section"]}>
-        <Config keyOptions={keyOptions} />
+        <Config
+          connector={connector}
+          connectorActive={id !== undefined && id !== null}
+        />
       </TabPanel>
 
       {isActive && containsAssets && (
@@ -111,7 +114,7 @@ function ConnectorPageBeta() {
           value={selectedTab}
           index={1}
           className={styles["config-section"]}>
-          <Assets />
+          <Assets connector={connector} />
         </TabPanel>
       )}
     </div>

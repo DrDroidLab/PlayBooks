@@ -79,7 +79,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
             id: integration.id ?? "",
             title: integration.display_name,
             buttonLink: card?.buttonLink ?? "",
-            buttonText: "View Details",
+            buttonText: "Connect",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",
             docs: card?.docs,

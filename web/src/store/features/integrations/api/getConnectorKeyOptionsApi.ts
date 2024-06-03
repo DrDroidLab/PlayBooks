@@ -14,7 +14,7 @@ export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["Integrations"],
       transformResponse: (response: any) => {
-        return response?.connector_key_options ?? [];
+        return response?.connector ?? [];
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {

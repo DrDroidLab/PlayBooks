@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 import { connectors } from "../../../constants/connectors.ts";
 import { ClickhouseAssets } from "./assets/ClickhouseAssets";
 import TableSkeleton from "../..//Skeleton/TableLoader";
@@ -12,11 +10,9 @@ import { useGetConnectorAssetsQuery } from "../../../store/features/integrations
 import { EksClusterAssets } from "./assets/EksClusterAssets.jsx";
 import { AzureAssets } from "./assets/AzureAssets.jsx";
 
-function Assets() {
-  const currentConnector = useSelector(connectorSelector);
-  const vpcEnabled = currentConnector?.vpc?.status === "active";
+function Assets({ connector }) {
   const { data, isFetching, error } = useGetConnectorAssetsQuery(
-    vpcEnabled ? currentConnector?.vpc?.enum : currentConnector.enum,
+    connector?.type,
   );
 
   if (isFetching) {
@@ -27,9 +23,9 @@ function Assets() {
     return <>There was an error: {error.message}</>;
   }
   const assets = data?.assets
-    ? data?.assets[0][currentConnector.type?.toLowerCase()]?.assets
+    ? data?.assets[0][connector.type?.toLowerCase()]?.assets
     : [];
-  switch (currentConnector.type) {
+  switch (connector.type) {
     case connectors.CLICKHOUSE:
       return <ClickhouseAssets assets={assets} />;
 

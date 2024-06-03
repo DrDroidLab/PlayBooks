@@ -236,7 +236,13 @@ const playbookSlice = createSlice({
       }
     },
     updateStep: (state, { payload }) => {
-      state.steps[payload.index][payload.key] = payload.value;
+      if (
+        state.currentStepIndex != null ||
+        payload.index !== undefined ||
+        payload.index !== null
+      )
+        state.steps[payload.index ?? state.currentStepIndex][payload.key] =
+          payload.value;
     },
     updateTitle: (state, { payload }) => {
       state.steps[payload.index].description = payload.description;

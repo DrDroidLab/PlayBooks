@@ -155,7 +155,10 @@ const App = () => {
           <Route path="/playgrounds" element={<Playground />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/data-sources" element={<DataSources />} />
-          {/* <Route path="/integrations/:id" element={<ConnectorPage />} /> */}
+          <Route
+            path="/integrations/:connectorEnum"
+            element={<ConnectorPageBeta />}
+          />
           <Route
             path="/integrations/:connectorEnum/:id"
             element={<ConnectorPageBeta />}
