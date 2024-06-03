@@ -9,13 +9,18 @@ export const extractTextTasks = (step: any) => {
       ? tasks[0]?.task_connector_sources[0]?.id
       : "";
 
+  if (taskType === "IFRAME") {
+    modelType = "IFRAME";
+  }
+
   const stepData = {
     source: stepSource,
     connector_type: stepSource,
     connectorType,
     taskType,
     modelType,
-    notes: textStep?.content,
+    notes: textStep.documentation,
+    iframe_url: textStep.iframe_url,
   };
 
   return stepData;

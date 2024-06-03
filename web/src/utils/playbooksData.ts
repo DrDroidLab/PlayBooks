@@ -11,6 +11,7 @@ export enum OptionType {
   MULTI_OPTIONS = "multi-options",
   MULTI_SELECT = "multi-select",
   TYPING_DROPDOWN = "typing-dropdown",
+  IFRAME_RENDER = "iframe-render",
 }
 
 export const constructBuilder = () => {
@@ -68,6 +69,8 @@ export const constructBuilder = () => {
       return Builders.sqlRawQueryBuilder();
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
       return Builders.mimirBuilder();
+    case taskTypes.DOCUMENTATION_IFRAME:
+      return Builders.iframeBuilder();
     default:
       break;
   }

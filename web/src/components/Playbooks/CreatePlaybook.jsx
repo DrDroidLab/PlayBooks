@@ -93,7 +93,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   }
 
   return (
-    <div className="flex flex-col h-full w-full lg:w-1/2 m-auto">
+    <div className="flex flex-col h-full w-full lg:w-2/3 m-auto">
       {showHeading && (
         <Heading
           heading={

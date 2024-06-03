@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\nAprotos/playbooks/source_task_definitions/documentation_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xef\x01\n\rDocumentation\x12\x36\n\x04type\x18\x01 \x01(\x0e\x32(.protos.playbooks.Documentation.TaskType\x12<\n\x08markdown\x18\x02 \x01(\x0b\x32(.protos.playbooks.Documentation.MarkdownH\x00\x1a\x39\n\x08Markdown\x12-\n\x07\x63ontent\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"%\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08MARKDOWN\x10\x01\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\nAprotos/playbooks/source_task_definitions/documentation_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xf1\x02\n\rDocumentation\x12\x36\n\x04type\x18\x01 \x01(\x0e\x32(.protos.playbooks.Documentation.TaskType\x12<\n\x08markdown\x18\x02 \x01(\x0b\x32(.protos.playbooks.Documentation.MarkdownH\x00\x12\x38\n\x06iframe\x18\x03 \x01(\x0b\x32&.protos.playbooks.Documentation.IframeH\x00\x1a\x39\n\x08Markdown\x12-\n\x07\x63ontent\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a:\n\x06Iframe\x12\x30\n\niframe_url\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"1\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08MARKDOWN\x10\x01\x12\n\n\x06IFRAME\x10\x02\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.documentation_task_pb2', globals())
@@ -22,9 +22,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _DOCUMENTATION._serialized_start=120
-  _DOCUMENTATION._serialized_end=359
-  _DOCUMENTATION_MARKDOWN._serialized_start=255
-  _DOCUMENTATION_MARKDOWN._serialized_end=312
-  _DOCUMENTATION_TASKTYPE._serialized_start=314
-  _DOCUMENTATION_TASKTYPE._serialized_end=351
+  _DOCUMENTATION._serialized_end=489
+  _DOCUMENTATION_MARKDOWN._serialized_start=313
+  _DOCUMENTATION_MARKDOWN._serialized_end=370
+  _DOCUMENTATION_IFRAME._serialized_start=372
+  _DOCUMENTATION_IFRAME._serialized_end=430
+  _DOCUMENTATION_TASKTYPE._serialized_start=432
+  _DOCUMENTATION_TASKTYPE._serialized_end=481
 # @@protoc_insertion_point(module_scope)
