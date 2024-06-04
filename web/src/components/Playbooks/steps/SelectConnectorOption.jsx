@@ -8,11 +8,12 @@ import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function SelectConnectorOption() {
-  const { currentStepIndex, steps, connectorOptions } =
-    useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+function SelectConnectorOption({ index }) {
+  const { connectorOptions } = useSelector(playbookSelector);
+  const [step, currentStepIndex] = useCurrentStep(index);
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
@@ -22,7 +23,8 @@ function SelectConnectorOption() {
   };
 
   function handleConnectorOptionChange(id) {
-    updateCardByIndex("connectorType", id);
+    updateCardByIndex("connectorType", id, currentStepIndex);
+    fetchData({ index: currentStepIndex });
   }
 
   const currentConnectorOptions =
@@ -71,7 +73,7 @@ function SelectConnectorOption() {
         <CustomDrawer
           isOpen={isDrawerOpen}
           setIsOpen={setDrawerOpen}
-          src={"/integrations"}
+          src={"/data-sources/add"}
         />
       </div>
     </div>

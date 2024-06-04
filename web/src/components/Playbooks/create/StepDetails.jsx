@@ -41,18 +41,16 @@ function StepDetails() {
       step?.modelType &&
       step.connectorType
     ) {
-      fetchData();
+      fetchData({ index: currentStepIndex });
     }
   }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
+    dispatch(toggleExternalLinkVisibility(currentStepIndex));
   };
 
   const setLinks = (links) => {
-    dispatch(
-      addExternalLinks({ index: currentStepIndex, externalLinks: links }),
-    );
+    dispatch(addExternalLinks({ index: currentStepIndex, links }));
   };
 
   return (

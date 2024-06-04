@@ -5,7 +5,7 @@ export const injectGrafanaDataSourceTasks = (
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   let task = {
-    datasource_uid: step.datasource.id,
+    datasource_uid: step.datasource?.id ?? step.datasource,
     promql_expression: step.grafanaQuery?.expression,
     process_function: "timeseries",
   };

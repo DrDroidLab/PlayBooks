@@ -5,26 +5,25 @@ import {
   setWorkspaceId,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { updateCardByIndex } from "../execution/updateCardByIndex.ts";
 
-export const azureLogsBuilder = (options: any) => {
-  const [task, index] = getCurrentTask();
+export const azureLogsBuilder = (options: any, task, index) => {
   return {
     builder: [
       [
         {
           key: "workspaceId",
-          label: "Workspace",
+          label: "Workspace ID",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op.workspace,
-            label: op.name,
+            label: `${op.workspace} - ${op.name}`,
+            workspace: op,
           })),
-          selected: task.workspaceName,
+          helperText: task.workspaceName,
           handleChange: (_, val) => {
             store.dispatch(setWorkspaceId({ index, workspaceId: val.id }));
-            updateCardByIndex("workspaceName", val.label);
+            updateCardByIndex("workspaceName", val.workspace.name);
           },
         },
       ],
