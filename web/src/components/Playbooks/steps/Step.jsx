@@ -10,7 +10,7 @@ import {
   addExternalLinks,
   deleteStep,
   toggleExternalLinkVisibility,
-  toggleNotesVisibility
+  toggleNotesVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import Query from "./Query.jsx";
@@ -81,19 +81,15 @@ function Step({ step, index }) {
           ) : (
             <>
               <div
-                  className={styles["addConditionStyle"]}
-                  onClick={toggleNotes}>
-                  <b className="ext_links">
-                    {step.showNotes ? "-" : "+"}
-                  </b>{" "}
-                  Add Notes about this step
+                className={styles["addConditionStyle"]}
+                onClick={toggleNotes}>
+                <b className="ext_links">{step.showNotes ? "-" : "+"}</b> Add
+                Notes about this step
               </div>
-              {step.showNotes && (
-                <Notes step={step} index={index} />
-              )}
+              {step.showNotes && <Notes step={step} index={index} />}
             </>
           )}
-          
+
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation index={index} />
           )}
@@ -124,7 +120,7 @@ function Step({ step, index }) {
               {step.source && !unsupportedRunners.includes(step.source) && (
                 <button
                   className={styles["pb-button"]}
-                  onClick={() => executeStep(step)}>
+                  onClick={() => executeStep(step, index)}>
                   <Tooltip title="Run this Step">
                     <>
                       Run <PlayArrowIcon />
