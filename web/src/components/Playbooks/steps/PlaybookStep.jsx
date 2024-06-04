@@ -5,9 +5,10 @@ import TaskDetails from "./TaskDetails.jsx";
 import { useEffect, useState } from "react";
 import Interpretation from "../../common/Interpretation/index.tsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 
 const PlaybookStep = ({ index }) => {
-  const [step] = useCurrentStep(index);
+  const [step, currentStepIndex] = useCurrentStep(index);
   const showOutput = step.showOutput;
   const [showConfig, setShowConfig] = useState(!showOutput);
 
@@ -18,6 +19,17 @@ const PlaybookStep = ({ index }) => {
   useEffect(() => {
     setShowConfig(!showOutput);
   }, [showOutput]);
+
+  useEffect(() => {
+    if (
+      currentStepIndex !== null &&
+      step?.source &&
+      step?.modelType &&
+      step.connectorType
+    ) {
+      fetchData({ index: currentStepIndex });
+    }
+  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   return (
     <div className="flex flex-col gap-2 mt-2">

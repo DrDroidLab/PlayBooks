@@ -8,6 +8,7 @@ import {
   setModelTypeOptions,
 } from "../store/features/playbook/playbookSlice.ts";
 import getCurrentTask from "./getCurrentTask.ts";
+import { connectorsWithoutAssets } from "./connectorsWithoutAssets.ts";
 
 export const fetchData = async (val: any = undefined) => {
   const { currentStepIndex } = playbookSelector(store.getState());
@@ -15,6 +16,11 @@ export const fetchData = async (val: any = undefined) => {
   const [step] = getCurrentTask(index);
 
   if (step?.source === "API" || val?.connector_type === "API") return;
+  if (
+    connectorsWithoutAssets.includes(step?.source) ||
+    connectorsWithoutAssets.includes(val?.connector_type)
+  )
+    return;
   await getAssetsFunction(index);
 };
 

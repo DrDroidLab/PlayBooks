@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   addExternalLinks,
@@ -20,7 +19,6 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
-import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import SelectInterpretation from "../steps/Interpretation.jsx";
 
 function StepDetails() {
@@ -33,17 +31,6 @@ function StepDetails() {
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
   };
-
-  useEffect(() => {
-    if (
-      currentStepIndex !== null &&
-      step?.source &&
-      step?.modelType &&
-      step.connectorType
-    ) {
-      fetchData({ index: currentStepIndex });
-    }
-  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility(currentStepIndex));
