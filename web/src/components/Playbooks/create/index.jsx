@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Heading from "../../Heading";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,6 +18,7 @@ import Loading from "../../common/Loading/index.tsx";
 import CreatePlaybook from "../CreatePlaybook.jsx";
 import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
+import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
 
 const viewOptions = [
   {
@@ -27,7 +28,7 @@ const viewOptions = [
   {
     id: "builder",
     label: "Builder",
-  }
+  },
 ];
 
 function CreatePlaybookBeta() {
@@ -37,6 +38,7 @@ function CreatePlaybookBeta() {
   const dispatch = useDispatch();
   const copied = useRef(false);
   const playbookDataRef = useRef(null);
+  const [copyLoading, setCopyLoading] = useState(false);
 
   useEffect(() => {
     dispatch(setPlaybookState());
@@ -55,12 +57,16 @@ function CreatePlaybookBeta() {
   };
 
   const handleCopyPlaybook = async () => {
+    setCopyLoading(true);
     const res = playbookDataRef.current;
     dispatch(copyPlaybook(res));
     copied.current = true;
-    navigate("/playbooks/create", {
-      replace: true,
-    });
+    setTimeout(() => {
+      setCopyLoading(false);
+      navigate("/playbooks/create", {
+        replace: true,
+      });
+    }, COPY_LOADING_DELAY);
   };
 
   const handleSelect = (option) => {
@@ -76,6 +82,10 @@ function CreatePlaybookBeta() {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (copyLoading) {
+    return <Loading title="Copying your playbook..." />;
   }
 
   return (
