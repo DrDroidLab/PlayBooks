@@ -6,10 +6,27 @@ import {
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
+import { SOURCES } from "../../../constants/index.ts";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
+
+  const handleImageSrc = () => {
+    switch (option?.source) {
+      case SOURCES.TEXT:
+        if (option.task_type === SOURCES.IFRAME) {
+          return cardsData.find((e) => e.enum === SOURCES.IFRAME)?.url;
+        }
+      // eslint-disable-next-line no-fallthrough
+      default:
+        return (
+          cardsData.find((e) => e.enum === option?.source?.replace("_VPC", ""))
+            ?.url ??
+          cardsData.find((e) => option?.model_type?.includes(e.enum))?.url
+        );
+    }
+  };
 
   const handleClick = () => {
     if (option.source) {
@@ -42,15 +59,7 @@ function IntegrationOption({ option, setIsOpen }) {
       {/* <div
         className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
       /> */}
-      <img
-        className="w-10 h-10"
-        src={
-          cardsData.find((e) => e.enum === option?.source?.replace("_VPC", ""))
-            ?.url ??
-          cardsData.find((e) => option?.model_type?.includes(e.enum))?.url
-        }
-        alt="logo"
-      />
+      <img className="w-10 h-10" src={handleImageSrc()} alt="logo" />
       {/* <div>
                     <p className="text-xs font-bold text-gray-500">{data.source}</p>
                     <p className="font-semibold">{data.display_name}</p>

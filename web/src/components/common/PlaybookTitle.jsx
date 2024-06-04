@@ -10,12 +10,12 @@ function PlaybookTitle({ step, index }) {
   const isPrefetched = useIsPrefetched();
   const editCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex("editTitle", true);
+    updateCardByIndex("editTitle", true, index);
   };
 
   const cancelEditCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex("editTitle", false);
+    updateCardByIndex("editTitle", false, index);
   };
 
   return (
@@ -42,12 +42,12 @@ function PlaybookTitle({ step, index }) {
           )}
 
         {!step.editTitle && (
-          <div onClick={editCardTitle}>
+          <div>
             <b>
               {index + 1}: {step.description || `Step - ${index + 1}`}
             </b>
             {!isPrefetched && (
-              <button>
+              <button onClick={editCardTitle}>
                 <EditIcon
                   sx={{ zIndex: "10" }}
                   fontSize={"small"}
@@ -64,7 +64,7 @@ function PlaybookTitle({ step, index }) {
             placeHolder={`Enter Title`}
             valueType={"STRING"}
             onValueChange={(val) => {
-              updateCardByIndex("description", val);
+              updateCardByIndex("description", val, index);
             }}
             value={step.description}
             length={200}
