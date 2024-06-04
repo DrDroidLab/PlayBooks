@@ -1,5 +1,6 @@
 // Integrations
 export const ALL_CONNECTORS = "/connectors/list";
+export const GET_CONNECTOR_DETAILS = "/connectors/get";
 export const GET_CONNECTOR_OPTIONS = "/connectors/keys/options";
 export const GET_CONNECTOR_KEYS = "/connectors/keys/get";
 export const UPDATE_CONNECTOR_STATUS = "/connectors/update";

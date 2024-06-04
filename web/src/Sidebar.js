@@ -106,13 +106,13 @@ function Sidebar() {
               Sample Playbooks
             </p>
           </NavLink>
-          <NavLink className={activeStyle} to="/integrations">
+          <NavLink className={activeStyle} to="/data-sources">
             <ListItemIcon
               sx={{ minWidth: "44px" }}
               onClick={(event) => handleListItemClick(event, 2)}>
               <DataThresholdingIcon />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>Integrations</p>
+            <p style={{ fontSize: "14px" }}>Data Sources</p>
           </NavLink>
           <hr></hr>
 
