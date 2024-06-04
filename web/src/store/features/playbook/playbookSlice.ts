@@ -18,6 +18,7 @@ const initialState: Playbook = {
   id: null,
   name: "",
   globalVariables: [],
+  stepsWithTasks: [],
   interpreterTypes: [],
   steps: [],
   playbooks: [],
@@ -92,6 +93,35 @@ const playbookSlice = createSlice({
       });
       state.steps = playbookToSteps(payload, true);
       state.isEditing = true;
+    },
+    createTaskWithSource(state, { payload }) {
+      const index = state.steps.length;
+      state.stepsWithTasks.push({
+        description:
+          state?.steps[index]?.description ??
+          payload.description ??
+          integrationSentenceMap[payload.modelType],
+        notes: state?.steps[index]?.notes,
+        tasks: [
+          {
+            name: "",
+            id: "0",
+            source: payload.source,
+            description:
+              state?.steps[index]?.description ??
+              payload.description ??
+              integrationSentenceMap[payload.modelType],
+            interpreter_type: "",
+            globalVariables: state.globalVariables ?? [],
+            task_connector_sources: [],
+            [payload.source?.toLowerCase()]: {
+              type: payload.taskType,
+              [(payload.taskType ?? "").toLowerCase()]: {},
+            },
+            showError: false,
+          },
+        ],
+      });
     },
     copyPlaybook(state, { payload }) {
       state.name = payload.name;
@@ -574,11 +604,12 @@ export const {
   setWorkspaceId,
   setTimespan,
   setAzureLogQuery,
+  createTaskWithSource,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
 
 export const playbookSelector = (state) => state.playbook;
-export const stepsSelector = (state) => state.playbook?.steps ?? [];
+export const stepsSelector = (state) => state.playbook?.stepsWithTasks ?? [];
 export const playbooksSelector = (state) => state.playbook.playbooks;
 export const metaSelector = (state) => state.playbook.meta;

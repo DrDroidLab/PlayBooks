@@ -75,7 +75,6 @@ export interface Step {
   promql_expression?: string;
   remote_server?: string;
   taskType?: string;
-  iframe_url?: string;
 }
 
 export interface GoldenMetric {
@@ -167,8 +166,7 @@ export interface DataFetchTask {
 
 export interface DocumentationTask {
   type: string;
-  documentation?: any;
-  iframe_url?: any;
+  documentation: any;
 }
 
 export interface ApiCallTask {
@@ -270,6 +268,7 @@ export interface Playbook {
   currentPlaybook?: any;
   currentStepIndex?: string | null;
   steps: Step[];
+  stepsWithTasks: any[];
   playbooks: any;
   meta: any;
   globalVariables: GlobalVariable[] | null;

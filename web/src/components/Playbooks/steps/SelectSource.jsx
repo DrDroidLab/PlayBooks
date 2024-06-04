@@ -1,28 +1,21 @@
 import React from "react";
 import SelectComponent from "../../SelectComponent";
-import {
-  playbookSelector,
-  updateStep,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import { useDispatch, useSelector } from "react-redux";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import getCurrentTask from "../../../utils/getCurrentTask.ts";
+import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 
 function SelectSource() {
-  const { currentStepIndex, connectorOptions, steps } =
-    useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+  const { connectorOptions } = useSelector(playbookSelector);
+  const [, index, task] = getCurrentTask();
   const isPrefetched = useIsPrefetched();
-  const dispatch = useDispatch();
 
   function handleSourceChange(id) {
-    dispatch(
-      updateStep({
-        currentStepIndex,
-        key: "source",
-        value: id,
-      }),
-    );
+    updateCardByIndex("source", id, index);
   }
+
+  console.log("task", task);
 
   return (
     <div className="flex flex-col">
@@ -31,7 +24,7 @@ function SelectSource() {
         data={connectorOptions}
         placeholder="Select Data Source"
         onSelectionChange={handleSourceChange}
-        selected={step?.source}
+        selected={task?.source}
         searchable={true}
         disabled={isPrefetched}
       />

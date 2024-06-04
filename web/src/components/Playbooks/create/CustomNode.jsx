@@ -12,6 +12,7 @@ import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 export default function CustomNode({ data }) {
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
+  const task = data?.step?.tasks[0];
 
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
@@ -41,13 +42,12 @@ export default function CustomNode({ data }) {
       </div>
 
       <div className="flex flex-col items-center gap-4">
-        {data?.step?.source && (
+        {task?.source && (
           <img
             className="w-10 h-10"
             src={
-              cardsData.find(
-                (e) => e.enum === data?.step?.source.replace("_VPC", ""),
-              )?.url ?? ""
+              cardsData.find((e) => e.enum === task?.source.replace("_VPC", ""))
+                ?.url ?? ""
             }
             alt="logo"
           />
