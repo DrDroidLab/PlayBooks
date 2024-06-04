@@ -82,7 +82,7 @@ function ConnectorPageBeta() {
       />
 
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/data-sources")}
         className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
         <ChevronLeft /> All Integrations
       </button>
@@ -104,6 +104,7 @@ function ConnectorPageBeta() {
         index={0}
         className={styles["config-section"]}>
         <Config
+          id={id}
           connector={connector}
           connectorActive={id !== undefined && id !== null}
         />

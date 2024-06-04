@@ -12,7 +12,9 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   return (
-    <div className="bg-gray-100 py-4 px-2 rounded flex justify-between items-center">
+    <Link
+      to={`/data-sources/${connector.enum.toLowerCase()}/${connector.id}`}
+      className="bg-gray-100 py-4 px-2 rounded flex justify-between items-center hover:bg-gray-50 transition-all">
       <div className="flex items-center gap-3">
         <img
           src={connector.imgUrl}
@@ -30,7 +32,11 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
 
       <div className="flex gap-2">
         <button
-          onClick={() => setIsDeleting(true)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsDeleting(true);
+          }}
           className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
           <Delete />
         </button>
@@ -50,7 +56,7 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
         }}
         connector={connector}
       />
-    </div>
+    </Link>
   );
 }
 
