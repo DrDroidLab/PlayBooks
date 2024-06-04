@@ -41,16 +41,9 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
     const data = playbookToSteps(playbook);
     const assetModelPromises = data.map((el, i) =>
       dispatch(
-        getAssetModelOptions.initiate(
-          {
-            connector_type: el.source,
-            model_type: el.modelType,
-            stepIndex: i,
-          },
-          {
-            forceRefetch: true,
-          },
-        ),
+        getAssetModelOptions.initiate({
+          forceRefetch: true,
+        }),
       ).unwrap(),
     );
 
@@ -129,9 +122,11 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 key={index}
                 style={{ borderRadius: "5px" }}
                 className="collapsible_option"
-                defaultExpanded={index === currentStepIndex ? false : true}
-                expanded={step.isOpen}
-                onChange={() => dispatch(toggleStep({ index }))}>
+                defaultExpanded={
+                  index.toString() === currentStepIndex ? false : true
+                }
+                expanded={index.toString() === currentStepIndex ? true : false}
+                onChange={() => dispatch(toggleStep(index))}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon />}
                   aria-controls="panel1-content"
@@ -144,7 +139,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                   />
                 </AccordionSummary>
                 <AccordionDetails sx={{ padding: "0" }}>
-                  <Step key={index} step={step} index={index} />
+                  <Step key={index} step={step} />
                 </AccordionDetails>
               </Accordion>
             ))}

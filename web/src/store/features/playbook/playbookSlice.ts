@@ -117,7 +117,11 @@ const playbookSlice = createSlice({
       state.isEditing = false;
     },
     setErrors(state, { payload }) {
-      state.steps[payload.index].errors = payload.errors;
+      if (
+        state.currentStepIndex !== null &&
+        state.currentStepIndex !== undefined
+      )
+        state.steps[state.currentStepIndex].errors = payload;
     },
     setPlaybookEditing(state, { payload }) {
       state.currentPlaybook.name = payload.name;
@@ -191,10 +195,12 @@ const playbookSlice = createSlice({
       state.steps.push({
         ...{
           source: payload.source,
+          taskType: payload.taskType,
           modelType: payload.modelType,
           selectedSource: payload.key,
           description:
             state?.steps[index]?.description ??
+            payload.description ??
             integrationSentenceMap[payload.modelType],
           notes: state?.steps[index]?.notes,
           assets: [],
@@ -220,12 +226,14 @@ const playbookSlice = createSlice({
       });
     },
     toggleStep: (state, { payload }) => {
-      state.steps[payload.index].isOpen = !state.steps[payload.index].isOpen;
-      state.currentStepIndex = payload.index.toString();
+      state.currentStepIndex =
+        state.currentStepIndex != null ? null : payload.toString();
     },
-    deleteStep: (state, { payload }) => {
-      state.steps.splice(payload, 1);
-      state.currentStepIndex = null;
+    deleteStep: (state) => {
+      if (state.currentStepIndex != null) {
+        state.steps.splice(parseInt(state.currentStepIndex, 10), 1);
+        state.currentStepIndex = null;
+      }
     },
     updateStep: (state, { payload }) => {
       state.steps[payload.index][payload.key] = payload.value;
@@ -279,10 +287,18 @@ const playbookSlice = createSlice({
       state.steps[payload.index].metric = undefined;
     },
     setModelTypeOptions: (state, { payload }) => {
-      state.steps[payload.index].modelTypeOptions = payload.options;
+      if (
+        state.currentStepIndex !== undefined &&
+        state.currentStepIndex !== null
+      )
+        state.steps[state.currentStepIndex].modelTypeOptions = payload;
     },
     setAssets(state, { payload }) {
-      state.steps[payload.index].assets = payload?.assets;
+      if (
+        state.currentStepIndex !== null &&
+        state.currentStepIndex !== undefined
+      )
+        state.steps[parseInt(state.currentStepIndex, 10)].assets = payload;
     },
     setRegion(state, { payload }) {
       state.steps[payload.index].region = payload.region;
@@ -386,14 +402,18 @@ const playbookSlice = createSlice({
       state.steps[payload.index].textNotes = payload.text;
     },
     addNotes(state, { payload }) {
-      state.steps[payload.index].notes = payload.notes;
+      if (state.currentStepIndex != null)
+        state.steps[parseInt(state.currentStepIndex, 10)].notes = payload;
     },
     addExternalLinks(state, { payload }) {
-      state.steps[payload.index].externalLinks = payload.externalLinks;
+      if (state.currentStepIndex != null)
+        state.steps[parseInt(state.currentStepIndex, 10)].externalLinks =
+          payload;
     },
-    toggleExternalLinkVisibility(state, { payload }) {
-      state.steps[payload.index].showExternalLinks =
-        !state.steps[payload.index].showExternalLinks;
+    toggleExternalLinkVisibility(state) {
+      if (state.currentStepIndex != null)
+        state.steps[parseInt(state.currentStepIndex, 10)].showExternalLinks =
+          !state.steps[parseInt(state.currentStepIndex, 10)].showExternalLinks;
     },
     resetState(state) {
       state.steps = [];

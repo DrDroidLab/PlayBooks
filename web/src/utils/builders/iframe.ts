@@ -1,6 +1,8 @@
+import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const iframeBuilder = (task: any, index: number) => {
+export const iframeBuilder = () => {
+  const [task] = getCurrentTask();
   return {
     builder: [
       [

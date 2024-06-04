@@ -11,7 +11,6 @@ import {
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
 import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
@@ -30,17 +29,21 @@ function StepDetails() {
   const dispatch = useDispatch();
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
-  const { data } = useGetBuilderOptionsQuery();
 
   const removeStep = () => {
     dispatch(deleteStep(currentStepIndex));
   };
 
   useEffect(() => {
-    if (currentStepIndex !== null && step?.source && step?.modelType) {
+    if (
+      currentStepIndex !== null &&
+      step?.source &&
+      step?.modelType &&
+      step.connectorType
+    ) {
       fetchData();
     }
-  }, [currentStepIndex, step?.source, step?.modelType]);
+  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
@@ -81,12 +84,10 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource step={step} />
-          <PlaybookStep card={step} index={currentStepIndex} />
-          <Notes step={step} index={currentStepIndex} />
-          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation />
-          )}
+          <AddSource />
+          <PlaybookStep />
+          <Notes />
+          <Interpretation />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}

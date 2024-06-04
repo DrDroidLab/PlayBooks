@@ -1,4 +1,4 @@
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   Accordion,
   AccordionDetails,
@@ -6,46 +6,9 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
-  Typography
-} from '@mui/material';
-
-const TableComponent = ({ panels }) => {
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ maxWidth: '40px' }}>Panel</TableCell>
-            <TableCell style={{ maxWidth: '40px' }}>Prometheus Queries</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {panels.map((panel, index) => (
-            <>
-              {panel.promql_metrics && (
-                <TableRow style={{ fontSize: '10px' }}>
-                  <TableCell style={{ maxWidth: '40px', textOverflow: '' }}>
-                    {panel.panel_title}
-                  </TableCell>
-                  <TableCell style={{ maxWidth: '40px' }}>
-                    {panel.promql_metrics?.map(e => (
-                      <div key={index}>
-                        <li>{e.expression + '\n'}</li>
-                      </div>
-                    ))}
-                  </TableCell>
-                </TableRow>
-              )}
-            </>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
+  Typography,
+} from "@mui/material";
 
 export const AzureAssets = ({ assets }) => {
   return (
@@ -53,15 +16,18 @@ export const AzureAssets = ({ assets }) => {
       {assets && assets.length > 0 && (
         <>
           <br />
-          <Accordion style={{ borderRadius: '5px' }} className="collapsible_option">
+          <Accordion
+            style={{ borderRadius: "5px" }}
+            className="collapsible_option">
             <AccordionSummary
               expandIcon={<ArrowDropDownIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
-              style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-            >
+              style={{ borderRadius: "5px", backgroundColor: "#f5f5f5" }}>
               <Typography>
-                <p style={{ fontSize: '16px' }}>Azure Workspaces ({assets.length})</p>{' '}
+                <p style={{ fontSize: "16px" }}>
+                  Azure Workspaces ({assets.length})
+                </p>{" "}
               </Typography>
             </AccordionSummary>
 
@@ -72,31 +38,36 @@ export const AzureAssets = ({ assets }) => {
                     <TableRow
                       key={index}
                       sx={{
-                        '&:last-child td, &:last-child th': { border: 0 }
-                      }}
-                    >
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}>
                       <TableCell component="th" scope="row">
                         <Accordion
-                          style={{ borderRadius: '5px', marginTop: '10px' }}
-                          className="collapsible_option"
-                        >
+                          style={{ borderRadius: "5px", marginTop: "10px" }}
+                          className="collapsible_option">
                           <AccordionSummary
                             expandIcon={<ArrowDropDownIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
-                            style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-                          >
+                            style={{
+                              borderRadius: "5px",
+                              backgroundColor: "#f5f5f5",
+                            }}>
                             <Typography>
-                              <b style={{ fontSize: '16px' }}>
+                              <b style={{ fontSize: "16px" }}>
                                 {item.azure_workspace?.name}
                               </b>
                               &nbsp;&nbsp;
-                              <i style={{ fontSize: '14px' }}>(Click for details)</i>{' '}
+                              <i style={{ fontSize: "14px" }}>
+                                (Click for details)
+                              </i>{" "}
                             </Typography>
                           </AccordionSummary>
 
                           <AccordionDetails>
-                            <p><b>Workspace ID: </b>{item.azure_workspace?.workspace}</p>
+                            <p>
+                              <b>Workspace ID: </b>
+                              {item.azure_workspace?.workspace}
+                            </p>
                           </AccordionDetails>
                         </Accordion>
                       </TableCell>

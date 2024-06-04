@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from "react-redux";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
@@ -8,20 +8,19 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import { CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 
-function SelectInterpreterDropdown({ index }) {
-  const { data, isFetching } = useGetBuilderOptionsQuery();
+function SelectInterpreterDropdown() {
+  const { data, isFetching } = usePlaybookBuilderOptionsQuery();
   const { steps, currentStepIndex } = useSelector(playbookSelector);
-  const currentIndex = index ?? currentStepIndex;
-  const step = steps[currentIndex];
+  const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
 
   const handleInterpreterChange = (value) => {
-    updateCardByIndex("interpreter", value?.interpreter, currentIndex);
+    updateCardByIndex("interpreter", value?.interpreter, currentStepIndex);
   };
 
   useEffect(() => {
     return () => {
-      updateCardByIndex("interpreter", undefined, currentIndex);
+      updateCardByIndex("interpreter", undefined, currentStepIndex);
     };
   }, []);
 
@@ -36,7 +35,7 @@ function SelectInterpreterDropdown({ index }) {
         />
       )}
       <SelectComponent
-        data={data?.map((interpreter) => ({
+        data={data?.interpreterTypes?.map((interpreter) => ({
           id: interpreter.type,
           label: interpreter.display_name,
           interpreter,

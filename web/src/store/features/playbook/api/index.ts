@@ -6,3 +6,4 @@ export * from "./executePlaybookTaskApi.ts";
 export * from "./deletePlaybookApi.ts";
 export * from "./options/index.ts";
 export * from "./executePlaybookStepApi.ts";
+export * from "./playbookBuilderOptionsApi.ts";

@@ -131,7 +131,9 @@ function Config({ keyOptions }) {
           </div>
 
           {keyOptions?.map((option, i) => (
-            <div key={i} className={styles["eventTypeSelectionSection"]}>
+            <div
+              key={i}
+              className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
               <div className={styles["content"]}>
                 {option?.display_name || option?.key_type}
               </div>

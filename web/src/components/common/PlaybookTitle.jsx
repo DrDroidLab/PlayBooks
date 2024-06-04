@@ -4,17 +4,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
 
-function PlaybookTitle({ step, index, updateCardByIndex }) {
+function PlaybookTitle({ step, index }) {
   const isPrefetched = useIsPrefetched();
-  const editCardTitle = (e, index) => {
+  const editCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex(index, "editTitle", true);
+    updateCardByIndex("editTitle", true);
   };
 
-  const cancelEditCardTitle = (e, index) => {
+  const cancelEditCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex(index, "editTitle", false);
+    updateCardByIndex("editTitle", false);
   };
 
   return (
@@ -29,17 +30,19 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
         {(step.outputLoading || step.inprogress) && (
           <CircularProgress size={20} />
         )}
-        {(step.outputError || step.showError) && (
+        {(step.outputError || Object.keys(step?.errors ?? {}).length > 0) && (
           <ErrorOutline color="error" size={20} />
         )}
         {!step.outputError &&
           !step.outputLoading &&
           step.showOutput &&
           step.outputs?.data?.length > 0 &&
-          !step.showError && <CheckCircleOutline color="success" size={20} />}
+          Object.keys(step?.errors ?? {}).length === 0 && (
+            <CheckCircleOutline color="success" size={20} />
+          )}
 
         {!step.editTitle && (
-          <div onClick={(e) => editCardTitle(e, index)}>
+          <div onClick={editCardTitle}>
             <b>
               {index + 1}: {step.description || `Step - ${index + 1}`}
             </b>
@@ -61,15 +64,12 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
             placeHolder={`Enter Title`}
             valueType={"STRING"}
             onValueChange={(val) => {
-              updateCardByIndex(index, "description", val);
+              updateCardByIndex("description", val);
             }}
             value={step.description}
             length={200}
           />
-          <Check
-            onClick={(e) => cancelEditCardTitle(e, index)}
-            style={{ marginLeft: "8px" }}
-          />
+          <Check onClick={cancelEditCardTitle} style={{ marginLeft: "8px" }} />
         </div>
       )}
     </>

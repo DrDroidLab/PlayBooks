@@ -1,15 +1,19 @@
 export const extractEksTasks = (step: any) => {
   let stepSource = "EKS";
   let modelType = "EKS_CLUSTER";
-  let selected = "EKS Cluster";
   const tasks = step.tasks;
-  const eksTask = tasks[0].data_fetch_task?.eks_data_fetch_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const eksTask = tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    connectorType,
+    taskType,
     modelType,
     eksRegion: eksTask?.region,
     cluster: eksTask?.cluster,

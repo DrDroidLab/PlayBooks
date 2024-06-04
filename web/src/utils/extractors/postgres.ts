@@ -1,16 +1,22 @@
 export const extractPostgresTasks = (step: any) => {
   let stepSource = "POSTGRES";
-  let modelType = "POSTGRES_QUERY";
-  let selected = "POSTGRES Sql Query";
+  let modelType = "POSTGRES_DATABASE";
   const tasks = step.tasks;
-  const postgresTask = tasks[0].data_fetch_task?.postgres_data_fetch_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const postgresTask =
+    tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    connectorType,
+    taskType,
     modelType,
+    database: postgresTask?.database,
     dbQuery: postgresTask?.query,
   };
 

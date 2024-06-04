@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircularProgress } from "@mui/material";
-import { useLazyGetAssetsQuery } from "../../../store/features/playbook/api/index.ts";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,67 +8,59 @@ import {
 import OptionRender from "./OptionRender.jsx";
 import VariablesBox from "./VariablesBox.jsx";
 import { InfoOutlined } from "@mui/icons-material";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { constructBuilder } from "../../../utils/playbooksData.ts";
 
-function TaskDetails({ task, data, stepIndex }) {
-  const [triggerGetAssets, { isFetching }] = useLazyGetAssetsQuery();
+function TaskDetails() {
+  const data = constructBuilder();
+  const [step] = useCurrentStep();
   const dispatch = useDispatch();
   const prevError = useRef(null);
   const { view } = useSelector(playbookSelector);
 
-  const getAssets = () => {
-    triggerGetAssets({
-      filter: data.assetFilterQuery,
-      stepIndex,
-    });
-  };
-
   const setDefaultErrors = () => {
     const errors = {};
-    for (let step of data.builder) {
-      for (let value of step) {
+    for (let buildStep of data?.builder) {
+      for (let value of buildStep) {
         if (value.isOptional) continue;
         if (!value.key || value.selected) {
           break;
         }
-        errors[value.key] = {
-          message: "Please enter a value",
-        };
+        if (!step[value.key]) {
+          errors[value.key] = {
+            message: "Please enter a value",
+          };
+        }
       }
     }
 
     prevError.current = errors;
-    dispatch(setErrors({ index: stepIndex, errors }));
+    dispatch(setErrors(errors));
   };
 
   const removeErrors = (key) => {
-    const errors = structuredClone(task.errors ?? {});
+    const errors = structuredClone(step.errors ?? {});
     delete errors[key];
 
     prevError.current = errors;
-    dispatch(setErrors({ index: stepIndex, errors }));
+    dispatch(setErrors(errors));
   };
 
   useEffect(() => {
-    if (task[data.triggerGetAssetsKey]) {
-      getAssets();
-    }
-  }, [task[data?.triggerGetAssetsKey]]);
-
-  useEffect(() => {
-    const errorChanged = prevError.current === task.errors;
+    const errorChanged = prevError.current === step.errors;
     if (
-      !task.isPrefetched &&
-      task &&
-      data.builder &&
-      Object.keys(task?.errors ?? {}).length === 0 &&
+      !step.isPrefetched &&
+      step &&
+      data?.builder &&
+      Object.keys(step?.errors ?? {}).length === 0 &&
       !errorChanged
     ) {
       setDefaultErrors();
     }
-  }, [task]);
+  }, [step]);
 
   return (
-    <div className="mt-2">
+    <div className="relative mt-2">
       {data?.builder?.map((step) => (
         <div
           className={`flex gap-2 flex-wrap ${
@@ -83,7 +73,6 @@ function TaskDetails({ task, data, stepIndex }) {
                 style={{
                   display: "flex",
                   flexDirection: view === "builder" ? "column" : "row",
-                  // borderTop: "0.5px solid gray",
                   gap: "10px",
                   alignItems: "flex-start",
                   flexWrap: "wrap",
@@ -91,27 +80,21 @@ function TaskDetails({ task, data, stepIndex }) {
                   justifyContent: "flex-start",
                   maxWidth: view === "builder" ? "600px" : "",
                 }}>
-                <OptionRender
-                  data={value}
-                  removeErrors={removeErrors}
-                  stepIndex={stepIndex}
-                  task={task}
-                />
+                <OptionRender data={value} removeErrors={removeErrors} />
               </div>
             ) : (
               <></>
             ),
           )}
-          {isFetching && <CircularProgress size={20} />}
         </div>
       ))}
-      {task.message && (
+      {step.message && (
         <div className="flex gap-1 items-center my-2 bg-gray-100 rounded p-2 text-sm text-blue-500">
           <InfoOutlined fontSize="small" />
-          {task.message}
+          {step.message}
         </div>
       )}
-      <VariablesBox task={task} />
+      <VariablesBox />
     </div>
   );
 }
