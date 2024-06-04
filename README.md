@@ -16,14 +16,25 @@ tl;dr Enrich your Slack alerts with contextual observability data, helping on-ca
 
 ## About PlayBooks
 PlayBooks are executable notebooks designed to *Automate Preliminary Investigations in Production* for engineers.
-Watch [demo video](https://www.youtube.com/watch?v=-a-AqwuvI8g).
+Watch [demo video](https://www.youtube.com/watch?v=_e-wOtIm1gk).
+
+Using PlayBooks, a user can configure the steps as data queries or actions within their observability stack. Here are the integrations we currently support: 
+1. Run bash commands on a remote server; 
+2. Fetch logs from AWS Cloudwatch and Azure Log Analytics; 
+3. Fetch metrics from any PromQL compatible db, AWS Cloudwatch, Datadog and New Relic; 
+4. Query PostgreSQL, ClickHouse or any other JDBC compatible databases; 
+5. Write a custom API call; 
+6. Query events from EKS / GKE; 
+7. Add an iFrame
+
+
 ### **Automating Playbook Executions**
 1. Define a playbook with your enrichment logic
 2. Configure the playbook to auto-trigger basis a Slack alert received in a channel
 3. Receive automated investigation summary in the Slack thread for the same alert
 
 ### Playground:
-* Explore the [sandbox](https://sandbox.drdroid.io/) to get a sense of how the playbooks work.
+* The [sandbox](https://sandbox.drdroid.io/) has a sample Playbook created. Check out how it works.
 * You can also check out the [#demo-alerts channel](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ) in community Slack workspace to see how automated replies are received for alerts.
 
 ## Capabilities
