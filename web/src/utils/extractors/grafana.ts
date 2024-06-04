@@ -12,7 +12,7 @@ export const extractGrafanaTasks = (step: any) => {
       modelType = "GRAFANA_TARGET_METRIC_PROMQL";
       break;
     case "PROMETHEUS_DATASOURCE_METRIC_EXECUTION":
-      modelType = "PROMETHEUS_DATASOURCE_METRIC_EXECUTION";
+      modelType = "GRAFANA_PROMETHEUS_DATASOURCE";
       break;
   }
 
@@ -27,25 +27,10 @@ export const extractGrafanaTasks = (step: any) => {
     taskType,
     modelType,
     connectorType,
-    dashboard: {
-      id: grafanaTask?.dashboard_uid,
-      title: grafanaTask?.dashboard_title,
+    datasource: grafanaTask?.datasource_uid,
+    grafanaQuery: {
+      expression: grafanaTask?.promql_expression,
     },
-    panel: {
-      panel_id: grafanaTask?.panel_id,
-      panel_title: grafanaTask?.panel_title,
-    },
-    grafanaQuery: tasks.map((task) => {
-      return {
-        id: grafanaTask?.panel_promql_expression,
-        label: grafanaTask?.panel_promql_expression,
-        query: {
-          expression: grafanaTask?.promql_expression,
-          originalExpression: grafanaTask?.panel_promql_expression,
-        },
-      };
-    }),
-    datasource_uid: grafanaTask.datasource_uid,
     selectedOptions: options,
   };
 

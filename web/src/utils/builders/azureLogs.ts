@@ -15,16 +15,17 @@ export const azureLogsBuilder = (options: any) => {
       [
         {
           key: "workspaceId",
-          label: "Workspace",
+          label: "Workspace ID",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op.workspace,
-            label: op.name,
+            label: `${op.workspace} - ${op.name}`,
+            workspace: op,
           })),
-          selected: task.workspaceName,
+          helperText: task.workspaceName,
           handleChange: (_, val) => {
             store.dispatch(setWorkspaceId({ index, workspaceId: val.id }));
-            updateCardByIndex("workspaceName", val.label);
+            updateCardByIndex("workspaceName", val.workspace.name);
           },
         },
       ],

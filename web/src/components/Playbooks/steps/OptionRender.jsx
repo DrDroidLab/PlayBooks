@@ -159,19 +159,23 @@ export default function OptionRender({ data, removeErrors }) {
     case "iframe-render":
       return (
         <>
-          {
-            isValidUrl(data.value) ? (  
-              <iframe
-                src={data.value}
-                title="iframe"
-                className="w-full h-full"
-                style={{ height: "500px", marginTop: "10px", border: "1px solid #ccc"}}
-                allowFullScreen
-              />
-            ) : (
-              <p style={{ color: "red", marginTop: "10px", fontSize: '12px' }} >Invalid URL</p>
-            )
-          }
+          {isValidUrl(data.value) ? (
+            <iframe
+              src={data.value}
+              title="iframe"
+              className="w-full h-full"
+              style={{
+                height: "500px",
+                marginTop: "10px",
+                border: "1px solid #ccc",
+              }}
+              allowFullScreen
+            />
+          ) : (
+            <p style={{ color: "red", marginTop: "10px", fontSize: "12px" }}>
+              Invalid URL
+            </p>
+          )}
         </>
       );
 
@@ -210,15 +214,20 @@ export default function OptionRender({ data, removeErrors }) {
             }}>
             <b>{data.label}</b>
           </p>
-          <TypingDropdown
-            data={data.options ?? []}
-            selected={data.selected ?? step[`${data.key}`]}
-            placeholder={data.placeholder ?? `Select ${data.label}`}
-            handleChange={handleTypingDropdownChange}
-            disabled={isPrefetched || data.disabled}
-            error={error}
-            {...data.additionalProps}
-          />
+          <div className="flex gap-1 items-center">
+            <TypingDropdown
+              data={data.options ?? []}
+              selected={data.selected ?? step[`${data.key}`]}
+              placeholder={data.placeholder ?? `Select ${data.label}`}
+              handleChange={handleTypingDropdownChange}
+              disabled={isPrefetched || data.disabled}
+              error={error}
+              {...data.additionalProps}
+            />
+            <p className="text-xs shrink-0 text-gray-500 font-semibold">
+              {data.helperText}
+            </p>
+          </div>
         </div>
       );
     default:

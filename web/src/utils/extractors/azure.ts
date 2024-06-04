@@ -1,5 +1,4 @@
 export const extractAzureTasks = (step: any) => {
-  console.log("Step", step);
   let stepSource = "AZURE";
   let modelType = "";
   const tasks = step.tasks;
