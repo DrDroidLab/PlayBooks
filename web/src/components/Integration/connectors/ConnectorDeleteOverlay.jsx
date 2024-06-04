@@ -31,7 +31,7 @@ const ConnectorDeleteOverlay = ({
           <div className={styles["actionOverlay"]}>
             <div className="flex justify-between items-center">
               <header className="text-gray-500">
-                Delete {connector.displayTitle} keys?
+                Delete {connector?.display_name} keys?
               </header>
               <CloseRounded
                 onClick={toggleOverlay}
