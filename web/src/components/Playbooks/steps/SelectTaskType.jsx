@@ -12,7 +12,7 @@ function SelectTaskType() {
   const isPrefetched = useIsPrefetched();
 
   const taskTypes =
-    connectorOptions.find((e) => e.id === step?.source)?.connector
+    connectorOptions?.find((e) => e.id === step?.source)?.connector
       ?.supported_task_type_options ?? [];
 
   function handleTaskTypeChange(id, val) {
