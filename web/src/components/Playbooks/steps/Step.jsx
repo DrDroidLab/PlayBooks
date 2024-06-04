@@ -17,7 +17,7 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
-import Interpretation from "./Interpretation.jsx";
+import SelectInterpretation from "./Interpretation.jsx";
 
 function Step({ step }) {
   const isPrefetched = useIsPrefetched();
@@ -63,7 +63,7 @@ function Step({ step }) {
             </div>
           </div>
           <Notes />
-          <Interpretation />
+          <SelectInterpretation />
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
               {step.source && !unsupportedRunners.includes(step.source) && (

@@ -18,10 +18,10 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
-import Interpretation from "../steps/Interpretation.jsx";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import SelectInterpretation from "../steps/Interpretation.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -87,7 +87,7 @@ function StepDetails() {
           <AddSource />
           <PlaybookStep />
           <Notes />
-          <Interpretation />
+          <SelectInterpretation />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}
