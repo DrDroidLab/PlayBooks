@@ -64,19 +64,19 @@ export const constructBuilder = (index?: number) => {
     case taskTypes.POSTGRES_SQL_QUERY:
       return Builders.postgresBuilder();
     case taskTypes.EKS_GET_DEPLOYMENTS:
-      return Builders.eksBuilder(ops?.regions, task, index);
+      return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.EKS_GET_EVENTS:
-      return Builders.eksBuilder(ops?.regions, task, index);
+      return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.EKS_GET_PODS:
-      return Builders.eksBuilder(ops?.regions, task, index);
+      return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.EKS_GET_SERVICES:
-      return Builders.eksBuilder(ops?.regions, task, index);
+      return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
-      return Builders.datadogRawQueryBuilder(task, index);
+      return Builders.datadogRawQueryBuilder(task, currentStepIndex);
     case taskTypes.API_HTTP_REQUEST:
-      return Builders.apiBuilder(task, index);
+      return Builders.apiBuilder(task, currentStepIndex);
     case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
       return Builders.sqlRawQueryBuilder();
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:

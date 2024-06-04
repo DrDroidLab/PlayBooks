@@ -11,7 +11,7 @@ function AddSource({ index }) {
           <SelectTaskType index={index} />
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <SelectConnectorOption index={index} />
       </div>
     </div>
