@@ -13,8 +13,7 @@ const getCurrentAsset = () => {
   return currentAsset;
 };
 
-export const newRelicEntityApplicationBuilder = (options) => {
-  const [task, index] = getCurrentTask();
+export const newRelicEntityApplicationBuilder = (options, task, index) => {
   return {
     triggerGetAssetsKey: "application_name",
     assetFilterQuery: {

@@ -8,8 +8,8 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.tsx";
 
-export default function OptionRender({ data, removeErrors }) {
-  const [step, currentStepIndex] = useCurrentStep();
+export default function OptionRender({ data, removeErrors, index }) {
+  const [step, currentStepIndex] = useCurrentStep(index);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
 

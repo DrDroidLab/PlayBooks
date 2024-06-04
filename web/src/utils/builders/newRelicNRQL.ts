@@ -1,10 +1,8 @@
 import { setNRQLData } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const newRelicNRQLBuilder = () => {
-  const [task, index] = getCurrentTask();
+export const newRelicNRQLBuilder = (task, index) => {
   return {
     builder: [
       [

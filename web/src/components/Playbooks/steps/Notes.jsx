@@ -36,8 +36,8 @@ const codePreview = {
   icon: <Button />,
 };
 
-function Notes() {
-  const [step] = useCurrentStep();
+function Notes({ index }) {
+  const [step] = useCurrentStep(index);
   const dispatch = useDispatch();
   return (
     <>
@@ -94,7 +94,7 @@ function Notes() {
               <MDEditor
                 value={step.notes}
                 onChange={(val) => {
-                  dispatch(addNotes(val));
+                  dispatch(addNotes({ notes: val, index }));
                 }}
                 height={100}
                 style={{
