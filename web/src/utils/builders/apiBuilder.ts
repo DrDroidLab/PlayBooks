@@ -1,12 +1,10 @@
 import { setActionKey } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
 const methodOptions = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 
-export const apiBuilder = () => {
-  const [task, index] = getCurrentTask();
+export const apiBuilder = (task, index) => {
   return {
     builder: [
       [

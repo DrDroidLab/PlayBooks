@@ -10,8 +10,7 @@ const getCurrentAsset = () => {
   return currentAsset;
 };
 
-export const eksBuilder = (options: any) => {
-  const [task, index] = getCurrentTask();
+export const eksBuilder = (options: any, task, index) => {
   return {
     triggerGetAssetsKey: "cluster",
     assetFilterQuery: {

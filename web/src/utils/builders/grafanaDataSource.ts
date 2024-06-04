@@ -4,11 +4,9 @@ import {
   setGrafanaQuery,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const grafanaDataSourceBuilder = (options: any) => {
-  const [task, index] = getCurrentTask();
+export const grafanaDataSourceBuilder = (options: any, task, index) => {
   return {
     builder: [
       [

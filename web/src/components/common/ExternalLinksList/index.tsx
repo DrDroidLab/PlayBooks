@@ -1,16 +1,9 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import {
-  playbookSelector,
-  stepsSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
 import { Launch } from "@mui/icons-material";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function ExternalLinksList() {
-  const steps = useSelector(stepsSelector);
-  const { currentStepIndex } = useSelector(playbookSelector);
-
-  const step = steps[currentStepIndex];
+function ExternalLinksList({ index }) {
+  const [step] = useCurrentStep(index);
 
   if (!step) return <></>;
   return (

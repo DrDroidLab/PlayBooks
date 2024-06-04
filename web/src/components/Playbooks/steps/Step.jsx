@@ -19,7 +19,7 @@ import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import Interpretation from "./Interpretation.jsx";
 
-function Step({ step }) {
+function Step({ step, index }) {
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -27,15 +27,15 @@ function Step({ step }) {
   const dispatch = useDispatch();
 
   function handleDeleteClick() {
-    dispatch(deleteStep());
+    dispatch(deleteStep(index));
   }
 
   const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility());
+    dispatch(toggleExternalLinkVisibility(index));
   };
 
   const setLinks = (links) => {
-    dispatch(addExternalLinks(links));
+    dispatch(addExternalLinks({ links, index }));
   };
 
   return (
@@ -46,7 +46,7 @@ function Step({ step }) {
         <div className={styles["step-name"]}>
           {step.isPrefetched && step.description && (
             <div className={styles.head}>
-              <ExternalLinksList />
+              <ExternalLinksList index={index} />
             </div>
           )}
         </div>
@@ -59,17 +59,17 @@ function Step({ step }) {
                 <b className="add_data">{!addQuery ? "+ Add Data" : "Data"}</b>
               </div>
 
-              {addQuery && <Query />}
+              {addQuery && <Query index={index} />}
             </div>
           </div>
-          <Notes />
-          <Interpretation />
+          <Notes index={index} />
+          <Interpretation index={index} />
           {!isPrefetched && (
             <div className={styles["step-buttons"]}>
               {step.source && !unsupportedRunners.includes(step.source) && (
                 <button
                   className={styles["pb-button"]}
-                  onClick={() => executeStep(step)}>
+                  onClick={() => executeStep(step, index)}>
                   <Tooltip title="Run this Step">
                     <>
                       Run <PlayArrowIcon />

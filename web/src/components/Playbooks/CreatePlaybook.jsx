@@ -33,7 +33,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
   const dispatch = useDispatch();
   const [triggerGetPlaybook, { isFetching: copyLoading }] =
     useLazyGetPlaybookQuery();
-  const { steps, isEditing, currentStepIndex } = useSelector(playbookSelector);
+  const { steps, isEditing } = useSelector(playbookSelector);
   const copied = useRef(false);
   const isPrefetched = useIsPrefetched();
 
@@ -54,7 +54,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
     dispatch(setSteps(data));
   };
 
-  const updateCardByIndex = (index, key, value) => {
+  const updateCardByIndex = (key, value, index) => {
     dispatch(
       updateStep({
         index,
@@ -122,10 +122,8 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                 key={index}
                 style={{ borderRadius: "5px" }}
                 className="collapsible_option"
-                defaultExpanded={
-                  index.toString() === currentStepIndex ? false : true
-                }
-                expanded={index.toString() === currentStepIndex ? true : false}
+                defaultExpanded={step.isOpen}
+                expanded={step.isOpen}
                 onChange={() => dispatch(toggleStep(index))}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon />}
@@ -139,7 +137,7 @@ const CreatePlaybook = ({ playbook, allowSave = true, showHeading = true }) => {
                   />
                 </AccordionSummary>
                 <AccordionDetails sx={{ padding: "0" }}>
-                  <Step key={index} step={step} />
+                  <Step key={index} step={step} index={index} />
                 </AccordionDetails>
               </Accordion>
             ))}
