@@ -57,6 +57,9 @@ const TypingDropdown = ({
   return (
     <div ref={dropdownRef} className="relative w-full inline-block text-left">
       <div
+        style={{
+          backgroundColor: disabled ? "#efefef" : "",
+        }}
         className={`${
           error ? "border-red" : ""
         } flex flex-wrap items-center gap-2 justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none`}>
