@@ -10,12 +10,21 @@ function SelectTaskType() {
     useSelector(playbookSelector);
   const step = steps[currentStepIndex];
   const isPrefetched = useIsPrefetched();
+  const currentConnector = connectorOptions?.find(
+    (e) => e.id === step?.source,
+  )?.connector;
 
-  const taskTypes =
-    connectorOptions?.find((e) => e.id === step?.source)?.connector
-      ?.supported_task_type_options ?? [];
+  const taskTypes = currentConnector?.supported_task_type_options ?? [];
 
   function handleTaskTypeChange(id, val) {
+    const currentTaskType = currentConnector?.supported_task_type_options?.find(
+      (e) => e.task_type === id,
+    );
+    const modelType =
+      currentTaskType.supported_model_types?.length > 0
+        ? currentTaskType.supported_model_types[0].model_type
+        : currentConnector.source;
+    updateCardByIndex("modelType", modelType);
     updateCardByIndex("taskType", id);
     updateCardByIndex("description", val.type.display_name);
   }

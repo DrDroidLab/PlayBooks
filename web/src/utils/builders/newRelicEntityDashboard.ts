@@ -51,7 +51,8 @@ export const newRelicEntityDashboardBuilder = (options) => {
           handleChange: (_, val) => {
             store.dispatch(setDashboard({ index, dashboard: val }));
           },
-          selected: task?.dashboard?.label,
+          selected: task?.dashboard?.id,
+          helperText: task?.dashboard?.label,
         },
         {
           key: "page",

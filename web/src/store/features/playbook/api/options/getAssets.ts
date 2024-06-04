@@ -8,8 +8,8 @@ import { setAssets } from "../../playbookSlice.ts";
 
 export const getAssetApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAssets: builder.query<any, { filter: any }>({
-      query: ({ filter }) => {
+    getAssets: builder.query<any, void>({
+      query: () => {
         const [task] = getCurrentTask();
         return {
           url: GET_ASSETS,
@@ -17,7 +17,6 @@ export const getAssetApi = apiSlice.injectEndpoints({
           body: {
             connector_id: task?.connectorType,
             type: task?.modelType,
-            filters: filter,
           },
         };
       },

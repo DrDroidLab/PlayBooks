@@ -34,7 +34,7 @@ function Query() {
       <CustomDrawer
         isOpen={isDrawerOpen}
         setIsOpen={setDrawerOpen}
-        src={"/integrations"}
+        src={"/data-sources/add"}
       />
     </div>
   );

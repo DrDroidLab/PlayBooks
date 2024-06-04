@@ -10,6 +10,7 @@ import VariablesBox from "./VariablesBox.jsx";
 import { InfoOutlined } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { constructBuilder } from "../../../utils/playbooksData.ts";
+import { deepEqual } from "../../../utils/deepEqual.ts";
 
 function TaskDetails() {
   const data = constructBuilder();
@@ -47,7 +48,7 @@ function TaskDetails() {
   };
 
   useEffect(() => {
-    const errorChanged = prevError.current === step.errors;
+    const errorChanged = deepEqual(prevError.current, step.errors);
     if (
       !step.isPrefetched &&
       step &&

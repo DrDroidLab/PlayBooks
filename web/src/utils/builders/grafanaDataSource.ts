@@ -14,7 +14,7 @@ export const grafanaDataSourceBuilder = (options: any) => {
       [
         {
           key: "datasource",
-          label: "Data Source",
+          label: "Data Source UID",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
@@ -33,16 +33,15 @@ export const grafanaDataSourceBuilder = (options: any) => {
               );
             }
           },
-          selected: task.datasource?.label,
+          helperText: task.datasource?.label,
+          selected: task.datasource?.id,
         },
       ],
       [
         {
           label: "PromQL",
           type: OptionType.MULTILINE,
-          value: task?.grafanaQuery?.expression
-            ? task?.grafanaQuery?.expression
-            : "",
+          value: task?.grafanaQuery?.expression,
           handleChange: (e) => {
             store.dispatch(
               setGrafanaExpression({ index, expression: e.target.value }),

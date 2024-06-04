@@ -15,11 +15,6 @@ export const fetchData = async (val: any = undefined) => {
   const step = steps[val?.index ?? currentStepIndex];
 
   if (step?.source === "API" || val?.connector_type === "API") return;
-  // if (step?.source === "BASH" || val?.connector_type === "BASH") {
-  //   await getAssetModelOptionsFunction();
-  //   return;
-  // }
-  // await getAssetModelOptionsFunction();
   await getAssetsFunction();
 };
 
@@ -38,9 +33,7 @@ export const getAssetModelOptionsFunction = async () => {
 
 export const getAssetsFunction = async () => {
   try {
-    await store.dispatch(
-      getAssets.initiate({ filter: {} }, { forceRefetch: true }),
-    );
+    await store.dispatch(getAssets.initiate(undefined, { forceRefetch: true }));
   } catch (e) {
     console.log("There was an error:", e);
   }
