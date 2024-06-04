@@ -15,7 +15,6 @@ export const iframeBuilder = () => {
       ],
       [
         {
-          key: "iframe_render",
           label: "Iframe RENDER",
           type: OptionType.IFRAME_RENDER,
           value: task.iframe_url,
