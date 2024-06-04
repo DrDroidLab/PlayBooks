@@ -5,7 +5,7 @@ import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
 
-function Interpretation({ index }) {
+function SelectInterpretation({ index }) {
   const [step] = useCurrentStep(index);
   const [selectInterpretation, setSelectInterpretation] = useState(false);
   const { data } = usePlaybookBuilderOptionsQuery();
@@ -15,7 +15,8 @@ function Interpretation({ index }) {
   };
 
   if (
-    !(data?.interpreterTypes > 0 && !unsupportedRunners.includes(step.source))
+    data?.interpreterTypes === 0 &&
+    unsupportedRunners.includes(step.source)
   ) {
     return <></>;
   }
@@ -34,4 +35,4 @@ function Interpretation({ index }) {
   );
 }
 
-export default Interpretation;
+export default SelectInterpretation;
