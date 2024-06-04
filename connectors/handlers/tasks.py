@@ -220,7 +220,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
         bot_auth_token = bot_auth_token.first().key
         doctor_droid_app_id = None
         app_id = get_db_connector_keys(account_id=account_id, connector_id=slack_connector.id,
-                                       key_type=ConnectorKeyProto.SLACK_APP_ID)
+                                       key_type=SourceKeyType.SLACK_APP_ID)
         if app_id:
             doctor_droid_app_id = app_id.first().key
 

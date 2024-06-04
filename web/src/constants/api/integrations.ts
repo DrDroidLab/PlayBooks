@@ -16,3 +16,4 @@ export const GOOGLE_SPACES_LIST =
   "/connectors/integrations/handlers/g_chat/list_spaces";
 export const GOOGLE_SPACES_REGISTER =
   "/connectors/integrations/handlers/g_chat/register_spaces";
+  export const SAVE_SITE_URL = "/connectors/save_site_url";
