@@ -10,6 +10,7 @@ import {
   addExternalLinks,
   deleteStep,
   toggleExternalLinkVisibility,
+  toggleNotesVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import Query from "./Query.jsx";
@@ -34,6 +35,10 @@ function Step({ step, index }) {
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index }));
+  };
+
+  const toggleNotes = () => {
+    dispatch(toggleNotesVisibility({ index }));
   };
 
   const setLinks = (links) => {
@@ -64,31 +69,29 @@ function Step({ step, index }) {
               {addQuery && <Query step={step} index={index} />}
             </div>
           </div>
-          <Notes step={step} index={index} />
+          {step.isPrefetched && !step.isCopied ? (
+            step.notes && (
+              <>
+                <div className={styles["addConditionStyle"]}>
+                  <b>Notes</b>
+                </div>
+                <Notes step={step} index={index} />
+              </>
+            )
+          ) : (
+            <>
+              <div
+                className={styles["addConditionStyle"]}
+                onClick={toggleNotes}>
+                <b className="ext_links">{step.showNotes ? "-" : "+"}</b> Add
+                Notes about this step
+              </div>
+              {step.showNotes && <Notes step={step} index={index} />}
+            </>
+          )}
+
           {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
             <Interpretation index={index} />
-          )}
-          {!isPrefetched && (
-            <div className={styles["step-buttons"]}>
-              {step.source && !unsupportedRunners.includes(step.source) && (
-                <button
-                  className={styles["pb-button"]}
-                  onClick={() => executeStep(step)}>
-                  <Tooltip title="Run this Step">
-                    <>
-                      Run <PlayArrowIcon />
-                    </>
-                  </Tooltip>
-                </button>
-              )}
-              <button
-                className={styles["pb-button"]}
-                onClick={() => handleDeleteClick(index)}>
-                <Tooltip title="Remove this Step">
-                  <DeleteIcon />
-                </Tooltip>
-              </button>
-            </div>
           )}
           {!isPrefetched && (
             <div>
@@ -109,6 +112,29 @@ function Step({ step, index }) {
                   />
                 )}
               </div>
+            </div>
+          )}
+
+          {!isPrefetched && (
+            <div className={styles["step-buttons"]}>
+              {step.source && !unsupportedRunners.includes(step.source) && (
+                <button
+                  className={styles["pb-button"]}
+                  onClick={() => executeStep(step, index)}>
+                  <Tooltip title="Run this Step">
+                    <>
+                      Run <PlayArrowIcon />
+                    </>
+                  </Tooltip>
+                </button>
+              )}
+              <button
+                className={styles["pb-button"]}
+                onClick={() => handleDeleteClick(index)}>
+                <Tooltip title="Remove this Step">
+                  <DeleteIcon />
+                </Tooltip>
+              </button>
             </div>
           )}
         </div>
