@@ -394,5 +394,10 @@ export const cardsData = [
     enum: "AZURE",
     desc: "Connect Logs from Microsoft Azure Log Analytics",
     buttonTitle: "Connect",
-  }
+  },
+  {
+    id: 47,
+    url: "/integrations/iframe_logo.png",
+    enum: "IFRAME",
+  },
 ];

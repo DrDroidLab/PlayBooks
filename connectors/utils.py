@@ -49,8 +49,8 @@ def get_all_request_connectors():
 def get_all_available_connectors(all_active_connectors):
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
     print(all_connectors);
-    for ac in all_active_connectors:
-        all_connectors.remove(ac.connector_type)
+    # for ac in all_active_connectors:
+    #     all_connectors.remove(ac.connector_type)
     all_available_connectors = []
     for c in all_connectors:
         all_available_connectors.append(
@@ -73,7 +73,11 @@ def get_connector_keys_options(connector_type):
     for sk in all_keys:
         connector_key_option_protos.append(ConnectorKeyProto(key_type=sk, display_name=StringValue(
             value=integrations_connector_key_display_name_map.get(sk))))
-    return connector_key_option_protos
+    connector_display_name = integrations_connector_type_display_name_map.get(connector_type,
+                                                                              Source.Name(connector_type))
+    connector = ConnectorProto(type=connector_type, display_name=StringValue(value=connector_display_name),
+                               keys=connector_key_option_protos)
+    return connector, connector_key_option_protos
 
 
 def generate_credentials_dict(connector_type, connector_keys):
@@ -237,7 +241,6 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
         return False, f'Missing Required Connector Keys for Connector Type: ' \
                       f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
-    print('credentials_dict', credentials_dict)
     try:
         api_processor = connector_type_api_processor_map.get(connector_type)
         if not api_processor:

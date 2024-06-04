@@ -226,6 +226,7 @@ enum SourceModelType {
 
   //Documentation Models
   MARKDOWN = 601;
+  IFRAME = 602;
 
   //Postgres Models
   POSTGRES_QUERY = 701;

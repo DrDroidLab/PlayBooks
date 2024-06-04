@@ -1,92 +1,77 @@
-import { store } from '../../store/index.ts';
-import {
-  selectCluster,
-  selectEksNamespace,
-  selectEksRegion,
-  setCommand
-} from '../../store/features/playbook/playbookSlice.ts';
-import { OptionType } from '../playbooksData.ts';
-import { Step } from '../../types.ts';
+import { store } from "../../store/index.ts";
+import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
+import { OptionType } from "../playbooksData.ts";
+import getCurrentTask from "../getCurrentTask.ts";
 
-export const eksBuilder = (task: Step, index, options: any) => {
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
+
+  return currentAsset;
+};
+
+export const eksBuilder = (options: any) => {
+  const [task, index] = getCurrentTask();
   return {
-    triggerGetAssetsKey: 'cluster',
+    triggerGetAssetsKey: "cluster",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
-      filters: {
-        eks_cluster_model_filters: {
-          regions: [
-            {
-              region: task.eksRegion,
-              clusters: [
-                {
-                  name: task.cluster
-                }
-              ]
-            }
-          ]
-        }
-      }
+      eks_cluster_model_filters: {
+        regions: [
+          {
+            region: task.eksRegion,
+            clusters: [
+              {
+                name: task.cluster,
+              },
+            ],
+          },
+        ],
+      },
     },
     builder: [
       [
         {
-          key: 'eksRegion',
-          label: 'Region',
-          type: OptionType.OPTIONS,
-          selected: task.eksRegion,
+          key: "eksRegion",
+          label: "Region",
+          type: OptionType.TYPING_DROPDOWN,
           value: task.eksRegion,
-          options: options?.map(x => ({ id: x.region, label: x.region })),
-          handleChange: (_, val) => {
-            store.dispatch(selectEksRegion({ index, region: val.label }));
-          }
+          options:
+            options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
         },
         {
-          key: 'cluster',
-          label: 'Cluster',
-          type: OptionType.OPTIONS,
-          selected: task.cluster,
+          key: "cluster",
+          label: "Cluster",
+          type: OptionType.TYPING_DROPDOWN,
           value: task.cluster,
           options: options
-            .find(e => e.region === task.eksRegion)
-            ?.clusters?.map(x => ({ id: x.name, label: x.name })),
-          handleChange: (_, val) => {
-            store.dispatch(selectCluster({ index, cluster: val.label }));
-          }
+            ?.find((e) => e.region === task.eksRegion)
+            ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
         },
         {
-          key: 'eksNamespace',
-          label: 'Namespace',
-          type: OptionType.OPTIONS,
+          key: "eksNamespace",
+          label: "Namespace",
+          type: OptionType.TYPING_DROPDOWN,
           options:
-            task.assets?.clusters?.length > 0
-              ? task.assets?.clusters[0].namespaces?.map(el => {
+            getCurrentAsset()?.clusters?.length > 0
+              ? getCurrentAsset()?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],
-          handleChange: (_, val) => {
-            store.dispatch(selectEksNamespace({ index, namespace: val.label }));
-          },
-          value: task.eksNamespace,
-          selected: task.eksNamespace
-          // requires: ['cluster']
         },
         {
-          key: 'command',
-          label: 'Command Type',
-          type: OptionType.OPTIONS,
-          options: task.assets?.commands?.map(el => {
+          key: "command",
+          label: "Command Type",
+          type: OptionType.TYPING_DROPDOWN,
+          options: getCurrentAsset()?.commands?.map((el) => {
             return { id: el.type, label: el.description, command: el };
           }),
           handleChange: (_, val) => {
             store.dispatch(setCommand({ index, command: val.command }));
           },
           value: task.command?.type,
-          selected: task.command?.type
-          // requires: ['eksNamespace']
-        }
-      ]
-    ]
+          selected: task.command?.type,
+        },
+      ],
+    ],
   };
 };

@@ -1,10 +1,10 @@
 export const workflowToState = (workflow) => {
   const notificationType =
-    workflow.actions.findIndex(
+    workflow.actions?.findIndex(
       (e) => e.notification_config.slack_config.message_type === "MESSAGE",
     ) !== -1
       ? "slack-message"
-      : workflow.actions.findIndex(
+      : workflow.actions?.findIndex(
           (e) =>
             e.notification_config.slack_config.message_type === "THREAD_REPLY",
         ) !== -1
@@ -17,11 +17,13 @@ export const workflowToState = (workflow) => {
       workflow.entry_points[0].type === "ALERT" ? "slack" : "api-trigger",
     channel: {
       channel_id:
-        notificationType === "slack-message"
-          ? workflow.actions[0]?.notification_config?.slack_config
-              ?.slack_channel_id
-          : workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-              ?.slack_channel_id,
+        workflow?.actions?.length > 0
+          ? notificationType === "slack-message"
+            ? workflow.actions[0]?.notification_config?.slack_config
+                ?.slack_channel_id
+            : workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
+                ?.slack_channel_id
+          : "",
     },
     trigger: {
       channel: {

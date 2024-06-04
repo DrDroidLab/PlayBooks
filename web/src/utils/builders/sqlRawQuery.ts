@@ -1,6 +1,6 @@
 import { OptionType } from "../playbooksData.ts";
 
-export const sqlRawQueryBuilder = (task: any, index: number) => {
+export const sqlRawQueryBuilder = () => {
   return {
     builder: [
       [

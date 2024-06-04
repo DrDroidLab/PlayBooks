@@ -27,14 +27,15 @@ export default function CustomNode({ data }) {
         {(data.step.outputLoading || data.step.inprogress) && (
           <CircularProgress size={20} />
         )}
-        {(data.step.outputError || data.step.showError) && (
+        {(data.step.outputError ||
+          Object.keys(data?.step?.errors ?? {}).length > 0) && (
           <ErrorOutline color="error" size={20} />
         )}
         {!data.step.outputError &&
           !data.step.outputLoading &&
           data.step.showOutput &&
           data.step.outputs?.data?.length > 0 &&
-          !data.step.showError && (
+          Object.keys(data?.step?.errors ?? {}).length === 0 && (
             <CheckCircleOutline color="success" size={20} />
           )}
       </div>

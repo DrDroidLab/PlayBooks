@@ -290,6 +290,7 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Slack Models"""
     MARKDOWN: _SourceModelType.ValueType  # 601
     """Documentation Models"""
+    IFRAME: _SourceModelType.ValueType  # 602
     POSTGRES_QUERY: _SourceModelType.ValueType  # 701
     """Postgres Models"""
     EKS_CLUSTER: _SourceModelType.ValueType  # 801
@@ -340,6 +341,7 @@ SLACK_CHANNEL: SourceModelType.ValueType  # 501
 """Slack Models"""
 MARKDOWN: SourceModelType.ValueType  # 601
 """Documentation Models"""
+IFRAME: SourceModelType.ValueType  # 602
 POSTGRES_QUERY: SourceModelType.ValueType  # 701
 """Postgres Models"""
 EKS_CLUSTER: SourceModelType.ValueType  # 801

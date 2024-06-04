@@ -31,20 +31,20 @@ const renderChildren = (children) => {
 };
 
 const Heading = ({
-  subHeading,
+  subHeading = "",
   heading,
-  subHeadingLink,
-  onTimeRangeChangeCb,
-  onRefreshCb,
+  subHeadingLink = undefined,
+  onTimeRangeChangeCb = true,
+  onRefreshCb = true,
   children,
-  defaultTimeRange,
-  defaultCustomTimeRange,
-  defaultCustomTillNowTimeRange,
+  defaultTimeRange = undefined,
+  defaultCustomTimeRange = undefined,
+  defaultCustomTillNowTimeRange = undefined,
   showRunAll = false,
   showEditTitle = false,
   customTimeRange = false,
-  copyPlaybook,
-  showCopy,
+  copyPlaybook = false,
+  showCopy = false,
   isPlayground = false,
   showSave = true,
 }) => {
@@ -85,9 +85,6 @@ const Heading = ({
             </div>
           )}
           <div className="flex-col justify-items-center">
-            {!!subHeading && !subHeadingLink ? (
-              <div className="text-xs text-gray-400">{subHeading}</div>
-            ) : null}
             <div>
               <div className="text-xs sm:text-lg font-semibold text-gray-800">
                 <div className="flex gap-2 items-center">
@@ -129,6 +126,11 @@ const Heading = ({
                     </button>
                   )}
                 </div>
+                {!!subHeading && !subHeadingLink ? (
+                  <div className="text-xs font-normal text-gray-400">
+                    {subHeading}
+                  </div>
+                ) : null}
                 {(Object.keys(playbook.currentPlaybook).length > 0 ||
                   showEditTitle) && (
                   <input

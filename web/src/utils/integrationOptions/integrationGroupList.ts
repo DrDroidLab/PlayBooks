@@ -3,8 +3,11 @@ import { models } from "../../constants/index.ts";
 export const integrations = [
   {
     id: "documentation",
-    label: "Documentation",
-    options: [models.TEXT],
+    label: "View",
+    options: [
+      models.TEXT,
+      models.IFRAME
+    ],
   },
   {
     id: "actions",
@@ -38,7 +41,7 @@ export const integrations = [
     label: "Database",
     options: [
       models.CLICKHOUSE,
-      models.POSTGRES_QUERY,
+      models.POSTGRES_DATABASE,
       models.SQL_DATABASE_CONNECTION,
     ],
   },

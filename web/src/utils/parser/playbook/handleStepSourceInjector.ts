@@ -8,10 +8,15 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
   let baseTask: PlaybookTask = {
     name: step.name ?? uuidv4(),
     id: step.id ?? "0",
-    type: "METRIC",
+    source: step.source,
     description: step.description ?? "",
     interpreter_type: step.interpreter?.type,
     global_variable_set: stateToGlobalVariable(step.globalVariables),
+    task_connector_sources: [
+      {
+        id: step.connectorType || 0,
+      },
+    ],
   };
 
   let tasks: PlaybookTask[] = [];
@@ -46,6 +51,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       tasks = Injector.injectApiTasks(step, baseTask);
       break;
     case SOURCES.TEXT:
+      // Handling iframe also
       tasks = Injector.injectTextTasks(step, baseTask);
       break;
     case SOURCES.BASH:
@@ -61,5 +67,10 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       break;
   }
 
-  return tasks;
+  const taskWithIds = tasks.map((task, i) => ({
+    ...task,
+    id: step.taskIds?.length > 0 ? step.taskIds[i] ?? step.id ?? "0" : "0",
+  }));
+
+  return taskWithIds;
 };

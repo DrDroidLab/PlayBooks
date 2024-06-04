@@ -1,5 +1,8 @@
 import { store } from "../store/index.ts";
-import { getAssetModelOptions } from "../store/features/playbook/api/index.ts";
+import {
+  getAssetModelOptions,
+  getAssets,
+} from "../store/features/playbook/api/index.ts";
 import {
   playbookSelector,
   setModelTypeOptions,
@@ -12,42 +15,32 @@ export const fetchData = async (val: any = undefined) => {
   const step = steps[val?.index ?? currentStepIndex];
 
   if (step?.source === "API" || val?.connector_type === "API") return;
-  if (step?.source === "BASH" || val?.connector_type === "BASH") {
-    await getAssetModelOptionsFunction(
-      "REMOTE_SERVER",
-      "SSH_SERVER",
-      val?.index ?? currentStepIndex,
-    );
-    return;
-  }
-  await getAssetModelOptionsFunction(
-    val?.connector_type ?? step?.source,
-    val?.model_type ?? step?.modelType,
-    val?.index ?? currentStepIndex,
-  );
+  // if (step?.source === "BASH" || val?.connector_type === "BASH") {
+  //   await getAssetModelOptionsFunction();
+  //   return;
+  // }
+  // await getAssetModelOptionsFunction();
+  await getAssetsFunction();
 };
 
-export const getAssetModelOptionsFunction = async (
-  connector_type,
-  model_type,
-  stepIndex,
-) => {
+export const getAssetModelOptionsFunction = async () => {
   try {
     const res = await store.dispatch(
-      getAssetModelOptions.initiate({
-        connector_type,
-        model_type,
-        stepIndex,
-      }),
+      getAssetModelOptions.initiate(undefined, { forceRefetch: true }),
     );
     const data = res.data;
     if ((data?.asset_model_options?.length ?? 0) > 0)
-      store.dispatch(
-        setModelTypeOptions({
-          options: data?.asset_model_options,
-          index: stepIndex,
-        }),
-      );
+      store.dispatch(setModelTypeOptions(data?.asset_model_options));
+  } catch (e) {
+    console.log("There was an error:", e);
+  }
+};
+
+export const getAssetsFunction = async () => {
+  try {
+    await store.dispatch(
+      getAssets.initiate({ filter: {} }, { forceRefetch: true }),
+    );
   } catch (e) {
     console.log("There was an error:", e);
   }
