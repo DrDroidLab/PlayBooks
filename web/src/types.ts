@@ -67,6 +67,7 @@ export interface Step {
   formula?: string;
   requiresFormula?: boolean;
   showExternalLinks?: boolean;
+  showNotes?: boolean;
   stepType: string | null;
   action: any;
   connector_type?: any;

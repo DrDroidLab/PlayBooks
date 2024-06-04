@@ -152,14 +152,14 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {showRunAll && playbook.steps?.length > 0 && (
+          {/* {showRunAll && playbook.steps?.length > 0 && (
             <button
               className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
               onClick={handleGlobalExecute}>
               <PlayArrowIcon style={{ fontSize: "medium" }} />
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
-          )}
+          )} */}
           {playbook.view === "builder" &&
             playbook.steps.length > 0 &&
             showSave &&
