@@ -428,10 +428,10 @@ const playbookSlice = createSlice({
       }
     },
     toggleNotesVisibility(state, { payload }) {
-      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
-    },
-    toggleNotesVisibility(state, { payload }) {
-      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].showNotes = !state.steps[payload.index].showNotes;
+      }
     },
     resetState(state) {
       state.steps = [];
