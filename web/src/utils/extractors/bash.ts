@@ -1,7 +1,6 @@
 export const extractBashTasks = (step: any) => {
   let stepSource = "BASH";
-  let modelType = "BASH";
-  let selected = "BASH";
+  let modelType = "SSH_SERVER";
   const tasks = step.tasks;
   const taskType = tasks[0][stepSource.toLowerCase()]?.type;
   const connectorType =
@@ -12,7 +11,6 @@ export const extractBashTasks = (step: any) => {
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
     model_type: modelType,
     connectorType,
