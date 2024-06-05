@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CardData } from "../../store/features/integrations/types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Delete } from "@mui/icons-material";
 import ConnectorDeleteOverlay from "./connectors/ConnectorDeleteOverlay";
 
@@ -9,11 +9,29 @@ type ConnectorCardPropTypes = {
 };
 
 function ConnectorCard({ connector }: ConnectorCardPropTypes) {
+  const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const handleNavigate = () => {
+    const url = `/data-sources/${connector.enum.toLowerCase()}/${connector.id}`;
+    navigate(url);
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDeleting(true);
+  };
+
+  const toggleDeletingOverlay = (e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setIsDeleting(!isDeleting);
+  };
+
   return (
-    <Link
-      to={`/data-sources/${connector.enum.toLowerCase()}/${connector.id}`}
+    <div
+      onClick={handleNavigate}
       className="bg-gray-100 py-4 px-2 rounded flex justify-between items-center hover:bg-gray-50 transition-all">
       <div className="flex items-center gap-3">
         <img
@@ -32,11 +50,7 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
 
       <div className="flex gap-2">
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsDeleting(true);
-          }}
+          onClick={handleDelete}
           className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
           <Delete />
         </button>
@@ -50,13 +64,13 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
 
       <ConnectorDeleteOverlay
         isOpen={isDeleting}
-        toggleOverlay={() => setIsDeleting(!isDeleting)}
+        toggleOverlay={toggleDeletingOverlay}
         successCb={() => {
           window.location.href = "/data-sources";
         }}
         connector={connector}
       />
-    </Link>
+    </div>
   );
 }
 

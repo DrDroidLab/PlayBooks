@@ -76,7 +76,7 @@ function DataSources() {
               </div>
             )}
 
-            {notFound && (
+            {!isEmpty && notFound && (
               <div className="flex flex-col gap-2 items-center justify-center">
                 <p className="text-sm">
                   No Datasources found. try changing the search keyword

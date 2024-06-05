@@ -21,7 +21,7 @@ export const fetchData = async (val: any = undefined) => {
     connectorsWithoutAssets.includes(val?.connector_type)
   )
     return;
-  await getAssetsFunction(index);
+  if (step.connectorType && step.modelType) await getAssetsFunction(index);
 };
 
 export const getAssetModelOptionsFunction = async () => {
@@ -39,7 +39,7 @@ export const getAssetModelOptionsFunction = async () => {
 
 export const getAssetsFunction = async (index) => {
   try {
-    await store.dispatch(getAssets.initiate(index));
+    await store.dispatch(getAssets.initiate(index, { forceRefetch: true }));
   } catch (e) {
     console.log("There was an error:", e);
   }
