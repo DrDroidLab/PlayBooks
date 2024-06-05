@@ -39,7 +39,7 @@ export const getAssetModelOptionsFunction = async () => {
 
 export const getAssetsFunction = async (index) => {
   try {
-    await store.dispatch(getAssets.initiate(index, { forceRefetch: true }));
+    await store.dispatch(getAssets.initiate(index));
   } catch (e) {
     console.log("There was an error:", e);
   }

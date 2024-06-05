@@ -8,7 +8,7 @@ export const executionToPlaybook = (playbook_execution) => {
   const list: Step[] = [];
   for (let [i, stepExecutionLog] of stepExecutionLogs.entries()) {
     const step = structuredClone(stepExecutionLog.step);
-    step.tasks = stepExecutionLog?.logs?.map((log) => log.task);
+    step.tasks = stepExecutionLog?.task_execution_logs?.map((log) => log.task);
     let data: any = handleStepSourceExtractor(step);
 
     const stepData: Step = {
