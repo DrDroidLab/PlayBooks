@@ -8,6 +8,7 @@ import {
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
+import { Tooltip } from "@mui/material";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
@@ -51,6 +52,29 @@ function IntegrationOption({ option, setIsOpen }) {
     }
   };
 
+  if (unsupported) {
+    return (
+      <Tooltip title="This task type is deprecated, use other Grafana Data Sources.">
+        <div
+          className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px] hover:bg-gray-200 cursor-pointer transition-all`}
+          key={option.id}>
+          {connectorOptionsMap[option.source.toLowerCase()]?.length > 0 && (
+            <div className="absolute top-0 right-0 m-1 text-md">
+              <CheckCircleOutline color="success" fontSize="inherit" />
+            </div>
+          )}
+          <div
+            className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
+          />
+          <img className="w-10 h-10" src={handleImageSrc()} alt="logo" />
+          <p className="text-sm">
+            {option?.display_name ?? `${option?.source} ${option?.task_type}`}
+          </p>
+        </div>
+      </Tooltip>
+    );
+  }
+
   return (
     <div
       className={`flex relative items-center gap-2 p-2 bg-gray-50 rounded border-[1px] hover:bg-gray-200 cursor-pointer transition-all`}
@@ -61,16 +85,7 @@ function IntegrationOption({ option, setIsOpen }) {
           <CheckCircleOutline color="success" fontSize="inherit" />
         </div>
       )}
-      {unsupported && (
-        <div
-          className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
-        />
-      )}
       <img className="w-10 h-10" src={handleImageSrc()} alt="logo" />
-      {/* <div>
-                    <p className="text-xs font-bold text-gray-500">{data.source}</p>
-                    <p className="font-semibold">{data.display_name}</p>
-                  </div> */}
       <p className="text-sm">
         {option?.display_name ?? `${option?.source} ${option?.task_type}`}
       </p>
