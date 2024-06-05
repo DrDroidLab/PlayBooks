@@ -7,10 +7,14 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
+import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
 
 function IntegrationOption({ option, setIsOpen }) {
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
+  const unsupported = unsupportedBuilderOptions.includes(
+    `${option.source} ${option.task_type}`,
+  );
 
   const handleImageSrc = () => {
     switch (option?.source) {
@@ -29,6 +33,7 @@ function IntegrationOption({ option, setIsOpen }) {
   };
 
   const handleClick = () => {
+    if (unsupported) return;
     if (option.source) {
       dispatch(
         createStepWithSource({
@@ -56,9 +61,11 @@ function IntegrationOption({ option, setIsOpen }) {
           <CheckCircleOutline color="success" fontSize="inherit" />
         </div>
       )}
-      {/* <div
-        className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
-      /> */}
+      {unsupported && (
+        <div
+          className={`bg-white w-full h-full absolute opacity-75 top-0 left-0`}
+        />
+      )}
       <img className="w-10 h-10" src={handleImageSrc()} alt="logo" />
       {/* <div>
                     <p className="text-xs font-bold text-gray-500">{data.source}</p>
