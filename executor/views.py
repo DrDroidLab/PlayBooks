@@ -49,11 +49,13 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookTaskResponseV3, GetPlaybooksRequestV2, GetPlaybooksResponseV2, RunPlaybookStepRequestV3, \
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
-    ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2
+    ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
+    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
 from utils.proto_utils import proto_to_dict, dict_to_proto
+from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -746,3 +748,79 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
     except Exception as e:
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))
+
+
+@web_api(PlaybookExecutionCreateRequest)
+def playbooks_execution_create(request_message: PlaybookExecutionCreateRequest) -> \
+        Union[PlaybookExecutionCreateResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    if not time_range.time_lt or not time_range.time_geq:
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook_id = request_message.playbook_id.value
+    if not playbook_id:
+        return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                               message=Message(title="Invalid Request",
+                                                               description="Missing playbook_id"))
+    try:
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+    except Exception as e:
+        logger.error(e)
+        return PlaybookExecutionCreateResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
+
+    location = settings.PLATFORM_PLAYBOOKS_EXECUTION_LOCATION.format(playbook_run_uuid)
+    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
+    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
+    session_url = build_absolute_uri(None, location, protocol, enabled)
+    return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                           playbook_run_id=StringValue(value=playbook_run_uuid),
+                                           execution_session_url=StringValue(value=session_url))
+
+
+@web_api(PlaybookExecutionStepExecuteRequest)
+def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecuteRequest) -> \
+        Union[PlaybookExecutionStepExecuteResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    playbook_run_id = request_message.playbook_run_id.value
+    if not playbook_run_id:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Invalid Request",
+                                                                    description="Missing playbook_run_id"))
+
+    playbook_execution = get_db_playbook_execution(account, playbook_run_id=playbook_run_id)
+    if not playbook_execution:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Error",
+                                                                    description="Playbook Execution not found"))
+
+    playbook_execution = playbook_execution.first()
+    if not time_range.time_lt or not time_range.time_geq:
+        playbook_execution_time_range = playbook_execution.time_range
+        if not playbook_execution_time_range:
+            time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+        else:
+            time_range = TimeRange(time_geq=playbook_execution_time_range.get('time_geq'),
+                                   time_lt=playbook_execution_time_range.get('time_lt'))
+    try:
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+    except Exception as e:
+        logger.error(e)
+        return PlaybookExecutionCreateResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
+
+    location = settings.PLATFORM_PLAYBOOKS_EXECUTION_LOCATION.format(playbook_run_uuid)
+    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
+    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
+    session_url = build_absolute_uri(None, location, protocol, enabled)
+    return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                           playbook_run_id=StringValue(value=playbook_run_uuid),
+                                           execution_session_url=StringValue(value=session_url))

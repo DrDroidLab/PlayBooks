@@ -454,6 +454,8 @@ class PlayBookStepExecutionLog(models.Model):
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.TextField(null=True, blank=True)
+    time_range = models.JSONField(null=True, blank=True)
 
     @property
     def proto(self) -> PlaybookStepExecutionLogProto:
@@ -496,6 +498,8 @@ class PlayBookTaskExecutionLog(models.Model):
     playbook_task_result = models.JSONField()
     interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.TextField(null=True, blank=True)
+    time_range = models.JSONField(null=True, blank=True)
 
     @property
     def proto(self) -> PlaybookTaskExecutionLogProto:
