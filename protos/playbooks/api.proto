@@ -252,8 +252,8 @@ message PlaybookExecutionCreateResponse {
 
 message PlaybookExecutionStepExecuteRequest {
   Meta meta = 1;
-  google.protobuf.UInt64Value playbook_run_id = 2;
-  PlaybookStep playbook_step = 3;
+  google.protobuf.StringValue playbook_run_id = 2;
+  PlaybookStep step = 3;
 }
 
 message PlaybookExecutionStepExecuteResponse {

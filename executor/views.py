@@ -803,24 +803,24 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
                                                     message=Message(title="Error",
                                                                     description="Playbook Execution not found"))
 
-    playbook = get_db_playbooks(account, playbook_id=playbook_execution.playbook_id)
+    playbook_execution = playbook_execution.first()
+    playbook = get_db_playbooks(account, playbook_id=playbook_execution.playbook.id)
     if not playbook:
         return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                                     message=Message(title="Error", description="Playbook not found"))
 
     playbook = playbook.first()
-    playbook_step = request_message.playbook_step
+    playbook_step = request_message.step
     if not playbook_step:
         return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                                     message=Message(title="Invalid Request",
                                                                     description="Missing playbook_step"))
-    playbook_execution = playbook_execution.first()
 
     if not time_range.time_lt or not time_range.time_geq:
         playbook_execution_time_range = playbook_execution.time_range
         if playbook_execution_time_range:
-            time_range = TimeRange(time_geq=playbook_execution_time_range.get('time_geq'),
-                                   time_lt=playbook_execution_time_range.get('time_lt'))
+            time_range = TimeRange(time_geq=int(playbook_execution_time_range.get('time_geq')),
+                                   time_lt=int(playbook_execution_time_range.get('time_lt')))
         else:
             time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
     try:
