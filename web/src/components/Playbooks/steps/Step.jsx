@@ -49,7 +49,7 @@ function Step({ step, index }) {
         className={styles["step-card-content"]}
         style={{ paddingBottom: "0px" }}>
         <div className={styles["step-name"]}>
-          {step.isPrefetched && step.description && (
+          {isPrefetched && step.description && (
             <div className={styles.head}>
               <ExternalLinksList index={index} />
             </div>
@@ -67,7 +67,7 @@ function Step({ step, index }) {
               {addQuery && <Query index={index} />}
             </div>
           </div>
-          {step.isPrefetched && !step.isCopied ? (
+          {isPrefetched && !step.isCopied ? (
             step.notes && (
               <>
                 <div className={styles["addConditionStyle"]}>
