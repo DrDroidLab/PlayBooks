@@ -162,6 +162,7 @@ const ValueComponent = ({
             className={
               styles["input__valueContainer"] + " " + styles[inputLengthClass]
             }
+            autoFocus
             onChange={handleChange}
             value={typeof value === "object" ? value.join(",") : value}
             type={hideText ? "password" : "text"}

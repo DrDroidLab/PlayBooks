@@ -108,11 +108,13 @@ const Heading = ({
                     </div>
                   )}
                   {showEditTitle && !isPrefetched && (
-                    <div
-                      className="icon"
-                      onClick={() => setShowEdit(!showEdit)}>
-                      {showEdit ? <Check /> : <Edit />}
-                    </div>
+                    <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+                      <div
+                        className="icon"
+                        onClick={() => setShowEdit(!showEdit)}>
+                        {showEdit ? <Check /> : <Edit />}
+                      </div>
+                    </button>
                   )}
                   {(showCopy || playbook.isEditing) && (
                     <button
@@ -160,10 +162,7 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" &&
-            playbook.steps.length > 0 &&
-            showSave &&
-            !isPrefetched && <StepActions />}
+          {playbook.view === "builder" && !isPrefetched && <StepActions />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

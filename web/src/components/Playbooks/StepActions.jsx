@@ -38,7 +38,7 @@ function StepActions({ allowSave }) {
     setIsSavePlaybookOverlayOpen(true);
   };
 
-  const handlePlaybookSave = async ({ pbName }) => {
+  const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
 
     const playbook = stepsToPlaybook(playbookVal, steps);
@@ -47,6 +47,7 @@ function StepActions({ allowSave }) {
       playbook: {
         ...playbook,
         name: pbName,
+        description,
       },
     };
 

@@ -4,7 +4,7 @@ export const injectCloudwatchMetricTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  const tasks = step.metric.map((e) => ({
+  const tasks = (step.metric ?? []).map((e) => ({
     namespace: step.namespaceName ?? step.namespace!,
     metric_name: e.id!,
     region: step.region!,
@@ -18,7 +18,7 @@ export const injectCloudwatchMetricTasks = (
     ],
   }));
 
-  return tasks.map((task) => ({
+  return tasks?.map((task) => ({
     ...baseTask,
     [step.source?.toLowerCase()]: {
       type: step.taskType,
