@@ -18,7 +18,6 @@ import { useParams } from "react-router-dom";
 import Loading from "../../common/Loading/index.tsx";
 import CreatePlaybook from "../CreatePlaybook.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
-import { getAssetModelOptions } from "../../../store/features/playbook/api/index.ts";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { executionToPlaybook } from "../../../utils/parser/playbook/executionToPlaybook.ts";
@@ -26,12 +25,12 @@ import Builder from "../create/Builder.jsx";
 
 const viewOptions = [
   {
-    id: "builder",
-    label: "Builder",
-  },
-  {
     id: "step",
     label: "List",
+  },
+  {
+    id: "builder",
+    label: "Builder",
   },
 ];
 
@@ -84,17 +83,6 @@ function PlaybookLogs() {
   const populateData = () => {
     const pbData = executionToPlaybook(data?.playbook_execution);
     dispatch(setSteps(pbData));
-    const assetModelPromises = pbData.map((el, i) =>
-      dispatch(
-        getAssetModelOptions.initiate({
-          forceRefetch: true,
-        }),
-      ).unwrap(),
-    );
-
-    Promise.all(assetModelPromises).catch((err) => {
-      console.log("Error: ", err);
-    });
 
     for (let output of outputs) {
       const outputList = [];

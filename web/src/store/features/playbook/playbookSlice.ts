@@ -90,7 +90,7 @@ const playbookSlice = createSlice({
           value: val[1] as string,
         };
       });
-      state.steps = playbookToSteps(payload, true);
+      state.steps = playbookToSteps(payload, false);
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
@@ -144,7 +144,7 @@ const playbookSlice = createSlice({
         };
       });
       state.isEditing = true;
-      state.steps = playbookToSteps(payload, true);
+      state.steps = playbookToSteps(payload, false);
     },
     setName(state, { payload }) {
       state.name = payload;
@@ -427,6 +427,12 @@ const playbookSlice = createSlice({
           !state.steps[parseInt(index, 10)].showExternalLinks;
       }
     },
+    toggleNotesVisibility(state, { payload }) {
+      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
+    },
+    toggleNotesVisibility(state, { payload }) {
+      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
+    },
     resetState(state) {
       state.steps = [];
       state.name = "";
@@ -574,6 +580,7 @@ export const {
   setFormula,
   setView,
   toggleExternalLinkVisibility,
+  toggleNotesVisibility,
   setStepType,
   setActionKey,
   setPlaybookKey,

@@ -11,7 +11,7 @@ export const bashBuilder = (options?: any) => {
           options: options?.map((x) => ({ id: x, label: x })),
           isOptional: true,
           disabled: true,
-          selected: options[0],
+          selected: options?.length > 0 ? options[0] : "",
         },
       ],
       [

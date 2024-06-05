@@ -13,5 +13,5 @@ export const GET_BUILDER_OPTIONS = "/pb/builder/options";
 export const DELETE_PLAYBOOK = "/pb/update";
 
 // Playbook Logs
-export const GET_PLAYBOOK_EXECUTION = "/pb/execution/get";
+export const GET_PLAYBOOK_EXECUTION = "/pb/execution/get/v2";
 export const GET_PLAYBOOK_EXECUTIONS = "/pb/executions/list";

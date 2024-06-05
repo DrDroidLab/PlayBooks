@@ -68,7 +68,7 @@ const ExecutionsTableRender = ({ data }) => {
               <TableCell component="td" scope="row">
                 <Link to={`/workflows/logs/${item.workflow_run_id}`}>
                   <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
-                    View Workflow Executions
+                    View Playbook Executions
                   </div>
                 </Link>
               </TableCell>

@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from "react-redux";
 import {
-  addExternalLinks,
   deleteStep,
   playbookSelector,
   stepsSelector,
-  toggleExternalLinkVisibility,
+  toggleNotesVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
-import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import AddSource from "../steps/AddSource.jsx";
@@ -32,12 +30,8 @@ function StepDetails() {
     dispatch(deleteStep(currentStepIndex));
   };
 
-  const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility(currentStepIndex));
-  };
-
-  const setLinks = (links) => {
-    dispatch(addExternalLinks({ index: currentStepIndex, links }));
+  const toggleNotes = () => {
+    dispatch(toggleNotesVisibility({ index: currentStepIndex }));
   };
 
   return (
@@ -69,9 +63,28 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource />
-          <PlaybookStep />
-          <Notes />
+          <AddSource step={step} />
+          <PlaybookStep card={step} index={currentStepIndex} />
+          {step.isPrefetched && !step.isCopied ? (
+            step.notes && (
+              <>
+                <div>
+                  <b>Notes</b>
+                </div>
+                <Notes step={step} index={currentStepIndex} />
+              </>
+            )
+          ) : (
+            <>
+              <div
+                className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
+                onClick={toggleNotes}>
+                <b className="ext_links">{step.showNotes ? "-" : "+"}</b> Add
+                Notes about this step
+              </div>
+              {step.showNotes && <Notes step={step} index={currentStepIndex} />}
+            </>
+          )}
           <SelectInterpretation />
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
@@ -83,20 +96,6 @@ function StepDetails() {
             </button>
           )}
         </>
-      )}
-      {!isPrefetched && (
-        <div className="my-4">
-          <div
-            className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
-            onClick={toggleExternalLinks}>
-            <b className="ext_links">{step?.showExternalLinks ? "-" : "+"}</b>{" "}
-            Add External Links
-          </div>
-
-          {step?.showExternalLinks && (
-            <ExternalLinks links={step?.externalLinks} setLinks={setLinks} />
-          )}
-        </div>
       )}
     </div>
   );
