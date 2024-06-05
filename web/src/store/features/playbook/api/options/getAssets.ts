@@ -49,6 +49,6 @@ export const getAssetApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetAssetsQuery,
+  useLazyGetAssetsQuery,
   endpoints: { getAssets },
 } = getAssetApi;

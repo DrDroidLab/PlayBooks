@@ -49,7 +49,8 @@ const TypingDropdownMultiple = ({
       arr?.findIndex((e) => e.label === (option?.label ?? value.trim())) !== -1
     )
       return;
-    arr.push(option ?? { label: value.trim(), id: value.trim() });
+    if (value.trim() || option?.label)
+      arr.push(option ?? { label: value.trim(), id: value.trim() });
     change(arr);
     resetState();
   };

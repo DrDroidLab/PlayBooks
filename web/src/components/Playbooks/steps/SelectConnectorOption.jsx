@@ -5,7 +5,7 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
 import {
-  useGetAssetsQuery,
+  useLazyGetAssetsQuery,
   usePlaybookBuilderOptionsQuery,
 } from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
@@ -20,7 +20,8 @@ function SelectConnectorOption({ index }) {
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
-  const { isFetching: assetsFetching } = useGetAssetsQuery(currentStepIndex);
+  const [, { isFetching: assetsFetching }] =
+    useLazyGetAssetsQuery(currentStepIndex);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
