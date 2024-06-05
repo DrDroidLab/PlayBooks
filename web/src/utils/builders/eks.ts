@@ -3,15 +3,14 @@ import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 
-const getCurrentAsset = () => {
-  const [task] = getCurrentTask();
+const getCurrentAsset = (index) => {
+  const [task] = getCurrentTask(index);
   const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
 
   return currentAsset;
 };
 
-export const eksBuilder = (options: any) => {
-  const [task, index] = getCurrentTask();
+export const eksBuilder = (options: any, task, index) => {
   return {
     triggerGetAssetsKey: "cluster",
     assetFilterQuery: {
@@ -52,8 +51,8 @@ export const eksBuilder = (options: any) => {
           label: "Namespace",
           type: OptionType.TYPING_DROPDOWN,
           options:
-            getCurrentAsset()?.clusters?.length > 0
-              ? getCurrentAsset()?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset(index)?.clusters?.length > 0
+              ? getCurrentAsset(index)?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],
@@ -62,7 +61,7 @@ export const eksBuilder = (options: any) => {
           key: "command",
           label: "Command Type",
           type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset()?.commands?.map((el) => {
+          options: getCurrentAsset(index)?.commands?.map((el) => {
             return { id: el.type, label: el.description, command: el };
           }),
           handleChange: (_, val) => {

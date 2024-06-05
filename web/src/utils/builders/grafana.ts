@@ -57,6 +57,7 @@ export const grafanaBuilder = (options: any) => {
             store.dispatch(setDashboard({ index, dashboard: val }));
           },
           selected: task.dashboard?.id,
+          helper: task.dashboard?.label,
         },
         {
           key: "panel",
@@ -99,7 +100,6 @@ export const grafanaBuilder = (options: any) => {
           // requires: ['panel'],
           selected: task?.grafanaQuery,
           handleChange: (val) => {
-            console.log("val", val);
             if (task?.grafanaQuery?.length > 0) {
               const options = grafanaOptionsList(index);
               if (options?.length === 0) {

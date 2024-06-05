@@ -23,22 +23,12 @@ export default function extractModelOptions(assets, task) {
           };
         }),
       };
-    case taskTypes.GRAFANA_VPC_PROMQL_METRIC_EXECUTION:
-    case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
-      return {
-        dashboards: assets.map((asset) => {
-          return {
-            datasource_uid: asset.datasource_uid,
-            datasource_name: asset.datasource_name,
-          };
-        }),
-      };
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
       return {
         prometheus_datasources: assets.map((asset) => {
           return {
-            datasource_uid: asset.datasource_uid,
             datasource_name: asset.datasource_name,
+            datasource_uid: asset.datasource_uid,
           };
         }),
       };

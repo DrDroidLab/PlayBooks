@@ -1,15 +1,12 @@
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-const getCurrentAsset = () => {
-  const [task] = getCurrentTask();
+const getCurrentAsset = (task: any) => {
   const currentAsset = task?.assets?.find((e) => e.region === task.region);
 
   return currentAsset;
 };
 
-export const cloudwatchLogGroupBuilder = (options: any) => {
-  const [task] = getCurrentTask();
+export const cloudwatchLogGroupBuilder = (options: any, task: any) => {
   return {
     triggerGetAssetsKey: "region",
     assetFilterQuery: {
@@ -35,7 +32,7 @@ export const cloudwatchLogGroupBuilder = (options: any) => {
           key: "logGroup",
           label: "Log Group",
           type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset()?.log_groups?.map((e) => {
+          options: getCurrentAsset(task)?.log_groups?.map((e) => {
             return {
               id: e,
               label: e,

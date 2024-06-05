@@ -10,6 +10,8 @@ export const bashBuilder = (options?: any) => {
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
           isOptional: true,
+          disabled: true,
+          selected: options?.length > 0 ? options[0] : "",
         },
       ],
       [

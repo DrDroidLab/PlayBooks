@@ -6,21 +6,22 @@ import {
 import {
   playbookSelector,
   setModelTypeOptions,
-  stepsSelector,
 } from "../store/features/playbook/playbookSlice.ts";
+import getCurrentTask from "./getCurrentTask.ts";
+import { connectorsWithoutAssets } from "./connectorsWithoutAssets.ts";
 
 export const fetchData = async (val: any = undefined) => {
-  const steps = stepsSelector(store.getState());
   const { currentStepIndex } = playbookSelector(store.getState());
-  const step = steps[val?.index ?? currentStepIndex];
+  const index = val?.index ?? currentStepIndex;
+  const [step] = getCurrentTask(index);
 
   if (step?.source === "API" || val?.connector_type === "API") return;
-  // if (step?.source === "BASH" || val?.connector_type === "BASH") {
-  //   await getAssetModelOptionsFunction();
-  //   return;
-  // }
-  // await getAssetModelOptionsFunction();
-  await getAssetsFunction();
+  if (
+    connectorsWithoutAssets.includes(step?.source) ||
+    connectorsWithoutAssets.includes(val?.connector_type)
+  )
+    return;
+  await getAssetsFunction(index);
 };
 
 export const getAssetModelOptionsFunction = async () => {
@@ -36,11 +37,9 @@ export const getAssetModelOptionsFunction = async () => {
   }
 };
 
-export const getAssetsFunction = async () => {
+export const getAssetsFunction = async (index) => {
   try {
-    await store.dispatch(
-      getAssets.initiate({ filter: {} }, { forceRefetch: true }),
-    );
+    await store.dispatch(getAssets.initiate(index));
   } catch (e) {
     console.log("There was an error:", e);
   }

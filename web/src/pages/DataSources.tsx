@@ -15,6 +15,8 @@ function DataSources() {
   const [filteredIntegrations, setFilteredIntegrations] =
     useState(connectorList);
   const debouncedQuery = useDebounce(query, 0);
+  const isEmpty = connectorList?.length === 0;
+  const notFound = filteredIntegrations?.length === 0;
 
   const searchIntegrations = () => {
     if (debouncedQuery) {
@@ -55,12 +57,7 @@ function DataSources() {
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
-          <Link
-            to={"/data-sources/add"}
-            className="flex gap-1 items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
-            <Add fontSize="inherit" />
-            <span>Add a new Data Source</span>
-          </Link>
+          {!isEmpty && <AddNewDataSource />}
         </div>
         <div className="mt-4 flex flex-col gap-1 bg-white p-2 rounded">
           <SuspenseLoader
@@ -69,6 +66,23 @@ function DataSources() {
             {filteredIntegrations?.map((connector, i) => (
               <ConnectorCard connector={connector} />
             ))}
+
+            {isEmpty && (
+              <div className="flex flex-col gap-2 items-center justify-center">
+                <p className="text-sm">
+                  No Datasources found. Connect a new one
+                </p>
+                <AddNewDataSource />
+              </div>
+            )}
+
+            {notFound && (
+              <div className="flex flex-col gap-2 items-center justify-center">
+                <p className="text-sm">
+                  No Datasources found. try changing the search keyword
+                </p>
+              </div>
+            )}
           </SuspenseLoader>
         </div>
       </main>
@@ -77,3 +91,14 @@ function DataSources() {
 }
 
 export default DataSources;
+
+function AddNewDataSource() {
+  return (
+    <Link
+      to={"/data-sources/add"}
+      className="flex gap-1 text-center justify-center w-fit items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
+      <Add fontSize="inherit" />
+      <span>Add a new Data Source</span>
+    </Link>
+  );
+}

@@ -7,4 +7,5 @@ export const connectorsWithoutAssets = [
   connectors.OPENAI,
   connectors.SQL_DATABASE_CONNECTION,
   connectors.REMOTE_SERVER,
+  connectors.POSTGRES,
 ];

@@ -147,11 +147,10 @@ const playbookSlice = createSlice({
       state.isEditing = false;
     },
     setErrors(state, { payload }) {
-      if (
-        state.currentStepIndex !== null &&
-        state.currentStepIndex !== undefined
-      )
-        state.steps[state.currentStepIndex].errors = payload;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[index].errors = payload.errors;
+      }
     },
     setPlaybookEditing(state, { payload }) {
       state.currentPlaybook.name = payload.name;
@@ -256,12 +255,15 @@ const playbookSlice = createSlice({
       });
     },
     toggleStep: (state, { payload }) => {
-      state.currentStepIndex =
-        state.currentStepIndex != null ? null : payload.toString();
+      // state.currentStepIndex =
+      //   state.currentStepIndex != null ? null : payload.toString();
+      const index = payload;
+      state.steps[index].isOpen = !state.steps[index].isOpen;
     },
-    deleteStep: (state) => {
-      if (state.currentStepIndex != null) {
-        state.steps.splice(parseInt(state.currentStepIndex, 10), 1);
+    deleteStep: (state, { payload }) => {
+      const index = (payload ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
       }
     },
@@ -330,11 +332,10 @@ const playbookSlice = createSlice({
         state.steps[state.currentStepIndex].modelTypeOptions = payload;
     },
     setAssets(state, { payload }) {
-      if (
-        state.currentStepIndex !== null &&
-        state.currentStepIndex !== undefined
-      )
-        state.steps[parseInt(state.currentStepIndex, 10)].assets = payload;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].assets = payload.assets;
+      }
     },
     setRegion(state, { payload }) {
       state.steps[payload.index].region = payload.region;
@@ -438,18 +439,23 @@ const playbookSlice = createSlice({
       state.steps[payload.index].textNotes = payload.text;
     },
     addNotes(state, { payload }) {
-      if (state.currentStepIndex != null)
-        state.steps[parseInt(state.currentStepIndex, 10)].notes = payload;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].notes = payload.notes;
+      }
     },
     addExternalLinks(state, { payload }) {
-      if (state.currentStepIndex != null)
-        state.steps[parseInt(state.currentStepIndex, 10)].externalLinks =
-          payload;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].externalLinks = payload.links;
+      }
     },
-    toggleExternalLinkVisibility(state) {
-      if (state.currentStepIndex != null)
-        state.steps[parseInt(state.currentStepIndex, 10)].showExternalLinks =
-          !state.steps[parseInt(state.currentStepIndex, 10)].showExternalLinks;
+    toggleExternalLinkVisibility(state, { payload }) {
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].showExternalLinks =
+          !state.steps[parseInt(index, 10)].showExternalLinks;
+      }
     },
     resetState(state) {
       state.steps = [];

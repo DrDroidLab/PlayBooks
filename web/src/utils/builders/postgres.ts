@@ -1,6 +1,6 @@
 import { OptionType } from "../playbooksData.ts";
 
-export const postgresBuilder = (options: any) => {
+export const postgresBuilder = () => {
   return {
     builder: [
       [

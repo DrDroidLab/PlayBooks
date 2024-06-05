@@ -1,21 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PlaybookStep from "./PlaybookStep";
 import styles from "../playbooks.module.css";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
-import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import AddSource from "./AddSource.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function Query() {
-  const [step, currentStepIndex] = useCurrentStep();
+function Query({ index }) {
+  const [step] = useCurrentStep(index);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    if (step?.isPrefetched) {
-      fetchData({ currentStepIndex });
-    }
-  }, [step?.isPrefetched]);
 
   return (
     <div className={styles["step-fields"]}>
@@ -26,15 +19,15 @@ function Query() {
           position: "relative",
         }}>
         <div className="flex items-center gap-2">
-          <AddSource />
+          <AddSource index={index} />
         </div>
       </div>
 
-      {step?.source && <PlaybookStep />}
+      {step?.source && <PlaybookStep index={index} />}
       <CustomDrawer
         isOpen={isDrawerOpen}
         setIsOpen={setDrawerOpen}
-        src={"/integrations"}
+        src={"/data-sources/add"}
       />
     </div>
   );

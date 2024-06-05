@@ -1,10 +1,8 @@
 import { store } from "../../store/index.ts";
 import { setRequiresFormula } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 
-export const datadogRawQueryBuilder = () => {
-  const [task, index] = getCurrentTask();
+export const datadogRawQueryBuilder = (task, index) => {
   return {
     builder: [
       [

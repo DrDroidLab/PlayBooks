@@ -4,25 +4,32 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
-import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import {
+  useLazyGetAssetsQuery,
+  usePlaybookBuilderOptionsQuery,
+} from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function SelectConnectorOption() {
-  const { currentStepIndex, steps, connectorOptions } =
-    useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+function SelectConnectorOption({ index }) {
+  const { connectorOptions } = useSelector(playbookSelector);
+  const [step, currentStepIndex] = useCurrentStep(index);
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
+  const [, { isFetching: assetsFetching }] =
+    useLazyGetAssetsQuery(currentStepIndex);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
 
   function handleConnectorOptionChange(id) {
-    updateCardByIndex("connectorType", id);
+    updateCardByIndex("connectorType", id, currentStepIndex);
+    fetchData({ index: currentStepIndex });
   }
 
   const currentConnectorOptions =
@@ -30,9 +37,9 @@ function SelectConnectorOption() {
       ?.connector_options ?? [];
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col">
       <p className="text-xs text-gray-500 font-bold">Connector</p>
-      <div className="flex gap-1">
+      <div className="flex gap-1 items-center">
         {currentConnectorOptions.length > 0 ? (
           <div className="flex gap-2">
             <SelectComponent
@@ -67,11 +74,11 @@ function SelectConnectorOption() {
             />
           </button>
         )}
-        {isFetching && <CircularProgress size={20} />}
+        {(isFetching || assetsFetching) && <CircularProgress size={20} />}
         <CustomDrawer
           isOpen={isDrawerOpen}
           setIsOpen={setDrawerOpen}
-          src={"/integrations"}
+          src={"/data-sources/add"}
         />
       </div>
     </div>

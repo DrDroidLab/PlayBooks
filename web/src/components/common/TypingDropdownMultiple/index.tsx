@@ -49,7 +49,8 @@ const TypingDropdownMultiple = ({
       arr?.findIndex((e) => e.label === (option?.label ?? value.trim())) !== -1
     )
       return;
-    arr.push(option ?? { label: value.trim(), id: value.trim() });
+    if (value.trim() || option?.label)
+      arr.push(option ?? { label: value.trim(), id: value.trim() });
     change(arr);
     resetState();
   };
@@ -82,6 +83,9 @@ const TypingDropdownMultiple = ({
     <div ref={dropdownRef} className="relative w-full inline-block text-left">
       <form onSubmit={addToArray} className="flex items-center gap-2">
         <div
+          style={{
+            backgroundColor: disabled ? "#efefef" : "",
+          }}
           className={`${
             error ? "border-red" : ""
           } flex flex-wrap items-center gap-2 max-w-[220px] justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none`}>

@@ -8,38 +8,37 @@ import { setAssets } from "../../playbookSlice.ts";
 
 export const getAssetApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAssets: builder.query<any, { filter: any }>({
-      query: ({ filter }) => {
-        const [task] = getCurrentTask();
+    getAssets: builder.query<any, number>({
+      query: (index) => {
+        const [task] = getCurrentTask(index);
         return {
           url: GET_ASSETS,
           method: "POST",
           body: {
             connector_id: task?.connectorType,
             type: task?.modelType,
-            filters: filter,
           },
         };
       },
-      transformResponse: (response: any) => {
-        const [task] = getCurrentTask();
+      transformResponse: (response: any, _, arg) => {
+        const [task] = getCurrentTask(arg);
         const data = response?.assets;
         if (data?.length === 0) return [];
         let connector_type = task.source;
         if (connector_type?.includes("_VPC"))
           connector_type = connector_type.replace("_VPC", "");
 
-        const assets = handleAssets(data, connector_type);
+        const assets = handleAssets(data, connector_type, arg);
         const modelOptions = extractModelOptions(assets, task);
-        updateCardByIndex("modelOptions", modelOptions);
+        updateCardByIndex("modelOptions", modelOptions, arg);
         return assets;
       },
-      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
           const { data } = await queryFulfilled;
           // Dispatch an action to update the global state
-          dispatch(setAssets(data));
+          dispatch(setAssets({ assets: data, index: arg }));
         } catch (error) {
           // Handle any errors
           console.log(error);
@@ -50,5 +49,6 @@ export const getAssetApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useLazyGetAssetsQuery,
   endpoints: { getAssets },
 } = getAssetApi;

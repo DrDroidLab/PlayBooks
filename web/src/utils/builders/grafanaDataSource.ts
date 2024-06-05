@@ -4,17 +4,15 @@ import {
   setGrafanaQuery,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const grafanaDataSourceBuilder = (options: any) => {
-  const [task, index] = getCurrentTask();
+export const grafanaDataSourceBuilder = (options: any, task, index) => {
   return {
     builder: [
       [
         {
           key: "datasource",
-          label: "Data Source",
+          label: "Data Source UID",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
@@ -33,16 +31,15 @@ export const grafanaDataSourceBuilder = (options: any) => {
               );
             }
           },
-          selected: task.datasource?.label,
+          helperText: task.datasource?.label,
+          selected: task.datasource?.id,
         },
       ],
       [
         {
           label: "PromQL",
           type: OptionType.MULTILINE,
-          value: task?.grafanaQuery?.expression
-            ? task?.grafanaQuery?.expression
-            : "",
+          value: task?.grafanaQuery?.expression,
           handleChange: (e) => {
             store.dispatch(
               setGrafanaExpression({ index, expression: e.target.value }),

@@ -94,7 +94,15 @@ function Sidebar() {
               onClick={(event) => handleListItemClick(event, 9)}>
               <SlowMotionVideo />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>All Executions</p>
+            <p style={{ fontSize: "14px" }}>Workflow Executions</p>
+          </NavLink>
+          <NavLink className={activeStyle} to="/playbooks/executions/list">
+            <ListItemIcon
+              sx={{ minWidth: "44px" }}
+              onClick={(event) => handleListItemClick(event, 9)}>
+              <SlowMotionVideo />
+            </ListItemIcon>
+            <p style={{ fontSize: "14px" }}>Playbook Executions</p>
           </NavLink>
           <NavLink className={activeStyle} to="/playgrounds">
             <ListItemIcon
