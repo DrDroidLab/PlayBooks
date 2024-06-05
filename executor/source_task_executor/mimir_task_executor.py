@@ -64,8 +64,8 @@ class MimirTaskExecutor(PlaybookTaskExecutor):
 
     def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
                                         mimir_task: PromQl) -> PlaybookTaskResult:
-        tr_end_time = time_range.time_lt
-        tr_start_time = time_range.time_geq
+        tr_end_time = int(time_range['time_lt'])
+        tr_start_time = int(time_range['time_geq'])
         current_datetime = datetime.utcfromtimestamp(tr_end_time)
         evaluation_time = datetime.utcfromtimestamp(tr_start_time)
 

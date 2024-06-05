@@ -16,4 +16,7 @@ urlpatterns = [
     path('slack/alerts/search', connector_views.slack_alerts_search),
     path('slack/app_manifest/create', connector_views.slack_manifest_create),
 
+    # Save Site URL
+    path('save_site_url', connector_views.save_site_url),
+
 ]
