@@ -6,7 +6,7 @@ import {
   stepsSelector,
   toggleNotesVisibility,
   toggleExternalLinkVisibility,
-  addExternalLinks
+  addExternalLinks,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -76,7 +76,7 @@ function StepDetails() {
           <ExternalLinksList />
           <AddSource step={step} />
           <PlaybookStep card={step} index={currentStepIndex} />
-          {step.isPrefetched && !step.isCopied ? (
+          {isPrefetched && !step.isCopied ? (
             step.notes && (
               <>
                 <div>

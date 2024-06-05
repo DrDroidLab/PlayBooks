@@ -8,13 +8,15 @@ import {
 import { stepsToPlaybook } from "../../../utils/parser/playbook/stepsToplaybook.ts";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   stepsSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
+import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 
 function StepActions() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const steps = useSelector(stepsSelector);
   const currentPlaybook = useSelector(playbookSelector);
@@ -26,15 +28,20 @@ function StepActions() {
   const [triggerCreatePlaybook, { isLoading: createLoading }] =
     useCreatePlaybookMutation();
 
-  const handlePlaybookSave = async ({ pbName }) => {
+  const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
 
     const playbook = stepsToPlaybook(currentPlaybook, steps);
+    if (steps?.length === 0) {
+      dispatch(showSnackbar("You cannot save a playbook with no steps"));
+      return;
+    }
 
     const playbookObj = {
       playbook: {
         ...playbook,
         name: pbName,
+        description,
       },
     };
 
@@ -49,6 +56,10 @@ function StepActions() {
   const handlePlaybookUpdate = async () => {
     setIsSavePlaybookOverlayOpen(false);
     const playbook = stepsToPlaybook(currentPlaybook, steps);
+    if (steps?.length === 0) {
+      dispatch(showSnackbar("You cannot save a playbook with no steps"));
+      return;
+    }
     try {
       await triggerUpdatePlaybook({
         ...playbook,
