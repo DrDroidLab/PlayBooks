@@ -19,10 +19,11 @@ from executor.crud.playbook_execution_crud import create_playbook_execution, get
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.playbooks_crud import update_or_create_db_playbook, get_db_playbooks
 from executor.deprecated_task_executor import deprecated_execute_task
 from executor.playbook_source_facade import playbook_source_facade
-from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs
+from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs, \
+    execute_playbook_step_impl
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
@@ -802,25 +803,34 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
                                                     message=Message(title="Error",
                                                                     description="Playbook Execution not found"))
 
+    playbook = get_db_playbooks(account, playbook_id=playbook_execution.playbook_id)
+    if not playbook:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Error", description="Playbook not found"))
+
+    playbook = playbook.first()
+    playbook_step = request_message.playbook_step
+    if not playbook_step:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Invalid Request",
+                                                                    description="Missing playbook_step"))
     playbook_execution = playbook_execution.first()
+
     if not time_range.time_lt or not time_range.time_geq:
         playbook_execution_time_range = playbook_execution.time_range
-        if not playbook_execution_time_range:
-            time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
-        else:
+        if playbook_execution_time_range:
             time_range = TimeRange(time_geq=playbook_execution_time_range.get('time_geq'),
                                    time_lt=playbook_execution_time_range.get('time_lt'))
+        else:
+            time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
     try:
-        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+        step_execution_log = execute_playbook_step_impl(time_range, account, playbook_step)
+        store_step_execution_logs(account, playbook, playbook_execution, [step_execution_log], user.email, time_range)
     except Exception as e:
         logger.error(e)
-        return PlaybookExecutionCreateResponse(success=BoolValue(value=False),
-                                               message=Message(title="Error", description=str(e)))
+        return PlaybookExecutionStepExecuteResponse(success=BoolValue(value=False),
+                                                    message=Message(title="Error", description=str(e)))
 
-    location = settings.PLATFORM_PLAYBOOKS_EXECUTION_LOCATION.format(playbook_run_uuid)
-    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
-    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
-    session_url = build_absolute_uri(None, location, protocol, enabled)
-    return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
-                                           playbook_run_id=StringValue(value=playbook_run_uuid),
-                                           execution_session_url=StringValue(value=session_url))
+    return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                                playbook_run_id=StringValue(value=playbook_run_id),
+                                                playbook_step_execution_log=step_execution_log)
