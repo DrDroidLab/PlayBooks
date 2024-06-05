@@ -85,6 +85,9 @@ class ConnectorAssetManager:
 
             if not connector.type or connector.type != self.source:
                 raise ValueError(f"Connector type {connector.type} does not match with source {self.source}")
+            
+            if connector.type in [Source.GRAFANA, Source.GRAFANA_VPC]:
+                model_type = SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE
 
             if not self.asset_type_callable_map:
                 logger.error("Asset type callable map not found")
