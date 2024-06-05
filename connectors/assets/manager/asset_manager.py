@@ -34,7 +34,7 @@ class ConnectorAssetManager:
                     asset_key = k
                 elif asset_key != k:
                     raise ValueError(f"Asset key mismatch: {asset_key} != {k}")
-                asset_values.extend(v['assets'])
+                asset_values.extend(v.get('assets', []))
 
         connector_dict = proto_to_dict(connector)
         connector_dict.pop('keys', None)
