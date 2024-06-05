@@ -4,10 +4,7 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
-import {
-  useLazyGetAssetsQuery,
-  usePlaybookBuilderOptionsQuery,
-} from "../../../store/features/playbook/api/index.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import CustomDrawer from "../../common/CustomDrawer";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
@@ -20,8 +17,6 @@ function SelectConnectorOption({ index }) {
   const isPrefetched = useIsPrefetched();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
-  const [, { isFetching: assetsFetching }] =
-    useLazyGetAssetsQuery(currentStepIndex);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -74,7 +69,7 @@ function SelectConnectorOption({ index }) {
             />
           </button>
         )}
-        {(isFetching || assetsFetching) && <CircularProgress size={20} />}
+        {(isFetching || step?.assetsLoading) && <CircularProgress size={20} />}
         <CustomDrawer
           isOpen={isDrawerOpen}
           setIsOpen={setDrawerOpen}

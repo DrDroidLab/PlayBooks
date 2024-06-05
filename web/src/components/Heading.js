@@ -2,7 +2,6 @@ import { Grid, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import styles from "./index.module.css";
 import {
   Check,
@@ -22,7 +21,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import handleGlobalExecute from "../utils/execution/handleGlobalExecute.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
