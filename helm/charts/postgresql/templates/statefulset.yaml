@@ -1,14 +1,13 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgresql
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.name }}
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: postgresql
+  serviceName: postgresql
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -25,4 +24,11 @@ spec:
             - name: POSTGRES_DB
               value: '{{ .Values.postgresqlDatabase }}'
           ports:
-            - containerPort: 5432
+          - containerPort: 5432
+          volumeMounts:
+          - name: postgres-pv
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-pv
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim

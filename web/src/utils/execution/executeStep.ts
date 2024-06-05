@@ -34,7 +34,7 @@ export async function executeStep(step: Step, index?: number) {
     );
   } catch (e) {
     updateCardByIndex("showError", true, index);
-    updateCardByIndex("outputError", e.message);
+    updateCardByIndex("outputError", e.message, index);
     console.error(e);
   } finally {
     updateCardByIndex("showOutput", true, index);
