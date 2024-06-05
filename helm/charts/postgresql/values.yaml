@@ -1,3 +1,8 @@
 postgresqlUsername: user
 postgresqlPassword: pass
 postgresqlDatabase: db
+
+replicaCount: 1
+
+persistence:
+  size: 2Gi

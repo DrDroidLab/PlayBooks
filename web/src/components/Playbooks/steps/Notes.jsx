@@ -4,7 +4,6 @@ import { addNotes } from "../../../store/features/playbook/playbookSlice.ts";
 import rehypeSanitize from "rehype-sanitize";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import styles from "../playbooks.module.css";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 const Button = () => {
@@ -41,17 +40,6 @@ function Notes({ index }) {
   const dispatch = useDispatch();
   return (
     <>
-      {step.isPrefetched && !step?.isCopied ? (
-        step.notes && (
-          <div className={styles["addConditionStyle"]}>
-            <b>Notes</b>
-          </div>
-        )
-      ) : (
-        <div className={styles["addConditionStyle"]}>
-          <b className="add_notes">Add note about this step</b>
-        </div>
-      )}
       <div
         style={
           step.isPrefetched && !step?.isCopied

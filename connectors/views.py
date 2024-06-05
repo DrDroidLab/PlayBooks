@@ -317,6 +317,14 @@ settings:
     """
 
     app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
+
+
+@web_api(GetSlackAppManifestRequest)
+def save_site_url(request_message: GetSlackAppManifestRequest) -> \
+        Union[GetSlackAppManifestResponse, HttpResponse]:
+    account: Account = get_request_account()
+    host_name = request_message.host_name
 
     site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
     active_sites = Site.objects.filter(is_active=True)
@@ -330,8 +338,7 @@ settings:
         site.save()
     else:
         Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
-
-    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
+    return GetSlackAppManifestResponse(success=BoolValue(value=True))
 
 
 @web_api(GetConnectedPlaybooksRequest)
