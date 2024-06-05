@@ -359,7 +359,7 @@ class PlayBookExecution(models.Model):
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
-            playbook=self.playbook.proto_partial,
+            playbook=self.playbook.proto,
             status=self.status,
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
