@@ -63,8 +63,8 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource />
-          <PlaybookStep />
+          <AddSource step={step} />
+          <PlaybookStep card={step} index={currentStepIndex} />
           {step.isPrefetched && !step.isCopied ? (
             step.notes && (
               <>

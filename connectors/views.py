@@ -356,5 +356,4 @@ def connected_playbooks_get(request_message: GetConnectedPlaybooksRequest) -> \
         connected_playbooks_proto.append(
             GetConnectedPlaybooksResponse.Playbook(playbook_id=UInt64Value(value=cp['playbook_id']),
                                                    playbook_name=StringValue(value=cp['playbook__name'])))
-
     return GetConnectedPlaybooksResponse(success=BoolValue(value=True), connected_playbooks=connected_playbooks_proto)
