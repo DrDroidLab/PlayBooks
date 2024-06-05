@@ -2,12 +2,13 @@ import React from "react";
 import { Handle, Position } from "reactflow";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteStep,
   playbookSelector,
   setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress } from "@mui/material";
-import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
+import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
 
 export default function CustomNode({ data }) {
   const dispatch = useDispatch();
@@ -15,6 +16,12 @@ export default function CustomNode({ data }) {
 
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(deleteStep(data.index));
   };
 
   return (
@@ -38,6 +45,12 @@ export default function CustomNode({ data }) {
           Object.keys(data?.step?.errors ?? {}).length === 0 && (
             <CheckCircleOutline color="success" size={20} />
           )}
+      </div>
+
+      <div
+        className="absolute top-0 right-0 m-2 text-violet-500"
+        onClick={handleDelete}>
+        <Delete fontSize="medium" />
       </div>
 
       <div className="flex flex-col items-center gap-4">

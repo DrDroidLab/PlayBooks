@@ -6,8 +6,10 @@ import { useUpdateConnectorMutation } from "../../../store/features/integrations
 import Overlay from "../../Overlay/index.jsx";
 import { CloseRounded } from "@mui/icons-material";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
+import { useNavigate } from "react-router-dom";
 
 const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
+  const naviagte = useNavigate();
   const [updateConnector, { isLoading }] = useUpdateConnectorMutation();
   const [formData, setFormData] = useState({});
   const handleSuccess = async () => {
@@ -24,7 +26,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
       keys: formattedKeys,
     });
 
-    window.location.reload();
+    naviagte("/data-sources");
   };
 
   useEffect(() => {
@@ -44,8 +46,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
           <div className={styles["actionOverlay"]}>
             <div className="flex items-center justify-between">
               <header className="text-gray-500">
-                Update {connector?.display_name}
-                Keys
+                Update {connector?.display_name} Keys
               </header>
               <CloseRounded
                 onClick={toggleOverlay}
