@@ -26,12 +26,12 @@ import Builder from "../create/Builder.jsx";
 
 const viewOptions = [
   {
-    id: "builder",
-    label: "Builder",
-  },
-  {
     id: "step",
     label: "List",
+  },
+  {
+    id: "builder",
+    label: "Builder",
   },
 ];
 
