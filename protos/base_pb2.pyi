@@ -183,7 +183,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AZURE_TENANT_ID: _SourceKeyType.ValueType  # 57
     AZURE_CLIENT_ID: _SourceKeyType.ValueType  # 58
     AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
-    GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 60
+    GKE_PROJECT_ID: _SourceKeyType.ValueType  # 60
+    GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 61
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -246,7 +247,8 @@ AZURE_SUBSCRIPTION_ID: SourceKeyType.ValueType  # 56
 AZURE_TENANT_ID: SourceKeyType.ValueType  # 57
 AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
 AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
-GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 60
+GKE_PROJECT_ID: SourceKeyType.ValueType  # 60
+GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 61
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -303,6 +305,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Remote Server Models"""
     GRAFANA_MIMIR_PROMQL: _SourceModelType.ValueType  # 1201
     """Mimir Server Models"""
+    GKE_CLUSTER: _SourceModelType.ValueType  # 1301
+    """GKE Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -354,6 +358,8 @@ SSH_SERVER: SourceModelType.ValueType  # 1100
 """Remote Server Models"""
 GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
 """Mimir Server Models"""
+GKE_CLUSTER: SourceModelType.ValueType  # 1301
+"""GKE Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

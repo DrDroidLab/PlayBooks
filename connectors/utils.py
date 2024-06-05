@@ -46,11 +46,8 @@ def get_all_request_connectors():
     return []
 
 
-def get_all_available_connectors(all_active_connectors):
+def get_all_available_connectors():
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
-    print(all_connectors);
-    # for ac in all_active_connectors:
-    #     all_connectors.remove(ac.connector_type)
     all_available_connectors = []
     for c in all_connectors:
         all_available_connectors.append(
@@ -191,6 +188,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['tenant_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AZURE_SUBSCRIPTION_ID:
                 credentials_dict['subscription_id'] = conn_key.key.value
+    elif connector_type == Source.GKE:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.GKE_PROJECT_ID:
+                credentials_dict['project_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GKE_SERVICE_ACCOUNT_JSON:
+                credentials_dict['service_account_json'] = conn_key.key.value
     else:
         return None
     return credentials_dict

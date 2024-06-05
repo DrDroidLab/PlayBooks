@@ -179,7 +179,8 @@ enum SourceKeyType {
   AZURE_CLIENT_ID = 58;
   AZURE_CLIENT_SECRET = 59;
 
-  GKE_SERVICE_ACCOUNT_JSON = 60;
+  GKE_PROJECT_ID = 60;
+  GKE_SERVICE_ACCOUNT_JSON = 61;
 }
 
 enum SourceModelType {
@@ -245,4 +246,7 @@ enum SourceModelType {
 
   // Mimir Server Models
   GRAFANA_MIMIR_PROMQL = 1201;
+
+  // GKE Models
+  GKE_CLUSTER = 1301;
 }
