@@ -10,7 +10,7 @@ function StepDetails() {
 
   const handleUpdateStepName = (e) => {
     const val = e.target.value;
-    updateCardByIndex("description", e.target.value);
+    updateCardByIndex("description", e.target.value, currentStepIndex);
     if (val.trim())
       updateCardByIndex("userEnteredDescription", true, currentStepIndex);
   };
@@ -33,7 +33,7 @@ function StepDetails() {
           />
         </div>
       </div>
-      <Step step={step} index={currentStepIndex} />
+      {currentStepIndex && <Step step={step} index={currentStepIndex} />}
     </div>
   );
 }
