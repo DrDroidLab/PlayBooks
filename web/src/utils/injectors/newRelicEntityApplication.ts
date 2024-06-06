@@ -1,32 +1,33 @@
 import { PlaybookTask, Step } from "../../types.ts";
 
+const getCurrentAsset = (task) => {
+  const currentAsset = task?.assets?.find(
+    (e) => e.application_name === task?.application_name,
+  );
+
+  return currentAsset;
+};
+
 export const injectNewRelicEntityApplicationTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  const tasks = (step.golden_metrics ?? []).map((golden_metric) => {
-    let metric_task = {
-      source: step.source,
-      new_relic_task: {
-        type: "ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION",
-        entity_application_golden_metric_execution_task: {
-          application_entity_guid: step?.assets?.application_entity_guid,
-          application_entity_name: step?.assets?.application_name,
-          golden_metric_name: golden_metric.metric?.golden_metric_name,
-          golden_metric_unit: golden_metric.metric?.golden_metric_unit,
-          golden_metric_nrql_expression:
-            golden_metric.metric?.golden_metric_nrql_expression,
-          process_function: "timeseries",
-        },
-      },
-    };
-
-    return metric_task;
-  });
+  const tasks = (step.golden_metrics ?? []).map((golden_metric) => ({
+    application_entity_guid: getCurrentAsset(step)?.application_entity_guid,
+    application_entity_name: getCurrentAsset(step)?.application_name,
+    golden_metric_name: golden_metric.metric?.golden_metric_name,
+    golden_metric_unit: golden_metric.metric?.golden_metric_unit,
+    golden_metric_nrql_expression:
+      golden_metric.metric?.golden_metric_nrql_expression,
+    process_function: "timeseries",
+  }));
 
   return tasks.map((task) => ({
     ...baseTask,
-    metric_task: task,
+    [step.source?.toLowerCase()]: {
+      type: step.taskType,
+      [(step.taskType ?? "").toLowerCase()]: task,
+    },
     type: "METRIC",
   }));
 };

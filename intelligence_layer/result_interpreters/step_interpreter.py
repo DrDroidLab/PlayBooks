@@ -4,7 +4,7 @@ import logging
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
-from integrations_api_processors.openai_api_processor import OpenAiApiProcessor
+from executor.source_processors.openai_api_processor import OpenAiApiProcessor
 from protos.base_pb2 import Source as ConnectorType, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.playbook_pb2 import PlaybookStep

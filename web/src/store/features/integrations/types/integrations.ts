@@ -1,4 +1,4 @@
-import { CardData } from './index.ts';
+import { CardData } from "./index.ts";
 
 export type IntegrationType = {
   [title: string]: CardData[];
@@ -10,4 +10,5 @@ export type Integrations = {
     [title: string]: CardData[];
   };
   agentProxy: any;
+  connectedConnectors: CardData[];
 };

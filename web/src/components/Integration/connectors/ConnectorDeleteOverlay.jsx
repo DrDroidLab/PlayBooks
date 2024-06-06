@@ -3,17 +3,21 @@ import { useEffect } from "react";
 import Overlay from "../../Overlay/index.jsx";
 import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
-import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 import { CloseRounded } from "@mui/icons-material";
 import { useDeleteConnectorMutation } from "../../../store/features/integrations/api/index.ts";
 
-const ConnectorDeleteOverlay = ({ isOpen, successCb, toggleOverlay }) => {
+const ConnectorDeleteOverlay = ({
+  isOpen,
+  successCb,
+  toggleOverlay,
+  connector,
+}) => {
   const [deleteConnector, { isLoading, isSuccess, data }] =
     useDeleteConnectorMutation();
-  const currentConnector = useSelector(connectorSelector);
-  const handleSuccess = () => {
-    deleteConnector(currentConnector.id);
+  const handleSuccess = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deleteConnector(connector.id);
   };
 
   useEffect(() => {
@@ -29,7 +33,7 @@ const ConnectorDeleteOverlay = ({ isOpen, successCb, toggleOverlay }) => {
           <div className={styles["actionOverlay"]}>
             <div className="flex justify-between items-center">
               <header className="text-gray-500">
-                Delete {currentConnector.displayTitle} keys?
+                Delete {connector?.display_name ?? connector?.title} keys?
               </header>
               <CloseRounded
                 onClick={toggleOverlay}

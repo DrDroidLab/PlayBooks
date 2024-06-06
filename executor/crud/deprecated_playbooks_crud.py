@@ -4,14 +4,16 @@ from hashlib import md5
 from django.db.utils import IntegrityError
 
 from accounts.models import Account
+from connectors.models import Connector
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
-    PlayBookStepMapping
+    PlayBookStepMapping, PlayBookStepTaskConnectorMapping
 from executor.utils.old_to_new_model_transformers import transform_old_task_definition_to_new
 from playbooks.utils.decorators import deprecated
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskDefinition, DeprecatedPlaybook, \
     DeprecatedPlaybookStepDefinition
-from utils.proto_utils import proto_to_dict
+from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto
+from utils.proto_utils import proto_to_dict, dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +25,28 @@ task_type_display_map = {
     DeprecatedPlaybookTaskDefinition.Type.DOCUMENTATION: "Documentation",
     DeprecatedPlaybookTaskDefinition.Type.ACTION: "Action",
 }
+
+
+def populate_task_connector_mapping():
+    for playbook in PlayBook.objects.all():
+        playbook_steps = PlayBookStepMapping.objects.filter(playbook=playbook, is_active=True).values_list(
+            'playbook_step', flat=True)
+        for step in playbook_steps:
+            for task in PlayBookStepTaskDefinitionMapping.objects.filter(playbook_step_id=step).values_list(
+                    'playbook_task_definition', flat=True):
+                db_task = PlayBookTask.objects.get(id=task)
+                playbook_task: PlaybookTaskProto = dict_to_proto(db_task.task, PlaybookTaskProto)
+                source = playbook_task.source
+                connector = Connector.objects.filter(connector_type=source, is_active=True).values_list('id', flat=True)
+                if connector:
+                    PlayBookStepTaskConnectorMapping.objects.get_or_create(
+                        account_id=db_task.account.id,
+                        playbook_id=playbook.id,
+                        playbook_step_id=step,
+                        playbook_task_id=task,
+                        connector_id=connector[0],
+                        defaults={'is_active': True}
+                    )
 
 
 @deprecated
@@ -107,6 +131,7 @@ def deprecated_update_or_create_db_playbook(account: Account, created_by, playbo
                                                is_active=True)
         except Exception as e:
             logger.error(f"Failed to add step {db_step.name} to playbook {db_playbook.name} with error {e}")
+    populate_task_connector_mapping()
     return db_playbook, None
 
 
@@ -123,7 +148,6 @@ def deprecated_create_db_step(account: Account, created_by, playbook_step: Depre
                 return None, f"Failed to create task: {task_type_display} for " \
                              f"playbook step {playbook_step.name.value} with error {err}"
             db_tasks.append(db_task)
-
         metadata = {}
         external_links = playbook_step.external_links
         if external_links:
@@ -192,4 +216,4 @@ def deprecated_get_or_create_db_task(account: Account, created_by, task_proto: D
         return db_task, None
     except Exception as e:
         logger.error(f"Failed to create playbook task definition for task type {task_type_display} with error {e}")
-    return None, f"Failed to create playbook task definition for task type: {task_type_display}"
+        return None, f"Failed to create playbook task definition for task type: {task_type_display} with error {e}"

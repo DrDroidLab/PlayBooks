@@ -7,7 +7,8 @@ from connectors.models import Site
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
-from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector
+from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, \
+    get_db_account_connector_connected_playbooks
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
 from connectors.utils import test_connection_connector, get_all_available_connectors, get_all_request_connectors, \
@@ -22,7 +23,8 @@ from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorRes
     GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
     UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
-    GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse
+    GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse, GetConnectedPlaybooksRequest, \
+    GetConnectedPlaybooksResponse, GetConnectorRequest, GetConnectorResponse
 
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
@@ -54,6 +56,19 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
+
+
+@web_api(GetConnectorRequest)
+def connectors_get(request_message: GetConnectorRequest) -> Union[GetConnectorResponse, HttpResponse]:
+    account: Account = get_request_account()
+    connector_id = request_message.connector_id
+    if not connector_id or not connector_id.value:
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector ID not found'))
+
+    db_connector = get_db_account_connectors(account=account, connector_id=connector_id.value, is_active=True)
+    if not db_connector or not db_connector.exists():
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector not found'))
+    return GetConnectorResponse(success=BoolValue(value=True), connector=db_connector.first().proto)
 
 
 @web_api(GetConnectorsListRequest)
@@ -103,8 +118,9 @@ def connector_keys_options(request_message: GetConnectorKeysOptionsRequest) -> \
         return GetConnectorKeysOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title='Connector Type not found'))
 
-    connector_key_options = get_connector_keys_options(connector_type)
-    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector_key_options=connector_key_options)
+    connector, connector_key_options = get_connector_keys_options(connector_type)
+    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector=connector,
+                                           connector_key_options=connector_key_options)
 
 
 @web_api(GetConnectorKeysRequest)
@@ -322,5 +338,22 @@ def save_site_url(request_message: GetSlackAppManifestRequest) -> \
         site.save()
     else:
         Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
-
     return GetSlackAppManifestResponse(success=BoolValue(value=True))
+
+
+@web_api(GetConnectedPlaybooksRequest)
+def connected_playbooks_get(request_message: GetConnectedPlaybooksRequest) -> \
+        Union[GetConnectedPlaybooksResponse, HttpResponse]:
+    account: Account = get_request_account()
+    if not request_message.connector_id or not request_message.connector_id.value:
+        return GetConnectedPlaybooksResponse(success=BoolValue(value=False),
+                                             message=Message(title='Connector ID not found'))
+    connector_id = request_message.connector_id.value
+    connected_playbooks = get_db_account_connector_connected_playbooks(account, connector_id)
+
+    connected_playbooks_proto: [GetConnectedPlaybooksResponse.Playbook] = []
+    for cp in connected_playbooks:
+        connected_playbooks_proto.append(
+            GetConnectedPlaybooksResponse.Playbook(playbook_id=UInt64Value(value=cp['playbook_id']),
+                                                   playbook_name=StringValue(value=cp['playbook__name'])))
+    return GetConnectedPlaybooksResponse(success=BoolValue(value=True), connected_playbooks=connected_playbooks_proto)

@@ -3,23 +3,15 @@ import { useEffect, useState } from "react";
 import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
 import { useUpdateConnectorMutation } from "../../../store/features/integrations/api/index.ts";
-import { useSelector } from "react-redux";
-import {
-  agentProxySelector,
-  connectorSelector,
-  keyOptionsSelector,
-} from "../../../store/features/integrations/integrationsSlice.ts";
 import Overlay from "../../Overlay/index.jsx";
 import { CloseRounded } from "@mui/icons-material";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
+import { useNavigate } from "react-router-dom";
 
-const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
+const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
+  const naviagte = useNavigate();
   const [updateConnector, { isLoading }] = useUpdateConnectorMutation();
   const [formData, setFormData] = useState({});
-  const keyOptions = useSelector(keyOptionsSelector);
-  const agentProxy = useSelector(agentProxySelector);
-  const currentConnector = useSelector(connectorSelector);
-  const vpcEnabled = currentConnector?.vpc?.status === "active";
   const handleSuccess = async () => {
     const formattedKeys = [];
     for (let [key, val] of Object.entries(formData)) {
@@ -29,36 +21,23 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
       });
     }
 
-    try {
-      await updateConnector({
-        id: vpcEnabled ? currentConnector?.vpc?.id : currentConnector.id,
-        keys: formattedKeys,
-      });
-      window.location.reload();
-    } catch (e) {
-      console.log("There was an error");
-    }
+    await updateConnector({
+      id: connector.id,
+      keys: formattedKeys,
+    });
+
+    naviagte("/data-sources");
   };
 
   useEffect(() => {
-    if (vpcEnabled) {
-      if (agentProxy?.keyOptions && agentProxy?.keyOptions?.length > 0) {
-        const obj = {};
-        keyOptions.forEach((e) => {
-          obj[e.key_type] = "";
-        });
-        setFormData(obj);
-      }
-    } else {
-      if (keyOptions && keyOptions.length > 0) {
-        const obj = {};
-        keyOptions.forEach((e) => {
-          obj[e.key_type] = "";
-        });
-        setFormData(obj);
-      }
+    if (connector.keys && connector.keys.length > 0) {
+      const obj = {};
+      connector.keys.forEach((e) => {
+        obj[e.key_type] = "";
+      });
+      setFormData(obj);
     }
-  }, [keyOptions]);
+  }, [connector.keys]);
 
   return (
     <>
@@ -67,42 +46,38 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay }) => {
           <div className={styles["actionOverlay"]}>
             <div className="flex items-center justify-between">
               <header className="text-gray-500">
-                Update{" "}
-                {vpcEnabled ? "Agent Proxy" : currentConnector?.displayTitle}{" "}
-                Keys
+                Update {connector?.display_name} Keys
               </header>
               <CloseRounded
                 onClick={toggleOverlay}
                 className="text-gray-500 cursor-pointer"
               />
             </div>
-            {(vpcEnabled ? agentProxy?.keyOptions : keyOptions)?.map(
-              (option, i) => (
+            {connector.keys?.map((option, i) => (
+              <div
+                key={i}
+                style={{ margin: "5px 0" }}
+                className={styles["eventTypeSelectionSection"]}>
                 <div
-                  key={i}
-                  style={{ margin: "5px 0" }}
-                  className={styles["eventTypeSelectionSection"]}>
-                  <div
-                    className={styles["content"]}
-                    style={{ fontSize: "12px", marginLeft: "2px" }}>
-                    {option.display_name}
-                  </div>
-                  <HandleKeyOptions
-                    connectorActive={false}
-                    option={option}
-                    onValueChange={(val) => {
-                      setFormData((prev) => {
-                        return {
-                          ...prev,
-                          [option.key_type]: val,
-                        };
-                      });
-                    }}
-                    value={formData[option.key_type]}
-                  />
+                  className={styles["content"]}
+                  style={{ fontSize: "12px", marginLeft: "2px" }}>
+                  {option.display_name}
                 </div>
-              ),
-            )}
+                <HandleKeyOptions
+                  connectorActive={false}
+                  option={option}
+                  onValueChange={(val) => {
+                    setFormData((prev) => {
+                      return {
+                        ...prev,
+                        [option.key_type]: val,
+                      };
+                    });
+                  }}
+                  value={formData[option.key_type]}
+                />
+              </div>
+            ))}
             <div className={styles.actions}>
               <button
                 className={styles["submitButton"]}

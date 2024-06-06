@@ -2,7 +2,7 @@ import re
 import time
 
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
+from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from protos.base_pb2 import Source, SourceModelType as SourceModelType
 
 
@@ -32,11 +32,7 @@ def promql_get_metric_optional_label_variable_pairs(promql):
 class GrafanaSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, grafana_host, grafana_api_key, ssl_verify="true", account_id=None, connector_id=None):
-        verify = True
-        if ssl_verify and ssl_verify.lower() == "false":
-            verify = False
-        self.__grafana_api_processor = GrafanaApiProcessor(grafana_host, grafana_api_key, ssl_verify=verify)
-
+        self.__grafana_api_processor = GrafanaApiProcessor(grafana_host, grafana_api_key, ssl_verify)
         super().__init__(account_id, connector_id, Source.GRAFANA)
 
     def extract_data_source(self, save_to_db=False):

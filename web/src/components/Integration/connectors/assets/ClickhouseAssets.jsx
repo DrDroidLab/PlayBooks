@@ -8,24 +8,23 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
-} from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+  Typography,
+} from "@mui/material";
+import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 const TableComponent = ({ tables }) => {
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {tables?.map((table, index) => (
-        <Accordion key={index}>
+        <Accordion
+          className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0"
+          key={index}>
           <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            aria-controls="tables-content"
-            id="tables-header"
-            style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-          >
+            expandIcon={<KeyboardArrowDownRounded />}
+            className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
             <Typography>
-              <p style={{ fontSize: '16px' }}>{table.name}</p>{' '}
-              <i style={{ fontSize: '14px' }}>(Click for details)</i>{' '}
+              <p style={{ fontSize: "16px" }}>{table.name}</p>{" "}
+              <i style={{ fontSize: "14px" }}>(Click for details)</i>{" "}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -33,21 +32,25 @@ const TableComponent = ({ tables }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ maxWidth: '20px' }}>Column name</TableCell>
-                    <TableCell style={{ maxWidth: '20px' }}>Column type</TableCell>
+                    <TableCell style={{ maxWidth: "20px" }}>
+                      Column name
+                    </TableCell>
+                    <TableCell style={{ maxWidth: "20px" }}>
+                      Column type
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {table.columns.map((col, index) => (
-                    <TableRow style={{ fontSize: '10px' }}>
-                      <TableCell style={{ maxWidth: '20px' }}>
+                    <TableRow style={{ fontSize: "10px" }}>
+                      <TableCell style={{ maxWidth: "20px" }}>
                         <Typography>
-                          <p style={{ fontSize: '16px' }}>{col.name}</p>{' '}
+                          <p style={{ fontSize: "16px" }}>{col.name}</p>{" "}
                         </Typography>
                       </TableCell>
-                      <TableCell style={{ maxWidth: '20px' }}>
+                      <TableCell style={{ maxWidth: "20px" }}>
                         <Typography>
-                          <p style={{ fontSize: '16px' }}>{col.type}</p>{' '}
+                          <p style={{ fontSize: "16px" }}>{col.type}</p>{" "}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -58,25 +61,21 @@ const TableComponent = ({ tables }) => {
           </AccordionDetails>
         </Accordion>
       ))}
-    </>
+    </div>
   );
 };
 
 export const ClickhouseAssets = ({ assets }) => {
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {assets && assets.length > 0 && (
         <>
-          <br />
-          <Accordion style={{ borderRadius: '5px' }} className="collapsible_option">
+          <Accordion className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0">
             <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-            >
+              expandIcon={<KeyboardArrowDownRounded />}
+              className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
               <Typography>
-                <p style={{ fontSize: '16px' }}>Databases ({assets.length})</p>{' '}
+                <p style={{ fontSize: "16px" }}>Databases ({assets.length})</p>{" "}
               </Typography>
             </AccordionSummary>
 
@@ -87,31 +86,28 @@ export const ClickhouseAssets = ({ assets }) => {
                     <TableRow
                       key={index}
                       sx={{
-                        '&:last-child td, &:last-child th': { border: 0 }
-                      }}
-                    >
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}>
                       <TableCell component="th" scope="row">
-                        <Accordion
-                          style={{ borderRadius: '5px', marginTop: '10px' }}
-                          className="collapsible_option"
-                        >
+                        <Accordion className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0">
                           <AccordionSummary
-                            expandIcon={<ArrowDropDownIcon />}
-                            aria-controls="panel1-content"
-                            id="panel1-header"
-                            style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-                          >
+                            expandIcon={<KeyboardArrowDownRounded />}
+                            className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
                             <Typography>
-                              <b style={{ fontSize: '16px' }}>
+                              <b style={{ fontSize: "16px" }}>
                                 {item.clickhouse_database?.database}
                               </b>
                               &nbsp;&nbsp;
-                              <i style={{ fontSize: '14px' }}>(Click for details)</i>{' '}
+                              <i style={{ fontSize: "14px" }}>
+                                (Click for details)
+                              </i>{" "}
                             </Typography>
                           </AccordionSummary>
 
                           <AccordionDetails>
-                            <TableComponent tables={item?.clickhouse_database?.tables} />
+                            <TableComponent
+                              tables={item?.clickhouse_database?.tables}
+                            />
                           </AccordionDetails>
                         </Accordion>
                       </TableCell>

@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
-import { Tooltip } from "@mui/material";
-import styles from "../playbooks.module.css";
+import { CircularProgress, Tooltip } from "@mui/material";
 import Notes from "./Notes.jsx";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useDispatch } from "react-redux";
 import {
   addExternalLinks,
@@ -18,8 +15,8 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
-import Interpretation from "./Interpretation.jsx";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import SelectInterpretation from "./Interpretation.jsx";
+import { Delete, PlayArrowRounded } from "@mui/icons-material";
 
 function Step({ step, index }) {
   const isPrefetched = useIsPrefetched();
@@ -27,9 +24,8 @@ function Step({ step, index }) {
     step?.isPrefetched ?? step.source ?? false,
   );
   const dispatch = useDispatch();
-  const { data } = useGetBuilderOptionsQuery();
 
-  function handleDeleteClick(index) {
+  function handleDeleteClick() {
     dispatch(deleteStep(index));
   }
 
@@ -42,102 +38,89 @@ function Step({ step, index }) {
   };
 
   const setLinks = (links) => {
-    dispatch(addExternalLinks({ index, externalLinks: links }));
+    dispatch(addExternalLinks({ links, index }));
   };
 
   return (
-    <div className={styles["step-card"]}>
-      <div
-        className={styles["step-card-content"]}
-        style={{ paddingBottom: "0px" }}>
-        <div className={styles["step-name"]}>
-          {step.isPrefetched && step.description && (
-            <div className={styles.head}>
-              <ExternalLinksList />
+    <div className="rounded my-2">
+      <div className="flex flex-col">
+        <div className="flex text-sm">
+          {isPrefetched && step.description && (
+            <div className="flex gap-5">
+              <ExternalLinksList index={index} />
             </div>
           )}
         </div>
-        <div className={styles["step-section"]}>
-          <div className={styles["step-info"]}>
+        <div>
+          <div
+            className="mt-2 text-sm cursor-pointer text-violet-500"
+            onClick={() => setAddQuery(true)}>
+            <b>{!addQuery ? "+ Add Data" : "Data"}</b>
+          </div>
+
+          {addQuery && <Query index={index} />}
+        </div>
+        {isPrefetched && !step.isCopied ? (
+          step.notes && (
+            <>
+              <div className="mt-2 text-sm cursor-pointer text-violet-500">
+                <b>Notes</b>
+              </div>
+              <Notes step={step} index={index} />
+            </>
+          )
+        ) : (
+          <>
+            <div
+              className="mt-2 text-sm cursor-pointer text-violet-500"
+              onClick={toggleNotes}>
+              <b>{step.showNotes ? "-" : "+"}</b> Add Notes about this step
+            </div>
+            {step.showNotes && <Notes step={step} index={index} />}
+          </>
+        )}
+        <SelectInterpretation index={index} />
+        {!isPrefetched && (
+          <div>
             <div>
               <div
-                className={styles["addConditionStyle"]}
-                onClick={() => setAddQuery(true)}>
-                <b className="add_data">{!addQuery ? "+ Add Data" : "Data"}</b>
+                className="mt-2 m-1 ml-0 text-sm cursor-pointer text-violet-500"
+                onClick={toggleExternalLinks}>
+                <b>{step.showExternalLinks ? "-" : "+"}</b> Add External Links
               </div>
 
-              {addQuery && <Query step={step} index={index} />}
+              {step.showExternalLinks && (
+                <ExternalLinks links={step.externalLinks} setLinks={setLinks} />
+              )}
             </div>
           </div>
-          {step.isPrefetched && !step.isCopied ? (
-            step.notes && (
-              <>
-                <div className={styles["addConditionStyle"]}>
-                  <b>Notes</b>
-                </div>
-                <Notes step={step} index={index} />
-              </>
-            )
-          ) : (
-            <>
-              <div
-                className={styles["addConditionStyle"]}
-                onClick={toggleNotes}>
-                <b className="ext_links">{step.showNotes ? "-" : "+"}</b> Add
-                Notes about this step
-              </div>
-              {step.showNotes && <Notes step={step} index={index} />}
-            </>
-          )}
+        )}
 
-          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation index={index} />
-          )}
-          {!isPrefetched && (
-            <div>
-              <div>
-                <div
-                  className={styles["addConditionStyle"]}
-                  onClick={toggleExternalLinks}>
-                  <b className="ext_links">
-                    {step.showExternalLinks ? "-" : "+"}
-                  </b>{" "}
-                  Add External Links
-                </div>
-
-                {step.showExternalLinks && (
-                  <ExternalLinks
-                    links={step.externalLinks}
-                    setLinks={setLinks}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-
-          {!isPrefetched && (
-            <div className={styles["step-buttons"]}>
-              {step.source && !unsupportedRunners.includes(step.source) && (
+        {!isPrefetched && (
+          <div className="flex gap-2 mt-2">
+            {step.source && !unsupportedRunners.includes(step.source) && (
+              <div className="flex items-center gap-2">
                 <button
-                  className={styles["pb-button"]}
+                  className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
                   onClick={() => executeStep(step, index)}>
                   <Tooltip title="Run this Step">
                     <>
-                      Run <PlayArrowIcon />
+                      Run <PlayArrowRounded />
                     </>
                   </Tooltip>
                 </button>
-              )}
-              <button
-                className={styles["pb-button"]}
-                onClick={() => handleDeleteClick(index)}>
-                <Tooltip title="Remove this Step">
-                  <DeleteIcon />
-                </Tooltip>
-              </button>
-            </div>
-          )}
-        </div>
+                {step.outputLoading && <CircularProgress size={20} />}
+              </div>
+            )}
+            <button
+              className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
+              onClick={() => handleDeleteClick(index)}>
+              <Tooltip title="Remove this Step">
+                <Delete />
+              </Tooltip>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

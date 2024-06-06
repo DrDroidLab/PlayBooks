@@ -356,3 +356,95 @@ class PlaybookTaskResult(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table", "api_response", "bash_command_output"] | None: ...
 
 global___PlaybookTaskResult = PlaybookTaskResult
+
+@typing_extensions.final
+class PlaybookSourceOptions(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class ConnectorOption(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        CONNECTOR_ID_FIELD_NUMBER: builtins.int
+        DISPLAY_NAME_FIELD_NUMBER: builtins.int
+        @property
+        def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "display_name", b"display_name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "display_name", b"display_name"]) -> None: ...
+
+    @typing_extensions.final
+    class TaskTypeOption(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        @typing_extensions.final
+        class SourceModelTypeMap(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            MODEL_TYPE_FIELD_NUMBER: builtins.int
+            DISPLAY_NAME_FIELD_NUMBER: builtins.int
+            model_type: protos.base_pb2.SourceModelType.ValueType
+            @property
+            def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            def __init__(
+                self,
+                *,
+                model_type: protos.base_pb2.SourceModelType.ValueType = ...,
+                display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["display_name", b"display_name"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["display_name", b"display_name", "model_type", b"model_type"]) -> None: ...
+
+        DISPLAY_NAME_FIELD_NUMBER: builtins.int
+        TASK_TYPE_FIELD_NUMBER: builtins.int
+        CATEGORY_FIELD_NUMBER: builtins.int
+        SUPPORTED_MODEL_TYPES_FIELD_NUMBER: builtins.int
+        @property
+        def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def task_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def category(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def supported_model_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap]: ...
+        def __init__(
+            self,
+            *,
+            display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            task_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            category: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            supported_model_types: collections.abc.Iterable[global___PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "task_type", b"task_type"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "supported_model_types", b"supported_model_types", "task_type", b"task_type"]) -> None: ...
+
+    SOURCE_FIELD_NUMBER: builtins.int
+    DISPLAY_NAME_FIELD_NUMBER: builtins.int
+    SUPPORTED_TASK_TYPE_OPTIONS_FIELD_NUMBER: builtins.int
+    CONNECTOR_OPTIONS_FIELD_NUMBER: builtins.int
+    source: protos.base_pb2.Source.ValueType
+    @property
+    def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def supported_task_type_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookSourceOptions.TaskTypeOption]: ...
+    @property
+    def connector_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookSourceOptions.ConnectorOption]: ...
+    def __init__(
+        self,
+        *,
+        source: protos.base_pb2.Source.ValueType = ...,
+        display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        supported_task_type_options: collections.abc.Iterable[global___PlaybookSourceOptions.TaskTypeOption] | None = ...,
+        connector_options: collections.abc.Iterable[global___PlaybookSourceOptions.ConnectorOption] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["display_name", b"display_name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_options", b"connector_options", "display_name", b"display_name", "source", b"source", "supported_task_type_options", b"supported_task_type_options"]) -> None: ...
+
+global___PlaybookSourceOptions = PlaybookSourceOptions

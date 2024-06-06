@@ -16,28 +16,28 @@ import "protos/connectors/assets/azure_asset.proto";
 import "protos/connectors/assets/remote_server_asset.proto";
 
 message ConnectorModelTypeOptions {
-  Connector connector = 1;
-  SourceModelType model_type = 2;
+  SourceModelType model_type = 1;
   oneof options {
-    CloudwatchLogGroupAssetOptions cloudwatch_log_group_model_options = 3;
-    CloudwatchMetricAssetOptions cloudwatch_metric_model_options = 4;
-    GrafanaTargetMetricPromQlAssetOptions grafana_target_metric_promql_model_options = 5;
-    ClickhouseDatabaseAssetOptions clickhouse_database_model_options = 6;
-    SlackChannelAssetOptions slack_channel_model_options = 7;
-    NewRelicApplicationEntityAssetOptions new_relic_entity_application_model_options = 8;
-    NewRelicDashboardEntityAssetOptions new_relic_entity_dashboard_model_options = 9;
-    DatadogServiceAssetOptions datadog_service_model_options = 10;
-    PostgresDatabaseAssetOptions postgres_database_model_options = 11;
-    EksClusterAssetOptions eks_cluster_model_options = 12;
-    SshServerAssetOptions ssh_server_model_options = 13;
-    AzureWorkspaceAssetOptions azure_workspace_model_options = 14;
-    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 15;
+    CloudwatchLogGroupAssetOptions cloudwatch_log_group_model_options = 2;
+    CloudwatchMetricAssetOptions cloudwatch_metric_model_options = 3;
+    GrafanaTargetMetricPromQlAssetOptions grafana_target_metric_promql_model_options = 4;
+    ClickhouseDatabaseAssetOptions clickhouse_database_model_options = 5;
+    SlackChannelAssetOptions slack_channel_model_options = 6;
+    NewRelicApplicationEntityAssetOptions new_relic_entity_application_model_options = 7;
+    NewRelicDashboardEntityAssetOptions new_relic_entity_dashboard_model_options = 8;
+    DatadogServiceAssetOptions datadog_service_model_options = 9;
+    PostgresDatabaseAssetOptions postgres_database_model_options = 10;
+    EksClusterAssetOptions eks_cluster_model_options = 11;
+    SshServerAssetOptions ssh_server_model_options = 12;
+    AzureWorkspaceAssetOptions azure_workspace_model_options = 13;
+    GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 14;
   }
 }
 
 message AccountConnectorAssetsModelOptions {
   Source connector_type = 1;
-  repeated ConnectorModelTypeOptions model_types_options = 2;
+  Connector connector = 2;
+  repeated ConnectorModelTypeOptions model_types_options = 3;
 }
 
 message AccountConnectorAssetsModelFilters {
@@ -52,8 +52,8 @@ message AccountConnectorAssetsModelFilters {
     DatadogServiceAssetOptions datadog_service_model_filters = 8;
     PostgresDatabaseAssetOptions postgres_database_model_filters = 9;
     EksClusterAssetOptions eks_cluster_model_filters = 10;
-    AzureWorkspaceAssetOptions azure_workspace_model_filters = 11;
-    SshServerAssetOptions ssh_server_model_filters = 12;
+    SshServerAssetOptions ssh_server_model_filters = 11;
+    AzureWorkspaceAssetOptions azure_workspace_model_filters = 12;
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 13;
   }
 }

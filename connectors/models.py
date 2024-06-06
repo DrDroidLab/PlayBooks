@@ -276,15 +276,21 @@ class Connector(models.Model):
 
     @property
     def proto_partial(self) -> ConnectorProto:
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
         )
 
@@ -292,15 +298,21 @@ class Connector(models.Model):
     def proto(self) -> ConnectorProto:
         keys = self.connectorkey_set.filter(is_active=True)
         keys_proto = [key.proto for key in keys]
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
             keys=keys_proto
         )
@@ -309,15 +321,21 @@ class Connector(models.Model):
     def unmasked_proto(self) -> ConnectorProto:
         keys = self.connectorkey_set.filter(is_active=True)
         keys_proto = [key.unmasked_proto for key in keys]
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
             keys=keys_proto
         )

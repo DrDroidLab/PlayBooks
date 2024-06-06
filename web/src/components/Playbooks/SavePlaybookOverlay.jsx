@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import Overlay from "../Overlay";
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  playbookSelector,
+  setPlaybookKey,
+} from "../../store/features/playbook/playbookSlice.ts";
 import ValueComponent from "../ValueComponent/index.jsx";
 import Toast from "../Toast.js";
 
 const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
-  const { name: playbookName, isEditing } = useSelector(playbookSelector);
+  const {
+    name: playbookName,
+    isEditing,
+    description: playbookDescription,
+  } = useSelector(playbookSelector);
+  const dispatch = useDispatch();
   const [name, setName] = useState(playbookName);
+  const [description, setDescription] = useState(playbookDescription);
   const [validationError, setValidationError] = useState("");
 
   const handleSubmit = () => {
@@ -16,10 +25,17 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
       setValidationError("Please enter a name");
       return;
     }
+    dispatch(setPlaybookKey({ key: "description", value: description }));
     saveCallback({
       pbName: name || playbookName,
+      description,
     });
     close();
+  };
+
+  const handleDescriptionChange = (e) => {
+    const val = e.target.value;
+    setDescription(val);
   };
 
   useEffect(() => {
@@ -38,19 +54,35 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
                 ? `Update "${playbookName}" playbook? `
                 : playbookName
                 ? `Save this playbook as "${playbookName}"?`
-                : "Please Enter a name"}
+                : "Please enter a name"}
             </div>
             <div className={styles["panel__description"]}>
               {isEditing && "NOTE: This action is irreversible"}
             </div>
             {!isEditing && !playbookName && (
               <div>
+                <label className="text-xs font-bold text-gray-500">Name</label>
                 <ValueComponent
                   valueType={"STRING"}
                   onValueChange={(val) => setName(val)}
                   value={name}
                   placeHolder={"Enter Playbook name"}
                   length={300}
+                />
+              </div>
+            )}
+            {!isEditing && !playbookDescription && (
+              <div>
+                <label className="text-xs font-bold text-gray-500">
+                  Description
+                </label>
+                <textarea
+                  className={
+                    "w-full border border-gray-300 p-1 rounded text-xs resize-none text-[#676666] h-32"
+                  }
+                  placeholder="Add Playbook description"
+                  value={description}
+                  onChange={handleDescriptionChange}
                 />
               </div>
             )}

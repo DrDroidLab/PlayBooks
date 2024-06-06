@@ -41,7 +41,7 @@ export const integrations = [
     label: "Database",
     options: [
       models.CLICKHOUSE,
-      models.POSTGRES_QUERY,
+      models.POSTGRES_DATABASE,
       models.SQL_DATABASE_CONNECTION,
     ],
   },

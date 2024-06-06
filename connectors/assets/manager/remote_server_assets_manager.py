@@ -2,42 +2,47 @@ from datetime import timezone
 
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 
-from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
     ConnectorModelTypeOptions
 from protos.connectors.assets.remote_server_asset_pb2 import SshServerAssetOptions, RemoteServerAssetModel, \
     SshServerAssetModel, RemoteServerAssets
 from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 
 class RemoteServetAssetManager(ConnectorAssetManager):
 
     def __init__(self):
-        self.source = Source.SLACK
+        self.source = Source.REMOTE_SERVER
+        self.asset_type_callable_map = {
+            SourceModelType.SSH_SERVER: {
+                'options': self.get_ssh_server_asset_options,
+                'values': self.get_ssh_server_asset_values,
+            }
+        }
 
-    def get_asset_model_options(self, model_type: SourceModelType, model_uid_metadata_list):
-        if model_type == SourceModelType.SSH_SERVER:
-            all_servers = []
-            for item in model_uid_metadata_list:
-                all_servers.append(item['model_uid'])
-            options = SshServerAssetOptions(ssh_servers=all_servers)
-            return ConnectorModelTypeOptions(model_type=model_type, ssh_server_model_options=options)
-        else:
-            return None
+    @staticmethod
+    def get_ssh_server_asset_options(ssh_server_assets):
+        all_servers = []
+        for asset in ssh_server_assets:
+            all_servers.append(asset.model_uid)
+        options = SshServerAssetOptions(ssh_servers=all_servers)
+        return ConnectorModelTypeOptions(model_type=SourceModelType.SSH_SERVER, ssh_server_model_options=options)
 
-    def get_asset_model_values(self, account: Account, model_type: SourceModelType,
-                               filters: AccountConnectorAssetsModelFilters, rm_models):
+    @staticmethod
+    def get_ssh_server_asset_values(connector: ConnectorProto, filters: AccountConnectorAssetsModelFilters,
+                                    ssh_server_assets):
         which_one_of = filters.WhichOneof('filters')
-        if model_type == SourceModelType.SSH_SERVER and (
-                not which_one_of or which_one_of == 'ssh_server_model_filters'):
-            options: SshServerAssetOptions = filters.ssh_server_model_filters
-            filter_servers = options.ssh_servers
-            rm_models = rm_models.filter(model_type=SourceModelType.SSH_SERVER)
-            if filter_servers:
-                rm_models = rm_models.filter(model_uid__in=filter_servers)
+        if which_one_of and which_one_of != 'ssh_server_model_filters':
+            raise ValueError(f"Invalid filter: {which_one_of}")
+
+        options: SshServerAssetOptions = filters.ssh_server_model_filters
+        filter_servers = options.ssh_servers
+        if filter_servers:
+            ssh_server_assets = ssh_server_assets.filter(model_uid__in=filter_servers)
         rm_asset_protos = []
-        for asset in rm_models:
+        for asset in ssh_server_assets:
             if asset.model_type == SourceModelType.SSH_SERVER:
                 rm_asset_protos.append(RemoteServerAssetModel(
                     id=UInt64Value(value=asset.id), connector_type=asset.connector_type,

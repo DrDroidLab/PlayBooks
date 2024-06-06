@@ -11,7 +11,7 @@ export const integrationSentenceMap = {
   [models.GRAFANA_DATASOURCE]:
     "Query any of your Prometheus based Grafana Data Sources",
   [models.CLICKHOUSE]: "Query a Clickhouse Database",
-  [models.POSTGRES_QUERY]: "Query a PostgreSQL Database",
+  [models.POSTGRES_DATABASE]: "Query a PostgreSQL Database",
   [models.EKS_CLUSTER]: "Query Events from your EKS Cluster",
   [models.API]: "Trigger an API",
   [models.TEXT]: "Write documentation",

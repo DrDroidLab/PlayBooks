@@ -44,6 +44,9 @@ const integrationsSlice = createSlice({
         };
       }
     },
+    setConnector(state, { payload }) {
+      state.currentConnector = payload;
+    },
     setKeysOptions: (state, { payload }) => {
       state.keyOptions = payload;
       payload.forEach((el) => {
@@ -70,6 +73,7 @@ export const {
   setVpcConnectors,
   setAgentProxy,
   setCurrentConnector,
+  setConnector,
   setKeysOptions,
   setAgentKeyOptions,
   setKey,

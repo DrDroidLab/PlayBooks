@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import styles from './index.module.css';
+import { useState, useEffect } from "react";
+import styles from "./index.module.css";
 
 import {
   Table,
@@ -9,10 +9,10 @@ import {
   TableRow,
   Button,
   Dialog,
-  DialogActions
-} from '@mui/material';
+  DialogActions,
+} from "@mui/material";
 
-import SeeMoreText from './SeeMoreText';
+import SeeMoreText from "./SeeMoreText";
 
 const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   const [showTable, setShowTable] = useState(false);
@@ -23,11 +23,11 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   useEffect(() => {
     if (
       result &&
-      result.table_result &&
-      result.table_result.rows &&
-      result.table_result.rows.length > 0
+      result.table &&
+      result.table.rows &&
+      result.table.rows.length > 0
     ) {
-      setTableData(result.table_result.rows);
+      setTableData(result.table.rows);
       setShowTable(true);
     }
   }, [result]);
@@ -37,17 +37,21 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   };
 
   return (
-    <div className={styles['graph-box']}>
-      <p className={styles['graph-title']}>{title}</p>
-      {!showTable && <p className={styles['graph-error']}>No data available</p>}
+    <div className={styles["graph-box"]}>
+      <p className={styles["graph-title"]}>{title}</p>
+      {!showTable && <p className={styles["graph-error"]}>No data available</p>}
       {showTable && (
-        <Table stickyHeader className={styles['tableData']}>
+        <Table stickyHeader className={styles["tableData"]}>
           <TableHead>
             <TableRow>
               {tableData[0]?.columns
-                ?.filter(x => x.name !== '@ptr')
+                ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
-                  return <TableCell className={styles['tableLogDataTitle']}>{col.name}</TableCell>;
+                  return (
+                    <TableCell className={styles["tableLogDataTitle"]}>
+                      {col.name}
+                    </TableCell>
+                  );
                 })}
             </TableRow>
           </TableHead>
@@ -56,16 +60,21 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
               return (
                 <TableRow key={rowIndex}>
                   {row?.columns
-                    ?.filter(x => x.name !== '@ptr')
+                    ?.filter((x) => x.name !== "@ptr")
                     .map((col, colIndex) => {
                       return (
                         <TableCell
                           key={colIndex}
                           className={
-                            col.name === '@message' ? styles['tableDataMsg'] : styles['tableData']
-                          }
-                        >
-                          <SeeMoreText title={col.name} text={col.value} truncSize={200} />
+                            col.name === "@message"
+                              ? styles["tableDataMsg"]
+                              : styles["tableData"]
+                          }>
+                          <SeeMoreText
+                            title={col.name}
+                            text={col.value}
+                            truncSize={200}
+                          />
                         </TableCell>
                       );
                     })}
@@ -76,12 +85,12 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
         </Table>
       )}
       {!showTable && timestamp && (
-        <p className={styles['graph-ts-error']}>
+        <p className={styles["graph-ts-error"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}
       {showTable && timestamp && (
-        <p className={styles['graph-ts']}>
+        <p className={styles["graph-ts"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}

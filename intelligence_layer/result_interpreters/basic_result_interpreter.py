@@ -6,6 +6,7 @@ from connectors.models import integrations_connector_type_display_name_map
 from intelligence_layer.utils import generate_graph_for_metric_timeseries_result, table_result_to_df
 from intelligence_layer.result_interpreters.result_interpreter import ResultInterpreter
 from media.utils import generate_local_image_path, generate_local_csv_path
+from protos.base_pb2 import Source
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TimeseriesResult, \
     TableResult
@@ -26,7 +27,8 @@ class BasicResultInterpreter(ResultInterpreter):
                 metric_expression = timeseries_result.metric_expression.value
                 metric_expression = metric_expression.replace('`', '')
                 metric_name = timeseries_result.metric_name.value
-                metric_source = integrations_connector_type_display_name_map.get(task_result.source, 'Metric Source')
+                metric_source = integrations_connector_type_display_name_map.get(task_result.source,
+                                                                                 Source.Name(task_result.source))
                 object_url = generate_graph_for_metric_timeseries_result(timeseries_result, file_key, metric_expression)
                 if not object_url:
                     return Interpretation()
@@ -47,7 +49,8 @@ class BasicResultInterpreter(ResultInterpreter):
         elif result_type == PlaybookTaskResultType.TABLE:
             try:
                 file_key = generate_local_csv_path()
-                data_source = integrations_connector_type_display_name_map.get(task_result.source, 'Data Source')
+                data_source = integrations_connector_type_display_name_map.get(task_result.source,
+                                                                               Source.Name(task_result.source))
                 table_result: TableResult = task_result.table
                 df = table_result_to_df(table_result)
                 df.to_csv(file_key, index=False)

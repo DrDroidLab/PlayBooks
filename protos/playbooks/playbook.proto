@@ -24,6 +24,11 @@ import "protos/playbooks/source_task_definitions/azure_task.proto";
 
 // Playbook Task Protos
 message PlaybookTask {
+  message PlaybookTaskConnectorSource {
+    google.protobuf.UInt64Value id = 1;
+    Source source = 2;
+    google.protobuf.StringValue name = 3;
+  }
   google.protobuf.UInt64Value id = 1;
   Source source = 2;
   google.protobuf.StringValue name = 3;
@@ -32,6 +37,7 @@ message PlaybookTask {
   google.protobuf.StringValue created_by = 6;
   google.protobuf.Struct global_variable_set = 7;
   InterpreterType interpreter_type = 8;
+  repeated PlaybookTaskConnectorSource task_connector_sources = 9;
   oneof task {
     Documentation documentation = 101;
     Cloudwatch cloudwatch = 102;

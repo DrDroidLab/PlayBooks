@@ -78,8 +78,10 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
         });
       }
 
-      let tsLabels = sortedTSData.map((x) =>
-        getTSLabel(x?.metric_label_values ?? []),
+      let tsLabels = sortedTSData.map(
+        (x) =>
+          result?.timeseries?.metric_name ??
+          getTSLabel(x?.metric_label_values ?? []),
       );
 
       let data = [];
