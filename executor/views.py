@@ -406,6 +406,7 @@ def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlay
     return CreatePlaybookResponse(success=BoolValue(value=True), playbook=playbook.deprecated_proto)
 
 
+@api_blocked
 @web_api(CreatePlaybookRequestV2)
 def playbooks_create_v2(request_message: CreatePlaybookRequestV2) -> Union[CreatePlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()
@@ -451,6 +452,7 @@ def playbooks_update(request_message: UpdatePlaybookRequest) -> Union[UpdatePlay
     return UpdatePlaybookResponse(success=BoolValue(value=True))
 
 
+@api_blocked
 @web_api(UpdatePlaybookRequestV2)
 def playbooks_update_v2(request_message: UpdatePlaybookRequestV2) -> Union[UpdatePlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()

@@ -324,6 +324,7 @@ settings:
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
 
+@api_blocked
 @web_api(GetSlackAppManifestRequest)
 def save_site_url(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
