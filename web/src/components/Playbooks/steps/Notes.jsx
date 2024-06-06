@@ -5,6 +5,7 @@ import rehypeSanitize from "rehype-sanitize";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 const Button = () => {
   const { preview, dispatch } = useContext(EditorContext);
@@ -38,11 +39,12 @@ const codePreview = {
 function Notes({ index }) {
   const [step] = useCurrentStep(index);
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
   return (
     <>
       <div
         style={
-          step.isPrefetched && !step?.isCopied
+          isPrefetched && !step?.isCopied
             ? step?.notes
               ? {
                   display: "flex",
@@ -61,7 +63,7 @@ function Notes({ index }) {
         <div
           data-color-mode="light"
           style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          {step.isPrefetched && !step?.isCopied ? (
+          {isPrefetched && !step?.isCopied ? (
             step?.notes && (
               <MDEditor.Markdown
                 source={step.notes}

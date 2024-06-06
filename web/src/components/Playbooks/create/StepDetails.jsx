@@ -5,11 +5,14 @@ import {
   playbookSelector,
   stepsSelector,
   toggleNotesVisibility,
+  toggleExternalLinkVisibility,
+  addExternalLinks,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import PlaybookStep from "../steps/PlaybookStep.jsx";
+import ExternalLinks from "../steps/ExternalLinks.jsx";
 import Notes from "../steps/Notes.jsx";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import AddSource from "../steps/AddSource.jsx";
@@ -30,8 +33,16 @@ function StepDetails() {
     dispatch(deleteStep(currentStepIndex));
   };
 
+  const toggleExternalLinks = () => {
+    dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
+  };
+
   const toggleNotes = () => {
     dispatch(toggleNotesVisibility({ index: currentStepIndex }));
+  };
+
+  const setLinks = (links) => {
+    dispatch(addExternalLinks({ links, index: currentStepIndex }));
   };
 
   return (
@@ -65,7 +76,7 @@ function StepDetails() {
           <ExternalLinksList />
           <AddSource step={step} />
           <PlaybookStep card={step} index={currentStepIndex} />
-          {step.isPrefetched && !step.isCopied ? (
+          {isPrefetched && !step.isCopied ? (
             step.notes && (
               <>
                 <div>
@@ -86,6 +97,27 @@ function StepDetails() {
             </>
           )}
           <SelectInterpretation />
+          {!isPrefetched && (
+            <div>
+              <div>
+                <div
+                  className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
+                  onClick={toggleExternalLinks}>
+                  <b className="ext_links">
+                    {step.showExternalLinks ? "-" : "+"}
+                  </b>{" "}
+                  Add External Links
+                </div>
+
+                {step.showExternalLinks && (
+                  <ExternalLinks
+                    links={step.externalLinks}
+                    setLinks={setLinks}
+                  />
+                )}
+              </div>
+            </div>
+          )}
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}

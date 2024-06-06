@@ -32,7 +32,7 @@ function Step({ step, index }) {
   }
 
   const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility(index));
+    dispatch(toggleExternalLinkVisibility({ index }));
   };
 
   const toggleNotes = () => {
@@ -49,7 +49,7 @@ function Step({ step, index }) {
         className={styles["step-card-content"]}
         style={{ paddingBottom: "0px" }}>
         <div className={styles["step-name"]}>
-          {step.isPrefetched && step.description && (
+          {isPrefetched && step.description && (
             <div className={styles.head}>
               <ExternalLinksList index={index} />
             </div>
@@ -67,7 +67,7 @@ function Step({ step, index }) {
               {addQuery && <Query index={index} />}
             </div>
           </div>
-          {step.isPrefetched && !step.isCopied ? (
+          {isPrefetched && !step.isCopied ? (
             step.notes && (
               <>
                 <div className={styles["addConditionStyle"]}>
@@ -88,28 +88,6 @@ function Step({ step, index }) {
             </>
           )}
           <SelectInterpretation index={index} />
-          {!isPrefetched && (
-            <div className={styles["step-buttons"]}>
-              {step.source && !unsupportedRunners.includes(step.source) && (
-                <button
-                  className={styles["pb-button"]}
-                  onClick={() => executeStep(step, index)}>
-                  <Tooltip title="Run this Step">
-                    <>
-                      Run <PlayArrowIcon />
-                    </>
-                  </Tooltip>
-                </button>
-              )}
-              <button
-                className={styles["pb-button"]}
-                onClick={handleDeleteClick}>
-                <Tooltip title="Remove this Step">
-                  <DeleteIcon />
-                </Tooltip>
-              </button>
-            </div>
-          )}
           {!isPrefetched && (
             <div>
               <div>

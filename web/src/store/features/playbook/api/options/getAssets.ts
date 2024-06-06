@@ -36,12 +36,15 @@ export const getAssetApi = apiSlice.injectEndpoints({
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
+          updateCardByIndex("assetsLoading", true, arg);
           const { data } = await queryFulfilled;
           // Dispatch an action to update the global state
           dispatch(setAssets({ assets: data, index: arg }));
         } catch (error) {
           // Handle any errors
           console.log(error);
+        } finally {
+          updateCardByIndex("assetsLoading", false, arg);
         }
       },
     }),
@@ -50,5 +53,6 @@ export const getAssetApi = apiSlice.injectEndpoints({
 
 export const {
   useLazyGetAssetsQuery,
+  useGetAssetsQuery,
   endpoints: { getAssets },
 } = getAssetApi;

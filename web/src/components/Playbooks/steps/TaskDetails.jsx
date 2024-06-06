@@ -60,6 +60,12 @@ function TaskDetails({ index }) {
     }
   }, [step]);
 
+  useEffect(() => {
+    if (step && data.builder) {
+      setDefaultErrors();
+    }
+  }, [step.taskType, step.source]);
+
   return (
     <div className="relative mt-2">
       {data?.builder?.map((step, index) => (

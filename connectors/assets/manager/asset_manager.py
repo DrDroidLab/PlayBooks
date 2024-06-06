@@ -34,7 +34,7 @@ class ConnectorAssetManager:
                     asset_key = k
                 elif asset_key != k:
                     raise ValueError(f"Asset key mismatch: {asset_key} != {k}")
-                asset_values.extend(v['assets'])
+                asset_values.extend(v.get('assets', []))
 
         connector_dict = proto_to_dict(connector)
         connector_dict.pop('keys', None)
@@ -85,6 +85,9 @@ class ConnectorAssetManager:
 
             if not connector.type or connector.type != self.source:
                 raise ValueError(f"Connector type {connector.type} does not match with source {self.source}")
+            
+            if connector.type in [Source.GRAFANA, Source.GRAFANA_VPC]:
+                model_type = SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE
 
             if not self.asset_type_callable_map:
                 logger.error("Asset type callable map not found")

@@ -94,7 +94,7 @@ const playbookSlice = createSlice({
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
-      state.name = payload.name;
+      state.name = "Copy of " + payload.name;
       state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
         payload.global_variable_set ?? {},
@@ -428,10 +428,11 @@ const playbookSlice = createSlice({
       }
     },
     toggleNotesVisibility(state, { payload }) {
-      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
-    },
-    toggleNotesVisibility(state, { payload }) {
-      state.steps[payload.index].showNotes = !state.steps[payload.index].showNotes;
+      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
+      if (index !== "" && index !== null && index !== undefined) {
+        state.steps[parseInt(index, 10)].showNotes =
+          !state.steps[payload.index].showNotes;
+      }
     },
     resetState(state) {
       state.steps = [];

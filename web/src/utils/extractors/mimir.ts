@@ -16,7 +16,7 @@ export const extractMimirTasks = (step: any) => {
     taskType,
     modelType,
     promql_expression:
-      mimirTask?.promql_metric_execution_task?.promql_expression,
+      mimirTask?.promql_expression,
   };
 
   return stepData;
