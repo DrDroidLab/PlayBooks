@@ -66,7 +66,6 @@ function StepActions() {
     try {
       await triggerUpdatePlaybook({ ...playbook, id: playbookVal.id }).unwrap();
       dispatch(setLastUpdatedAt());
-      navigate(`/playbooks`);
     } catch (e) {
       console.log(e);
     }

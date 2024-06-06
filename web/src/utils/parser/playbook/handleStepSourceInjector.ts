@@ -12,11 +12,13 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     description: step.description ?? "",
     interpreter_type: step.interpreter?.type,
     global_variable_set: stateToGlobalVariable(step.globalVariables),
-    task_connector_sources: [
-      {
-        id: step.connectorType || 0,
-      },
-    ],
+    task_connector_sources: step.connectorType
+      ? [
+          {
+            id: step.connectorType || 0,
+          },
+        ]
+      : [],
   };
 
   let tasks: PlaybookTask[] = [];
