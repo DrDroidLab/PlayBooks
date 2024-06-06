@@ -172,6 +172,8 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
     TASK_FIELD_NUMBER: builtins.int
     RESULT_FIELD_NUMBER: builtins.int
     INTERPRETATION_FIELD_NUMBER: builtins.int
+    TIME_RANGE_FIELD_NUMBER: builtins.int
+    CREATED_BY_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     timestamp: builtins.int
@@ -181,6 +183,10 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
     def result(self) -> protos.playbooks.playbook_commons_pb2.PlaybookTaskResult: ...
     @property
     def interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
+    @property
+    def time_range(self) -> protos.base_pb2.TimeRange: ...
+    @property
+    def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
@@ -189,9 +195,11 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
         task: global___PlaybookTask | None = ...,
         result: protos.playbooks.playbook_commons_pb2.PlaybookTaskResult | None = ...,
         interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
+        time_range: protos.base_pb2.TimeRange | None = ...,
+        created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "timestamp", b"timestamp"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range", "timestamp", b"timestamp"]) -> None: ...
 
 global___PlaybookTaskExecutionLog = PlaybookTaskExecutionLog
 
@@ -247,6 +255,8 @@ class PlaybookStepExecutionLog(google.protobuf.message.Message):
     STEP_FIELD_NUMBER: builtins.int
     TASK_EXECUTION_LOGS_FIELD_NUMBER: builtins.int
     STEP_INTERPRETATION_FIELD_NUMBER: builtins.int
+    TIME_RANGE_FIELD_NUMBER: builtins.int
+    CREATED_BY_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     timestamp: builtins.int
@@ -258,6 +268,10 @@ class PlaybookStepExecutionLog(google.protobuf.message.Message):
     def task_execution_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskExecutionLog]: ...
     @property
     def step_interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
+    @property
+    def time_range(self) -> protos.base_pb2.TimeRange: ...
+    @property
+    def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
@@ -267,9 +281,11 @@ class PlaybookStepExecutionLog(google.protobuf.message.Message):
         step: global___PlaybookStep | None = ...,
         task_execution_logs: collections.abc.Iterable[global___PlaybookTaskExecutionLog] | None = ...,
         step_interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
+        time_range: protos.base_pb2.TimeRange | None = ...,
+        created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_run_id", b"playbook_run_id", "step", b"step", "step_interpretation", b"step_interpretation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "playbook_run_id", b"playbook_run_id", "step", b"step", "step_interpretation", b"step_interpretation", "task_execution_logs", b"task_execution_logs", "timestamp", b"timestamp"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "playbook_run_id", b"playbook_run_id", "step", b"step", "step_interpretation", b"step_interpretation", "time_range", b"time_range"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "playbook_run_id", b"playbook_run_id", "step", b"step", "step_interpretation", b"step_interpretation", "task_execution_logs", b"task_execution_logs", "time_range", b"time_range", "timestamp", b"timestamp"]) -> None: ...
 
 global___PlaybookStepExecutionLog = PlaybookStepExecutionLog
 

@@ -236,6 +236,34 @@ message PlaybookTemplatesGetResponse  {
   repeated google.protobuf.Struct data = 3;
 }
 
+
+message PlaybookExecutionCreateRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value playbook_id = 2;
+}
+
+message PlaybookExecutionCreateResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue playbook_run_id = 4;
+  google.protobuf.StringValue execution_session_url = 5;
+}
+
+message PlaybookExecutionStepExecuteRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+  PlaybookStep step = 3;
+}
+
+message PlaybookExecutionStepExecuteResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  google.protobuf.StringValue playbook_run_id = 4;
+  PlaybookStepExecutionLog playbook_step_execution_log = 5;
+}
+
 ///////////////////// Workflows APIs /////////////////////
 message GetWorkflowsRequest {
   Meta meta = 1;
