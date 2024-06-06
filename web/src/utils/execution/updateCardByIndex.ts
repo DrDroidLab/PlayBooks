@@ -3,7 +3,9 @@ import { updateStep } from "../../store/features/playbook/playbookSlice.ts";
 
 export function updateCardByIndex(key, value, index?: number) {
   const stepIndex =
-    index != null ? index : store.getState().playbook.currentStepIndex;
+    index != null && index !== undefined
+      ? index
+      : store.getState().playbook.currentStepIndex;
   store.dispatch(
     updateStep({
       index: stepIndex,

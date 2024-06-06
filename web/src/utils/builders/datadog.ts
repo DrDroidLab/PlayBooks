@@ -1,10 +1,8 @@
 import { store } from "../../store/index.ts";
 import { setDatadogMetric } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 
-const getCurrentAsset = () => {
-  const [task] = getCurrentTask();
+const getCurrentAsset = (task) => {
   const currentAsset = task?.assets?.find(
     (e) => e.service_name === task?.datadogService,
   );
@@ -12,8 +10,7 @@ const getCurrentAsset = () => {
   return currentAsset;
 };
 
-export const datadogBuilder = (options) => {
-  const [task, index] = getCurrentTask();
+export const datadogBuilder = (options, task, index) => {
   return {
     triggerGetAssetsKey: "datadogMetricFamily",
     assetFilterQuery: {
@@ -51,7 +48,7 @@ export const datadogBuilder = (options) => {
           key: "datadogEnvironment",
           label: "Environment",
           type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset()?.environments?.map((e) => {
+          options: getCurrentAsset(task)?.environments?.map((e) => {
             return {
               id: e,
               label: e,
@@ -62,7 +59,7 @@ export const datadogBuilder = (options) => {
           key: "datadogMetric",
           label: "Metric",
           type: OptionType.MULTI_SELECT,
-          options: getCurrentAsset()
+          options: getCurrentAsset(task)
             ?.metrics?.filter(
               (e) => e.metric_family === task.datadogMetricFamily,
             )

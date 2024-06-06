@@ -10,10 +10,11 @@ import VariablesBox from "./VariablesBox.jsx";
 import { InfoOutlined } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { constructBuilder } from "../../../utils/playbooksData.ts";
+import { deepEqual } from "../../../utils/deepEqual.ts";
 
-function TaskDetails() {
-  const data = constructBuilder();
-  const [step] = useCurrentStep();
+function TaskDetails({ index }) {
+  const data = constructBuilder(index);
+  const [step, currentStepIndex] = useCurrentStep(index);
   const dispatch = useDispatch();
   const prevError = useRef(null);
   const { view } = useSelector(playbookSelector);
@@ -35,7 +36,7 @@ function TaskDetails() {
     }
 
     prevError.current = errors;
-    dispatch(setErrors(errors));
+    dispatch(setErrors({ errors, index: currentStepIndex }));
   };
 
   const removeErrors = (key) => {
@@ -43,11 +44,11 @@ function TaskDetails() {
     delete errors[key];
 
     prevError.current = errors;
-    dispatch(setErrors(errors));
+    dispatch(setErrors({ errors, index: currentStepIndex }));
   };
 
   useEffect(() => {
-    const errorChanged = prevError.current === step.errors;
+    const errorChanged = deepEqual(prevError.current, step.errors);
     if (
       !step.isPrefetched &&
       step &&
@@ -59,10 +60,17 @@ function TaskDetails() {
     }
   }, [step]);
 
+  useEffect(() => {
+    if (step && data.builder) {
+      setDefaultErrors();
+    }
+  }, [step.taskType, step.source]);
+
   return (
     <div className="relative mt-2">
-      {data?.builder?.map((step) => (
+      {data?.builder?.map((step, index) => (
         <div
+          key={index}
           className={`flex gap-2 flex-wrap ${
             view === "builder" ? "flex-col" : "flex-row"
           }`}>
@@ -80,7 +88,11 @@ function TaskDetails() {
                   justifyContent: "flex-start",
                   maxWidth: view === "builder" ? "600px" : "",
                 }}>
-                <OptionRender data={value} removeErrors={removeErrors} />
+                <OptionRender
+                  data={value}
+                  removeErrors={removeErrors}
+                  index={currentStepIndex}
+                />
               </div>
             ) : (
               <></>

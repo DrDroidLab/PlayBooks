@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
-  addExternalLinks,
   deleteStep,
   playbookSelector,
   stepsSelector,
+  toggleNotesVisibility,
   toggleExternalLinkVisibility,
+  addExternalLinks,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -18,10 +18,9 @@ import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts
 import AddSource from "../steps/AddSource.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
-import Interpretation from "../steps/Interpretation.jsx";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
-import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import SelectInterpretation from "../steps/Interpretation.jsx";
 
 function StepDetails() {
   const steps = useSelector(stepsSelector);
@@ -34,25 +33,16 @@ function StepDetails() {
     dispatch(deleteStep(currentStepIndex));
   };
 
-  useEffect(() => {
-    if (
-      currentStepIndex !== null &&
-      step?.source &&
-      step?.modelType &&
-      step.connectorType
-    ) {
-      fetchData();
-    }
-  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
-
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index: currentStepIndex }));
   };
 
+  const toggleNotes = () => {
+    dispatch(toggleNotesVisibility({ index: currentStepIndex }));
+  };
+
   const setLinks = (links) => {
-    dispatch(
-      addExternalLinks({ index: currentStepIndex, externalLinks: links }),
-    );
+    dispatch(addExternalLinks({ links, index: currentStepIndex }));
   };
 
   return (
@@ -84,10 +74,50 @@ function StepDetails() {
             </div>
           </div>
           <ExternalLinksList />
-          <AddSource />
-          <PlaybookStep />
-          <Notes />
-          <Interpretation />
+          <AddSource step={step} />
+          <PlaybookStep card={step} index={currentStepIndex} />
+          {isPrefetched && !step.isCopied ? (
+            step.notes && (
+              <>
+                <div>
+                  <b>Notes</b>
+                </div>
+                <Notes step={step} index={currentStepIndex} />
+              </>
+            )
+          ) : (
+            <>
+              <div
+                className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
+                onClick={toggleNotes}>
+                <b className="ext_links">{step.showNotes ? "-" : "+"}</b> Add
+                Notes about this step
+              </div>
+              {step.showNotes && <Notes step={step} index={currentStepIndex} />}
+            </>
+          )}
+          <SelectInterpretation />
+          {!isPrefetched && (
+            <div>
+              <div>
+                <div
+                  className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
+                  onClick={toggleExternalLinks}>
+                  <b className="ext_links">
+                    {step.showExternalLinks ? "-" : "+"}
+                  </b>{" "}
+                  Add External Links
+                </div>
+
+                {step.showExternalLinks && (
+                  <ExternalLinks
+                    links={step.externalLinks}
+                    setLinks={setLinks}
+                  />
+                )}
+              </div>
+            </div>
+          )}
           {!isPrefetched && !unsupportedRunners.includes(step.source) && (
             <button
               onClick={() => executeStep(step)}
@@ -98,20 +128,6 @@ function StepDetails() {
             </button>
           )}
         </>
-      )}
-      {!isPrefetched && (
-        <div className="my-4">
-          <div
-            className="font-semibold text-sm mb-2 cursor-pointer text-gray-500"
-            onClick={toggleExternalLinks}>
-            <b className="ext_links">{step?.showExternalLinks ? "-" : "+"}</b>{" "}
-            Add External Links
-          </div>
-
-          {step?.showExternalLinks && (
-            <ExternalLinks links={step?.externalLinks} setLinks={setLinks} />
-          )}
-        </div>
       )}
     </div>
   );

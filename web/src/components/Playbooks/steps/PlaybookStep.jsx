@@ -5,9 +5,10 @@ import TaskDetails from "./TaskDetails.jsx";
 import { useEffect, useState } from "react";
 import Interpretation from "../../common/Interpretation/index.tsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 
-const PlaybookStep = () => {
-  const [step] = useCurrentStep();
+const PlaybookStep = ({ index }) => {
+  const [step, currentStepIndex] = useCurrentStep(index);
   const showOutput = step.showOutput;
   const [showConfig, setShowConfig] = useState(!showOutput);
 
@@ -19,6 +20,17 @@ const PlaybookStep = () => {
     setShowConfig(!showOutput);
   }, [showOutput]);
 
+  useEffect(() => {
+    if (
+      currentStepIndex !== null &&
+      step?.source &&
+      step?.modelType &&
+      step.connectorType
+    ) {
+      fetchData({ index: currentStepIndex });
+    }
+  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
+
   return (
     <div className="flex flex-col gap-2 mt-2">
       {showOutput && (
@@ -28,7 +40,7 @@ const PlaybookStep = () => {
           {showConfig ? "Hide" : "Show"} Config
         </button>
       )}
-      {showConfig && step && <TaskDetails />}
+      {showConfig && step && <TaskDetails index={index} />}
 
       <div>
         {showOutput && step.source !== SOURCES.TEXT && (
@@ -55,6 +67,7 @@ const PlaybookStep = () => {
             {(step.outputs?.data ?? [])?.map((output, index) => {
               return (
                 <div
+                  key={index}
                   className={`${styles["output-box"]} flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-4 max-w-full`}>
                   <div className="w-full">
                     <PlaybookStepOutput stepOutput={output} />

@@ -2,7 +2,6 @@ import { Grid, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import styles from "./index.module.css";
 import {
   Check,
@@ -22,7 +21,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import handleGlobalExecute from "../utils/execution/handleGlobalExecute.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -110,11 +108,13 @@ const Heading = ({
                     </div>
                   )}
                   {showEditTitle && !isPrefetched && (
-                    <div
-                      className="icon"
-                      onClick={() => setShowEdit(!showEdit)}>
-                      {showEdit ? <Check /> : <Edit />}
-                    </div>
+                    <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+                      <div
+                        className="icon"
+                        onClick={() => setShowEdit(!showEdit)}>
+                        {showEdit ? <Check /> : <Edit />}
+                      </div>
+                    </button>
                   )}
                   {(showCopy || playbook.isEditing) && (
                     <button
@@ -154,18 +154,15 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {showRunAll && playbook.steps?.length > 0 && (
+          {/* {showRunAll && playbook.steps?.length > 0 && (
             <button
               className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
               onClick={handleGlobalExecute}>
               <PlayArrowIcon style={{ fontSize: "medium" }} />
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
-          )}
-          {playbook.view === "builder" &&
-            playbook.steps.length > 0 &&
-            showSave &&
-            !isPrefetched && <StepActions />}
+          )} */}
+          {playbook.view === "builder" && !isPrefetched && <StepActions />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

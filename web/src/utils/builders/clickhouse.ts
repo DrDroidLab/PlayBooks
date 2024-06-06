@@ -1,8 +1,6 @@
 import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 
-export const clickhouseBuilder = (options: any) => {
-  const [task] = getCurrentTask();
+export const clickhouseBuilder = (options: any, task: any) => {
   return {
     builder: [
       [

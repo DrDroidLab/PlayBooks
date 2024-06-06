@@ -4,11 +4,9 @@ import {
   setWidget,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-const getCurrentAsset = () => {
-  const [task] = getCurrentTask();
+const getCurrentAsset = (task) => {
   const currentAsset = task?.assets?.find(
     (e) => e.dashboard_guid === task?.dashboard?.id,
   );
@@ -16,8 +14,7 @@ const getCurrentAsset = () => {
   return currentAsset;
 };
 
-export const newRelicEntityDashboardBuilder = (options) => {
-  const [task, index] = getCurrentTask();
+export const newRelicEntityDashboardBuilder = (options, task, index) => {
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
@@ -51,7 +48,8 @@ export const newRelicEntityDashboardBuilder = (options) => {
           handleChange: (_, val) => {
             store.dispatch(setDashboard({ index, dashboard: val }));
           },
-          selected: task?.dashboard?.label,
+          selected: task?.dashboard?.id,
+          helperText: task?.dashboard?.label,
         },
         {
           key: "page",
@@ -77,8 +75,8 @@ export const newRelicEntityDashboardBuilder = (options) => {
           label: "Widget",
           type: OptionType.MULTI_SELECT,
           options:
-            getCurrentAsset()?.pages?.length > 0
-              ? getCurrentAsset()?.pages[0].widgets?.map((e) => {
+            getCurrentAsset(task)?.pages?.length > 0
+              ? getCurrentAsset(task)?.pages[0].widgets?.map((e) => {
                   return {
                     id: e.widget_id,
                     label: e.widget_title || e.widget_nrql_expression,

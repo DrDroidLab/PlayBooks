@@ -456,8 +456,11 @@ def transform_old_task_definition_to_new(task):
         elif task_type == 'IFRAME':
             updated_task_def = {
                 'source': 'DOCUMENTATION',
-                'iframe': {
-                    'iframe_url': task.get('iframe_url', None)
+                'documentation': {
+                    'type': 'IFRAME',
+                    'iframe': {
+                        'iframe_url': task.get('iframe_url', None)
+                    }
                 }
             }
         else:
@@ -660,20 +663,23 @@ def transform_new_task_definition_to_old(task):
             'bash_command_task': bash_command_task.get('command', {})
         }
     elif source == 'DOCUMENTATION':
-        if task.get('documentation', None):
+        documentation_task = task.get('documentation', {})
+        if documentation_task.get('type', None) == 'MARKDOWN':
             documentation_task = task.get('documentation', {})
             updated_task_def = {
                 'source': 'DOCUMENTATION',
                 'type': 'MARKDOWN',
                 'documentation': documentation_task.get('markdown', {}).get('content', None)
             }
-        elif task.get('iframe', None):
-            iframe_task = task.get('iframe', {})
+        elif documentation_task.get('type', None) == 'IFRAME':
+            documentation_task = task.get('documentation', {})
             updated_task_def = {
-                'source': 'IFRAME',
+                'source': 'DOCUMENTATION',
                 'type': 'IFRAME',
-                'iframe_url': iframe_task.get('iframe_url', None)
+                'documentation': documentation_task.get('iframe', {}).get('iframe_url', None)
             }
+        else:
+            raise ValueError(f"Invalid task type: {task.get('type', None)}")
     else:
         raise ValueError(f"Invalid source: {source}")
     return updated_task_def

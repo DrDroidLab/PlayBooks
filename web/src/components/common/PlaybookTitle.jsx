@@ -69,7 +69,9 @@ function PlaybookTitle({ step, index }) {
             value={step.description}
             length={200}
           />
-          <Check onClick={cancelEditCardTitle} style={{ marginLeft: "8px" }} />
+          <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+            <Check onClick={cancelEditCardTitle} fontSize="inherit" />
+          </button>
         </div>
       )}
     </>

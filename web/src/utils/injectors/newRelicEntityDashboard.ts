@@ -5,8 +5,8 @@ export const injectNewRelicEntityDashboardTasks = (
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   const tasks = (step.widget ?? []).map((w) => ({
-    dashboard_guid: step.dashboard?.id,
-    dashboard_name: step.dashboard.label,
+    dashboard_guid: step.dashboard?.id ?? step.dashboard,
+    dashboard_name: step.dashboard?.label ?? "",
     page_guid: step.page.page_guid,
     page_name: step.page.page_name,
     widget_id: w.widget?.widget_id,

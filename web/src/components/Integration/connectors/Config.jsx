@@ -12,8 +12,10 @@ import {
   setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function Config({ connector, connectorActive }) {
+function Config({ connector, connectorActive, id }) {
+  const navigate = useNavigate();
   const keyOptions = connector?.keys ?? [];
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -58,8 +60,9 @@ function Config({ connector, connectorActive }) {
           keys: formattedKeys,
           name: currentConnector.name,
         });
-        if (res.success) {
-          window.location.reload();
+        if (res.data?.success) {
+          // window.location.reload();
+          navigate("/data-sources");
         }
       }
     }
@@ -164,14 +167,16 @@ function Config({ connector, connectorActive }) {
 
       <ConnectorUpdateOverlay
         isOpen={isUpdating}
+        connector={{ ...connector, id }}
         toggleOverlay={() => setIsUpdating(!isUpdating)}
         saveCallback={() => {}}
       />
       <ConnectorDeleteOverlay
         isOpen={isDeleting}
+        connector={{ ...connector, id }}
         toggleOverlay={() => setIsDeleting(!isDeleting)}
         successCb={() => {
-          window.location.href = "/integrations";
+          window.location.href = "/data-sources";
         }}
       />
     </>
