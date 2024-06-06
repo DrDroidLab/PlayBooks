@@ -61,10 +61,11 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "SQL Database", sql_db_connector.account_id.value, query), flush=True)
 
-            query_result = sql_db_processor.get_query_result(query).fetchall()
+            query_result = sql_db_processor.get_query_result(query)
 
             table_rows: [TableResult.TableRow] = []
             col_names = list(query_result.keys())
+            query_result = query_result.fetchall()
             for row in query_result:
                 table_columns = []
                 for i, value in enumerate(row):
