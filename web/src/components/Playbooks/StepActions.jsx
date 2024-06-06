@@ -17,7 +17,7 @@ import {
 } from "../../store/features/playbook/api/index.ts";
 import { renderTimestamp } from "../../utils/DateUtils.js";
 
-function StepActions({ allowSave }) {
+function StepActions() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { steps, isEditing, lastUpdatedAt } = useSelector(playbookSelector);
@@ -32,10 +32,6 @@ function StepActions({ allowSave }) {
 
   const handleAddCard = () => {
     dispatch(addStep());
-  };
-
-  const handleSave = () => {
-    setIsSavePlaybookOverlayOpen(true);
   };
 
   const handlePlaybookSave = async ({ pbName, description }) => {
@@ -83,14 +79,6 @@ function StepActions({ allowSave }) {
       </button>
       {steps && steps?.length > 0 && (
         <>
-          {allowSave && !isEditing && (
-            <button className={styles["pb-button"]} onClick={handleSave}>
-              <SaveIcon style={{ fontSize: "medium" }} />
-              <span style={{ marginLeft: "2px" }} className="save_playbook">
-                Save
-              </span>
-            </button>
-          )}
           {isEditing && (
             <button
               className={styles["pb-button"]}
@@ -106,7 +94,6 @@ function StepActions({ allowSave }) {
               }}
               size={20}
             />
-            // </div>
           )}
           {lastUpdatedAt && !(updateLoading || createLoading) && (
             <i className="text-sm text-gray-400">
