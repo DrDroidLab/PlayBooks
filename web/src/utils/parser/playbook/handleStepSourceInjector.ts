@@ -43,6 +43,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.EKS:
       tasks = Injector.injectEksTasks(step, baseTask);
       break;
+    case SOURCES.GKE:
+      tasks = Injector.injectGkeTasks(step, baseTask);
+      break;
     case SOURCES.NEW_RELIC:
       tasks = Injector.injectNewRelicTasks(step, baseTask);
       break;
