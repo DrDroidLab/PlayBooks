@@ -23,7 +23,7 @@ export const azureLogsBuilder = (options: any, task, index) => {
           helperText: task.workspaceName,
           handleChange: (_, val) => {
             store.dispatch(setWorkspaceId({ index, workspaceId: val.id }));
-            updateCardByIndex("workspaceName", val.workspace.name);
+            updateCardByIndex("workspaceName", val.workspace.name, index);
           },
         },
       ],

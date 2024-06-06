@@ -87,7 +87,7 @@ def workflow_scheduler():
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING)
-        all_pbs = wf_execution.workflow.playbooks.filter(is_active=True)
+        all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:

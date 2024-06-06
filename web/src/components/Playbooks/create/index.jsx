@@ -15,7 +15,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
-import CreatePlaybook from "../CreatePlaybook.jsx";
+import ListView from "../ListView.jsx";
 import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
 import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
@@ -31,7 +31,7 @@ const viewOptions = [
   },
 ];
 
-function CreatePlaybookBeta() {
+function CreatePlaybook() {
   const navigate = useNavigate();
   const { playbook_id: id } = useParams();
   const playbook = useSelector(playbookSelector);
@@ -120,7 +120,7 @@ function CreatePlaybookBeta() {
           </button> */}
           {playbook.view === "step" ? (
             <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
-              <CreatePlaybook showHeading={false} />
+              <ListView />
             </div>
           ) : (
             <Builder />
@@ -131,4 +131,4 @@ function CreatePlaybookBeta() {
   );
 }
 
-export default CreatePlaybookBeta;
+export default CreatePlaybook;

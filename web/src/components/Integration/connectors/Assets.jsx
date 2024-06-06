@@ -10,10 +10,8 @@ import { useGetConnectorAssetsQuery } from "../../../store/features/integrations
 import { EksClusterAssets } from "./assets/EksClusterAssets.jsx";
 import { AzureAssets } from "./assets/AzureAssets.jsx";
 
-function Assets({ connector }) {
-  const { data, isFetching, error } = useGetConnectorAssetsQuery(
-    connector?.type,
-  );
+function Assets({ connector, id }) {
+  const { data, isFetching, error } = useGetConnectorAssetsQuery(id);
 
   if (isFetching) {
     return <TableSkeleton />;
