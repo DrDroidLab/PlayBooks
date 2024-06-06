@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Interpretation from "../../common/Interpretation/index.tsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 
 const PlaybookStep = ({ index }) => {
   const [step, currentStepIndex] = useCurrentStep(index);
@@ -72,15 +73,18 @@ const PlaybookStep = ({ index }) => {
                   <div className="w-full">
                     <PlaybookStepOutput stepOutput={output} />
                   </div>
-                  {Object.keys(output?.interpretation).length > 0 && (
-                    <div className="lg:w-2/5 w-full h-full">
-                      <Interpretation
-                        title={output?.interpretation?.title}
-                        description={output?.interpretation?.description}
-                        summary={output?.interpretation?.summary}
-                      />
-                    </div>
-                  )}
+                  {Object.keys(output?.interpretation).length > 0 &&
+                    unsupportedInterpreterTypes.includes(
+                      step?.outputs?.interpretation?.interpreter_type,
+                    ) && (
+                      <div className="lg:w-2/5 w-full h-full">
+                        <Interpretation
+                          title={output?.interpretation?.title}
+                          description={output?.interpretation?.description}
+                          summary={output?.interpretation?.summary}
+                        />
+                      </div>
+                    )}
                 </div>
               );
             })}

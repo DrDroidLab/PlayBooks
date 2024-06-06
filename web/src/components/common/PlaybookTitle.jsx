@@ -65,6 +65,8 @@ function PlaybookTitle({ step, index }) {
             valueType={"STRING"}
             onValueChange={(val) => {
               updateCardByIndex("description", val, index);
+              if (val.trim())
+                updateCardByIndex("userEnteredDescription", true, index);
             }}
             value={step.description}
             length={200}

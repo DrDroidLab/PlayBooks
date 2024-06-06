@@ -1,4 +1,5 @@
 import { Step } from "../../../types.ts";
+import { unsupportedInterpreterTypes } from "../../unsupportedInterpreterTypes.ts";
 import globalVariableToState from "./globalVariableToState.ts";
 import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
@@ -18,6 +19,11 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
       isCopied: isCopied,
       isOpen: false,
       globalVariables: globalVariableToState(playbook.global_variable_set),
+      interpreter: {
+        type: !unsupportedInterpreterTypes.includes(step?.interpreter_type)
+          ? step?.interpreter_type
+          : undefined,
+      },
       showError: false,
       isPlayground: false,
       stepType: "",

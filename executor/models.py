@@ -119,10 +119,10 @@ class PlayBookStep(models.Model):
         tasks = [pbt.proto for pbt in all_tasks]
 
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
+        el_list_proto: [ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
+                el_list_proto.append(ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
@@ -140,10 +140,10 @@ class PlayBookStep(models.Model):
     @property
     def proto_partial(self) -> PlaybookStepProto:
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
+        el_list_proto: [ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
+                el_list_proto.append(ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))
@@ -163,7 +163,7 @@ class PlayBookStep(models.Model):
         tasks = [pbt.deprecated_proto for pbt in all_tasks]
 
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
+        el_list_proto: [ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
                 el_list_proto.append(ExternalLink(name=StringValue(value=el['name']), url=StringValue(value=el['url'])))
@@ -182,10 +182,10 @@ class PlayBookStep(models.Model):
     @deprecated
     def deprecated_proto_partial(self) -> DeprecatedPlaybookStepDefinition:
         metadata = self.metadata if self.metadata else {}
-        el_list_proto: [DeprecatedPlaybookStepDefinition.ExternalLink] = []
+        el_list_proto: [ExternalLink] = []
         if 'external_links' in metadata:
             for el in metadata['external_links']:
-                el_list_proto.append(DeprecatedPlaybookStepDefinition.ExternalLink(
+                el_list_proto.append(ExternalLink(
                     name=StringValue(value=el['name']),
                     url=StringValue(value=el['url'])
                 ))

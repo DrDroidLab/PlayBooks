@@ -7,7 +7,9 @@ import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook
 
 function SelectInterpretation({ index }) {
   const [step] = useCurrentStep(index);
-  const [selectInterpretation, setSelectInterpretation] = useState(false);
+  const [selectInterpretation, setSelectInterpretation] = useState(
+    step?.interpreter?.type ?? false,
+  );
   const { data } = usePlaybookBuilderOptionsQuery();
 
   const toggleInterpretation = () => {
