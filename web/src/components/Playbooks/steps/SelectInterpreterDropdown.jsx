@@ -4,7 +4,6 @@ import SelectComponent from "../../SelectComponent/index.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { CircularProgress } from "@mui/material";
-import { useEffect } from "react";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function SelectInterpreterDropdown({ index }) {
@@ -15,12 +14,6 @@ function SelectInterpreterDropdown({ index }) {
   const handleInterpreterChange = (value) => {
     updateCardByIndex("interpreter", value?.interpreter, currentIndex);
   };
-
-  useEffect(() => {
-    return () => {
-      updateCardByIndex("interpreter", undefined, currentIndex);
-    };
-  }, []);
 
   return (
     <div className="relative flex my-2">
