@@ -71,6 +71,14 @@ export const constructBuilder = (index?: number) => {
       return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.EKS_GET_SERVICES:
       return Builders.eksBuilder(ops?.regions, task, currentStepIndex);
+    case taskTypes.GKE_GET_DEPLOYMENTS:
+      return Builders.gkeBuilder(ops?.regions, task, currentStepIndex);
+    case taskTypes.GKE_GET_EVENTS:
+      return Builders.gkeBuilder(ops?.regions, task, currentStepIndex);
+    case taskTypes.GKE_GET_PODS:
+      return Builders.gkeBuilder(ops?.regions, task, currentStepIndex);
+    case taskTypes.GKE_GET_SERVICES:
+      return Builders.gkeBuilder(ops?.regions, task, currentStepIndex);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
