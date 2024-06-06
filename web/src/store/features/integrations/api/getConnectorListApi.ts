@@ -29,6 +29,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
         const integrations: IntegrationType = {};
         const allAvailableConnectors: CardData[] = [];
         const vpcConnectors: any = [];
+        const connectedConnectors: CardData[] = [];
         let agentProxy: any = {};
 
         for (let integration of response?.available_connectors ?? []) {
@@ -78,17 +79,18 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
             id: integration.id ?? "",
             title: integration.display_name,
             buttonLink: card?.buttonLink ?? "",
-            buttonText: "View Details",
+            buttonText: "Connect",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",
             docs: card?.docs,
             enum: integration.type,
             status: IntegrationStatus.ACTIVE,
           };
-          integrations[integration.category] =
-            integrations[integration.category] || []; // Check if the key exists, if not create an empty array
-          integrations[integration.category].push(cardData);
-          allAvailableConnectors.push(cardData);
+          // integrations[integration.category] =
+          //   integrations[integration.category] || []; // Check if the key exists, if not create an empty array
+          // integrations[integration.category].push(cardData);
+          connectedConnectors.push(cardData);
+          // allAvailableConnectors.push(cardData);
         }
 
         for (let integration of response?.request_connectors ?? []) {
@@ -121,16 +123,16 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
 
         integrations["allAvailableConnectors"] = allAvailableConnectors;
 
-        for (let vpcConnector of vpcConnectors) {
-          const integration = integrations.allAvailableConnectors.find(
-            (e) => e.enum === vpcConnector.enum.replace("_VPC", ""),
-          );
-          if (integration) {
-            integration.vpc = vpcConnector;
-          }
-        }
+        // for (let vpcConnector of vpcConnectors) {
+        //   const integration = integrations.allAvailableConnectors.find(
+        //     (e) => e.enum === vpcConnector.enum.replace("_VPC", ""),
+        //   );
+        //   if (integration) {
+        //     integration.vpc = vpcConnector;
+        //   }
+        // }
 
-        return { integrations, vpcConnectors, agentProxy };
+        return { integrations, vpcConnectors, agentProxy, connectedConnectors };
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {

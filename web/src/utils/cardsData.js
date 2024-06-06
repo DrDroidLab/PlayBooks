@@ -397,7 +397,7 @@ export const cardsData = [
   },
   {
     id: 47,
-    url: "/integrations/code.png",
+    url: "/integrations/iframe_logo.png",
     enum: "IFRAME",
   },
 ];

@@ -1,6 +1,6 @@
 import { OptionType } from "../playbooksData.ts";
 
-export const iframeBuilder = (task: any, index: number) => {
+export const iframeBuilder = (task) => {
   return {
     builder: [
       [
@@ -13,7 +13,6 @@ export const iframeBuilder = (task: any, index: number) => {
       ],
       [
         {
-          key: "iframe_render",
           label: "Iframe RENDER",
           type: OptionType.IFRAME_RENDER,
           value: task.iframe_url,

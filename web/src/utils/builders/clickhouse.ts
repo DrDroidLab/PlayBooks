@@ -1,30 +1,24 @@
-import { store } from '../../store/index.ts';
-import { setDbQuery } from '../../store/features/playbook/playbookSlice.ts';
-import { OptionType } from '../playbooksData.ts';
+import { OptionType } from "../playbooksData.ts";
 
-export const clickhouseBuilder = (task: any, index: number, options: any) => {
+export const clickhouseBuilder = (options: any, task: any) => {
   return {
     builder: [
       [
         {
-          key: 'database',
-          label: 'Database',
-          type: OptionType.OPTIONS,
-          options: options?.map(x => ({ id: x, label: x }))
-        }
+          key: "database",
+          label: "Database",
+          type: OptionType.TYPING_DROPDOWN,
+          options: options?.map((x) => ({ id: x, label: x })),
+        },
       ],
       [
         {
-          key: 'dbQuery',
-          label: 'Query',
+          key: "dbQuery",
+          label: "Query",
           type: OptionType.MULTILINE,
-          handleChange: e => {
-            store.dispatch(setDbQuery({ index, query: e.target.value }));
-          },
-          value: task.dbQuery
-          // requires: ['database']
-        }
-      ]
-    ]
+          value: task.dbQuery,
+        },
+      ],
+    ],
   };
 };

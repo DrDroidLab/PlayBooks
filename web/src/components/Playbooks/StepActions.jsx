@@ -17,7 +17,7 @@ import {
 } from "../../store/features/playbook/api/index.ts";
 import { renderTimestamp } from "../../utils/DateUtils.js";
 
-function StepActions({ allowSave }) {
+function StepActions() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { steps, isEditing, lastUpdatedAt } = useSelector(playbookSelector);
@@ -38,7 +38,7 @@ function StepActions({ allowSave }) {
     setIsSavePlaybookOverlayOpen(true);
   };
 
-  const handlePlaybookSave = async ({ pbName }) => {
+  const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
 
     const playbook = stepsToPlaybook(playbookVal, steps);
@@ -47,13 +47,14 @@ function StepActions({ allowSave }) {
       playbook: {
         ...playbook,
         name: pbName,
+        description,
       },
     };
 
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
       setIsSaved(true);
-      navigate(`/playbooks/edit/${response.playbook?.id}`, { replace: true });
+      navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
     } catch (e) {
       console.error(e);
     }
@@ -65,7 +66,6 @@ function StepActions({ allowSave }) {
     try {
       await triggerUpdatePlaybook({ ...playbook, id: playbookVal.id }).unwrap();
       dispatch(setLastUpdatedAt());
-      navigate(`/playbooks`);
     } catch (e) {
       console.log(e);
     }
@@ -82,7 +82,7 @@ function StepActions({ allowSave }) {
       </button>
       {steps && steps?.length > 0 && (
         <>
-          {allowSave && !isEditing && (
+          {!isEditing && (
             <button className={styles["pb-button"]} onClick={handleSave}>
               <SaveIcon style={{ fontSize: "medium" }} />
               <span style={{ marginLeft: "2px" }} className="save_playbook">
@@ -105,7 +105,6 @@ function StepActions({ allowSave }) {
               }}
               size={20}
             />
-            // </div>
           )}
           {lastUpdatedAt && !(updateLoading || createLoading) && (
             <i className="text-sm text-gray-400">

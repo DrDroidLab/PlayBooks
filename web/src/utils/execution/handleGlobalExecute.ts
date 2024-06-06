@@ -26,12 +26,12 @@ export default async function handleGlobalExecute() {
     const outputs = res?.playbook_execution.step_execution_logs;
     for (let stepOutput of outputs) {
       const stepFromReq = stepOutput.step;
-      const logs = stepOutput.logs;
+      const logs = stepOutput.task_execution_logs;
       const interpretation = stepOutput.step_interpretation;
       const stepIndex = steps.findIndex((step) => step.id === stepFromReq.id);
 
       for (let log of logs) {
-        const error = log.task_execution_result?.error;
+        const error = log.result?.error;
         if (error) {
           updateCardByIndex("outputError", error, stepIndex);
           break;

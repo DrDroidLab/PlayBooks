@@ -8,23 +8,22 @@ from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
-from connectors.models import integrations_connector_type_display_name_map
-from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
+from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution, \
+    update_db_account_playbook_execution_status, bulk_create_playbook_execution_log
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.crud.playbooks_crud import update_or_create_db_playbook
 from executor.deprecated_task_executor import deprecated_execute_task
-from executor.task_executor_facade import executor_facade
-from executor.tasks import execute_playbook
+from executor.playbook_source_facade import playbook_source_facade
+from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
-from executor.utils.playbooks_builder_utils import playbooks_supported_sources
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
@@ -35,7 +34,7 @@ from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookExecutionStatusType
 from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, PlaybookStepExecutionLog, \
     PlaybookExecution, Playbook
 from utils.time_utils import current_epoch_timestamp, current_datetime
@@ -128,7 +127,7 @@ def task_run_v3(request_message: RunPlaybookTaskRequestV3) -> Union[RunPlaybookT
         global_variable_set = proto_to_dict(task.global_variable_set)
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
     try:
-        task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
+        task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
         interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
         playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                interpretation=interpretation)
@@ -227,7 +226,7 @@ def step_run_v3(request_message: RunPlaybookStepRequestV3) -> Union[RunPlaybookS
             global_variable_set = {}
             if task.global_variable_set:
                 global_variable_set = proto_to_dict(task.global_variable_set)
-            task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
+            task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
             playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                    interpretation=interpretation)
@@ -300,43 +299,43 @@ def playbook_run(request_message: RunPlaybookRequest) -> Union[RunPlaybookRespon
 @web_api(RunPlaybookRequestV2)
 def playbook_run_v2(request_message: RunPlaybookRequestV2) -> Union[RunPlaybookResponseV2, HttpResponse]:
     account: Account = get_request_account()
+    user = get_request_user()
+    current_time = current_epoch_timestamp()
     meta: Meta = request_message.meta
     time_range: TimeRange = meta.time_range
     if not time_range.time_lt or not time_range.time_geq:
         current_time = current_epoch_timestamp()
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook: Playbook = request_message.playbook
 
-    playbook = request_message.playbook
-    steps = playbook.steps
-    step_execution_logs = []
-    for step in steps:
-        tasks = step.tasks
-        interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
-        pte_logs = []
-        task_interpretations = []
-        for task in tasks:
-            try:
-                global_variable_set = {}
-                if task.global_variable_set:
-                    global_variable_set = proto_to_dict(task.global_variable_set)
-                task_result = executor_facade.execute_task(account.id, time_range, global_variable_set, task)
-                interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
-                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
-                                                                       interpretation=interpretation)
-                task_interpretations.append(interpretation)
-            except Exception as e:
-                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task,
-                                                                       result=PlaybookTaskResult(
-                                                                           error=StringValue(value=str(e))))
-            pte_logs.append(playbook_task_execution_log)
-        step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
-        step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
-                                                      step_interpretation=step_interpretation)
-        step_execution_logs.append(step_execution_log)
-    playbook_execution = PlaybookExecution(playbook=playbook, time_range=time_range,
-                                           step_execution_logs=step_execution_logs)
-    return RunPlaybookResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
-                                 playbook_execution=playbook_execution)
+    db_playbook = None
+    db_playbook_execution = None
+    if playbook.id and playbook.id.value:
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook.id.value}_pb_run'
+        try:
+            db_playbook = account.playbook_set.get(id=playbook.id.value, is_active=True)
+            db_playbook_execution = create_playbook_execution(account, time_range, playbook.id.value, playbook_run_uuid,
+                                                              user.email)
+        except Exception as e:
+            logger.error(e)
+
+    try:
+        step_execution_logs = execute_playbook_impl(time_range, account, playbook)
+        playbook_execution = PlaybookExecution(playbook=playbook, time_range=time_range,
+                                               step_execution_logs=step_execution_logs)
+        if db_playbook and db_playbook_execution:
+            store_step_execution_logs(account, db_playbook, db_playbook_execution, step_execution_logs)
+            update_db_account_playbook_execution_status(account, db_playbook_execution.id,
+                                                        PlaybookExecutionStatusType.FINISHED)
+        return RunPlaybookResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                     playbook_execution=playbook_execution)
+    except Exception as e:
+        logger.error(f"Error running playbook: {e}")
+        if db_playbook_execution:
+            update_db_account_playbook_execution_status(account, db_playbook_execution.id,
+                                                        PlaybookExecutionStatusType.FAILED)
+        return RunPlaybookResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                     message=Message(title="Error", description=str(e)))
 
 
 @web_api(GetPlaybooksRequest)
@@ -734,20 +733,8 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
     try:
         account: Account = get_request_account()
         interpreter_type_options = []
-        db_connectors = get_db_account_connectors(account, is_active=True,
-                                                  connector_type_list=playbooks_supported_sources)
-        connector_options: [PlaybooksBuilderOptionsResponse.ConnectorOptions] = []
-        for dbc in db_connectors:
-            connector_type_name = integrations_connector_type_display_name_map.get(dbc.connector_type,
-                                                                                   dbc.connector_type)
-            display_name = f'{connector_type_name}'
-            if dbc.name:
-                display_name = f'{connector_type_name} - {dbc.name}'
-            connector_options.append(PlaybooksBuilderOptionsResponse.ConnectorOptions(
-                connector_id=UInt64Value(value=dbc.id),
-                display_name=StringValue(value=display_name),
-                connector_type=dbc.connector_type
-            ))
+
+        source_options = playbook_source_facade.get_source_options(account.id)
         open_ai_connector = get_db_account_connectors(account, connector_type=ConnectorType.OPEN_AI, is_active=True)
         if open_ai_connector.exists():
             interpreter_type_options.append(
@@ -757,7 +744,7 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
 
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=True),
                                                interpreter_types=interpreter_type_options,
-                                               connector_options=connector_options)
+                                               source_options=source_options)
     except Exception as e:
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))

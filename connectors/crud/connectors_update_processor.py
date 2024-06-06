@@ -46,6 +46,10 @@ class ConnectorUpdateProcessor(UpdateProcessorMixin):
                 for cm in all_connector_metadata:
                     cm.is_active = False
                     cm.save(update_fields=['is_active'])
+                all_connected_playbooks = elem.playbooksteptaskconnectormapping_set.filter(is_active=True)
+                for cp in all_connected_playbooks:
+                    cp.is_active = False
+                    cp.save(update_fields=['is_active'])
                 elem.name = f"{elem.name}###(inactive)###{current_millis}"
                 elem.save(update_fields=['is_active', 'name'])
         except Exception as ex:

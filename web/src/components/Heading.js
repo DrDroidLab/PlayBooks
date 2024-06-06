@@ -2,7 +2,6 @@ import { Grid, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import styles from "./index.module.css";
 import {
   Check,
@@ -22,7 +21,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import handleGlobalExecute from "../utils/execution/handleGlobalExecute.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -31,22 +29,20 @@ const renderChildren = (children) => {
 };
 
 const Heading = ({
-  subHeading,
+  subHeading = "",
   heading,
-  subHeadingLink,
-  onTimeRangeChangeCb,
-  onRefreshCb,
+  subHeadingLink = undefined,
+  onTimeRangeChangeCb = true,
+  onRefreshCb = true,
   children,
-  defaultTimeRange,
-  defaultCustomTimeRange,
-  defaultCustomTillNowTimeRange,
-  showRunAll = false,
+  defaultTimeRange = undefined,
+  defaultCustomTimeRange = undefined,
+  defaultCustomTillNowTimeRange = undefined,
   showEditTitle = false,
   customTimeRange = false,
-  copyPlaybook,
-  showCopy,
+  copyPlaybook = false,
+  showCopy = false,
   isPlayground = false,
-  showSave = true,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -85,9 +81,6 @@ const Heading = ({
             </div>
           )}
           <div className="flex-col justify-items-center">
-            {!!subHeading && !subHeadingLink ? (
-              <div className="text-xs text-gray-400">{subHeading}</div>
-            ) : null}
             <div>
               <div className="text-xs sm:text-lg font-semibold text-gray-800">
                 <div className="flex gap-2 items-center">
@@ -113,11 +106,13 @@ const Heading = ({
                     </div>
                   )}
                   {showEditTitle && !isPrefetched && (
-                    <div
-                      className="icon"
-                      onClick={() => setShowEdit(!showEdit)}>
-                      {showEdit ? <Check /> : <Edit />}
-                    </div>
+                    <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+                      <div
+                        className="icon"
+                        onClick={() => setShowEdit(!showEdit)}>
+                        {showEdit ? <Check /> : <Edit />}
+                      </div>
+                    </button>
                   )}
                   {(showCopy || playbook.isEditing) && (
                     <button
@@ -129,6 +124,11 @@ const Heading = ({
                     </button>
                   )}
                 </div>
+                {!!subHeading && !subHeadingLink ? (
+                  <div className="text-xs font-normal text-gray-400">
+                    {subHeading}
+                  </div>
+                ) : null}
                 {(Object.keys(playbook.currentPlaybook).length > 0 ||
                   showEditTitle) && (
                   <input
@@ -160,10 +160,7 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" &&
-            playbook.steps.length > 0 &&
-            showSave &&
-            !isPrefetched && <StepActions />}
+          {playbook.view === "builder" && !isPrefetched && <StepActions />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

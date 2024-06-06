@@ -2,7 +2,7 @@ import re
 import time
 
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
-from integrations_api_processors.vpc_api_processor import VpcApiProcessor
+from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 
 

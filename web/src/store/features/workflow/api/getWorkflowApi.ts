@@ -19,7 +19,6 @@ export const getWorkflowApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-
           dispatch(
             setWorkflowKey({
               key: "currentWorkflow",

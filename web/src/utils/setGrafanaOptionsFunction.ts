@@ -1,11 +1,21 @@
 import { store } from "../store/index.ts";
 import { setGrafanaOptions } from "../store/features/playbook/playbookSlice.ts";
+import getCurrentTask from "./getCurrentTask.ts";
+
+const getCurrentAsset = () => {
+  const [task] = getCurrentTask();
+  const currentAsset = task?.assets?.find(
+    (e) => e.dashboard_id === task?.dashboard?.id,
+  );
+
+  return currentAsset;
+};
 
 export const grafanaOptionsList = (index) => {
   const options: any = [];
   const task = store.getState().playbook.steps[index];
   if (!task) return [];
-  const assets = task.assets;
+  const assets = getCurrentAsset();
   if (Object.keys(assets ?? {}).length === 0) return [];
   const promqlMetrics = assets.panel_promql_map?.find(
     (e) => e.panel_id === task.panel.panel_id,
@@ -24,7 +34,7 @@ export const grafanaOptionsList = (index) => {
   if (!selectedQuery) return [];
 
   if (selectedQuery?.label_variable_map?.length > 0) {
-    for (let label of selectedQuery.label_variable_map) {
+    for (let label of selectedQuery?.label_variable_map ?? []) {
       if (selectedQuery?.variable_values_options?.length > 0) {
         for (let values of selectedQuery.variable_values_options) {
           if (label.variable === values.variable) {
