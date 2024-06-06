@@ -18,10 +18,6 @@ export const extractEksTasks = (step: any) => {
     eksRegion: eksTask?.region,
     cluster: eksTask?.cluster,
     eksNamespace: eksTask?.namespace,
-    command: {
-      type: eksTask?.command_type,
-      description: eksTask?.description,
-    },
   };
 
   return stepData;
