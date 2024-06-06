@@ -19,10 +19,11 @@ from executor.crud.playbook_execution_crud import create_playbook_execution, get
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
-from executor.crud.playbooks_crud import update_or_create_db_playbook
+from executor.crud.playbooks_crud import update_or_create_db_playbook, get_db_playbooks
 from executor.deprecated_task_executor import deprecated_execute_task
 from executor.playbook_source_facade import playbook_source_facade
-from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs
+from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs, \
+    execute_playbook_step_impl
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
@@ -49,11 +50,13 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookTaskResponseV3, GetPlaybooksRequestV2, GetPlaybooksResponseV2, RunPlaybookStepRequestV3, \
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
-    ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2
+    ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
+    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
 from utils.proto_utils import proto_to_dict, dict_to_proto
+from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -746,3 +749,88 @@ def playbooks_builder_options(request_message: PlaybooksBuilderOptionsRequest) -
     except Exception as e:
         return PlaybooksBuilderOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))
+
+
+@web_api(PlaybookExecutionCreateRequest)
+def playbooks_execution_create(request_message: PlaybookExecutionCreateRequest) -> \
+        Union[PlaybookExecutionCreateResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    if not time_range.time_lt or not time_range.time_geq:
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    playbook_id = request_message.playbook_id.value
+    if not playbook_id:
+        return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                               message=Message(title="Invalid Request",
+                                                               description="Missing playbook_id"))
+    try:
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+    except Exception as e:
+        logger.error(e)
+        return PlaybookExecutionCreateResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))
+
+    location = settings.PLATFORM_PLAYBOOKS_EXECUTION_LOCATION.format(playbook_run_uuid)
+    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
+    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
+    session_url = build_absolute_uri(None, location, protocol, enabled)
+    return PlaybookExecutionCreateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                           playbook_run_id=StringValue(value=playbook_run_uuid),
+                                           execution_session_url=StringValue(value=session_url))
+
+
+@web_api(PlaybookExecutionStepExecuteRequest)
+def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecuteRequest) -> \
+        Union[PlaybookExecutionStepExecuteResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    current_time = current_epoch_timestamp()
+    playbook_run_id = request_message.playbook_run_id.value
+    if not playbook_run_id:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Invalid Request",
+                                                                    description="Missing playbook_run_id"))
+
+    playbook_execution = get_db_playbook_execution(account, playbook_run_id=playbook_run_id)
+    if not playbook_execution:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Error",
+                                                                    description="Playbook Execution not found"))
+
+    playbook_execution = playbook_execution.first()
+    playbook = get_db_playbooks(account, playbook_id=playbook_execution.playbook.id)
+    if not playbook:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Error", description="Playbook not found"))
+
+    playbook = playbook.first()
+    playbook_step = request_message.step
+    if not playbook_step:
+        return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                    message=Message(title="Invalid Request",
+                                                                    description="Missing playbook_step"))
+
+    if not time_range.time_lt or not time_range.time_geq:
+        playbook_execution_time_range = playbook_execution.time_range
+        if playbook_execution_time_range:
+            time_range = TimeRange(time_geq=int(playbook_execution_time_range.get('time_geq')),
+                                   time_lt=int(playbook_execution_time_range.get('time_lt')))
+        else:
+            time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+    try:
+        step_execution_log = execute_playbook_step_impl(time_range, account, playbook_step)
+        store_step_execution_logs(account, playbook, playbook_execution, [step_execution_log], user.email, time_range)
+    except Exception as e:
+        logger.error(e)
+        return PlaybookExecutionStepExecuteResponse(success=BoolValue(value=False),
+                                                    message=Message(title="Error", description=str(e)))
+
+    return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                                playbook_run_id=StringValue(value=playbook_run_id),
+                                                playbook_step_execution_log=step_execution_log)
