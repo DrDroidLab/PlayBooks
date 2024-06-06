@@ -13,7 +13,7 @@ class GkeSourceMetadataExtractor(SourceMetadataExtractor):
     def extract_clusters(self, save_to_db=False):
         model_data = {}
         gke_api_processor = GkeApiProcessor(self.__project_id, self.__service_account_json)
-        model_type = SourceModelType.EKS_CLUSTER
+        model_type = SourceModelType.GKE_CLUSTER
         clusters = gke_api_processor.list_clusters()
         if not clusters:
             return model_data
