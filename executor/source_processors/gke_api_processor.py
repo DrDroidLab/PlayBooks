@@ -133,10 +133,7 @@ class GkeApiProcessor(Processor):
     def list_namespaces(self, zone, cluster_name):
         api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)
         namespaces = api_client.list_namespace()
-        namespace_list = []
-        for ns in namespaces.items:
-            namespace_list.append(ns.metadata.name)
-        return namespace_list
+        return namespaces
 
     def list_pods(self, zone, cluster_name, namespace=None):
         api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)

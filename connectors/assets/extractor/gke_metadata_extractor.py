@@ -19,7 +19,7 @@ class GkeSourceMetadataExtractor(SourceMetadataExtractor):
             return model_data
         for c in clusters:
             clusters = model_data.get(c['zone'], [])
-            clusters.append(c)
+            clusters.append(c['name'])
             model_data[c['zone']] = clusters
         for zone in model_data:
             clusters = model_data[zone]
