@@ -209,7 +209,6 @@ def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto
     connector_type: Source = connector.type
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
     if credentials_dict:
-        populate_connector_metadata.delay(account.id, connector_id, connector_type, credentials_dict)
         saved_task = get_or_create_task(populate_connector_metadata.__name__, account.id, connector_id,
                                         connector_type, credentials_dict)
         if saved_task:
