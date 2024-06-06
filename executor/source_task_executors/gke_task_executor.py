@@ -104,17 +104,17 @@ class GkeSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows)
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get pods in eks: {e}")
+            raise Exception(f"Failed to get pods in gke: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get pods in eks: {e}")
+            raise Exception(f"Failed to get pods in gke: {e}")
 
     def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
                         gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
-                raise Exception("Task execution Failed:: No EKS source found")
+                raise Exception("Task execution Failed:: No GKE source found")
 
-            gke_command = gke_task.get_pods
+            gke_command = gke_task.get_deployments
             zone = gke_command.zone.value
             cluster_name = gke_command.cluster.value
             namespace = gke_command.namespace.value
@@ -158,17 +158,17 @@ class GkeSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value='Get Deployments'), rows=table_rows)
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get deployments in eks: {e}")
+            raise Exception(f"Failed to get deployments in gke: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get deployments in eks: {e}")
+            raise Exception(f"Failed to get deployments in gke: {e}")
 
     def get_events(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
                    gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
-                raise Exception("Task execution Failed:: No EKS source found")
+                raise Exception("Task execution Failed:: No GKE source found")
 
-            gke_command = gke_task.get_pods
+            gke_command = gke_task.get_events
             zone = gke_command.zone.value
             cluster_name = gke_command.cluster.value
             namespace = gke_command.namespace.value
@@ -213,17 +213,17 @@ class GkeSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows)
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get events in eks: {e}")
+            raise Exception(f"Failed to get events in gke: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get events in eks: {e}")
+            raise Exception(f"Failed to get events in gke: {e}")
 
     def get_services(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
                      gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
-                raise Exception("Task execution Failed:: No EKS source found")
+                raise Exception("Task execution Failed:: No GKE source found")
 
-            gke_command = gke_task.get_pods
+            gke_command = gke_task.get_services
             zone = gke_command.zone.value
             cluster_name = gke_command.cluster.value
             namespace = gke_command.namespace.value
@@ -266,6 +266,6 @@ class GkeSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value='Get Services'), rows=table_rows)
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get services in eks: {e}")
+            raise Exception(f"Failed to get services in gke: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get services in eks: {e}")
+            raise Exception(f"Failed to get services in gke: {e}")
