@@ -11,9 +11,12 @@ class ConnectorAssetModelCrudException(ValueError):
     pass
 
 
-def get_db_account_connector_metadata_models(account: Account, model_uid: str = None,
+def get_db_account_connector_metadata_models(account: Account,
+                                             model_uid: str = None,
                                              connector_type: Source = None,
-                                             model_type: SourceModelType = None, model_types=None,
+                                             connector_id=None,
+                                             model_type: SourceModelType = None,
+                                             model_types: [SourceModelType] = None,
                                              is_active=True):
     filters = {}
     if connector_type:
@@ -26,8 +29,39 @@ def get_db_account_connector_metadata_models(account: Account, model_uid: str = 
         filters['is_active'] = is_active
     if model_uid:
         filters['model_uid'] = model_uid
+    if connector_id:
+        filters['connector_id'] = connector_id
     try:
         return account.connectormetadatamodelstore_set.filter(**filters)
+    except Exception as e:
+        logger.error(f"Error fetching Connector Models: {str(e)}")
+    return None
+
+
+def get_db_connector_metadata_models(account_id: int = None,
+                                     connector_id: int = None,
+                                     model_uid: str = None,
+                                     connector_type: Source = None,
+                                     model_type: SourceModelType = None,
+                                     model_types: [SourceModelType] = None,
+                                     is_active=True):
+    filters = {}
+    if account_id:
+        filters['account_id'] = account_id
+    if connector_type:
+        filters['connector_type'] = connector_type
+    if model_type:
+        filters['model_type'] = model_type
+    if model_types:
+        filters['model_type__in'] = model_types
+    if is_active is not None:
+        filters['is_active'] = is_active
+    if model_uid:
+        filters['model_uid'] = model_uid
+    if connector_id:
+        filters['connector_id'] = connector_id
+    try:
+        return ConnectorMetadataModelStore.objects.filter(**filters)
     except Exception as e:
         logger.error(f"Error fetching Connector Models: {str(e)}")
     return None

@@ -9,7 +9,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.task_executor_facade import executor_facade
+from executor.playbook_source_facade import playbook_source_facade
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor import action_executor
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
@@ -17,7 +17,7 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
     get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
     update_db_account_workflow_execution_count_increment
 from executor.workflows.crud.workflows_crud import get_db_workflows
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
@@ -87,7 +87,7 @@ def workflow_scheduler():
         if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING)
-        all_pbs = wf_execution.workflow.playbooks.filter(is_active=True)
+        all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
@@ -266,7 +266,7 @@ def test_workflow_notification(account_id, workflow, message_type):
             tasks = step.tasks
             pe_logs = []
             for task_proto in tasks:
-                task_result = executor_facade.execute_task(account.id, tr, global_variable_set, task_proto)
+                task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set, task_proto)
                 playbook_execution_log = PlaybookTaskExecutionLogProto(task=task_proto, result=task_result)
                 pe_logs.append(playbook_execution_log)
             step_execution_log = PlaybookStepExecutionLogProto(step=step, task_execution_logs=pe_logs)

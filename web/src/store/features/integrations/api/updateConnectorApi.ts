@@ -4,14 +4,11 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 export const updateConnectorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     updateConnector: builder.mutation<any, any>({
-      query: ({ id, keys, type }) => ({
+      query: ({ id, keys }) => ({
         url: UPDATE_CONNECTOR_STATUS,
         method: "POST",
         body: {
           connector_id: id,
-          connector: {
-            type: type,
-          },
           update_connector_ops: [
             {
               op: "UPDATE_CONNECTOR_KEYS",

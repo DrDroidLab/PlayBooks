@@ -22,6 +22,9 @@ message Eks {
 
   TaskType type = 1;
   oneof task {
-    Command command = 2;
+    Command get_pods = 2;
+    Command get_deployments = 3;
+    Command get_events = 4;
+    Command get_services = 5;
   }
 }

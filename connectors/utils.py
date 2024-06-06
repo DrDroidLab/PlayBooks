@@ -7,17 +7,17 @@ from connectors.models import integrations_connector_type_display_name_map, \
     integrations_connector_type_connector_keys_map, integrations_connector_type_category_map, \
     integrations_connector_key_display_name_map
 from connectors.tasks import populate_connector_metadata
-from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from integrations_api_processors.azure_api_processor import AzureApiProcessor
-from integrations_api_processors.clickhouse_db_processor import ClickhouseDBProcessor
-from integrations_api_processors.datadog_api_processor import DatadogApiProcessor
-from integrations_api_processors.db_connection_string_processor import DBConnectionStringProcessor
-from integrations_api_processors.grafana_api_processor import GrafanaApiProcessor
-from integrations_api_processors.mimir_api_processor import MimirApiProcessor
-from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from integrations_api_processors.postgres_db_processor import PostgresDBProcessor
-from integrations_api_processors.slack_api_processor import SlackApiProcessor
-from integrations_api_processors.vpc_api_processor import VpcApiProcessor
+from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
+from executor.source_processors.azure_api_processor import AzureApiProcessor
+from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
+from executor.source_processors.datadog_api_processor import DatadogApiProcessor
+from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
+from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
+from executor.source_processors.mimir_api_processor import MimirApiProcessor
+from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.postgres_db_processor import PostgresDBProcessor
+from executor.source_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import SourceKeyType, Source
@@ -49,13 +49,13 @@ def get_all_request_connectors():
 def get_all_available_connectors(all_active_connectors):
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
     print(all_connectors);
-    for ac in all_active_connectors:
-        all_connectors.remove(ac.connector_type)
+    # for ac in all_active_connectors:
+    #     all_connectors.remove(ac.connector_type)
     all_available_connectors = []
     for c in all_connectors:
         all_available_connectors.append(
             ConnectorProto(type=c, display_name=StringValue(value=integrations_connector_type_display_name_map.get(c)),
-                           category=StringValue(value=integrations_connector_type_category_map.get(c))))
+                           category=StringValue(value=integrations_connector_type_category_map.get(c, Source.Name(c)))))
     return all_available_connectors
 
 
@@ -73,7 +73,11 @@ def get_connector_keys_options(connector_type):
     for sk in all_keys:
         connector_key_option_protos.append(ConnectorKeyProto(key_type=sk, display_name=StringValue(
             value=integrations_connector_key_display_name_map.get(sk))))
-    return connector_key_option_protos
+    connector_display_name = integrations_connector_type_display_name_map.get(connector_type,
+                                                                              Source.Name(connector_type))
+    connector = ConnectorProto(type=connector_type, display_name=StringValue(value=connector_display_name),
+                               keys=connector_key_option_protos)
+    return connector, connector_key_option_protos
 
 
 def generate_credentials_dict(connector_type, connector_keys):
@@ -86,7 +90,7 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['nr_app_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.NEWRELIC_API_DOMAIN:
                 credentials_dict['nr_api_domain'] = conn_key.key.value
-    elif connector_type == Source.DATADOG:
+    elif connector_type == Source.DATADOG or connector_type == Source.DATADOG_OAUTH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.DATADOG_API_KEY:
                 credentials_dict['dd_api_key'] = conn_key.key.value
@@ -94,17 +98,8 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['dd_app_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 credentials_dict['dd_api_domain'] = conn_key.key.value
-    elif connector_type == Source.CLOUDWATCH:
-        for conn_key in connector_keys:
-            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
-                credentials_dict['aws_access_key'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
-                credentials_dict['aws_secret_key'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.AWS_REGION:
-                regions = credentials_dict.get('regions', [])
-                regions.append(conn_key.key.value)
-                credentials_dict['regions'] = regions
-    elif connector_type == Source.EKS:
+            credentials_dict['dd_connector_type'] = connector_type
+    elif connector_type == Source.CLOUDWATCH or connector_type == Source.EKS:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
@@ -223,7 +218,7 @@ def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto
                 except Exception as e:
                     logger.error(f"Exception occurred while saving task run for account: {account.id}, "
                                  f"connector_type: "
-                                 f"{integrations_connector_type_display_name_map.get(connector_type, connector_type)} "
+                                 f"{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} "
                                  f"with error: {e}")
     else:
         logger.error(f'Invalid Credentials for Connector: {connector_id}')
@@ -244,7 +239,7 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
             break
     if not all_keys_found:
         return False, f'Missing Required Connector Keys for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
+                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
     credentials_dict = generate_credentials_dict(connector_type, connector_keys)
     try:
         api_processor = connector_type_api_processor_map.get(connector_type)
@@ -279,21 +274,14 @@ def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [
                 connection_state = True
             else:
                 connection_state = False
-        elif connector_type == Source.GRAFANA_MIMIR or connector_type == Source.GRAFANA:
-            if 'ssl_verify' in credentials_dict:
-                verify = credentials_dict.get('ssl_verify', 'true')
-                credentials_dict['ssl_verify'] = True
-                if verify.lower() == 'false':
-                    credentials_dict['ssl_verify'] = False
-                connection_state = api_processor(**credentials_dict).test_connection()
         else:
             connection_state = api_processor(**credentials_dict).test_connection()
         if not connection_state:
             return False, f'Error testing connection for Connector Type: ' \
-                          f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)}'
+                          f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
     except Exception as e:
         logger.error(f'Error testing connection for Connector Type: {str(e)}')
         return False, f'Error testing connection for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, connector_type)} ' \
+                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} ' \
                       f'with error: {str(e)}'
     return True, 'Source Connection Successful'

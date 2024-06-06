@@ -2,21 +2,24 @@ import styles from "./index.module.css";
 import ConnectorUpdateOverlay from "./ConnectorUpdateOverlay";
 import ConnectorDeleteOverlay from "./ConnectorDeleteOverlay";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import {
-  agentProxySelector,
-  connectorSelector,
-} from "../../../store/features/integrations/integrationsSlice.ts";
 import { useCreateConnectorMutation } from "../../../store/features/integrations/api/index.ts";
-import { ToggleOff, ToggleOn } from "@mui/icons-material";
-import AgentProxy from "./AgentProxy.jsx";
 import { useLazyTestConnectionQuery } from "../../../store/features/integrations/api/testConnectionApi.ts";
 import SlackManifestGenerator from "./SlackManifestGenerator.jsx";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
+import ValueComponent from "../../ValueComponent/index.jsx";
+import {
+  connectorSelector,
+  setKey,
+} from "../../../store/features/integrations/integrationsSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function Config({ keyOptions }) {
+function Config({ connector, connectorActive, id }) {
+  const navigate = useNavigate();
+  const keyOptions = connector?.keys ?? [];
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
   const [createConnector, { isLoading: saveLoading }] =
     useCreateConnectorMutation();
@@ -28,110 +31,84 @@ function Config({ keyOptions }) {
       isFetching: testConnectionLoading,
     },
   ] = useLazyTestConnectionQuery();
-  const [vpcEnabled, setVpcEnabled] = useState(vpcEnabledCheck());
-  const agentProxy = useSelector(agentProxySelector);
-  const connectorActive =
-    currentConnector.status === "active" ||
-    currentConnector?.vpc?.status === "active";
-
-  function vpcEnabledCheck() {
-    if (currentConnector?.status === "active") {
-      return false;
-    } else if (currentConnector?.vpc?.status === "active") {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   const handleClick = async (_, test = false) => {
     if (connectorActive) {
       setIsUpdating(true);
     } else {
       const formattedKeys = [];
-      if (vpcEnabled) {
-        agentProxy.keyOptions.forEach((e) => {
-          formattedKeys.push({
-            key_type: e.key_type,
-            key: agentProxy[e.key_type],
-          });
+      keyOptions?.forEach((e) => {
+        formattedKeys.push({
+          key_type: e.key_type,
+          key: (currentConnector[e.key_type] === "SSL_VERIFY"
+            ? currentConnector[e.key_type] !== ""
+              ? currentConnector[e.key_type]
+              : false
+            : currentConnector[e.key_type]
+          )?.toString(),
         });
-      } else {
-        keyOptions.forEach((e) => {
-          formattedKeys.push({
-            key_type: e.key_type,
-            key: (currentConnector[e.key_type] === "SSL_VERIFY"
-              ? currentConnector[e.key_type] !== ""
-                ? currentConnector[e.key_type]
-                : false
-              : currentConnector[e.key_type]
-            ).toString(),
-          });
-        });
-      }
+      });
       if (test) {
         await triggerTestConnection({
-          type: vpcEnabled ? currentConnector.vpc.enum : currentConnector.enum,
+          type: connector.type,
           keys: formattedKeys,
+          name: currentConnector.name,
         });
       } else {
-        await createConnector({
-          type: vpcEnabled ? currentConnector.vpc.enum : currentConnector.enum,
+        const res = await createConnector({
+          type: connector.type,
           keys: formattedKeys,
+          name: currentConnector.name,
         });
-        window.location.reload();
+        if (res.data?.success) {
+          // window.location.reload();
+          navigate("/data-sources");
+        }
       }
     }
   };
 
-  const toggleVpc = () => {
-    if (currentConnector?.vpc?.status === "active") {
-      setVpcEnabled(true);
-      return;
-    } else if (currentConnector?.status === "active") {
-      setVpcEnabled(false);
-    } else {
-      setVpcEnabled(!vpcEnabled);
-    }
-  };
   return (
     <>
-      {currentConnector.vpc && (
-        <div className={styles.vpcToggle} onClick={toggleVpc}>
-          VPC Mode
-          {vpcEnabled ? (
-            <ToggleOn color="primary" fontSize="medium" />
-          ) : (
-            <ToggleOff color="disabled" fontSize="medium" />
+      {connector.type === "SLACK" && <SlackManifestGenerator />}
+
+      <div className={styles["container"]}>
+        <div className={styles["heading"]}>
+          <span>{connector?.display_name ?? connector?.type} Keys</span>
+          {connector?.docs && (
+            <span>
+              (
+              <a
+                className="text-violet-500 cursor-pointer"
+                href={connector.docs}
+                target="_blank"
+                rel="noreferrer">
+                Docs
+              </a>
+              )
+            </span>
           )}
         </div>
-      )}
 
-      {currentConnector.enum === "SLACK" && <SlackManifestGenerator />}
-
-      {vpcEnabled ? (
-        <AgentProxy />
-      ) : (
-        <div className={styles["container"]}>
-          <div className={styles["heading"]}>
-            <span>{currentConnector?.displayTitle} Keys</span>
-            {currentConnector?.docs && (
-              <span>
-                (
-                <a
-                  className="text-violet-500 cursor-pointer"
-                  href={currentConnector.docs}
-                  target="_blank"
-                  rel="noreferrer">
-                  Docs
-                </a>
-                )
-              </span>
-            )}
+        <>
+          <div
+            className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
+            <div className={styles["content"]}>Name</div>
+            <ValueComponent
+              valueType={"STRING"}
+              onValueChange={(val) => {
+                dispatch(setKey({ key: "name", value: val }));
+              }}
+              disabled={connectorActive}
+              value={currentConnector.name}
+              placeHolder={"Enter connector name"}
+              length={500}
+            />
           </div>
-
           {keyOptions?.map((option, i) => (
-            <div key={i} className={styles["eventTypeSelectionSection"]}>
+            <div
+              key={i}
+              className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
               <div className={styles["content"]}>
                 {option?.display_name || option?.key_type}
               </div>
@@ -141,8 +118,8 @@ function Config({ keyOptions }) {
               />
             </div>
           ))}
-        </div>
-      )}
+        </>
+      </div>
 
       <button
         className="text-xs bg-white hover:text-white hover:bg-violet-500 hover:color-white-500 py-1 px-1 border border-gray-400 rounded shadow"
@@ -190,14 +167,16 @@ function Config({ keyOptions }) {
 
       <ConnectorUpdateOverlay
         isOpen={isUpdating}
+        connector={{ ...connector, id }}
         toggleOverlay={() => setIsUpdating(!isUpdating)}
         saveCallback={() => {}}
       />
       <ConnectorDeleteOverlay
         isOpen={isDeleting}
+        connector={{ ...connector, id }}
         toggleOverlay={() => setIsDeleting(!isDeleting)}
         successCb={() => {
-          window.location.href = "/integrations";
+          window.location.href = "/data-sources";
         }}
       />
     </>

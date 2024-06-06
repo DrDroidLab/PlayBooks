@@ -16,7 +16,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CardContent, CircularProgress } from "@mui/material";
 import Toast from "../components/Toast";
-import { useSignupMutation } from "../store/features/auth/api/index.ts";
+import { useSignupMutation, useLazySaveSiteUrlQuery } from "../store/features/auth/api/index.ts";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -50,6 +50,7 @@ function SignUp() {
   const [error, setError] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [triggerSignup] = useSignupMutation();
+  const [triggerSiteUrlSave] = useLazySaveSiteUrlQuery();
 
   const handleCloseToast = () => {
     setError("");
@@ -97,6 +98,7 @@ function SignUp() {
         password: password,
       };
       await triggerSignup(data).unwrap();
+      await triggerSiteUrlSave({ siteUrl: window.location.origin }).unwrap();
 
       setEmail("");
       setPassword("");

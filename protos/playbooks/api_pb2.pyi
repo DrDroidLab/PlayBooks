@@ -12,6 +12,7 @@ import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.playbooks.deprecated_playbook_pb2
 import protos.playbooks.intelligence_layer.interpreter_pb2
+import protos.playbooks.playbook_commons_pb2
 import protos.playbooks.playbook_pb2
 import protos.playbooks.workflow_pb2
 import sys
@@ -1314,37 +1315,11 @@ class PlaybooksBuilderOptionsResponse(google.protobuf.message.Message):
         def HasField(self, field_name: typing_extensions.Literal["display_name", b"display_name"]) -> builtins.bool: ...
         def ClearField(self, field_name: typing_extensions.Literal["display_name", b"display_name", "type", b"type"]) -> None: ...
 
-    @typing_extensions.final
-    class ConnectorOptions(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
-        CONNECTOR_ID_FIELD_NUMBER: builtins.int
-        DISPLAY_NAME_FIELD_NUMBER: builtins.int
-        SUPPORTED_TASK_TYPES_FIELD_NUMBER: builtins.int
-        connector_type: protos.base_pb2.Source.ValueType
-        @property
-        def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-        @property
-        def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def supported_task_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.wrappers_pb2.StringValue]: ...
-        def __init__(
-            self,
-            *,
-            connector_type: protos.base_pb2.Source.ValueType = ...,
-            connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-            display_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            supported_task_types: collections.abc.Iterable[google.protobuf.wrappers_pb2.StringValue] | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "display_name", b"display_name"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "connector_type", b"connector_type", "display_name", b"display_name", "supported_task_types", b"supported_task_types"]) -> None: ...
-
     META_FIELD_NUMBER: builtins.int
     SUCCESS_FIELD_NUMBER: builtins.int
     MESSAGE_FIELD_NUMBER: builtins.int
     INTERPRETER_TYPES_FIELD_NUMBER: builtins.int
-    CONNECTOR_OPTIONS_FIELD_NUMBER: builtins.int
+    SOURCE_OPTIONS_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
@@ -1354,7 +1329,7 @@ class PlaybooksBuilderOptionsResponse(google.protobuf.message.Message):
     @property
     def interpreter_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybooksBuilderOptionsResponse.InterpreterTypeOption]: ...
     @property
-    def connector_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybooksBuilderOptionsResponse.ConnectorOptions]: ...
+    def source_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_commons_pb2.PlaybookSourceOptions]: ...
     def __init__(
         self,
         *,
@@ -1362,9 +1337,9 @@ class PlaybooksBuilderOptionsResponse(google.protobuf.message.Message):
         success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         message: protos.base_pb2.Message | None = ...,
         interpreter_types: collections.abc.Iterable[global___PlaybooksBuilderOptionsResponse.InterpreterTypeOption] | None = ...,
-        connector_options: collections.abc.Iterable[global___PlaybooksBuilderOptionsResponse.ConnectorOptions] | None = ...,
+        source_options: collections.abc.Iterable[protos.playbooks.playbook_commons_pb2.PlaybookSourceOptions] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["connector_options", b"connector_options", "interpreter_types", b"interpreter_types", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["interpreter_types", b"interpreter_types", "message", b"message", "meta", b"meta", "source_options", b"source_options", "success", b"success"]) -> None: ...
 
 global___PlaybooksBuilderOptionsResponse = PlaybooksBuilderOptionsResponse

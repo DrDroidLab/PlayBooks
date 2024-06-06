@@ -6,27 +6,31 @@ import {
 import { store } from "../../store/index.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const newRelicEntityDashboardBuilder = (task, index, options) => {
+const getCurrentAsset = (task) => {
+  const currentAsset = task?.assets?.find(
+    (e) => e.dashboard_guid === task?.dashboard?.id,
+  );
+
+  return currentAsset;
+};
+
+export const newRelicEntityDashboardBuilder = (options, task, index) => {
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
-      connector_type: task.source,
-      type: task.modelType,
-      filters: {
-        new_relic_entity_dashboard_model_filters: {
-          dashboards: [
-            {
-              dashboard_guid: task?.dashboard?.id,
-              dashboard_name: task?.dashboard?.label,
-              page_options: [
-                {
-                  page_guid: task?.page?.page_guid,
-                  page_name: task?.page?.page_name,
-                },
-              ],
-            },
-          ],
-        },
+      new_relic_entity_dashboard_model_filters: {
+        dashboards: [
+          {
+            dashboard_guid: task?.dashboard?.id,
+            dashboard_name: task?.dashboard?.label,
+            page_options: [
+              {
+                page_guid: task?.page?.page_guid,
+                page_name: task?.page?.page_name,
+              },
+            ],
+          },
+        ],
       },
     },
     builder: [
@@ -34,7 +38,7 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
         {
           key: "dashboard",
           label: "Dashboard",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.dashboard_guid,
@@ -45,11 +49,12 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
             store.dispatch(setDashboard({ index, dashboard: val }));
           },
           selected: task?.dashboard?.id,
+          helperText: task?.dashboard?.label,
         },
         {
           key: "page",
           label: "Page",
-          type: OptionType.OPTIONS,
+          type: OptionType.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.dashboard_guid === task?.dashboard?.id)
             ?.page_options?.map((page) => {
@@ -60,7 +65,7 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
               };
             }),
           // requires: ['dashboard'],
-          selected: task?.page?.page_guid,
+          selected: task?.page?.page_name,
           handleChange: (_, val) => {
             store.dispatch(setPage({ index, page: val.page }));
           },
@@ -70,8 +75,8 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
           label: "Widget",
           type: OptionType.MULTI_SELECT,
           options:
-            task.assets?.pages?.length > 0
-              ? task.assets?.pages[0].widgets?.map((e) => {
+            getCurrentAsset(task)?.pages?.length > 0
+              ? getCurrentAsset(task)?.pages[0].widgets?.map((e) => {
                   return {
                     id: e.widget_id,
                     label: e.widget_title || e.widget_nrql_expression,
@@ -84,7 +89,7 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
               store.dispatch(
                 setWidget({
                   index,
-                  widget: val?.length > 0 ? val?.map((e) => e.widget) : [],
+                  widget: val,
                 }),
               );
           },
@@ -95,7 +100,9 @@ export const newRelicEntityDashboardBuilder = (task, index, options) => {
         {
           label: "Selected Query",
           type: OptionType.MULTILINE,
-          value: task?.widget ? task?.widget[0]?.widget_nrql_expression : "",
+          value: task?.widget
+            ? task?.widget[0]?.widget?.widget_nrql_expression
+            : "",
           disabled: true,
           condition: !task.widget || task.widget.length < 2,
           // requires: ['widget']

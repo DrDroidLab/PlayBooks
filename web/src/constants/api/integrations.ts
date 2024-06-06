@@ -1,5 +1,6 @@
 // Integrations
 export const ALL_CONNECTORS = "/connectors/list";
+export const GET_CONNECTOR_DETAILS = "/connectors/get";
 export const GET_CONNECTOR_OPTIONS = "/connectors/keys/options";
 export const GET_CONNECTOR_KEYS = "/connectors/keys/get";
 export const UPDATE_CONNECTOR_STATUS = "/connectors/update";
@@ -16,3 +17,4 @@ export const GOOGLE_SPACES_LIST =
   "/connectors/integrations/handlers/g_chat/list_spaces";
 export const GOOGLE_SPACES_REGISTER =
   "/connectors/integrations/handlers/g_chat/register_spaces";
+  export const SAVE_SITE_URL = "/connectors/save_site_url";

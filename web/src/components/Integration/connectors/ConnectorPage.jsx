@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircularProgress, Tab, Tabs } from "@mui/material";
-import Heading from "../../Heading";
+import Heading from "../../Heading.js";
 import styles from "./index.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   connectorSelector,
-  integrationsSelector,
   setCurrentConnector,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,66 +15,40 @@ import Assets from "./Assets.jsx";
 import { connectorsWithoutAssets } from "../../../utils/connectorsWithoutAssets.ts";
 import { unsupportedConnectors } from "../../../utils/unsupportedConnectors.ts";
 import {
-  useLazyGetConnectorKeyOptionsQuery,
+  useGetConnectorKeyOptionsQuery,
   useLazyGetConnectorKeysQuery,
-  useLazyGetConnectorListQuery,
 } from "../../../store/features/integrations/api/index.ts";
 import { ChevronLeft } from "@mui/icons-material";
 import GoogleChatIntegration from "./GoogleChatIntegration.jsx";
 
-function ConnectorPage() {
-  const { id } = useParams();
+function ConnectorPageBeta() {
+  const { id, connectorEnum } = useParams();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
-  const connectors = useSelector(integrationsSelector);
   const [selectedTab, setSelectedTab] = useState(0);
-  const [triggerConnectorList] = useLazyGetConnectorListQuery();
-  const [
-    triggergetConnectorKeyOptions,
-    { data: keyOptions, isFetching: optionsLoading },
-  ] = useLazyGetConnectorKeyOptionsQuery();
-  const [triggerGetConnectorsKey, { data: keys, isFetching: keysLoading }] =
+  const { data: connector, isFetching: optionsLoading } =
+    useGetConnectorKeyOptionsQuery(connectorEnum);
+  const [triggerGetKeys, { isFetching: keysLoading }] =
     useLazyGetConnectorKeysQuery();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentConnector.title) {
-      triggerConnectorList();
-    }
-  }, [keys]);
-
-  useEffect(() => {
-    if (connectors?.length > 0 && id) {
+    if (id !== null && id !== undefined) {
       dispatch(setCurrentConnector(id));
+      triggerGetKeys(id);
     }
-  }, [connectors]);
-
-  useEffect(() => {
-    if (currentConnector?.enum) {
-      fetchData();
-    }
-  }, [currentConnector.enum]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    await triggergetConnectorKeyOptions(currentConnector?.enum);
-    if (currentConnector.status === "active")
-      await triggerGetConnectorsKey(currentConnector?.id);
-    setLoading(false);
-  };
+  }, [id]);
 
   const handleTabChange = (_, newValue) => {
     setSelectedTab(newValue);
   };
 
   const containsAssets = !connectorsWithoutAssets.includes(
-    currentConnector.enum,
+    connectorEnum.toUpperCase(),
   );
-  const isActive =
-    currentConnector?.status === "active" ||
-    currentConnector?.vpc?.status === "active";
+
+  const isActive = currentConnector?.is_active;
 
   switch (id) {
     case unsupportedConnectors.GOOGLE_CHAT:
@@ -84,7 +57,7 @@ function ConnectorPage() {
       break;
   }
 
-  if (!currentConnector.enum || loading || optionsLoading || keysLoading) {
+  if (optionsLoading || keysLoading) {
     return (
       <div
         style={{
@@ -101,13 +74,15 @@ function ConnectorPage() {
   return (
     <div>
       <Heading
-        heading={`${currentConnector?.displayTitle} Integration Setup`}
+        heading={`${
+          connector?.display_name ?? currentConnector?.type
+        } Integration Setup`}
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
       />
 
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/data-sources")}
         className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
         <ChevronLeft /> All Integrations
       </button>
@@ -128,7 +103,11 @@ function ConnectorPage() {
         value={selectedTab}
         index={0}
         className={styles["config-section"]}>
-        <Config keyOptions={keyOptions} />
+        <Config
+          id={id}
+          connector={connector}
+          connectorActive={id !== undefined && id !== null}
+        />
       </TabPanel>
 
       {isActive && containsAssets && (
@@ -136,11 +115,11 @@ function ConnectorPage() {
           value={selectedTab}
           index={1}
           className={styles["config-section"]}>
-          <Assets />
+          <Assets connector={connector} id={id} />
         </TabPanel>
       )}
     </div>
   );
 }
 
-export default ConnectorPage;
+export default ConnectorPageBeta;
