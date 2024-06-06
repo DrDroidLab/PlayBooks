@@ -14,7 +14,9 @@ const ConnectorDeleteOverlay = ({
 }) => {
   const [deleteConnector, { isLoading, isSuccess, data }] =
     useDeleteConnectorMutation();
-  const handleSuccess = () => {
+  const handleSuccess = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     deleteConnector(connector.id);
   };
 

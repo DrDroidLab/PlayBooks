@@ -6,42 +6,40 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography
-} from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+  Typography,
+} from "@mui/material";
+import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 export const DataDogAssets = ({ assets }) => {
   if (assets?.length === 0) {
     return <CircularProgress />;
   }
 
-  const services = assets?.filter(e => e.datadog_service !== undefined).map(e => e.datadog_service);
+  const services = assets
+    ?.filter((e) => e.datadog_service !== undefined)
+    .map((e) => e.datadog_service);
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {services && services.length > 0 && (
-        <Accordion style={{ borderRadius: '5px' }} className="collapsible_option">
+        <Accordion className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0">
           <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-            style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-          >
+            expandIcon={<KeyboardArrowDownRounded />}
+            className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
             <Typography>
-              <p style={{ fontSize: '16px' }}>Services ({services.length})</p>{' '}
+              <p style={{ fontSize: "16px" }}>Services ({services.length})</p>{" "}
             </Typography>
           </AccordionSummary>
 
           <AccordionDetails>
             {services.map((item, index) => (
-              <Accordion key={index}>
+              <Accordion
+                className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0"
+                key={index}>
                 <AccordionSummary
-                  expandIcon={<ArrowDropDownIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                  style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-                >
+                  expandIcon={<KeyboardArrowDownRounded />}
+                  className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
                   <Typography>
-                    <p style={{ fontSize: '16px' }}>{item.service_name}</p>
+                    <p style={{ fontSize: "16px" }}>{item.service_name}</p>
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -53,22 +51,21 @@ export const DataDogAssets = ({ assets }) => {
                       }
                       acc[curr.metric_family].push(curr.metric);
                       return acc;
-                    }, {})
+                    }, {}),
                   ).map((metric, i) => (
-                    <Accordion key={i}>
+                    <Accordion
+                      className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0"
+                      key={i}>
                       <AccordionSummary
-                        expandIcon={<ArrowDropDownIcon />}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                        style={{ borderRadius: '5px', backgroundColor: '#f5f5f5' }}
-                      >
+                        expandIcon={<KeyboardArrowDownRounded />}
+                        className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
                         <Typography>
-                          <p style={{ fontSize: '16px' }}>{metric[0]}</p>
+                          <p style={{ fontSize: "16px" }}>{metric[0]}</p>
                         </Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <List>
-                          {metric[1].map(metric_name => (
+                          {metric[1].map((metric_name) => (
                             <ListItem>
                               <ListItemText primary={metric_name} />
                             </ListItem>
