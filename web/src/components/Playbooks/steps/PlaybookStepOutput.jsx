@@ -28,7 +28,10 @@ const PlaybookStepOutput = ({ stepOutput }) => {
           timestamp={out.timestamp}
           step={step}
           title={
-            error ? "Error from Source" : "No data available for this step"
+            error
+              ? "Error from Source"
+              : out?.timeseries?.metric_name ??
+                "No data available for this step"
           }
         />
       );

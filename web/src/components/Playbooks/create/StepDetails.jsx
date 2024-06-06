@@ -1,19 +1,19 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useSelector } from "react-redux";
-import {
-  playbookSelector,
-  stepsSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
 import { CircularProgress } from "@mui/material";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import Step from "../steps/Step.jsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function StepDetails() {
-  const steps = useSelector(stepsSelector);
-  const { currentStepIndex } = useSelector(playbookSelector);
-  const step = steps[currentStepIndex];
+  const [step, currentStepIndex] = useCurrentStep();
   const isPrefetched = useIsPrefetched();
+
+  const handleUpdateStepName = (e) => {
+    const val = e.target.value;
+    updateCardByIndex("description", e.target.value);
+    if (val.trim())
+      updateCardByIndex("userEnteredDescription", true, currentStepIndex);
+  };
 
   if (!step) return <></>;
 
@@ -28,7 +28,7 @@ function StepDetails() {
           <input
             className="border-gray-300 border rounded w-full p-1 text-sm font-bold text-gray-500"
             value={step.description}
-            onChange={(e) => updateCardByIndex("description", e.target.value)}
+            onChange={handleUpdateStepName}
             disabled={isPrefetched}
           />
         </div>
