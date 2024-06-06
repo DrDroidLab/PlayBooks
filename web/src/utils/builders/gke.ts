@@ -16,15 +16,14 @@ export const gkeBuilder = (options: any, task, index) => {
           key: "zone",
           label: "Zone",
           type: OptionType.TYPING_DROPDOWN,
-          options:
-            options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
+          options: options?.map((x) => ({ id: x.zone, label: x.zone })) ?? [],
         },
         {
           key: "cluster",
           label: "Cluster",
           type: OptionType.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.region === task.eksRegion)
+            ?.find((e) => e.zone === task.zone)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
         },
         {
