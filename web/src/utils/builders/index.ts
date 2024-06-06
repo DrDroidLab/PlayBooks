@@ -16,3 +16,4 @@ export * from "./sqlRawQuery.ts";
 export * from "./iframe.ts";
 export * from "./azureLogs.ts";
 export * from "./grafanaDataSource.ts";
+export * from "./gke.ts";

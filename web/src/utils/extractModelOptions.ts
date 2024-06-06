@@ -88,6 +88,34 @@ export default function extractModelOptions(assets, task) {
           clusters: asset.clusters,
         })),
       };
+    case taskTypes.GKE_GET_DEPLOYMENTS:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
+    case taskTypes.GKE_GET_EVENTS:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
+    case taskTypes.GKE_GET_PODS:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
+    case taskTypes.GKE_GET_SERVICES:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
     case taskTypes.BASH_COMMAND:
       return {
         ssh_servers: assets?.map((asset) => asset.name) ?? [],
