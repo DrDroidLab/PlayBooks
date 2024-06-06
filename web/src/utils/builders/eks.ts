@@ -1,5 +1,3 @@
-import { store } from "../../store/index.ts";
-import { setCommand } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 
@@ -56,19 +54,6 @@ export const eksBuilder = (options: any, task, index) => {
                   return { id: el.name, label: el.name };
                 })
               : [],
-        },
-        {
-          key: "command",
-          label: "Command Type",
-          type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset(index)?.commands?.map((el) => {
-            return { id: el.type, label: el.description, command: el };
-          }),
-          handleChange: (_, val) => {
-            store.dispatch(setCommand({ index, command: val.command }));
-          },
-          value: task.command?.type,
-          selected: task.command?.type,
         },
       ],
     ],

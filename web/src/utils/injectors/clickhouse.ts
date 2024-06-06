@@ -4,7 +4,7 @@ export const injectClickhouseTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
-  let clickhouse_data_fetch_task = {
+  let task = {
     database: step.database!,
     query: step.dbQuery!,
   };
@@ -12,8 +12,10 @@ export const injectClickhouseTasks = (
   return [
     {
       ...baseTask,
-      source: step.source.toUpperCase(),
-      clickhouse_data_fetch_task,
+      [step.source?.toLowerCase()]: {
+        type: step.taskType,
+        [(step.taskType ?? "").toLowerCase()]: task,
+      },
     },
   ];
 };

@@ -16,12 +16,12 @@ import {
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useParams } from "react-router-dom";
 import Loading from "../../common/Loading/index.tsx";
-import CreatePlaybook from "../CreatePlaybook.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
 import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { executionToPlaybook } from "../../../utils/parser/playbook/executionToPlaybook.ts";
 import Builder from "../create/Builder.jsx";
+import ListView from "../ListView.jsx";
 
 const viewOptions = [
   {
@@ -126,7 +126,7 @@ function PlaybookLogs() {
           </div>
           {view === "step" ? (
             <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
-              <CreatePlaybook showHeading={false} />
+              <ListView />
             </div>
           ) : (
             <Builder isLog={true} />

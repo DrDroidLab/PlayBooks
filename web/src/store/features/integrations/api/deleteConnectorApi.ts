@@ -19,6 +19,7 @@ export const deleteConnectorApi = apiSlice.injectEndpoints({
           ],
         },
       }),
+      invalidatesTags: ["Integrations"],
     }),
   }),
 });

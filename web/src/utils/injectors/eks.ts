@@ -7,9 +7,7 @@ export const injectEksTasks = (
   let task = {
     region: step.eksRegion!,
     cluster: step.cluster!,
-    command_type: step.command?.type!,
     namespace: step.eksNamespace!,
-    description: step.command.description!,
   };
 
   return [
