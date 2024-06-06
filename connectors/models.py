@@ -37,6 +37,7 @@ integrations_connector_type_display_name_map = {
     Source.REMOTE_SERVER: 'REMOTE SERVER',
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
     Source.AZURE: 'AZURE',
+    Source.GKE: 'GKE KUBERNETES',
 }
 
 integrations_connector_type_category_map = {
@@ -64,6 +65,7 @@ integrations_connector_type_category_map = {
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
     Source.GRAFANA_MIMIR: 'APM Tools',
+    Source.GKE: 'Cloud',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -200,6 +202,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.AZURE_TENANT_ID,
             SourceKeyType.AZURE_SUBSCRIPTION_ID,
         ]
+    ],
+    Source.GKE: [
+        [
+            SourceKeyType.GKE_PROJECT_ID,
+            SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
+        ]
     ]
 }
 
@@ -254,6 +262,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AZURE_CLIENT_SECRET: 'Client Secret',
     SourceKeyType.AZURE_TENANT_ID: 'Tenant ID',
     SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
+    SourceKeyType.GKE_PROJECT_ID: 'Project ID',
+    SourceKeyType.GKE_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
 }
 
 
@@ -380,7 +390,8 @@ class ConnectorKey(models.Model):
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
-                             SourceKeyType.AZURE_CLIENT_SECRET]:
+                             SourceKeyType.AZURE_CLIENT_SECRET,
+                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

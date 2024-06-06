@@ -12,6 +12,7 @@ from executor.source_processors.azure_api_processor import AzureApiProcessor
 from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
+from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
@@ -39,6 +40,7 @@ connector_type_api_processor_map = {
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
     Source.GRAFANA_MIMIR: MimirApiProcessor,
     Source.AZURE: AzureApiProcessor,
+    Source.GKE: GkeApiProcessor
 }
 
 
@@ -46,11 +48,8 @@ def get_all_request_connectors():
     return []
 
 
-def get_all_available_connectors(all_active_connectors):
+def get_all_available_connectors():
     all_connectors = list(integrations_connector_type_connector_keys_map.keys())
-    print(all_connectors);
-    # for ac in all_active_connectors:
-    #     all_connectors.remove(ac.connector_type)
     all_available_connectors = []
     for c in all_connectors:
         all_available_connectors.append(
@@ -191,6 +190,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['tenant_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AZURE_SUBSCRIPTION_ID:
                 credentials_dict['subscription_id'] = conn_key.key.value
+    elif connector_type == Source.GKE:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.GKE_PROJECT_ID:
+                credentials_dict['project_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GKE_SERVICE_ACCOUNT_JSON:
+                credentials_dict['service_account_json'] = conn_key.key.value
     else:
         return None
     return credentials_dict

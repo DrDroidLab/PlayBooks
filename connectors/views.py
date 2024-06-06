@@ -76,7 +76,7 @@ def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConne
     account: Account = get_request_account()
     all_active_connectors = get_db_account_connectors(account, is_active=True)
     all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
-    all_available_connectors = get_all_available_connectors(all_active_connectors)
+    all_available_connectors = get_all_available_connectors()
     all_request_connectors = get_all_request_connectors()
     return GetConnectorsListResponse(success=BoolValue(value=True),
                                      request_connectors=all_request_connectors,

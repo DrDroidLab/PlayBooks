@@ -3,6 +3,7 @@ from connectors.assets.extractor.clickhouse_metadata_extractor import Clickhouse
 from connectors.assets.extractor.cloudwatch_metadata_extractor import CloudwatchSourceMetadataExtractor
 from connectors.assets.extractor.datadog_metadata_extractor import DatadogSourceMetadataExtractor
 from connectors.assets.extractor.eks_metadata_extractor import EksSourceMetadataExtractor
+from connectors.assets.extractor.gke_metadata_extractor import GkeSourceMetadataExtractor
 from connectors.assets.extractor.grafana_metadata_extractor import GrafanaSourceMetadataExtractor
 from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVpcSourceMetadataExtractor
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
@@ -38,3 +39,4 @@ source_metadata_extractor_facade.register(Source.EKS, EksSourceMetadataExtractor
 source_metadata_extractor_facade.register(Source.REMOTE_SERVER, RemoteServerSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.GRAFANA_MIMIR, MimirSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.AZURE, AzureConnectorMetadataExtractor)
+source_metadata_extractor_facade.register(Source.GKE, GkeSourceMetadataExtractor)
