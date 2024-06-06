@@ -34,6 +34,10 @@ function StepActions() {
     dispatch(addStep());
   };
 
+  const handleSave = () => {
+    setIsSavePlaybookOverlayOpen(true);
+  };
+
   const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
 
@@ -79,6 +83,14 @@ function StepActions() {
       </button>
       {steps && steps?.length > 0 && (
         <>
+          {!isEditing && (
+            <button className={styles["pb-button"]} onClick={handleSave}>
+              <SaveIcon style={{ fontSize: "medium" }} />
+              <span style={{ marginLeft: "2px" }} className="save_playbook">
+                Save
+              </span>
+            </button>
+          )}
           {isEditing && (
             <button
               className={styles["pb-button"]}

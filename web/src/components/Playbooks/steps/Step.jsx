@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
-import { Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import Notes from "./Notes.jsx";
 import { useDispatch } from "react-redux";
 import {
@@ -99,15 +99,18 @@ function Step({ step, index }) {
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
             {step.source && !unsupportedRunners.includes(step.source) && (
-              <button
-                className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
-                onClick={() => executeStep(step, index)}>
-                <Tooltip title="Run this Step">
-                  <>
-                    Run <PlayArrowRounded />
-                  </>
-                </Tooltip>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
+                  onClick={() => executeStep(step, index)}>
+                  <Tooltip title="Run this Step">
+                    <>
+                      Run <PlayArrowRounded />
+                    </>
+                  </Tooltip>
+                </button>
+                {step.outputLoading && <CircularProgress size={20} />}
+              </div>
             )}
             <button
               className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
