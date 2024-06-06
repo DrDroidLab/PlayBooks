@@ -306,6 +306,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/clickhouse",
+    docs: "https://drdroid.io/clickhouse",
   },
   {
     id: 37,
