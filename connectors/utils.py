@@ -12,6 +12,7 @@ from executor.source_processors.azure_api_processor import AzureApiProcessor
 from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
+from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
@@ -39,6 +40,7 @@ connector_type_api_processor_map = {
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
     Source.GRAFANA_MIMIR: MimirApiProcessor,
     Source.AZURE: AzureApiProcessor,
+    Source.GKE: GkeApiProcessor
 }
 
 
