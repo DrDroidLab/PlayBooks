@@ -65,9 +65,7 @@ function ConnectorCard({ connector }: ConnectorCardPropTypes) {
       <ConnectorDeleteOverlay
         isOpen={isDeleting}
         toggleOverlay={toggleDeletingOverlay}
-        successCb={() => {
-          window.location.href = "/data-sources";
-        }}
+        successCb={toggleDeletingOverlay}
         connector={connector}
       />
     </div>

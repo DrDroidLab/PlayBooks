@@ -115,7 +115,7 @@ function ConnectorPageBeta() {
           value={selectedTab}
           index={1}
           className={styles["config-section"]}>
-          <Assets connector={connector} />
+          <Assets connector={connector} id={id} />
         </TabPanel>
       )}
     </div>
