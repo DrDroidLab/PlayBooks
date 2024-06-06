@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('executor', '0031_alter_playbooksteptaskconnectormapping_unique_together'),
+        ('executor', '0032_migrate_iframe_task_to_new_def'),
     ]
 
     operations = [
