@@ -261,7 +261,7 @@ message PlaybookExecutionStepExecuteResponse {
   google.protobuf.BoolValue success = 2;
   Message message = 3;
   google.protobuf.StringValue playbook_run_id = 4;
-  PlaybookStepExecutionLog playbook_step_execution_log = 5;
+  PlaybookStepExecutionLog step_execution_log = 5;
 }
 
 ///////////////////// Workflows APIs /////////////////////
