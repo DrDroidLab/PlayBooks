@@ -76,7 +76,7 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
 
 
 def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id, scheduled_at,
-                              expiry_at, interval, created_by=None, metadata=None):
+                              expiry_at, created_by=None, metadata=None):
     try:
         workflow_execution = WorkflowExecution.objects.create(
             account=account,
@@ -84,7 +84,6 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
             workflow_run_id=workflow_run_id,
             scheduled_at=scheduled_at,
             expiry_at=expiry_at,
-            interval=interval,
             status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED,
             created_at=timezone.now(),
             time_range=proto_to_dict(time_range),

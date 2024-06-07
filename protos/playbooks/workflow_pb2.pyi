@@ -8,11 +8,17 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
-import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
-import protos.base_pb2
 import protos.playbooks.deprecated_playbook_pb2
 import protos.playbooks.playbook_pb2
+import protos.playbooks.workflow_actions.api_trigger_pb2
+import protos.playbooks.workflow_actions.slack_message_pb2
+import protos.playbooks.workflow_actions.slack_thread_reply_pb2
+import protos.playbooks.workflow_entry_points.api_entry_point_pb2
+import protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2
+import protos.playbooks.workflow_schedules.cron_schedule_pb2
+import protos.playbooks.workflow_schedules.interval_schedule_pb2
+import protos.playbooks.workflow_schedules.one_off_schedule_pb2
 import sys
 import typing
 
@@ -47,249 +53,8 @@ WORKFLOW_CANCELLED: WorkflowExecutionStatusType.ValueType  # 5
 global___WorkflowExecutionStatusType = WorkflowExecutionStatusType
 
 @typing_extensions.final
-class WorkflowOneOffSchedule(google.protobuf.message.Message):
-    """/////////////////// Workflow Scheduling /////////////////////"""
-
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    def __init__(
-        self,
-    ) -> None: ...
-
-global___WorkflowOneOffSchedule = WorkflowOneOffSchedule
-
-@typing_extensions.final
-class WorkflowPeriodicSchedule(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _Type:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowPeriodicSchedule._Type.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: WorkflowPeriodicSchedule._Type.ValueType  # 0
-        INTERVAL: WorkflowPeriodicSchedule._Type.ValueType  # 1
-        CRON: WorkflowPeriodicSchedule._Type.ValueType  # 4
-
-    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-    UNKNOWN: WorkflowPeriodicSchedule.Type.ValueType  # 0
-    INTERVAL: WorkflowPeriodicSchedule.Type.ValueType  # 1
-    CRON: WorkflowPeriodicSchedule.Type.ValueType  # 4
-
-    DURATION_IN_SECONDS_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    TASK_INTERVAL_FIELD_NUMBER: builtins.int
-    CRON_RULE_FIELD_NUMBER: builtins.int
-    @property
-    def duration_in_seconds(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
-    type: global___WorkflowPeriodicSchedule.Type.ValueType
-    @property
-    def task_interval(self) -> protos.base_pb2.TaskInterval: ...
-    @property
-    def cron_rule(self) -> protos.base_pb2.TaskCronRule: ...
-    def __init__(
-        self,
-        *,
-        duration_in_seconds: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
-        type: global___WorkflowPeriodicSchedule.Type.ValueType = ...,
-        task_interval: protos.base_pb2.TaskInterval | None = ...,
-        cron_rule: protos.base_pb2.TaskCronRule | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["cron_rule", b"cron_rule", "duration_in_seconds", b"duration_in_seconds", "schedule", b"schedule", "task_interval", b"task_interval"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["cron_rule", b"cron_rule", "duration_in_seconds", b"duration_in_seconds", "schedule", b"schedule", "task_interval", b"task_interval", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["schedule", b"schedule"]) -> typing_extensions.Literal["task_interval", "cron_rule"] | None: ...
-
-global___WorkflowPeriodicSchedule = WorkflowPeriodicSchedule
-
-@typing_extensions.final
-class WorkflowEntryPointApiConfig(google.protobuf.message.Message):
-    """/////////////////// Workflow Entry Points Configurations /////////////////////"""
-
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    def __init__(
-        self,
-    ) -> None: ...
-
-global___WorkflowEntryPointApiConfig = WorkflowEntryPointApiConfig
-
-@typing_extensions.final
-class WorkflowEntryPointSlackChannelAlertConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    SLACK_CHANNEL_ID_FIELD_NUMBER: builtins.int
-    SLACK_CHANNEL_NAME_FIELD_NUMBER: builtins.int
-    SLACK_ALERT_TYPE_FIELD_NUMBER: builtins.int
-    SLACK_ALERT_FILTER_STRING_FIELD_NUMBER: builtins.int
-    @property
-    def slack_channel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def slack_channel_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def slack_alert_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def slack_alert_filter_string(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    def __init__(
-        self,
-        *,
-        slack_channel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        slack_channel_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        slack_alert_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        slack_alert_filter_string: google.protobuf.wrappers_pb2.StringValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["slack_alert_filter_string", b"slack_alert_filter_string", "slack_alert_type", b"slack_alert_type", "slack_channel_id", b"slack_channel_id", "slack_channel_name", b"slack_channel_name"]) -> None: ...
-
-global___WorkflowEntryPointSlackChannelAlertConfig = WorkflowEntryPointSlackChannelAlertConfig
-
-@typing_extensions.final
-class WorkflowEntryPointAlertConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _AlertType:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _AlertTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowEntryPointAlertConfig._AlertType.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: WorkflowEntryPointAlertConfig._AlertType.ValueType  # 0
-        SLACK_CHANNEL_ALERT: WorkflowEntryPointAlertConfig._AlertType.ValueType  # 1
-
-    class AlertType(_AlertType, metaclass=_AlertTypeEnumTypeWrapper): ...
-    UNKNOWN: WorkflowEntryPointAlertConfig.AlertType.ValueType  # 0
-    SLACK_CHANNEL_ALERT: WorkflowEntryPointAlertConfig.AlertType.ValueType  # 1
-
-    ALERT_TYPE_FIELD_NUMBER: builtins.int
-    SLACK_CHANNEL_ALERT_CONFIG_FIELD_NUMBER: builtins.int
-    alert_type: global___WorkflowEntryPointAlertConfig.AlertType.ValueType
-    @property
-    def slack_channel_alert_config(self) -> global___WorkflowEntryPointSlackChannelAlertConfig: ...
-    def __init__(
-        self,
-        *,
-        alert_type: global___WorkflowEntryPointAlertConfig.AlertType.ValueType = ...,
-        slack_channel_alert_config: global___WorkflowEntryPointSlackChannelAlertConfig | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "slack_channel_alert_config", b"slack_channel_alert_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "alert_type", b"alert_type", "slack_channel_alert_config", b"slack_channel_alert_config"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["alert_config", b"alert_config"]) -> typing_extensions.Literal["slack_channel_alert_config"] | None: ...
-
-global___WorkflowEntryPointAlertConfig = WorkflowEntryPointAlertConfig
-
-@typing_extensions.final
-class WorkflowActionWebhookNotificationConfig(google.protobuf.message.Message):
-    """/////////////////// Workflow Actions /////////////////////"""
-
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    ENDPOINT_FIELD_NUMBER: builtins.int
-    METHOD_FIELD_NUMBER: builtins.int
-    HEADERS_FIELD_NUMBER: builtins.int
-    BODY_FIELD_NUMBER: builtins.int
-    @property
-    def endpoint(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def method(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def headers(self) -> google.protobuf.struct_pb2.Struct: ...
-    @property
-    def body(self) -> google.protobuf.struct_pb2.Struct: ...
-    def __init__(
-        self,
-        *,
-        endpoint: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        method: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        headers: google.protobuf.struct_pb2.Struct | None = ...,
-        body: google.protobuf.struct_pb2.Struct | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["body", b"body", "endpoint", b"endpoint", "headers", b"headers", "method", b"method"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["body", b"body", "endpoint", b"endpoint", "headers", b"headers", "method", b"method"]) -> None: ...
-
-global___WorkflowActionWebhookNotificationConfig = WorkflowActionWebhookNotificationConfig
-
-@typing_extensions.final
-class WorkflowActionSlackNotificationConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _MessageType:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _MessageTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionSlackNotificationConfig._MessageType.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN_SNT: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 0
-        MESSAGE: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 1
-        THREAD_REPLY: WorkflowActionSlackNotificationConfig._MessageType.ValueType  # 2
-
-    class MessageType(_MessageType, metaclass=_MessageTypeEnumTypeWrapper): ...
-    UNKNOWN_SNT: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 0
-    MESSAGE: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 1
-    THREAD_REPLY: WorkflowActionSlackNotificationConfig.MessageType.ValueType  # 2
-
-    MESSAGE_TYPE_FIELD_NUMBER: builtins.int
-    SLACK_CHANNEL_ID_FIELD_NUMBER: builtins.int
-    THREAD_TS_FIELD_NUMBER: builtins.int
-    message_type: global___WorkflowActionSlackNotificationConfig.MessageType.ValueType
-    @property
-    def slack_channel_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def thread_ts(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    def __init__(
-        self,
-        *,
-        message_type: global___WorkflowActionSlackNotificationConfig.MessageType.ValueType = ...,
-        slack_channel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        thread_ts: google.protobuf.wrappers_pb2.StringValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["slack_channel_id", b"slack_channel_id", "thread_ts", b"thread_ts"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["message_type", b"message_type", "slack_channel_id", b"slack_channel_id", "thread_ts", b"thread_ts"]) -> None: ...
-
-global___WorkflowActionSlackNotificationConfig = WorkflowActionSlackNotificationConfig
-
-@typing_extensions.final
-class WorkflowActionNotificationConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class _Type:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
-
-    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowActionNotificationConfig._Type.ValueType], builtins.type):  # noqa: F821
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: WorkflowActionNotificationConfig._Type.ValueType  # 0
-        WEBHOOK: WorkflowActionNotificationConfig._Type.ValueType  # 1
-        SLACK: WorkflowActionNotificationConfig._Type.ValueType  # 2
-
-    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
-    UNKNOWN: WorkflowActionNotificationConfig.Type.ValueType  # 0
-    WEBHOOK: WorkflowActionNotificationConfig.Type.ValueType  # 1
-    SLACK: WorkflowActionNotificationConfig.Type.ValueType  # 2
-
-    TYPE_FIELD_NUMBER: builtins.int
-    WEBHOOK_CONFIG_FIELD_NUMBER: builtins.int
-    SLACK_CONFIG_FIELD_NUMBER: builtins.int
-    type: global___WorkflowActionNotificationConfig.Type.ValueType
-    @property
-    def webhook_config(self) -> global___WorkflowActionWebhookNotificationConfig: ...
-    @property
-    def slack_config(self) -> global___WorkflowActionSlackNotificationConfig: ...
-    def __init__(
-        self,
-        *,
-        type: global___WorkflowActionNotificationConfig.Type.ValueType = ...,
-        webhook_config: global___WorkflowActionWebhookNotificationConfig | None = ...,
-        slack_config: global___WorkflowActionSlackNotificationConfig | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "webhook_config", b"webhook_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["notification_config", b"notification_config", "slack_config", b"slack_config", "type", b"type", "webhook_config", b"webhook_config"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["webhook_config", "slack_config"] | None: ...
-
-global___WorkflowActionNotificationConfig = WorkflowActionNotificationConfig
-
-@typing_extensions.final
 class WorkflowSchedule(google.protobuf.message.Message):
-    """/////////////////// Workflow Builder Proto /////////////////////"""
+    """/////////////////// Workflow Schedules /////////////////////"""
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -301,36 +66,44 @@ class WorkflowSchedule(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: WorkflowSchedule._Type.ValueType  # 0
         ONE_OFF: WorkflowSchedule._Type.ValueType  # 1
-        PERIODIC: WorkflowSchedule._Type.ValueType  # 2
+        INTERVAL: WorkflowSchedule._Type.ValueType  # 2
+        CRON: WorkflowSchedule._Type.ValueType  # 3
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowSchedule.Type.ValueType  # 0
     ONE_OFF: WorkflowSchedule.Type.ValueType  # 1
-    PERIODIC: WorkflowSchedule.Type.ValueType  # 2
+    INTERVAL: WorkflowSchedule.Type.ValueType  # 2
+    CRON: WorkflowSchedule.Type.ValueType  # 3
 
     TYPE_FIELD_NUMBER: builtins.int
     ONE_OFF_FIELD_NUMBER: builtins.int
-    PERIODIC_FIELD_NUMBER: builtins.int
+    INTERVAL_FIELD_NUMBER: builtins.int
+    CRON_FIELD_NUMBER: builtins.int
     type: global___WorkflowSchedule.Type.ValueType
     @property
-    def one_off(self) -> global___WorkflowOneOffSchedule: ...
+    def one_off(self) -> protos.playbooks.workflow_schedules.one_off_schedule_pb2.OneOffSchedule: ...
     @property
-    def periodic(self) -> global___WorkflowPeriodicSchedule: ...
+    def interval(self) -> protos.playbooks.workflow_schedules.interval_schedule_pb2.IntervalSchedule: ...
+    @property
+    def cron(self) -> protos.playbooks.workflow_schedules.cron_schedule_pb2.CronSchedule: ...
     def __init__(
         self,
         *,
         type: global___WorkflowSchedule.Type.ValueType = ...,
-        one_off: global___WorkflowOneOffSchedule | None = ...,
-        periodic: global___WorkflowPeriodicSchedule | None = ...,
+        one_off: protos.playbooks.workflow_schedules.one_off_schedule_pb2.OneOffSchedule | None = ...,
+        interval: protos.playbooks.workflow_schedules.interval_schedule_pb2.IntervalSchedule | None = ...,
+        cron: protos.playbooks.workflow_schedules.cron_schedule_pb2.CronSchedule | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["one_off", b"one_off", "periodic", b"periodic", "scheduler", b"scheduler"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["one_off", b"one_off", "periodic", b"periodic", "scheduler", b"scheduler", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["scheduler", b"scheduler"]) -> typing_extensions.Literal["one_off", "periodic"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["cron", b"cron", "interval", b"interval", "one_off", b"one_off", "scheduler", b"scheduler"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["cron", b"cron", "interval", b"interval", "one_off", b"one_off", "scheduler", b"scheduler", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["scheduler", b"scheduler"]) -> typing_extensions.Literal["one_off", "interval", "cron"] | None: ...
 
 global___WorkflowSchedule = WorkflowSchedule
 
 @typing_extensions.final
 class WorkflowEntryPoint(google.protobuf.message.Message):
+    """/////////////////// Workflow Entry Points /////////////////////"""
+
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _Type:
@@ -341,40 +114,42 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: WorkflowEntryPoint._Type.ValueType  # 0
         API: WorkflowEntryPoint._Type.ValueType  # 1
-        ALERT: WorkflowEntryPoint._Type.ValueType  # 2
+        SLACK_CHANNEL_ALERT: WorkflowEntryPoint._Type.ValueType  # 2
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowEntryPoint.Type.ValueType  # 0
     API: WorkflowEntryPoint.Type.ValueType  # 1
-    ALERT: WorkflowEntryPoint.Type.ValueType  # 2
+    SLACK_CHANNEL_ALERT: WorkflowEntryPoint.Type.ValueType  # 2
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
-    API_CONFIG_FIELD_NUMBER: builtins.int
-    ALERT_CONFIG_FIELD_NUMBER: builtins.int
+    API_FIELD_NUMBER: builtins.int
+    SLACK_CHANNEL_ALERT_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowEntryPoint.Type.ValueType
     @property
-    def api_config(self) -> global___WorkflowEntryPointApiConfig: ...
+    def api(self) -> protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint: ...
     @property
-    def alert_config(self) -> global___WorkflowEntryPointAlertConfig: ...
+    def slack_channel_alert(self) -> protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint: ...
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: global___WorkflowEntryPoint.Type.ValueType = ...,
-        api_config: global___WorkflowEntryPointApiConfig | None = ...,
-        alert_config: global___WorkflowEntryPointAlertConfig | None = ...,
+        api: protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint | None = ...,
+        slack_channel_alert: protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config", "id", b"id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["alert_config", b"alert_config", "api_config", b"api_config", "config", b"config", "id", b"id", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api_config", "alert_config"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert"] | None: ...
 
 global___WorkflowEntryPoint = WorkflowEntryPoint
 
 @typing_extensions.final
 class WorkflowAction(google.protobuf.message.Message):
+    """/////////////////// Workflow Actions /////////////////////"""
+
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _Type:
@@ -384,30 +159,38 @@ class WorkflowAction(google.protobuf.message.Message):
     class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WorkflowAction._Type.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: WorkflowAction._Type.ValueType  # 0
-        NOTIFY: WorkflowAction._Type.ValueType  # 1
+        API: WorkflowAction._Type.ValueType  # 1
+        SLACK_MESSAGE: WorkflowAction._Type.ValueType  # 2
+        SLACK_THREAD_REPLY: WorkflowAction._Type.ValueType  # 3
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowAction.Type.ValueType  # 0
-    NOTIFY: WorkflowAction.Type.ValueType  # 1
+    API: WorkflowAction.Type.ValueType  # 1
+    SLACK_MESSAGE: WorkflowAction.Type.ValueType  # 2
+    SLACK_THREAD_REPLY: WorkflowAction.Type.ValueType  # 3
 
-    ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
-    NOTIFICATION_CONFIG_FIELD_NUMBER: builtins.int
-    @property
-    def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    API_FIELD_NUMBER: builtins.int
+    SLACK_MESSAGE_FIELD_NUMBER: builtins.int
+    SLACK_THREAD_REPLY_FIELD_NUMBER: builtins.int
     type: global___WorkflowAction.Type.ValueType
     @property
-    def notification_config(self) -> global___WorkflowActionNotificationConfig: ...
+    def api(self) -> protos.playbooks.workflow_actions.api_trigger_pb2.ApiTriggerWorkflowAction: ...
+    @property
+    def slack_message(self) -> protos.playbooks.workflow_actions.slack_message_pb2.SlackMessageWorkflowAction: ...
+    @property
+    def slack_thread_reply(self) -> protos.playbooks.workflow_actions.slack_thread_reply_pb2.SlackThreadReplyWorkflowAction: ...
     def __init__(
         self,
         *,
-        id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         type: global___WorkflowAction.Type.ValueType = ...,
-        notification_config: global___WorkflowActionNotificationConfig | None = ...,
+        api: protos.playbooks.workflow_actions.api_trigger_pb2.ApiTriggerWorkflowAction | None = ...,
+        slack_message: protos.playbooks.workflow_actions.slack_message_pb2.SlackMessageWorkflowAction | None = ...,
+        slack_thread_reply: protos.playbooks.workflow_actions.slack_thread_reply_pb2.SlackThreadReplyWorkflowAction | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action", b"action", "id", b"id", "notification_config", b"notification_config", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["action", b"action"]) -> typing_extensions.Literal["notification_config"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "notification_config", b"notification_config", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "notification_config", b"notification_config", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["api", "slack_message", "slack_thread_reply"] | None: ...
 
 global___WorkflowAction = WorkflowAction
 

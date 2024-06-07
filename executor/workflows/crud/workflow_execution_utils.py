@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.conf import settings
@@ -5,11 +6,15 @@ from django.conf import settings
 from accounts.models import Account
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_point_mappings
 from executor.workflows.crud.workflow_execution_crud import create_workflow_execution
-from utils.time_utils import calculate_cron_times, current_datetime
-from protos.base_pb2 import TaskCronRule, TimeRange
-from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowPeriodicSchedule as WorkflowPeriodicScheduleProto
+from protos.playbooks.workflow_schedules.cron_schedule_pb2 import CronSchedule
+from protos.playbooks.workflow_schedules.interval_schedule_pb2 import IntervalSchedule
+from utils.time_utils import calculate_cron_times, current_datetime, calculate_interval_times
+from protos.base_pb2 import TimeRange
+from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto
+
 from utils.proto_utils import dict_to_proto
+
+logger = logging.getLogger(__name__)
 
 
 def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread_ts) -> (bool, str):
@@ -25,41 +30,65 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
         workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
         schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
         create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
-                                       current_time_utc, workflow_run_id, 'SLACK_ALERT', {'thread_ts': thread_ts})
+                                       current_time_utc, workflow_run_id, 'SLACK_ALERT',
+                                       metadata={'thread_ts': thread_ts})
 
 
 def create_workflow_execution_util(account: Account, workflow_id, schedule_type, schedule, scheduled_at,
                                    workflow_run_uuid, triggered_by=None, metadata=None) -> (bool, str):
-    if schedule_type == WorkflowScheduleProto.Type.PERIODIC:
-        periodic_schedule: WorkflowPeriodicScheduleProto = schedule.periodic
-        duration_in_seconds = periodic_schedule.duration_in_seconds.value
+    if schedule_type == WorkflowScheduleProto.Type.INTERVAL:
+        interval_schedule: IntervalSchedule = schedule.interval
+
+        duration_in_seconds = interval_schedule.duration_in_seconds.value
+        if not duration_in_seconds:
+            return False, "Invalid Schedule Deadline"
         expiry_at = scheduled_at + timedelta(seconds=duration_in_seconds)
-        if periodic_schedule.type == WorkflowPeriodicScheduleProto.Type.INTERVAL:
-            interval = periodic_schedule.task_interval.interval_in_seconds.value
-            if interval < 60:
-                return False, "Invalid Interval"
-            time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                                   time_lt=int(scheduled_at.timestamp()))
+
+        interval = interval_schedule.interval_in_seconds.value
+        if not interval or interval < 60:
+            return False, "Invalid Interval"
+
+        intervals = calculate_interval_times(interval, scheduled_at, expiry_at)
+        if not intervals or len(intervals) == 0:
+            return False, "No Intervals Found"
+
+        for scheduled_at in intervals:
+            if scheduled_at > expiry_at:
+                break
+            time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
             create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, expiry_at,
-                                      interval, triggered_by, metadata)
-        elif periodic_schedule.type == WorkflowPeriodicScheduleProto.Type.CRON:
-            cron_rule: TaskCronRule = periodic_schedule.cron_rule.rule.value
+                                      triggered_by, metadata)
+    elif schedule_type.type == WorkflowScheduleProto.Type.CRON:
+        cron_schedule: CronSchedule = schedule.cron
+        cron_rule = cron_schedule.rule.value
+        if not cron_rule:
+            return False, "Invalid Cron Rule"
+
+        duration_in_seconds = cron_schedule.duration_in_seconds.value
+        if not duration_in_seconds:
+            return False, "Invalid Schedule Deadline"
+        expiry_at = scheduled_at + timedelta(seconds=duration_in_seconds)
+
+        try:
             cron_schedules = calculate_cron_times(cron_rule, scheduled_at, expiry_at)
-            if len(cron_schedules) == 0:
-                return False, f"No Schedules Found with Cron Rule: {cron_rule}"
-            for scheduled_at in cron_schedules:
-                if scheduled_at > expiry_at:
-                    break
-                time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                                       time_lt=int(scheduled_at.timestamp()))
-                create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at,
-                                          scheduled_at, None, triggered_by, metadata)
+        except Exception as e:
+            logger.error(f"Error in calculating cron times: {e}")
+            return False, f"Error in calculating cron times: {e}"
+
+        if not cron_schedules or len(cron_schedules) == 0:
+            return False, f"No Schedules Found with Cron Rule: {cron_rule}"
+
+        for scheduled_at in cron_schedules:
+            if scheduled_at > expiry_at:
+                break
+            time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
+            create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, scheduled_at,
+                                      triggered_by, metadata)
     elif schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
         scheduled_at = scheduled_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL))
-        time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600,
-                               time_lt=int(scheduled_at.timestamp()))
+        time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
         create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, scheduled_at,
-                                  None, triggered_by, metadata)
+                                  triggered_by, metadata)
     else:
         return False, f'Invalid Schedule Type'
     return True, ''

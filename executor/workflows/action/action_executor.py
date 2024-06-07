@@ -1,15 +1,19 @@
 import logging
 
-from accounts.models import Account
-from executor.workflows.action.notify_action_executor.notify_facade import notifier_facade
-from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.workflow_pb2 import WorkflowAction as WorkflowActionProto
+from protos.base_pb2 import Source
+from protos.connectors.connector_pb2 import Connector
+from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation
+from protos.playbooks.workflow_pb2 import WorkflowAction
 
 logger = logging.getLogger(__name__)
 
 
-def action_executor(account: Account, action: WorkflowActionProto, execution_output: [InterpretationProto]):
-    if action.type == WorkflowActionProto.Type.NOTIFY:
-        notifier_facade.notify(account, action.notification_config, execution_output)
-    else:
-        raise NotImplementedError(f'Action type {action.type} is not supported')
+class WorkflowActionExecutor:
+    type = WorkflowAction.Type.UNKNOWN
+    source = Source.UNKNOWN
+
+    def get_connector_processor(self, connector: Connector, **kwargs):
+        raise NotImplementedError('get_connector_processor method is not implemented')
+
+    def execute(self, action: WorkflowAction, execution_output: [Interpretation], connector: Connector = None):
+        raise NotImplementedError('execute method is not implemented')

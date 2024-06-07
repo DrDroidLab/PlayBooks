@@ -216,18 +216,16 @@ class WorkflowExecution(models.Model):
     workflow_run_id = models.CharField(max_length=256, db_index=True)
     status = models.IntegerField(choices=generate_choices(WorkflowExecutionStatusType),
                                  default=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, db_index=True)
+
     metadata = models.JSONField(null=True, blank=True)
 
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    interval = models.IntegerField(null=True, blank=True, db_index=True)
-    total_executions = models.IntegerField(default=0)
-
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    time_range = models.JSONField(null=True, blank=True)
 
+    time_range = models.JSONField(null=True, blank=True)
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -244,8 +242,6 @@ class WorkflowExecution(models.Model):
             status=self.status,
             scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
             expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval),
-            total_executions=UInt64Value(value=self.total_executions),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
