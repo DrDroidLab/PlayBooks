@@ -11,13 +11,13 @@ import {
 import GlobalVariables from "../../common/GlobalVariable";
 import TemplatesList from "./TemplatesList.jsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import Timeline from "../Timeline.jsx";
+// import Timeline from "../Timeline.jsx";
 
 function Builder({ isLog = false }) {
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const [importFromTemplatesOpen, setImportFromTemplatesOpen] = useState(false);
-  const [timelineOpen, setTimelineOpen] = useState(false);
-  const { currentStepIndex, executionId } = useSelector(playbookSelector);
+  // const [timelineOpen, setTimelineOpen] = useState(false);
+  const { currentStepIndex } = useSelector(playbookSelector);
   const dispatch = useDispatch();
 
   return (
@@ -37,13 +37,13 @@ function Builder({ isLog = false }) {
           <GlobalVariables />
         </div>
       </div>
-      <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
+      {/* <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
         {executionId && (
           <CustomButton onClick={() => setTimelineOpen(true)}>
             View Timeline
           </CustomButton>
         )}
-      </div>
+      </div> */}
       <CustomDrawer
         isOpen={addDataDrawerOpen}
         setIsOpen={setAddDataDrawerOpen}
@@ -81,7 +81,7 @@ function Builder({ isLog = false }) {
           <StepDetails />
         </div>
       </CustomDrawer>
-      <CustomDrawer
+      {/* <CustomDrawer
         isOpen={timelineOpen}
         setIsOpen={setTimelineOpen}
         addtionalStyles={"lg:w-[50%]"}
@@ -92,7 +92,7 @@ function Builder({ isLog = false }) {
             <Timeline setTimelineOpen={setTimelineOpen} />
           </div>
         )}
-      </CustomDrawer>
+      </CustomDrawer> */}
     </div>
   );
 }

@@ -56,11 +56,11 @@ function Step({ step, index }) {
   };
 
   const handleExecuteStep = async () => {
-    if (isExisting) {
-      const executionId = await handleStartExecution();
-      dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+    if (isExisting && !executionId) {
+      const id = await handleStartExecution();
+      dispatch(setPlaybookKey({ key: "executionId", value: id }));
       await executeStep(step, index);
-      setSearchParams({ executionId });
+      setSearchParams({ executionId: id });
     } else {
       executeStep(step, index);
     }

@@ -9,6 +9,7 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
           url: GET_PLAYBOOK_EXECUTION,
           body: {
             playbook_run_id: playbookRunId,
+            meta: {},
           },
           method: "POST",
         };

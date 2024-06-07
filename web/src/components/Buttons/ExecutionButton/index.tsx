@@ -26,7 +26,7 @@ function ExecutionButton() {
 
   const handleStopExecution = () => {
     if (!executionId) return;
-    navigate(-1);
+    navigate(`/playbooks/${currentPlaybook.id}`, { replace: true });
   };
 
   return (
