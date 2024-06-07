@@ -6,6 +6,7 @@ import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsExisting from "../../../hooks/useIsExisting.ts";
 
 const Button = () => {
   const { preview, dispatch } = useContext(EditorContext);
@@ -40,11 +41,13 @@ function Notes({ index }) {
   const [step] = useCurrentStep(index);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
+  const isExisting = useIsExisting();
+
   return (
     <>
       <div
         style={
-          isPrefetched && !step?.isCopied
+          isExisting && !step?.isCopied
             ? step?.notes
               ? {
                   display: "flex",

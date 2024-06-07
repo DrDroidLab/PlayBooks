@@ -1,4 +1,5 @@
 import { GET_CONNECTOR_OPTIONS } from "../../../../constants/index.ts";
+import handleDefaultValues from "../../../../utils/handleDefaultValues.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setKeysOptions } from "../integrationsSlice.ts";
 
@@ -19,7 +20,10 @@ export const getConnectorKeyOptionsApi = apiSlice.injectEndpoints({
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setKeysOptions(data));
+          dispatch(setKeysOptions(data?.keys));
+          data?.keys?.forEach((e) => {
+            handleDefaultValues(e);
+          });
         } catch (e) {
           console.log(e);
         }

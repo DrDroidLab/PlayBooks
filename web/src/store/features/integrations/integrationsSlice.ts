@@ -49,7 +49,7 @@ const integrationsSlice = createSlice({
     },
     setKeysOptions: (state, { payload }) => {
       state.keyOptions = payload;
-      payload.forEach((el) => {
+      payload?.forEach((el) => {
         state.currentConnector[el.key_type] = "";
       });
     },
