@@ -10,33 +10,39 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import GlobalVariables from "../../common/GlobalVariable";
 import TemplatesList from "./TemplatesList.jsx";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import Timeline from "../Timeline.jsx";
 
 function Builder({ isLog = false }) {
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const [importFromTemplatesOpen, setImportFromTemplatesOpen] = useState(false);
-  const { currentStepIndex } = useSelector(playbookSelector);
+  const [timelineOpen, setTimelineOpen] = useState(false);
+  const { currentStepIndex, executionId } = useSelector(playbookSelector);
   const dispatch = useDispatch();
 
   return (
     <div className="h-full w-full">
-      <div className="absolute top-2 left-2 flex flex-col items-start gap-4">
+      <div className="absolute top-2 left-2 flex flex-col items-start gap-4 z-10">
         {!isLog && (
           <>
-            <button
-              onClick={() => setAddDataDrawerOpen(true)}
-              className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
+            <CustomButton onClick={() => setAddDataDrawerOpen(true)}>
               Add Data
-            </button>
-            <button
-              onClick={() => setImportFromTemplatesOpen(true)}
-              className="border w-fit border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
+            </CustomButton>
+            <CustomButton onClick={() => setImportFromTemplatesOpen(true)}>
               Import from templates
-            </button>
+            </CustomButton>
           </>
         )}
-        <div className="z-10 bg-white p-1 rounded w-[300px]">
+        <div className="bg-white p-1 rounded w-[300px]">
           <GlobalVariables />
         </div>
+      </div>
+      <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
+        {executionId && (
+          <CustomButton onClick={() => setTimelineOpen(true)}>
+            View Timeline
+          </CustomButton>
+        )}
       </div>
       <CustomDrawer
         isOpen={addDataDrawerOpen}
@@ -74,6 +80,18 @@ function Builder({ isLog = false }) {
         <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
           <StepDetails />
         </div>
+      </CustomDrawer>
+      <CustomDrawer
+        isOpen={timelineOpen}
+        setIsOpen={setTimelineOpen}
+        addtionalStyles={"lg:w-[50%]"}
+        showOverlay={true}
+        startFrom="80">
+        {timelineOpen && (
+          <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
+            <Timeline />
+          </div>
+        )}
       </CustomDrawer>
     </div>
   );
