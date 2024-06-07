@@ -15,7 +15,7 @@ export const extractGkeTasks = (step: any) => {
     connectorType,
     taskType,
     modelType,
-    region: gkeTask?.region,
+    zone: gkeTask?.zone,
     cluster: gkeTask?.cluster,
     namespace: gkeTask?.namespace,
   };
