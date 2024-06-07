@@ -9,7 +9,7 @@ import { updateCardByIndex } from "./updateCardByIndex.ts";
 import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
 export async function executeStep(step: Step, index?: number) {
-  const executionId = playbookSelector(store.getState());
+  const { executionId } = playbookSelector(store.getState());
   if (Object.keys(step.errors ?? {}).length > 0) {
     updateCardByIndex("showError", true, index);
     return;

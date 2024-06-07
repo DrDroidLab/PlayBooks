@@ -21,7 +21,6 @@ function ExecutionButton() {
     if ("data" in response) {
       const { data } = response;
       setSearchParams({ executionId: data.playbook_run_id });
-      console.log(data);
     }
   };
 
