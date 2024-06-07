@@ -89,7 +89,7 @@ function Builder({ isLog = false }) {
         startFrom="80">
         {timelineOpen && (
           <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
-            <Timeline />
+            <Timeline setTimelineOpen={setTimelineOpen} />
           </div>
         )}
       </CustomDrawer>

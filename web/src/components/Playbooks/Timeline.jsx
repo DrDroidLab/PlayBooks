@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/api/index.ts";
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  playbookSelector,
+  setCurrentStepIndex,
+  stepsSelector,
+} from "../../store/features/playbook/playbookSlice.ts";
 import { executionToPlaybook } from "../../utils/parser/playbook/executionToPlaybook.ts";
 import Loading from "../common/Loading/index.tsx";
 import HandleOutput from "./steps/HandleOutput.jsx";
 import { renderTimestamp } from "../../utils/DateUtils.js";
+import CustomButton from "../common/CustomButton/index.tsx";
 
-function Timeline() {
+function Timeline({ setTimelineOpen }) {
   const { executionId } = useSelector(playbookSelector);
+  const playbookSteps = useSelector(stepsSelector);
   const [triggerGetPlaybookExeution, { isFetching }] =
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
+  const dispatch = useDispatch();
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -20,6 +27,12 @@ function Timeline() {
     ).unwrap();
     const pbData = executionToPlaybook(data?.playbook_execution);
     setSteps(pbData);
+  };
+
+  const handleShowConfig = (stepId) => {
+    const index = playbookSteps.findIndex((step) => step.id === stepId);
+    dispatch(setCurrentStepIndex(index));
+    setTimelineOpen(false);
   };
 
   useEffect(() => {
@@ -52,6 +65,11 @@ function Timeline() {
                 ? renderTimestamp(step?.outputs?.data?.[0]?.timestamp)
                 : ""}
             </p>
+            <div className="mt-2">
+              <CustomButton onClick={() => handleShowConfig(step.id)}>
+                Show Config
+              </CustomButton>
+            </div>
             <HandleOutput index={index} stepData={step} />
           </div>
         ))}
