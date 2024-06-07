@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
 import { CircularProgress, Tooltip } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addExternalLinks,
   deleteStep,
+  playbookSelector,
+  setPlaybookKey,
   toggleExternalLinkVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
@@ -17,13 +19,19 @@ import SelectInterpretation from "./Interpretation.jsx";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import useIsExisting from "../../../hooks/useIsExisting.ts";
 import HandleNotesRender from "./HandleNotesRender.jsx";
+import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
+import { useSearchParams } from "react-router-dom";
 
 function Step({ step, index }) {
+  const { executionId, currentPlaybook } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isExisting = useIsExisting();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
+  const [, setSearchParams] = useSearchParams();
+  const [triggerStartExecution, { isLoading: executionLoading }] =
+    useStartExecutionMutation();
   const dispatch = useDispatch();
 
   function handleDeleteClick() {
@@ -38,8 +46,24 @@ function Step({ step, index }) {
     dispatch(addExternalLinks({ links, index }));
   };
 
-  const handleExecuteStep = () => {
-    executeStep(step, index);
+  const handleStartExecution = async () => {
+    if (executionId) return;
+    const response = await triggerStartExecution(currentPlaybook.id);
+    if ("data" in response) {
+      const { data } = response;
+      return data.playbook_run_id;
+    }
+  };
+
+  const handleExecuteStep = async () => {
+    if (isExisting) {
+      const executionId = await handleStartExecution();
+      dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+      await executeStep(step, index);
+      setSearchParams({ executionId });
+    } else {
+      executeStep(step, index);
+    }
   };
 
   return (
@@ -92,7 +116,9 @@ function Step({ step, index }) {
                     </>
                   </Tooltip>
                 </button>
-                {step.outputLoading && <CircularProgress size={20} />}
+                {(step.outputLoading || executionLoading) && (
+                  <CircularProgress size={20} />
+                )}
               </div>
             )}
             <button
