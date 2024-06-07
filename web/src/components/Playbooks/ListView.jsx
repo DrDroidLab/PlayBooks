@@ -16,7 +16,7 @@ import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 const ListView = () => {
   const dispatch = useDispatch();
-  const { steps } = useSelector(playbookSelector);
+  const { steps, executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const ListView = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          {!isPrefetched && <StepActions />}
+          {!isPrefetched && !executionId && <StepActions />}
         </div>
       </div>
     </div>

@@ -15,3 +15,7 @@ export const DELETE_PLAYBOOK = "/pb/update";
 // Playbook Logs
 export const GET_PLAYBOOK_EXECUTION = "/pb/execution/get/v2";
 export const GET_PLAYBOOK_EXECUTIONS = "/pb/executions/list";
+
+// Executions
+export const START_EXECUTION = "/executor/execution/create";
+export const EXECUTION_STEP_EXECUTE = "/executor/execution/step/execute";

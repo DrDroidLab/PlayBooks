@@ -21,6 +21,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
+import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
+import useShowExecution from "../hooks/useShowExecution.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -51,7 +53,9 @@ const Heading = ({
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
+  const { executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
+  const showExecution = useShowExecution();
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -133,9 +137,14 @@ const Heading = ({
                   showEditTitle) && (
                   <input
                     className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
-                    placeholder="+ Add Description..."
+                    placeholder={
+                      isPrefetched
+                        ? "Playbook Description goes here"
+                        : "+ Add Description..."
+                    }
                     value={playbook.description}
                     onChange={handleDescription}
+                    disabled={isPrefetched}
                   />
                 )}
                 {!!subHeadingLink && !!subHeading ? (
@@ -160,7 +169,10 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" && !isPrefetched && <StepActions />}
+          {playbook.view === "builder" && !executionId && !isPrefetched && (
+            <StepActions />
+          )}
+          {showExecution && <ExecutionButton />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

@@ -49,7 +49,7 @@ const playbookSlice = createSlice({
       state.view = payload;
     },
     setCurrentPlaybook(state, { payload }) {
-      state.currentPlaybook = { ...payload, isPrefetched: true };
+      state.currentPlaybook = { isPrefetched: true, ...payload };
     },
     setPlaybookData(state, { payload }) {
       state.currentPlaybook.name = payload.name;

@@ -1,10 +1,15 @@
 import { store } from "../../store/index.ts";
-import { executePlaybookStep } from "../../store/features/playbook/api/index.ts";
+import {
+  executePlaybookStep,
+  executionStepExecute,
+} from "../../store/features/playbook/api/index.ts";
 import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
 export async function executeStep(step: Step, index?: number) {
+  const executionId = playbookSelector(store.getState());
   if (Object.keys(step.errors ?? {}).length > 0) {
     updateCardByIndex("showError", true, index);
     return;
@@ -15,9 +20,9 @@ export async function executeStep(step: Step, index?: number) {
   updateCardByIndex("showOutput", false, index);
 
   try {
-    const res = await store
-      .dispatch(executePlaybookStep.initiate(stepData))
-      .unwrap();
+    const res = executionId
+      ? await store.dispatch(executionStepExecute.initiate(stepData)).unwrap()
+      : await store.dispatch(executePlaybookStep.initiate(stepData)).unwrap();
     const outputList: any = [];
     const output = res?.step_execution_log;
     for (let outputData of output?.task_execution_logs ?? []) {

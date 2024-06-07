@@ -14,6 +14,7 @@ import {
   stepsSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
+import CustomButton from "../../common/CustomButton/index.tsx";
 
 function StepActions() {
   const dispatch = useDispatch();
@@ -77,14 +78,10 @@ function StepActions() {
 
   return (
     <div className="flex items-center gap-2">
-      <button
-        className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
-        onClick={handleSave}>
-        <Save style={{ fontSize: "medium" }} />
-        <span style={{ marginLeft: "2px" }} className="save_playbook">
-          {isEditing ? "Update" : "Save"}
-        </span>
-      </button>
+      <CustomButton onClick={handleSave}>
+        <Save />
+        <span>{isEditing ? "Update" : "Save"}</span>
+      </CustomButton>
       {(updateLoading || createLoading) && (
         <CircularProgress
           style={{

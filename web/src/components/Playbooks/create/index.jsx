@@ -7,12 +7,13 @@ import {
   setPlaybookDataBeta,
   copyPlaybook,
   setView,
+  setPlaybookKey,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
   setPlaybookState,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import ListView from "../ListView.jsx";
@@ -39,6 +40,12 @@ function CreatePlaybook() {
   const copied = useRef(false);
   const playbookDataRef = useRef(null);
   const [copyLoading, setCopyLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const executionId = searchParams.get("executionId");
+
+  useEffect(() => {
+    dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+  }, [executionId, dispatch]);
 
   useEffect(() => {
     dispatch(setPlaybookState());

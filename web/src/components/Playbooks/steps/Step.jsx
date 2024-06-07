@@ -41,6 +41,10 @@ function Step({ step, index }) {
     dispatch(addExternalLinks({ links, index }));
   };
 
+  const handleExecuteStep = () => {
+    executeStep(step, index);
+  };
+
   return (
     <div className="rounded my-2">
       <div className="flex flex-col">
@@ -102,7 +106,7 @@ function Step({ step, index }) {
               <div className="flex items-center gap-2">
                 <button
                   className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
-                  onClick={() => executeStep(step, index)}>
+                  onClick={handleExecuteStep}>
                   <Tooltip title="Run this Step">
                     <>
                       Run <PlayArrowRounded />
