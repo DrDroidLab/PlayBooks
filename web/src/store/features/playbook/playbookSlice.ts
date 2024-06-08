@@ -186,6 +186,11 @@ const playbookSlice = createSlice({
       if (payload !== null) state.currentStepIndex = payload.toString();
       else state.currentStepIndex = null;
     },
+    showStepConfig(state, { payload }) {
+      state.currentStepIndex = payload.toString();
+      state.steps.forEach((step) => (step.isOpen = false));
+      state.steps[payload].isOpen = true;
+    },
     createStepWithSource(state, { payload }) {
       state.steps.forEach((step) => {
         step.isOpen = false;
@@ -520,6 +525,7 @@ export const {
   setName,
   setMeta,
   setCurrentStepIndex,
+  showStepConfig,
   createStepWithSource,
   addStep,
   toggleStep,

@@ -3,7 +3,7 @@ import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
-  setCurrentStepIndex,
+  showStepConfig,
   stepsSelector,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { executionToPlaybook } from "../../utils/parser/playbook/executionToPlaybook.ts";
@@ -31,7 +31,7 @@ function Timeline({ setTimelineOpen }) {
 
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
-    dispatch(setCurrentStepIndex(index));
+    dispatch(showStepConfig(index));
     setTimelineOpen(false);
   };
 
