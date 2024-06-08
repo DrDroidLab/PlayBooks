@@ -47,3 +47,20 @@ img {
 .wmde-markdown ul {
   list-style: circle !important;
 }
+
+.MuiTableCell-root {
+  padding: 14px !important;
+  font-size: 15px !important;
+  border-color: #eee !important;
+}
+
+.MuiTableRow-root:hover {
+  background-color: #eee !important;
+  transition: all 0.2s !important;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  border-bottom: 2px solid #ededed !important;
+  font-size: 14px !important;
+  padding: 8px !important;
+}
