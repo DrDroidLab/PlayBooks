@@ -40,7 +40,7 @@ const Playbooks = () => {
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center justify-between">
           <button
-            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg create_playbook"
+            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg !text-white"
             onClick={handleCreatePlaybook}
             style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
             + Create Playbook

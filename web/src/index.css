@@ -54,6 +54,15 @@ img {
   border-color: #eee !important;
 }
 
+.MuiTableCell-root a {
+  text-decoration: none !important;
+  color: #9553fe !important;
+}
+
+.MuiTableCell-root a:hover {
+  text-decoration: underline !important;
+}
+
 .MuiTableRow-root:hover {
   background-color: #eee !important;
   transition: all 0.2s !important;
