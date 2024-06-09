@@ -54,34 +54,9 @@ Using PlayBooks, a user can configure the steps as data queries or actions withi
 
 ## Getting Started with alert enrichment
 
-### Use latest stable version
-#### via Docker Compose 
-```
-docker-compose -f deploy.docker-compose.yaml up -d
-```
-Access the portal at [localhost](http://localhost:80) (on port 80)
-
-#### via Helm (on a kubernetes cluster)
-```
-cd helm
-helm install playbooks .
-```
-Run the following command to get the portal endpoint
-```
-kubectl get svc web -o custom-columns="EXTERNAL-IP:.status.loadBalancer.ingress[*].hostname"
-```
-OR
-### Build from Source
-
-```
-git clone git@github.com:DrDroidLab/PlayBooks.git
-
-docker-compose -f playbooks.docker-compose.yaml up -d
-```
+**Step 1:** Follow this [guide](https://docs.drdroid.io/docs/installation) to setup Playbooks by docker-compose or helm.
 
 **Step 2:** Follow this [Step-by-Step guide](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) to do your first alert enrichment.
-
-#### [Cloud Signup](https://playbooks.drdroid.io/signup)
 
 ## Have feedback or queries?
 Asks questions in the [Slack Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ) or write to us at founders [at] drdroid [dot] io
