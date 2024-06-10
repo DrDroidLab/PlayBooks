@@ -4,12 +4,19 @@ import { PlayArrowRounded, StopCircleRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import { useSelector } from "react-redux";
+import {
+  playbookSelector,
+  setPlaybookKey,
+} from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { executeStep } from "../../../utils/execution/executeStep.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function ExecutionButton() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentPlaybook = useSelector(playbookSelector);
+  const [step] = useCurrentStep(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const [triggerStartExecution, { isLoading: executionLoading }] =
@@ -21,6 +28,9 @@ function ExecutionButton() {
     if ("data" in response) {
       const { data } = response;
       setSearchParams({ executionId: data.playbook_run_id });
+      const id = data.playbook_run_id;
+      dispatch(setPlaybookKey({ key: "executionId", value: id }));
+      await executeStep(step, 0);
     }
   };
 
