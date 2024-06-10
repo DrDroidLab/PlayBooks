@@ -1,7 +1,7 @@
 from executor.workflows.entry_point.entry_point_evaluator import WorkflowEntryPointEvaluator
 from protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2 import \
     SlackChannelAlertEntryPoint as SlackChannelAlertEntryPointProto
-from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto
+from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
 
 def i_contains(string, substring):
@@ -10,9 +10,9 @@ def i_contains(string, substring):
 
 class SlackChannelAlertEntryPointEvaluator(WorkflowEntryPointEvaluator):
     def __init__(self):
-        self.type = WorkflowEntryPointProto.Type.SLACK_CHANNEL_ALERT
+        self.type = WorkflowEntryPoint.Type.SLACK_CHANNEL_ALERT
 
-    def evaluate(self, slack_channel_alert_ep: WorkflowEntryPointProto, slack_alert) -> bool:
+    def evaluate(self, slack_channel_alert_ep: WorkflowEntryPoint, slack_alert) -> bool:
         slack_channel_alert_config: SlackChannelAlertEntryPointProto = slack_channel_alert_ep.slack_channel_alert
         if not slack_channel_alert_config:
             return False

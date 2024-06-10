@@ -12,8 +12,8 @@ class WorkflowActionExecutor:
     type = WorkflowAction.Type.UNKNOWN
     source = Source.UNKNOWN
 
-    def get_connector_processor(self, connector: Connector, **kwargs):
-        raise NotImplementedError('get_connector_processor method is not implemented')
+    def get_action_connector_processor(self, connector: Connector, **kwargs):
+        raise NotImplementedError('get_action_connector_processor method is not implemented')
 
     def execute(self, action: WorkflowAction, execution_output: [Interpretation], connector: Connector = None):
         raise NotImplementedError('execute method is not implemented')

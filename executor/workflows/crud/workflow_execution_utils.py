@@ -10,7 +10,7 @@ from protos.playbooks.workflow_schedules.cron_schedule_pb2 import CronSchedule
 from protos.playbooks.workflow_schedules.interval_schedule_pb2 import IntervalSchedule
 from utils.time_utils import calculate_cron_times, current_datetime, calculate_interval_times
 from protos.base_pb2 import TimeRange
-from protos.playbooks.workflow_pb2 import WorkflowSchedule as WorkflowScheduleProto
+from protos.playbooks.workflow_pb2 import WorkflowSchedule
 
 from utils.proto_utils import dict_to_proto
 
@@ -28,7 +28,7 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
     for wfm in all_wf_mappings:
         workflow = wfm.workflow
         workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
-        schedule: WorkflowScheduleProto = dict_to_proto(workflow.schedule, WorkflowScheduleProto)
+        schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
         create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
                                        current_time_utc, workflow_run_id, 'SLACK_ALERT',
                                        metadata={'thread_ts': thread_ts})
@@ -36,7 +36,7 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
 
 def create_workflow_execution_util(account: Account, workflow_id, schedule_type, schedule, scheduled_at,
                                    workflow_run_uuid, triggered_by=None, metadata=None) -> (bool, str):
-    if schedule_type == WorkflowScheduleProto.Type.INTERVAL:
+    if schedule_type == WorkflowSchedule.Type.INTERVAL:
         interval_schedule: IntervalSchedule = schedule.interval
 
         duration_in_seconds = interval_schedule.duration_in_seconds.value
@@ -58,7 +58,7 @@ def create_workflow_execution_util(account: Account, workflow_id, schedule_type,
             time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
             create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, expiry_at,
                                       triggered_by, metadata)
-    elif schedule_type.type == WorkflowScheduleProto.Type.CRON:
+    elif schedule_type == WorkflowSchedule.Type.CRON:
         cron_schedule: CronSchedule = schedule.cron
         cron_rule = cron_schedule.rule.value
         if not cron_rule:
@@ -84,7 +84,7 @@ def create_workflow_execution_util(account: Account, workflow_id, schedule_type,
             time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
             create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, scheduled_at,
                                       triggered_by, metadata)
-    elif schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
+    elif schedule_type == WorkflowSchedule.Type.ONE_OFF:
         scheduled_at = scheduled_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL))
         time_range = TimeRange(time_geq=int(scheduled_at.timestamp()) - 3600, time_lt=int(scheduled_at.timestamp()))
         create_workflow_execution(account, time_range, workflow_id, workflow_run_uuid, scheduled_at, scheduled_at,

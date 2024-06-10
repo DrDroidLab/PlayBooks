@@ -1274,56 +1274,6 @@ class ExecutionWorkflowGetResponse(google.protobuf.message.Message):
     @property
     def message(self) -> protos.base_pb2.Message: ...
     @property
-    def workflow_executions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.DeprecatedWorkflowExecution]: ...
-    def __init__(
-        self,
-        *,
-        meta: protos.base_pb2.Meta | None = ...,
-        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-        message: protos.base_pb2.Message | None = ...,
-        workflow_executions: collections.abc.Iterable[protos.playbooks.workflow_pb2.DeprecatedWorkflowExecution] | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_executions", b"workflow_executions"]) -> None: ...
-
-global___ExecutionWorkflowGetResponse = ExecutionWorkflowGetResponse
-
-@typing_extensions.final
-class ExecutionWorkflowGetRequestV2(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    META_FIELD_NUMBER: builtins.int
-    WORKFLOW_RUN_ID_FIELD_NUMBER: builtins.int
-    @property
-    def meta(self) -> protos.base_pb2.Meta: ...
-    @property
-    def workflow_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    def __init__(
-        self,
-        *,
-        meta: protos.base_pb2.Meta | None = ...,
-        workflow_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "workflow_run_id", b"workflow_run_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "workflow_run_id", b"workflow_run_id"]) -> None: ...
-
-global___ExecutionWorkflowGetRequestV2 = ExecutionWorkflowGetRequestV2
-
-@typing_extensions.final
-class ExecutionWorkflowGetResponseV2(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    META_FIELD_NUMBER: builtins.int
-    SUCCESS_FIELD_NUMBER: builtins.int
-    MESSAGE_FIELD_NUMBER: builtins.int
-    WORKFLOW_EXECUTIONS_FIELD_NUMBER: builtins.int
-    @property
-    def meta(self) -> protos.base_pb2.Meta: ...
-    @property
-    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-    @property
-    def message(self) -> protos.base_pb2.Message: ...
-    @property
     def workflow_executions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.WorkflowExecution]: ...
     def __init__(
         self,
@@ -1336,7 +1286,7 @@ class ExecutionWorkflowGetResponseV2(google.protobuf.message.Message):
     def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_executions", b"workflow_executions"]) -> None: ...
 
-global___ExecutionWorkflowGetResponseV2 = ExecutionWorkflowGetResponseV2
+global___ExecutionWorkflowGetResponse = ExecutionWorkflowGetResponse
 
 @typing_extensions.final
 class ExecutionsWorkflowsListRequest(google.protobuf.message.Message):

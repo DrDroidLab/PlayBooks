@@ -20,7 +20,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import get_current_time
 from protos.base_pb2 import Source, SourceModelType, SourceKeyType
-from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto
+from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
@@ -295,8 +295,9 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
 
                 slack_received_msg.save()
                 all_slack_chanel_alert_ep = get_db_workflow_entry_points(account_id=account_id,
-                                                                         entry_point_type=WorkflowEntryPointProto.Type.SLACK_CHANNEL_ALERT)
-                ep_protos: [WorkflowEntryPointProto] = [e.proto for e in all_slack_chanel_alert_ep]
+                                                                         entry_point_type=WorkflowEntryPoint.Type.SLACK_CHANNEL_ALERT,
+                                                                         is_active=True)
+                ep_protos: [WorkflowEntryPoint] = [e.proto for e in all_slack_chanel_alert_ep]
 
                 slack_alert_event = {'channel_id': channel_id, 'alert_type': alert_type, 'alert_text': alert_text}
                 for ep in ep_protos:

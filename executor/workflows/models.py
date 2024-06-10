@@ -5,9 +5,8 @@ from django.db import models
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
+from connectors.models import Connector
 from executor.models import PlayBook, PlayBookExecution
-from playbooks.utils.decorators import deprecated
-from protos.playbooks.workflow_pb2 import DeprecatedWorkflowExecutionLog, DeprecatedWorkflowExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
@@ -28,28 +27,9 @@ class WorkflowEntryPoint(models.Model):
     class Meta:
         unique_together = [['account', 'type', 'entry_point_md5', 'created_by']]
 
-    def save(self, **kwargs):
-        if self.entry_point:
-            self.entry_point_md5 = md5(str(self.entry_point).encode('utf-8')).hexdigest()
-        super().save(**kwargs)
-
     @property
     def proto(self) -> WorkflowEntryPointProto:
-        ep_proto = dict_to_proto(self.entry_point, WorkflowEntryPointProto)
-        if ep_proto.type == WorkflowEntryPointProto.Type.API:
-            return WorkflowEntryPointProto(
-                id=UInt64Value(value=self.id),
-                type=ep_proto.type,
-                api_config=ep_proto.api_config
-            )
-        elif ep_proto.type == WorkflowEntryPointProto.Type.ALERT:
-            return WorkflowEntryPointProto(
-                id=UInt64Value(value=self.id),
-                type=ep_proto.type,
-                alert_config=ep_proto.alert_config
-            )
-        else:
-            raise ValueError(f"Invalid entry point type: {ep_proto.type}")
+        return dict_to_proto(self.entry_point, WorkflowEntryPointProto)
 
 
 class WorkflowAction(models.Model):
@@ -71,15 +51,7 @@ class WorkflowAction(models.Model):
 
     @property
     def proto(self) -> WorkflowActionProto:
-        wf_action_proto = dict_to_proto(self.action, WorkflowActionProto)
-        if wf_action_proto.type == WorkflowActionProto.Type.NOTIFY:
-            return WorkflowActionProto(
-                id=UInt64Value(value=self.id),
-                type=wf_action_proto.type,
-                notification_config=wf_action_proto.notification_config
-            )
-        else:
-            raise ValueError(f"Invalid action type: {wf_action_proto.type}")
+        return dict_to_proto(self.action, WorkflowActionProto)
 
 
 class Workflow(models.Model):
@@ -210,6 +182,19 @@ class WorkflowActionMapping(models.Model):
         unique_together = [['account', 'workflow', 'action']]
 
 
+#
+# class WorkflowActionConnectorMapping(models.Model):
+#     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+#     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, db_index=True)
+#     workflow_action = models.ForeignKey(WorkflowAction, on_delete=models.CASCADE, db_index=True)
+#     connector = models.ForeignKey(Connector, on_delete=models.CASCADE, db_index=True)
+#     is_active = models.BooleanField(default=True)
+#     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
+#
+#     class Meta:
+#         unique_together = [['account', 'workflow', 'workflow_action', 'connector']]
+
+
 class WorkflowExecution(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, db_index=True)
@@ -258,33 +243,10 @@ class WorkflowExecution(models.Model):
             status=self.status,
             scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
             expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval) if self.interval else None,
-            total_executions=UInt64Value(value=self.total_executions),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_by=StringValue(value=self.created_by) if self.created_by else None,
-        )
-
-    @property
-    @deprecated
-    def deprecated_proto(self) -> DeprecatedWorkflowExecution:
-        workflow_execution_logs = self.workflowexecutionlog_set.all()
-        wf_logs = [wel.deprecated_proto for wel in workflow_execution_logs]
-        return DeprecatedWorkflowExecution(
-            id=UInt64Value(value=self.id),
-            workflow_run_id=StringValue(value=self.workflow_run_id),
-            workflow=self.workflow.proto_partial,
-            status=self.status,
-            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
-            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval),
-            total_executions=UInt64Value(value=self.total_executions),
-            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
-            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
-            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
-            created_by=StringValue(value=self.created_by) if self.created_by else None,
-            workflow_logs=wf_logs
         )
 
 
@@ -308,15 +270,5 @@ class WorkflowExecutionLog(models.Model):
     def proto_partial(self) -> WorkflowExecutionLogProto:
         return WorkflowExecutionLogProto(
             id=UInt64Value(value=self.id),
-            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
-        )
-
-    @property
-    @deprecated
-    def deprecated_proto(self) -> DeprecatedWorkflowExecutionLog:
-        playbook_execution_proto = self.playbook_execution.deprecated_proto
-        return DeprecatedWorkflowExecutionLog(
-            id=UInt64Value(value=self.id),
-            playbook_execution=playbook_execution_proto,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
         )

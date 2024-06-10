@@ -62,6 +62,12 @@ message WorkflowEntryPoint {
 
 ///////////////////// Workflow Actions /////////////////////
 message WorkflowAction {
+  message WorkflowActionConnectorSource {
+    google.protobuf.UInt64Value id = 1;
+    Source source = 2;
+    google.protobuf.StringValue name = 3;
+  }
+
   enum Type {
     UNKNOWN = 0;
     API = 1;
@@ -69,6 +75,8 @@ message WorkflowAction {
     SLACK_THREAD_REPLY = 3;
   }
   Type type = 1;
+  Source source = 2;
+  WorkflowActionConnectorSource action_connector_source = 3;
   oneof notification_config {
     ApiTriggerWorkflowAction api = 101;
     SlackMessageWorkflowAction slack_message = 102;
@@ -156,35 +164,9 @@ message WorkflowExecution {
   WorkflowExecutionStatusType status = 4;
   sfixed64 scheduled_at = 5;
   sfixed64 expiry_at = 6;
-  google.protobuf.UInt64Value interval = 7;
-  google.protobuf.UInt64Value total_executions = 8;
-  sfixed64 created_at = 9;
-  sfixed64 started_at = 10;
-  sfixed64 finished_at = 11;
-  google.protobuf.StringValue created_by = 12;
-  repeated WorkflowExecutionLog workflow_logs = 13;
-}
-
-
-///////////////////// Deprecated Workflow Executions Proto /////////////////////
-message DeprecatedWorkflowExecutionLog {
-  google.protobuf.UInt64Value id = 1;
-  DeprecatedPlaybookExecution playbook_execution = 2;
-  sfixed64 created_at = 3;
-}
-
-message DeprecatedWorkflowExecution {
-  google.protobuf.UInt64Value id = 1;
-  google.protobuf.StringValue workflow_run_id = 2;
-  Workflow workflow = 3;
-  WorkflowExecutionStatusType status = 4;
-  sfixed64 scheduled_at = 5;
-  sfixed64 expiry_at = 6;
-  google.protobuf.UInt64Value interval = 7;
-  google.protobuf.UInt64Value total_executions = 8;
-  sfixed64 created_at = 9;
-  sfixed64 started_at = 10;
-  sfixed64 finished_at = 11;
-  google.protobuf.StringValue created_by = 12;
-  repeated DeprecatedWorkflowExecutionLog workflow_logs = 13;
+  sfixed64 created_at = 7;
+  sfixed64 started_at = 8;
+  sfixed64 finished_at = 9;
+  google.protobuf.StringValue created_by = 10;
+  repeated WorkflowExecutionLog workflow_logs = 11;
 }

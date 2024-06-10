@@ -9,7 +9,7 @@ from protos.base_pb2 import Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
-from protos.playbooks.workflow_pb2 import WorkflowAction as WorkflowActionProto
+from protos.playbooks.workflow_pb2 import WorkflowAction
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +18,9 @@ class SlackMessageExecutor(WorkflowActionExecutor):
 
     def __init__(self):
         self.source = Source.SLACK
-        self.type = WorkflowActionProto.Type.SLACK_MESSAGE
+        self.type = WorkflowAction.Type.SLACK_MESSAGE
 
-    def get_connector_processor(self, slack_connector: ConnectorProto, **kwargs):
+    def get_action_connector_processor(self, slack_connector: ConnectorProto, **kwargs):
         if not slack_connector:
             db_connector = get_db_connectors(connector_type=Source.SLACK)
             if not db_connector:
@@ -31,7 +31,7 @@ class SlackMessageExecutor(WorkflowActionExecutor):
         generated_credentials = generate_credentials_dict(slack_connector.type, slack_connector.keys)
         return SlackApiProcessor(**generated_credentials)
 
-    def execute(self, action: WorkflowActionProto, execution_output: [InterpretationProto],
+    def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
                 connector: ConnectorProto = None):
         slack_config: SlackMessageWorkflowAction = action.slack_message
         channel_id = slack_config.slack_channel_id.value
@@ -67,7 +67,7 @@ class SlackMessageExecutor(WorkflowActionExecutor):
                                      'initial_comment': interpretation.title.value})
         message_params = {'blocks': blocks, 'channel_id': channel_id}
         try:
-            slack_api_processor = self.get_connector_processor(connector)
+            slack_api_processor = self.get_action_connector_processor(connector)
             slack_api_processor.send_bot_message(**message_params)
             for file_upload in file_uploads:
                 try:

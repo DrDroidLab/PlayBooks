@@ -318,18 +318,6 @@ message ExecutionWorkflowGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated DeprecatedWorkflowExecution workflow_executions = 4;
-}
-
-message ExecutionWorkflowGetRequestV2 {
-  Meta meta = 1;
-  google.protobuf.StringValue workflow_run_id = 2;
-}
-
-message ExecutionWorkflowGetResponseV2 {
-  Meta meta = 1;
-  google.protobuf.BoolValue success = 2;
-  Message message = 3;
   repeated WorkflowExecution workflow_executions = 4;
 }
 

@@ -13,9 +13,7 @@ from executor.playbook_source_facade import playbook_source_facade
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, \
-    get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
-    update_db_account_workflow_execution_count_increment
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
@@ -41,8 +39,7 @@ logger = logging.getLogger(__name__)
 def workflow_scheduler():
     current_time_utc = current_datetime()
     current_time = int(current_time_utc.timestamp())
-    all_scheduled_wf_executions = get_workflow_executions(
-        status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
+    all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
     for wf_execution in all_scheduled_wf_executions:
         workflow_id = wf_execution.workflow_id
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
@@ -62,31 +59,15 @@ def workflow_scheduler():
             continue
 
         expiry_at = wf_execution.expiry_at
-        interval = wf_execution.interval
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
             logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}, workflow_id: "
                         f"{workflow_id} at {current_time}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
-        if interval:
-            next_schedule = current_time_utc
-            wf_execution_logs = get_db_workflow_execution_logs(account, wf_execution.id)
-            if wf_execution_logs.exists():
-                latest_wf_execution_log = wf_execution_logs.first()
-                next_schedule = latest_wf_execution_log.created_at + timedelta(seconds=interval)
-            if current_time_utc < next_schedule:
-                logger.info(f"Next Workflow execution interval not reached for workflow_execution_id: "
-                            f"{wf_execution.id}, workflow_id: {workflow_id} at {current_time}")
-                continue
-            else:
-                update_time_range = {'time_geq': int(next_schedule.timestamp()) - 3600,
-                                     'time_lt': int(next_schedule.timestamp())}
 
-        update_db_account_workflow_execution_count_increment(account, wf_execution.id)
-        if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
-            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
-                                                        WorkflowExecutionStatusType.WORKFLOW_RUNNING)
+        update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+                                                    WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
@@ -116,9 +97,6 @@ def workflow_scheduler():
                 update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                             WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
-        if not interval:
-            logger.info(f"Workflow execution interval not set for workflow_execution_id, "
-                        f"marking complete: {wf_execution.id}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue

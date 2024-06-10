@@ -1,4 +1,5 @@
 import logging
+from hashlib import md5
 
 from django.db import transaction as dj_transaction
 
@@ -47,19 +48,20 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     wf_schedule_type = wf_schedule_proto.type
     if wf_schedule_type == WorkflowScheduleProto.Type.UNKNOWN:
         return None, 'Invalid Schedule Type'
-    if wf_schedule_type == WorkflowScheduleProto.Type.PERIODIC and not wf_schedule_proto.periodic.duration_in_seconds.value:
+    if wf_schedule_type == WorkflowScheduleProto.Type.INTERVAL and not wf_schedule_proto.interval.duration_in_seconds.value:
         return None, 'Invalid Periodic Schedule'
-    wf_schedule = proto_to_dict(wf_schedule_proto)
+    elif wf_schedule_type == WorkflowScheduleProto.Type.CRON and not wf_schedule_proto.cron.duration_in_seconds.value:
+        return None, 'Invalid Cron Schedule'
 
+    wf_schedule = proto_to_dict(wf_schedule_proto)
     wf_entry_point_protos: [WorkflowEntryPointProto] = workflow_proto.entry_points
     wf_action_protos: [WorkflowActionProto] = workflow_proto.actions
 
     playbooks: [DeprecatedPlaybook] = workflow_proto.playbooks
     playbook_ids = [pb.id.value for pb in playbooks]
-    db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids)
+    db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids, is_active=True)
     if db_playbooks.count() != len(playbook_ids):
         return None, 'Invalid Playbooks in Workflow Config'
-
     try:
         db_workflows = get_db_workflows(account, workflow_name=name, created_by=created_by)
         if db_workflows.exists() and not update_mode:
@@ -73,26 +75,25 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
             for ep in wf_entry_point_protos:
                 ep_type = ep.type
                 entry_point = proto_to_dict(ep)
-
+                entry_point_md5 = md5(str(entry_point).encode('utf-8')).hexdigest()
                 saved_ep, _ = WorkflowEntryPoint.objects.get_or_create(account=account,
                                                                        type=ep_type,
-                                                                       entry_point=entry_point,
+                                                                       entry_point_md5=entry_point_md5,
                                                                        created_by=created_by,
-                                                                       defaults={
-                                                                           'is_active': True,
-                                                                       })
+                                                                       defaults={'is_active': True,
+                                                                                 'entry_point': entry_point})
                 db_w_entry_points.append(saved_ep)
+
             db_w_actions = []
             for ap in wf_action_protos:
                 ap_type = ap.type
                 action = proto_to_dict(ap)
+                action_md5 = md5(str(action).encode('utf-8')).hexdigest()
                 saved_a, _ = WorkflowAction.objects.get_or_create(account=account,
                                                                   type=ap_type,
-                                                                  action=action,
+                                                                  action_md5=action_md5,
                                                                   created_by=created_by,
-                                                                  defaults={
-                                                                      'is_active': True,
-                                                                  })
+                                                                  defaults={'is_active': True, 'action': action})
                 db_w_actions.append(saved_a)
 
             db_workflow, is_created = Workflow.objects.update_or_create(account=account,
