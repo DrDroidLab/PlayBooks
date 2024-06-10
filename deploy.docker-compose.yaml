@@ -23,6 +23,7 @@ services:
 
   setup_db:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./setup_db.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -42,6 +43,7 @@ services:
 
   server:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-server.sh
     ports:
       - 8080:8080
@@ -62,6 +64,7 @@ services:
 
   celery_worker:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -80,6 +83,7 @@ services:
 
   workflow_scheduler_celery_worker:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -99,6 +103,7 @@ services:
 
   workflow_executor_celery_worker:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -118,6 +123,7 @@ services:
 
   workflow_action_execution_celery_worker:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -137,6 +143,7 @@ services:
 
   celery_beat:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    platform: linux/amd64
     command: ./start-celery-beat.sh
     environment:
       - "DJANGO_DEBUG=True"
@@ -155,6 +162,7 @@ services:
 
   web:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
+    platform: linux/amd64
     environment:
       - REACT_APP_POSTHOG_ENABLED=true
     ports:

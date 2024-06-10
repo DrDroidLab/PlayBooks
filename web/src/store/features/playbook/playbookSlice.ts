@@ -424,11 +424,7 @@ const playbookSlice = createSlice({
       }
     },
     toggleNotesVisibility(state, { payload }) {
-      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
-      if (index !== "" && index !== null && index !== undefined) {
-        state.steps[parseInt(index, 10)].showNotes =
-          !state.steps[payload.index].showNotes;
-      }
+      state.steps[payload].showNotes = !state.steps[payload].showNotes;
     },
     resetState(state) {
       state.steps = [];
