@@ -9,6 +9,7 @@ import { PostgresAssets } from "./assets/PostgresAssets.jsx";
 import { useGetConnectorAssetsQuery } from "../../../store/features/integrations/api/index.ts";
 import { EksClusterAssets } from "./assets/EksClusterAssets.jsx";
 import { AzureAssets } from "./assets/AzureAssets.jsx";
+import { GkeAssets } from "./assets/GkeAssets.jsx";
 
 function Assets({ connector, id }) {
   const { data, isFetching, error } = useGetConnectorAssetsQuery(id);
@@ -48,6 +49,9 @@ function Assets({ connector, id }) {
 
     case connectors.EKS:
       return <EksClusterAssets assets={assets} />;
+
+    case connectors.GKE:
+      return <GkeAssets assets={assets} />;
 
     default:
       return <></>;

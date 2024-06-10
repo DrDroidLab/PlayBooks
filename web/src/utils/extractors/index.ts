@@ -11,3 +11,4 @@ export * from "./mimir.ts";
 export * from "./bash.ts";
 export * from "./sqlRawQuery.ts";
 export * from "./azure.ts";
+export * from "./gke.ts";

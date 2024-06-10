@@ -52,19 +52,21 @@ const WorkflowExecutionList = () => {
           + Create Workflow
         </button>
       </div> */}
-      <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <ExecutionsTable
-          workflowsList={workflowsList}
-          total={total}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          pageUpdateCb={pageUpdateCb}
-          tableContainerStyles={
-            workflowsList?.length
-              ? {}
-              : { maxHeight: "35vh", minHeight: "35vh" }
-          }
-          refreshTable={refetch}></ExecutionsTable>
-      </SuspenseLoader>
+      <main className="flex flex-col gap-4 p-2 pt-4">
+        <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
+          <ExecutionsTable
+            workflowsList={workflowsList}
+            total={total}
+            pageSize={pageMeta ? pageMeta?.limit : 10}
+            pageUpdateCb={pageUpdateCb}
+            tableContainerStyles={
+              workflowsList?.length
+                ? {}
+                : { maxHeight: "35vh", minHeight: "35vh" }
+            }
+            refreshTable={refetch}></ExecutionsTable>
+        </SuspenseLoader>
+      </main>
     </div>
   );
 };

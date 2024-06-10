@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
 import { CircularProgress, Tooltip } from "@mui/material";
-import Notes from "./Notes.jsx";
 import { useDispatch } from "react-redux";
 import {
   addExternalLinks,
   deleteStep,
   toggleExternalLinkVisibility,
-  toggleNotesVisibility,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import Query from "./Query.jsx";
@@ -17,9 +15,12 @@ import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import SelectInterpretation from "./Interpretation.jsx";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
+import useIsExisting from "../../../hooks/useIsExisting.ts";
+import HandleNotesRender from "./HandleNotesRender.jsx";
 
 function Step({ step, index }) {
   const isPrefetched = useIsPrefetched();
+  const isExisting = useIsExisting();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
@@ -31,10 +32,6 @@ function Step({ step, index }) {
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ index }));
-  };
-
-  const toggleNotes = () => {
-    dispatch(toggleNotesVisibility({ index }));
   };
 
   const setLinks = (links) => {
@@ -60,27 +57,9 @@ function Step({ step, index }) {
 
           {addQuery && <Query index={index} />}
         </div>
-        {isPrefetched && !step.isCopied ? (
-          step.notes && (
-            <>
-              <div className="mt-2 text-sm cursor-pointer text-violet-500">
-                <b>Notes</b>
-              </div>
-              <Notes step={step} index={index} />
-            </>
-          )
-        ) : (
-          <>
-            <div
-              className="mt-2 text-sm cursor-pointer text-violet-500"
-              onClick={toggleNotes}>
-              <b>{step.showNotes ? "-" : "+"}</b> Add Notes about this step
-            </div>
-            {step.showNotes && <Notes step={step} index={index} />}
-          </>
-        )}
+        <HandleNotesRender index={index} step={step} />
         <SelectInterpretation index={index} />
-        {!isPrefetched && (
+        {isExisting && (
           <div>
             <div>
               <div

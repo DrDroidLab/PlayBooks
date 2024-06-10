@@ -82,8 +82,15 @@ def update_db_playbook_execution_status(playbook_execution_id: int, status: Play
     return False
 
 
-def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results):
+def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results, user=None,
+                                       tr=None):
     all_db_playbook_execution_logs = []
+    if not user:
+        user = playbook_execution.created_by
+    if tr:
+        time_range = proto_to_dict(tr)
+    else:
+        time_range = playbook_execution.time_range
     for step_id, all_results in all_step_results.items():
         step_interpretation = all_results['step_interpretation']
         all_task_executions = all_results['all_task_executions']
@@ -94,7 +101,9 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 playbook=playbook,
                 playbook_execution=playbook_execution,
                 playbook_step_id=step_id,
-                interpretation=step_interpretation
+                interpretation=step_interpretation,
+                created_by=user,
+                time_range=time_range
             )
         except Exception as e:
             logger.error(f"Failed to create playbook step execution log with error: {e}")
@@ -109,7 +118,9 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 playbook_task_definition_id=result['task_id'],
                 playbook_step_execution_log=playbook_step_execution_log,
                 playbook_task_result=result['task_result'],
-                interpretation=result['task_interpretation']
+                interpretation=result['task_interpretation'],
+                created_by=user,
+                time_range=time_range
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)
     try:

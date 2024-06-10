@@ -400,4 +400,9 @@ export const cardsData = [
     url: "/integrations/iframe_logo.png",
     enum: "IFRAME",
   },
+  {
+    id: 47,
+    url: "/integrations/gke_logo.svg",
+    enum: "GKE",
+  },
 ];

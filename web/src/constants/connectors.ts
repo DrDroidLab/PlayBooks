@@ -11,6 +11,7 @@ export const connectors = {
   CLICKHOUSE: "CLICKHOUSE",
   POSTGRES: "POSTGRES",
   EKS: "EKS",
+  GKE: "GKE",
   AGENT_PROXY: "AGENT_PROXY",
   GOOGLE_CHAT: "GOOGLE_CHAT",
   OPENAI: "OPEN_AI",

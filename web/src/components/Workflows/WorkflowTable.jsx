@@ -32,6 +32,10 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
     navigate(`/workflows/executions/${id}`);
   };
 
+  const navigateToPlaybook = (id) => {
+    navigate(`/playbooks/${id}`);
+  };
+
   return (
     <>
       <Table stickyHeader>
@@ -68,9 +72,9 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                 {item.playbooks?.length > 0
                   ? item.playbooks.map((e) => (
                       <div
-                        className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
+                        className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:!text-white"
                         key={e.id}>
-                        <Link to={`/playbooks/${e.id}`}>{e.name}</Link>
+                        <p onClick={() => navigateToPlaybook(e.id)}>{e.name}</p>
                       </div>
                     ))
                   : "--"}
