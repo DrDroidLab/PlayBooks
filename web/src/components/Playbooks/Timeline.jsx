@@ -11,6 +11,8 @@ import Loading from "../common/Loading/index.tsx";
 import HandleOutput from "./steps/HandleOutput.jsx";
 import { renderTimestamp } from "../../utils/DateUtils.js";
 import CustomButton from "../common/CustomButton/index.tsx";
+import { PlayArrowRounded } from "@mui/icons-material";
+import { executeStep } from "../../utils/execution/executeStep.ts";
 
 function Timeline({ setTimelineOpen }) {
   const { executionId } = useSelector(playbookSelector);
@@ -19,6 +21,12 @@ function Timeline({ setTimelineOpen }) {
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
+
+  const lastStep = (playbookSteps ?? []).findIndex(
+    (step) => step.id === steps[steps.length - 1]?.id,
+  );
+
+  const showNextStepExecution = lastStep < playbookSteps.length - 1;
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -32,6 +40,11 @@ function Timeline({ setTimelineOpen }) {
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
     dispatch(showStepConfig(index));
+    setTimelineOpen(false);
+  };
+
+  const handleExecuteNextStep = () => {
+    executeStep(playbookSteps[lastStep + 1], lastStep + 1);
     setTimelineOpen(false);
   };
 
@@ -55,25 +68,39 @@ function Timeline({ setTimelineOpen }) {
       <div className="flex flex-col gap-14 overflow-scroll">
         {steps?.map((step, index) => (
           <div key={index} className="border rounded p-3 bg-gray-100">
-            <h2 className="text-violet-500 text-sm font-bold">Step title</h2>
-            <h1 className="font-semibold text-lg line-clamp-3 mb-2">
-              {step.description}
-            </h1>
-            <h2 className="text-violet-500 text-sm font-bold">Executed At</h2>
+            <h2 className="text-violet-500 text-sm font-bold">Step</h2>
+            <div className="flex gap-2 items-center flex-wrap">
+              <h1 className="font-semibold text-lg line-clamp-3">
+                {step.description}
+              </h1>
+              <div onClick={() => handleShowConfig(step.id)}>
+                (
+                <span className="text-violet-500 cursor-pointer hover:underline">
+                  Show Config
+                </span>
+                )
+              </div>
+            </div>
+            <h2 className="text-violet-500 text-sm font-bold mt-2">
+              Executed At
+            </h2>
             <p className="text-gray-500 italic text-sm">
               {step?.outputs?.data?.length > 0
                 ? renderTimestamp(step?.outputs?.data?.[0]?.timestamp)
                 : ""}
             </p>
-            <div className="mt-2">
-              <CustomButton onClick={() => handleShowConfig(step.id)}>
-                Show Config
-              </CustomButton>
-            </div>
             <HandleOutput index={index} stepData={step} />
           </div>
         ))}
       </div>
+
+      {showNextStepExecution && (
+        <div className="my-3">
+          <CustomButton onClick={handleExecuteNextStep}>
+            <PlayArrowRounded /> Execute Next Step
+          </CustomButton>
+        </div>
+      )}
     </main>
   );
 }
