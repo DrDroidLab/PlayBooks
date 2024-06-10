@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 
 import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
+import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 
 const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   const [showTable, setShowTable] = useState(false);
@@ -53,7 +54,9 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
                 ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
                   return (
-                    <TableCell className="!text-sm !w-fit !min-w-[50px] !max-w-[200px]">
+                    <TableCell
+                      key={index}
+                      className="!text-sm !w-fit !min-w-[50px] !max-w-[200px]">
                       <SeeMoreTextWithoutModal text={col.name} maxLength={50} />
                     </TableCell>
                   );
@@ -77,7 +80,13 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
                           } !text-xs`}>
                           <SeeMoreTextWithoutModal
                             shouldNoWrap={shouldNoWrap}
-                            text={col.value}
+                            text={
+                              isDate(col.value)
+                                ? renderTimestamp(
+                                    new Date(col.value).getTime() / 1000,
+                                  )
+                                : col.value
+                            }
                             maxLength={200}
                           />
                         </TableCell>

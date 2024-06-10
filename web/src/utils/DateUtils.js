@@ -29,3 +29,9 @@ export const renderTimestamp = (timestamp) => {
   // Rearrange and format the string
   return `${datePart[2]}-${datePart[0]}-${datePart[1]} ${timePart}`;
 };
+
+export const isDate = (date) => {
+  if (date.length < 10) return false;
+  const d = new Date(date);
+  return d instanceof Date && !isNaN(d.valueOf());
+};
