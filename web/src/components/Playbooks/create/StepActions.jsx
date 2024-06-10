@@ -11,9 +11,10 @@ import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
+  setPlaybookKey,
   stepsSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
+import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSavingValidations.ts";
 
 function StepActions() {
   const dispatch = useDispatch();
@@ -30,12 +31,12 @@ function StepActions() {
 
   const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
+    dispatch(setPlaybookKey({ key: "name", value: pbName }));
 
     const playbook = stepsToPlaybook(currentPlaybook, steps);
-    if (steps?.length === 0) {
-      dispatch(showSnackbar("You cannot save a playbook with no steps"));
-      return;
-    }
+
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
 
     const playbookObj = {
       playbook: {
@@ -56,10 +57,10 @@ function StepActions() {
   const handlePlaybookUpdate = async () => {
     setIsSavePlaybookOverlayOpen(false);
     const playbook = stepsToPlaybook(currentPlaybook, steps);
-    if (steps?.length === 0) {
-      dispatch(showSnackbar("You cannot save a playbook with no steps"));
-      return;
-    }
+
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
+
     try {
       await triggerUpdatePlaybook({
         ...playbook,
