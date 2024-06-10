@@ -14,6 +14,7 @@ import "protos/connectors/assets/postgres_asset.proto";
 import "protos/connectors/assets/eks_asset.proto";
 import "protos/connectors/assets/azure_asset.proto";
 import "protos/connectors/assets/remote_server_asset.proto";
+import "protos/connectors/assets/gke_asset.proto";
 
 message ConnectorModelTypeOptions {
   SourceModelType model_type = 1;
@@ -31,6 +32,7 @@ message ConnectorModelTypeOptions {
     SshServerAssetOptions ssh_server_model_options = 12;
     AzureWorkspaceAssetOptions azure_workspace_model_options = 13;
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 14;
+    GkeClusterAssetOptions gke_cluster_model_options = 15;
   }
 }
 
@@ -55,6 +57,7 @@ message AccountConnectorAssetsModelFilters {
     SshServerAssetOptions ssh_server_model_filters = 11;
     AzureWorkspaceAssetOptions azure_workspace_model_filters = 12;
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 13;
+    GkeClusterAssetOptions gke_cluster_model_filters = 14;
   }
 }
 
@@ -71,5 +74,6 @@ message AccountConnectorAssets {
     EksAssets eks = 9;
     RemoteServerAssets remote_server = 10;
     AzureAssets azure = 11;
+    GkeAssets gke = 12;
   }
 }

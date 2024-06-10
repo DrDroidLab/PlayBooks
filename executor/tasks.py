@@ -15,10 +15,45 @@ from management.utils.celery_task_signal_utils import publish_pre_run_task, publ
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType
 from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType, PlaybookTaskResult
-from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, PlaybookTaskExecutionLog, PlaybookStepExecutionLog
+from protos.playbooks.playbook_pb2 import Playbook as PlaybookProto, PlaybookTaskExecutionLog, PlaybookStepExecutionLog, \
+    PlaybookStep as PlaybookStepProto
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
+
+
+def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookStepProto):
+    try:
+        tasks = step.tasks
+        interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
+        pte_logs = []
+        task_interpretations = []
+        for task_proto in tasks:
+            try:
+                global_variable_set = {}
+                if task_proto.global_variable_set:
+                    global_variable_set = proto_to_dict(task_proto.global_variable_set)
+                task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
+                                                                                      global_variable_set,
+                                                                                      task_proto)
+                task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
+                                                                                 task_result)
+                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
+                                                                       interpretation=task_interpretation)
+                task_interpretations.append(task_interpretation)
+            except Exception as exc:
+                logger.error(f"Error occurred while running task: {exc}")
+                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
+                                                                       result=PlaybookTaskResult(
+                                                                           error=StringValue(value=str(exc))))
+            pte_logs.append(playbook_task_execution_log)
+        step_interpretation = step_result_interpret(interpreter_type, step, task_interpretations)
+        step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
+                                                      step_interpretation=step_interpretation)
+        return step_execution_log
+    except Exception as exc:
+        logger.error(f"Error occurred while running playbook: {exc}")
+        raise exc
 
 
 def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto):
@@ -58,7 +93,7 @@ def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookPro
 
 
 def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_execution: PlayBookExecution,
-                              step_execution_logs: [PlaybookStepExecutionLog]):
+                              step_execution_logs: [PlaybookStepExecutionLog], user=None, tr=None):
     try:
         all_step_executions = {}
         for sel in step_execution_logs:
@@ -75,7 +110,7 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                 'all_task_executions': all_task_executions,
                 'step_interpretation': proto_to_dict(sel.step_interpretation)
             }
-        bulk_create_playbook_execution_log(account, db_playbook, db_pb_execution, all_step_executions)
+        bulk_create_playbook_execution_log(account, db_playbook, db_pb_execution, all_step_executions, user=user, tr=tr)
     except Exception as exc:
         logger.error(f"Error occurred while storing step execution logs: {exc}")
         raise exc
