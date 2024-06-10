@@ -12,7 +12,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
-import SeeMoreText from "./SeeMoreText";
+import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
 
 const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   const [showTable, setShowTable] = useState(false);
@@ -36,20 +36,25 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
     setOpen(false);
   };
 
+  const columnLength = tableData[0]?.columns?.length;
+  const shouldNoWrap = columnLength < 5;
+
   return (
     <div className={styles["graph-box"]}>
       <p className={styles["graph-title"]}>{title}</p>
       {!showTable && <p className={styles["graph-error"]}>No data available</p>}
       {showTable && (
-        <Table stickyHeader className={styles["tableData"]}>
+        <Table
+          stickyHeader
+          className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2`}>
           <TableHead>
             <TableRow>
               {tableData[0]?.columns
                 ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
                   return (
-                    <TableCell className={styles["tableLogDataTitle"]}>
-                      {col.name}
+                    <TableCell className="!text-sm !w-fit !min-w-[50px] !max-w-[200px]">
+                      <SeeMoreTextWithoutModal text={col.name} maxLength={50} />
                     </TableCell>
                   );
                 })}
@@ -65,15 +70,15 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
                       return (
                         <TableCell
                           key={colIndex}
-                          className={
+                          className={`${
                             col.name === "@message"
-                              ? styles["tableDataMsg"]
-                              : styles["tableData"]
-                          }>
-                          <SeeMoreText
-                            title={col.name}
+                              ? "min-w-[100px]"
+                              : "min-w-[50px]"
+                          } !text-xs`}>
+                          <SeeMoreTextWithoutModal
+                            shouldNoWrap={shouldNoWrap}
                             text={col.value}
-                            truncSize={200}
+                            maxLength={200}
                           />
                         </TableCell>
                       );
