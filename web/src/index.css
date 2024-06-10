@@ -50,7 +50,7 @@ img {
 
 .MuiTableCell-root {
   padding: 14px !important;
-  font-size: 15px !important;
+  font-size: 15px;
   border-color: #eee !important;
 }
 
@@ -72,4 +72,10 @@ img {
   border-bottom: 2px solid #ededed !important;
   font-size: 14px !important;
   padding: 8px !important;
+}
+
+td {
+  width: fit-content !important;
+  max-width: max-content !important;
+  min-width: max-content !important;
 }
