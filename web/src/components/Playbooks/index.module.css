@@ -842,10 +842,11 @@ div.ruleBox {
 
 .graph-box {
   border: 1px solid #d3d3d3;
+  max-width: 100%;
+  min-width: fit-content;
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 10px;
-  overflow-x: scroll;
 }
 
 .graph-error {
