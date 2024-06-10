@@ -108,6 +108,7 @@ packaging==24.0
 pandas==2.2.2
 paramiko==3.4.0
 patsy==0.5.6
+pdpyras==5.2.0
 pg8000==1.31.2
 pillow==10.3.0
 platformdirs==4.2.2
@@ -177,3 +178,5 @@ wsproto==1.2.0
 yarl==1.9.4
 zipp==3.18.1
 zstandard==0.22.0
+
+pdpyras~=5.2.0

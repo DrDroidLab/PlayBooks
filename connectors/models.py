@@ -69,6 +69,11 @@ integrations_connector_type_category_map = {
 }
 
 integrations_connector_type_connector_keys_map = {
+    Source.PAGER_DUTY: [
+        [
+            SourceKeyType.PAGER_DUTY_API_KEY,
+        ]
+    ],
     Source.SLACK: [
         [
             SourceKeyType.SLACK_BOT_AUTH_TOKEN,
