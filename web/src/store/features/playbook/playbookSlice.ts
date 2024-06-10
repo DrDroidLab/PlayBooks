@@ -238,13 +238,9 @@ const playbookSlice = createSlice({
       }
     },
     updateStep: (state, { payload }) => {
-      if (
-        state.currentStepIndex != null ||
-        payload.index !== undefined ||
-        payload.index !== null
-      )
-        state.steps[payload.index ?? state.currentStepIndex][payload.key] =
-          payload.value;
+      const index = payload.index;
+      if (state.steps.length > 0)
+        state.steps[index][payload.key] = payload.value;
     },
     updateTitle: (state, { payload }) => {
       state.steps[payload.index].description = payload.description;
@@ -428,11 +424,7 @@ const playbookSlice = createSlice({
       }
     },
     toggleNotesVisibility(state, { payload }) {
-      const index = (payload.index ?? state.currentStepIndex ?? "")?.toString();
-      if (index !== "" && index !== null && index !== undefined) {
-        state.steps[parseInt(index, 10)].showNotes =
-          !state.steps[payload.index].showNotes;
-      }
+      state.steps[payload].showNotes = !state.steps[payload].showNotes;
     },
     resetState(state) {
       state.steps = [];
