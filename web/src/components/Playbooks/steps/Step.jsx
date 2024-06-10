@@ -2,12 +2,7 @@
 import { useState } from "react";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
-import {
-  addExternalLinks,
-  deleteStep,
-  toggleExternalLinkVisibility,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import ExternalLinks from "./ExternalLinks.jsx";
+import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
 import Query from "./Query.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
@@ -15,12 +10,11 @@ import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import SelectInterpretation from "./Interpretation.jsx";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
-import useIsExisting from "../../../hooks/useIsExisting.ts";
 import HandleNotesRender from "./HandleNotesRender.jsx";
+import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
 
 function Step({ step, index }) {
   const isPrefetched = useIsPrefetched();
-  const isExisting = useIsExisting();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
@@ -29,14 +23,6 @@ function Step({ step, index }) {
   function handleDeleteClick() {
     dispatch(deleteStep(index));
   }
-
-  const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility({ index }));
-  };
-
-  const setLinks = (links) => {
-    dispatch(addExternalLinks({ links, index }));
-  };
 
   return (
     <div className="rounded my-2">
@@ -59,21 +45,7 @@ function Step({ step, index }) {
         </div>
         <HandleNotesRender index={index} step={step} />
         <SelectInterpretation index={index} />
-        {isExisting && (
-          <div>
-            <div>
-              <div
-                className="mt-2 m-1 ml-0 text-sm cursor-pointer text-violet-500"
-                onClick={toggleExternalLinks}>
-                <b>{step.showExternalLinks ? "-" : "+"}</b> Add External Links
-              </div>
-
-              {step.showExternalLinks && (
-                <ExternalLinks links={step.externalLinks} setLinks={setLinks} />
-              )}
-            </div>
-          </div>
-        )}
+        <HandleExternalLinksRender index={index} step={step} />
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
