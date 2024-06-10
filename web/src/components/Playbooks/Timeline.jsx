@@ -13,6 +13,7 @@ import { renderTimestamp } from "../../utils/DateUtils.js";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import { executeStep } from "../../utils/execution/executeStep.ts";
+import { CircularProgress } from "@mui/material";
 
 function Timeline({ setTimelineOpen }) {
   const { executionId } = useSelector(playbookSelector);
@@ -27,6 +28,9 @@ function Timeline({ setTimelineOpen }) {
   );
 
   const showNextStepExecution = lastStep < playbookSteps.length - 1;
+  const executingStep = (playbookSteps ?? []).find(
+    (step) => step.outputLoading,
+  );
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -47,6 +51,13 @@ function Timeline({ setTimelineOpen }) {
     executeStep(playbookSteps[lastStep + 1], lastStep + 1);
     setTimelineOpen(false);
   };
+
+  useEffect(() => {
+    if (!executingStep?.outputLoading) {
+      populateData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [executingStep?.outputLoading]);
 
   useEffect(() => {
     if (executionId) populateData();
@@ -93,6 +104,28 @@ function Timeline({ setTimelineOpen }) {
           </div>
         ))}
       </div>
+
+      {executingStep && (
+        <div className="border rounded p-3 bg-gray-100 mt-2">
+          <h2 className="text-violet-500 text-sm font-bold">Step</h2>
+          <div className="flex gap-2 items-center flex-wrap">
+            <h1 className="font-semibold text-lg line-clamp-3">
+              {executingStep.description}
+            </h1>
+            <div onClick={() => handleShowConfig(executingStep.id)}>
+              (
+              <span className="text-violet-500 cursor-pointer hover:underline">
+                Show Config
+              </span>
+              )
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-3">
+            <CircularProgress size={20} />
+            <div className="text-sm">Step execution is in progess</div>
+          </div>
+        </div>
+      )}
 
       {showNextStepExecution && (
         <div className="my-3">
