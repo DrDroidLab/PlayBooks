@@ -119,17 +119,12 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         schedule_type = account_workflow.schedule_type
         schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
-        if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
-            execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
-                                                                      current_time_utc, workflow_run_uuid, user.email)
-            if err:
-                return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                               message=Message(title="Failed to Schedule Workflow Execution",
-                                                               description=f"Error: {err}"))
-        else:
+        execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
+                                                                  current_time_utc, workflow_run_uuid, user.email)
+        if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                           message=Message(title="Error", description="Invalid Schedule Type"))
-
+                                           message=Message(title="Failed to Schedule Workflow Execution",
+                                                           description=f"Error: {err}"))
         return ExecuteWorkflowResponse(success=BoolValue(value=True),
                                        workflow_run_id=StringValue(value=workflow_run_uuid))
     except Exception as e:

@@ -8,7 +8,7 @@ from executor.source_processors.slack_api_processor import SlackApiProcessor
 from protos.base_pb2 import Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
+from protos.playbooks.workflow_actions.slack_thread_reply_pb2 import SlackThreadReplyWorkflowAction
 from protos.playbooks.workflow_pb2 import WorkflowAction as WorkflowAction
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class SlackThreadReplyExecutor(WorkflowActionExecutor):
 
     def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
                 connector: ConnectorProto = None):
-        slack_config: SlackMessageWorkflowAction = action.slack_message
+        slack_config: SlackThreadReplyWorkflowAction = action.slack_thread_reply
         channel_id = slack_config.slack_channel_id.value
         if not channel_id:
             raise ValueError('Slack channel id is not configured in the notification config')
@@ -64,7 +64,9 @@ class SlackThreadReplyExecutor(WorkflowActionExecutor):
             elif interpretation.type == InterpretationProto.Type.CSV_FILE:
                 file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
                                      'initial_comment': interpretation.title.value})
-        message_params = {'blocks': blocks, 'channel_id': channel_id, 'reply_to': slack_config.thread_ts.value}
+        message_params = {'blocks': blocks, 'channel_id': channel_id}
+        if slack_config.thread_ts.value:
+            message_params['reply_to'] = slack_config.thread_ts.value
         for file_upload in file_uploads:
             file_upload['thread_ts'] = slack_config.thread_ts.value
         try:
