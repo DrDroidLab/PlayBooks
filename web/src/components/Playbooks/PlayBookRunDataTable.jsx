@@ -56,8 +56,12 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
                   return (
                     <TableCell
                       key={index}
-                      className="!text-sm !w-fit !min-w-[50px] !max-w-[200px]">
-                      <SeeMoreTextWithoutModal text={col.name} maxLength={50} />
+                      className="!w-fit !min-w-[50px] !max-w-[200px] !border">
+                      <SeeMoreTextWithoutModal
+                        text={col.name}
+                        maxLength={50}
+                        className={"font-bold text-xs"}
+                      />
                     </TableCell>
                   );
                 })}
@@ -77,7 +81,7 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
                             col.name === "@message"
                               ? "min-w-[100px]"
                               : "min-w-[50px]"
-                          } !text-xs`}>
+                          } !text-xs !border`}>
                           <SeeMoreTextWithoutModal
                             shouldNoWrap={shouldNoWrap}
                             text={

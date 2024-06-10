@@ -4,12 +4,14 @@ interface SeeMoreTextWithoutModalProps {
   text: string;
   maxLength?: number;
   shouldNoWrap?: boolean;
+  className: React.ClassAttributes<string>;
 }
 
 const SeeMoreTextWithoutModal: React.FC<SeeMoreTextWithoutModalProps> = ({
   text,
   maxLength = 100,
   shouldNoWrap = false,
+  className,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -30,7 +32,7 @@ const SeeMoreTextWithoutModal: React.FC<SeeMoreTextWithoutModalProps> = ({
     : text;
 
   return (
-    <div className="text-gray-800 min-w-[50px] w-full">
+    <div className={`${className} text-gray-800 min-w-[50px] w-full`}>
       <p
         className={`${
           shouldNoWrap && text.length < 50
