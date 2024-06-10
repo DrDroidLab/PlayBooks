@@ -30,19 +30,21 @@ const PlaybookExecutionsList = () => {
         onRefreshCb={false}
       />
 
-      <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <ExecutionsTable
-          playbooksList={playbooksList}
-          total={total}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          pageUpdateCb={pageUpdateCb}
-          tableContainerStyles={
-            playbooksList?.length
-              ? {}
-              : { maxHeight: "35vh", minHeight: "35vh" }
-          }
-          refreshTable={refetch}></ExecutionsTable>
-      </SuspenseLoader>
+      <main className="flex flex-col gap-4 p-2 pt-4">
+        <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
+          <ExecutionsTable
+            playbooksList={playbooksList}
+            total={total}
+            pageSize={pageMeta ? pageMeta?.limit : 10}
+            pageUpdateCb={pageUpdateCb}
+            tableContainerStyles={
+              playbooksList?.length
+                ? {}
+                : { maxHeight: "35vh", minHeight: "35vh" }
+            }
+            refreshTable={refetch}></ExecutionsTable>
+        </SuspenseLoader>
+      </main>
     </div>
   );
 };

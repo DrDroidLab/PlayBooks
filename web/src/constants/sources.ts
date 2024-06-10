@@ -11,6 +11,7 @@ export const SOURCES = {
   DATADOG: "DATADOG",
   POSTGRES: "POSTGRES",
   EKS: "EKS",
+  GKE: "GKE",
   API: "API",
   GRAFANA_MIMIR: "GRAFANA_MIMIR",
   BASH: "BASH",

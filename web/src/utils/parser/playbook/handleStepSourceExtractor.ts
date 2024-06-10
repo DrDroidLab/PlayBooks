@@ -27,6 +27,9 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.EKS:
       data = Extractor.extractEksTasks(step);
       break;
+    case SOURCES.GKE:
+      data = Extractor.extractGkeTasks(step);
+      break;
     case SOURCES.NEW_RELIC:
       data = Extractor.extractNewRelicTasks(step);
       break;
@@ -52,5 +55,5 @@ export const handleStepSourceExtractor = (step) => {
       break;
   }
 
-  return { ...data, taskIds };
+  return { ...data, taskIds, showNotes: step?.notes ?? false };
 };

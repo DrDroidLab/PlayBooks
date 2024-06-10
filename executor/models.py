@@ -454,9 +454,12 @@ class PlayBookStepExecutionLog(models.Model):
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.TextField(null=True, blank=True)
+    time_range = models.JSONField(null=True, blank=True)
 
     @property
     def proto(self) -> PlaybookStepExecutionLogProto:
+        time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         logs = self.playbooktaskexecutionlog_set.all()
         task_execution_logs = [pel.proto for pel in logs]
         step = self.playbook_step.proto_partial
@@ -466,7 +469,9 @@ class PlayBookStepExecutionLog(models.Model):
             step=step,
             task_execution_logs=task_execution_logs,
             step_interpretation=dict_to_proto(self.interpretation,
-                                              InterpretationProto) if self.interpretation else InterpretationProto()
+                                              InterpretationProto) if self.interpretation else InterpretationProto(),
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            time_range=time_range_proto
         )
 
     @property
@@ -496,17 +501,22 @@ class PlayBookTaskExecutionLog(models.Model):
     playbook_task_result = models.JSONField()
     interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_by = models.TextField(null=True, blank=True)
+    time_range = models.JSONField(null=True, blank=True)
 
     @property
     def proto(self) -> PlaybookTaskExecutionLogProto:
         task = self.playbook_task_definition.proto_with_connector_source(self.playbook.id, self.playbook_step.id)
+        time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookTaskExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             task=task,
             result=dict_to_proto(self.playbook_task_result, PlaybookTaskResultProto),
             interpretation=dict_to_proto(self.interpretation,
-                                         InterpretationProto) if self.interpretation else InterpretationProto()
+                                         InterpretationProto) if self.interpretation else InterpretationProto(),
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            time_range=time_range_proto
         )
 
     @property

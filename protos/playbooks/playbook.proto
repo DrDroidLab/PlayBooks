@@ -20,6 +20,7 @@ import "protos/playbooks/source_task_definitions/bash_task.proto";
 import "protos/playbooks/source_task_definitions/documentation_task.proto";
 import "protos/playbooks/source_task_definitions/promql_task.proto";
 import "protos/playbooks/source_task_definitions/azure_task.proto";
+import "protos/playbooks/source_task_definitions/gke_task.proto";
 
 
 // Playbook Task Protos
@@ -52,6 +53,7 @@ message PlaybookTask {
     Bash bash = 111;
     PromQl grafana_mimir = 112;
     Azure azure = 113;
+    Gke gke = 114;
   }
 }
 
@@ -61,6 +63,8 @@ message PlaybookTaskExecutionLog {
   PlaybookTask task = 3;
   PlaybookTaskResult result = 4;
   Interpretation interpretation = 5;
+  TimeRange time_range = 6;
+  google.protobuf.StringValue created_by = 7;
 }
 
 // Playbook Step Protos
@@ -81,6 +85,8 @@ message PlaybookStepExecutionLog {
   PlaybookStep step = 4;
   repeated PlaybookTaskExecutionLog task_execution_logs = 5;
   Interpretation step_interpretation = 6;
+  TimeRange time_range = 7;
+  google.protobuf.StringValue created_by = 8;
 }
 
 

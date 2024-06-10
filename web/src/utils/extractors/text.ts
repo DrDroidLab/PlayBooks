@@ -19,8 +19,8 @@ export const extractTextTasks = (step: any) => {
     connectorType,
     taskType,
     modelType,
-    notes: textStep.documentation,
-    iframe_url: textStep.iframe_url,
+    notes: textStep?.content,
+    iframe_url: textStep?.iframe_url,
   };
 
   return stepData;

@@ -77,6 +77,7 @@ export interface Step {
   remote_server?: string;
   taskType?: string;
   iframe_url?: string;
+  zone?: any;
 }
 
 export interface GoldenMetric {
