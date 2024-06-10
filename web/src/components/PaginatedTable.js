@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Paper, TableContainer, TablePagination } from '@mui/material';
-import { useCallback, useState } from 'react';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import { Paper, TableContainer, TablePagination } from "@mui/material";
+import { useCallback, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 const rowsPerPageOptions = [2, 5, 10, 25, 100];
 const PaginatedTable = ({
@@ -15,7 +15,7 @@ const PaginatedTable = ({
   params,
   onSortChange,
   orderData,
-  showDelete
+  showDelete,
 }) => {
   const RenderTableComponent = renderTable;
 
@@ -38,25 +38,25 @@ const PaginatedTable = ({
       pageUpdateCb(
         {
           limit: curPageSize,
-          offset: curPageSize * newPage
+          offset: curPageSize * newPage,
         },
         (rowData, total) => {
           setRows(rowData);
           setTotalRows(Number(total));
           setIsFetchingData(false);
         },
-        err => {
+        (err) => {
           console.error(err);
           setIsError(true);
           setIsFetchingData(false);
-        }
+        },
       );
     },
-    [curPageSize, curPage]
+    [curPageSize, curPage],
   );
 
   const handleChangeRowsPerPage = useCallback(
-    event => {
+    (event) => {
       let newPageSize = parseInt(event.target.value, 10);
       setCurPageSize(newPageSize);
       setCurPage(0);
@@ -67,21 +67,21 @@ const PaginatedTable = ({
       pageUpdateCb(
         {
           limit: newPageSize,
-          offset: 0
+          offset: 0,
         },
         (rowData, total) => {
           setRows(rowData);
           setTotalRows(Number(total));
           setIsFetchingData(false);
         },
-        err => {
+        (err) => {
           console.error(err);
           setIsError(true);
           setIsFetchingData(false);
-        }
+        },
       );
     },
-    [curPageSize, curPage]
+    [curPageSize, curPage],
   );
 
   const handleRefreshTable = () => {
@@ -89,34 +89,40 @@ const PaginatedTable = ({
     pageUpdateCb(
       {
         limit: curPageSize,
-        offset: curPageSize * curPage
+        offset: curPageSize * curPage,
       },
       (rowData, total) => {
         setRows(rowData);
         setTotalRows(Number(total));
         setIsFetchingData(false);
       },
-      err => {
+      (err) => {
         console.error(err);
         setIsError(true);
         setIsFetchingData(false);
-      }
+      },
     );
   };
 
   const sliceRows = useCallback(
-    rowList => {
+    (rowList) => {
       if (!pageUpdateCb && curPageSize) {
-        return rowList?.slice(curPage * curPageSize, curPage * curPageSize + curPageSize);
+        return rowList?.slice(
+          curPage * curPageSize,
+          curPage * curPageSize + curPageSize,
+        );
       }
       return rowList;
     },
-    [curPage, curPageSize, rows, pageUpdateCb]
+    [curPage, curPageSize, rows, pageUpdateCb],
   );
 
   return (
     <>
-      <TableContainer component={Paper} sx={tableContainerStyles ? tableContainerStyles : {}}>
+      <TableContainer
+        component={Paper}
+        className="!shadow-none !border"
+        sx={tableContainerStyles ? tableContainerStyles : {}}>
         {
           <RenderTableComponent
             data={sliceRows(rows)}
@@ -144,9 +150,8 @@ const PaginatedTable = ({
       <Snackbar
         open={isError}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert severity="error" sx={{ width: '100%' }}>
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="error" sx={{ width: "100%" }}>
           Something went wrong. Please contact Administrator
         </Alert>
       </Snackbar>

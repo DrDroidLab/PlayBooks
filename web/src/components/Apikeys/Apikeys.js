@@ -109,47 +109,51 @@ const ApiTokens = () => {
   return (
     <>
       <Heading heading={"API keys"}></Heading>
-      <div className="flex flex-wrap gap-2 items-center">
-        <button
-          className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 ml-2 my-4 text-white rounded-lg create_playbook transition-all"
-          onClick={handleCreateApiKey}>
-          + API Key
-        </button>
-        {generateLoading && <CircularProgress color="primary" size={20} />}
-      </div>
-      <SuspenseLoader
-        loading={isLoading}
-        loader={<TableSkeleton noOfLines={7} />}>
-        <Paper sx={{ width: "100%", height: "360px" }}>
-          {data?.account_api_tokens && (
-            <DataGrid
-              sx={{
-                ".MuiDataGrid-columnSeparator": {
-                  display: "none",
-                },
-              }}
-              disableColumnMenu
-              sortable={false}
-              pagination
-              paginationMode="server"
-              rowCount={data?.meta?.total_count}
-              pageSize={pageSize}
-              onPageSizeChange={handlePageSizeChange}
-              rowsPerPageOptions={[10, 20, 50]}
-              onPageChange={handlePageChange}
-              rows={data?.account_api_tokens}
-              columns={columns.map((column) => ({
-                ...column,
-                sortable: false,
-              }))}
-              getRowId={(params) => params?.key}
-              disableSelectionOnClick
-            />
-          )}
+      <main className="flex flex-col gap-4 p-2 pt-4">
+        <div className="flex items-center justify-between">
+          <button
+            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg !text-white"
+            onClick={handleCreateApiKey}>
+            + API Key
+          </button>
+          {generateLoading && <CircularProgress color="primary" size={20} />}
+        </div>
+        <SuspenseLoader
+          loading={isLoading}
+          loader={<TableSkeleton noOfLines={7} />}>
+          <Paper
+            className="!shadow-none"
+            sx={{ width: "100%", height: "360px" }}>
+            {data?.account_api_tokens && (
+              <DataGrid
+                sx={{
+                  ".MuiDataGrid-columnSeparator": {
+                    display: "none",
+                  },
+                }}
+                disableColumnMenu
+                sortable={false}
+                pagination
+                paginationMode="server"
+                rowCount={data?.meta?.total_count}
+                pageSize={pageSize}
+                onPageSizeChange={handlePageSizeChange}
+                rowsPerPageOptions={[10, 20, 50]}
+                onPageChange={handlePageChange}
+                rows={data?.account_api_tokens}
+                columns={columns.map((column) => ({
+                  ...column,
+                  sortable: false,
+                }))}
+                getRowId={(params) => params?.key}
+                disableSelectionOnClick
+              />
+            )}
 
-          {!data?.account_api_tokens && <NoAPIKeys />}
-        </Paper>
-      </SuspenseLoader>
+            {!data?.account_api_tokens && <NoAPIKeys />}
+          </Paper>
+        </SuspenseLoader>
+      </main>
       <Snackbar
         open={isError}
         autoHideDuration={6000}

@@ -75,9 +75,7 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                <Link to={`/playbooks/${item.id}`} className={styles["link"]}>
-                  {item.name}
-                </Link>
+                <Link to={`/playbooks/${item.id}`}>{item.name}</Link>
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.created_at)}
