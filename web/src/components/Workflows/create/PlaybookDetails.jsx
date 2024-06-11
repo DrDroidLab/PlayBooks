@@ -63,7 +63,7 @@ function PlaybookDetails() {
       <div className="mt-2">
         <Checkbox
           id="generateSummary"
-          isChecked={currentWorkflow?.summary}
+          isChecked={currentWorkflow?.generateSummary}
           label="Generate Summary"
           info="Execute playbook and generate a summary on every workflow execution"
           onChange={handleToggleSummary}
