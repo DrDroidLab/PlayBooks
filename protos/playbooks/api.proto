@@ -312,14 +312,14 @@ message ExecuteWorkflowResponse {
 
 message ExecutionWorkflowGetRequest {
   Meta meta = 1;
-  google.protobuf.StringValue workflow_run_id = 2;
+  google.protobuf.UInt64Value workflow_execution_id = 2;
 }
 
 message ExecutionWorkflowGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated WorkflowExecution workflow_executions = 4;
+  WorkflowExecution workflow_execution = 4;
 }
 
 message ExecutionsWorkflowsListRequest {

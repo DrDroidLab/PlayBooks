@@ -27,7 +27,7 @@ def get_db_workflow_executions(account: Account, workflow_execution_id=None, wor
         filters['workflow_run_id__in'] = workflow_run_ids
     try:
         db_we = account.workflowexecution_set.all()
-        db_we = db_we.order_by('-workflow_run_id', '-scheduled_at')
+        db_we = db_we.order_by('-workflow_run_id', 'scheduled_at')
         if filters:
             db_we = db_we.filter(**filters)
         return db_we

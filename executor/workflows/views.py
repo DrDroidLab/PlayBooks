@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import timezone
 from typing import Union
 
 import traceback
@@ -8,7 +9,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
@@ -26,7 +27,7 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowConfiguration
+    WorkflowConfiguration, WorkflowExecution, WorkflowExecutionStatusType
 from utils.proto_utils import dict_to_proto
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -154,10 +155,32 @@ def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) ->
         if not workflow_executions:
             return ExecutionsWorkflowsListResponse(success=BoolValue(value=True),
                                                    message=Message(title="No Workflow Executions Found"))
-        workflow_executions = workflow_executions.distinct('workflow_run_id')
-        total_count = workflow_executions.count()
-        workflow_executions = filter_page(workflow_executions, page)
-        we_protos = [we.proto_partial for we in workflow_executions]
+        distinct_workflow_executions = workflow_executions.distinct('workflow_run_id')
+        total_count = distinct_workflow_executions.count()
+        distinct_workflow_executions = filter_page(distinct_workflow_executions, page)
+
+        we_protos = []
+        for weqs in distinct_workflow_executions:
+            we = weqs.workflow_run_id
+            current_workflow_executions = workflow_executions.filter(workflow_run_id=we)
+            last_completed_cwe = current_workflow_executions.first()
+            started_at = last_completed_cwe.started_at
+            next_scheduled_cwe = None
+            for cwe in current_workflow_executions:
+                if cwe.status in [WorkflowExecutionStatusType.WORKFLOW_FINISHED,
+                                  WorkflowExecutionStatusType.WORKFLOW_FAILED]:
+                    last_completed_cwe = cwe
+                if cwe.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
+                    next_scheduled_cwe = cwe
+                    break
+            last_completed_cwe_proto = last_completed_cwe.proto_partial
+            last_completed_cwe_proto.started_at = int(
+                started_at.replace(tzinfo=timezone.utc).timestamp()) if started_at else 0
+            if next_scheduled_cwe:
+                last_completed_cwe_proto.scheduled_at = int(
+                    next_scheduled_cwe.scheduled_at.replace(tzinfo=timezone.utc).timestamp())
+            we_protos.append(last_completed_cwe_proto)
+
         return ExecutionsWorkflowsListResponse(meta=get_meta(page=page, total_count=total_count),
                                                success=BoolValue(value=True), workflow_executions=we_protos)
     except Exception as e:
@@ -169,12 +192,12 @@ def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) ->
 def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
         Union[ExecutionWorkflowGetResponse, HttpResponse]:
     account: Account = get_request_account()
-    workflow_run_id = request_message.workflow_run_id.value
-    if not workflow_run_id:
+    workflow_execution_id = request_message.workflow_execution_id.value
+    if not workflow_execution_id:
         return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
-                                                                                            description="Missing workflow_run_id"))
+                                                                                            description="Missing workflow_execution_id"))
     try:
-        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        workflow_execution = get_db_workflow_executions(account, workflow_execution_id=workflow_execution_id)
         if not workflow_execution:
             return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Error",
                                                                                                 description="Workflow Execution not found"))
@@ -182,8 +205,9 @@ def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
         return ExecutionWorkflowGetResponse(success=BoolValue(value=False),
                                             message=Message(title="Error", description=str(e)))
 
-    workflow_execution_protos = [we.proto for we in workflow_execution]
-    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+    workflow_execution = workflow_execution.first()
+    workflow_execution_protos = workflow_execution.proto
+    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_execution=workflow_execution_protos)
 
 
 @account_post_api(ExecuteWorkflowRequest)
@@ -284,7 +308,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select the trigger type"))
 
-    if not workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id:
+    if not workflow.entry_points[0].slack_channel_alert.slack_channel_id.value:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select a slack channel"))
 
@@ -292,7 +316,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
-    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
+    test_workflow_notification(account.id, workflow, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 
 
