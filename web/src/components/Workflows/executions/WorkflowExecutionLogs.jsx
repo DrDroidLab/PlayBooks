@@ -29,6 +29,10 @@ const WorkflowExecutionLogs = () => {
     data?.workflow_executions?.length > 0
       ? data?.workflow_executions[0].workflow_logs
       : [];
+
+  const execution =
+    data?.workflow_executions?.length > 0 ? data?.workflow_executions[0] : null;
+
   const total = data?.meta?.total_count;
 
   return (
@@ -48,7 +52,13 @@ const WorkflowExecutionLogs = () => {
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <ExecutionsTable
-            playbooksList={playbooksList?.map((e) => e.playbook_execution)}
+            playbooksList={playbooksList?.map((e) => ({
+              ...e.playbook_execution,
+              finished_at: execution.finished_at,
+              scheduled_at: execution.scheduled_at,
+              created_at: execution.created_at,
+              created_by: execution.created_by,
+            }))}
             total={total ?? playbooksList?.length}
             pageSize={pageMeta ? pageMeta?.limit : 10}
             pageUpdateCb={pageUpdateCb}

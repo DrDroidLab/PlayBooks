@@ -105,7 +105,7 @@ const Heading = ({
                         showEditTitle ? () => setShowEdit(!showEdit) : () => {}
                       }
                       className="add_title">
-                      {playbook.isEditing ? "Editing - " : ""}{" "}
+                      {playbook.isEditing && !executionId ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
                     </div>
                   )}
@@ -138,13 +138,13 @@ const Heading = ({
                   <input
                     className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
                     placeholder={
-                      isPrefetched
+                      isPrefetched || executionId
                         ? "Playbook Description goes here"
                         : "+ Add Description..."
                     }
                     value={playbook.description}
                     onChange={handleDescription}
-                    disabled={isPrefetched}
+                    disabled={isPrefetched || executionId}
                   />
                 )}
                 {!!subHeadingLink && !!subHeading ? (
