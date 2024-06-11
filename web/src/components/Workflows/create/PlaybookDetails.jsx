@@ -3,11 +3,11 @@ import SelectComponent from "../../SelectComponent";
 import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
 import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Checkbox from "../../common/Checkbox/index.tsx";
-import GlobalVariables from "../../common/GlobalVariable/index.jsx";
+import WorkflowGlobalVariables from "./WorkflowGlobalVariables.jsx";
+import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 
 function PlaybookDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -71,7 +71,7 @@ function PlaybookDetails() {
         />
       </div>
 
-      {/* <GlobalVariables /> */}
+      <WorkflowGlobalVariables />
     </div>
   );
 }

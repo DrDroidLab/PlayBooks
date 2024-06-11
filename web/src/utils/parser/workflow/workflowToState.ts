@@ -1,5 +1,6 @@
 import * as Extractors from "../../workflow/extractors/index.ts";
 import * as Types from "../../workflow/types/index.ts";
+import globalVariableToState from "./globalVariableToState.ts";
 
 export const workflowToState = (workflow) => {
   const workflowActionType =
@@ -33,6 +34,9 @@ export const workflowToState = (workflow) => {
     workflowType: entryPointType,
     schedule: scheduleType,
     generateSummary: workflow?.configuration?.generate_summary,
+    globalVariables: globalVariableToState(
+      workflow?.configuration?.global_variable_set ?? {},
+    ),
     ...Extractors.handleActionsExtractor(workflowActionType, workflowAction),
     ...Extractors.handleEntryPointsExtractor(entryPointType, entryPoint),
     ...Extractors.handleScheduleExtractor(scheduleType, schedule),

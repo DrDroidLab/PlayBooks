@@ -1,5 +1,6 @@
 import { store } from "../../../store/index.ts";
 import * as Injectors from "../../workflow/injectors/index.ts";
+import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 
 export const stateToWorkflow = () => {
   const workflow: any = store.getState().workflows.currentWorkflow;
@@ -33,6 +34,7 @@ export const stateToWorkflow = () => {
         : [],
       configuration: {
         generate_summary: workflow?.generateSummary ?? false,
+        global_variable_set: stateToGlobalVariable(workflow.globalVariables),
       },
     },
   };
