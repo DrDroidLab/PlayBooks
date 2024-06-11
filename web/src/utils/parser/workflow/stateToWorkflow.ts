@@ -1,4 +1,6 @@
 import { store } from "../../../store/index.ts";
+import handleSchedule from "../../workflow/handleSchedule.ts";
+import handleWorkflowType from "../../workflow/handleWorkflowType.ts";
 
 export const stateToWorkflow = () => {
   const workflow: any = store.getState().workflows.currentWorkflow;
@@ -8,7 +10,8 @@ export const stateToWorkflow = () => {
       id: workflow.id,
       name: workflow.name,
       schedule: {
-        type: workflow.schedule.toUpperCase(),
+        type: workflow.schedule?.toUpperCase(),
+        [workflow.schedule]: handleSchedule(workflow.schedule),
       },
       playbooks: [
         {
@@ -17,84 +20,22 @@ export const stateToWorkflow = () => {
       ],
       entry_points: [
         {
-          type: workflow.workflowType === "api-trigger" ? "API" : "ALERT",
-          alert_config:
-            workflow.workflowType === "api-trigger"
-              ? undefined
-              : {
-                  alert_type: "SLACK_CHANNEL_ALERT",
-                  slack_channel_alert_config: {
-                    slack_channel_asset_id: 1,
-                    slack_channel_id: workflow.trigger?.channel?.channel_id,
-                    slack_channel_name: workflow.trigger?.channel?.channel_name,
-                    slack_alert_type: workflow.trigger?.source,
-                    slack_alert_filter_string: workflow.trigger?.filterString,
-                  },
-                },
+          type: workflow.workflowType?.toUpperCase(),
+          [workflow.workflowType]: handleWorkflowType(workflow.workflowType),
         },
       ],
-      actions: [],
-    },
-  };
-
-  if (workflow.notification) {
-    if (workflow.notification === "slack-message") {
-      responseBody.workflow.actions.push({
-        type: "NOTIFY",
-        notification_config: {
-          type: "SLACK",
-          slack_config: {
-            message_type: "MESSAGE",
+      actions: [
+        {
+          type: workflow.notification,
+          slack_message: {
             slack_channel_id:
               workflow?.channel?.channel_id ??
               workflow.trigger?.channel?.channel_id,
           },
         },
-      });
-    }
-
-    if (workflow.notification === "reply-to-alert") {
-      responseBody.workflow.actions.push({
-        type: "NOTIFY",
-        notification_config: {
-          type: "SLACK",
-          slack_config: {
-            message_type: "THREAD_REPLY",
-            slack_channel_id: workflow.trigger?.channel?.channel_id,
-          },
-        },
-      });
-    }
-  }
-
-  switch (workflow.schedule) {
-    case "one_off":
-      responseBody.workflow.schedule.one_off = {};
-      break;
-    case "periodic":
-      if (workflow?.cron) {
-        responseBody.workflow.schedule.periodic = {
-          type: "CRON",
-          duration_in_seconds: workflow.duration,
-          cron_rule: {
-            rule: workflow?.cron,
-            timezone: "UTC",
-          },
-        };
-      }
-      if (workflow.interval) {
-        responseBody.workflow.schedule.periodic = {
-          type: "INTERVAL",
-          duration_in_seconds: workflow.duration,
-          task_interval: {
-            interval_in_seconds: workflow.interval,
-          },
-        };
-      }
-      break;
-    default:
-      break;
-  }
+      ],
+    },
+  };
 
   return responseBody;
 };

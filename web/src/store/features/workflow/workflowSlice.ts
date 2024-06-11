@@ -4,7 +4,7 @@ const initialState = {
   currentWorkflow: {
     name: "",
     schedule: "one_off",
-    workflowType: "slack",
+    workflowType: "slack_channel_alert",
     trigger: {},
     errors: {},
   },

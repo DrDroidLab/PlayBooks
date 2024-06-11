@@ -4,13 +4,13 @@ export const notificationOptions = [
     type: "multiple-checkbox",
     options: [
       {
-        id: "reply-to-alert",
+        id: "SLACK_THREAD_REPLY",
         type: "checkbox",
         group: "notification",
         label: "Get reply to the alert which triggered this workflow",
       },
       {
-        id: "slack-message",
+        id: "SLACK_MESSAGE",
         label: "Send via Slack message",
         type: "checkbox",
         group: "notification",

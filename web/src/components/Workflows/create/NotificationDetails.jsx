@@ -27,7 +27,7 @@ function NotificationDetails() {
       ))} */}
       {notificationOptions[0].options.map((option) =>
         currentWorkflow.workflowType !== "slack" &&
-        option.id === "reply-to-alert" ? (
+        option.id === "SLACK_THREAD_REPLY" ? (
           <div key={option.id}></div>
         ) : (
           <button
@@ -55,7 +55,7 @@ function NotificationDetails() {
         ),
       )}
 
-      {currentWorkflow.notification === "slack-message" && (
+      {currentWorkflow.notification === "SLACK_MESSAGE" && (
         <div className="flex items-center gap-2 mt-2">
           <p className="text-xs font-bold text-gray-500">Select Channel</p>
           {isFetching && <CircularProgress size={20} />}

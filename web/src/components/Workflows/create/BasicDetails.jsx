@@ -39,7 +39,7 @@ function BasicDetails() {
   };
 
   useEffect(() => {
-    if (currentWorkflow?.workflowType === "api-trigger") {
+    if (currentWorkflow?.workflowType === "api") {
       handleGenerateCurl();
     }
   }, [currentWorkflow.name, currentWorkflow?.workflowType]);
@@ -87,7 +87,7 @@ function BasicDetails() {
               searchable={true}
               error={currentWorkflow?.errors?.workflowType ?? false}
             />
-            {currentWorkflow?.workflowType === "api-trigger" &&
+            {currentWorkflow?.workflowType === "api" &&
               !currentWorkflow?.name && (
                 // <button
                 //   className="border p-1 rounded transition-all text-xs text-violet-500 border-violet-500 hover:bg-violet-500 hover:text-white cursor-pointer disabled:bg-gray-100 disabled:text-gray-300 disabled:border-gray-300 disabled:cursor-not-allowed"
