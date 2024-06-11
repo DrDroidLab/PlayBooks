@@ -334,6 +334,18 @@ message ExecutionsWorkflowsListResponse {
   repeated WorkflowExecution workflow_executions = 4;
 }
 
+message ExecutionsWorkflowsGetAllRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+}
+
+message ExecutionsWorkflowsGetAllResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated WorkflowExecution workflow_executions = 4;
+}
+
 message PlaybooksBuilderOptionsRequest {
   Meta meta = 1;
 }

@@ -25,7 +25,8 @@ from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
-    ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest
+    ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
+    ExecutionsWorkflowsGetAllResponse
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
     WorkflowConfiguration, WorkflowExecution, WorkflowExecutionStatusType
 from utils.proto_utils import dict_to_proto
@@ -186,6 +187,28 @@ def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) ->
     except Exception as e:
         return ExecutionsWorkflowsListResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))
+
+
+@web_api(ExecutionsWorkflowsGetAllRequest)
+def workflows_execution_get_all(request_message: ExecutionsWorkflowsGetAllRequest) -> \
+        Union[ExecutionsWorkflowsGetAllResponse, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Invalid Request",
+                                                                 description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                     description="Workflow Executions not found"))
+    except Exception as e:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Error", description=str(e)))
+
+    we_protos = [we.proto for we in workflow_execution]
+    return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=True), workflow_executions=we_protos)
 
 
 @web_api(ExecutionWorkflowGetRequest)
