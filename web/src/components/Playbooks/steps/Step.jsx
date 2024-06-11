@@ -1,60 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
-import { CircularProgress, Tooltip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteStep,
-  playbookSelector,
-  setPlaybookKey,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { Tooltip } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
 import Query from "./Query.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
-import { executeStep } from "../../../utils/execution/executeStep.ts";
 import SelectInterpretation from "./Interpretation.jsx";
-import { Delete, PlayArrowRounded } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
-import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
-import { useSearchParams } from "react-router-dom";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
-import useIsExisting from "../../../hooks/useIsExisting.ts";
+import RunButton from "../../Buttons/RunButton/index.tsx";
 
 function Step({ step, index }) {
-  const { executionId, currentPlaybook } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const isExisting = useIsExisting();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
-  const [, setSearchParams] = useSearchParams();
-  const [triggerStartExecution, { isLoading: executionLoading }] =
-    useStartExecutionMutation();
   const dispatch = useDispatch();
 
   function handleDeleteClick() {
     dispatch(deleteStep(index));
   }
-
-  const handleStartExecution = async () => {
-    if (executionId) return;
-    const response = await triggerStartExecution(currentPlaybook.id);
-    if ("data" in response) {
-      const { data } = response;
-      return data.playbook_run_id;
-    }
-  };
-
-  const handleExecuteStep = async () => {
-    if (isExisting && !executionId) {
-      const id = await handleStartExecution();
-      dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      await executeStep(step, index);
-      setSearchParams({ executionId: id });
-    } else {
-      executeStep(step, index);
-    }
-  };
 
   return (
     <div className="rounded my-2">
@@ -81,22 +48,7 @@ function Step({ step, index }) {
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
-            {step.source && !unsupportedRunners.includes(step.source) && (
-              <div className="flex items-center gap-2">
-                <button
-                  className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
-                  onClick={handleExecuteStep}>
-                  <Tooltip title="Run this Step">
-                    <>
-                      Run <PlayArrowRounded />
-                    </>
-                  </Tooltip>
-                </button>
-                {(step.outputLoading || executionLoading) && (
-                  <CircularProgress size={20} />
-                )}
-              </div>
-            )}
+            <RunButton index={index} />
             <button
               className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
               onClick={() => handleDeleteClick(index)}>
