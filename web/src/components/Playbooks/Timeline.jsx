@@ -8,12 +8,9 @@ import {
 } from "../../store/features/playbook/playbookSlice.ts";
 import { executionToPlaybook } from "../../utils/parser/playbook/executionToPlaybook.ts";
 import Loading from "../common/Loading/index.tsx";
-import HandleOutput from "./steps/HandleOutput.jsx";
-import { renderTimestamp } from "../../utils/DateUtils.js";
-import CustomButton from "../common/CustomButton/index.tsx";
-import { PlayArrowRounded } from "@mui/icons-material";
-import { executeStep } from "../../utils/execution/executeStep.ts";
-import { CircularProgress } from "@mui/material";
+import ExecutingStep from "./timeline/ExecutingStep.jsx";
+import StepConfig from "./timeline/StepConfig.jsx";
+import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
 
 function Timeline({ setTimelineOpen }) {
   const { executionId } = useSelector(playbookSelector);
@@ -47,11 +44,6 @@ function Timeline({ setTimelineOpen }) {
     setTimelineOpen(false);
   };
 
-  const handleExecuteNextStep = () => {
-    executeStep(playbookSteps[lastStep + 1], lastStep + 1);
-    setTimelineOpen(false);
-  };
-
   useEffect(() => {
     if (!executingStep?.outputLoading) {
       populateData();
@@ -76,63 +68,24 @@ function Timeline({ setTimelineOpen }) {
 
       {steps?.length === 0 && <p>No steps executed in the playbook yet</p>}
 
-      <div className="flex flex-col gap-14 overflow-scroll">
+      <div className="flex flex-col gap-8 overflow-scroll">
         {steps?.map((step, index) => (
-          <div key={index} className="border rounded p-3 bg-gray-100">
-            <h2 className="text-violet-500 text-sm font-bold">Step</h2>
-            <div className="flex gap-2 items-center flex-wrap">
-              <h1 className="font-semibold text-lg line-clamp-3">
-                {step.description}
-              </h1>
-              <div onClick={() => handleShowConfig(step.id)}>
-                (
-                <span className="text-violet-500 cursor-pointer hover:underline">
-                  Show Config
-                </span>
-                )
-              </div>
-            </div>
-            <h2 className="text-violet-500 text-sm font-bold mt-2">
-              Executed At
-            </h2>
-            <p className="text-gray-500 italic text-sm">
-              {step?.outputs?.data?.length > 0
-                ? renderTimestamp(step?.outputs?.data?.[0]?.timestamp)
-                : ""}
-            </p>
-            <HandleOutput index={index} stepData={step} />
-          </div>
+          <StepConfig
+            key={index}
+            step={step}
+            index={index}
+            handleShowConfig={handleShowConfig}
+          />
         ))}
       </div>
 
-      {executingStep && (
-        <div className="border rounded p-3 bg-gray-100 mt-2">
-          <h2 className="text-violet-500 text-sm font-bold">Step</h2>
-          <div className="flex gap-2 items-center flex-wrap">
-            <h1 className="font-semibold text-lg line-clamp-3">
-              {executingStep.description}
-            </h1>
-            <div onClick={() => handleShowConfig(executingStep.id)}>
-              (
-              <span className="text-violet-500 cursor-pointer hover:underline">
-                Show Config
-              </span>
-              )
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-3">
-            <CircularProgress size={20} />
-            <div className="text-sm">Step execution is in progess</div>
-          </div>
-        </div>
-      )}
+      <ExecutingStep handleShowConfig={handleShowConfig} />
 
-      {showNextStepExecution && (
-        <div className="my-3">
-          <CustomButton onClick={handleExecuteNextStep}>
-            <PlayArrowRounded /> Execute Next Step
-          </CustomButton>
-        </div>
+      {showNextStepExecution && !executingStep && (
+        <ExecuteNextStep
+          handleShowConfig={handleShowConfig}
+          stepIndex={lastStep}
+        />
       )}
     </main>
   );
