@@ -27,6 +27,12 @@ enum WorkflowExecutionStatusType {
   WORKFLOW_FAILED = 4;
   WORKFLOW_CANCELLED = 5;
 }
+///////////////////// Workflow Configurations /////////////////////
+message WorkflowConfiguration {
+  google.protobuf.BoolValue generate_summary = 1;
+  google.protobuf.Struct global_variable_set = 2;
+}
+
 
 ///////////////////// Workflow Schedules /////////////////////
 message WorkflowSchedule {
@@ -97,6 +103,7 @@ message Workflow {
   repeated WorkflowAction actions = 10;
   sfixed64 last_execution_time = 11;
   WorkflowExecutionStatusType last_execution_status = 12;
+  WorkflowConfiguration configuration = 13;
 }
 
 
@@ -169,4 +176,5 @@ message WorkflowExecution {
   sfixed64 finished_at = 9;
   google.protobuf.StringValue created_by = 10;
   repeated WorkflowExecutionLog workflow_logs = 11;
+  WorkflowConfiguration execution_configuration = 13;
 }

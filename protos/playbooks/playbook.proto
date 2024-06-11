@@ -114,6 +114,7 @@ message PlaybookExecution {
   TimeRange time_range = 8;
   google.protobuf.StringValue created_by = 9;
   repeated PlaybookStepExecutionLog step_execution_logs = 11;
+  google.protobuf.Struct execution_global_variable_set = 12;
 }
 
 // Crud Protos

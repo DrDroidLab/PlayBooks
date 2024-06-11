@@ -25,7 +25,8 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
+    WorkflowConfiguration
 from utils.proto_utils import dict_to_proto
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -116,11 +117,19 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
     try:
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
+        workflow: WorkflowProto = account_workflow.proto_partial
+        schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
-        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
+        if request_message.workflow_configuration:
+            workflow_config = request_message.workflow_configuration
+        elif workflow.configuration:
+            workflow_config = workflow.configuration
+        else:
+            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
         execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
-                                                                  current_time_utc, workflow_run_uuid, user.email)
+                                                                  current_time_utc, workflow_run_uuid, user.email, None,
+                                                                  workflow_config)
         if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Failed to Schedule Workflow Execution",
@@ -203,28 +212,31 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                             status=500,
                             content_type='application/json')
     try:
-        schedule_type = account_workflow.schedule_type
-        schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
-        if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
-            execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
-                                                                      schedule, current_time_utc,
-                                                                      workflow_run_uuid, user.email, None)
-            if err:
-                return HttpResponse(json.dumps(
-                    {'success': False, 'error_message': f'Failed to schedule workflow execution with error: {err}'}),
-                    status=500, content_type='application/json')
+        workflow: WorkflowProto = account_workflow.proto_partial
+        schedule = workflow.schedule
+        schedule_type = account_workflow.schedule_type
+        if request_message.workflow_configuration:
+            workflow_config = request_message.workflow_configuration
+        elif workflow.configuration:
+            workflow_config = workflow.configuration
         else:
-            return HttpResponse(json.dumps({'success': False, 'error_message': 'Invalid Workflow Schedule Type'}),
-                                status=400, content_type='application/json')
+            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
+
+        execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
+                                                                  schedule, current_time_utc, workflow_run_uuid,
+                                                                  user.email, None, workflow_config)
+        if err:
+            return HttpResponse(json.dumps(
+                {'success': False, 'error_message': f'Failed to schedule workflow execution with error: {err}'}),
+                status=500, content_type='application/json')
 
         return HttpResponse(json.dumps({'success': True, 'workflow_run_id': workflow_run_uuid}), status=200,
                             content_type='application/json')
     except Exception as e:
         logger.error(f'Error executing workflow: {str(e)}')
         return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
-                            status=500,
-                            content_type='application/json')
+                            status=500, content_type='application/json')
 
 
 @account_get_api()
