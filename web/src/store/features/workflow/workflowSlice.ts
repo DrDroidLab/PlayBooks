@@ -7,6 +7,7 @@ const initialState = {
     workflowType: "slack_channel_alert",
     trigger: {},
     errors: {},
+    generateSummary: false,
   },
 };
 

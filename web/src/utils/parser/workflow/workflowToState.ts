@@ -28,6 +28,7 @@ export const workflowToState = (workflow) => {
     notification: workflowActionType,
     workflowType: entryPointType,
     schedule: scheduleType,
+    generateSummary: workflow?.configuration?.generate_summary,
     ...Extractors.handleActionsExtractor(workflowActionType, workflowAction),
     ...Extractors.handleEntryPointsExtractor(entryPointType, entryPoint),
     ...Extractors.handleScheduleExtractor(scheduleType, schedule),

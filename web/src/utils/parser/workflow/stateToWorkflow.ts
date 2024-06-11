@@ -29,6 +29,9 @@ export const stateToWorkflow = () => {
           [workflow.notification]: Injectors.handleActionsInjector(),
         },
       ],
+      configuration: {
+        generate_summary: workflow?.generateSummary ?? false,
+      },
     },
   };
 
