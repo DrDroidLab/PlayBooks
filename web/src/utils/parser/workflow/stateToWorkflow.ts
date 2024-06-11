@@ -1,6 +1,5 @@
 import { store } from "../../../store/index.ts";
-import handleSchedule from "../../workflow/handleSchedule.ts";
-import handleWorkflowType from "../../workflow/handleWorkflowType.ts";
+import * as Injectors from "../../workflow/injectors/index.ts";
 
 export const stateToWorkflow = () => {
   const workflow: any = store.getState().workflows.currentWorkflow;
@@ -11,7 +10,7 @@ export const stateToWorkflow = () => {
       name: workflow.name,
       schedule: {
         type: workflow.schedule?.toUpperCase(),
-        [workflow.schedule]: handleSchedule(workflow.schedule),
+        [workflow.schedule]: Injectors.handleScheduleInjector(),
       },
       playbooks: [
         {
@@ -21,17 +20,17 @@ export const stateToWorkflow = () => {
       entry_points: [
         {
           type: workflow.workflowType?.toUpperCase(),
-          [workflow.workflowType]: handleWorkflowType(workflow.workflowType),
+          [workflow.workflowType]: Injectors.handleEntryPointsInjector(),
         },
       ],
       actions: [
         {
-          type: workflow.notification,
-          slack_message: {
-            slack_channel_id:
-              workflow?.channel?.channel_id ??
-              workflow.trigger?.channel?.channel_id,
-          },
+          type: workflow.workflowType?.toUpperCase(),
+          [workflow.workflowType]: Injectors.handleEntryPointsInjector(),
+        },
+        {
+          type: workflow.notification?.toLowerCase(),
+          [workflow.workflowType]: Injectors.handleActionsInjector(),
         },
       ],
     },

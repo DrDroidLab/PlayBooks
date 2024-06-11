@@ -3,16 +3,16 @@ import { currentWorkflowSelector } from "../../../../store/features/workflow/wor
 import { useSelector } from "react-redux";
 import SlackTriggerForm from "../../triggers/SlackTriggerForm";
 import CopyCode from "../../../common/CopyCode/index.jsx";
-import { WorkflowTypeOptions } from "../../../../utils/workflow/handleWorkflowType.ts";
+import { WorkflowEntryPointOptions } from "../../../../utils/workflow/types/entryPoint.ts";
 
 function HandleWorkflowType() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   switch (currentWorkflow.workflowType) {
-    case WorkflowTypeOptions.SLACK_CHANNEL_ALERT:
+    case WorkflowEntryPointOptions.SLACK_CHANNEL_ALERT:
       return <SlackTriggerForm />;
 
-    case WorkflowTypeOptions.API:
+    case WorkflowEntryPointOptions.API:
       if (currentWorkflow.curl)
         return (
           <div className="flex flex-col gap-2 lg:w-1/2">

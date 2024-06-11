@@ -1,53 +1,37 @@
+import * as Extractors from "../../workflow/extractors/index.ts";
+import * as Types from "../../workflow/types/index.ts";
+
 export const workflowToState = (workflow) => {
-  const notificationType =
-    workflow.actions?.findIndex(
-      (e) => e.notification_config.slack_config.message_type === "MESSAGE",
-    ) !== -1
-      ? "slack-message"
-      : workflow.actions?.findIndex(
-          (e) =>
-            e.notification_config.slack_config.message_type === "THREAD_REPLY",
-        ) !== -1
-      ? "reply-to-alert"
-      : undefined;
+  console.log("workflow", workflow);
+  const workflowActionType =
+    workflow.actions.length > 0 ? workflow.actions[0]?.type?.toLowerCase() : "";
+  const workflowAction: Types.WorkflowActionContractType =
+    workflow.actions.length > 0 ? workflow.actions[0][workflowActionType] : {};
+
+  const entryPointType =
+    workflow.entry_points.length > 0
+      ? workflow.entry_points[0]?.type?.toLowerCase()
+      : "";
+  const entryPoint =
+    workflow.entry_points.length > 0
+      ? workflow.entry_points[0][entryPointType]
+      : {};
+
+  const scheduleType = workflow.schedule?.type?.toLowerCase();
+  const schedule = workflow.schedule[scheduleType];
+
+  const playbookId =
+    workflow?.playbooks?.length > 0 ? workflow?.playbooks[0].id : null;
+
   const currentWorkflow = {
     name: workflow.name,
-    schedule: workflow.schedule?.type?.toLowerCase(),
-    workflowType:
-      workflow.entry_points[0].type === "ALERT" ? "slack" : "api-trigger",
-    channel: {
-      channel_id:
-        workflow?.actions?.length > 0
-          ? notificationType === "slack-message"
-            ? workflow.actions[0]?.notification_config?.slack_config
-                ?.slack_channel_id
-            : workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-                ?.slack_channel_id
-          : "",
-    },
-    trigger: {
-      channel: {
-        channel_id:
-          workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-            ?.slack_channel_id,
-        name: workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-          ?.slack_channel_name,
-      },
-      source:
-        workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-          ?.slack_alert_type,
-      filterString:
-        workflow.entry_points[0]?.alert_config?.slack_channel_alert_config
-          ?.slack_alert_filter_string,
-    },
-    playbookId:
-      workflow?.playbooks?.length > 0 ? workflow?.playbooks[0].id : null,
-    notification: notificationType,
-    "slack-message": notificationType === "slack-message",
-    "reply-to-alert": notificationType === "reply-to-alert",
-    cron: workflow.schedule?.periodic?.cron_rule?.rule,
-    interval: workflow.schedule?.periodic?.task_interval?.interval_in_seconds,
-    duration: workflow.schedule?.periodic?.duration_in_seconds,
+    playbookId,
+    notification: workflowActionType,
+    workflowType: entryPointType,
+    schedule: scheduleType,
+    ...Extractors.handleActionsExtractor(workflowActionType, workflowAction),
+    ...Extractors.handleEntryPointsExtractor(entryPointType, entryPoint),
+    ...Extractors.handleScheduleExtractor(scheduleType, schedule),
   };
 
   return currentWorkflow;
