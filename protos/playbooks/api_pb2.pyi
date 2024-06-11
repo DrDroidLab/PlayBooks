@@ -1028,7 +1028,7 @@ class PlaybookExecutionStepExecuteResponse(google.protobuf.message.Message):
     SUCCESS_FIELD_NUMBER: builtins.int
     MESSAGE_FIELD_NUMBER: builtins.int
     PLAYBOOK_RUN_ID_FIELD_NUMBER: builtins.int
-    PLAYBOOK_STEP_EXECUTION_LOG_FIELD_NUMBER: builtins.int
+    STEP_EXECUTION_LOG_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
@@ -1038,7 +1038,7 @@ class PlaybookExecutionStepExecuteResponse(google.protobuf.message.Message):
     @property
     def playbook_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def playbook_step_execution_log(self) -> protos.playbooks.playbook_pb2.PlaybookStepExecutionLog: ...
+    def step_execution_log(self) -> protos.playbooks.playbook_pb2.PlaybookStepExecutionLog: ...
     def __init__(
         self,
         *,
@@ -1046,10 +1046,10 @@ class PlaybookExecutionStepExecuteResponse(google.protobuf.message.Message):
         success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         message: protos.base_pb2.Message | None = ...,
         playbook_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        playbook_step_execution_log: protos.playbooks.playbook_pb2.PlaybookStepExecutionLog | None = ...,
+        step_execution_log: protos.playbooks.playbook_pb2.PlaybookStepExecutionLog | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_run_id", b"playbook_run_id", "playbook_step_execution_log", b"playbook_step_execution_log", "success", b"success"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_run_id", b"playbook_run_id", "playbook_step_execution_log", b"playbook_step_execution_log", "success", b"success"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_run_id", b"playbook_run_id", "step_execution_log", b"step_execution_log", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_run_id", b"playbook_run_id", "step_execution_log", b"step_execution_log", "success", b"success"]) -> None: ...
 
 global___PlaybookExecutionStepExecuteResponse = PlaybookExecutionStepExecuteResponse
 

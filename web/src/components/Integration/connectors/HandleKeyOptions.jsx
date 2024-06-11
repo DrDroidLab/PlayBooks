@@ -12,6 +12,7 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
   const currentConnector = useSelector(connectorSelector);
 
   switch (option.display_name) {
+    case "Service Account JSON":
     case "PEM":
       return (
         <textarea
