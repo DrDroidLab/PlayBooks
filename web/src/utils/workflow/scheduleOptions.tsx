@@ -27,7 +27,6 @@ export const scheduleOptions = [
         ),
         type: "string",
         placeholder: "Enter Cron Schedule",
-        disabledKey: "interval",
       },
       {
         id: "duration",
@@ -51,7 +50,6 @@ export const scheduleOptions = [
         valueType: "LONG",
         type: "string",
         placeholder: "Enter Interval in seconds",
-        disabledKey: "cron",
       },
       {
         id: "duration",

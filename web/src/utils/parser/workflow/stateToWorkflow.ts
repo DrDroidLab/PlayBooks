@@ -25,12 +25,8 @@ export const stateToWorkflow = () => {
       ],
       actions: [
         {
-          type: workflow.workflowType?.toUpperCase(),
-          [workflow.workflowType]: Injectors.handleEntryPointsInjector(),
-        },
-        {
-          type: workflow.notification?.toLowerCase(),
-          [workflow.workflowType]: Injectors.handleActionsInjector(),
+          type: workflow.notification?.toUpperCase(),
+          [workflow.notification]: Injectors.handleActionsInjector(),
         },
       ],
     },
