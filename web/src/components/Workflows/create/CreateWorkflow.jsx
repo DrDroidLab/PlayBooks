@@ -50,7 +50,7 @@ function CreateTrigger() {
         navigate("/workflows");
       }
     } catch (e) {
-      dispatch(showSnackbar(e.toString()));
+      dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
     }
   };
 

@@ -23,12 +23,14 @@ export const stateToWorkflow = () => {
           [workflow.workflowType]: Injectors.handleEntryPointsInjector(),
         },
       ],
-      actions: [
-        {
-          type: workflow.notification?.toUpperCase(),
-          [workflow.notification]: Injectors.handleActionsInjector(),
-        },
-      ],
+      actions: workflow.notification
+        ? [
+            {
+              type: workflow.notification?.toUpperCase(),
+              [workflow.notification]: Injectors.handleActionsInjector(),
+            },
+          ]
+        : [],
       configuration: {
         generate_summary: workflow?.generateSummary ?? false,
       },
