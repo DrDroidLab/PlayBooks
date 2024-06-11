@@ -38,24 +38,28 @@ const WorkflowExecutionLogs = () => {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
       />
-      <button
-        onClick={() => navigate(-1)}
-        className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
-        <ChevronLeft /> All Workflows
-      </button>
-      <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <ExecutionsTable
-          playbooksList={playbooksList?.map((e) => e.playbook_execution)}
-          total={total ?? playbooksList?.length}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          pageUpdateCb={pageUpdateCb}
-          tableContainerStyles={
-            playbooksList?.length
-              ? {}
-              : { maxHeight: "35vh", minHeight: "35vh" }
-          }
-          refreshTable={refetch}></ExecutionsTable>
-      </SuspenseLoader>
+      <main className="flex flex-col gap-4 p-2 pt-4">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-1 text-sm border border-violet-500 rounded text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
+            <ChevronLeft /> All Workflows
+          </button>
+        </div>
+        <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
+          <ExecutionsTable
+            playbooksList={playbooksList?.map((e) => e.playbook_execution)}
+            total={total ?? playbooksList?.length}
+            pageSize={pageMeta ? pageMeta?.limit : 10}
+            pageUpdateCb={pageUpdateCb}
+            tableContainerStyles={
+              playbooksList?.length
+                ? {}
+                : { maxHeight: "35vh", minHeight: "35vh" }
+            }
+            refreshTable={refetch}></ExecutionsTable>
+        </SuspenseLoader>
+      </main>
     </div>
   );
 };
