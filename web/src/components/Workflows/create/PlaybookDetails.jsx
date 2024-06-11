@@ -18,7 +18,7 @@ function PlaybookDetails() {
   } = useGetPlaybooksQuery({});
 
   const handleToggleSummary = () => {
-    handleInput("generateSummary", !currentWorkflow?.summary ?? false);
+    handleInput("generateSummary", !currentWorkflow?.generateSummary ?? false);
   };
 
   return (
