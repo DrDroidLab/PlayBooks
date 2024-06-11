@@ -10,7 +10,7 @@ from executor.models import PlayBook, PlayBookExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
-    WorkflowExecutionLog as WorkflowExecutionLogProto
+    WorkflowExecutionLog as WorkflowExecutionLogProto, WorkflowConfiguration as WorkflowConfigurationProto
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -65,6 +65,7 @@ class Workflow(models.Model):
 
     schedule_type = models.IntegerField(choices=generate_choices(WorkflowScheduleProto.Type), db_index=True)
     schedule = models.JSONField()
+    configuration = models.JSONField(null=True, blank=True)
 
     playbooks = models.ManyToManyField(
         PlayBook,
@@ -108,6 +109,9 @@ class Workflow(models.Model):
         if latest_workflow_executions:
             latest_workflow_execution = latest_workflow_executions.first()
 
+        configuration = WorkflowConfigurationProto()
+        if self.configuration:
+            configuration = dict_to_proto(self.configuration, WorkflowConfigurationProto)
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -121,7 +125,9 @@ class Workflow(models.Model):
             actions=all_action_protos,
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
-            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
+            configuration=configuration
+
         )
 
     @property
@@ -134,6 +140,9 @@ class Workflow(models.Model):
         if latest_workflow_executions:
             latest_workflow_execution = latest_workflow_executions.first()
 
+        configuration = WorkflowConfigurationProto()
+        if self.configuration:
+            configuration = dict_to_proto(self.configuration, WorkflowConfigurationProto)
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -145,7 +154,8 @@ class Workflow(models.Model):
             schedule=dict_to_proto(self.schedule, WorkflowScheduleProto),
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
-            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
+            configuration=configuration
         )
 
 
@@ -211,6 +221,7 @@ class WorkflowExecution(models.Model):
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
 
     time_range = models.JSONField(null=True, blank=True)
+    workflow_execution_configuration = models.JSONField(null=True, blank=True)
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:

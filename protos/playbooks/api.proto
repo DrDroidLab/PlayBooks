@@ -300,6 +300,7 @@ message ExecuteWorkflowRequest {
   Meta meta = 1;
   google.protobuf.UInt64Value workflow_id = 2;
   google.protobuf.StringValue workflow_name = 3;
+  WorkflowConfiguration workflow_configuration = 4;
 }
 
 message ExecuteWorkflowResponse {
@@ -311,14 +312,14 @@ message ExecuteWorkflowResponse {
 
 message ExecutionWorkflowGetRequest {
   Meta meta = 1;
-  google.protobuf.StringValue workflow_run_id = 2;
+  google.protobuf.UInt64Value workflow_execution_id = 2;
 }
 
 message ExecutionWorkflowGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated WorkflowExecution workflow_executions = 4;
+  WorkflowExecution workflow_execution = 4;
 }
 
 message ExecutionsWorkflowsListRequest {
@@ -327,6 +328,18 @@ message ExecutionsWorkflowsListRequest {
 }
 
 message ExecutionsWorkflowsListResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated WorkflowExecution workflow_executions = 4;
+}
+
+message ExecutionsWorkflowsGetAllRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue workflow_run_id = 2;
+}
+
+message ExecutionsWorkflowsGetAllResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
