@@ -54,6 +54,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
         return None, 'Invalid Cron Schedule'
 
     wf_schedule = proto_to_dict(wf_schedule_proto)
+    wf_configuration = proto_to_dict(workflow_proto.configuration)
     wf_entry_point_protos: [WorkflowEntryPointProto] = workflow_proto.entry_points
     wf_action_protos: [WorkflowActionProto] = workflow_proto.actions
 
@@ -104,6 +105,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
                                                                             'description': description,
                                                                             'schedule_type': wf_schedule_type,
                                                                             'schedule': wf_schedule,
+                                                                            'wf_configuration': wf_configuration
                                                                         })
             for pb in db_playbooks:
                 WorkflowPlayBookMapping.objects.update_or_create(account=account, workflow=db_workflow, playbook=pb,
