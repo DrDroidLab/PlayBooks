@@ -16,8 +16,10 @@ from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook, Depreca
     DeprecatedPlaybookStepExecutionLog
 from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
     Playbook as PlaybookProto, PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
-    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, \
-    PlaybookExecution as PlaybookExecutionProto
+    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, PlaybookExecution as PlaybookExecutionProto, \
+    PlaybookStepRelation as PlaybookStepRelationProto, \
+    PlaybookStepRelationExecutionLog as PlaybookStepRelationExecutionLogProto
+from protos.playbooks.playbook_task_result_evaluator_pb2 import PlaybookStepResultCondition
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
@@ -98,7 +100,7 @@ class PlayBookTask(models.Model):
 
 class PlayBookStep(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-
+    reference_id = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     description = models.CharField(max_length=255, db_index=True)
     notes = models.TextField(null=True, blank=True)
@@ -129,6 +131,7 @@ class PlayBookStep(models.Model):
 
         return PlaybookStepProto(
             id=UInt64Value(value=self.id),
+            reference_id=StringValue(value=self.reference_id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
@@ -149,6 +152,7 @@ class PlayBookStep(models.Model):
                 ))
         return PlaybookStepProto(
             id=UInt64Value(value=self.id),
+            reference_id=StringValue(value=self.reference_id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
@@ -223,7 +227,12 @@ class PlayBook(models.Model):
         if self.is_active:
             all_steps = all_steps.filter(playbookstepmapping__is_active=True)
         steps = [pbs.proto for pbs in all_steps]
+        all_step_relations = []
         for st in steps:
+            all_active_relations = PlayBookStepRelation.objects.filter(account=self.account, playbook=self,
+                                                                       parent_id=st.id.value, is_active=True)
+            all_active_relations_protos = [aar.proto for aar in all_active_relations]
+            all_step_relations.extend(all_active_relations_protos)
             for t in st.tasks:
                 all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
                     account=self.account, playbook=self, playbook_step_id=st.id.value, playbook_task_id=t.id.value,
@@ -255,6 +264,7 @@ class PlayBook(models.Model):
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             global_variable_set=global_variable_set_proto,
             steps=steps,
+            step_relations=all_step_relations
         )
 
     @property
@@ -463,12 +473,15 @@ class PlayBookStepExecutionLog(models.Model):
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         logs = self.playbooktaskexecutionlog_set.all()
         task_execution_logs = [pel.proto for pel in logs]
+        relation_execution_logs = self.playbooksteprelationexecutionlog_set.all()
+        relation_execution_log_protos = [rel.proto for rel in relation_execution_logs]
         step = self.playbook_step.proto_partial
         return PlaybookStepExecutionLogProto(
             id=UInt64Value(value=self.id),
             timestamp=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             step=step,
             task_execution_logs=task_execution_logs,
+            relation_execution_logs=relation_execution_log_protos,
             step_interpretation=dict_to_proto(self.interpretation,
                                               InterpretationProto) if self.interpretation else InterpretationProto(),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
@@ -535,4 +548,46 @@ class PlayBookTaskExecutionLog(models.Model):
             task_execution_result=task_execution_result,
             task_interpretation=dict_to_proto(self.interpretation,
                                               InterpretationProto) if self.interpretation else InterpretationProto()
+        )
+
+
+class PlayBookStepRelation(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    parent = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, related_name='parent_step', db_index=True)
+    child = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, related_name='child_step', db_index=True)
+    condition = models.JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = [['account', 'playbook', 'parent', 'child']]
+
+    @property
+    def proto(self) -> PlaybookStepRelationProto:
+        return PlaybookStepRelationProto(
+            id=UInt64Value(value=self.id),
+            parent=self.parent.proto_partial,
+            child=self.child.proto_partial,
+            condition=dict_to_proto(self.condition,
+                                    PlaybookStepResultCondition) if self.condition else PlaybookStepResultCondition(),
+            is_active=BoolValue(value=self.is_active)
+        )
+
+
+class PlayBookStepRelationExecutionLog(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    playbook = models.ForeignKey(PlayBook, on_delete=models.CASCADE, db_index=True)
+    playbook_step_relation = models.ForeignKey(PlayBookStepRelation, on_delete=models.CASCADE, db_index=True)
+    playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
+    playbook_step_execution_log = models.ForeignKey(PlayBookStepExecutionLog, on_delete=models.CASCADE, db_index=True)
+    evaluation_result = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    @property
+    def proto(self) -> PlaybookStepRelationExecutionLogProto:
+        return PlaybookStepRelationExecutionLogProto(
+            id=UInt64Value(value=self.id),
+            relation=self.playbook_step_relation.proto,
+            evaluation_result=BoolValue(value=self.evaluation_result)
         )

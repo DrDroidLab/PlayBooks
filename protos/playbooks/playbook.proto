@@ -21,6 +21,7 @@ import "protos/playbooks/source_task_definitions/documentation_task.proto";
 import "protos/playbooks/source_task_definitions/promql_task.proto";
 import "protos/playbooks/source_task_definitions/azure_task.proto";
 import "protos/playbooks/source_task_definitions/gke_task.proto";
+import "protos/playbooks/playbook_task_result_evaluator.proto";
 
 
 // Playbook Task Protos
@@ -70,12 +71,27 @@ message PlaybookTaskExecutionLog {
 // Playbook Step Protos
 message PlaybookStep {
   google.protobuf.UInt64Value id = 1;
-  google.protobuf.StringValue name = 2;
-  google.protobuf.StringValue description = 3;
-  google.protobuf.StringValue notes = 4;
-  repeated ExternalLink external_links = 5;
-  InterpreterType interpreter_type = 6;
-  repeated PlaybookTask tasks = 7;
+  google.protobuf.StringValue reference_id = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.StringValue description = 4;
+  google.protobuf.StringValue notes = 5;
+  repeated ExternalLink external_links = 6;
+  InterpreterType interpreter_type = 7;
+  repeated PlaybookTask tasks = 8;
+}
+
+message PlaybookStepRelation {
+  google.protobuf.UInt64Value id = 1;
+  PlaybookStep parent = 2;
+  PlaybookStep child = 3;
+  PlaybookStepResultCondition condition = 4;
+  google.protobuf.BoolValue is_active = 5;
+}
+
+message PlaybookStepRelationExecutionLog {
+  google.protobuf.UInt64Value id = 1;
+  PlaybookStepRelation relation = 2;
+  google.protobuf.BoolValue evaluation_result = 3;
 }
 
 message PlaybookStepExecutionLog {
@@ -84,11 +100,11 @@ message PlaybookStepExecutionLog {
   google.protobuf.StringValue playbook_run_id = 3;
   PlaybookStep step = 4;
   repeated PlaybookTaskExecutionLog task_execution_logs = 5;
-  Interpretation step_interpretation = 6;
-  TimeRange time_range = 7;
-  google.protobuf.StringValue created_by = 8;
+  repeated PlaybookStepRelationExecutionLog relation_execution_logs = 6;
+  Interpretation step_interpretation = 7;
+  TimeRange time_range = 8;
+  google.protobuf.StringValue created_by = 9;
 }
-
 
 message Playbook {
   google.protobuf.UInt64Value id = 1;
@@ -101,6 +117,7 @@ message Playbook {
   sfixed64 last_run_at = 8;
   PlaybookExecutionStatusType status = 9;
   repeated PlaybookStep steps = 10;
+  repeated PlaybookStepRelation step_relations = 11;
 }
 
 message PlaybookExecution {

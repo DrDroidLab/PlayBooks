@@ -5,10 +5,10 @@ from django.db.utils import IntegrityError
 
 from accounts.models import Account
 from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
-    PlayBookStepMapping, PlayBookStepTaskConnectorMapping
+    PlayBookStepMapping, PlayBookStepTaskConnectorMapping, PlayBookStepRelation
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
 from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
-    Playbook as PlaybookProto
+    Playbook as PlaybookProto, PlaybookStepRelation as PlaybookStepRelationProto
 from utils.proto_utils import proto_to_dict
 from utils.time_utils import current_milli_time
 
@@ -45,7 +45,7 @@ def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_
 
 
 def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto,
-                                 update_mode: bool = False) -> (PlayBook, bool, str):
+                                 update_mode: bool = False) -> (PlayBook, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
     if not is_valid_playbook:
         return None, f"Invalid Playbook Request: {err}"
@@ -53,6 +53,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     playbook_name = playbook.name.value
     db_playbook = get_db_playbooks(account, playbook_name=playbook_name, created_by=created_by, is_active=True)
     if db_playbook.exists() and not update_mode:
+        db_playbook = db_playbook.first()
         if db_playbook.is_active:
             return None, f"Playbook with name {playbook_name} already exists"
         else:
@@ -63,8 +64,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
         playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
         step_task_connector_map = {}
+        step_ref_id_db_id_map = {}
         for step in playbook_steps:
+            if not step.reference_id.value:
+                return None, f"Reference ID is missing for step {step.name.value}"
+            if step.reference_id.value in step_ref_id_db_id_map:
+                return None, f"Duplicate reference ID found for step {step.name.value}"
             db_step, task_connectors_map, err = create_db_step(account, created_by, step)
+            step_ref_id_db_id_map[step.reference_id.value] = db_step.id
             if not db_step or not task_connectors_map or err:
                 return None, f"Failed to create playbook step with error: {err}"
             step_task_connector_map[db_step.id] = task_connectors_map
@@ -111,6 +118,28 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                     logger.error(
                         f"Failed to add task connector mapping for task {task_id} with connector {connector_id} "
                         f"to playbook {db_playbook.name} with error {e}")
+    try:
+        step_relations: [PlaybookStepRelationProto] = playbook.step_relations
+        for step_relation in step_relations:
+            try:
+                parent_step_id = step_ref_id_db_id_map[step_relation.parent.reference_id.value]
+                child_step_id = step_ref_id_db_id_map[step_relation.child.reference_id.value]
+                if not parent_step_id or not child_step_id:
+                    return None, f"Invalid step relation found for playbook {playbook_name}"
+                condition = None
+                if step_relation.condition:
+                    condition = proto_to_dict(step_relation.condition)
+                PlayBookStepRelation.objects.get_or_create(account=account,
+                                                           playbook=db_playbook,
+                                                           parent_id=parent_step_id,
+                                                           child_id=child_step_id,
+                                                           defaults={'condition': condition, 'is_active': True})
+            except Exception as e:
+                logger.error(f"Failed to create step relations for playbook {db_playbook.name} with error {e}")
+                return None, f"Failed to create step relations for playbook {db_playbook.name} with error {e}"
+    except Exception as e:
+        logger.error(f"Failed to create step relations for playbook {db_playbook.name} with error {e}")
+        return None, f"Failed to create step relations for playbook {db_playbook.name} with error {e}"
     return db_playbook, None
 
 
@@ -137,9 +166,9 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
             for el in external_links:
                 el_list.append({'name': el.name.value, 'url': el.url.value})
             metadata['external_links'] = el_list
-
         try:
             db_step = PlayBookStep.objects.create(account=account,
+                                                  reference_id=step.reference_id.value,
                                                   name=step.name.value,
                                                   description=step.description.value,
                                                   notes=step.notes.value,

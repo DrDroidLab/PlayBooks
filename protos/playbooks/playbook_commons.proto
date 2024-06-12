@@ -13,6 +13,14 @@ enum PlaybookExecutionStatusType {
   FAILED = 4;
 }
 
+enum PlaybookTaskResultType {
+  UNKNOWN = 0;
+  TIMESERIES = 1;
+  TABLE = 2;
+  API_RESPONSE = 3;
+  BASH_COMMAND_OUTPUT = 4;
+}
+
 message ExternalLink {
   google.protobuf.StringValue name = 1;
   google.protobuf.StringValue url = 2;
@@ -72,14 +80,6 @@ message BashCommandOutputResult {
     google.protobuf.StringValue output = 2;
   }
   repeated CommandOutput command_outputs = 1;
-}
-
-enum PlaybookTaskResultType {
-  UNKNOWN = 0;
-  TIMESERIES = 1;
-  TABLE = 2;
-  API_RESPONSE = 3;
-  BASH_COMMAND_OUTPUT = 4;
 }
 
 message PlaybookTaskResult {
