@@ -78,6 +78,14 @@ export interface Step {
   taskType?: string;
   iframe_url?: string;
   zone?: any;
+  position?: StepPosition;
+  stepIndex: number;
+  parentIndexes?: number[];
+}
+
+export interface StepPosition {
+  x: number;
+  y: number;
 }
 
 export interface GoldenMetric {

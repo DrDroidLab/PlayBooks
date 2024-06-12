@@ -10,7 +10,7 @@ import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
 
-function IntegrationOption({ option, setIsOpen }) {
+function IntegrationOption({ option, setIsOpen, setParentIndex, parentIndex }) {
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
   const unsupported = unsupportedBuilderOptions.includes(
@@ -36,6 +36,7 @@ function IntegrationOption({ option, setIsOpen }) {
   const handleClick = () => {
     if (unsupported) return;
     if (option.source) {
+      if (setParentIndex) setParentIndex(null);
       dispatch(
         createStepWithSource({
           source: option.source,
@@ -46,6 +47,7 @@ function IntegrationOption({ option, setIsOpen }) {
           taskType: option.task_type,
           key: option.id,
           description: option.display_name,
+          parentIndex,
         }),
       );
       setIsOpen(false);

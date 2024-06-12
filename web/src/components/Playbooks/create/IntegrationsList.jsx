@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
-function IntegrationsList({ setIsOpen }) {
+function IntegrationsList({ setIsOpen, parentIndex, setParentIndex }) {
   const { data, isLoading } = usePlaybookBuilderOptionsQuery();
   const supportedTaskTypes = data?.supportedTaskTypes;
   const [query, setQuery] = useState("");
@@ -71,6 +71,8 @@ function IntegrationsList({ setIsOpen }) {
                   key={index}
                   option={option}
                   setIsOpen={setIsOpen}
+                  setParentIndex={setParentIndex}
+                  parentIndex={parentIndex}
                 />
               );
             })
@@ -88,6 +90,8 @@ function IntegrationsList({ setIsOpen }) {
                     key={index}
                     option={option}
                     setIsOpen={setIsOpen}
+                    setParentIndex={setParentIndex}
+                    parentIndex={parentIndex}
                   />
                 ))}
               </div>

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
+import { getStepPosition } from "../../../utils/getStepPosition.ts";
 
 const emptyStep = {
   modelType: "",
@@ -31,7 +32,7 @@ const initialState: Playbook = {
   isEditing: false,
   lastUpdatedAt: null,
   currentStepIndex: null,
-  view: "step",
+  view: "builder",
 };
 
 const playbookSlice = createSlice({
@@ -194,6 +195,7 @@ const playbookSlice = createSlice({
       state.steps.push({
         ...{
           source: payload.source,
+          stepIndex: index,
           taskType: payload.taskType,
           modelType: payload.modelType,
           selectedSource: payload.key,
@@ -209,11 +211,26 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
+          parentIndexes:
+            payload.parentIndex !== null && payload.parentIndex !== undefined
+              ? [payload.parentIndex]
+              : [],
         },
         globalVariables: state.globalVariables ?? [],
       });
 
+      playbookSlice.caseReducers.updatePosition(state);
+
       // state.currentStepIndex = index.toString();
+    },
+    updatePosition(state) {
+      state.steps.forEach((step, _, steps) => {
+        const position = getStepPosition(step, steps);
+        step.position = {
+          x: position.x,
+          y: position.y,
+        };
+      });
     },
     addStep: (state) => {
       state.steps.forEach((step) => {
@@ -221,8 +238,11 @@ const playbookSlice = createSlice({
       });
       state.steps.push({
         ...emptyStep,
+        stepIndex: state.steps.length,
         globalVariables: state.globalVariables ?? [],
       });
+
+      playbookSlice.caseReducers.updatePosition(state);
     },
     toggleStep: (state, { payload }) => {
       // state.currentStepIndex =
@@ -268,6 +288,7 @@ const playbookSlice = createSlice({
         return;
       state.steps[payload.index] = {
         source: payload.source,
+        stepIndex: payload.index,
         description: state?.steps[payload.index]?.description,
         notes: state?.steps[payload.index]?.notes,
         assets: [],
