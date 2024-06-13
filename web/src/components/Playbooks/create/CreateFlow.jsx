@@ -4,11 +4,15 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
+  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { useSelector } from "react-redux";
-import { stepsSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addParentIndex,
+  stepsSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
+import { useCallback, useEffect, useState } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
 import ParentNode from "./ParentNode.jsx";
@@ -24,13 +28,30 @@ const nodeTypes = {
 
 const CreateFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const graphData = fetchGraphData();
+  const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const [parentIndex, setParentIndex] = useState(null);
   const steps = useSelector(stepsSelector);
   const reactFlowInstance = useReactFlow();
-  const graphData = fetchGraphData();
   const dagreData = useDagre(graphData);
+  const dispatch = useDispatch();
+
+  const onConnect = useCallback(
+    ({ source, target }) => {
+      return setEdges((eds) =>
+        nodes
+          .filter((node) => node.id === source || node.selected)
+          .reduce((eds, node) => {
+            const stepIndex = target.split("-")[1];
+            const parentIndex = node.id.split("-")[1];
+            dispatch(addParentIndex({ index: stepIndex, parentIndex }));
+            return addEdge({ source: node.id, target }, eds);
+          }, eds),
+      );
+    },
+    [nodes],
+  );
 
   useEffect(() => {
     setNodes(
@@ -59,6 +80,7 @@ const CreateFlow = () => {
         fitView
         maxZoom={0.75}
         fitViewOptions={{ maxZoom: 0.75 }}
+        onConnect={onConnect}
         className="bg-gray-50">
         <Controls />
         <Background variant="dots" gap={12} size={1} />

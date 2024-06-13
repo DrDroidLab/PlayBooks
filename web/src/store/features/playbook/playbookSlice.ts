@@ -214,21 +214,22 @@ const playbookSlice = createSlice({
             payload.parentIndex !== null && payload.parentIndex !== undefined
               ? [payload.parentIndex]
               : [],
+          position: {
+            x: 0,
+            y: 0,
+          },
         },
         globalVariables: state.globalVariables ?? [],
       });
 
-      playbookSlice.caseReducers.updatePosition(state);
-
       // state.currentStepIndex = index.toString();
     },
-    updatePosition(state) {
-      state.steps.forEach((step, _, steps) => {
-        step.position = {
-          x: 0,
-          y: 0,
-        };
-      });
+    addParentIndex: (state, { payload }) => {
+      const { index, parentIndex } = payload;
+      const step = state.steps[index];
+      if (step?.parentIndexes) {
+        step.parentIndexes.push(parentIndex);
+      }
     },
     addStep: (state) => {
       state.steps.forEach((step) => {
@@ -238,9 +239,11 @@ const playbookSlice = createSlice({
         ...emptyStep,
         stepIndex: state.steps.length,
         globalVariables: state.globalVariables ?? [],
+        position: {
+          x: 0,
+          y: 0,
+        },
       });
-
-      playbookSlice.caseReducers.updatePosition(state);
     },
     toggleStep: (state, { payload }) => {
       // state.currentStepIndex =
@@ -541,6 +544,7 @@ export const {
   setCurrentStepIndex,
   createStepWithSource,
   addStep,
+  addParentIndex,
   toggleStep,
   deleteStep,
   updateStep,
