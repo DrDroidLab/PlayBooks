@@ -583,11 +583,14 @@ class PlayBookStepRelationExecutionLog(models.Model):
     playbook_step_execution_log = models.ForeignKey(PlayBookStepExecutionLog, on_delete=models.CASCADE, db_index=True)
     evaluation_result = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    evaluation_output = models.JSONField(null=True, blank=True)
 
     @property
     def proto(self) -> PlaybookStepRelationExecutionLogProto:
+        evaluation_output_proto = dict_to_proto(self.evaluation_output, Struct) if self.evaluation_output else Struct()
         return PlaybookStepRelationExecutionLogProto(
             id=UInt64Value(value=self.id),
             relation=self.playbook_step_relation.proto,
-            evaluation_result=BoolValue(value=self.evaluation_result)
+            evaluation_result=BoolValue(value=self.evaluation_result),
+            evaluation_output=evaluation_output_proto
         )
