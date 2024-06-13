@@ -7,7 +7,11 @@ export const handleActionsInjector = (): Types.WorkflowActionContractType => {
 
   switch (workflow.notification) {
     case Types.WorkflowActionOptions.SLACK_MESSAGE:
-      return {};
+      return {
+        slack_channel_id:
+          workflow?.channel?.channel_id ??
+          workflow.trigger?.channel?.channel_id,
+      };
     case Types.WorkflowActionOptions.SLACK_THREAD_REPLY:
       return {
         slack_channel_id:
