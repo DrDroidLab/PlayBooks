@@ -12,8 +12,17 @@ import SelectInterpretation from "./Interpretation.jsx";
 import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import AddDataDrawer from "../../common/Drawers/AddDataDrawer.tsx";
+import useDataDrawer from "../../../hooks/useDataDrawer.ts";
 
 function Step({ step, index }) {
+  const {
+    addDataDrawerOpen,
+    parentIndex,
+    setAddDataDrawerOpen,
+    setParentIndex,
+  } = useDataDrawer();
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -21,8 +30,13 @@ function Step({ step, index }) {
   const dispatch = useDispatch();
 
   function handleDeleteClick() {
-    dispatch(deleteStep(index));
+    dispatch(deleteStep(step.stepIndex));
   }
+
+  const handleAdd = () => {
+    setAddDataDrawerOpen(true);
+    setParentIndex(step.stepIndex);
+  };
 
   return (
     <div className="rounded my-2">
@@ -72,7 +86,28 @@ function Step({ step, index }) {
             </button>
           </div>
         )}
+        {!isPrefetched && (
+          <div className="flex gap-2 mt-2">
+            {step.source && (
+              <div className="flex items-center gap-2">
+                <CustomButton onClick={handleAdd}>Add Next Step</CustomButton>
+              </div>
+            )}
+            <CustomButton onClick={handleAdd}>
+              Add Next Step With Condition
+            </CustomButton>
+          </div>
+        )}
       </div>
+
+      {addDataDrawerOpen && (
+        <AddDataDrawer
+          addDataDrawerOpen={addDataDrawerOpen}
+          parentIndex={parentIndex}
+          setAddDataDrawerOpen={setAddDataDrawerOpen}
+          setParentIndex={setParentIndex}
+        />
+      )}
     </div>
   );
 }

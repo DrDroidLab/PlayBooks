@@ -8,12 +8,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress } from "@mui/material";
-import {
-  Add,
-  CheckCircleOutline,
-  Delete,
-  ErrorOutline,
-} from "@mui/icons-material";
+import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 
 export default function CustomNode({ data }) {
@@ -90,18 +85,18 @@ export default function CustomNode({ data }) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!bg-violet-500"
+          className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
         />
 
         <Handle
           type="source"
           position={Position.Bottom}
-          className="!bg-violet-500"
+          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
         />
 
         <NodeToolbar isVisible={true} position={Position.Bottom}>
           <CustomButton onClick={handleAdd}>
-            <Add fontSize="small" />
+            {/* <Add fontSize="small" /> */}
             Add Step
           </CustomButton>
         </NodeToolbar>

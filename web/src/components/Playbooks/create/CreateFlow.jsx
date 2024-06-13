@@ -12,26 +12,35 @@ import {
   addParentIndex,
   stepsSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
 import ParentNode from "./ParentNode.jsx";
-import CustomDrawer from "../../common/CustomDrawer/index.jsx";
-import Sidebar from "./Sidebar.jsx";
 import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
 import useDagre from "../../../hooks/useDagre.ts";
+import CustomEdge from "./CustomEdge.jsx";
+import AddDataDrawer from "../../common/Drawers/AddDataDrawer.tsx";
+import useDataDrawer from "../../../hooks/useDataDrawer.ts";
 
 const nodeTypes = {
   custom: CustomNode,
   parent: ParentNode,
 };
 
+const edgeTypes = {
+  custom: CustomEdge,
+};
+
 const CreateFlow = () => {
+  const {
+    addDataDrawerOpen,
+    parentIndex,
+    setAddDataDrawerOpen,
+    setParentIndex,
+  } = useDataDrawer();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const graphData = fetchGraphData();
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
-  const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
-  const [parentIndex, setParentIndex] = useState(null);
   const steps = useSelector(stepsSelector);
   const reactFlowInstance = useReactFlow();
   const dagreData = useDagre(graphData);
@@ -76,6 +85,7 @@ const CreateFlow = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         minZoom={-Infinity}
         fitView
         maxZoom={0.75}
@@ -86,21 +96,12 @@ const CreateFlow = () => {
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
 
-      <CustomDrawer
-        isOpen={addDataDrawerOpen}
-        setIsOpen={setAddDataDrawerOpen}
-        openFrom="left"
-        addtionalStyles={"lg:w-[20%]"}
-        showOverlay={false}
-        startFrom="80">
-        <div className="flex-[0.4] border-r-[1px] border-r-gray-200 h-full">
-          <Sidebar
-            parentIndex={parentIndex}
-            setParentIndex={setParentIndex}
-            setIsOpen={setAddDataDrawerOpen}
-          />
-        </div>
-      </CustomDrawer>
+      <AddDataDrawer
+        addDataDrawerOpen={addDataDrawerOpen}
+        parentIndex={parentIndex}
+        setAddDataDrawerOpen={setAddDataDrawerOpen}
+        setParentIndex={setParentIndex}
+      />
     </div>
   );
 };

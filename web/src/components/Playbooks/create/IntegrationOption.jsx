@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createStepWithSource,
   playbookSelector,
+  setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
@@ -50,6 +51,7 @@ function IntegrationOption({ option, setIsOpen, setParentIndex, parentIndex }) {
           parentIndex,
         }),
       );
+      dispatch(setCurrentStepIndex(null));
       setIsOpen(false);
     }
   };

@@ -1,3 +1,4 @@
+import { MarkerType } from "reactflow";
 import { Step } from "../../types.ts";
 import { parentIndexExists } from "../parentIndexesExist.ts";
 
@@ -13,12 +14,19 @@ export const getEdges = (steps: Step[]) => {
     id: `edge-${step.stepIndex}`,
     source: `playbook`,
     target: `node-${step.stepIndex}`,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+    },
   }));
   const stepsWithParentsEdges = stepsWithParents.flatMap((step) =>
     step?.parentIndexes?.map((parentIndex) => ({
       id: `edge-${parentIndex}-${step.stepIndex}`, // Ensures unique edge id
       source: `node-${parentIndex}`,
       target: `node-${step.stepIndex}`,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+      type: "custom",
     })),
   );
 

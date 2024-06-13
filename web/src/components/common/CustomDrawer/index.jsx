@@ -7,7 +7,7 @@ const CustomDrawer = ({
   isOpen,
   setIsOpen,
   children,
-  src,
+  src = undefined,
   openFrom = "right",
   addtionalStyles,
   showOverlay = true,
