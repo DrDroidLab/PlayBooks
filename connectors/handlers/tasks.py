@@ -329,9 +329,13 @@ slack_bot_handle_receive_message_prerun_notifier = publish_pre_run_task(slack_bo
 slack_bot_handle_receive_message_failure_notifier = publish_task_failure(slack_bot_handle_receive_message)
 slack_bot_handle_receive_message_postrun_notifier = publish_post_run_task(slack_bot_handle_receive_message)
 
+from datetime import datetime
+
+
+# Assuming PagerDutyConnectorDataReceived and other required imports are correctly defined
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pagerduty_handle_receive_message(pagerduty_connector_id, message):
+def pager_duty_handle_webhook_call(pagerduty_connector_id, incident):
     try:
         pagerduty_connector = get_db_connectors(connector_id=pagerduty_connector_id)
         if not pagerduty_connector:
@@ -349,68 +353,59 @@ def pagerduty_handle_receive_message(pagerduty_connector_id, message):
             return
         bot_auth_token = bot_auth_token.first().key
 
-        alerts = message.get('alerts', [])
+        # Extract incident details
+        incident_id = incident.get('incident', {}).get('id')
+        alerts = incident.get('alerts', [])
+        alert_id = alerts.get('id')
+        alert_text = alerts.get('summary')
+        details = alerts.get('body', {}).get('details', 'No Details')
+        alerts_created_at = alerts.get('created_at')
 
-        if not alerts:
-            print(f"No alerts found in the message, ignoring event: {message}")
+        if not alerts_created_at:
+            data_timestamp = datetime.utcnow()
+        else:
+            data_timestamp = datetime.strptime(alerts_created_at, '%Y-%m-%dT%H:%M:%S%z')
+
+        if not incident_id or not alert_id:
+            print(f"Incident ID or Alert ID not found, ignoring alert: {incident}")
             return
 
-        for alert in alerts:
-            incident_id = alert.get('incident', {}).get('id')
-            alert_id = alert.get('id')
-            alert_summary = alert.get('summary', 'No Title')
-            alert_details = alert.get('body', {}).get('details', 'No Details')
-            alert_created_at = alert.get('created_at')
+        pagerduty_received_msg = PagerDutyConnectorDataReceived(
+            account_id=pagerduty_connector.account_id,
+            connector=pagerduty_connector,
+            data_timestamp=data_timestamp,
+            text=details,
+            incident_id=incident_id,
+            alert_id=alert_id
+        )
+        pagerduty_received_msg.save()
+        #change this line
+        all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
+                                                                   entry_point_type=WorkflowEntryPointProto.ALERT)
+        ep_protos = [e.proto for e in all_alert_type_entry_points]
 
-            if not alert_created_at:
-                data_timestamp = datetime.utcnow()
-            else:
-                data_timestamp = datetime.strptime(alert_created_at, '%Y-%m-%dT%H:%M:%S%z')
+        try:
+            entry_point_evaluator = get_entry_point_evaluator(WorkflowEntryPointProto.Type.ALERT)
+        except Exception as e:
+            print(f"Error while handling pagerduty_alert_trigger_playbook with error: {e} for incident: {incident} "
+                  f"for account: {account_id}")
+            return
 
-            if not incident_id or not alert_id:
-                print(f"Incident ID or Alert ID not found, ignoring alert: {alert}")
-                continue
+        for ep in ep_protos:
+            alert_config = ep.alert_config
+            if alert_config.alert_type == WorkflowEntryPointAlertConfigProto.AlertType.PAGERDUTY_INCIDENT_ALERT:
+                pagerduty_alert = {
+                    'incident_id': incident_id,
+                    'alert_id': alert_id,
+                    'alert_text': details,
+                    'alert_title': alert_text
+                }
+                is_triggered = entry_point_evaluator.evaluate(alert_config, alert_config.alert_type,
+                                                              pagerduty_alert)
+                if is_triggered:
+                    trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, data_timestamp)
 
-            pagerduty_received_msg = PagerDutyConnectorDataReceived(
-                account_id=pagerduty_connector.account_id,
-                connector=pagerduty_connector,
-                data=message,
-                data_timestamp=data_timestamp,
-                text=alert_details,
-                title=alert_summary,
-                incident_id=incident_id,
-                alert_id=alert_id
-            )
-
-            pagerduty_received_msg.save()
-
-            all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
-                                                                       entry_point_type=WorkflowEntryPointProto.ALERT)
-            ep_protos: [WorkflowEntryPointProto] = [e.proto for e in all_alert_type_entry_points]
-            try:
-                entry_point_evaluator = get_entry_point_evaluator(WorkflowEntryPointProto.Type.ALERT)
-            except Exception as e:
-                print(f"Error while handling pagerduty_alert_trigger_playbook with error: {e} for message: {message} "
-                      f"for account: {account_id}")
-                return
-            for ep in ep_protos:
-                alert_config: WorkflowEntryPointAlertConfigProto = ep.alert_config
-                if alert_config.alert_type == WorkflowEntryPointAlertConfigProto.AlertType.PAGERDUTY_INCIDENT_ALERT:
-                    pagerduty_alert = {
-                        'incident_id': incident_id,
-                        'alert_id': alert_id,
-                        'alert_text': alert_details,
-                        'alert_title': alert_summary
-                    }
-                    is_triggered = entry_point_evaluator.evaluate(alert_config, alert_config.alert_type,
-                                                                  pagerduty_alert)
-                    if is_triggered:
-                        trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, data_timestamp)
     except Exception as e:
-        print(f"Error while handling pagerduty handle_receive_message with error: {e} for message: {message}")
+        print(f"Error while handling pagerduty handle_receive_message with error: {e} for message: {incident}")
+
     return
-
-
-pagerduty_handle_receive_message_prerun_notifier = publish_pre_run_task(pagerduty_handle_receive_message)
-pagerduty_handle_receive_message_failure_notifier = publish_task_failure(pagerduty_handle_receive_message)
-pagerduty_handle_receive_message_postrun_notifier = publish_post_run_task(pagerduty_handle_receive_message)

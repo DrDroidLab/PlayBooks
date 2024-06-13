@@ -384,6 +384,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
                              SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.AGENT_PROXY_API_KEY,
+                             SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.GITHUB_ACTIONS_TOKEN,
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,

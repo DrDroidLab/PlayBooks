@@ -249,4 +249,7 @@ enum SourceModelType {
 
   // GKE Models
   GKE_CLUSTER = 1301;
+
+  // Pagerduty Models
+  PAGERDUTY_INCIDENT = 1401;
 }
