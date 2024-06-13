@@ -20,16 +20,3 @@ message TimeseriesResultRule {
   google.protobuf.DoubleValue threshold = 5;
   repeated LabelValuePair label_value_filters = 6;
 }
-
-
-message PlaybookTaskResultRule {
-  PlaybookTaskResultType type = 1;
-  oneof rule {
-    TimeseriesResultRule timeseries = 2;
-  }
-}
-
-message PlaybookStepResultCondition {
-  repeated PlaybookTaskResultRule rules = 1;
-  LogicalOperator logical_operator = 2;
-}

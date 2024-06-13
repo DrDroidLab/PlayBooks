@@ -33,13 +33,14 @@ message PlaybookTask {
   }
   google.protobuf.UInt64Value id = 1;
   Source source = 2;
-  google.protobuf.StringValue name = 3;
-  google.protobuf.StringValue description = 4;
-  google.protobuf.StringValue notes = 5;
-  google.protobuf.StringValue created_by = 6;
-  google.protobuf.Struct global_variable_set = 7;
-  InterpreterType interpreter_type = 8;
-  repeated PlaybookTaskConnectorSource task_connector_sources = 9;
+  google.protobuf.StringValue reference_id = 3;
+  google.protobuf.StringValue name = 4;
+  google.protobuf.StringValue description = 5;
+  google.protobuf.StringValue notes = 6;
+  google.protobuf.StringValue created_by = 7;
+  google.protobuf.Struct global_variable_set = 8;
+  InterpreterType interpreter_type = 9;
+  repeated PlaybookTaskConnectorSource task_connector_sources = 10;
   oneof task {
     Documentation documentation = 101;
     Cloudwatch cloudwatch = 102;
@@ -58,6 +59,14 @@ message PlaybookTask {
   }
 }
 
+message PlaybookTaskResultRule {
+  PlaybookTaskResultType type = 1;
+  PlaybookTask task = 2;
+  oneof rule {
+    TimeseriesResultRule timeseries = 101;
+  }
+}
+
 message PlaybookTaskExecutionLog {
   google.protobuf.UInt64Value id = 1;
   sfixed64 timestamp = 2;
@@ -69,6 +78,11 @@ message PlaybookTaskExecutionLog {
 }
 
 // Playbook Step Protos
+message PlaybookStepResultCondition {
+  repeated PlaybookTaskResultRule rules = 1;
+  LogicalOperator logical_operator = 2;
+}
+
 message PlaybookStep {
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue reference_id = 2;
@@ -78,6 +92,7 @@ message PlaybookStep {
   repeated ExternalLink external_links = 6;
   InterpreterType interpreter_type = 7;
   repeated PlaybookTask tasks = 8;
+  repeated PlaybookStepRelation children = 9;
 }
 
 message PlaybookStepRelation {

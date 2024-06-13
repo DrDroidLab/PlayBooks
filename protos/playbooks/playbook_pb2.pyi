@@ -66,6 +66,7 @@ class PlaybookTask(google.protobuf.message.Message):
 
     ID_FIELD_NUMBER: builtins.int
     SOURCE_FIELD_NUMBER: builtins.int
+    REFERENCE_ID_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
     NOTES_FIELD_NUMBER: builtins.int
@@ -90,6 +91,8 @@ class PlaybookTask(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     source: protos.base_pb2.Source.ValueType
+    @property
+    def reference_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -136,6 +139,7 @@ class PlaybookTask(google.protobuf.message.Message):
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         source: protos.base_pb2.Source.ValueType = ...,
+        reference_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
         notes: google.protobuf.wrappers_pb2.StringValue | None = ...,
@@ -158,11 +162,36 @@ class PlaybookTask(google.protobuf.message.Message):
         azure: protos.playbooks.source_task_definitions.azure_task_pb2.Azure | None = ...,
         gke: protos.playbooks.source_task_definitions.gke_task_pb2.Gke | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "source", b"source", "sql_database_connection", b"sql_database_connection", "task", b"task", "task_connector_sources", b"task_connector_sources"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_mimir", b"grafana_mimir", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "source", b"source", "sql_database_connection", b"sql_database_connection", "task", b"task", "task_connector_sources", b"task_connector_sources"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation", "cloudwatch", "grafana", "new_relic", "datadog", "clickhouse", "postgres", "eks", "sql_database_connection", "api", "bash", "grafana_mimir", "azure", "gke"] | None: ...
 
 global___PlaybookTask = PlaybookTask
+
+@typing_extensions.final
+class PlaybookTaskResultRule(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    TYPE_FIELD_NUMBER: builtins.int
+    TASK_FIELD_NUMBER: builtins.int
+    TIMESERIES_FIELD_NUMBER: builtins.int
+    type: protos.playbooks.playbook_commons_pb2.PlaybookTaskResultType.ValueType
+    @property
+    def task(self) -> global___PlaybookTask: ...
+    @property
+    def timeseries(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.TimeseriesResultRule: ...
+    def __init__(
+        self,
+        *,
+        type: protos.playbooks.playbook_commons_pb2.PlaybookTaskResultType.ValueType = ...,
+        task: global___PlaybookTask | None = ...,
+        timeseries: protos.playbooks.playbook_task_result_evaluator_pb2.TimeseriesResultRule | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["rule", b"rule", "task", b"task", "timeseries", b"timeseries"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["rule", b"rule", "task", b"task", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["rule", b"rule"]) -> typing_extensions.Literal["timeseries"] | None: ...
+
+global___PlaybookTaskResultRule = PlaybookTaskResultRule
 
 @typing_extensions.final
 class PlaybookTaskExecutionLog(google.protobuf.message.Message):
@@ -205,9 +234,28 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
 global___PlaybookTaskExecutionLog = PlaybookTaskExecutionLog
 
 @typing_extensions.final
-class PlaybookStep(google.protobuf.message.Message):
+class PlaybookStepResultCondition(google.protobuf.message.Message):
     """Playbook Step Protos"""
 
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    RULES_FIELD_NUMBER: builtins.int
+    LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
+    @property
+    def rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
+    logical_operator: protos.base_pb2.LogicalOperator.ValueType
+    def __init__(
+        self,
+        *,
+        rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
+        logical_operator: protos.base_pb2.LogicalOperator.ValueType = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules"]) -> None: ...
+
+global___PlaybookStepResultCondition = PlaybookStepResultCondition
+
+@typing_extensions.final
+class PlaybookStep(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
@@ -218,6 +266,7 @@ class PlaybookStep(google.protobuf.message.Message):
     EXTERNAL_LINKS_FIELD_NUMBER: builtins.int
     INTERPRETER_TYPE_FIELD_NUMBER: builtins.int
     TASKS_FIELD_NUMBER: builtins.int
+    CHILDREN_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -233,6 +282,8 @@ class PlaybookStep(google.protobuf.message.Message):
     interpreter_type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType
     @property
     def tasks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTask]: ...
+    @property
+    def children(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepRelation]: ...
     def __init__(
         self,
         *,
@@ -244,9 +295,10 @@ class PlaybookStep(google.protobuf.message.Message):
         external_links: collections.abc.Iterable[protos.playbooks.playbook_commons_pb2.ExternalLink] | None = ...,
         interpreter_type: protos.playbooks.intelligence_layer.interpreter_pb2.InterpreterType.ValueType = ...,
         tasks: collections.abc.Iterable[global___PlaybookTask] | None = ...,
+        children: collections.abc.Iterable[global___PlaybookStepRelation] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["description", b"description", "id", b"id", "name", b"name", "notes", b"notes", "reference_id", b"reference_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "external_links", b"external_links", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "notes", b"notes", "reference_id", b"reference_id", "tasks", b"tasks"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["children", b"children", "description", b"description", "external_links", b"external_links", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "notes", b"notes", "reference_id", b"reference_id", "tasks", b"tasks"]) -> None: ...
 
 global___PlaybookStep = PlaybookStep
 
@@ -266,7 +318,7 @@ class PlaybookStepRelation(google.protobuf.message.Message):
     @property
     def child(self) -> global___PlaybookStep: ...
     @property
-    def condition(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.PlaybookStepResultCondition: ...
+    def condition(self) -> global___PlaybookStepResultCondition: ...
     @property
     def is_active(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     def __init__(
@@ -275,7 +327,7 @@ class PlaybookStepRelation(google.protobuf.message.Message):
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         parent: global___PlaybookStep | None = ...,
         child: global___PlaybookStep | None = ...,
-        condition: protos.playbooks.playbook_task_result_evaluator_pb2.PlaybookStepResultCondition | None = ...,
+        condition: global___PlaybookStepResultCondition | None = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["child", b"child", "condition", b"condition", "id", b"id", "is_active", b"is_active", "parent", b"parent"]) -> builtins.bool: ...

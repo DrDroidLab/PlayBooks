@@ -60,6 +60,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
             current_millis = current_milli_time()
             db_playbook.name = f'{playbook_name}###(inactive)###{current_millis}'
             db_playbook.save(update_fields=['name'])
+    all_task_ref_id_db_id_map = {}
     try:
         playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
@@ -70,7 +71,8 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                 return None, f"Reference ID is missing for step {step.name.value}"
             if step.reference_id.value in step_ref_id_db_id_map:
                 return None, f"Duplicate reference ID found for step {step.name.value}"
-            db_step, task_connectors_map, err = create_db_step(account, created_by, step)
+            db_step, task_connectors_map, task_ref_id_db_id_map, err = create_db_step(account, created_by, step)
+            all_task_ref_id_db_id_map.update(task_ref_id_db_id_map)
             step_ref_id_db_id_map[step.reference_id.value] = db_step.id
             if not db_step or not task_connectors_map or err:
                 return None, f"Failed to create playbook step with error: {err}"
@@ -129,6 +131,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                 condition = None
                 if step_relation.condition:
                     condition = proto_to_dict(step_relation.condition)
+                    for r in condition.get('rules', []):
+                        task = r.get('task')
+                        condition_task = {
+                            'id': all_task_ref_id_db_id_map[task['reference_id']],
+                            'name': task.get('name', ''),
+                        }
+                        r['task'] = condition_task
+
                 PlayBookStepRelation.objects.get_or_create(account=account,
                                                            playbook=db_playbook,
                                                            parent_id=parent_step_id,
@@ -148,11 +158,13 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
         tasks: [PlayBookTask] = step.tasks
         db_tasks = []
         task_connectors_map = {}
+        task_ref_id_db_id_map = {}
         for task in tasks:
             db_task, err = get_or_create_db_task(account, created_by, task)
+            task_ref_id_db_id_map[task.reference_id.value] = db_task.id
             if not db_task or err:
-                return None, None, f"Failed to create task: {task.name.value} for " \
-                                   f"playbook step {step.name.value} with error {err}"
+                return None, None, None, f"Failed to create task: {task.name.value} for " \
+                                         f"playbook step {step.name.value} with error {err}"
             db_tasks.append(db_task)
             connector_ids = []
             for tc in task.task_connector_sources:
@@ -168,7 +180,6 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
             metadata['external_links'] = el_list
         try:
             db_step = PlayBookStep.objects.create(account=account,
-                                                  reference_id=step.reference_id.value,
                                                   name=step.name.value,
                                                   description=step.description.value,
                                                   notes=step.notes.value,
@@ -176,7 +187,7 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
                                                   interpreter_type=step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I,
                                                   created_by=created_by)
         except Exception as e:
-            return None, None, f"Failed to create playbook step with error: {e}"
+            return None, None, None, f"Failed to create playbook step with error: {e}"
         for db_task in db_tasks:
             try:
                 PlayBookStepTaskDefinitionMapping.objects.get_or_create(account=account,
@@ -186,9 +197,9 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
                 logger.error(f"Failed to create playbook step task definition mapping for task {db_task.name} "
                              f"with error {e}")
                 return None, None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
-        return db_step, task_connectors_map, None
+        return db_step, task_connectors_map, task_ref_id_db_id_map, None
     except Exception as e:
-        return None, None, f"Failed to create playbook step with error: {e}"
+        return None, None, None, f"Failed to create playbook step with error: {e}"
 
 
 def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto) -> (PlaybookTaskProto, str):

@@ -18,8 +18,7 @@ from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, Pla
     Playbook as PlaybookProto, PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
     PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, PlaybookExecution as PlaybookExecutionProto, \
     PlaybookStepRelation as PlaybookStepRelationProto, \
-    PlaybookStepRelationExecutionLog as PlaybookStepRelationExecutionLogProto
-from protos.playbooks.playbook_task_result_evaluator_pb2 import PlaybookStepResultCondition
+    PlaybookStepRelationExecutionLog as PlaybookStepRelationExecutionLogProto, PlaybookStepResultCondition
 from utils.model_utils import generate_choices
 
 from accounts.models import Account
@@ -100,7 +99,6 @@ class PlayBookTask(models.Model):
 
 class PlayBookStep(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-    reference_id = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     description = models.CharField(max_length=255, db_index=True)
     notes = models.TextField(null=True, blank=True)
@@ -152,7 +150,6 @@ class PlayBookStep(models.Model):
                 ))
         return PlaybookStepProto(
             id=UInt64Value(value=self.id),
-            reference_id=StringValue(value=self.reference_id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
@@ -202,6 +199,35 @@ class PlayBookStep(models.Model):
             interpreter_type=self.interpreter_type
         )
 
+    def playbook_specific_proto(self, playbook_id) -> PlaybookStepProto:
+        all_tasks = self.tasks.all().order_by('playbooksteptaskdefinitionmapping__id')
+        tasks = [pbt.proto for pbt in all_tasks]
+
+        all_active_relations = PlayBookStepRelation.objects.filter(account=self.account, playbook_id=playbook_id,
+                                                                   parent=self, is_active=True)
+
+        all_active_relations_protos = [aar.child_specific_proto for aar in all_active_relations]
+
+        metadata = self.metadata if self.metadata else {}
+        el_list_proto: [ExternalLink] = []
+        if 'external_links' in metadata:
+            for el in metadata['external_links']:
+                el_list_proto.append(ExternalLink(
+                    name=StringValue(value=el['name']),
+                    url=StringValue(value=el['url'])
+                ))
+
+        return PlaybookStepProto(
+            id=UInt64Value(value=self.id),
+            name=StringValue(value=self.name),
+            external_links=el_list_proto,
+            description=StringValue(value=self.description),
+            notes=StringValue(value=self.notes),
+            interpreter_type=self.interpreter_type,
+            tasks=tasks,
+            children=all_active_relations_protos
+        )
+
 
 class PlayBook(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
@@ -226,7 +252,7 @@ class PlayBook(models.Model):
         all_steps = self.steps.all().order_by('playbookstepmapping__id')
         if self.is_active:
             all_steps = all_steps.filter(playbookstepmapping__is_active=True)
-        steps = [pbs.proto for pbs in all_steps]
+        steps = [pbs.playbook_specific_proto(self.id) for pbs in all_steps]
         all_step_relations = []
         for st in steps:
             all_active_relations = PlayBookStepRelation.objects.filter(account=self.account, playbook=self,
@@ -568,6 +594,16 @@ class PlayBookStepRelation(models.Model):
         return PlaybookStepRelationProto(
             id=UInt64Value(value=self.id),
             parent=self.parent.proto_partial,
+            child=self.child.proto_partial,
+            condition=dict_to_proto(self.condition,
+                                    PlaybookStepResultCondition) if self.condition else PlaybookStepResultCondition(),
+            is_active=BoolValue(value=self.is_active)
+        )
+
+    @property
+    def child_specific_proto(self) -> PlaybookStepRelationProto:
+        return PlaybookStepRelationProto(
+            id=UInt64Value(value=self.id),
             child=self.child.proto_partial,
             condition=dict_to_proto(self.condition,
                                     PlaybookStepResultCondition) if self.condition else PlaybookStepResultCondition(),

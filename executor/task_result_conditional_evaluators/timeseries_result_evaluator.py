@@ -3,7 +3,8 @@ from typing import Dict
 from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
 from protos.base_pb2 import Function, Operator
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TimeseriesResult
-from protos.playbooks.playbook_task_result_evaluator_pb2 import PlaybookTaskResultRule, TimeseriesResultRule
+from protos.playbooks.playbook_pb2 import PlaybookTaskResultRule
+from protos.playbooks.playbook_task_result_evaluator_pb2 import TimeseriesResultRule
 
 
 def sample_data_function_evaluator(function, sample_data):
