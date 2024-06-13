@@ -14,77 +14,36 @@ import { useReactFlow } from "reactflow";
 import ParentNode from "./ParentNode.jsx";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import Sidebar from "./Sidebar.jsx";
-
-const parentIndexExists = (parentIndexes) => {
-  return parentIndexes && parentIndexes?.length > 0;
-};
+import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
+import useDagre from "../../../hooks/useDagre.ts";
 
 const nodeTypes = {
   custom: CustomNode,
   parent: ParentNode,
 };
 
-const initialPlaybookNode = {
-  id: "playbook",
-  position: { x: 0, y: 0 },
-  data: {
-    label: "Playbook",
-    index: 0,
-  },
-  type: "parent",
-};
-
 const CreateFlow = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
   const [parentIndex, setParentIndex] = useState(null);
-
   const steps = useSelector(stepsSelector);
   const reactFlowInstance = useReactFlow();
-  const [nodes, setNodes, onNodesChange] = useNodesState([initialPlaybookNode]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
-  const stepsWithParents = steps.filter((step) =>
-    parentIndexExists(step.parentIndexes),
-  );
-  const stepsWithoutParents = steps.filter(
-    (step) => !parentIndexExists(step.parentIndexes),
-  );
-
-  const stepNodes = steps.map((step, index) => {
-    return {
-      id: `node-${step.stepIndex}`,
-      position: {
-        x: step.position.x,
-        y: step.position.y,
-      },
-      data: {
-        step,
-        index,
-        setAddDataDrawerOpen,
-        setParentIndex,
-      },
-      type: "custom",
-    };
-  });
-
-  const stepsWithoutParentsEdges = stepsWithoutParents.map((step, index) => ({
-    id: `edge-${step.stepIndex}`,
-    source: `playbook`,
-    target: `node-${index}`,
-  }));
-  const stepsWithParentsEdges = stepsWithParents.flatMap((step) =>
-    step.parentIndexes.map((parentIndex) => ({
-      id: `edge-${parentIndex}-${step.stepIndex}`, // Ensures unique edge id
-      source: `node-${parentIndex}`,
-      target: `node-${step.stepIndex}`,
-    })),
-  );
-
-  const stepEdges = [...stepsWithoutParentsEdges, ...stepsWithParentsEdges];
+  const graphData = fetchGraphData();
+  const dagreData = useDagre(graphData);
 
   useEffect(() => {
-    setNodes([...stepNodes, initialPlaybookNode]);
-    setEdges(stepEdges);
+    setNodes(
+      dagreData.nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          setAddDataDrawerOpen,
+          setParentIndex,
+        },
+      })),
+    );
+    setEdges(dagreData.edges);
     reactFlowInstance.fitView();
   }, [steps]);
 

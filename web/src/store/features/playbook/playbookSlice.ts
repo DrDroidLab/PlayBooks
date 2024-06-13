@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
-import { getStepPosition } from "../../../utils/getStepPosition.ts";
 
 const emptyStep = {
   modelType: "",
@@ -225,10 +224,9 @@ const playbookSlice = createSlice({
     },
     updatePosition(state) {
       state.steps.forEach((step, _, steps) => {
-        const position = getStepPosition(step, steps);
         step.position = {
-          x: position.x,
-          y: position.y,
+          x: 0,
+          y: 0,
         };
       });
     },
