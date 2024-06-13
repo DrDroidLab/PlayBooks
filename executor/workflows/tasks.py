@@ -217,7 +217,7 @@ def test_workflow_notification(account_id, workflow, message_type):
     pb_proto = playbook.proto
     if message_type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
         logger.info("Sending test thread reply message")
-        channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
+        channel_id = workflow.entry_points[0].slack_channel_alert.slack_channel_id.value
         slack_connectors = get_db_connectors(account, connector_type=Source.SLACK, is_active=True)
         if not slack_connectors:
             logger.error(f"Active Slack connector not found for account_id: {account_id}")

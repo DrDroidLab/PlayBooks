@@ -105,7 +105,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
                                                                             'description': description,
                                                                             'schedule_type': wf_schedule_type,
                                                                             'schedule': wf_schedule,
-                                                                            'wf_configuration': wf_configuration
+                                                                            'configuration': wf_configuration
                                                                         })
             for pb in db_playbooks:
                 WorkflowPlayBookMapping.objects.update_or_create(account=account, workflow=db_workflow, playbook=pb,
