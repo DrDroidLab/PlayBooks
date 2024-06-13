@@ -9,13 +9,19 @@ import {
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress } from "@mui/material";
 import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+
+const id = DrawerTypes.STEP_DETAILS;
 
 export default function CustomNode({ data }) {
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
+  const { toggle } = useDrawerState(id);
 
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
+    toggle();
   };
 
   const handleDelete = (e) => {
