@@ -19,8 +19,6 @@ import ParentNode from "./ParentNode.jsx";
 import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
 import useDagre from "../../../hooks/useDagre.ts";
 import CustomEdge from "./CustomEdge.jsx";
-import AddDataDrawer from "../../common/Drawers/AddDataDrawer.tsx";
-import useDataDrawer from "../../../hooks/useDataDrawer.ts";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -32,12 +30,6 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
-  const {
-    addDataDrawerOpen,
-    parentIndex,
-    setAddDataDrawerOpen,
-    setParentIndex,
-  } = useDataDrawer();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const graphData = fetchGraphData();
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
@@ -68,8 +60,6 @@ const CreateFlow = () => {
         ...node,
         data: {
           ...node.data,
-          setAddDataDrawerOpen,
-          setParentIndex,
         },
       })),
     );
@@ -95,13 +85,6 @@ const CreateFlow = () => {
         <Controls />
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
-
-      <AddDataDrawer
-        addDataDrawerOpen={addDataDrawerOpen}
-        parentIndex={parentIndex}
-        setAddDataDrawerOpen={setAddDataDrawerOpen}
-        setParentIndex={setParentIndex}
-      />
     </div>
   );
 };

@@ -25,7 +25,7 @@ const CustomDrawer = ({
     if (OnClose) {
       OnClose();
     }
-    closeDrawer();
+    if (isOpen) closeDrawer();
   };
 
   // Handle keyboard interactions

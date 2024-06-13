@@ -14,8 +14,11 @@ import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 const id = DrawerTypes.STEP_DETAILS;
+const addDataId = DrawerTypes.ADD_DATA;
 
 export default function CustomNode({ data }) {
+  const { toggle: toggleAddData, addAdditionalData } =
+    useDrawerState(addDataId);
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
   const { toggle } = useDrawerState(id);
@@ -35,8 +38,8 @@ export default function CustomNode({ data }) {
     e.preventDefault();
     e.stopPropagation();
 
-    data.setAddDataDrawerOpen(true);
-    data.setParentIndex(data.index);
+    toggleAddData();
+    addAdditionalData({ parentIndex: data.index });
   };
 
   return (

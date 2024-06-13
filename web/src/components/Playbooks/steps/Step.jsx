@@ -13,16 +13,13 @@ import { Delete, PlayArrowRounded } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import AddDataDrawer from "../../common/Drawers/AddDataDrawer.tsx";
-import useDataDrawer from "../../../hooks/useDataDrawer.ts";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+
+const id = DrawerTypes.ADD_DATA;
 
 function Step({ step, index }) {
-  const {
-    addDataDrawerOpen,
-    parentIndex,
-    setAddDataDrawerOpen,
-    setParentIndex,
-  } = useDataDrawer();
+  const { toggle, addAdditionalData } = useDrawerState(id);
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -34,8 +31,8 @@ function Step({ step, index }) {
   }
 
   const handleAdd = () => {
-    setAddDataDrawerOpen(true);
-    setParentIndex(step.stepIndex);
+    addAdditionalData({ parentIndex: step.stepIndex });
+    toggle();
   };
 
   return (
@@ -99,15 +96,6 @@ function Step({ step, index }) {
           </div>
         )}
       </div>
-
-      {addDataDrawerOpen && (
-        <AddDataDrawer
-          addDataDrawerOpen={addDataDrawerOpen}
-          parentIndex={parentIndex}
-          setAddDataDrawerOpen={setAddDataDrawerOpen}
-          setParentIndex={setParentIndex}
-        />
-      )}
     </div>
   );
 }

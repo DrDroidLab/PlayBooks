@@ -12,14 +12,18 @@ import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOpti
 import { Tooltip } from "@mui/material";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import { additonalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 
 function IntegrationOption({ option }) {
   const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
+  const addtionalState = useSelector(additonalStateSelector);
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
   const unsupported = unsupportedBuilderOptions.includes(
     `${option.source} ${option.task_type}`,
   );
+
+  console.log("sdf", addtionalState);
 
   const handleImageSrc = () => {
     switch (option?.source) {
@@ -40,6 +44,7 @@ function IntegrationOption({ option }) {
   const handleClick = () => {
     if (unsupported) return;
     if (option.source) {
+      console.log("sdf", addtionalState);
       dispatch(
         createStepWithSource({
           source: option.source,
@@ -50,6 +55,7 @@ function IntegrationOption({ option }) {
           taskType: option.task_type,
           key: option.id,
           description: option.display_name,
+          parentIndex: addtionalState?.parentIndex,
         }),
       );
       dispatch(setCurrentStepIndex(null));
