@@ -60,7 +60,7 @@ def handle_slack_event_callback(data: Dict):
     event_ts = event.get('event_ts', '')
     channel_id = event.get('channel', '')
 
-    if not event_subtype and not event_type:
+    if event_type == 'message':
         try:
             slack_bot_handle_receive_message.delay(slack_connector.id, data)
         except Exception as e:

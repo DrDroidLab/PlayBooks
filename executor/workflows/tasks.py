@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta, datetime
+import uuid
 
 from celery import shared_task
 from django.conf import settings
@@ -70,7 +71,8 @@ def workflow_scheduler():
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run'
+                pb_run_uuid = str(uuid.uuid4())
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{pb_run_uuid}'
                 if update_time_range:
                     time_range_proto = dict_to_proto(update_time_range, TimeRange)
                 else:
