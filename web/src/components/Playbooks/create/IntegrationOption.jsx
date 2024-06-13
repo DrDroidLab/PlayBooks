@@ -10,8 +10,11 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
-function IntegrationOption({ option, setIsOpen, setParentIndex, parentIndex }) {
+function IntegrationOption({ option }) {
+  const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
   const unsupported = unsupportedBuilderOptions.includes(
@@ -37,7 +40,6 @@ function IntegrationOption({ option, setIsOpen, setParentIndex, parentIndex }) {
   const handleClick = () => {
     if (unsupported) return;
     if (option.source) {
-      if (setParentIndex) setParentIndex(null);
       dispatch(
         createStepWithSource({
           source: option.source,
@@ -48,11 +50,10 @@ function IntegrationOption({ option, setIsOpen, setParentIndex, parentIndex }) {
           taskType: option.task_type,
           key: option.id,
           description: option.display_name,
-          parentIndex,
         }),
       );
       dispatch(setCurrentStepIndex(null));
-      setIsOpen(false);
+      toggle();
     }
   };
 
