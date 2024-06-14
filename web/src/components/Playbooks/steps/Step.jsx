@@ -16,9 +16,11 @@ import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 
 const id = DrawerTypes.ADD_DATA;
+const currentStepDrawerId = DrawerTypes.STEP_DETAILS;
 
 function Step({ step, index }) {
-  const { toggle, addAdditionalData } = useDrawerState(id);
+  const { openDrawer, addAdditionalData } = useDrawerState(id);
+  const { closeDrawer: closeCurrentStep } = useDrawerState(currentStepDrawerId);
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -31,7 +33,8 @@ function Step({ step, index }) {
 
   const handleAdd = () => {
     addAdditionalData({ parentIndex: step.stepIndex });
-    toggle();
+    openDrawer();
+    closeCurrentStep(false);
   };
 
   return (

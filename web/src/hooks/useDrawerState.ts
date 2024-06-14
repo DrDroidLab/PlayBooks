@@ -25,8 +25,8 @@ function useDrawerState(id: string): DrawerState {
     dispatch(openDrawer(id));
   };
 
-  const closeDrawerFunction = () => {
-    dispatch(closeDrawer(id));
+  const closeDrawerFunction = (resetState = true) => {
+    dispatch(closeDrawer({ id, resetState }));
   };
 
   const toggle = () => {

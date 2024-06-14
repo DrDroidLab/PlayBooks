@@ -17,8 +17,9 @@ const drawersSlice = createSlice({
       state[payload] = true;
     },
     closeDrawer(state, { payload }) {
-      state[payload] = false;
-      state.additonalState = {};
+      const { id, resetState } = payload;
+      state[id] = false;
+      if (resetState) state.additonalState = {};
     },
     toggleDrawer(state, { payload }) {
       if (!state[payload]) state.additonalState = {};
