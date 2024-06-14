@@ -23,6 +23,7 @@ import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import Timeline from "../Timeline.jsx";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 const viewOptions = [
   {
@@ -46,6 +47,7 @@ function CreatePlaybook() {
   const [searchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const [timelineOpen, setTimelineOpen] = useState(false);
+  const isPrefetched = useIsPrefetched();
 
   useEffect(() => {
     dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
@@ -129,7 +131,7 @@ function CreatePlaybook() {
               <ListView />
             </div>
           ) : (
-            <Builder />
+            <Builder isLog={isPrefetched || executionId} />
           )}
           <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
             {executionId && (
