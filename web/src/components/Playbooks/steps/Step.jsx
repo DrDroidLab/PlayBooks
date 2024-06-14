@@ -31,8 +31,8 @@ function Step({ step, index }) {
     dispatch(deleteStep(step.stepIndex));
   }
 
-  const handleAdd = () => {
-    addAdditionalData({ parentIndex: step.stepIndex });
+  const handleAdd = (requireCondition = false) => {
+    addAdditionalData({ parentIndex: step.stepIndex, requireCondition });
     openDrawer();
     closeCurrentStep(false);
   };
@@ -79,7 +79,7 @@ function Step({ step, index }) {
                 <CustomButton onClick={handleAdd}>Add Next Step</CustomButton>
               </div>
             )}
-            <CustomButton onClick={handleAdd}>
+            <CustomButton onClick={() => handleAdd(true)}>
               Add Next Step With Condition
             </CustomButton>
           </div>

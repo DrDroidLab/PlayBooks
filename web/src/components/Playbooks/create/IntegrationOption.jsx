@@ -44,7 +44,6 @@ function IntegrationOption({ option }) {
   const handleClick = () => {
     if (unsupported) return;
     if (option.source) {
-      console.log("sdf", addtionalState);
       dispatch(
         createStepWithSource({
           source: option.source,
@@ -56,6 +55,7 @@ function IntegrationOption({ option }) {
           key: option.id,
           description: option.display_name,
           parentIndex: addtionalState?.parentIndex,
+          requireCondition: addtionalState?.requireCondition,
         }),
       );
       dispatch(setCurrentStepIndex(null));

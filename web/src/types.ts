@@ -81,6 +81,7 @@ export interface Step {
   position?: StepPosition;
   stepIndex: number;
   parentIndexes?: number[];
+  requireCondition: boolean;
 }
 
 export interface StepPosition {

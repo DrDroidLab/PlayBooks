@@ -12,6 +12,7 @@ const emptyStep = {
   showError: false,
   stepType: null,
   action: {},
+  requireCondition: false,
 };
 
 const initialState: Playbook = {
@@ -223,6 +224,7 @@ const playbookSlice = createSlice({
             x: 0,
             y: 0,
           },
+          requireCondition: payload.requireCondition ?? false,
         },
         globalVariables: state.globalVariables ?? [],
       });
@@ -304,6 +306,7 @@ const playbookSlice = createSlice({
         showError: false,
         stepType: "data",
         action: {},
+        requireCondition: false,
       };
       state.steps[payload.index].source = payload.source;
       state.steps[payload.index].modelType = payload.modelType;

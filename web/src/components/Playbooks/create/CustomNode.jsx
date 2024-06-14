@@ -12,6 +12,7 @@ import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import AddCondition from "../../AddCondition/index.tsx";
 
 const id = DrawerTypes.STEP_DETAILS;
 const addDataId = DrawerTypes.ADD_DATA;
@@ -22,6 +23,7 @@ export default function CustomNode({ data }) {
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
   const { toggle } = useDrawerState(id);
+  const step = data.step;
 
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
@@ -50,17 +52,17 @@ export default function CustomNode({ data }) {
         } px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 w-[200px] h-48 cursor-pointer transition-all hover:shadow-violet-500`}
         onClick={handleClick}>
         <div className="">
-          {(data.step.outputLoading || data.step.inprogress) && (
+          {(step.outputLoading || step.inprogress) && (
             <CircularProgress size={20} />
           )}
-          {(data.step.outputError ||
+          {(step.outputError ||
             Object.keys(data?.step?.errors ?? {}).length > 0) && (
             <ErrorOutline color="error" size={20} />
           )}
-          {!data.step.outputError &&
-            !data.step.outputLoading &&
-            data.step.showOutput &&
-            data.step.outputs?.data?.length > 0 &&
+          {!step.outputError &&
+            !step.outputLoading &&
+            step.showOutput &&
+            step.outputs?.data?.length > 0 &&
             Object.keys(data?.step?.errors ?? {}).length === 0 && (
               <CheckCircleOutline color="success" size={20} />
             )}
@@ -104,11 +106,14 @@ export default function CustomNode({ data }) {
         />
 
         <NodeToolbar isVisible={true} position={Position.Bottom}>
-          <CustomButton onClick={handleAdd}>
-            {/* <Add fontSize="small" /> */}
-            Add Step
-          </CustomButton>
+          <CustomButton onClick={handleAdd}>Add Step</CustomButton>
         </NodeToolbar>
+
+        {step.requireCondition && (
+          <NodeToolbar isVisible={true} position={Position.Left}>
+            <AddCondition />
+          </NodeToolbar>
+        )}
       </div>
 
       <div className="absolute top-0 left-0 w-screen"></div>
