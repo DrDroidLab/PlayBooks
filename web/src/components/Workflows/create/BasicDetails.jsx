@@ -61,11 +61,19 @@ function BasicDetails() {
       <hr />
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
+        <div className="flex">
           <label
-            className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             htmlFor="playbook">
             Trigger Type
           </label>
+          &nbsp;
+          <p
+            className="flex gap-1 items-center text-sm font-small leading-none decoration-underline peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            (Read more about triggers <a style={{ color: "#9553fe" }} href="https://docs.drdroid.io/docs/workflows#triggers" target="_blank">here</a>)
+          </p>
+        </div>
           <div className="flex gap-2 items-center">
             <SelectComponent
               data={triggerOptions?.map((e) => {
