@@ -288,6 +288,8 @@ export interface Playbook {
   lastUpdatedAt?: Date | null;
   view: string;
   interpreterTypes: any[];
+  shouldScroll?: string;
+  currentVisibleStep?: number;
 }
 
 export interface Playground {

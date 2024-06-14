@@ -4,7 +4,6 @@ import PlaybookStepOutput from "./PlaybookStepOutput";
 import { SOURCES } from "../../../constants/index.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
-import styles from "./index.module.css";
 
 function HandleOutput({ index, stepData, showHeading = true }) {
   const [stepFromState] = useCurrentStep(index);
@@ -16,7 +15,7 @@ function HandleOutput({ index, stepData, showHeading = true }) {
       {showOutput && step.source !== SOURCES.TEXT && (
         <>
           {showHeading && (
-            <p className={styles["notesHeading"]}>
+            <p className={"text-sm mt-2 text-violet-500"}>
               <b>Output</b>
             </p>
           )}
@@ -32,7 +31,10 @@ function HandleOutput({ index, stepData, showHeading = true }) {
             )}
           </div>
           {(!step.outputs || step.outputs?.data?.length === 0) && (
-            <div className={styles["output-box"]}>
+            <div
+              className={`${
+                !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
+              } bg-gray-50 p-1 h-full`}>
               <PlaybookStepOutput stepOutput={null} />
             </div>
           )}
@@ -40,7 +42,9 @@ function HandleOutput({ index, stepData, showHeading = true }) {
             return (
               <div
                 key={index}
-                className={`${styles["output-box"]} flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
+                className={`${
+                  !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
+                } h-full bg-gray-50 p-1 flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
                 <div className="w-full">
                   <PlaybookStepOutput stepOutput={output} />
                 </div>
