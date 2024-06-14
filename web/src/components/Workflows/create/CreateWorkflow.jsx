@@ -97,6 +97,17 @@ function CreateTrigger() {
           </CustomButton>
           <CustomButton onClick={handleTestNotification}>Test Run</CustomButton>
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
+          <p className="flex gap-1 items-center text-xs font-small leading-none decoration-underline peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              (The test notification will be visible in <span style={{ color: "#9553fe" }}>#sandbox-alerts</span>/<span style={{ color: "#9553fe" }}>#demo-alerts</span> channels in{" "}
+              <a
+                rel="noreferrer"
+                style={{ color: "#9553fe" }}
+                href="https://doctor-droid-public.slack.com/archives/C076LUZQBC7"
+                target="_blank">
+                this
+              </a>
+              Slack workspace.)
+            </p>
         </div>
       </div>
     </div>
