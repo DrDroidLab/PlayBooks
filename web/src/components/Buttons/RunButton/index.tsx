@@ -40,7 +40,7 @@ function RunButton({ index }: RunButtonProps) {
   };
 
   const handleExecuteStep = async () => {
-    if (isExisting && !executionId) {
+    if (isExisting && !executionId && step.id) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
       await executeStep(step, index);
