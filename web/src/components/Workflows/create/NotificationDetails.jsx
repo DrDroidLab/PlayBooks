@@ -25,9 +25,9 @@ function NotificationDetails() {
       {/* {notificationOptions.map((option) => (
         <HandleInputRender key={option.id} option={option} />
       ))} */}
-      {notificationOptions[0].options.map((option) =>
-        currentWorkflow.workflowType !== "slack_channel_alert" &&
-        option.id === "slack_thread_reply" ? (
+      {notificationOptions[0].options.map((option, index) =>
+        currentWorkflow.workflowType !== "slack" &&
+        option.id === "reply-to-alert" ? (
           <div key={option.id}></div>
         ) : (
           <button
@@ -49,7 +49,9 @@ function NotificationDetails() {
               currentWorkflow.notification === option.id
                 ? "!bg-white !text-violet-500 border-violet-500"
                 : "text-gray-500 bg-gray-50 border-gray-200"
-            } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all rounded border`}>
+            } ${index === options?.length - 1 ? "rounded-r" : ""} ${
+              index === 0 ? "rounded-l" : ""
+            } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all border`}>
             {option.label}
           </button>
         ),

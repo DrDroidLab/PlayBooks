@@ -6,7 +6,7 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 import styles from "./index.module.css";
 
-function HandleOutput({ index, stepData }) {
+function HandleOutput({ index, stepData, showHeading = true }) {
   const [stepFromState] = useCurrentStep(index);
   const step = stepData ?? stepFromState;
   const showOutput = step.showOutput;
@@ -15,10 +15,12 @@ function HandleOutput({ index, stepData }) {
     <div>
       {showOutput && step.source !== SOURCES.TEXT && (
         <>
-          <p className={styles["notesHeading"]}>
-            <b>Output</b>
-          </p>
-          <div className="my-2">
+          {showHeading && (
+            <p className={styles["notesHeading"]}>
+              <b>Output</b>
+            </p>
+          )}
+          <div className="my-1">
             {Object.keys(step?.outputs?.stepInterpretation ?? {}).length >
               0 && (
               <SelectInterpretation
@@ -38,7 +40,7 @@ function HandleOutput({ index, stepData }) {
             return (
               <div
                 key={index}
-                className={`${styles["output-box"]} flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-4 max-w-full`}>
+                className={`${styles["output-box"]} flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
                 <div className="w-full">
                   <PlaybookStepOutput stepOutput={output} />
                 </div>

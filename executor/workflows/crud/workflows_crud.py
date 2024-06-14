@@ -8,7 +8,7 @@ from executor.crud.playbooks_crud import get_db_playbooks
 from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowAction, WorkflowEntryPointMapping, \
     WorkflowActionMapping, WorkflowPlayBookMapping
 
-from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybook
+from protos.playbooks.playbook_pb2 import Playbook
 from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto
 from utils.proto_utils import proto_to_dict
@@ -58,14 +58,14 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     wf_entry_point_protos: [WorkflowEntryPointProto] = workflow_proto.entry_points
     wf_action_protos: [WorkflowActionProto] = workflow_proto.actions
 
-    playbooks: [DeprecatedPlaybook] = workflow_proto.playbooks
+    playbooks: [Playbook] = workflow_proto.playbooks
     playbook_ids = [pb.id.value for pb in playbooks]
     db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids, is_active=True)
     if db_playbooks.count() != len(playbook_ids):
         return None, 'Invalid Playbooks in Workflow Config'
     try:
         db_workflows = get_db_workflows(account, workflow_name=name, created_by=created_by)
-        if db_workflows.exists() and not update_mode:
+        if not update_mode and db_workflows.exists():
             return None, f'Workflow with name: {name} already exists'
     except WorkflowsCrudException as wce:
         return None, str(wce)
