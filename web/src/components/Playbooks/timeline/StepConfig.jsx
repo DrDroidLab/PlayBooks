@@ -8,7 +8,7 @@ import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
 function StepConfig({ step, index, handleShowConfig }) {
   const [, setCurrentVisibleStep] = usePlaybookKey("currentVisibleStep");
   const scrollRef = useScrollIntoView(index);
-  const isVisible = useVisibility(scrollRef);
+  const isVisible = useVisibility(scrollRef, 0.2);
 
   useEffect(() => {
     if (isVisible) {
@@ -18,7 +18,7 @@ function StepConfig({ step, index, handleShowConfig }) {
   }, [isVisible]);
 
   return (
-    <div ref={scrollRef} className="border rounded p-1 bg-gray-100">
+    <div ref={scrollRef} className="border rounded p-1 bg-gray-100 h-full">
       <div className="flex items-center justify-between">
         <div className="flex flex-col px-1">
           <h2 className="text-violet-500 text-sm font-bold">Step</h2>

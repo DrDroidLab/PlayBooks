@@ -11,11 +11,10 @@ import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.jsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
-import CustomButton from "../common/CustomButton/index.tsx";
-import usePlaybookKey from "../../hooks/usePlaybookKey.ts";
+import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 
 function Timeline({ setTimelineOpen }) {
-  const { executionId, currentVisibleStep } = useSelector(playbookSelector);
+  const { executionId } = useSelector(playbookSelector);
   const playbookSteps = useSelector(stepsSelector);
   const [triggerGetPlaybookExeution, { isLoading }] =
     useLazyGetPlaybookExecutionQuery();
@@ -27,12 +26,9 @@ function Timeline({ setTimelineOpen }) {
   );
 
   const showNextStepExecution = lastStep < playbookSteps.length - 1;
-  const showNextStepLogButton = currentVisibleStep !== steps.length - 1;
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
-
-  const [, setShouldScroll] = usePlaybookKey("shouldScroll");
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -47,10 +43,6 @@ function Timeline({ setTimelineOpen }) {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
     dispatch(showStepConfig(index));
     setTimelineOpen(false);
-  };
-
-  const handleNextStepClick = () => {
-    setShouldScroll(true);
   };
 
   useEffect(() => {
@@ -97,11 +89,7 @@ function Timeline({ setTimelineOpen }) {
         />
       )}
 
-      {showNextStepLogButton && (
-        <div className="fixed bottom-0 right-0 m-2 z-50">
-          <CustomButton onClick={handleNextStepClick}>Next Step</CustomButton>
-        </div>
-      )}
+      <ExecutionNavigateButtons steps={steps} />
     </main>
   );
 }

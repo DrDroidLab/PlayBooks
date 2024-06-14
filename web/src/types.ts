@@ -279,7 +279,7 @@ export interface Playbook {
   lastUpdatedAt?: Date | null;
   view: string;
   interpreterTypes: any[];
-  shouldScroll?: boolean;
+  shouldScroll?: string;
   currentVisibleStep?: number;
 }
 

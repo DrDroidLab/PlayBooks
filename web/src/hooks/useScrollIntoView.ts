@@ -2,18 +2,37 @@ import { useEffect, useRef } from "react";
 import usePlaybookKey from "./usePlaybookKey.ts";
 
 const useScrollIntoView = (index) => {
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [shouldScroll, setShouldScroll] = usePlaybookKey("shouldScroll");
   const [currentVisibleStep] = usePlaybookKey("currentVisibleStep");
 
-  useEffect(() => {
-    if (shouldScroll && index === currentVisibleStep + 1) {
-      setShouldScroll(false);
+  const handleShouldScrollIndex = () => {
+    switch (shouldScroll) {
+      case "next":
+        return currentVisibleStep + 1;
+
+      case "previous":
+        return currentVisibleStep - 1;
+
+      default:
+        return undefined;
+    }
+  };
+
+  const showStep = () => {
+    const scrollIndex = handleShouldScrollIndex();
+    if (shouldScroll && index === scrollIndex) {
       ref.current?.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: "start",
       });
+      setShouldScroll(undefined);
     }
+  };
+
+  useEffect(() => {
+    showStep();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentVisibleStep, index, setShouldScroll, shouldScroll]);
 
   return ref;
