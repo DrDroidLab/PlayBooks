@@ -15,7 +15,7 @@ import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
 function Timeline({ setTimelineOpen }) {
   const { executionId } = useSelector(playbookSelector);
   const playbookSteps = useSelector(stepsSelector);
-  const [triggerGetPlaybookExeution, { isFetching }] =
+  const [triggerGetPlaybookExeution, { isLoading }] =
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ function Timeline({ setTimelineOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [executionId]);
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loading title="Your timeline is loading..." />;
   }
 
