@@ -19,6 +19,7 @@ import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/
 import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/workflow/api/testWorkflowNotificationApi.ts";
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 import { validate } from "./utils/validation.ts";
+import CustomButton from "../../common/CustomButton/index.tsx";
 
 function CreateTrigger() {
   const { id: workflowId } = useParams();
@@ -91,18 +92,10 @@ function CreateTrigger() {
         <hr />
         <NotificationDetails />
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleSave}
-            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
-            type="submit">
+          <CustomButton onClick={handleSave}>
             {workflowId ? "Update" : "Save"}
-          </button>
-          <button
-            onClick={handleTestNotification}
-            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
-            type="submit">
-            Test Run
-          </button>
+          </CustomButton>
+          <CustomButton onClick={handleTestNotification}>Test Run</CustomButton>
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
         </div>
       </div>

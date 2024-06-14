@@ -28,7 +28,9 @@ function PlaybookDetails() {
     isFetching: playbooksLoading,
     refetch,
   } = useGetPlaybooksQuery({});
-  const [selectedValue, setSelectedValue] = useState("default");
+  const [selectedValue, setSelectedValue] = useState(
+    currentWorkflow.generateSummary ? "summary" : "default",
+  );
 
   const handleRadioChange = (value) => {
     setSelectedValue(value);
