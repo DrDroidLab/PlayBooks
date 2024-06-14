@@ -19,7 +19,9 @@ const ExecutionsTableRender = ({ data }) => {
           <TableRow>
             <TableCell className="!font-bold">Playbook</TableCell>
             <TableCell className="!font-bold">Status</TableCell>
+            <TableCell className="!font-bold">Scheduled At</TableCell>
             <TableCell className="!font-bold">Executed At</TableCell>
+            <TableCell className="!font-bold">Created By</TableCell>
             <TableCell className="!font-bold">Action</TableCell>
           </TableRow>
         </TableHead>
@@ -41,14 +43,19 @@ const ExecutionsTableRender = ({ data }) => {
                 {handleStatus(item.status)}
               </TableCell>
               <TableCell component="td" scope="row">
-                <Link
-                  to={`/playbooks/logs/${item.playbook_run_id}`}
-                  className="text-violet-500 underline">
-                  {renderTimestamp(item.created_at)}
-                </Link>
+                {item.scheduled_at ? renderTimestamp(item.scheduled_at) : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
-                <Link to={`/playbooks/logs/${item.playbook_run_id}`}>
+                {item.finished_at ?? item.created_at
+                  ? renderTimestamp(item.finished_at ?? item.created_at)
+                  : "--"}
+              </TableCell>
+              <TableCell component="td" scope="row">
+                {item.created_by}
+              </TableCell>
+              <TableCell component="td" scope="row">
+                <Link
+                  to={`/playbooks/${item.playbook.id}?executionId=${item.playbook_run_id}`}>
                   <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
                     View Playbook Execution
                   </div>

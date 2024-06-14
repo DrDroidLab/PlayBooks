@@ -19,6 +19,7 @@ import { useUpdateWorkflowMutation } from "../../../store/features/workflow/api/
 import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/workflow/api/testWorkflowNotificationApi.ts";
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 import { validate } from "./utils/validation.ts";
+import CustomButton from "../../common/CustomButton/index.tsx";
 
 function CreateTrigger() {
   const { id: workflowId } = useParams();
@@ -50,7 +51,7 @@ function CreateTrigger() {
         navigate("/workflows");
       }
     } catch (e) {
-      dispatch(showSnackbar(e.toString()));
+      dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
     }
   };
 
@@ -84,26 +85,29 @@ function CreateTrigger() {
             : "Create Workflow"
         }
       />
-      <div className="p-6 flex flex-col gap-6 bg-white border rounded m-2">
+      <div className="p-6 flex flex-col gap-3 bg-white border rounded m-2">
         <BasicDetails />
         <hr />
         <ScheduleDetails />
         <hr />
         <NotificationDetails />
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleSave}
-            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
-            type="submit">
+          <CustomButton onClick={handleSave}>
             {workflowId ? "Update" : "Save"}
-          </button>
-          <button
-            onClick={handleTestNotification}
-            className="text-sm bg-transparent hover:bg-violet-500 p-2 border-violet-500 border hover:text-white text-violet-500 rounded transition-all"
-            type="submit">
-            Test Run
-          </button>
+          </CustomButton>
+          <CustomButton onClick={handleTestNotification}>Test Run</CustomButton>
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
+          <p className="flex gap-1 items-center text-xs font-small leading-none decoration-underline peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              (The test notification will be visible in <span style={{ color: "#9553fe" }}>#sandbox-alerts</span>/<span style={{ color: "#9553fe" }}>#demo-alerts</span> channels in{" "}
+              <a
+                rel="noreferrer"
+                style={{ color: "#9553fe" }}
+                href="https://doctor-droid-public.slack.com/archives/C076LUZQBC7"
+                target="_blank">
+                this
+              </a>
+              Slack workspace.)
+            </p>
         </div>
       </div>
     </div>

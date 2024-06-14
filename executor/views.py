@@ -837,4 +837,4 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
 
     return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                                 playbook_run_id=StringValue(value=playbook_run_id),
-                                                playbook_step_execution_log=step_execution_log)
+                                                step_execution_log=step_execution_log)

@@ -7,12 +7,11 @@ from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPoi
 logger = logging.getLogger(__name__)
 
 
-def get_db_workflow_entry_points(account_id=None, entry_point_type: WorkflowEntryPointProto.Type = None,
-                                 is_active=True):
+def get_db_workflow_entry_points(account_id=None, entry_point_type: WorkflowEntryPointProto.Type = None, is_active=True):
     filters = {}
     if account_id:
         filters['account_id'] = account_id
-    if type:
+    if entry_point_type:
         filters['type'] = entry_point_type
     if is_active is not None:
         filters['is_active'] = is_active

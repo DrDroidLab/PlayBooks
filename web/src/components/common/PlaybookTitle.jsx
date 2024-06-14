@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
+import RunButton from "../Buttons/RunButton/index.tsx";
 
 function PlaybookTitle({ step, index }) {
   const isPrefetched = useIsPrefetched();
@@ -19,7 +20,7 @@ function PlaybookTitle({ step, index }) {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-between gap-2 w-full mr-2">
       <div
         style={{
           fontSize: "16px",
@@ -76,7 +77,8 @@ function PlaybookTitle({ step, index }) {
           </button>
         </div>
       )}
-    </>
+      <RunButton index={index} />
+    </div>
   );
 }
 

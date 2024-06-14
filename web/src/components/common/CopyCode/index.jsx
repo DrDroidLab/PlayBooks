@@ -31,6 +31,7 @@ function CopyCode({ content, language }) {
       </div>
       <div className="border bg-gray-100 max-h-64 relative overflow-scroll p-2 rounded text-sm">
         <pre
+        className="flex flex-wrap"
           dangerouslySetInnerHTML={{
             __html: hljs.highlight(content, {
               language,
