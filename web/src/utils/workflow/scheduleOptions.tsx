@@ -7,40 +7,49 @@ export const scheduleOptions = [
     options: [],
   },
   {
-    id: "periodic",
-    label: "Run continuously",
+    id: "cron",
+    label: "CRON",
     options: [
       {
-        type: "multi-option",
-        options: [
-          {
-            id: "cron",
-            label: (
-              <>
-                Cron Schedule (See{" "}
-                <a
-                  href="https://crontab.guru/#*/2_*_*_*_*"
-                  rel="noreferrer"
-                  target="_blank"
-                  className="text-violet-500">
-                  Docs
-                </a>
-                )
-              </>
-            ),
-            type: "string",
-            placeholder: "Enter Cron Schedule",
-            disabledKey: "interval",
-          },
-          {
-            id: "interval",
-            label: "Interval (in seconds)",
-            valueType: "LONG",
-            type: "string",
-            placeholder: "Enter Interval in seconds",
-            disabledKey: "cron",
-          },
-        ],
+        id: "cron",
+        label: (
+          <>
+            Cron Schedule (See{" "}
+            <a
+              href="https://crontab.guru/#*/2_*_*_*_*"
+              rel="noreferrer"
+              target="_blank"
+              className="text-violet-500">
+              Docs
+            </a>
+            )
+          </>
+        ),
+        type: "string",
+        placeholder: "Enter Cron Schedule",
+      },
+      {
+        id: "duration",
+        label: "Stop after (in seconds)",
+        type: "string",
+        placeholder: "Enter Duration (in seconds)",
+        valueType: "LONG",
+        additionalProps: {
+          length: 200,
+        },
+      },
+    ],
+  },
+  {
+    id: "interval",
+    label: "Regular Intervals",
+    options: [
+      {
+        id: "interval",
+        label: "Interval (in seconds)",
+        valueType: "LONG",
+        type: "string",
+        placeholder: "Enter Interval in seconds",
       },
       {
         id: "duration",

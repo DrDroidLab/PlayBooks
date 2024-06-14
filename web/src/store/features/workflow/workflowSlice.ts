@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: any = {
   currentWorkflow: {
     name: "",
     schedule: "one_off",
-    workflowType: "slack",
+    workflowType: "slack_channel_alert",
     trigger: {},
     errors: {},
+    generateSummary: false,
+    globalVariables: [],
   },
 };
 
@@ -33,6 +35,24 @@ const workflowSlice = createSlice({
     resetWorkflowState(state) {
       state.currentWorkflow = initialState.currentWorkflow;
     },
+    addGlobalVariable(state, { payload }) {
+      const list = state.currentWorkflow.globalVariables ?? [];
+      list?.push({
+        name: payload.name,
+        value: payload.value,
+      });
+      state.currentWorkflow.globalVariables = list;
+    },
+    updateGlobalVariable(state, { payload }) {
+      const list = state.currentWorkflow.globalVariables ?? [];
+      list[payload.index].value = payload.value;
+      state.currentWorkflow.globalVariables = list;
+    },
+    deleteGlobalVariable(state, { payload }) {
+      const list = state.currentWorkflow.globalVariables ?? [];
+      list.splice(payload.index, 1);
+      state.currentWorkflow.globalVariables = list;
+    },
   },
 });
 
@@ -43,6 +63,9 @@ export const {
   setErrorKey,
   removeErrorKey,
   resetWorkflowState,
+  addGlobalVariable,
+  updateGlobalVariable,
+  deleteGlobalVariable,
 } = workflowSlice.actions;
 
 export default workflowSlice.reducer;

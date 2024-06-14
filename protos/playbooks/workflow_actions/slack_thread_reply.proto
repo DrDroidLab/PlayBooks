@@ -1,0 +1,10 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message SlackThreadReplyWorkflowAction {
+  google.protobuf.StringValue slack_channel_id = 1;
+  google.protobuf.StringValue thread_ts = 2;
+}

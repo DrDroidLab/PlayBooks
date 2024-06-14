@@ -348,6 +348,7 @@ class PlayBookExecution(models.Model):
     time_range = models.JSONField(null=True, blank=True)
 
     created_by = models.TextField(null=True, blank=True)
+    execution_global_variable_set = models.JSONField(null=True, blank=True)
 
     class Meta:
         unique_together = [['account', 'playbook_run_id']]

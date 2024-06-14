@@ -1,6 +1,7 @@
 import logging
 
 from celery import shared_task
+from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue
 
 from accounts.models import Account
@@ -56,9 +57,10 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         raise exc
 
 
-def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto):
+def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto, global_variable_set=None):
     try:
-        global_variable_set = playbook.global_variable_set
+        if not global_variable_set:
+            global_variable_set = playbook.global_variable_set
         steps = playbook.steps
         step_execution_logs = []
         for step in steps:
@@ -143,7 +145,12 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
     pb_proto = pb.proto
     try:
-        step_execution_logs: [PlaybookStepExecutionLog] = execute_playbook_impl(tr, account, pb_proto)
+        updated_global_variable_set = None
+        execution_global_variable_set = pb_execution.execution_global_variable_set
+        if execution_global_variable_set:
+            updated_global_variable_set = dict_to_proto(execution_global_variable_set, Struct)
+        step_execution_logs: [PlaybookStepExecutionLog] = execute_playbook_impl(tr, account, pb_proto,
+                                                                                updated_global_variable_set)
         store_step_execution_logs(account, pb, pb_execution, step_execution_logs)
         update_db_account_playbook_execution_status(account, playbook_execution_id,
                                                     PlaybookExecutionStatusType.FINISHED)

@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import timezone
 from typing import Union
 
 import traceback
@@ -8,7 +9,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
@@ -23,9 +24,11 @@ from utils.time_utils import current_datetime
 from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
-    ExecuteWorkflowResponse, ExecutionWorkflowGetRequest, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
-    ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequestV2, ExecutionWorkflowGetResponseV2
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto
+    ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
+    ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
+    ExecutionsWorkflowsGetAllResponse
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
+    WorkflowConfiguration, WorkflowExecution, WorkflowExecutionStatusType
 from utils.proto_utils import dict_to_proto
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -118,69 +121,29 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
     try:
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
+        workflow: WorkflowProto = account_workflow.proto_partial
+        schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
-        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{workflow_id}_wf_run'
-        if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
-            execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
-                                                                      current_time_utc, workflow_run_uuid, user.email)
-            if err:
-                return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                               message=Message(title="Failed to Schedule Workflow Execution",
-                                                               description=f"Error: {err}"))
+        if request_message.workflow_configuration:
+            workflow_config = request_message.workflow_configuration
+        elif workflow.configuration:
+            workflow_config = workflow.configuration
         else:
+            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
+        execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
+                                                                  current_time_utc, workflow_run_uuid, user.email, None,
+                                                                  workflow_config)
+        if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
-                                           message=Message(title="Error", description="Invalid Schedule Type"))
-
+                                           message=Message(title="Failed to Schedule Workflow Execution",
+                                                           description=f"Error: {err}"))
         return ExecuteWorkflowResponse(success=BoolValue(value=True),
                                        workflow_run_id=StringValue(value=workflow_run_uuid))
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
-
-
-@web_api(ExecutionWorkflowGetRequest)
-@deprecated
-def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
-        Union[ExecutionWorkflowGetResponse, HttpResponse]:
-    account: Account = get_request_account()
-    workflow_run_id = request_message.workflow_run_id.value
-    if not workflow_run_id:
-        return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
-                                                                                            description="Missing workflow_run_id"))
-    try:
-        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
-        if not workflow_execution:
-            return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Error",
-                                                                                                description="Workflow Execution not found"))
-    except Exception as e:
-        return ExecutionWorkflowGetResponse(success=BoolValue(value=False),
-                                            message=Message(title="Error", description=str(e)))
-
-    workflow_execution_protos = [we.deprecated_proto for we in workflow_execution]
-    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
-
-
-@web_api(ExecutionWorkflowGetRequestV2)
-def workflows_execution_get_v2(request_message: ExecutionWorkflowGetRequestV2) -> \
-        Union[ExecutionWorkflowGetResponseV2, HttpResponse]:
-    account: Account = get_request_account()
-    workflow_run_id = request_message.workflow_run_id.value
-    if not workflow_run_id:
-        return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False), message=Message(title="Invalid Request",
-                                                                                              description="Missing workflow_run_id"))
-    try:
-        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
-        if not workflow_execution:
-            return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False), message=Message(title="Error",
-                                                                                                  description="Workflow Execution not found"))
-    except Exception as e:
-        return ExecutionWorkflowGetResponseV2(success=BoolValue(value=False),
-                                              message=Message(title="Error", description=str(e)))
-
-    workflow_execution_protos = [we.proto for we in workflow_execution]
-    return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
 
 
 @web_api(ExecutionsWorkflowsListRequest)
@@ -195,14 +158,81 @@ def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) ->
         if not workflow_executions:
             return ExecutionsWorkflowsListResponse(success=BoolValue(value=True),
                                                    message=Message(title="No Workflow Executions Found"))
-        total_count = workflow_executions.count()
-        workflow_executions = filter_page(workflow_executions, page)
-        we_protos = [we.proto_partial for we in workflow_executions]
+        distinct_workflow_executions = workflow_executions.distinct('workflow_run_id')
+        total_count = distinct_workflow_executions.count()
+        distinct_workflow_executions = filter_page(distinct_workflow_executions, page)
+
+        we_protos = []
+        for weqs in distinct_workflow_executions:
+            we = weqs.workflow_run_id
+            current_workflow_executions = workflow_executions.filter(workflow_run_id=we)
+            last_completed_cwe = current_workflow_executions.first()
+            started_at = last_completed_cwe.started_at
+            next_scheduled_cwe = None
+            for cwe in current_workflow_executions:
+                if cwe.status in [WorkflowExecutionStatusType.WORKFLOW_FINISHED,
+                                  WorkflowExecutionStatusType.WORKFLOW_FAILED]:
+                    last_completed_cwe = cwe
+                if cwe.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
+                    next_scheduled_cwe = cwe
+                    break
+            last_completed_cwe_proto = last_completed_cwe.proto_partial
+            last_completed_cwe_proto.started_at = int(
+                started_at.replace(tzinfo=timezone.utc).timestamp()) if started_at else 0
+            if next_scheduled_cwe:
+                last_completed_cwe_proto.scheduled_at = int(
+                    next_scheduled_cwe.scheduled_at.replace(tzinfo=timezone.utc).timestamp())
+            we_protos.append(last_completed_cwe_proto)
+
         return ExecutionsWorkflowsListResponse(meta=get_meta(page=page, total_count=total_count),
                                                success=BoolValue(value=True), workflow_executions=we_protos)
     except Exception as e:
         return ExecutionsWorkflowsListResponse(success=BoolValue(value=False),
                                                message=Message(title="Error", description=str(e)))
+
+
+@web_api(ExecutionsWorkflowsGetAllRequest)
+def workflows_execution_get_all(request_message: ExecutionsWorkflowsGetAllRequest) -> \
+        Union[ExecutionsWorkflowsGetAllResponse, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Invalid Request",
+                                                                 description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                     description="Workflow Executions not found"))
+    except Exception as e:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Error", description=str(e)))
+
+    we_protos = [we.proto for we in workflow_execution]
+    return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=True), workflow_executions=we_protos)
+
+
+@web_api(ExecutionWorkflowGetRequest)
+def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
+        Union[ExecutionWorkflowGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    workflow_execution_id = request_message.workflow_execution_id.value
+    if not workflow_execution_id:
+        return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Invalid Request",
+                                                                                            description="Missing workflow_execution_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_execution_id=workflow_execution_id)
+        if not workflow_execution:
+            return ExecutionWorkflowGetResponse(success=BoolValue(value=False), message=Message(title="Error",
+                                                                                                description="Workflow Execution not found"))
+    except Exception as e:
+        return ExecutionWorkflowGetResponse(success=BoolValue(value=False),
+                                            message=Message(title="Error", description=str(e)))
+
+    workflow_execution = workflow_execution.first()
+    workflow_execution_protos = workflow_execution.proto
+    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_execution=workflow_execution_protos)
 
 
 @account_post_api(ExecuteWorkflowRequest)
@@ -231,32 +261,34 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                             status=500,
                             content_type='application/json')
     try:
-        schedule_type = account_workflow.schedule_type
-        schedule: WorkflowScheduleProto = dict_to_proto(account_workflow.schedule, WorkflowScheduleProto)
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
-        if schedule_type in [WorkflowScheduleProto.Type.PERIODIC, WorkflowScheduleProto.Type.ONE_OFF]:
-            execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
-                                                                      schedule, current_time_utc,
-                                                                      workflow_run_uuid, user.email, None)
-            if err:
-                return HttpResponse(json.dumps(
-                    {'success': False, 'error_message': f'Failed to schedule workflow execution with error: {err}'}),
-                    status=500, content_type='application/json')
+        workflow: WorkflowProto = account_workflow.proto_partial
+        schedule = workflow.schedule
+        schedule_type = account_workflow.schedule_type
+        if request_message.workflow_configuration:
+            workflow_config = request_message.workflow_configuration
+        elif workflow.configuration:
+            workflow_config = workflow.configuration
         else:
-            return HttpResponse(json.dumps({'success': False, 'error_message': 'Invalid Workflow Schedule Type'}),
-                                status=400, content_type='application/json')
+            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
+
+        execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
+                                                                  schedule, current_time_utc, workflow_run_uuid,
+                                                                  user.email, None, workflow_config)
+        if err:
+            return HttpResponse(json.dumps(
+                {'success': False, 'error_message': f'Failed to schedule workflow execution with error: {err}'}),
+                status=500, content_type='application/json')
 
         return HttpResponse(json.dumps({'success': True, 'workflow_run_id': workflow_run_uuid}), status=200,
                             content_type='application/json')
     except Exception as e:
         logger.error(f'Error executing workflow: {str(e)}')
         return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
-                            status=500,
-                            content_type='application/json')
+                            status=500, content_type='application/json')
 
 
 @account_get_api()
-@deprecated
 def workflows_execution_api_get(request_message: HttpRequest) -> Union[ExecutionWorkflowGetResponse, HttpResponse]:
     account: Account = get_request_account()
     query_dict = request_message.GET
@@ -283,39 +315,8 @@ def workflows_execution_api_get(request_message: HttpRequest) -> Union[Execution
                             status=500,
                             content_type='application/json')
 
-    workflow_execution_protos = [we.deprecated_proto for we in workflow_executions]
-    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
-
-
-@account_get_api()
-def workflows_execution_api_get_v2(request_message: HttpRequest) -> Union[ExecutionWorkflowGetResponse, HttpResponse]:
-    account: Account = get_request_account()
-    query_dict = request_message.GET
-    if 'workflow_run_id' not in query_dict:
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'Request Workflow params not found.'}),
-                            status=400, content_type='application/json')
-    request_dict = dict(query_dict)
-    workflow_run_id = request_dict.get('workflow_run_id')
-    if not workflow_run_id:
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'Request Workflow params not found.'}),
-                            status=400, content_type='application/json')
-    if isinstance(workflow_run_id, list):
-        workflow_run_ids = workflow_run_id
-    else:
-        workflow_run_ids = [workflow_run_id]
-    try:
-        workflow_executions = get_db_workflow_executions(account, workflow_run_ids=workflow_run_ids)
-        if not workflow_executions:
-            return HttpResponse(json.dumps({'success': False, 'error_message': 'Workflow Executions not found.'}),
-                                status=404, content_type='application/json')
-    except Exception as e:
-        logger.error(traceback.format_exc())
-        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
-                            status=500,
-                            content_type='application/json')
-
     workflow_execution_protos = [we.proto for we in workflow_executions]
-    return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+    return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
 
 
 @web_api(CreateWorkflowRequest)
@@ -332,7 +333,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select the trigger type"))
 
-    if not workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id:
+    if not workflow.entry_points[0].slack_channel_alert.slack_channel_id.value:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select a slack channel"))
 
@@ -340,7 +341,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
-    test_workflow_notification(account.id, workflow, workflow.actions[0].notification_config.slack_config.message_type)
+    test_workflow_notification(account.id, workflow, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 
 

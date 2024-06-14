@@ -27,7 +27,7 @@ def get_db_workflow_executions(account: Account, workflow_execution_id=None, wor
         filters['workflow_run_id__in'] = workflow_run_ids
     try:
         db_we = account.workflowexecution_set.all()
-        db_we = db_we.order_by('-workflow_run_id', '-scheduled_at')
+        db_we = db_we.order_by('-workflow_run_id', 'scheduled_at')
         if filters:
             db_we = db_we.filter(**filters)
         return db_we
@@ -76,7 +76,7 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
 
 
 def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id, scheduled_at,
-                              expiry_at, interval, created_by=None, metadata=None):
+                              expiry_at, created_by=None, metadata=None, workflow_execution_configuration=None):
     try:
         workflow_execution = WorkflowExecution.objects.create(
             account=account,
@@ -84,12 +84,12 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
             workflow_run_id=workflow_run_id,
             scheduled_at=scheduled_at,
             expiry_at=expiry_at,
-            interval=interval,
             status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED,
             created_at=timezone.now(),
             time_range=proto_to_dict(time_range),
             created_by=created_by,
-            metadata=metadata
+            metadata=metadata,
+            workflow_execution_configuration=workflow_execution_configuration
         )
         return workflow_execution
     except Exception as e:
@@ -118,22 +118,6 @@ def update_db_account_workflow_execution_status(account: Account, workflow_execu
     except Exception as e:
         logger.error(f"Failed to update workflow execution status for account_id: {account.id}, "
                      f"workflow_run_id: {workflow_execution_id}, error: {e}")
-    return False
-
-
-def update_db_account_workflow_execution_count_increment(account: Account, workflow_execution_id: int):
-    try:
-        workflow_execution = account.workflowexecution_set.get(id=workflow_execution_id)
-        total_executions = workflow_execution.total_executions
-        workflow_execution.total_executions = total_executions + 1
-        workflow_execution.save(update_fields=['total_executions'])
-        return True
-    except WorkflowExecution.DoesNotExist:
-        logger.error(f"Failed to get workflow execution for account_id: {account.id}, "
-                     f"workflow_execution_id: {workflow_execution_id}")
-    except Exception as e:
-        logger.error(f"Failed to update workflow execution status for account_id: {account.id}, "
-                     f"workflow_execution_id: {workflow_execution_id}, error: {e}")
     return False
 
 
