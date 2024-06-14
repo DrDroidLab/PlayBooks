@@ -21,9 +21,14 @@ export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
   const dispatch = useDispatch();
-  const { currentStepIndex } = useSelector(playbookSelector);
+  const { steps, currentStepIndex } = useSelector(playbookSelector);
   const { toggle } = useDrawerState(id);
   const step = data.step;
+
+  const parentStepForCondition =
+    step?.currentConditionParentIndex !== undefined
+      ? steps[step.currentConditionParentIndex]
+      : {};
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -117,7 +122,7 @@ export default function CustomNode({ data }) {
             position={Position.Left}
             onClick={handleNoAction}
             className="nodrag">
-            <AddCondition step={step} />
+            <AddCondition step={parentStepForCondition} />
           </NodeToolbar>
         )}
       </div>

@@ -23,8 +23,6 @@ function IntegrationOption({ option }) {
     `${option.source} ${option.task_type}`,
   );
 
-  console.log("sdf", addtionalState);
-
   const handleImageSrc = () => {
     switch (option?.source) {
       case SOURCES.TEXT:
