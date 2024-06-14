@@ -2,16 +2,10 @@ import React from "react";
 import ValueComponent from "../ValueComponent";
 import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
-import {
-  Check,
-  CheckCircleOutline,
-  ErrorOutline,
-  PlayArrowRounded,
-} from "@mui/icons-material";
+import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
-import CustomButton from "./CustomButton/index.tsx";
-import { executeStep } from "../../utils/execution/executeStep.ts";
+import RunButton from "../Buttons/RunButton/index.tsx";
 
 function PlaybookTitle({ step, index }) {
   const isPrefetched = useIsPrefetched();
@@ -23,10 +17,6 @@ function PlaybookTitle({ step, index }) {
   const cancelEditCardTitle = (e) => {
     e.stopPropagation();
     updateCardByIndex("editTitle", false, index);
-  };
-
-  const handleStepRun = () => {
-    executeStep(step, index);
   };
 
   return (
@@ -87,10 +77,7 @@ function PlaybookTitle({ step, index }) {
           </button>
         </div>
       )}
-      <CustomButton onClick={handleStepRun}>
-        Run
-        <PlayArrowRounded />
-      </CustomButton>
+      <RunButton index={index} />
     </div>
   );
 }

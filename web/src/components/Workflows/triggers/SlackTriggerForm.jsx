@@ -63,7 +63,7 @@ function SlackTriggerForm() {
         </button>
       </div>
       <div className="text-sm flex items-center gap-2">
-        <p className="text-xs">Source</p>
+        <p className="text-xs">Bot</p>
         <SelectComponent
           data={sources?.map((e) => {
             return {
@@ -72,7 +72,7 @@ function SlackTriggerForm() {
               source: e,
             };
           })}
-          placeholder="Select Source"
+          placeholder="Select Bot"
           onSelectionChange={(id) => handleTriggerSelect("source", id)}
           selected={currentWorkflow?.trigger?.source ?? ""}
           searchable={true}

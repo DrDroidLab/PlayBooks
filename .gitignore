@@ -166,3 +166,5 @@ redeploy.sh
 start_celery.sh
 start_server.sh
 web/nginx.local.conf
+
+dev_scripts
