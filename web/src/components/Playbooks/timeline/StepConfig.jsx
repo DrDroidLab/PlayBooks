@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { renderTimestamp } from "../../../utils/DateUtils";
 import HandleOutput from "../steps/HandleOutput";
+import useVisibility from "../../../hooks/useVisibility.ts";
+import useScrollIntoView from "../../../hooks/useScrollIntoView.ts";
+import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
 
 function StepConfig({ step, index, handleShowConfig }) {
+  const [, setCurrentVisibleStep] = usePlaybookKey("currentVisibleStep");
+  const scrollRef = useScrollIntoView(index);
+  const isVisible = useVisibility(scrollRef);
+
+  useEffect(() => {
+    if (isVisible) {
+      setCurrentVisibleStep(index);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
+
   return (
-    <div className="border rounded p-1 bg-gray-100">
+    <div ref={scrollRef} className="border rounded p-1 bg-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex flex-col px-1">
           <h2 className="text-violet-500 text-sm font-bold">Step</h2>
@@ -21,7 +35,7 @@ function StepConfig({ step, index, handleShowConfig }) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col mr-2">
           <h2 className="text-violet-500 text-sm font-bold">Executed At</h2>
           <p className="text-gray-500 italic text-sm">
             {step?.outputs?.data?.length > 0

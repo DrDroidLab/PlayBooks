@@ -279,6 +279,8 @@ export interface Playbook {
   lastUpdatedAt?: Date | null;
   view: string;
   interpreterTypes: any[];
+  shouldScroll?: boolean;
+  currentVisibleStep?: number;
 }
 
 export interface Playground {

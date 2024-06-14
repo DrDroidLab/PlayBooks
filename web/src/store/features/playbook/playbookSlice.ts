@@ -32,6 +32,8 @@ const initialState: Playbook = {
   lastUpdatedAt: null,
   currentStepIndex: null,
   view: "step",
+  shouldScroll: undefined,
+  currentVisibleStep: undefined,
 };
 
 const playbookSlice = createSlice({
