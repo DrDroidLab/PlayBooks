@@ -84,7 +84,7 @@ function CreateTrigger() {
             : "Create Workflow"
         }
       />
-      <div className="p-6 flex flex-col gap-6 bg-white border rounded m-2">
+      <div className="p-6 flex flex-col gap-3 bg-white border rounded m-2">
         <BasicDetails />
         <hr />
         <ScheduleDetails />

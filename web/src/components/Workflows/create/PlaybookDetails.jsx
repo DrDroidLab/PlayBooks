@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import SelectComponent from "../../SelectComponent";
 import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
 import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
-import Checkbox from "../../common/Checkbox/index.tsx";
-import WorkflowGlobalVariables from "./WorkflowGlobalVariables.jsx";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import RadioGroup from "../../common/RadioGroupComponent/index.tsx";
+
+const radioOptions = [
+  {
+    label: "Generate a link to execute this playbook",
+    value: "default",
+    isSmall: true,
+  },
+  {
+    label: "Execute this playbook and publish its summary",
+    value: "summary",
+    isSmall: true,
+  },
+];
 
 function PlaybookDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -16,9 +28,15 @@ function PlaybookDetails() {
     isFetching: playbooksLoading,
     refetch,
   } = useGetPlaybooksQuery({});
+  const [selectedValue, setSelectedValue] = useState("default");
 
-  const handleToggleSummary = () => {
-    handleInput("generateSummary", !currentWorkflow?.generateSummary ?? false);
+  const handleRadioChange = (value) => {
+    setSelectedValue(value);
+    if (value === "summary") {
+      handleInput("generateSummary", true);
+    } else {
+      handleInput("generateSummary", false);
+    }
   };
 
   return (
@@ -61,12 +79,11 @@ function PlaybookDetails() {
       </div>
 
       <div className="mt-2">
-        <Checkbox
-          id="generateSummary"
-          isChecked={currentWorkflow?.generateSummary}
-          label="Execute and generate a summary in each execution"
-          onChange={handleToggleSummary}
-          isSmall={true}
+        <RadioGroup
+          options={radioOptions}
+          onChange={handleRadioChange}
+          orientation="vertical"
+          checked={selectedValue}
         />
       </div>
 

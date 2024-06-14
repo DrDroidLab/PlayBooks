@@ -15,7 +15,7 @@ function ScheduleDetails() {
         What happens when the workflow is triggered?
         <p className="text-gray-500 text-xs italic">Select one of these</p>
       </label>
-      <div className="flex items-center mt-2 overflow-hidden w-fit">
+      <div className="flex items-center mt-1 overflow-hidden w-fit">
         <TabsComponent
           options={scheduleOptions}
           handleSelect={handleSelect}
@@ -23,7 +23,7 @@ function ScheduleDetails() {
           data-type="schedule"
         />
       </div>
-      <div className="mt-4">
+      <div className="mt-2">
         {scheduleOptions
           .find((e) => e.id === currentWorkflow.schedule)
           ?.options.map((option) => (
