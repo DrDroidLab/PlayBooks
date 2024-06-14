@@ -83,7 +83,7 @@ function PlaybookLogs() {
     dispatch(setSteps(pbData));
   };
 
-  const handleSelect = (option) => {
+  const handleSelect = (_, option) => {
     dispatch(setView(option.id));
   };
 

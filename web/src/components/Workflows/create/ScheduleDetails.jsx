@@ -4,6 +4,7 @@ import { currentWorkflowSelector } from "../../../store/features/workflow/workfl
 import { scheduleOptions } from "../../../utils/workflow/scheduleOptions.tsx";
 import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 import { handleSelect } from "../utils/handleInputs.ts";
+import TabsComponent from "../../common/TabsComponent/index.tsx";
 
 function ScheduleDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -15,19 +16,12 @@ function ScheduleDetails() {
         <p className="text-gray-500 text-xs italic">Select one of these</p>
       </label>
       <div className="flex items-center mt-2 overflow-hidden w-fit">
-        {scheduleOptions.map((option) => (
-          <button
-            key={option.id}
-            data-type="schedule"
-            onClick={(e) => handleSelect(e, option)}
-            className={`${
-              currentWorkflow.schedule === option.id
-                ? "!bg-white !text-violet-500 border-violet-500"
-                : "text-gray-500 bg-gray-50 border-gray-200"
-            } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all rounded border`}>
-            {option.label}
-          </button>
-        ))}
+        <TabsComponent
+          options={scheduleOptions}
+          handleSelect={handleSelect}
+          selectedId={currentWorkflow.schedule}
+          data-type="schedule"
+        />
       </div>
       <div className="mt-4">
         {scheduleOptions

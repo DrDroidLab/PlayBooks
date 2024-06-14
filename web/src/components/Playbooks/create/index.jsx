@@ -82,7 +82,7 @@ function CreatePlaybook() {
     }, COPY_LOADING_DELAY);
   };
 
-  const handleSelect = (option) => {
+  const handleSelect = (_, option) => {
     dispatch(setView(option.id));
   };
 
