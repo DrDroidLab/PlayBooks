@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
-import { CircularProgress, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
 import Query from "./Query.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
-import { executeStep } from "../../../utils/execution/executeStep.ts";
 import SelectInterpretation from "./Interpretation.jsx";
-import { Delete, PlayArrowRounded } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import RunButton from "../../Buttons/RunButton/index.tsx";
 
 const id = DrawerTypes.ADD_DATA;
 
@@ -60,20 +59,7 @@ function Step({ step, index }) {
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
-            {step.source && !unsupportedRunners.includes(step.source) && (
-              <div className="flex items-center gap-2">
-                <button
-                  className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
-                  onClick={() => executeStep(step, index)}>
-                  <Tooltip title="Run this Step">
-                    <>
-                      Run <PlayArrowRounded />
-                    </>
-                  </Tooltip>
-                </button>
-                {step.outputLoading && <CircularProgress size={20} />}
-              </div>
-            )}
+            <RunButton index={index} />
             <button
               className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
               onClick={() => handleDeleteClick(index)}>
