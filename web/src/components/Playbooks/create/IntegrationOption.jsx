@@ -56,6 +56,8 @@ function IntegrationOption({ option }) {
           description: option.display_name,
           parentIndex: addtionalState?.parentIndex,
           requireCondition: addtionalState?.requireCondition,
+          currentConditionParentIndex:
+            addtionalState?.currentConditionParentIndex,
         }),
       );
       dispatch(setCurrentStepIndex(null));

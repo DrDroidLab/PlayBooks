@@ -55,9 +55,7 @@ const TypingDropdown = ({
   }, [dropdownRef]);
 
   return (
-    <div
-      ref={dropdownRef}
-      className="relative w-full inline-block text-left overflow-hidden">
+    <div ref={dropdownRef} className="relative w-full inline-block text-left">
       <div
         style={{
           backgroundColor: disabled ? "#efefef" : "",

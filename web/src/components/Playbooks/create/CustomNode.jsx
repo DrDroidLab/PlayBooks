@@ -117,7 +117,7 @@ export default function CustomNode({ data }) {
             position={Position.Left}
             onClick={handleNoAction}
             className="nodrag">
-            <AddCondition />
+            <AddCondition step={step} />
           </NodeToolbar>
         )}
       </div>

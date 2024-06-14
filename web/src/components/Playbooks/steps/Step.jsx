@@ -32,7 +32,11 @@ function Step({ step, index }) {
   }
 
   const handleAdd = (requireCondition = false) => {
-    addAdditionalData({ parentIndex: step.stepIndex, requireCondition });
+    addAdditionalData({
+      parentIndex: step.stepIndex,
+      requireCondition,
+      currentConditionParentIndex: step.stepIndex,
+    });
     openDrawer();
     closeCurrentStep(false);
   };

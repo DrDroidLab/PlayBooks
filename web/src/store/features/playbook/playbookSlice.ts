@@ -13,6 +13,7 @@ const emptyStep = {
   stepType: null,
   action: {},
   requireCondition: false,
+  currentConditionParentIndex: undefined,
 };
 
 const initialState: Playbook = {
@@ -227,6 +228,7 @@ const playbookSlice = createSlice({
             y: 0,
           },
           requireCondition: payload.requireCondition ?? false,
+          currentConditionParentIndex: payload.currentConditionParentIndex,
         },
         globalVariables: state.globalVariables ?? [],
       });
