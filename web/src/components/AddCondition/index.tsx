@@ -1,7 +1,7 @@
 import React from "react";
 
 function AddCondition() {
-  return <div>AddCondition</div>;
+  return <div className="bg-white rounded p-2">AddCondition</div>;
 }
 
 export default AddCondition;

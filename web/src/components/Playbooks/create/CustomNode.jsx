@@ -25,21 +25,23 @@ export default function CustomNode({ data }) {
   const { toggle } = useDrawerState(id);
   const step = data.step;
 
+  const handleNoAction = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
     toggle();
   };
 
   const handleDelete = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    handleNoAction(e);
     dispatch(deleteStep(data.index));
   };
 
   const handleAdd = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+    handleNoAction(e);
     toggleAddData();
     addAdditionalData({ parentIndex: data.index });
   };
@@ -110,7 +112,10 @@ export default function CustomNode({ data }) {
         </NodeToolbar>
 
         {step.requireCondition && (
-          <NodeToolbar isVisible={true} position={Position.Left}>
+          <NodeToolbar
+            isVisible={true}
+            position={Position.Left}
+            onClick={handleNoAction}>
             <AddCondition />
           </NodeToolbar>
         )}
