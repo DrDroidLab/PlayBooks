@@ -58,6 +58,7 @@ function BasicDetails() {
           />
         </div>
       </div>
+      <hr />
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <label
@@ -95,6 +96,7 @@ function BasicDetails() {
           </div>
         </div>
         <HandleWorkflowType />
+        <hr />
         <PlaybookDetails />
       </div>
     </>

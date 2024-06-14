@@ -64,14 +64,13 @@ function PlaybookDetails() {
         <Checkbox
           id="generateSummary"
           isChecked={currentWorkflow?.generateSummary}
-          label="Generate Summary"
-          info="Execute playbook and generate a summary on every workflow execution"
+          label="Execute and generate a summary in each execution"
           onChange={handleToggleSummary}
           isSmall={true}
         />
       </div>
 
-      <WorkflowGlobalVariables />
+      {/* <WorkflowGlobalVariables /> */}
     </div>
   );
 }
