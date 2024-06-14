@@ -7,18 +7,22 @@ import {
   setPlaybookDataBeta,
   copyPlaybook,
   setView,
+  setPlaybookKey,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
   setPlaybookState,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import ListView from "../ListView.jsx";
 import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
 import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import CustomDrawer from "../../common/CustomDrawer/index.jsx";
+import Timeline from "../Timeline.jsx";
 
 const viewOptions = [
   {
@@ -39,6 +43,13 @@ function CreatePlaybook() {
   const copied = useRef(false);
   const playbookDataRef = useRef(null);
   const [copyLoading, setCopyLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const executionId = searchParams.get("executionId");
+  const [timelineOpen, setTimelineOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+  }, [executionId, dispatch]);
 
   useEffect(() => {
     dispatch(setPlaybookState());
@@ -113,11 +124,6 @@ function CreatePlaybook() {
               selectedId={playbook.view}
             />
           </div>
-          {/* <button
-            onClick={() => dispatch(toggleView())}
-            className="absolute top-2 left-1/2 -translate-x-1/2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
-            Toggle View
-          </button> */}
           {playbook.view === "step" ? (
             <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
               <ListView />
@@ -125,8 +131,27 @@ function CreatePlaybook() {
           ) : (
             <Builder />
           )}
+          <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
+            {executionId && (
+              <CustomButton onClick={() => setTimelineOpen(true)}>
+                View Timeline
+              </CustomButton>
+            )}
+          </div>
         </main>
       </div>
+      <CustomDrawer
+        isOpen={timelineOpen}
+        setIsOpen={setTimelineOpen}
+        addtionalStyles={"lg:w-[50%]"}
+        showOverlay={true}
+        startFrom="80">
+        {timelineOpen && (
+          <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
+            <Timeline setTimelineOpen={setTimelineOpen} />
+          </div>
+        )}
+      </CustomDrawer>
     </div>
   );
 }
