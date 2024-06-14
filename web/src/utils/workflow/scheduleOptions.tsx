@@ -11,6 +11,7 @@ export const scheduleOptions = [
     label: "Run continuously",
     options: [
       {
+        id: "periodic-options",
         type: "multi-option",
         options: [
           {
