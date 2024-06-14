@@ -3,7 +3,7 @@ import React from "react";
 import IntegrationsList from "./IntegrationsList";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 
-function Sidebar({ setIsOpen }) {
+function Sidebar() {
   const heightList = window.innerHeight * 0.05;
   const length = Object.keys(integrationSentenceMap).length * heightList;
   return (
@@ -12,10 +12,7 @@ function Sidebar({ setIsOpen }) {
       style={{
         paddingBottom: `${length}px`,
       }}>
-      {/* <div className="p-1 border-[2px] border-gray-100 rounded max-w-full">
-        <GlobalVariables />
-      </div> */}
-      <IntegrationsList setIsOpen={setIsOpen} />
+      <IntegrationsList />
     </div>
   );
 }

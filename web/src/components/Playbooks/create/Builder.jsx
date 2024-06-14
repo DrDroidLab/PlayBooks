@@ -1,34 +1,23 @@
-import React, { useState } from "react";
-import CustomDrawer from "../../common/CustomDrawer";
-import Sidebar from "./Sidebar";
 import CreateFlow from "./CreateFlow";
-import StepDetails from "./StepDetails";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setCurrentStepIndex,
-} from "../../../store/features/playbook/playbookSlice.ts";
 import GlobalVariables from "../../common/GlobalVariable";
-import TemplatesList from "./TemplatesList.jsx";
+import AddDataDrawer from "../../common/Drawers/AddDataDrawer.jsx";
+import TemplatesDrawer from "../../common/Drawers/TemplatesDrawer.jsx";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import StepDetailsDrawer from "../../common/Drawers/StepDetailsDrawer.jsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
-// import Timeline from "../Timeline.jsx";
 
 function Builder({ isLog = false }) {
-  const [addDataDrawerOpen, setAddDataDrawerOpen] = useState(false);
-  const [importFromTemplatesOpen, setImportFromTemplatesOpen] = useState(false);
-  // const [timelineOpen, setTimelineOpen] = useState(false);
-  const { currentStepIndex } = useSelector(playbookSelector);
-  const dispatch = useDispatch();
+  const { toggle: toggleAddData } = useDrawerState(DrawerTypes.ADD_DATA);
+  const { toggle: toggleTemplates } = useDrawerState(DrawerTypes.TEMPLATES);
 
   return (
     <div className="h-full w-full">
       <div className="absolute top-2 left-2 flex flex-col items-start gap-4 z-10">
         {!isLog && (
           <>
-            <CustomButton onClick={() => setAddDataDrawerOpen(true)}>
-              Add Data
-            </CustomButton>
-            <CustomButton onClick={() => setImportFromTemplatesOpen(true)}>
+            <CustomButton onClick={toggleAddData}>Add Data</CustomButton>
+            <CustomButton onClick={toggleTemplates}>
               Import from templates
             </CustomButton>
           </>
@@ -37,62 +26,12 @@ function Builder({ isLog = false }) {
           <GlobalVariables />
         </div>
       </div>
-      {/* <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
-        {executionId && (
-          <CustomButton onClick={() => setTimelineOpen(true)}>
-            View Timeline
-          </CustomButton>
-        )}
-      </div> */}
-      <CustomDrawer
-        isOpen={addDataDrawerOpen}
-        setIsOpen={setAddDataDrawerOpen}
-        openFrom="left"
-        addtionalStyles={"lg:w-[20%]"}
-        showOverlay={false}
-        startFrom="80">
-        <div className="flex-[0.4] border-r-[1px] border-r-gray-200 h-full">
-          <Sidebar setIsOpen={setAddDataDrawerOpen} />
-        </div>
-      </CustomDrawer>
-      <CustomDrawer
-        isOpen={importFromTemplatesOpen}
-        setIsOpen={setImportFromTemplatesOpen}
-        openFrom="left"
-        addtionalStyles={"lg:w-[20%]"}
-        showOverlay={false}
-        startFrom="80">
-        <div className="flex-[0.4] border-r-[1px] border-r-gray-200 h-full">
-          <TemplatesList
-            setImportFromTemplatesOpen={setImportFromTemplatesOpen}
-          />
-        </div>
-      </CustomDrawer>
+      <AddDataDrawer />
+      <TemplatesDrawer />
       <div className="flex-[1] h-full">
         <CreateFlow />
       </div>
-      <CustomDrawer
-        isOpen={currentStepIndex}
-        setIsOpen={() => dispatch(setCurrentStepIndex(null))}
-        addtionalStyles={"lg:w-[50%]"}
-        showOverlay={true}
-        startFrom="80">
-        <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
-          <StepDetails />
-        </div>
-      </CustomDrawer>
-      {/* <CustomDrawer
-        isOpen={timelineOpen}
-        setIsOpen={setTimelineOpen}
-        addtionalStyles={"lg:w-[50%]"}
-        showOverlay={true}
-        startFrom="80">
-        {timelineOpen && (
-          <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
-            <Timeline setTimelineOpen={setTimelineOpen} />
-          </div>
-        )}
-      </CustomDrawer> */}
+      <StepDetailsDrawer />
     </div>
   );
 }
