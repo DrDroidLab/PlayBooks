@@ -28,41 +28,6 @@ class PdApiProcessor(Processor):
             logger.error(f"Error fetching incident: {incident_id}, Error: {e}")
             return None
 
-    def create_incident(self, service_id: str, title, description, urgency='high'):
-        try:
-            incident = self.client.rpost("/incidents", json={
-                "incident": {
-                    "type": "incident",
-                    "title": title,
-                    "service": {
-                        "id": service_id,
-                        "type": "service_reference"
-                    },
-                    "body": {
-                        "type": "incident_body",
-                        "details": description
-                    },
-                    "urgency": urgency
-                }
-            })
-            return incident
-        except Exception as e:
-            logger.error(f"Error creating incident: {e}")
-            return None
-
-    def update_incident(self, incident_id: str):
-        try:
-            response = self.client.rput(f"/incidents/{incident_id}", json={
-                {
-                    "type": "incident_reference",
-                    "status": "acknowledged"
-                }
-            })
-            return response
-        except Exception as e:
-            logger.error(f"Error updating incident:{incident_id}, Error:{e}")
-            return None
-
     def fetch_alerts(self, incident_id: str):
         try:
             alerts = self.client.rget(f"incident/{incident_id}/alerts")

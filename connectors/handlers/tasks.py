@@ -10,7 +10,7 @@ from celery import shared_task
 from connectors.assets.extractor.slack_metadata_extractor import title_identifier, text_identifier_v2, source_identifier
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
-from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceived
+from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceived, PagerDutyConnectorDataReceived
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_points
 from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows
 from executor.workflows.entry_point.entry_point_evaluator import get_entry_point_evaluator
@@ -351,9 +351,7 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id, incident):
             print(f"Error while handling PagerDuty handle_receive_message: Bot auth token not found for connector_id: "
                   f"{pagerduty_connector_id}")
             return
-        bot_auth_token = bot_auth_token.first().key
 
-        # Extract incident details
         incident_id = incident.get('incident', {}).get('id')
         alerts = incident.get('alerts', [])
         alert_id = alerts.get('id')
@@ -367,18 +365,20 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id, incident):
             data_timestamp = datetime.strptime(alerts_created_at, '%Y-%m-%dT%H:%M:%S%z')
 
         if not incident_id or not alert_id:
-            print(f"Incident ID or Alert ID not found, ignoring alert: {incident}")
+            print(f"Incident ID or Alert ID not found, ignoring alert: {incident_id}")
             return
 
         pagerduty_received_msg = PagerDutyConnectorDataReceived(
             account_id=pagerduty_connector.account_id,
             connector=pagerduty_connector,
-            data_timestamp=data_timestamp,
-            text=details,
             incident_id=incident_id,
-            alert_id=alert_id
+            alert_id=alert_id,
+            alert_text=alert_text,
+            details=details,
+            data_timestamp=data_timestamp
         )
         pagerduty_received_msg.save()
+
         #change this line
         all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
                                                                    entry_point_type=WorkflowEntryPointProto.ALERT)

@@ -397,7 +397,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
                              SourceKeyType.AZURE_CLIENT_SECRET,
-                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,]:
+                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
@@ -474,6 +474,16 @@ class SlackConnectorDataReceived(models.Model):
 
     data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
     received_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class PagerDutyConnectorDataReceived(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    incident_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    alert_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    alert_text = models.TextField(null=True, blank=True)
+    details = models.JSONField(null=True, blank=True)
+    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
 
 
 class ConnectorPeriodicRunMetadata(models.Model):

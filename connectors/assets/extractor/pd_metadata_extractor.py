@@ -15,23 +15,39 @@ class PagerDutyConnectorMetadataExtractor(SourceMetadataExtractor):
         try:
             since_time = (datetime.utcnow() - timedelta(days=7)).isoformat() + 'Z'
             incidents = self.__client.fetch_incidents()
-            recent_incidents = [incident for incident in incidents if incident['created_at'] >= since_time]
+            if not incidents:
+                print('No incidents found')
+                return
+            recent_alerts = {}
+            for incident in incidents:
+                incident_id = incident.get('id', '')
+                if not incident_id:
+                    continue
+                alerts = self.__client.fetch_alerts(incident_id)
+                filtered_alerts = [alert for alert in alerts if alert.get('created_at') >= since_time]
+                if filtered_alerts:
+                    recent_alerts[incident_id] = filtered_alerts
         except Exception as e:
             print(f'Error fetching incidents: {e}')
             return
-        if not recent_incidents:
+        if not recent_alerts:
             return
         model_data = {}
-        for incident in recent_incidents:
-            incident_id = incident.get('id', '')
+        for incident_id, alerts in recent_alerts.items():
             try:
-                alerts = self.__client.fetch_alerts(incident_id)
+                detailed_alerts = []
                 for alert in alerts:
                     alert_id = alert.get('id', '')
-                    model_data[alert_id] = alert
-                    if save_to_db:
-                        self.create_or_update_model_metadata(model_type, alert_id, alert)
+                    details = alert.get('body', {}).get('details', {})
+                    detailed_alert = {
+                        'alert': alert,
+                        'details': details
+                    }
+                    detailed_alerts.append(detailed_alert)
+                model_data[incident_id] = detailed_alerts
+                if save_to_db:
+                    self.create_or_update_model_metadata(model_type, incident_id, detailed_alerts)
             except Exception as e:
-                print(f'Error fetching alerts for incident {incident_id}: {e}')
+                print(f'Error processing alerts for incident {incident_id}: {e}')
                 continue
         return model_data
