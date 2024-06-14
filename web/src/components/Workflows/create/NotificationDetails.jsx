@@ -51,13 +51,13 @@ function NotificationDetails() {
                 : "text-gray-500 bg-gray-50 border-gray-200"
             } ${index === options?.length - 1 ? "rounded-r" : ""} ${
               index === 0 ? "rounded-l" : ""
-            } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all border`}>
+            } p-1 text-xs hover:bg-gray-100 cursor-pointer transition-all border`}>
             {option.label}
           </button>
         ),
       )}
 
-      {currentWorkflow.notification === "slack-message" && (
+      {currentWorkflow.notification === "slack_message" && (
         <div className="flex items-center gap-2 mt-2">
           <p className="text-xs font-bold text-gray-500">Select Channel</p>
           {isFetching && <CircularProgress size={20} />}

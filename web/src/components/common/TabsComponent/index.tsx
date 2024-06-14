@@ -13,7 +13,7 @@ function TabsComponent({ options, handleSelect, selectedId, ...props }) {
               : "text-gray-500 bg-gray-50 border-gray-200"
           } ${index === options.length - 1 ? "rounded-r" : ""} ${
             index === 0 ? "rounded-l" : ""
-          } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all border`}
+          } p-1 text-xs hover:bg-gray-100 cursor-pointer transition-all border`}
           {...props}>
           {option.label}
         </button>

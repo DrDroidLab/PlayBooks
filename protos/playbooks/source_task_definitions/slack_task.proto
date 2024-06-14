@@ -1,0 +1,35 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+
+message Slack {
+  message SendMessage {
+    google.protobuf.StringValue channel = 1;
+    google.protobuf.StringValue text = 2;
+    google.protobuf.Struct blocks = 3;
+    google.protobuf.Struct file_uploads = 4;
+  }
+
+  message SendThreadReply {
+    google.protobuf.StringValue channel = 1;
+    google.protobuf.StringValue thread_ts = 2;
+    google.protobuf.StringValue text = 3;
+    google.protobuf.Struct blocks = 4;
+    google.protobuf.Struct file_uploads = 5;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SEND_MESSAGE = 1;
+    SEND_THREAD_REPLY = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SendMessage send_message = 2;
+    SendThreadReply send_thread_reply = 3;
+  }
+}

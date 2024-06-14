@@ -53,7 +53,7 @@ const ExecutionsTableRender = ({ data }) => {
                         <div
                           className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
                           key={e.id}>
-                          <Link to={`/playbooks/${e.id}`}>{e.name}</Link>
+                          <div to={`/playbooks/${e.id}`}>{e.name}</div>
                         </div>
                       ))
                     : "--"}

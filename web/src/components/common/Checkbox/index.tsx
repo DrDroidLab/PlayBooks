@@ -1,3 +1,5 @@
+import { InfoRounded } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import React from "react";
 
 interface CheckboxProps {
@@ -5,6 +7,8 @@ interface CheckboxProps {
   label: string;
   help?: string;
   isChecked: boolean;
+  isSmall?: boolean;
+  info?: string;
   onChange: (id: string) => void;
 }
 
@@ -14,11 +18,16 @@ const Checkbox: React.FC<CheckboxProps> = ({
   help,
   isChecked,
   onChange,
+  isSmall = false,
+  info,
 }) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center">
-        <label className="inline-flex items-center cursor-pointer">
+        <label
+          className={`inline-flex items-center cursor-pointer ${
+            isSmall ? "gap-1" : "gap-2"
+          } `}>
           <input
             type="checkbox"
             className="sr-only"
@@ -26,7 +35,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
             onChange={() => onChange(id)}
           />
           <div
-            className={`w-5 h-5 inline-block mr-2 rounded border transition duration-300 ease-in-out ${
+            className={`${
+              isSmall ? "w-4 h-4" : "w-5 h-5"
+            } inline-block rounded border transition duration-300 ease-in-out ${
               isChecked ? "bg-violet-500 border-violet-500" : "border-gray-300"
             }`}>
             {isChecked && (
@@ -44,9 +55,17 @@ const Checkbox: React.FC<CheckboxProps> = ({
               </svg>
             )}
           </div>
-          <span className="text-gray-700 transition duration-300 ease-in-out">
+          <span
+            className={`${
+              isSmall ? "text-sm" : "text-base"
+            } text-gray-700 transition duration-300 ease-in-out`}>
             {label}
           </span>
+          {info && (
+            <Tooltip title={info}>
+              <InfoRounded color="primary" />
+            </Tooltip>
+          )}
         </label>
       </div>
       {help && <span className="text-sm text-[#ADADAD]">{help}</span>}

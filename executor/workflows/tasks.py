@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta, datetime
+import uuid
 
 from celery import shared_task
 from django.conf import settings
@@ -9,27 +10,22 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.playbook_source_facade import playbook_source_facade
-from executor.tasks import execute_playbook
-from executor.workflows.action.action_executor import action_executor
+from executor.tasks import execute_playbook, execute_playbook_impl
+from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, \
-    get_db_workflow_execution_logs, get_workflow_executions, create_workflow_execution_log, \
-    update_db_account_workflow_execution_count_increment
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionLog as PlaybookTaskExecutionLogProto, \
-    PlaybookStepExecutionLog as PlaybookStepExecutionLogProto
+from protos.playbooks.playbook_pb2 import PlaybookExecution
 from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
-from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookExecution
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowActionSlackNotificationConfig
+    WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto
 from protos.base_pb2 import Source
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
@@ -41,10 +37,10 @@ logger = logging.getLogger(__name__)
 def workflow_scheduler():
     current_time_utc = current_datetime()
     current_time = int(current_time_utc.timestamp())
-    all_scheduled_wf_executions = get_workflow_executions(
-        status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING])
+    all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
     for wf_execution in all_scheduled_wf_executions:
         workflow_id = wf_execution.workflow_id
+        workflow_execution_configuration = wf_execution.workflow_execution_configuration
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
         account = wf_execution.account
@@ -62,50 +58,39 @@ def workflow_scheduler():
             continue
 
         expiry_at = wf_execution.expiry_at
-        interval = wf_execution.interval
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
             logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}, workflow_id: "
                         f"{workflow_id} at {current_time}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
-        if interval:
-            next_schedule = current_time_utc
-            wf_execution_logs = get_db_workflow_execution_logs(account, wf_execution.id)
-            if wf_execution_logs.exists():
-                latest_wf_execution_log = wf_execution_logs.first()
-                next_schedule = latest_wf_execution_log.created_at + timedelta(seconds=interval)
-            if current_time_utc < next_schedule:
-                logger.info(f"Next Workflow execution interval not reached for workflow_execution_id: "
-                            f"{wf_execution.id}, workflow_id: {workflow_id} at {current_time}")
-                continue
-            else:
-                update_time_range = {'time_geq': int(next_schedule.timestamp()) - 3600,
-                                     'time_lt': int(next_schedule.timestamp())}
 
-        update_db_account_workflow_execution_count_increment(account, wf_execution.id)
-        if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_SCHEDULED:
-            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
-                                                        WorkflowExecutionStatusType.WORKFLOW_RUNNING)
+        update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+                                                    WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run'
+                pb_run_uuid = str(uuid.uuid4())
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{pb_run_uuid}'
                 if update_time_range:
                     time_range_proto = dict_to_proto(update_time_range, TimeRange)
                 else:
                     time_range_proto = dict_to_proto(time_range, TimeRange)
+                execution_global_variable_set = None
+                if workflow_execution_configuration and 'global_variable_set' in workflow_execution_configuration:
+                    execution_global_variable_set = workflow_execution_configuration['global_variable_set']
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
-                                                               wf_execution.created_by)
+                                                               wf_execution.created_by, execution_global_variable_set)
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
-                                                pb_id, playbook_execution.id, time_range)
+                                                pb_id, playbook_execution.id, time_range,
+                                                workflow_execution_configuration)
                 if not saved_task:
                     logger.error(f"Failed to create workflow execution task for account: {account.id}, workflow_id: "
                                  f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
                     continue
                 task = workflow_executor.delay(account.id, workflow_id, wf_execution.id, pb_id, playbook_execution.id,
-                                               time_range)
+                                               time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                                   status=PeriodicTaskStatus.SCHEDULED,
                                                   account_id=account.id,
@@ -116,9 +101,6 @@ def workflow_scheduler():
                 update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                             WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
-        if not interval:
-            logger.info(f"Workflow execution interval not set for workflow_execution_id, "
-                        f"marking complete: {wf_execution.id}")
             update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
@@ -130,13 +112,18 @@ workflow_scheduler_postrun_notifier = publish_post_run_task(workflow_scheduler)
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_id, playbook_execution_id, time_range):
+def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_id, playbook_execution_id, time_range,
+                      workflow_execution_configuration):
     current_time = current_datetime().timestamp()
     logger.info(f"Running workflow execution:: account_id: {account_id}, workflow_execution_id: "
                 f"{workflow_execution_id}, playbook_execution_id: {playbook_execution_id}")
     try:
         create_workflow_execution_log(account_id, workflow_id, workflow_execution_id, playbook_execution_id)
-        execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
+        workflow_config = WorkflowConfigurationProto()
+        if workflow_execution_configuration:
+            workflow_config = dict_to_proto(workflow_execution_configuration, WorkflowConfigurationProto)
+        if workflow_config.generate_summary and workflow_config.generate_summary.value:
+            execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         try:
             saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
                                             workflow_execution_id, playbook_execution_id)
@@ -189,7 +176,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
             thread_ts = workflow_execution.metadata.get('thread_ts', None)
 
         playbook_execution = playbook_executions.first()
-        pe_proto: DeprecatedPlaybookExecution = playbook_execution.proto
+        pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
@@ -198,17 +185,13 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
         for w_action in w_actions:
-            if w_action.type == WorkflowActionProto.Type.NOTIFY:
+            if w_action.type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
                 w_action_dict = proto_to_dict(w_action)
-                if w_action_dict.get('notification_config', {}).get('slack_config', {}).get('message_type',
-                                                                                            None) == 'THREAD_REPLY' and thread_ts:
-                    w_action_dict['notification_config']['slack_config']['thread_ts'] = thread_ts
-                    updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
-                    action_executor(account, updated_w_action, execution_output)
-                else:
-                    action_executor(account, w_action, execution_output)
+                w_action_dict['slack_thread_reply']['thread_ts'] = str(thread_ts)
+                updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                action_executor_facade.execute(updated_w_action, execution_output)
             else:
-                action_executor(account, w_action, execution_output)
+                action_executor_facade.execute(w_action, execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running workflow action execution: {exc}")
         raise exc
@@ -234,10 +217,9 @@ def test_workflow_notification(account_id, workflow, message_type):
         return
     playbook = playbooks.first()
     pb_proto = playbook.proto
-    playbook_steps = pb_proto.steps
-    if message_type == WorkflowActionSlackNotificationConfig.MessageType.THREAD_REPLY:
+    if message_type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
         logger.info("Sending test thread reply message")
-        channel_id = workflow.entry_points[0].alert_config.slack_channel_alert_config.slack_channel_id.value
+        channel_id = workflow.entry_points[0].slack_channel_alert.slack_channel_id.value
         slack_connectors = get_db_connectors(account, connector_type=Source.SLACK, is_active=True)
         if not slack_connectors:
             logger.error(f"Active Slack connector not found for account_id: {account_id}")
@@ -253,27 +235,16 @@ def test_workflow_notification(account_id, workflow, message_type):
         bot_auth_token = bot_auth_token_slack_connector_keys.first().key
         message_ts = SlackApiProcessor(bot_auth_token).send_bot_message(channel_id,
                                                                         'Hello, this is a test alert message from the Playbooks Slack Droid to show how the enrichment works in reply to an alert.')
-        workflow.actions[0].notification_config.slack_config.thread_ts.value = message_ts
-    elif message_type == WorkflowActionSlackNotificationConfig.MessageType.MESSAGE:
+        workflow.actions[0].slack_thread_reply.thread_ts.value = message_ts
+    elif message_type == WorkflowActionProto.Type.SLACK_MESSAGE:
         logger.info("Sending test message")
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
-    step_execution_logs: [PlaybookStepExecutionLogProto] = []
     try:
-        global_variable_set = pb_proto.global_variable_set
-        for step in playbook_steps:
-            tasks = step.tasks
-            pe_logs = []
-            for task_proto in tasks:
-                task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set, task_proto)
-                playbook_execution_log = PlaybookTaskExecutionLogProto(task=task_proto, result=task_result)
-                pe_logs.append(playbook_execution_log)
-            step_execution_log = PlaybookStepExecutionLogProto(step=step, task_execution_logs=pe_logs)
-            step_execution_logs.append(step_execution_log)
+        step_execution_logs = execute_playbook_impl(tr, account, pb_proto)
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(pb_proto,
+                                                                                           step_execution_logs)
+        action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
-
-    execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(pb_proto,
-                                                                                       step_execution_logs)
-    action_executor(account, workflow.actions[0], execution_output)

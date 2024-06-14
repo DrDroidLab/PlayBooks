@@ -30,7 +30,8 @@ def get_db_playbook_execution(account: Account, playbook_execution_id=None, play
     return None
 
 
-def create_playbook_execution(account: Account, time_range: TimeRange, playbook_id, playbook_run_id, created_by=None):
+def create_playbook_execution(account: Account, time_range: TimeRange, playbook_id, playbook_run_id, created_by=None,
+                              execution_global_variable_set=None):
     try:
         playbook_execution = PlayBookExecution.objects.create(
             account=account,
@@ -39,7 +40,8 @@ def create_playbook_execution(account: Account, time_range: TimeRange, playbook_
             status=PlaybookExecutionStatusType.CREATED,
             created_at=timezone.now(),
             time_range=proto_to_dict(time_range),
-            created_by=created_by
+            created_by=created_by,
+            execution_global_variable_set=execution_global_variable_set
         )
         return playbook_execution
     except Exception as e:
