@@ -1,0 +1,11 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+import "protos/base.proto";
+
+message IntervalSchedule {
+  google.protobuf.UInt64Value duration_in_seconds = 1;
+  google.protobuf.UInt64Value interval_in_seconds = 2;
+}

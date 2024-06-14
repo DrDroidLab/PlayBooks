@@ -1,3 +1,5 @@
+import logging
+
 from google.protobuf.wrappers_pb2 import StringValue
 
 from protos.base_pb2 import Source
@@ -6,6 +8,8 @@ from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, Timeseries
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, \
     DeprecatedPlaybookMetricTaskExecutionResult, DeprecatedPlaybookDataFetchTaskExecutionResult, \
     DeprecatedPlaybookActionTaskExecutionResult
+
+logger = logging.getLogger(__name__)
 
 
 def transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult(old_result: DeprecatedPlaybookTaskExecutionResult):
@@ -210,7 +214,8 @@ def transform_PlaybookTaskResult_to_PlaybookTaskExecutionResult(
             )
         )
     else:
-        raise ValueError(f'Unsupported task result type: {new_result.type}')
+        logger.error(f'No transformer found for result: {new_result}')
+        return DeprecatedPlaybookTaskExecutionResult()
 
 
 def transform_old_task_definition_to_new(task):

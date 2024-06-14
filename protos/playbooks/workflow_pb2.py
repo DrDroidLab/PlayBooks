@@ -16,77 +16,61 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from protos import base_pb2 as protos_dot_base__pb2
 from protos.playbooks import deprecated_playbook_pb2 as protos_dot_playbooks_dot_deprecated__playbook__pb2
 from protos.playbooks import playbook_pb2 as protos_dot_playbooks_dot_playbook__pb2
+from protos.playbooks.workflow_schedules import cron_schedule_pb2 as protos_dot_playbooks_dot_workflow__schedules_dot_cron__schedule__pb2
+from protos.playbooks.workflow_schedules import interval_schedule_pb2 as protos_dot_playbooks_dot_workflow__schedules_dot_interval__schedule__pb2
+from protos.playbooks.workflow_schedules import one_off_schedule_pb2 as protos_dot_playbooks_dot_workflow__schedules_dot_one__off__schedule__pb2
+from protos.playbooks.workflow_entry_points import slack_alert_entry_point_pb2 as protos_dot_playbooks_dot_workflow__entry__points_dot_slack__alert__entry__point__pb2
+from protos.playbooks.workflow_entry_points import api_entry_point_pb2 as protos_dot_playbooks_dot_workflow__entry__points_dot_api__entry__point__pb2
+from protos.playbooks.workflow_actions import api_trigger_pb2 as protos_dot_playbooks_dot_workflow__actions_dot_api__trigger__pb2
+from protos.playbooks.workflow_actions import slack_message_pb2 as protos_dot_playbooks_dot_workflow__actions_dot_slack__message__pb2
+from protos.playbooks.workflow_actions import slack_thread_reply_pb2 as protos_dot_playbooks_dot_workflow__actions_dot_slack__thread__reply__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/playbooks/workflow.proto\x12\x10protos.playbooks\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a*protos/playbooks/deprecated_playbook.proto\x1a\x1fprotos/playbooks/playbook.proto\"\x18\n\x16WorkflowOneOffSchedule\"\xa7\x02\n\x18WorkflowPeriodicSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12=\n\x04type\x18\x02 \x01(\x0e\x32/.protos.playbooks.WorkflowPeriodicSchedule.Type\x12-\n\rtask_interval\x18\x03 \x01(\x0b\x32\x14.protos.TaskIntervalH\x00\x12)\n\tcron_rule\x18\x04 \x01(\x0b\x32\x14.protos.TaskCronRuleH\x00\"+\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08INTERVAL\x10\x01\x12\x08\n\x04\x43RON\x10\x04\x42\n\n\x08schedule\"\x1d\n\x1bWorkflowEntryPointApiConfig\"\x96\x02\n)WorkflowEntryPointSlackChannelAlertConfig\x12\x36\n\x10slack_channel_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x38\n\x12slack_channel_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10slack_alert_type\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12?\n\x19slack_alert_filter_string\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\x94\x02\n\x1dWorkflowEntryPointAlertConfig\x12M\n\nalert_type\x18\x01 \x01(\x0e\x32\x39.protos.playbooks.WorkflowEntryPointAlertConfig.AlertType\x12\x61\n\x1aslack_channel_alert_config\x18\x02 \x01(\x0b\x32;.protos.playbooks.WorkflowEntryPointSlackChannelAlertConfigH\x00\"1\n\tAlertType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x17\n\x13SLACK_CHANNEL_ALERT\x10\x01\x42\x0e\n\x0c\x61lert_config\"\xd8\x01\n\'WorkflowActionWebhookNotificationConfig\x12.\n\x08\x65ndpoint\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06method\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12(\n\x07headers\x18\x03 \x01(\x0b\x32\x17.google.protobuf.Struct\x12%\n\x04\x62ody\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct\"\xaa\x02\n%WorkflowActionSlackNotificationConfig\x12Y\n\x0cmessage_type\x18\x01 \x01(\x0e\x32\x43.protos.playbooks.WorkflowActionSlackNotificationConfig.MessageType\x12\x36\n\x10slack_channel_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tthread_ts\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"=\n\x0bMessageType\x12\x0f\n\x0bUNKNOWN_SNT\x10\x00\x12\x0b\n\x07MESSAGE\x10\x01\x12\x10\n\x0cTHREAD_REPLY\x10\x02\"\xd3\x02\n WorkflowActionNotificationConfig\x12\x45\n\x04type\x18\x01 \x01(\x0e\x32\x37.protos.playbooks.WorkflowActionNotificationConfig.Type\x12S\n\x0ewebhook_config\x18\x02 \x01(\x0b\x32\x39.protos.playbooks.WorkflowActionWebhookNotificationConfigH\x00\x12O\n\x0cslack_config\x18\x03 \x01(\x0b\x32\x37.protos.playbooks.WorkflowActionSlackNotificationConfigH\x00\"+\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07WEBHOOK\x10\x01\x12\t\n\x05SLACK\x10\x02\x42\x15\n\x13notification_config\"\x83\x02\n\x10WorkflowSchedule\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.protos.playbooks.WorkflowSchedule.Type\x12;\n\x07one_off\x18\x02 \x01(\x0b\x32(.protos.playbooks.WorkflowOneOffScheduleH\x00\x12>\n\x08periodic\x18\x03 \x01(\x0b\x32*.protos.playbooks.WorkflowPeriodicScheduleH\x00\".\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07ONE_OFF\x10\x01\x12\x0c\n\x08PERIODIC\x10\x02\x42\x0b\n\tscheduler\"\xb8\x02\n\x12WorkflowEntryPoint\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x37\n\x04type\x18\x02 \x01(\x0e\x32).protos.playbooks.WorkflowEntryPoint.Type\x12\x43\n\napi_config\x18\x03 \x01(\x0b\x32-.protos.playbooks.WorkflowEntryPointApiConfigH\x00\x12G\n\x0c\x61lert_config\x18\x04 \x01(\x0b\x32/.protos.playbooks.WorkflowEntryPointAlertConfigH\x00\"\'\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x07\n\x03\x41PI\x10\x01\x12\t\n\x05\x41LERT\x10\x02\x42\x08\n\x06\x63onfig\"\xed\x01\n\x0eWorkflowAction\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x33\n\x04type\x18\x02 \x01(\x0e\x32%.protos.playbooks.WorkflowAction.Type\x12Q\n\x13notification_config\x18\x03 \x01(\x0b\x32\x32.protos.playbooks.WorkflowActionNotificationConfigH\x00\"\x1f\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\n\n\x06NOTIFY\x10\x01\x42\x08\n\x06\x61\x63tion\"\xc7\x04\n\x08Workflow\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12*\n\x04name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\ncreated_by\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x12\n\ncreated_at\x18\x05 \x01(\x10\x12-\n\tis_active\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12\x34\n\x08schedule\x18\x07 \x01(\x0b\x32\".protos.playbooks.WorkflowSchedule\x12-\n\tplaybooks\x18\x08 \x03(\x0b\x32\x1a.protos.playbooks.Playbook\x12:\n\x0c\x65ntry_points\x18\t \x03(\x0b\x32$.protos.playbooks.WorkflowEntryPoint\x12\x31\n\x07\x61\x63tions\x18\n \x03(\x0b\x32 .protos.playbooks.WorkflowAction\x12\x1b\n\x13last_execution_time\x18\x0b \x01(\x10\x12L\n\x15last_execution_status\x18\x0c \x01(\x0e\x32-.protos.playbooks.WorkflowExecutionStatusType\"\xb5\x0b\n\x10UpdateWorkflowOp\x12\x31\n\x02op\x18\x01 \x01(\x0e\x32%.protos.playbooks.UpdateWorkflowOp.Op\x12U\n\x14update_workflow_name\x18\x02 \x01(\x0b\x32\x35.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowNameH\x00\x12Y\n\x16update_workflow_status\x18\x03 \x01(\x0b\x32\x37.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowStatusH\x00\x12L\n\x0fupdate_workflow\x18\x04 \x01(\x0b\x32\x31.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowH\x00\x12o\n\"update_workflow_entry_point_status\x18\x05 \x01(\x0b\x32\x41.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowEntryPointStatusH\x00\x12\x66\n\x1dupdate_workflow_action_status\x18\x06 \x01(\x0b\x32=.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowActionStatusH\x00\x12j\n\x1fupdate_workflow_playbook_status\x18\x07 \x01(\x0b\x32?.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowPlaybookStatusH\x00\x1a@\n\x12UpdateWorkflowName\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x45\n\x14UpdateWorkflowStatus\x12-\n\tis_active\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a>\n\x0eUpdateWorkflow\x12,\n\x08workflow\x18\x01 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\x1a\x85\x01\n\x1eUpdateWorkflowEntryPointStatus\x12\x34\n\x0e\x65ntry_point_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a|\n\x1aUpdateWorkflowActionStatus\x12/\n\taction_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a\x80\x01\n\x1cUpdateWorkflowPlaybookStatus\x12\x31\n\x0bplaybook_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\"\xcc\x01\n\x02Op\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x18\n\x14UPDATE_WORKFLOW_NAME\x10\x01\x12\x1a\n\x16UPDATE_WORKFLOW_STATUS\x10\x02\x12\x13\n\x0fUPDATE_WORKFLOW\x10\x03\x12&\n\"UPDATE_WORKFLOW_ENTRY_POINT_STATUS\x10\x04\x12!\n\x1dUPDATE_WORKFLOW_ACTION_STATUS\x10\x05\x12#\n\x1fUPDATE_WORKFLOW_PLAYBOOK_STATUS\x10\x06\x42\x08\n\x06update\"\x95\x01\n\x14WorkflowExecutionLog\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x12playbook_execution\x18\x02 \x01(\x0b\x32#.protos.playbooks.PlaybookExecution\x12\x12\n\ncreated_at\x18\x03 \x01(\x10\"\xa0\x04\n\x11WorkflowExecution\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x35\n\x0fworkflow_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x08workflow\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\x12=\n\x06status\x18\x04 \x01(\x0e\x32-.protos.playbooks.WorkflowExecutionStatusType\x12\x14\n\x0cscheduled_at\x18\x05 \x01(\x10\x12\x11\n\texpiry_at\x18\x06 \x01(\x10\x12.\n\x08interval\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x36\n\x10total_executions\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x12\n\ncreated_at\x18\t \x01(\x10\x12\x12\n\nstarted_at\x18\n \x01(\x10\x12\x13\n\x0b\x66inished_at\x18\x0b \x01(\x10\x12\x30\n\ncreated_by\x18\x0c \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\rworkflow_logs\x18\r \x03(\x0b\x32&.protos.playbooks.WorkflowExecutionLog\"\xa9\x01\n\x1e\x44\x65precatedWorkflowExecutionLog\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12I\n\x12playbook_execution\x18\x02 \x01(\x0b\x32-.protos.playbooks.DeprecatedPlaybookExecution\x12\x12\n\ncreated_at\x18\x03 \x01(\x10\"\xb4\x04\n\x1b\x44\x65precatedWorkflowExecution\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x35\n\x0fworkflow_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x08workflow\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\x12=\n\x06status\x18\x04 \x01(\x0e\x32-.protos.playbooks.WorkflowExecutionStatusType\x12\x14\n\x0cscheduled_at\x18\x05 \x01(\x10\x12\x11\n\texpiry_at\x18\x06 \x01(\x10\x12.\n\x08interval\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x36\n\x10total_executions\x18\x08 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x12\n\ncreated_at\x18\t \x01(\x10\x12\x12\n\nstarted_at\x18\n \x01(\x10\x12\x13\n\x0b\x66inished_at\x18\x0b \x01(\x10\x12\x30\n\ncreated_by\x18\x0c \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12G\n\rworkflow_logs\x18\r \x03(\x0b\x32\x30.protos.playbooks.DeprecatedWorkflowExecutionLog*\xac\x01\n\x1bWorkflowExecutionStatusType\x12\x1b\n\x17UNKNOWN_WORKFLOW_STATUS\x10\x00\x12\x16\n\x12WORKFLOW_SCHEDULED\x10\x01\x12\x14\n\x10WORKFLOW_RUNNING\x10\x02\x12\x15\n\x11WORKFLOW_FINISHED\x10\x03\x12\x13\n\x0fWORKFLOW_FAILED\x10\x04\x12\x16\n\x12WORKFLOW_CANCELLED\x10\x05\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/playbooks/workflow.proto\x12\x10protos.playbooks\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a*protos/playbooks/deprecated_playbook.proto\x1a\x1fprotos/playbooks/playbook.proto\x1a\x37protos/playbooks/workflow_schedules/cron_schedule.proto\x1a;protos/playbooks/workflow_schedules/interval_schedule.proto\x1a:protos/playbooks/workflow_schedules/one_off_schedule.proto\x1a\x44protos/playbooks/workflow_entry_points/slack_alert_entry_point.proto\x1a<protos/playbooks/workflow_entry_points/api_entry_point.proto\x1a\x33protos/playbooks/workflow_actions/api_trigger.proto\x1a\x35protos/playbooks/workflow_actions/slack_message.proto\x1a:protos/playbooks/workflow_actions/slack_thread_reply.proto\"\x83\x01\n\x15WorkflowConfiguration\x12\x34\n\x10generate_summary\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12\x34\n\x13global_variable_set\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"\xad\x02\n\x10WorkflowSchedule\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.protos.playbooks.WorkflowSchedule.Type\x12\x33\n\x07one_off\x18\x65 \x01(\x0b\x32 .protos.playbooks.OneOffScheduleH\x00\x12\x36\n\x08interval\x18\x66 \x01(\x0b\x32\".protos.playbooks.IntervalScheduleH\x00\x12.\n\x04\x63ron\x18g \x01(\x0b\x32\x1e.protos.playbooks.CronScheduleH\x00\"8\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07ONE_OFF\x10\x01\x12\x0c\n\x08INTERVAL\x10\x02\x12\x08\n\x04\x43RON\x10\x03\x42\x0b\n\tscheduler\"\xbe\x02\n\x12WorkflowEntryPoint\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x37\n\x04type\x18\x02 \x01(\x0e\x32).protos.playbooks.WorkflowEntryPoint.Type\x12\x36\n\x03\x61pi\x18\x65 \x01(\x0b\x32\'.protos.playbooks.ApiWorkflowEntryPointH\x00\x12L\n\x13slack_channel_alert\x18\x66 \x01(\x0b\x32-.protos.playbooks.SlackChannelAlertEntryPointH\x00\"5\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x07\n\x03\x41PI\x10\x01\x12\x17\n\x13SLACK_CHANNEL_ALERT\x10\x02\x42\x08\n\x06\x63onfig\"\x90\x05\n\x0eWorkflowAction\x12\x33\n\x04type\x18\x01 \x01(\x0e\x32%.protos.playbooks.WorkflowAction.Type\x12\x1e\n\x06source\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12_\n\x17\x61\x63tion_connector_source\x18\x03 \x01(\x0b\x32>.protos.playbooks.WorkflowAction.WorkflowActionConnectorSource\x12\x39\n\x03\x61pi\x18\x65 \x01(\x0b\x32*.protos.playbooks.ApiTriggerWorkflowActionH\x00\x12\x45\n\rslack_message\x18\x66 \x01(\x0b\x32,.protos.playbooks.SlackMessageWorkflowActionH\x00\x12N\n\x12slack_thread_reply\x18g \x01(\x0b\x32\x30.protos.playbooks.SlackThreadReplyWorkflowActionH\x00\x1a\x95\x01\n\x1dWorkflowActionConnectorSource\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x1e\n\x06source\x18\x02 \x01(\x0e\x32\x0e.protos.Source\x12*\n\x04name\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"G\n\x04Type\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x07\n\x03\x41PI\x10\x01\x12\x11\n\rSLACK_MESSAGE\x10\x02\x12\x16\n\x12SLACK_THREAD_REPLY\x10\x03\x42\x15\n\x13notification_config\"\x87\x05\n\x08Workflow\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12*\n\x04name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\ncreated_by\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x12\n\ncreated_at\x18\x05 \x01(\x10\x12-\n\tis_active\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12\x34\n\x08schedule\x18\x07 \x01(\x0b\x32\".protos.playbooks.WorkflowSchedule\x12-\n\tplaybooks\x18\x08 \x03(\x0b\x32\x1a.protos.playbooks.Playbook\x12:\n\x0c\x65ntry_points\x18\t \x03(\x0b\x32$.protos.playbooks.WorkflowEntryPoint\x12\x31\n\x07\x61\x63tions\x18\n \x03(\x0b\x32 .protos.playbooks.WorkflowAction\x12\x1b\n\x13last_execution_time\x18\x0b \x01(\x10\x12L\n\x15last_execution_status\x18\x0c \x01(\x0e\x32-.protos.playbooks.WorkflowExecutionStatusType\x12>\n\rconfiguration\x18\r \x01(\x0b\x32\'.protos.playbooks.WorkflowConfiguration\"\xb5\x0b\n\x10UpdateWorkflowOp\x12\x31\n\x02op\x18\x01 \x01(\x0e\x32%.protos.playbooks.UpdateWorkflowOp.Op\x12U\n\x14update_workflow_name\x18\x02 \x01(\x0b\x32\x35.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowNameH\x00\x12Y\n\x16update_workflow_status\x18\x03 \x01(\x0b\x32\x37.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowStatusH\x00\x12L\n\x0fupdate_workflow\x18\x04 \x01(\x0b\x32\x31.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowH\x00\x12o\n\"update_workflow_entry_point_status\x18\x05 \x01(\x0b\x32\x41.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowEntryPointStatusH\x00\x12\x66\n\x1dupdate_workflow_action_status\x18\x06 \x01(\x0b\x32=.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowActionStatusH\x00\x12j\n\x1fupdate_workflow_playbook_status\x18\x07 \x01(\x0b\x32?.protos.playbooks.UpdateWorkflowOp.UpdateWorkflowPlaybookStatusH\x00\x1a@\n\x12UpdateWorkflowName\x12*\n\x04name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x45\n\x14UpdateWorkflowStatus\x12-\n\tis_active\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a>\n\x0eUpdateWorkflow\x12,\n\x08workflow\x18\x01 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\x1a\x85\x01\n\x1eUpdateWorkflowEntryPointStatus\x12\x34\n\x0e\x65ntry_point_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a|\n\x1aUpdateWorkflowActionStatus\x12/\n\taction_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x1a\x80\x01\n\x1cUpdateWorkflowPlaybookStatus\x12\x31\n\x0bplaybook_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\tis_active\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\"\xcc\x01\n\x02Op\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x18\n\x14UPDATE_WORKFLOW_NAME\x10\x01\x12\x1a\n\x16UPDATE_WORKFLOW_STATUS\x10\x02\x12\x13\n\x0fUPDATE_WORKFLOW\x10\x03\x12&\n\"UPDATE_WORKFLOW_ENTRY_POINT_STATUS\x10\x04\x12!\n\x1dUPDATE_WORKFLOW_ACTION_STATUS\x10\x05\x12#\n\x1fUPDATE_WORKFLOW_PLAYBOOK_STATUS\x10\x06\x42\x08\n\x06update\"\x95\x01\n\x14WorkflowExecutionLog\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12?\n\x12playbook_execution\x18\x02 \x01(\x0b\x32#.protos.playbooks.PlaybookExecution\x12\x12\n\ncreated_at\x18\x03 \x01(\x10\"\x82\x04\n\x11WorkflowExecution\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x35\n\x0fworkflow_run_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x08workflow\x18\x03 \x01(\x0b\x32\x1a.protos.playbooks.Workflow\x12=\n\x06status\x18\x04 \x01(\x0e\x32-.protos.playbooks.WorkflowExecutionStatusType\x12\x14\n\x0cscheduled_at\x18\x05 \x01(\x10\x12\x11\n\texpiry_at\x18\x06 \x01(\x10\x12\x12\n\ncreated_at\x18\x07 \x01(\x10\x12\x12\n\nstarted_at\x18\x08 \x01(\x10\x12\x13\n\x0b\x66inished_at\x18\t \x01(\x10\x12\x30\n\ncreated_by\x18\n \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12=\n\rworkflow_logs\x18\x0b \x03(\x0b\x32&.protos.playbooks.WorkflowExecutionLog\x12H\n\x17\x65xecution_configuration\x18\r \x01(\x0b\x32\'.protos.playbooks.WorkflowConfiguration*\xac\x01\n\x1bWorkflowExecutionStatusType\x12\x1b\n\x17UNKNOWN_WORKFLOW_STATUS\x10\x00\x12\x16\n\x12WORKFLOW_SCHEDULED\x10\x01\x12\x14\n\x10WORKFLOW_RUNNING\x10\x02\x12\x15\n\x11WORKFLOW_FINISHED\x10\x03\x12\x13\n\x0fWORKFLOW_FAILED\x10\x04\x12\x16\n\x12WORKFLOW_CANCELLED\x10\x05\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.workflow_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _WORKFLOWEXECUTIONSTATUSTYPE._serialized_start=6294
-  _WORKFLOWEXECUTIONSTATUSTYPE._serialized_end=6466
-  _WORKFLOWONEOFFSCHEDULE._serialized_start=211
-  _WORKFLOWONEOFFSCHEDULE._serialized_end=235
-  _WORKFLOWPERIODICSCHEDULE._serialized_start=238
-  _WORKFLOWPERIODICSCHEDULE._serialized_end=533
-  _WORKFLOWPERIODICSCHEDULE_TYPE._serialized_start=478
-  _WORKFLOWPERIODICSCHEDULE_TYPE._serialized_end=521
-  _WORKFLOWENTRYPOINTAPICONFIG._serialized_start=535
-  _WORKFLOWENTRYPOINTAPICONFIG._serialized_end=564
-  _WORKFLOWENTRYPOINTSLACKCHANNELALERTCONFIG._serialized_start=567
-  _WORKFLOWENTRYPOINTSLACKCHANNELALERTCONFIG._serialized_end=845
-  _WORKFLOWENTRYPOINTALERTCONFIG._serialized_start=848
-  _WORKFLOWENTRYPOINTALERTCONFIG._serialized_end=1124
-  _WORKFLOWENTRYPOINTALERTCONFIG_ALERTTYPE._serialized_start=1059
-  _WORKFLOWENTRYPOINTALERTCONFIG_ALERTTYPE._serialized_end=1108
-  _WORKFLOWACTIONWEBHOOKNOTIFICATIONCONFIG._serialized_start=1127
-  _WORKFLOWACTIONWEBHOOKNOTIFICATIONCONFIG._serialized_end=1343
-  _WORKFLOWACTIONSLACKNOTIFICATIONCONFIG._serialized_start=1346
-  _WORKFLOWACTIONSLACKNOTIFICATIONCONFIG._serialized_end=1644
-  _WORKFLOWACTIONSLACKNOTIFICATIONCONFIG_MESSAGETYPE._serialized_start=1583
-  _WORKFLOWACTIONSLACKNOTIFICATIONCONFIG_MESSAGETYPE._serialized_end=1644
-  _WORKFLOWACTIONNOTIFICATIONCONFIG._serialized_start=1647
-  _WORKFLOWACTIONNOTIFICATIONCONFIG._serialized_end=1986
-  _WORKFLOWACTIONNOTIFICATIONCONFIG_TYPE._serialized_start=1920
-  _WORKFLOWACTIONNOTIFICATIONCONFIG_TYPE._serialized_end=1963
-  _WORKFLOWSCHEDULE._serialized_start=1989
-  _WORKFLOWSCHEDULE._serialized_end=2248
-  _WORKFLOWSCHEDULE_TYPE._serialized_start=2189
-  _WORKFLOWSCHEDULE_TYPE._serialized_end=2235
-  _WORKFLOWENTRYPOINT._serialized_start=2251
-  _WORKFLOWENTRYPOINT._serialized_end=2563
-  _WORKFLOWENTRYPOINT_TYPE._serialized_start=2514
-  _WORKFLOWENTRYPOINT_TYPE._serialized_end=2553
-  _WORKFLOWACTION._serialized_start=2566
-  _WORKFLOWACTION._serialized_end=2803
-  _WORKFLOWACTION_TYPE._serialized_start=2762
-  _WORKFLOWACTION_TYPE._serialized_end=2793
-  _WORKFLOW._serialized_start=2806
-  _WORKFLOW._serialized_end=3389
-  _UPDATEWORKFLOWOP._serialized_start=3392
-  _UPDATEWORKFLOWOP._serialized_end=4853
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWNAME._serialized_start=4044
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWNAME._serialized_end=4108
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWSTATUS._serialized_start=4110
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWSTATUS._serialized_end=4179
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOW._serialized_start=4181
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOW._serialized_end=4243
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWENTRYPOINTSTATUS._serialized_start=4246
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWENTRYPOINTSTATUS._serialized_end=4379
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWACTIONSTATUS._serialized_start=4381
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWACTIONSTATUS._serialized_end=4505
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWPLAYBOOKSTATUS._serialized_start=4508
-  _UPDATEWORKFLOWOP_UPDATEWORKFLOWPLAYBOOKSTATUS._serialized_end=4636
-  _UPDATEWORKFLOWOP_OP._serialized_start=4639
-  _UPDATEWORKFLOWOP_OP._serialized_end=4843
-  _WORKFLOWEXECUTIONLOG._serialized_start=4856
-  _WORKFLOWEXECUTIONLOG._serialized_end=5005
-  _WORKFLOWEXECUTION._serialized_start=5008
-  _WORKFLOWEXECUTION._serialized_end=5552
-  _DEPRECATEDWORKFLOWEXECUTIONLOG._serialized_start=5555
-  _DEPRECATEDWORKFLOWEXECUTIONLOG._serialized_end=5724
-  _DEPRECATEDWORKFLOWEXECUTION._serialized_start=5727
-  _DEPRECATEDWORKFLOWEXECUTION._serialized_end=6291
+  _WORKFLOWEXECUTIONSTATUSTYPE._serialized_start=4891
+  _WORKFLOWEXECUTIONSTATUSTYPE._serialized_end=5063
+  _WORKFLOWCONFIGURATION._serialized_start=690
+  _WORKFLOWCONFIGURATION._serialized_end=821
+  _WORKFLOWSCHEDULE._serialized_start=824
+  _WORKFLOWSCHEDULE._serialized_end=1125
+  _WORKFLOWSCHEDULE_TYPE._serialized_start=1056
+  _WORKFLOWSCHEDULE_TYPE._serialized_end=1112
+  _WORKFLOWENTRYPOINT._serialized_start=1128
+  _WORKFLOWENTRYPOINT._serialized_end=1446
+  _WORKFLOWENTRYPOINT_TYPE._serialized_start=1383
+  _WORKFLOWENTRYPOINT_TYPE._serialized_end=1436
+  _WORKFLOWACTION._serialized_start=1449
+  _WORKFLOWACTION._serialized_end=2105
+  _WORKFLOWACTION_WORKFLOWACTIONCONNECTORSOURCE._serialized_start=1860
+  _WORKFLOWACTION_WORKFLOWACTIONCONNECTORSOURCE._serialized_end=2009
+  _WORKFLOWACTION_TYPE._serialized_start=2011
+  _WORKFLOWACTION_TYPE._serialized_end=2082
+  _WORKFLOW._serialized_start=2108
+  _WORKFLOW._serialized_end=2755
+  _UPDATEWORKFLOWOP._serialized_start=2758
+  _UPDATEWORKFLOWOP._serialized_end=4219
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWNAME._serialized_start=3410
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWNAME._serialized_end=3474
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWSTATUS._serialized_start=3476
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWSTATUS._serialized_end=3545
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOW._serialized_start=3547
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOW._serialized_end=3609
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWENTRYPOINTSTATUS._serialized_start=3612
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWENTRYPOINTSTATUS._serialized_end=3745
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWACTIONSTATUS._serialized_start=3747
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWACTIONSTATUS._serialized_end=3871
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWPLAYBOOKSTATUS._serialized_start=3874
+  _UPDATEWORKFLOWOP_UPDATEWORKFLOWPLAYBOOKSTATUS._serialized_end=4002
+  _UPDATEWORKFLOWOP_OP._serialized_start=4005
+  _UPDATEWORKFLOWOP_OP._serialized_end=4209
+  _WORKFLOWEXECUTIONLOG._serialized_start=4222
+  _WORKFLOWEXECUTIONLOG._serialized_end=4371
+  _WORKFLOWEXECUTION._serialized_start=4374
+  _WORKFLOWEXECUTION._serialized_end=4888
 # @@protoc_insertion_point(module_scope)

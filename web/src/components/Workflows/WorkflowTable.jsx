@@ -13,6 +13,8 @@ import { Delete, Edit, History } from "@mui/icons-material";
 import WorkflowActionOverlay from "./WorkflowActionOverlay.jsx";
 import { useState } from "react";
 import useToggle from "../../hooks/useToggle.js";
+import { renderTimestamp } from "../../utils/DateUtils.js";
+import { handleStatus } from "../../utils/handleStatus.tsx";
 
 const WorkflowTableRender = ({ data, refreshTable }) => {
   const navigate = useNavigate();
@@ -44,12 +46,8 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
             <TableCell className="!font-bold">Name</TableCell>
             <TableCell className="!font-bold">Playbooks</TableCell>
             <TableCell className="!font-bold">Schedule</TableCell>
-            <TableCell className="!font-bold !text-center">
-              Last Execution Time
-            </TableCell>
-            <TableCell className="!font-bold !text-center">
-              Last Execution Status
-            </TableCell>
+            <TableCell className="!font-bold">Last Execution Time</TableCell>
+            <TableCell className="!font-bold">Last Execution Status</TableCell>
             <TableCell className="!font-bold">Created by</TableCell>
             <TableCell className="!font-bold">Actions</TableCell>
           </TableRow>
@@ -96,11 +94,15 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                   )}
                 </div>
               </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+              <TableCell component="td" scope="row">
+                {item.last_execution_time
+                  ? renderTimestamp(item?.last_execution_time)
+                  : "--"}
               </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+              <TableCell component="td" scope="row">
+                {item.last_execution_status
+                  ? handleStatus(item.last_execution_status)
+                  : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.created_by}
