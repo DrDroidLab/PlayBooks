@@ -61,8 +61,8 @@ function Timeline({ setTimelineOpen }) {
   }
 
   return (
-    <main className="p-2 min-h-screen mb-16">
-      <div className="border-b p-2 sticky top-0 mb-2 bg-white z-10">
+    <main className="p-1 min-h-screen mb-16">
+      <div className="border-b p-1 sticky top-0 mb-2 bg-white z-10">
         <h1 className="font-bold text-xl">Timeline</h1>
       </div>
 
