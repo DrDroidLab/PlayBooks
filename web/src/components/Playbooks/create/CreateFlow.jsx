@@ -19,6 +19,7 @@ import ParentNode from "./ParentNode.jsx";
 import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
 import useDagre from "../../../hooks/useDagre.ts";
 import CustomEdge from "./CustomEdge.jsx";
+import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -30,6 +31,7 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
+  const [, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const graphData = fetchGraphData();
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
@@ -66,6 +68,15 @@ const CreateFlow = () => {
     setEdges(dagreData.edges);
     reactFlowInstance.fitView();
   }, [steps]);
+
+  useEffect(() => {
+    setPlaybookEdges(
+      edges.map((edge) => ({
+        source: edge.source,
+        target: edge.target,
+      })),
+    );
+  }, [edges]);
 
   return (
     <div className="h-full w-full">
