@@ -15,7 +15,7 @@ function useDagre(graphData: GraphData) {
     g.setNode(node.id, {
       label: node.id,
       width: 350,
-      height: 300,
+      height: node.type === "custom" ? 400 : 200,
     });
   });
 
