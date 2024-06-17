@@ -169,9 +169,11 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" && !executionId && !isPrefetched && (
-            <StepActions />
-          )}
+          {playbook.view === "builder" &&
+            !executionId &&
+            !isPrefetched &&
+            (Object.keys(playbook.currentPlaybook).length > 0 ||
+              showEditTitle) && <StepActions />}
           {showExecution && <ExecutionButton />}
           {renderChildren(children)}
           {customTimeRange && (
