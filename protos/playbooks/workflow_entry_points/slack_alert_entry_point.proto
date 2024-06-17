@@ -1,0 +1,13 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+
+message SlackChannelAlertEntryPoint {
+  google.protobuf.StringValue slack_channel_id = 1;
+  google.protobuf.StringValue slack_channel_name = 2;
+  google.protobuf.StringValue slack_alert_type = 3;
+  google.protobuf.StringValue slack_alert_filter_string = 4;
+}

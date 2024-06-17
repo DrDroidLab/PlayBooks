@@ -54,11 +54,14 @@ oauth_config:
         - groups:read
         - mpim:read
         - im:read
+        - groups:history
 settings:
     event_subscriptions:
         request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
         bot_events:
         - message.channels
+        - member_joined_channel
+        - message.groups
     org_deploy_enabled: false
     socket_mode_enabled: false
     token_rotation_enabled: false

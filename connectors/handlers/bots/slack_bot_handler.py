@@ -50,23 +50,24 @@ def handle_slack_event_callback(data: Dict):
             f"Error handling slack event callback api for {team_id}: event type not found in request data: {data}")
         raise Exception("Invalid data received")
 
-    if event_type != 'message':
+    if event_type not in ['message', 'member_joined_channel']:
         logger.info(
             f"Ignoring slack event callback. Received invalid event type: {event['type']} for connector {team_id}")
         return True
 
     event_subtype = event.get('subtype', '')
+    event_type = event.get('type', '')
     event_ts = event.get('event_ts', '')
     channel_id = event.get('channel', '')
 
-    if not event_subtype:
+    if event_type == 'message':
         try:
             slack_bot_handle_receive_message.delay(slack_connector.id, data)
         except Exception as e:
             logger.error(f"Error while handling slack 'message' event with error: {e} for connector: {team_id}")
             raise Exception("Error while handling slack 'message' event")
 
-    if event_subtype == 'channel_join':
+    if event_subtype == 'channel_join' or event_type == 'member_joined_channel':
         slack_channel_model = get_db_connector_metadata_models(account_id=slack_connector.account_id,
                                                                connector_id=slack_connector.id,
                                                                connector_type=Source.SLACK,

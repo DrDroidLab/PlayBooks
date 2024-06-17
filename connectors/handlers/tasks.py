@@ -14,17 +14,15 @@ from connectors.crud.connector_asset_model_crud import get_db_connector_metadata
 from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
 from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceived, PagerDutyConnectorDataReceived
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_points
-from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows, \
-    trigger_pagerduty_alert_entry_point_workflows
-from executor.workflows.entry_point.entry_point_evaluator import get_entry_point_evaluator
+from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows
+from executor.workflows.entry_point.entry_point_evaluator_facade import entry_point_evaluator_facade
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from utils.time_utils import get_current_time
 from protos.base_pb2 import Source, SourceModelType, SourceKeyType
-from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
-    WorkflowEntryPointAlertConfig as WorkflowEntryPointAlertConfigProto
+from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
@@ -261,10 +259,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
             data_timestamp = datetime.utcfromtimestamp(float(event_ts))
             data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)
 
-        whitelisted_bots = ['Sentry', 'Datadog', 'New Relic', 'Grafana', 'Metabase', 'Cloudwatch', 'Robusta',
-                            'Prometheus_AlertManager', 'MongoDB Atlas', 'Coralogix']
-
-        if event_ts and channel_id and bot_auth_token and account_id and bot_profile in whitelisted_bots:
+        if event_ts and channel_id and bot_auth_token and account_id:
             try:
                 alert_title = title_identifier(message['event'], 'slack')
                 alert_text = text_identifier_v2(message['event'], 'slack')
@@ -298,28 +293,16 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                         slack_received_msg.slack_channel_metadata_model = slack_channel_metadata.first()
 
                 slack_received_msg.save()
+                all_slack_chanel_alert_ep = get_db_workflow_entry_points(account_id=account_id,
+                                                                         entry_point_type=WorkflowEntryPoint.Type.SLACK_CHANNEL_ALERT,
+                                                                         is_active=True)
+                ep_protos: [WorkflowEntryPoint] = [e.proto for e in all_slack_chanel_alert_ep]
 
-                all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
-                                                                           entry_point_type=WorkflowEntryPointProto.ALERT)
-                ep_protos: [WorkflowEntryPointProto] = [e.proto for e in all_alert_type_entry_points]
-                try:
-                    entry_point_evaluator = get_entry_point_evaluator(WorkflowEntryPointProto.Type.ALERT)
-                except Exception as e:
-                    print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
-                          f"for account: {account_id}")
-                    return
+                slack_alert_event = {'channel_id': channel_id, 'alert_type': alert_type, 'alert_text': alert_text}
                 for ep in ep_protos:
-                    alert_config: WorkflowEntryPointAlertConfigProto = ep.alert_config
-                    if alert_config.alert_type == WorkflowEntryPointAlertConfigProto.AlertType.SLACK_CHANNEL_ALERT:
-                        slack_alert = {
-                            'channel_id': channel_id,
-                            'alert_type': alert_type,
-                            'alert_text': alert_text
-                        }
-                        is_triggered = entry_point_evaluator.evaluate(alert_config, alert_config.alert_type,
-                                                                      slack_alert)
-                        if is_triggered:
-                            trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, event_ts)
+                    is_triggered = entry_point_evaluator_facade.evaluate(ep, slack_alert_event)
+                    if is_triggered:
+                        trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, event_ts)
             except Exception as e:
                 print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
                       f"for account: {account_id}")
@@ -384,7 +367,7 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id=1, event=None):
         )
         pagerduty_received_msg.save()
 
-        #change this line
+        # change this line
         all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
                                                                    entry_point_type=WorkflowEntryPointProto.ALERT)
         ep_protos = [e.proto for e in all_alert_type_entry_points]
@@ -431,7 +414,8 @@ def pagerduty_data_fetch_storage_job(account_id=1, connector_id=2, raw_data_json
         event_data = raw_data.get('event', {}).get('data', {})
         event_id = raw_data.get('id')
         if not event_data:
-            print(f"pagerduty_data_fetch_storage_job: Found no data for incident_id: {event_id} at epoch: {current_time} with connector_id: {connector_id}")
+            print(
+                f"pagerduty_data_fetch_storage_job: Found no data for incident_id: {event_id} at epoch: {current_time} with connector_id: {connector_id}")
             return
 
         incident_id = event_data.get('id')
