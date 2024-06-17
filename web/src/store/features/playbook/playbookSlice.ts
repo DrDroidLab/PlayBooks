@@ -242,7 +242,8 @@ const playbookSlice = createSlice({
         step.parentIndexes.push(parentIndex);
       }
     },
-    addStep: (state) => {
+    addStep: (state, { payload }) => {
+      const { parentIndex } = payload;
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
@@ -254,6 +255,7 @@ const playbookSlice = createSlice({
           x: 0,
           y: 0,
         },
+        parentIndexes: parentIndex !== undefined ? [parentIndex] : [],
       });
     },
     toggleStep: (state, { payload }) => {

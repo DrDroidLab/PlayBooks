@@ -21,7 +21,10 @@ const CustomEdge = ({
   source,
   target,
 }) => {
-  const { conditions, handleCondition } = useEdgeConditions(source, target);
+  const { conditions } = useEdgeConditions(source, target);
+  const { openDrawer, addAdditionalData } = useDrawerState(
+    DrawerTypes.CONDITION,
+  );
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -30,9 +33,6 @@ const CustomEdge = ({
     targetY,
     targetPosition,
   });
-  const { openDrawer, addAdditionalData } = useDrawerState(
-    DrawerTypes.CONDITION,
-  );
   const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
 
   const handleAddConditionClick = (e) => {
@@ -41,9 +41,6 @@ const CustomEdge = ({
       source,
       target,
     });
-    if (conditions.length === 0) {
-      handleCondition(undefined, undefined, 0);
-    }
     openDrawer();
   };
 
@@ -61,11 +58,13 @@ const CustomEdge = ({
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
         <body className="flex items-center justify-center w-full h-full">
-          <CustomButton
-            className="w-10 h-10 items-center rotate-45 p-0 justify-center font-bold"
-            onClick={handleAddConditionClick}>
-            <Close fontWeight="inherit" />
-          </CustomButton>
+          {conditions.length > 0 && (
+            <CustomButton
+              className="w-10 h-10 items-center rotate-45 p-0 justify-center font-bold"
+              onClick={handleAddConditionClick}>
+              <Close fontWeight="inherit" />
+            </CustomButton>
+          )}
         </body>
       </foreignObject>
     </>

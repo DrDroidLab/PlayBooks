@@ -79,3 +79,18 @@ td {
   max-width: max-content !important;
   min-width: max-content !important;
 }
+
+.add-step-buttons {
+  opacity: 0;
+  display: none;
+}
+
+.add-button:hover + .add-step-buttons {
+  display: block !important;
+  opacity: 1;
+}
+
+.add-step-buttons:hover {
+  display: block !important;
+  opacity: 1;
+}

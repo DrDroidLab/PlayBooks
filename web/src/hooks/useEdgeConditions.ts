@@ -17,6 +17,7 @@ function useEdgeConditions(source: string, target: string) {
     };
     const temp = structuredClone(playbookEdges ?? []);
     const tempEdge = temp[edgeIndex];
+    if (!tempEdge) return;
     tempEdge.conditions = [...(tempEdge.conditions ?? []), newCondition];
 
     setPlaybookEdges(temp);
@@ -52,6 +53,7 @@ function useEdgeConditions(source: string, target: string) {
   };
 
   return {
+    playbookEdges,
     edge,
     edgeIndex,
     conditions,

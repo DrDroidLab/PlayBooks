@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import SelectComponent from "../SelectComponent/index.jsx";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
@@ -23,14 +23,25 @@ function extractNumbers(input: string) {
 
 function AddCondition() {
   const { source, target } = useSelector(additionalStateSelector);
-  const { conditions, handleCondition, addNewCondition, deleteCondition } =
-    useEdgeConditions(source, target);
+  const {
+    playbookEdges,
+    conditions,
+    handleCondition,
+    addNewCondition,
+    deleteCondition,
+  } = useEdgeConditions(source, target);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
 
   const handleChange = (val: string, type: string, index: number) => {
     handleCondition(type, val, index);
   };
+
+  useEffect(() => {
+    if (conditions?.length === 0) {
+      handleCondition("", "", 0);
+    }
+  }, [conditions, handleCondition, playbookEdges]);
 
   return (
     <div className="p-2">

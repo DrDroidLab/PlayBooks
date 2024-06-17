@@ -2,27 +2,37 @@ import React from "react";
 import { Handle, NodeToolbar, Position } from "reactflow";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addStep,
   deleteStep,
   playbookSelector,
   setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress } from "@mui/material";
-import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
+import {
+  Add,
+  CheckCircleOutline,
+  Delete,
+  ErrorOutline,
+} from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 const id = DrawerTypes.STEP_DETAILS;
 const addDataId = DrawerTypes.ADD_DATA;
+const addConditionId = DrawerTypes.CONDITION;
 
 export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
+  const { openDrawer: openConditionDrawer } = useDrawerState(addConditionId);
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
   const { toggle } = useDrawerState(id);
   const step = data.step;
+  const source = `node-${step?.stepIndex}`;
+  const target = `node-${step?.stepIndex + 1}`;
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -43,6 +53,16 @@ export default function CustomNode({ data }) {
     handleNoAction(e);
     toggleAddData();
     addAdditionalData({ parentIndex: data.index });
+  };
+
+  const handleAddWithCondition = (e) => {
+    handleNoAction(e);
+    dispatch(addStep({ parentIndex: step?.stepIndex }));
+    addAdditionalData({
+      source,
+      target,
+    });
+    openConditionDrawer();
   };
 
   return (
@@ -107,7 +127,24 @@ export default function CustomNode({ data }) {
         />
 
         <NodeToolbar isVisible={true} position={Position.Bottom}>
-          <CustomButton onClick={handleAdd}>Add Step</CustomButton>
+          <CustomButton
+            onClick={handleNoAction}
+            className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
+            <Add fontSize="inherit" />
+          </CustomButton>
+
+          <div className="absolute top-0 left-full add-step-buttons transition-all">
+            <div className="flex flex-col gap-2 m-2 mt-0">
+              <CustomButton className="w-fit" onClick={handleAdd}>
+                Add Step
+              </CustomButton>
+              <CustomButton
+                onClick={handleAddWithCondition}
+                className="whitespace-nowrap">
+                Add Step with Condition
+              </CustomButton>
+            </div>
+          </div>
         </NodeToolbar>
 
         {/* {step.requireCondition && (

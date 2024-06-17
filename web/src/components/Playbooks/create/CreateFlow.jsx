@@ -31,7 +31,7 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
-  const [, setPlaybookEdges] = usePlaybookKey("playbookEdges");
+  const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const graphData = fetchGraphData();
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
@@ -69,13 +69,22 @@ const CreateFlow = () => {
     reactFlowInstance.fitView();
   }, [steps]);
 
+  const handleEdges = () => {
+    console.log("playbookedges", playbookEdges, edges);
+    if (playbookEdges?.length === 0) return edges;
+    const lastEdge = edges[edges.length - 1];
+    const newEdges = structuredClone(playbookEdges ?? []);
+    if (!lastEdge) return playbookEdges;
+    newEdges.push({
+      source: lastEdge.source,
+      target: lastEdge.target,
+    });
+
+    return newEdges;
+  };
+
   useEffect(() => {
-    setPlaybookEdges(
-      edges.map((edge) => ({
-        source: edge.source,
-        target: edge.target,
-      })),
-    );
+    setPlaybookEdges(handleEdges());
   }, [edges]);
 
   return (
