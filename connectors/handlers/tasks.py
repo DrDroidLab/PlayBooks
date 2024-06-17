@@ -12,7 +12,8 @@ from connectors.crud.connector_asset_model_crud import get_db_connector_metadata
 from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
 from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceived, PagerDutyConnectorDataReceived
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_points
-from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows
+from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows, \
+    trigger_pagerduty_alert_entry_point_workflows
 from executor.workflows.entry_point.entry_point_evaluator import get_entry_point_evaluator
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
@@ -329,10 +330,6 @@ slack_bot_handle_receive_message_prerun_notifier = publish_pre_run_task(slack_bo
 slack_bot_handle_receive_message_failure_notifier = publish_task_failure(slack_bot_handle_receive_message)
 slack_bot_handle_receive_message_postrun_notifier = publish_post_run_task(slack_bot_handle_receive_message)
 
-from datetime import datetime
-
-
-# Assuming PagerDutyConnectorDataReceived and other required imports are correctly defined
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def pager_duty_handle_webhook_call(pagerduty_connector_id, incident):

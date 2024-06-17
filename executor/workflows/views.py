@@ -11,7 +11,7 @@ from django.http import HttpResponse, HttpRequest
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
-from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, get_workflow_run_ids_by_name
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
@@ -311,6 +311,55 @@ def workflows_execution_api_get_v2(request_message: HttpRequest) -> Union[Execut
         return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
                             status=500,
                             content_type='application/json')
+
+    workflow_execution_protos = [we.proto for we in workflow_executions]
+    return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
+
+
+@account_get_api()
+def workflows_execution_api_get_pagerduty(request_message: HttpRequest) -> Union[ExecutionWorkflowGetResponse, HttpResponse]:
+    account: Account = get_request_account()
+    query_dict = request_message.GET
+
+    if 'workflow_run_id' not in query_dict and 'workflow_name' not in query_dict:
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'Request Workflow params not found.'}),
+                            status=400, content_type='application/json')
+
+    request_dict = dict(query_dict)
+
+    workflow_run_ids = []
+
+    if 'workflow_run_id' in request_dict:
+        workflow_run_id = request_dict.get('workflow_run_id')
+        if isinstance(workflow_run_id, list):
+            workflow_run_ids.extend(workflow_run_id)
+        else:
+            workflow_run_ids.append(workflow_run_id)
+
+    if 'workflow_name' in request_dict:
+        workflow_name = request_dict.get('workflow_name')
+        try:
+            workflow_run_ids_by_name = get_workflow_run_ids_by_name(account, workflow_name)
+            workflow_run_ids.extend(workflow_run_ids_by_name)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            return HttpResponse(
+                json.dumps({'success': False, 'error_message': 'An error occurred fetching workflow IDs by name.'}),
+                status=500, content_type='application/json')
+
+    if not workflow_run_ids:
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'No workflow run IDs found.'}),
+                            status=404, content_type='application/json')
+
+    try:
+        workflow_executions = get_db_workflow_executions(account, workflow_run_ids=workflow_run_ids)
+        if not workflow_executions:
+            return HttpResponse(json.dumps({'success': False, 'error_message': 'Workflow Executions not found.'}),
+                                status=404, content_type='application/json')
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        return HttpResponse(json.dumps({'success': False, 'error_message': 'An internal error has occurred!'}),
+                            status=500, content_type='application/json')
 
     workflow_execution_protos = [we.proto for we in workflow_executions]
     return ExecutionWorkflowGetResponseV2(success=BoolValue(value=True), workflow_executions=workflow_execution_protos)
