@@ -45,7 +45,7 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                 all_step_relation_executions.append({
                     'relation_id': srel.relation.id.value,
                     'evaluation_result': srel.evaluation_result.value,
-                    'evaluation_output': proto_to_dict(srel.evaluation_output)
+                    'evaluation_output': proto_to_dict(srel.evaluation_output) if srel.evaluation_output else None
                 })
             all_step_executions[sel.step.id.value] = {
                 'all_task_executions': all_task_executions,
@@ -89,8 +89,13 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         relation_execution_logs = []
         for relation_proto in children:
             condition: PlaybookStepResultCondition = relation_proto.condition
-            condition_evaluation_result, condition_evaluation_output = step_condition_evaluator.evaluate(condition,
-                                                                                                         pte_logs)
+            try:
+                condition_evaluation_result, condition_evaluation_output = step_condition_evaluator.evaluate(condition,
+                                                                                                             pte_logs)
+            except Exception as exc:
+                logger.error(f"Error occurred while evaluating condition: {exc}")
+                condition_evaluation_result = False
+                condition_evaluation_output = {}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
             relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
                                                                       evaluation_result=BoolValue(
