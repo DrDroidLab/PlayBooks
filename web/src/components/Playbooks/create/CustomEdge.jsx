@@ -4,18 +4,9 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { Close } from "@mui/icons-material";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 
 const foreignObjectSize = 60;
-
-function extractNumbers(input) {
-  // Use regular expression to match numbers in the string
-  const numbers = input.match(/\d+/g);
-
-  // Convert the matched strings to integers
-  const result = numbers ? numbers.map(Number) : [];
-
-  return result;
-}
 
 const CustomEdge = ({
   id,
@@ -28,7 +19,9 @@ const CustomEdge = ({
   arrowHeadType,
   markerEndId,
   source,
+  target,
 }) => {
+  const { conditions, handleCondition } = useEdgeConditions(source, target);
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -44,8 +37,13 @@ const CustomEdge = ({
 
   const handleAddConditionClick = (e) => {
     e.stopPropagation();
-    const [sourceId] = extractNumbers(source);
-    addAdditionalData({ source: sourceId });
+    addAdditionalData({
+      source,
+      target,
+    });
+    if (conditions.length === 0) {
+      handleCondition(undefined, undefined, 0);
+    }
     openDrawer();
   };
 
