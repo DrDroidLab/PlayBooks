@@ -477,13 +477,14 @@ class SlackConnectorDataReceived(models.Model):
 
 
 class PagerDutyConnectorDataReceived(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    # account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    # connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
     incident_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    alert_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    alert_text = models.TextField(null=True, blank=True)
-    details = models.JSONField(null=True, blank=True)
-    data_timestamp = models.DateTimeField(blank=True, null=True, db_index=True)
+    title = models.TextField(null=True, blank=True)
+    # alert_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    # alert_text = models.TextField(null=True, blank=True)
+    # details = models.JSONField(null=True, blank=True)
+    incident_created_at = models.DateTimeField(blank=True, null=True, db_index=True)
 
 
 class ConnectorPeriodicRunMetadata(models.Model):

@@ -309,7 +309,6 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """GKE Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
-
 UNKNOWN_MT: SourceModelType.ValueType  # 0
 NEW_RELIC_POLICY: SourceModelType.ValueType  # 1
 """New Relic Models"""

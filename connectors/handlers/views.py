@@ -7,7 +7,9 @@ from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 
 from accounts.models import get_request_account, Account
+from connectors.handlers.bots.pagerduty_handler import handle_pagerduty_event_callback
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
+from connectors.handlers.tasks import pagerduty_data_fetch_storage_job
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
 from utils.time_utils import current_epoch_timestamp
@@ -15,6 +17,7 @@ from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
 
 logger = logging.getLogger(__name__)
+
 
 @web_api(GetSlackAppManifestRequest)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
@@ -118,3 +121,13 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
         else:
             return JsonResponse({'success': False, 'message': f"Received invalid data type: {d_type}"}, status=400)
     return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=400)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
+    current_epoch = current_epoch_timestamp()
+    data = request_message.data
+    pagerduty_data_fetch_storage_job(1, 2, raw_data_json=data)
+    # print(request_message)
+    return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=200)

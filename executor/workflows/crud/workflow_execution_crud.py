@@ -75,13 +75,12 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
     return None
 
 
-def create_workflow_execution(account: Account, time_range: TimeRange, workflow_name, workflow_id, workflow_run_id, scheduled_at,
+def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id, scheduled_at,
                               expiry_at, interval, created_by=None, metadata=None):
     try:
         workflow_execution = WorkflowExecution.objects.create(
             account=account,
             workflow_id=workflow_id,
-            workflow_name=workflow_name,
             workflow_run_id=workflow_run_id,
             scheduled_at=scheduled_at,
             expiry_at=expiry_at,
@@ -96,20 +95,6 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
     except Exception as e:
         logger.error(f"Failed to create workflow execution with error: {e}")
         raise e
-
-
-def get_workflow_run_ids_by_name(account: Account, workflow_name: str):
-    """
-    Function to fetch workflow run IDs by workflow name.
-    """
-    try:
-        workflows = get_db_workflow_executions(account=account).objects.filter(account=account, name=workflow_name)
-        workflow_run_ids = [workflow.run_id for workflow in workflows]
-        return workflow_run_ids
-    except Exception as e:
-        logger.error(f"Failed to get workflow run IDs by name for account_id: {account.id}, "
-                     f"workflow_name: {workflow_name}, error: {e}")
-        return []
 
 
 def update_db_account_workflow_execution_status(account: Account, workflow_execution_id: int, scheduled_at,
