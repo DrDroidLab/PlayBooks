@@ -129,7 +129,6 @@ class PlayBookStep(models.Model):
 
         return PlaybookStepProto(
             id=UInt64Value(value=self.id),
-            reference_id=StringValue(value=self.reference_id),
             name=StringValue(value=self.name),
             external_links=el_list_proto,
             description=StringValue(value=self.description),
