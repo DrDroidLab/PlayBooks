@@ -51,7 +51,7 @@ function AddCondition() {
       <hr />
 
       {conditions?.map((condition, i) => (
-        <div className="flex gap-2 mt-4 items-center">
+        <div className="flex gap-2 mt-4 items-center flex-wrap">
           <div className="flex items-center gap-1">
             {/* <p className="text-xs text-violet-500 font-semibold">Function</p> */}
             <SelectComponent
