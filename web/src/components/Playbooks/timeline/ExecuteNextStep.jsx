@@ -24,11 +24,11 @@ function ExecuteNextStep({ handleShowConfig, stepIndex }) {
           {step?.description}
         </h1>
         <div onClick={() => handleShowConfig(step?.id)}>
-          (
+          {/* (
           <span className="text-violet-500 cursor-pointer hover:underline">
             Show Config
           </span>
-          )
+          ) */}
         </div>
       </div>
       <div className="flex items-center gap-2 mt-3">

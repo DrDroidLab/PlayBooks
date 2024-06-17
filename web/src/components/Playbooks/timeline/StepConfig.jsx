@@ -27,11 +27,11 @@ function StepConfig({ step, index, handleShowConfig }) {
               {step.description}
             </h1>
             <div onClick={() => handleShowConfig(step.id)}>
-              (
+              {/* (
               <span className="text-violet-500 cursor-pointer hover:underline">
                 Config
               </span>
-              )
+              ) */}
             </div>
           </div>
         </div>
