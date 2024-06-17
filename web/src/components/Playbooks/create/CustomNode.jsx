@@ -109,7 +109,9 @@ export default function CustomNode({ data }) {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <RunButton index={data.index} />
+          <div onClick={handleNoAction}>
+            <RunButton index={data.index} />
+          </div>
           {isEditing && (
             <div
               className="text-violet-500 cursor-pointer"
