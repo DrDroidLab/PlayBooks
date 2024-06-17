@@ -3,7 +3,8 @@ import logging
 from django.utils import timezone
 
 from accounts.models import Account
-from executor.models import PlayBookExecution, PlayBookTaskExecutionLog, PlayBookStepExecutionLog
+from executor.models import PlayBookExecution, PlayBookTaskExecutionLog, PlayBookStepExecutionLog, \
+    PlayBookStepRelationExecutionLog
 from protos.base_pb2 import TimeRange
 from protos.playbooks.playbook_commons_pb2 import PlaybookExecutionStatusType
 from utils.proto_utils import proto_to_dict
@@ -87,6 +88,7 @@ def update_db_playbook_execution_status(playbook_execution_id: int, status: Play
 def bulk_create_playbook_execution_log(account, playbook, playbook_execution, all_step_results, user=None,
                                        tr=None):
     all_db_playbook_execution_logs = []
+    all_db_playbook_step_relation_execution_logs = []
     if not user:
         user = playbook_execution.created_by
     if tr:
@@ -96,6 +98,7 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
     for step_id, all_results in all_step_results.items():
         step_interpretation = all_results['step_interpretation']
         all_task_executions = all_results['all_task_executions']
+        all_step_relation_executions = all_results['all_step_relation_executions']
 
         try:
             playbook_step_execution_log = PlayBookStepExecutionLog.objects.create(
@@ -125,8 +128,21 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 time_range=time_range
             )
             all_db_playbook_execution_logs.append(playbook_execution_log)
+        for step_relation_execution_log in all_step_relation_executions:
+            playbook_step_relation_execution_log = PlayBookStepRelationExecutionLog(
+                account=account,
+                playbook=playbook,
+                playbook_step_relation_id=step_relation_execution_log['relation_id'],
+                playbook_execution=playbook_execution,
+                playbook_step_execution_log=playbook_step_execution_log,
+                evaluation_result=step_relation_execution_log['evaluation_result'],
+                evaluation_output=step_relation_execution_log['evaluation_output'],
+            )
+            all_db_playbook_step_relation_execution_logs.append(playbook_step_relation_execution_log)
+
     try:
         PlayBookTaskExecutionLog.objects.bulk_create(all_db_playbook_execution_logs)
+        PlayBookStepRelationExecutionLog.objects.bulk_create(all_db_playbook_step_relation_execution_logs)
     except Exception as e:
         logger.error(f"Failed to bulk create playbook execution logs with error: {e}")
         raise e

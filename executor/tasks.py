@@ -2,7 +2,7 @@ import logging
 
 from celery import shared_task
 from google.protobuf.struct_pb2 import Struct
-from google.protobuf.wrappers_pb2 import StringValue
+from google.protobuf.wrappers_pb2 import StringValue, BoolValue
 
 from accounts.models import Account
 from executor.crud.playbook_execution_crud import get_db_playbook_execution, update_db_playbook_execution_status, \
@@ -30,6 +30,7 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
         all_step_executions = {}
         for sel in step_execution_logs:
             all_task_executions = []
+            all_step_relation_executions = []
             logger.info(f"Step Execution Log: {sel}")
             for tel in sel.task_execution_logs:
                 logger.info(f"Task Execution Log: {tel}")
@@ -38,8 +39,16 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                     'task_result': proto_to_dict(tel.result),
                     'task_interpretation': proto_to_dict(tel.interpretation),
                 })
+            for srel in sel.relation_execution_logs:
+                logger.info(f"Relation Execution Log: {srel}")
+                all_step_relation_executions.append({
+                    'relation_id': srel.relation.id.value,
+                    'evaluation_result': srel.evaluation_result.value,
+                    'evaluation_output': proto_to_dict(srel.evaluation_output)
+                })
             all_step_executions[sel.step.id.value] = {
                 'all_task_executions': all_task_executions,
+                'all_step_relation_executions': all_step_relation_executions,
                 'step_interpretation': proto_to_dict(sel.step_interpretation)
             }
         bulk_create_playbook_execution_log(account, db_playbook, db_pb_execution, all_step_executions, user=user, tr=tr)
@@ -82,9 +91,11 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
             condition_evaluation_result, condition_evaluation_output = step_condition_evaluator.evaluate(condition,
                                                                                                          pte_logs)
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
-            PlaybookStepRelationExecutionLog(relation=relation_proto, evaluation_result=condition_evaluation_result,
-                                             evaluation_output=condition_evaluation_output_proto)
-            relation_execution_logs.append(relation_execution_logs)
+            relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
+                                                                      evaluation_result=BoolValue(
+                                                                          value=condition_evaluation_result),
+                                                                      evaluation_output=condition_evaluation_output_proto)
+            relation_execution_logs.append(relation_execution_log)
         step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
                                                       step_interpretation=step_interpretation,
                                                       relation_execution_logs=relation_execution_logs)

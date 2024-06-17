@@ -15,7 +15,7 @@ from google.protobuf.struct_pb2 import Struct
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution, \
-    update_db_account_playbook_execution_status, bulk_create_playbook_execution_log
+    update_db_account_playbook_execution_status
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
