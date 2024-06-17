@@ -11,6 +11,7 @@ from executor.crud.playbooks_crud import get_db_playbooks
 from executor.models import PlayBook, PlayBookExecution
 from executor.playbook_source_facade import playbook_source_facade
 from executor.task_result_conditional_evaluators.step_condition_evaluator import step_condition_evaluator
+from executor.utils.playbook_step_utils import get_playbook_steps_graph_view, get_playbook_steps_id_def_map
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
@@ -106,15 +107,35 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         raise exc
 
 
+def execute_playbook_step_with_children_impl(tr: TimeRange, account: Account, step_id_def_map, parent_step_id,
+                                             global_variable_set=None):
+    all_step_executions = []
+    parent_step_def = step_id_def_map.get(parent_step_id, None)
+    if not parent_step_def:
+        raise ValueError(f"Step with id {parent_step_id} not found")
+    step_execution_log: PlaybookStepExecutionLog = execute_playbook_step_impl(tr, account, parent_step_def,
+                                                                              global_variable_set)
+    all_step_executions.append(step_execution_log)
+    relation_execution_logs: [PlaybookStepRelationExecutionLog] = step_execution_log.relation_execution_logs
+    for rel in relation_execution_logs:
+        if rel.evaluation_result.value:
+            child_step_id = rel.relation.child.id.value
+            all_step_executions.extend(
+                execute_playbook_step_with_children_impl(tr, account, step_id_def_map, child_step_id,
+                                                         global_variable_set))
+    return all_step_executions
+
+
 def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto, global_variable_set=None):
     try:
         if not global_variable_set:
             global_variable_set = playbook.global_variable_set
-        steps = playbook.steps
         step_execution_logs = []
-        for step in steps:
-            step_execution_log = execute_playbook_step_impl(tr, account, step, global_variable_set)
-            step_execution_logs.append(step_execution_log)
+        graph_view = get_playbook_steps_graph_view(playbook.step_relations)
+        step_id_def_map = get_playbook_steps_id_def_map(playbook.steps)
+        for step_id in graph_view:
+            step_execution_logs.extend(
+                execute_playbook_step_with_children_impl(tr, account, step_id_def_map, step_id, global_variable_set))
         return step_execution_logs
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")

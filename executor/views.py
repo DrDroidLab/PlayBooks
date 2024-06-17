@@ -219,33 +219,14 @@ def step_run_v3(request_message: RunPlaybookStepRequestV3) -> Union[RunPlaybookS
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
 
     step = request_message.playbook_step
-    tasks = step.tasks
-    interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
-
-    pte_logs = []
-    task_interpretations = []
-    for task in tasks:
-        try:
-            global_variable_set = {}
-            if task.global_variable_set:
-                global_variable_set = proto_to_dict(task.global_variable_set)
-            task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
-            interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
-            playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
-                                                                   interpretation=interpretation)
-            task_interpretations.append(interpretation)
-        except Exception as e:
-            playbook_task_execution_log = PlaybookTaskExecutionLog(task=task,
-                                                                   result=PlaybookTaskResult(
-                                                                       error=StringValue(value=str(e))))
-        pte_logs.append(playbook_task_execution_log)
-
-    step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
-    step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
-                                                  step_interpretation=step_interpretation)
-
-    return RunPlaybookStepResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=True),
-                                     step_execution_log=step_execution_log)
+    try:
+        step_execution_log = execute_playbook_step_impl(time_range, account, step)
+        return RunPlaybookStepResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                         step_execution_log=step_execution_log)
+    except Exception as e:
+        logger.error(f"Error running step: {e}")
+        return RunPlaybookStepResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                         message=Message(title="Error", description=str(e)))
 
 
 @web_api(RunPlaybookRequest)
