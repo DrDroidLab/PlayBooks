@@ -24,6 +24,7 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import Timeline from "../Timeline.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import ConditionDrawer from "../../common/Drawers/ConditionDrawer.jsx";
 
 const viewOptions = [
   {
@@ -154,6 +155,7 @@ function CreatePlaybook() {
           </div>
         )}
       </CustomDrawer>
+      <ConditionDrawer />
     </div>
   );
 }

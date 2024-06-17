@@ -12,11 +12,11 @@ import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOpti
 import { Tooltip } from "@mui/material";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import { additonalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 
 function IntegrationOption({ option }) {
   const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
-  const addtionalState = useSelector(additonalStateSelector);
+  const addtionalState = useSelector(additionalStateSelector);
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
   const unsupported = unsupportedBuilderOptions.includes(

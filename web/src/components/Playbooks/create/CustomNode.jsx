@@ -12,7 +12,6 @@ import { CheckCircleOutline, Delete, ErrorOutline } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import AddCondition from "../../AddCondition/index.tsx";
 
 const id = DrawerTypes.STEP_DETAILS;
 const addDataId = DrawerTypes.ADD_DATA;
@@ -21,14 +20,9 @@ export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
   const dispatch = useDispatch();
-  const { steps, currentStepIndex } = useSelector(playbookSelector);
+  const { currentStepIndex } = useSelector(playbookSelector);
   const { toggle } = useDrawerState(id);
   const step = data.step;
-
-  const parentStepForCondition =
-    step?.currentConditionParentIndex !== undefined
-      ? steps[step.currentConditionParentIndex]
-      : {};
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -116,7 +110,7 @@ export default function CustomNode({ data }) {
           <CustomButton onClick={handleAdd}>Add Step</CustomButton>
         </NodeToolbar>
 
-        {step.requireCondition && (
+        {/* {step.requireCondition && (
           <NodeToolbar
             isVisible={true}
             position={Position.Left}
@@ -124,7 +118,7 @@ export default function CustomNode({ data }) {
             className="nodrag">
             <AddCondition step={parentStepForCondition} />
           </NodeToolbar>
-        )}
+        )} */}
       </div>
 
       <div className="absolute top-0 left-0 w-screen"></div>

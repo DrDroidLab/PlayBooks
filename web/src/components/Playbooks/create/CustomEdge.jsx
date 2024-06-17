@@ -1,7 +1,11 @@
 import React from "react";
-import { getBezierPath, EdgeLabelRenderer, BaseEdge } from "reactflow";
+import { getBezierPath, getMarkerEnd } from "reactflow";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
+import { Close } from "@mui/icons-material";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+
+const foreignObjectSize = 60;
 
 function extractNumbers(input) {
   // Use regular expression to match numbers in the string
@@ -21,16 +25,10 @@ const CustomEdge = ({
   targetY,
   sourcePosition,
   targetPosition,
+  arrowHeadType,
+  markerEndId,
+  source,
 }) => {
-  const [playbookEdges] = usePlaybookKey("playbookEdges");
-  const [parentIndex, childIndex] = extractNumbers(id);
-  const edge = playbookEdges.find(
-    (edge) =>
-      edge.source === `node-${parentIndex}` &&
-      edge.target === `node-${childIndex}`,
-  );
-
-  console.log("edge", edge);
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -39,24 +37,39 @@ const CustomEdge = ({
     targetY,
     targetPosition,
   });
+  const { openDrawer, addAdditionalData } = useDrawerState(
+    DrawerTypes.CONDITION,
+  );
+  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
 
-  const handleAddConditionClick = () => {};
+  const handleAddConditionClick = (e) => {
+    e.stopPropagation();
+    const [sourceId] = extractNumbers(source);
+    addAdditionalData({ source: sourceId });
+    openDrawer();
+  };
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} />
-      <EdgeLabelRenderer>
-        <div
-          style={{
-            position: "absolute",
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-          }}
-          className="nodrag nopan">
-          <CustomButton onClick={handleAddConditionClick}>
-            Add Condition
+      <path
+        id={id}
+        className="react-flow__edge-path"
+        d={edgePath}
+        markerEnd={markerEnd}
+      />
+      <foreignObject
+        width={foreignObjectSize}
+        height={foreignObjectSize}
+        x={labelX - foreignObjectSize / 2}
+        y={labelY - foreignObjectSize / 2}>
+        <body className="flex items-center justify-center w-full h-full">
+          <CustomButton
+            className="w-10 h-10 items-center rotate-45 p-0 justify-center font-bold"
+            onClick={handleAddConditionClick}>
+            <Close fontWeight="inherit" />
           </CustomButton>
-        </div>
-      </EdgeLabelRenderer>
+        </body>
+      </foreignObject>
     </>
   );
 };

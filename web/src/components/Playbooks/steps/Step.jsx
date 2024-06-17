@@ -83,9 +83,9 @@ function Step({ step, index }) {
                 <CustomButton onClick={handleAdd}>Add Next Step</CustomButton>
               </div>
             )}
-            <CustomButton onClick={() => handleAdd(true)}>
+            {/* <CustomButton onClick={() => handleAdd(true)}>
               Add Next Step With Condition
-            </CustomButton>
+            </CustomButton> */}
           </div>
         )}
       </div>

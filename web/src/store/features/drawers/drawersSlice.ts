@@ -2,11 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../..";
 import { DrawerTypes } from "./drawerTypes.ts";
 
-const initialState = {
-  ...Object.fromEntries(
-    Object.values(DrawerTypes).map((type) => [type, false]),
-  ),
-  additonalState: {},
+type DrawerTypesKeys = keyof typeof DrawerTypes;
+
+type DrawerInitialState = {
+  [key in DrawerTypesKeys]?: boolean;
+} & {
+  additionalState: Record<string, any>;
+};
+
+const initialState: DrawerInitialState = {
+  ...Object.fromEntries(Object.keys(DrawerTypes).map((key) => [key, false])),
+  additionalState: {},
 };
 
 const drawersSlice = createSlice({
@@ -19,14 +25,14 @@ const drawersSlice = createSlice({
     closeDrawer(state, { payload }) {
       const { id, resetState } = payload;
       state[id] = false;
-      if (resetState) state.additonalState = {};
+      if (resetState) state.additionalState = {};
     },
     toggleDrawer(state, { payload }) {
-      if (!state[payload]) state.additonalState = {};
+      if (!state[payload]) state.additionalState = {};
       state[payload] = !state[payload];
     },
     setAdditionalState(state, { payload }) {
-      state.additonalState = payload;
+      state.additionalState = payload;
     },
   },
 });
@@ -37,5 +43,5 @@ export const { openDrawer, closeDrawer, toggleDrawer, setAdditionalState } =
 export default drawersSlice.reducer;
 
 export const drawersSelector = (state: RootState) => state.drawers;
-export const additonalStateSelector = (state: RootState) =>
-  state.drawers.additonalState;
+export const additionalStateSelector = (state: RootState) =>
+  state.drawers.additionalState;

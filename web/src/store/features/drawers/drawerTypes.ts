@@ -5,4 +5,5 @@ export const DrawerTypes = {
   STEP_DETAILS: "step_details",
   ADD_DATA_SOURCES: "add_data_sources",
   ALERTS: "alerts",
-};
+  CONDITION: "add_condition",
+} as const;

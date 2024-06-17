@@ -1,27 +1,23 @@
 import React from "react";
-import { CloseRounded } from "@mui/icons-material";
-import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
 import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import SelectComponent from "../SelectComponent/index.jsx";
+import useCurrentStep from "../../hooks/useCurrentStep.ts";
+import { useSelector } from "react-redux";
+import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 
-function AddCondition({ step }) {
-  const handleClose = () => {
-    updateCardByIndex("requireCondition", false, step.stepIndex);
-    updateCardByIndex("currentConditionParentIndex", undefined, step.stepIndex);
-  };
+function AddCondition() {
+  const additionalData = useSelector(additionalStateSelector);
+  const [parentStep] = useCurrentStep(additionalData.source);
 
   return (
-    <div className="bg-white rounded-md p-2 shadow-md w-[200px] overflow-visible">
+    <div className="p-2">
       <h1 className="text-violet-500 font-semibold text-sm flex justify-between my-2">
         <span>Add Condition</span>
-        <div onClick={handleClose} className="cursor-pointer">
-          <CloseRounded fontSize="small" />
-        </div>
       </h1>
 
-      <div>
+      <div className="flex">
         <SelectComponent
-          data={functionOptions(step)}
+          data={functionOptions(parentStep)}
           selected={""}
           placeholder={`Select Function`}
           onSelectionChange={(id, val) => {}}
