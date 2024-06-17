@@ -24,8 +24,8 @@ const ExecutionsTableRender = ({ data }) => {
             <TableCell className="!font-bold">Tools</TableCell>
             <TableCell className="!font-bold">Status</TableCell>
             <TableCell className="!font-bold">Executed At</TableCell>
-            <TableCell className="!font-bold">Finsihed By</TableCell>
-            <TableCell className="!font-bold">Action</TableCell>
+            <TableCell className="!font-bold">Executed By</TableCell>
+            {/* <TableCell className="!font-bold">Action</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -37,7 +37,7 @@ const ExecutionsTableRender = ({ data }) => {
               }}>
               <TableCell component="td" scope="row">
                 <Link
-                  to={`/playbooks/${item.playbook.id}`}
+                  to={`/playbooks/${item.playbook.id}?executionId=${item.playbook_run_id}`}
                   className="text-violet-500 underline">
                   {item.playbook_run_id}
                 </Link>
@@ -74,14 +74,14 @@ const ExecutionsTableRender = ({ data }) => {
               <TableCell component="td" scope="row">
                 {item.created_by}
               </TableCell>
-              <TableCell component="td" scope="row">
+              {/* <TableCell component="td" scope="row">
                 <Link
                   to={`/playbooks/${item.playbook.id}?executionId=${item.playbook_run_id}`}>
                   <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
                     View Playbook Execution
                   </div>
                 </Link>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>

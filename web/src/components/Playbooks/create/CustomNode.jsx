@@ -18,18 +18,17 @@ import {
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 
-const id = DrawerTypes.STEP_DETAILS;
 const addDataId = DrawerTypes.ADD_DATA;
-const addConditionId = DrawerTypes.CONDITION;
 
 export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
-  const { openDrawer: openConditionDrawer } = useDrawerState(addConditionId);
+  const { openDrawer } = usePermanentDrawerState();
   const dispatch = useDispatch();
   const { currentStepIndex } = useSelector(playbookSelector);
-  const { toggle } = useDrawerState(id);
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
   const target = `node-${step?.stepIndex + 1}`;
@@ -41,7 +40,7 @@ export default function CustomNode({ data }) {
 
   const handleClick = () => {
     dispatch(setCurrentStepIndex(data.index));
-    toggle();
+    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {
@@ -62,7 +61,7 @@ export default function CustomNode({ data }) {
       source,
       target,
     });
-    openConditionDrawer();
+    openDrawer(PermanentDrawerTypes.CONDITION);
   };
 
   return (
@@ -146,16 +145,6 @@ export default function CustomNode({ data }) {
             </div>
           </div>
         </NodeToolbar>
-
-        {/* {step.requireCondition && (
-          <NodeToolbar
-            isVisible={true}
-            position={Position.Left}
-            onClick={handleNoAction}
-            className="nodrag">
-            <AddCondition step={parentStepForCondition} />
-          </NodeToolbar>
-        )} */}
       </div>
 
       <div className="absolute top-0 left-0 w-screen"></div>

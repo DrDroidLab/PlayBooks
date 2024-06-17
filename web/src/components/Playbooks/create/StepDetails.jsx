@@ -15,7 +15,7 @@ function StepDetails() {
       updateCardByIndex("userEnteredDescription", true, currentStepIndex);
   };
 
-  if (!step) return <></>;
+  if (!Object.keys(step).length === 0) return <>No Step Found</>;
 
   return (
     <div className="p-2 min-h-screen mb-16">

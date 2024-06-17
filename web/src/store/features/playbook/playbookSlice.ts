@@ -233,7 +233,7 @@ const playbookSlice = createSlice({
         globalVariables: state.globalVariables ?? [],
       });
 
-      // state.currentStepIndex = index.toString();
+      state.currentStepIndex = index.toString();
     },
     addParentIndex: (state, { payload }) => {
       const { index, parentIndex } = payload;
