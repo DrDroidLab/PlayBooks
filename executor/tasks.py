@@ -95,7 +95,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
             except Exception as exc:
                 logger.error(f"Error occurred while evaluating condition: {exc}")
                 condition_evaluation_result = False
-                condition_evaluation_output = {}
+                condition_evaluation_output = {'error': str(exc) if exc else 'Unknown Error'}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
             relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
                                                                       evaluation_result=BoolValue(

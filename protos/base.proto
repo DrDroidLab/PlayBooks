@@ -20,6 +20,7 @@ enum Operator {
   LESS_THAN_EQUAL_O = 4;
   EQUAL_O = 5;
   NOT_EQUAL_O = 6;
+  LIKE_O = 7;
 }
 
 enum LogicalOperator {

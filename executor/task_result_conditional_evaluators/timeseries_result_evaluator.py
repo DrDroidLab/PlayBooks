@@ -68,20 +68,20 @@ def timeseries_cumulative_function_operator(function, operator, window, threshol
     return False, function_result
 
 
-class TimeseriesEvaluator(TaskResultEvaluator):
+class TimeseriesResultEvaluator(TaskResultEvaluator):
 
     def evaluate(self, rule: PlaybookTaskResultRule, task_result: PlaybookTaskResult) -> (bool, Dict):
         if rule.type != PlaybookTaskResultType.TIMESERIES or task_result.type != PlaybookTaskResultType.TIMESERIES:
             raise ValueError("Received unsupported rule and task types")
         timeseries_result = task_result.timeseries
-        timeseries_rule: TimeseriesResultRule = rule.timeseries
+        timeseries_result_rule: TimeseriesResultRule = rule.timeseries
         labeled_metric_result_timeseries = timeseries_result.labeled_metric_timeseries
-        rule_type = timeseries_rule.type
-        function = timeseries_rule.function
-        operator = timeseries_rule.operator
-        window = timeseries_rule.window.value
-        threshold = timeseries_rule.threshold.value
-        metric_label_values = timeseries_rule.label_value_filters
+        rule_type = timeseries_result_rule.type
+        function = timeseries_result_rule.function
+        operator = timeseries_result_rule.operator
+        window = timeseries_result_rule.window.value
+        threshold = timeseries_result_rule.threshold.value
+        metric_label_values = timeseries_result_rule.label_value_filters
         datapoints = []
         for lmrt in labeled_metric_result_timeseries:
             if metric_label_values:

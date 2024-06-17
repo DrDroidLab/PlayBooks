@@ -64,6 +64,7 @@ message PlaybookTaskResultRule {
   PlaybookTask task = 2;
   oneof rule {
     TimeseriesResultRule timeseries = 101;
+    TableResultRule table = 102;
   }
 }
 

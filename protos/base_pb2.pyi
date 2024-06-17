@@ -53,6 +53,7 @@ class _OperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumT
     LESS_THAN_EQUAL_O: _Operator.ValueType  # 4
     EQUAL_O: _Operator.ValueType  # 5
     NOT_EQUAL_O: _Operator.ValueType  # 6
+    LIKE_O: _Operator.ValueType  # 7
 
 class Operator(_Operator, metaclass=_OperatorEnumTypeWrapper): ...
 
@@ -63,6 +64,7 @@ LESS_THAN_O: Operator.ValueType  # 3
 LESS_THAN_EQUAL_O: Operator.ValueType  # 4
 EQUAL_O: Operator.ValueType  # 5
 NOT_EQUAL_O: Operator.ValueType  # 6
+LIKE_O: Operator.ValueType  # 7
 global___Operator = Operator
 
 class _LogicalOperator:
