@@ -7,6 +7,7 @@ export const TEST_WORKFLOW_NOTIFICATION =
 export const UPDATE_WORKFLOW = "/executor/workflows/update";
 export const DELETE_WORKFLOW = "/executor/workflows/update";
 export const GET_WORKFLOW_EXECUTIONS = "/executor/workflows/executions/list";
-export const GET_WORKFLOW_EXECUTION_LOGS = "/executor/workflows/executions/get";
+export const GET_WORKFLOW_EXECUTION_LOGS =
+  "/executor/workflows/executions/get/all";
 
 export const GENERATE_CURL = "/executor/workflows/generate/curl";

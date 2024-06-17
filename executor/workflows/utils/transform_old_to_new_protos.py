@@ -4,11 +4,10 @@ def transform_old_entry_points_definition_to_new(entry_point):
         return entry_point
     elif ep_type == "ALERT":
         return {"type": "SLACK_CHANNEL_ALERT", "slack_channel_alert": {
-            "slack_alert_type": entry_point['alert_config']['slack_channel_alert_config']['slack_alert_type'],
-            "slack_channel_id": entry_point['alert_config']['slack_channel_alert_config']['slack_channel_id'],
-            "slack_channel_name": entry_point['alert_config']['slack_channel_alert_config']['slack_channel_name'],
-            "slack_alert_filter_string": entry_point['alert_config']['slack_channel_alert_config'][
-                'slack_alert_filter_string']}}
+            "slack_alert_type": entry_point.get('alert_config', '').get('slack_channel_alert_config', '').get('slack_alert_type', ''),
+            "slack_channel_id": entry_point.get('alert_config', '').get('slack_channel_alert_config', '').get('slack_channel_id', ''),
+            "slack_channel_name": entry_point.get('alert_config', '').get('slack_channel_alert_config', '').get('slack_channel_name', ''),
+            "slack_alert_filter_string": entry_point.get('alert_config', '').get('slack_channel_alert_config', '').get('slack_alert_filter_string', '')}}
     else:
         raise ValueError(f"Entry point type {ep_type} is not supported")
 

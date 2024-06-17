@@ -255,12 +255,9 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                 data_timestamp = datetime.utcnow()
         else:
             data_timestamp = datetime.utcfromtimestamp(float(event_ts))
-            data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)
+            data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)           
 
-        whitelisted_bots = ['Sentry', 'Datadog', 'New Relic', 'Grafana', 'Metabase', 'Cloudwatch', 'Robusta',
-                            'Prometheus_AlertManager', 'MongoDB Atlas', 'Coralogix']
-
-        if event_ts and channel_id and bot_auth_token and account_id and bot_profile in whitelisted_bots:
+        if event_ts and channel_id and bot_auth_token and account_id:
             try:
                 alert_title = title_identifier(message['event'], 'slack')
                 alert_text = text_identifier_v2(message['event'], 'slack')
