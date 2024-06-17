@@ -20,6 +20,7 @@ import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -28,7 +29,9 @@ export default function CustomNode({ data }) {
     useDrawerState(addDataId);
   const { openDrawer } = usePermanentDrawerState();
   const dispatch = useDispatch();
-  const { currentStepIndex } = useSelector(playbookSelector);
+  const { currentStepIndex, executionId } = useSelector(playbookSelector);
+  const isPrefetched = useIsPrefetched();
+  const isEditing = !isPrefetched && !executionId;
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
   const target = `node-${step?.stepIndex + 1}`;
@@ -39,23 +42,27 @@ export default function CustomNode({ data }) {
   };
 
   const handleClick = () => {
+    if (!isEditing) return;
     dispatch(setCurrentStepIndex(data.index));
     openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {
     handleNoAction(e);
+    if (!isEditing) return;
     dispatch(deleteStep(data.index));
   };
 
   const handleAdd = (e) => {
     handleNoAction(e);
+    if (!isEditing) return;
     toggleAddData();
     addAdditionalData({ parentIndex: data.index });
   };
 
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
+    if (!isEditing) return;
     dispatch(addStep({ parentIndex: step?.stepIndex }));
     addAdditionalData({
       source,
@@ -88,11 +95,13 @@ export default function CustomNode({ data }) {
             )}
         </div>
 
-        <div
-          className="absolute top-0 right-0 m-2 text-violet-500"
-          onClick={handleDelete}>
-          <Delete fontSize="medium" />
-        </div>
+        {isEditing && (
+          <div
+            className="absolute top-0 right-0 m-2 text-violet-500"
+            onClick={handleDelete}>
+            <Delete fontSize="medium" />
+          </div>
+        )}
 
         <div className="flex flex-col items-center gap-4">
           {data?.step?.source && (
@@ -125,26 +134,28 @@ export default function CustomNode({ data }) {
           className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
         />
 
-        <NodeToolbar isVisible={true} position={Position.Bottom}>
-          <CustomButton
-            onClick={handleNoAction}
-            className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
-            <Add fontSize="inherit" />
-          </CustomButton>
+        {isEditing && (
+          <NodeToolbar isVisible={true} position={Position.Bottom}>
+            <CustomButton
+              onClick={handleNoAction}
+              className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
+              <Add fontSize="inherit" />
+            </CustomButton>
 
-          <div className="absolute top-0 left-full add-step-buttons transition-all">
-            <div className="flex flex-col gap-2 m-2 mt-0">
-              <CustomButton className="w-fit" onClick={handleAdd}>
-                Add Step
-              </CustomButton>
-              <CustomButton
-                onClick={handleAddWithCondition}
-                className="whitespace-nowrap">
-                Add Step with Condition
-              </CustomButton>
+            <div className="absolute top-0 left-full add-step-buttons transition-all">
+              <div className="flex flex-col gap-2 m-2 mt-0">
+                <CustomButton className="w-fit" onClick={handleAdd}>
+                  Add Step
+                </CustomButton>
+                <CustomButton
+                  onClick={handleAddWithCondition}
+                  className="whitespace-nowrap">
+                  Add Step with Condition
+                </CustomButton>
+              </div>
             </div>
-          </div>
-        </NodeToolbar>
+          </NodeToolbar>
+        )}
       </div>
 
       <div className="absolute top-0 left-0 w-screen"></div>

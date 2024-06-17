@@ -50,6 +50,7 @@ function CreatePlaybook() {
   const [searchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
+  const isEditing = !isPrefetched && !executionId;
 
   useEffect(() => {
     dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
@@ -87,6 +88,11 @@ function CreatePlaybook() {
 
   const handleSelect = (_, option) => {
     dispatch(setView(option.id));
+  };
+
+  const handlePlaybook = () => {
+    dispatch(resetDrawerState());
+    navigate(`/playbooks/${playbook.id}`);
   };
 
   const handleTimeline = () => {
@@ -148,9 +154,9 @@ function CreatePlaybook() {
             <Builder isLog={isPrefetched || executionId} />
           )}
           <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
-            {executionId && (
-              <CustomButton onClick={handleTimeline}>
-                View Timeline
+            {!isEditing && (
+              <CustomButton onClick={handlePlaybook}>
+                View Playbook
               </CustomButton>
             )}
           </div>
