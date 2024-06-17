@@ -21,7 +21,7 @@ class SlackThreadReplyExecutor(WorkflowActionExecutor):
 
     def get_action_connector_processor(self, slack_connector: ConnectorProto, **kwargs):
         if not slack_connector:
-            db_connector = get_db_connectors(connector_type=Source.SLACK)
+            db_connector = get_db_connectors(connector_type=Source.SLACK, is_active=True)
             if not db_connector:
                 raise ValueError('Slack connector is not configured')
             db_connector = db_connector.first()

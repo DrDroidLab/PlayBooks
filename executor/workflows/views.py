@@ -277,7 +277,7 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                                                                   user.email, None, workflow_config)
         if err:
             return HttpResponse(json.dumps(
-                {'success': False, 'error_message': f'Failed to schedule workflow execution with error: {err}'}),
+                {'success': False, 'error_message': f'Failed to schedule workflow execution'}),
                 status=500, content_type='application/json')
 
         return HttpResponse(json.dumps({'success': True, 'workflow_run_id': workflow_run_uuid}), status=200,
