@@ -20,6 +20,7 @@ import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
 import useDagre from "../../../hooks/useDagre.ts";
 import CustomEdge from "./CustomEdge.jsx";
 import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -31,6 +32,7 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
+  const { permanentView } = usePermanentDrawerState();
   const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const graphData = fetchGraphData();
@@ -69,8 +71,11 @@ const CreateFlow = () => {
     reactFlowInstance.fitView();
   }, [steps]);
 
+  useEffect(() => {
+    reactFlowInstance.fitView();
+  }, [permanentView]);
+
   const handleEdges = () => {
-    console.log("playbookedges", playbookEdges, edges);
     if (playbookEdges?.length === 0) return edges;
     const lastEdge = edges[edges.length - 1];
     const newEdges = structuredClone(playbookEdges ?? []);

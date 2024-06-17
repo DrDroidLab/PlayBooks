@@ -21,6 +21,7 @@ import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import RunButton from "../../Buttons/RunButton/index.tsx";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -72,41 +73,16 @@ export default function CustomNode({ data }) {
   };
 
   return (
-    <>
-      <div
-        className={`${
-          currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
-        } px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 w-[200px] h-48 cursor-pointer transition-all hover:shadow-violet-500`}
-        onClick={handleClick}>
-        <div className="">
-          {(step.outputLoading || step.inprogress) && (
-            <CircularProgress size={20} />
-          )}
-          {(step.outputError ||
-            Object.keys(data?.step?.errors ?? {}).length > 0) && (
-            <ErrorOutline color="error" size={20} />
-          )}
-          {!step.outputError &&
-            !step.outputLoading &&
-            step.showOutput &&
-            step.outputs?.data?.length > 0 &&
-            Object.keys(data?.step?.errors ?? {}).length === 0 && (
-              <CheckCircleOutline color="success" size={20} />
-            )}
-        </div>
-
-        {isEditing && (
-          <div
-            className="absolute top-0 right-0 m-2 text-violet-500"
-            onClick={handleDelete}>
-            <Delete fontSize="medium" />
-          </div>
-        )}
-
-        <div className="flex flex-col items-center gap-4">
+    <div
+      onClick={handleClick}
+      className={`${
+        currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+      } shadow-md rounded-md overflow-hidden`}>
+      <div className="w-full bg-gray-200 flex items-center justify-between p-1">
+        <div className="flex items-center gap-1">
           {data?.step?.source && (
             <img
-              className="w-10 h-10"
+              className="w-8 h-8"
               src={
                 cardsData.find(
                   (e) => e.enum === data?.step?.source.replace("_VPC", ""),
@@ -115,7 +91,40 @@ export default function CustomNode({ data }) {
               alt="logo"
             />
           )}
-          <p className="text-lg font-bold text-center z-10 break-word line-clamp-3">
+          <div>
+            {(step.outputLoading || step.inprogress) && (
+              <CircularProgress size={20} />
+            )}
+            {(step.outputError ||
+              Object.keys(data?.step?.errors ?? {}).length > 0) && (
+              <ErrorOutline color="error" size={20} />
+            )}
+            {!step.outputError &&
+              !step.outputLoading &&
+              step.showOutput &&
+              step.outputs?.data?.length > 0 &&
+              Object.keys(data?.step?.errors ?? {}).length === 0 && (
+                <CheckCircleOutline color="success" size={20} />
+              )}
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <RunButton index={data.index} />
+          {isEditing && (
+            <div
+              className="text-violet-500 cursor-pointer"
+              onClick={handleDelete}>
+              <Delete fontSize="medium" />
+            </div>
+          )}
+        </div>
+      </div>
+      <div
+        className={`${
+          currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+        } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-48 cursor-pointer transition-all hover:shadow-violet-500`}>
+        <div className="flex flex-col items-start gap-4">
+          <p className="text-lg font-bold text-left z-10 break-word line-clamp-3">
             {data?.step?.description ||
               data?.step?.selectedSource ||
               `Step - ${data?.index + 1}`}
@@ -159,6 +168,6 @@ export default function CustomNode({ data }) {
       </div>
 
       <div className="absolute top-0 left-0 w-screen"></div>
-    </>
+    </div>
   );
 }
