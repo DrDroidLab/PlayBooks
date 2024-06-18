@@ -64,7 +64,7 @@ const CustomEdge = ({
             <CustomButton
               className={`${
                 additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
-              } w-10 h-10 items-center !text-xl p-0 justify-center font-bold`}
+              } w-10 h-10 items-center !text-xl p-0 justify-center font-normal`}
               onClick={handleAddConditionClick}>
               <Tooltip title="Condition">{`{ }`}</Tooltip>
             </CustomButton>
