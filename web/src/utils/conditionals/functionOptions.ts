@@ -13,19 +13,19 @@ export const functionOptions = (step: Step) => {
     case ResultTypeTypes.TIMESERIES:
       return [
         {
-          id: "avg",
+          id: "AVG_F",
           label: "Average",
         },
         {
-          id: "max",
+          id: "MAX_F",
           label: "Max",
         },
         {
-          id: "min",
+          id: "MIN_F",
           label: "Min",
         },
         {
-          id: "latest",
+          id: "LAST_F",
           label: "Latest",
         },
       ];
