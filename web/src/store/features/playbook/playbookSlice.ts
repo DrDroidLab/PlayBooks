@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
@@ -230,6 +230,7 @@ const playbookSlice = createSlice({
           },
           requireCondition: payload.requireCondition ?? false,
           currentConditionParentIndex: payload.currentConditionParentIndex,
+          resultType: payload.resultType,
         },
         globalVariables: state.globalVariables ?? [],
       });
@@ -329,41 +330,6 @@ const playbookSlice = createSlice({
     changeProgress: (state, { payload }) => {
       if (state.steps[payload.index])
         state.steps[payload.index].executioninprogress = payload.progress;
-    },
-    selectSourceAndModel: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        index: number;
-        source: string;
-        modelType: string;
-        key: string;
-      }>,
-    ) => {
-      const currentStep = state.steps[payload.index];
-      if (
-        currentStep.source === payload.source &&
-        currentStep.modelType === payload.modelType
-      )
-        return;
-      state.steps[payload.index] = {
-        source: payload.source,
-        stepIndex: payload.index,
-        description: state?.steps[payload.index]?.description,
-        notes: state?.steps[payload.index]?.notes,
-        assets: [],
-        isOpen: true,
-        isPlayground: false,
-        globalVariables: state.globalVariables ?? [],
-        showError: false,
-        stepType: "data",
-        action: {},
-        requireCondition: false,
-      };
-      state.steps[payload.index].source = payload.source;
-      state.steps[payload.index].modelType = payload.modelType;
-      state.steps[payload.index].selectedSource = payload.key;
     },
     selectNamespace: (state, { payload }) => {
       state.steps[payload.index].namespaceName = payload.namespace;
@@ -612,7 +578,6 @@ export const {
   updateStep,
   updateTitle,
   changeProgress,
-  selectSourceAndModel,
   setModelTypeOptions,
   selectNamespace,
   setTextNotes,

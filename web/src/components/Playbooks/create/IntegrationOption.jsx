@@ -40,6 +40,7 @@ function IntegrationOption({ option }) {
 
   const handleClick = () => {
     if (unsupported) return;
+    console.log("option", option);
     if (option.source) {
       dispatch(
         createStepWithSource({
@@ -55,6 +56,7 @@ function IntegrationOption({ option }) {
           requireCondition: addtionalState?.requireCondition,
           currentConditionParentIndex:
             addtionalState?.currentConditionParentIndex,
+          resultType: option.result_type,
         }),
       );
       toggle();

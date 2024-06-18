@@ -83,6 +83,7 @@ export interface Step {
   parentIndexes?: number[];
   requireCondition: boolean;
   currentConditionParentIndex?: number;
+  resultType?: string;
 }
 
 export interface StepPosition {
