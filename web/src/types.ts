@@ -269,6 +269,7 @@ export interface PlaybookTask {
   global_variable_set?: any;
   interpreter_type?: string;
   task_connector_sources: any;
+  reference_id: string;
 }
 
 export interface GlobalVariable {
@@ -293,6 +294,7 @@ export interface Playbook {
   shouldScroll?: string;
   currentVisibleStep?: number;
   playbookEdges: any[];
+  permanentView?: string;
 }
 
 export interface Playground {
@@ -312,6 +314,7 @@ export interface PlaybookContractStep {
   description: string;
   external_links: ExternalLink[];
   tasks: PlaybookTask[];
+  reference_id: string;
 }
 
 export interface PlaybookContract {
@@ -320,6 +323,7 @@ export interface PlaybookContract {
   description?: string;
   global_variable_set: any;
   steps: PlaybookContractStep[];
+  step_relations: any;
 }
 
 // Response types for the first API
