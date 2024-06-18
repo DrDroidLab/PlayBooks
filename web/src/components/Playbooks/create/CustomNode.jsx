@@ -45,6 +45,7 @@ export default function CustomNode({ data }) {
   const handleClick = () => {
     if (!isEditing) return;
     dispatch(setCurrentStepIndex(data.index));
+    addAdditionalData({});
     openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 

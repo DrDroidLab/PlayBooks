@@ -19,10 +19,10 @@ const CustomEdge = ({
   arrowHeadType,
   markerEndId,
   source,
-  target,
 }) => {
   const { conditions } = useEdgeConditions(id);
-  const { openDrawer, addAdditionalData } = usePermanentDrawerState();
+  const { openDrawer, addAdditionalData, additionalData } =
+    usePermanentDrawerState();
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -47,19 +47,24 @@ const CustomEdge = ({
     <>
       <path
         id={id}
-        className="react-flow__edge-path"
+        className={`react-flow__edge-path`}
         d={edgePath}
         markerEnd={markerEnd}
+        style={{
+          stroke: additionalData.id === id ? "rgba(139, 92, 246, 1)" : "",
+        }}
       />
       <foreignObject
         width={foreignObjectSize}
         height={foreignObjectSize}
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
-        <body className="flex items-center justify-center w-full h-full">
+        <body className={`flex items-center justify-center w-full h-full`}>
           {conditions.length > 0 && (
             <CustomButton
-              className="w-10 h-10 items-center !text-xl p-0 justify-center font-bold"
+              className={`${
+                additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
+              } w-10 h-10 items-center !text-xl p-0 justify-center font-bold`}
               onClick={handleAddConditionClick}>
               <Tooltip title="Condition">{`{ }`}</Tooltip>
             </CustomButton>
