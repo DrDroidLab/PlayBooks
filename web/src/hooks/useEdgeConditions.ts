@@ -1,11 +1,9 @@
 import usePlaybookKey from "./usePlaybookKey.ts";
 import { addConditionToEdgeByIndex } from "../utils/conditionals/addConditionToEdgeByIndex.ts";
 
-function useEdgeConditions(source: string, target: string) {
+function useEdgeConditions(id: string) {
   const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
-  const edgeIndex = playbookEdges?.findIndex(
-    (e) => e.source === source && e.target === target,
-  );
+  const edgeIndex = playbookEdges?.findIndex((e) => e.id === id);
   const edge = playbookEdges?.length > 0 ? playbookEdges[edgeIndex] : undefined;
   const conditions = edge?.conditions ?? [];
 
@@ -45,6 +43,7 @@ function useEdgeConditions(source: string, target: string) {
     value: string,
     conditionIndex: number,
   ) => {
+    console.log("wohooooo", edge);
     if (conditions.length === 0) {
       addNewCondition();
     } else {

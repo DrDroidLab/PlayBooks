@@ -291,6 +291,7 @@ export interface Playbook {
   interpreterTypes: any[];
   shouldScroll?: string;
   currentVisibleStep?: number;
+  playbookEdges: any[];
 }
 
 export interface Playground {

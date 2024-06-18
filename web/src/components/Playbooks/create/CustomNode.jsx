@@ -35,7 +35,7 @@ export default function CustomNode({ data }) {
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
-  const target = `node-${step?.stepIndex + 1}`;
+  const id = `edge-${step?.stepIndex}-${step?.stepIndex + 1}`;
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -64,10 +64,10 @@ export default function CustomNode({ data }) {
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(addStep({ parentIndex: step?.stepIndex }));
+    dispatch(addStep({ parentIndex: step?.stepIndex, addConditions: true }));
     addAdditionalData({
       source,
-      target,
+      id,
     });
     openDrawer(PermanentDrawerTypes.CONDITION);
   };

@@ -22,14 +22,14 @@ function extractNumbers(input: string) {
 }
 
 function AddCondition() {
-  const { source, target } = useSelector(additionalStateSelector);
+  const { source, id } = useSelector(additionalStateSelector);
   const {
     playbookEdges,
     conditions,
     handleCondition,
     addNewCondition,
     deleteCondition,
-  } = useEdgeConditions(source, target);
+  } = useEdgeConditions(id);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
 

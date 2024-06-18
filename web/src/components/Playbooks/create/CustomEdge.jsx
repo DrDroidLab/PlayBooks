@@ -21,7 +21,7 @@ const CustomEdge = ({
   source,
   target,
 }) => {
-  const { conditions } = useEdgeConditions(source, target);
+  const { conditions } = useEdgeConditions(id);
   const { openDrawer, addAdditionalData } = useDrawerState(
     DrawerTypes.CONDITION,
   );

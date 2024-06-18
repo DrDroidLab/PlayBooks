@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import fetchGraphData from "../utils/graph/fetchGraphData.ts";
 import { useSelector } from "react-redux";
-import { stepsSelector } from "../store/features/playbook/playbookSlice.ts";
+import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { calculateData } from "../utils/calculateData.ts";
 
 type GraphDimensions = {
@@ -10,7 +10,7 @@ type GraphDimensions = {
 };
 
 function useGraphDimensions(width: number, height: number): GraphDimensions {
-  const steps = useSelector(stepsSelector);
+  const { steps } = useSelector(playbookSelector);
   const graphData = fetchGraphData(steps);
   const dagreData = calculateData(graphData, width, height);
   const [data, setData] = useState(dagreData);

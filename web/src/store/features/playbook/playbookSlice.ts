@@ -36,6 +36,7 @@ const initialState: Playbook = {
   view: "builder",
   shouldScroll: undefined,
   currentVisibleStep: undefined,
+  playbookEdges: [],
 };
 
 const playbookSlice = createSlice({
@@ -200,6 +201,8 @@ const playbookSlice = createSlice({
         step.isOpen = false;
       });
       const index = state.steps.length;
+      const parentIndex = payload.parentIndex;
+      const parentExists = parentIndex !== null && parentIndex !== undefined;
       state.steps.push({
         ...{
           source: payload.source,
@@ -219,10 +222,7 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
-          parentIndexes:
-            payload.parentIndex !== null && payload.parentIndex !== undefined
-              ? [payload.parentIndex]
-              : [],
+          parentIndexes: parentExists ? [parentIndex] : [],
           position: {
             x: 0,
             y: 0,
@@ -233,7 +233,20 @@ const playbookSlice = createSlice({
         globalVariables: state.globalVariables ?? [],
       });
 
-      state.currentStepIndex = index.toString();
+      if (parentExists) {
+        state.playbookEdges.push({
+          id: `edge-${parentIndex}-${index}`,
+          source: `node-${parentIndex}`,
+          target: `node-${index}`,
+          type: "custom",
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${index}`,
+          source: `playbook`,
+          target: `node-${index}`,
+        });
+      }
     },
     addParentIndex: (state, { payload }) => {
       const { index, parentIndex } = payload;
@@ -241,15 +254,22 @@ const playbookSlice = createSlice({
       if (step?.parentIndexes) {
         step.parentIndexes.push(parentIndex);
       }
+      state.playbookEdges.push({
+        id: `edge-${parentIndex}-${index}`,
+        source: `node-${parentIndex}`,
+        target: `node-${index}`,
+        type: "custom",
+      });
     },
     addStep: (state, { payload }) => {
-      const { parentIndex } = payload;
+      const { parentIndex, addConditions } = payload;
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
+      const index = state.steps.length;
       state.steps.push({
         ...emptyStep,
-        stepIndex: state.steps.length,
+        stepIndex: index,
         globalVariables: state.globalVariables ?? [],
         position: {
           x: 0,
@@ -257,6 +277,29 @@ const playbookSlice = createSlice({
         },
         parentIndexes: parentIndex !== undefined ? [parentIndex] : [],
       });
+      if (parentIndex !== undefined) {
+        state.playbookEdges.push({
+          id: `edge-${parentIndex}-${index}`,
+          source: `node-${parentIndex}`,
+          target: `node-${index}`,
+          type: "custom",
+          conditions: addConditions
+            ? [
+                {
+                  function: "",
+                  operation: "",
+                  value: "",
+                },
+              ]
+            : [],
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${index}`,
+          source: `playbook`,
+          target: `node-${index}`,
+        });
+      }
     },
     toggleStep: (state, { payload }) => {
       // state.currentStepIndex =

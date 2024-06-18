@@ -14,7 +14,6 @@ import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
 import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
-import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
 
@@ -35,7 +34,6 @@ const edgeTypes = {
 const CreateFlow = () => {
   const [graphRef, { width, height }] = useDimensions();
   const { graphData, dagreData } = useGraphDimensions(width, height);
-  const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
   const reactFlowInstance = useReactFlow();
@@ -69,23 +67,6 @@ const CreateFlow = () => {
     setEdges(dagreData.edges);
     reactFlowInstance.fitView(fitViewOptions);
   }, [dagreData]);
-
-  const handleEdges = () => {
-    if (playbookEdges?.length === 0) return edges;
-    const lastEdge = edges[edges.length - 1];
-    const newEdges = structuredClone(playbookEdges ?? []);
-    if (!lastEdge) return playbookEdges;
-    newEdges.push({
-      source: lastEdge.source,
-      target: lastEdge.target,
-    });
-
-    return newEdges;
-  };
-
-  useEffect(() => {
-    setPlaybookEdges(handleEdges());
-  }, [edges]);
 
   return (
     <div ref={graphRef} className="h-full w-full">
