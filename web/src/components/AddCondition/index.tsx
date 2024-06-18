@@ -9,6 +9,7 @@ import ValueComponent from "../ValueComponent/index.jsx";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { Add, Delete } from "@mui/icons-material";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
+import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 
 function extractNumbers(input: string) {
   if (!input) return [];
@@ -26,9 +27,11 @@ function AddCondition() {
   const {
     playbookEdges,
     conditions,
+    globalRule,
     handleCondition,
     addNewCondition,
     deleteCondition,
+    handleGlobalRule,
   } = useEdgeConditions(id);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
@@ -50,56 +53,74 @@ function AddCondition() {
       </h1>
       <hr />
 
+      <div className="flex flex-col items-start gap-1 mt-4">
+        <p className="text-xs text-violet-500 font-semibold">
+          Select a global rule
+        </p>
+        <SelectComponent
+          data={ruleOptions}
+          selected={globalRule}
+          placeholder={`Select Global Rule`}
+          onSelectionChange={handleGlobalRule}
+        />
+      </div>
+
       {conditions?.map((condition, i) => (
-        <div className="flex gap-2 mt-4 items-center flex-wrap">
-          <div className="flex items-center gap-1">
-            {/* <p className="text-xs text-violet-500 font-semibold">Function</p> */}
-            <SelectComponent
-              data={functionOptions(parentStep)}
-              selected={condition.function}
-              placeholder={`Select Function`}
-              onSelectionChange={(id: string) =>
-                handleChange(id, "function", i)
-              }
-            />
-          </div>
+        <div className="mt-2">
+          <p className="text-xs text-violet-500 font-semibold">
+            Condition-{i + 1}
+          </p>
+          <div className="flex gap-2 items-center flex-wrap">
+            <div className="flex items-center gap-1">
+              <SelectComponent
+                data={functionOptions(parentStep)}
+                selected={condition.function}
+                placeholder={`Select Function`}
+                onSelectionChange={(id: string) =>
+                  handleChange(id, "function", i)
+                }
+              />
+            </div>
 
-          <div className="flex items-center gap-1">
-            {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
-            <SelectComponent
-              data={operationOptions}
-              selected={condition.operation}
-              placeholder={`Select Operator`}
-              onSelectionChange={(id: string) =>
-                handleChange(id, "operation", i)
-              }
-              containerClassName={""}
-            />
-          </div>
+            <div className="flex items-center gap-1">
+              {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
+              <SelectComponent
+                data={operationOptions}
+                selected={condition.operation}
+                placeholder={`Select Operator`}
+                onSelectionChange={(id: string) =>
+                  handleChange(id, "operation", i)
+                }
+                containerClassName={""}
+              />
+            </div>
 
-          <div className="flex items-center gap-1">
-            {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val: string) => handleChange(val, "value", i)}
-              value={condition.value}
-              valueOptions={[]}
-              placeHolder={"Enter Value of condition"}
-              length={200}
-            />
-          </div>
+            <div className="flex items-center gap-1">
+              {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
+              <ValueComponent
+                valueType={"STRING"}
+                onValueChange={(val: string) => handleChange(val, "value", i)}
+                value={condition.value}
+                valueOptions={[]}
+                placeHolder={"Enter Value of condition"}
+                length={200}
+              />
+            </div>
 
-          {conditions.length === i + 1 && (
-            <CustomButton className="!text-sm !w-fit" onClick={addNewCondition}>
-              <Add fontSize="inherit" />
+            {conditions.length === i + 1 && (
+              <CustomButton
+                className="!text-sm !w-fit"
+                onClick={addNewCondition}>
+                <Add fontSize="inherit" />
+              </CustomButton>
+            )}
+
+            <CustomButton
+              className="!text-sm !w-fit"
+              onClick={() => deleteCondition(i)}>
+              <Delete fontSize="inherit" />
             </CustomButton>
-          )}
-
-          <CustomButton
-            className="!text-sm !w-fit"
-            onClick={() => deleteCondition(i)}>
-            <Delete fontSize="inherit" />
-          </CustomButton>
+          </div>
         </div>
       ))}
     </div>

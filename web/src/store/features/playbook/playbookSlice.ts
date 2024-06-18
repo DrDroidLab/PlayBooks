@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
+import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
 
 const emptyStep = {
   modelType: "",
@@ -293,6 +294,7 @@ const playbookSlice = createSlice({
                 },
               ]
             : [],
+          globalRule: addConditions ? ruleOptions[0].id : undefined,
         });
       } else {
         state.playbookEdges.push({
