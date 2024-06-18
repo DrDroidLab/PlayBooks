@@ -25,6 +25,7 @@ class EksSourceManager(PlaybookSourceManager):
                 'task_type': 'GET_PODS',
                 'executor': self.get_pods,
                 'model_types': [SourceModelType.EKS_CLUSTER],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Pods from EKS Cluster',
                 'category': 'Deployment'
             },
@@ -32,6 +33,7 @@ class EksSourceManager(PlaybookSourceManager):
                 'task_type': 'GET_DEPLOYMENTS',
                 'executor': self.get_deployments,
                 'model_types': [SourceModelType.EKS_CLUSTER],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Deployments from EKS Cluster',
                 'category': 'Deployment'
             },
@@ -39,6 +41,7 @@ class EksSourceManager(PlaybookSourceManager):
                 'task_type': 'GET_EVENTS',
                 'executor': self.get_events,
                 'model_types': [SourceModelType.EKS_CLUSTER],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Events from EKS Cluster',
                 'category': 'Deployment'
             },
@@ -46,6 +49,7 @@ class EksSourceManager(PlaybookSourceManager):
                 'category': 'Deployment',
                 'executor': self.get_services,
                 'model_types': [SourceModelType.EKS_CLUSTER],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Services from EKS Cluster',
                 'task_type': 'GET_SERVICES'
             },
@@ -113,7 +117,7 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows)
+            table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows, total_count=len(table_rows))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get pods in eks: {e}")
@@ -168,7 +172,8 @@ class EksSourceManager(PlaybookSourceManager):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value='Get Deployments'), rows=table_rows)
+            table = TableResult(raw_query=StringValue(value='Get Deployments'), rows=table_rows,
+                                total_count=len(table_rows))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
@@ -223,7 +228,7 @@ class EksSourceManager(PlaybookSourceManager):
                 table_columns.append(
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows)
+            table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows, total_count=len(table_rows))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get events in eks: {e}")
@@ -277,7 +282,8 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value='Get Services'), rows=table_rows)
+            table = TableResult(raw_query=StringValue(value='Get Services'), rows=table_rows,
+                                total_count=len(table_rows))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get services in eks: {e}")

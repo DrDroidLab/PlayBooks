@@ -23,6 +23,7 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
                 'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus based dashboard panels from Grafana VPC',
                 'category': 'Metrics'
             },

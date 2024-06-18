@@ -22,6 +22,7 @@ class DatadogSourceManager(PlaybookSourceManager):
                 'task_type': 'SERVICE_METRIC_EXECUTION',
                 'executor': self.execute_service_metric_execution,
                 'model_types': [SourceModelType.DATADOG_SERVICE],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Datadog Metric by service',
                 'category': 'Metrics'
             },
@@ -29,6 +30,7 @@ class DatadogSourceManager(PlaybookSourceManager):
                 'task_type': 'QUERY_METRIC_EXECUTION',
                 'executor': self.execute_query_metric_execution,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Datadog custom metric',
                 'category': 'Metrics'
             },

@@ -33,6 +33,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'task_type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
                 'executor': self.execute_entity_application_golden_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a New Relic golden metric',
                 'category': 'Metrics'
             },
@@ -40,6 +41,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'task_type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
                 'executor': self.execute_entity_dashboard_widget_nrql_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a metric from New Relic dashboard',
                 'category': 'Metrics'
             },
@@ -47,6 +49,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'task_type': 'NRQL_METRIC_EXECUTION',
                 'executor': self.execute_nrql_metric_execution,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a custom NRQL query',
                 'category': 'Metrics'
             },

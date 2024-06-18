@@ -110,6 +110,7 @@ message PlaybookSourceOptions {
     google.protobuf.StringValue task_type = 2;
     google.protobuf.StringValue category = 3;
     repeated SourceModelTypeMap supported_model_types = 4;
+    PlaybookTaskResultType result_type = 5;
   }
 
   Source source = 1;

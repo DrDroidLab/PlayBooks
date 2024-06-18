@@ -26,6 +26,7 @@ class AzureSourceManager(PlaybookSourceManager):
                 'task_type': 'FILTER_LOG_EVENTS',
                 'executor': self.filter_log_events,
                 'model_types': [SourceModelType.AZURE_WORKSPACE],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch logs from Azure Log Analytics Workspace',
                 'category': 'Logs'
             },

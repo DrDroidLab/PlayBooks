@@ -7,7 +7,7 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.slack_task_pb2 import Slack as SlackTaskProto
 from utils.proto_utils import proto_to_dict
 
@@ -24,6 +24,7 @@ class SlackSourceManager(PlaybookSourceManager):
                 'task_type': 'SEND_MESSAGE',
                 'executor': self.execute_send_message,
                 'model_types': [SourceModelType.SLACK_CHANNEL],
+                'result_type': PlaybookTaskResultType.UNKNOWN,
                 'display_name': 'Send a message to slack channel',
                 'category': 'Actions'
             },
@@ -31,6 +32,7 @@ class SlackSourceManager(PlaybookSourceManager):
                 'task_type': 'SEND_THREAD_REPLY',
                 'executor': self.execute_send_thread_reply,
                 'model_types': [SourceModelType.SLACK_CHANNEL],
+                'result_type': PlaybookTaskResultType.UNKNOWN,
                 'display_name': 'Send a reply to a thread in slack channel',
                 'category': 'Actions'
             },

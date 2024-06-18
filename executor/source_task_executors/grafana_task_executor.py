@@ -23,6 +23,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus based dashboard panels from Grafana',
                 'category': 'Metrics'
             },
@@ -30,6 +31,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'task_type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
                 'executor': self.execute_prometheus_datasource_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus Data Sources from Grafana',
                 'category': 'Metrics'
             },
@@ -148,7 +150,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
                 "-> {}, End_Time -> {}, Period -> {}".format(
-                    "Grafana", grafana_connector.account_id.value, datasource_uid, promql_metric_query, start_time, end_time, period
+                    "Grafana", grafana_connector.account_id.value, datasource_uid, promql_metric_query, start_time,
+                    end_time, period
                 ), flush=True)
 
             response = grafana_api_processor.fetch_promql_metric_timeseries(datasource_uid, promql_metric_query,

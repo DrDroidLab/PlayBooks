@@ -21,6 +21,7 @@ class ClickhouseSourceManager(PlaybookSourceManager):
                 'task_type': 'SQL_QUERY',
                 'executor': self.execute_sql_query,
                 'model_types': [SourceModelType.CLICKHOUSE_DATABASE],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Query a Clickhouse Database',
                 'category': 'Database'
             },
