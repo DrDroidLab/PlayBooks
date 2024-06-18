@@ -1,10 +1,14 @@
 import { graphlib, layout } from "@dagrejs/dagre";
-import { GraphData } from "../utils/graph/fetchGraphData.ts";
+import { GraphData } from "./graph/fetchGraphData.ts";
 
-function useDagre(graphData: GraphData) {
-  var g = new graphlib.Graph();
+export const calculateData = (
+  graphData: GraphData,
+  width: number,
+  height: number,
+) => {
   const { nodes, edges } = graphData;
 
+  const g = new graphlib.Graph();
   g.setGraph({});
 
   g.setDefaultEdgeLabel(function () {
@@ -15,7 +19,7 @@ function useDagre(graphData: GraphData) {
     g.setNode(node.id, {
       label: node.id,
       width: 350,
-      height: node.type === "custom" ? 400 : 200,
+      height: node.type === "custom" ? 250 : 200,
     });
   });
 
@@ -23,7 +27,11 @@ function useDagre(graphData: GraphData) {
     g.setEdge(edge.source, edge.target);
   });
 
-  layout(g);
+  layout(g, {
+    align: "center",
+    width,
+    height,
+  });
 
   const graphNodes = g.nodes().map((node) => {
     const graphNode = g.node(node);
@@ -34,10 +42,5 @@ function useDagre(graphData: GraphData) {
     return newNode;
   });
 
-  return {
-    nodes: graphNodes,
-    edges,
-  };
-}
-
-export default useDagre;
+  return { nodes: graphNodes, edges };
+};

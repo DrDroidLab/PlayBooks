@@ -7,20 +7,21 @@ import ReactFlow, {
   addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addParentIndex,
-  stepsSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch } from "react-redux";
+import { addParentIndex } from "../../../store/features/playbook/playbookSlice.ts";
 import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
 import ParentNode from "./ParentNode.jsx";
-import fetchGraphData from "../../../utils/graph/fetchGraphData.ts";
-import useDagre from "../../../hooks/useDagre.ts";
 import CustomEdge from "./CustomEdge.jsx";
 import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import useDimensions from "../../../hooks/useDimensions.ts";
+import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+
+const fitViewOptions = {
+  maxZoom: 0.75,
+  duration: 500,
+};
 
 const nodeTypes = {
   custom: CustomNode,
@@ -32,14 +33,12 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
-  const { permanentView } = usePermanentDrawerState();
+  const [graphRef, { width, height }] = useDimensions();
+  const { graphData, dagreData } = useGraphDimensions(width, height);
   const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const graphData = fetchGraphData();
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
-  const steps = useSelector(stepsSelector);
   const reactFlowInstance = useReactFlow();
-  const dagreData = useDagre(graphData);
   const dispatch = useDispatch();
 
   const onConnect = useCallback(
@@ -68,12 +67,8 @@ const CreateFlow = () => {
       })),
     );
     setEdges(dagreData.edges);
-    reactFlowInstance.fitView();
-  }, [steps]);
-
-  useEffect(() => {
-    reactFlowInstance.fitView();
-  }, [permanentView]);
+    reactFlowInstance.fitView(fitViewOptions);
+  }, [dagreData]);
 
   const handleEdges = () => {
     if (playbookEdges?.length === 0) return edges;
@@ -93,7 +88,7 @@ const CreateFlow = () => {
   }, [edges]);
 
   return (
-    <div className="h-full w-full">
+    <div ref={graphRef} className="h-full w-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -104,7 +99,7 @@ const CreateFlow = () => {
         minZoom={-Infinity}
         fitView
         maxZoom={0.75}
-        fitViewOptions={{ maxZoom: 0.75 }}
+        fitViewOptions={fitViewOptions}
         onConnect={onConnect}
         className="bg-gray-50">
         <Controls />

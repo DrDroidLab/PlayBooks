@@ -124,7 +124,7 @@ export default function CustomNode({ data }) {
       <div
         className={`${
           currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
-        } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-48 cursor-pointer transition-all hover:shadow-violet-500`}>
+        } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500`}>
         <div className="flex flex-col items-start gap-4">
           <p className="text-lg font-bold text-left z-10 break-word line-clamp-3">
             {data?.step?.description ||
