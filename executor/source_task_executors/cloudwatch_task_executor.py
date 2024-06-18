@@ -21,16 +21,16 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         self.task_proto = Cloudwatch
         self.task_type_callable_map = {
             Cloudwatch.TaskType.METRIC_EXECUTION: {
-                'task_type': 'METRIC_EXECUTION',
                 'executor': self.execute_metric_execution,
                 'model_types': [SourceModelType.CLOUDWATCH_METRIC],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Metric from Cloudwatch',
                 'category': 'Metrics'
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
-                'task_type': 'FILTER_LOG_EVENTS',
                 'executor': self.execute_filter_log_events,
                 'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from Cloudwatch',
                 'category': 'Logs'
             },

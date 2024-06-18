@@ -20,9 +20,9 @@ class BashSourceManager(PlaybookSourceManager):
         self.task_proto = Bash
         self.task_type_callable_map = {
             Bash.TaskType.COMMAND: {
-                'task_type': 'COMMAND',
                 'executor': self.execute_command,
                 'model_types': [SourceModelType.SSH_SERVER],
+                'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute a BASH Command',
                 'category': 'Actions'
             },
