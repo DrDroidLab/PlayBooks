@@ -21,7 +21,6 @@ class MimirSourceManager(PlaybookSourceManager):
         self.task_proto = PromQl
         self.task_type_callable_map = {
             PromQl.TaskType.PROMQL_METRIC_EXECUTION: {
-                'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,

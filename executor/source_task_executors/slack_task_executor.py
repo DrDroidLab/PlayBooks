@@ -21,7 +21,6 @@ class SlackSourceManager(PlaybookSourceManager):
         self.task_proto = SlackTaskProto
         self.task_type_callable_map = {
             SlackTaskProto.TaskType.SEND_MESSAGE: {
-                'task_type': 'SEND_MESSAGE',
                 'executor': self.execute_send_message,
                 'model_types': [SourceModelType.SLACK_CHANNEL],
                 'result_type': PlaybookTaskResultType.UNKNOWN,
@@ -29,7 +28,6 @@ class SlackSourceManager(PlaybookSourceManager):
                 'category': 'Actions'
             },
             SlackTaskProto.TaskType.SEND_THREAD_REPLY: {
-                'task_type': 'SEND_THREAD_REPLY',
                 'executor': self.execute_send_thread_reply,
                 'model_types': [SourceModelType.SLACK_CHANNEL],
                 'result_type': PlaybookTaskResultType.UNKNOWN,

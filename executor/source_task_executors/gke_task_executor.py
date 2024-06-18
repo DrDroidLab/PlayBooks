@@ -22,7 +22,6 @@ class GkeSourceManager(PlaybookSourceManager):
         self.task_proto = Gke
         self.task_type_callable_map = {
             Gke.TaskType.GET_PODS: {
-                'task_type': 'GET_PODS',
                 'executor': self.get_pods,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -30,7 +29,6 @@ class GkeSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Gke.TaskType.GET_DEPLOYMENTS: {
-                'task_type': 'GET_DEPLOYMENTS',
                 'executor': self.get_deployments,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -38,7 +36,6 @@ class GkeSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Gke.TaskType.GET_EVENTS: {
-                'task_type': 'GET_EVENTS',
                 'executor': self.get_events,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -46,7 +43,6 @@ class GkeSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Gke.TaskType.GET_SERVICES: {
-                'task_type': 'GET_SERVICES',
                 'executor': self.get_services,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,

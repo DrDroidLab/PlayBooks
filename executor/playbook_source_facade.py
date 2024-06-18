@@ -57,9 +57,10 @@ class PlaybookSourceFacade:
                 logger.error(f'Error while getting connector options for source: {str(e)}')
             st_map = manager.get_task_type_callable_map()
             all_task_types = []
+            task_proto = manager.task_proto
             for task_type, task_info in st_map.items():
                 display_name = task_info['display_name']
-                task_type_name = task_info.get('task_type', task_type)
+                task_type_name = task_proto.TaskType.Name(task_type)
                 task_type_category = task_info.get('category', 'Others')
                 model_types = task_info['model_types']
                 model_options: [PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] = []

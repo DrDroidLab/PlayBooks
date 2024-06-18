@@ -19,7 +19,6 @@ class DatadogSourceManager(PlaybookSourceManager):
         self.task_proto = Datadog
         self.task_type_callable_map = {
             Datadog.TaskType.SERVICE_METRIC_EXECUTION: {
-                'task_type': 'SERVICE_METRIC_EXECUTION',
                 'executor': self.execute_service_metric_execution,
                 'model_types': [SourceModelType.DATADOG_SERVICE],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
@@ -27,7 +26,6 @@ class DatadogSourceManager(PlaybookSourceManager):
                 'category': 'Metrics'
             },
             Datadog.TaskType.QUERY_METRIC_EXECUTION: {
-                'task_type': 'QUERY_METRIC_EXECUTION',
                 'executor': self.execute_query_metric_execution,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,

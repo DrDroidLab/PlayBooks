@@ -23,7 +23,6 @@ class AzureSourceManager(PlaybookSourceManager):
         self.task_proto = Azure
         self.task_type_callable_map = {
             Azure.TaskType.FILTER_LOG_EVENTS: {
-                'task_type': 'FILTER_LOG_EVENTS',
                 'executor': self.filter_log_events,
                 'model_types': [SourceModelType.AZURE_WORKSPACE],
                 'result_type': PlaybookTaskResultType.TABLE,

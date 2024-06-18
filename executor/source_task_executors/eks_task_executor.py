@@ -22,7 +22,6 @@ class EksSourceManager(PlaybookSourceManager):
         self.task_proto = Eks
         self.task_type_callable_map = {
             Eks.TaskType.GET_PODS: {
-                'task_type': 'GET_PODS',
                 'executor': self.get_pods,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -30,7 +29,6 @@ class EksSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Eks.TaskType.GET_DEPLOYMENTS: {
-                'task_type': 'GET_DEPLOYMENTS',
                 'executor': self.get_deployments,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -38,7 +36,6 @@ class EksSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Eks.TaskType.GET_EVENTS: {
-                'task_type': 'GET_EVENTS',
                 'executor': self.get_events,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
@@ -51,7 +48,6 @@ class EksSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Services from EKS Cluster',
-                'task_type': 'GET_SERVICES'
             },
         }
 

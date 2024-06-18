@@ -30,7 +30,6 @@ class NewRelicSourceManager(PlaybookSourceManager):
         self.task_proto = NewRelic
         self.task_type_callable_map = {
             NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: {
-                'task_type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
                 'executor': self.execute_entity_application_golden_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
@@ -38,7 +37,6 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'category': 'Metrics'
             },
             NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
-                'task_type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
                 'executor': self.execute_entity_dashboard_widget_nrql_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
@@ -46,7 +44,6 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'category': 'Metrics'
             },
             NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
-                'task_type': 'NRQL_METRIC_EXECUTION',
                 'executor': self.execute_nrql_metric_execution,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,

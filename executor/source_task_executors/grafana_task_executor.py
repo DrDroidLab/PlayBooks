@@ -20,7 +20,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
         self.task_proto = Grafana
         self.task_type_callable_map = {
             Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
-                'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
@@ -28,7 +27,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'category': 'Metrics'
             },
             Grafana.TaskType.PROMETHEUS_DATASOURCE_METRIC_EXECUTION: {
-                'task_type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
                 'executor': self.execute_prometheus_datasource_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
                 'result_type': PlaybookTaskResultType.TIMESERIES,

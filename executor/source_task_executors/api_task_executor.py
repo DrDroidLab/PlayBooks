@@ -27,7 +27,6 @@ class ApiSourceManager(PlaybookSourceManager):
         self.task_proto = Api
         self.task_type_callable_map = {
             Api.TaskType.HTTP_REQUEST: {
-                'task_type': 'HTTP_REQUEST',
                 'executor': self.execute_http_request,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.API_RESPONSE,
