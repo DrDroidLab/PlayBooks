@@ -16,6 +16,8 @@ def sample_data_function_evaluator(function, sample_data):
         return min(sample_data)
     elif function == Function.MAX_F:
         return max(sample_data)
+    elif function == Function.LAST_F:
+        return sample_data[-1]
     else:
         raise ValueError(f'Function {function} not supported')
 
