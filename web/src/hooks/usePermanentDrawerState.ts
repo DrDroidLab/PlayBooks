@@ -5,10 +5,12 @@ import {
   permanentViewSelector,
 } from "../store/features/drawers/drawersSlice.ts";
 import { PermanentDrawerTypes } from "../store/features/drawers/permanentDrawerTypes.ts";
+import { setCurrentStepIndex } from "../store/features/playbook/playbookSlice.ts";
 
 type DrawerState = {
   isOpen: boolean;
   openDrawer: (view: PermanentDrawerTypesKeys) => void;
+  closeDrawer: () => void;
   permanentView: PermanentDrawerTypesKeys;
 };
 
@@ -21,9 +23,15 @@ function usePermanentDrawerState(): DrawerState {
     dispatch(setPermanentView(view));
   };
 
+  const closeDrawerFunction = () => {
+    dispatch(setPermanentView(PermanentDrawerTypes.DEFAULT));
+    dispatch(setCurrentStepIndex(null));
+  };
+
   return {
     isOpen,
     openDrawer: openDrawerFunction,
+    closeDrawer: closeDrawerFunction,
     permanentView,
   };
 }
