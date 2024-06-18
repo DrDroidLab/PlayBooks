@@ -1,29 +1,16 @@
 import { Step } from "../../types.ts";
-import { taskTypeMapping } from "../taskTypeMapping.ts";
 
-enum TaskTypes {
-  METRIC_EXECUTION = "metric_execution",
-  DATA_FETCH = "data_fetch",
+enum ResultTypeTypes {
+  TIMESERIES = "TIMESERIES",
+  TABLE = "TABLE",
   OTHERS = "others",
 }
 
-const checkMapping = (taskType: string) => {
-  if (taskTypeMapping[TaskTypes.METRIC_EXECUTION].includes(taskType)) {
-    return TaskTypes.METRIC_EXECUTION;
-  }
-
-  if (taskTypeMapping[TaskTypes.DATA_FETCH].includes(taskType)) {
-    return TaskTypes.DATA_FETCH;
-  }
-
-  return TaskTypes.OTHERS;
-};
-
 export const functionOptions = (step: Step) => {
-  const type = checkMapping(`${step.source} ${step.taskType}`);
+  const type = step.resultType;
 
   switch (type) {
-    case TaskTypes.METRIC_EXECUTION:
+    case ResultTypeTypes.TIMESERIES:
       return [
         {
           id: "avg",
@@ -42,7 +29,7 @@ export const functionOptions = (step: Step) => {
           label: "Latest",
         },
       ];
-    case TaskTypes.DATA_FETCH:
+    case ResultTypeTypes.TABLE:
       return [
         {
           id: "count",
