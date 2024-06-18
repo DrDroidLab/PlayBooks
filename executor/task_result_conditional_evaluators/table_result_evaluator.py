@@ -34,7 +34,7 @@ def string_function_result_operator_threshold(function_result, operator, thresho
 
 
 def table_row_count_operator(operator, threshold, row_count):
-    if type(threshold) == float or type(threshold) == int:
+    if type(threshold) != float and type(threshold) != int:
         raise ValueError('Threshold type not supported for row count')
     return numeric_function_result_operator_threshold(row_count, operator, threshold), row_count
 

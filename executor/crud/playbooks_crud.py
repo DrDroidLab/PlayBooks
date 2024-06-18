@@ -212,6 +212,7 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
     task_dict.pop('global_variable_set', None)
     task_dict.pop('interpreter_type', None)
     task_dict.pop('task_connector_sources', None)
+    task_dict.pop('reference_id', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
         db_task, _ = PlayBookTask.objects.get_or_create(account=account,
