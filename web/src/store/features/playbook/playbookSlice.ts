@@ -269,6 +269,7 @@ const playbookSlice = createSlice({
       const index = state.steps.length;
       state.steps.push({
         ...emptyStep,
+        description: `Step-${index + 1}`,
         stepIndex: index,
         globalVariables: state.globalVariables ?? [],
         position: {
