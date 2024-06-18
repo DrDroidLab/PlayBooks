@@ -10,6 +10,7 @@ import CustomButton from "../common/CustomButton/index.tsx";
 import { Add, Delete } from "@mui/icons-material";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
+import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 
 function extractNumbers(input: string) {
   if (!input) return [];
@@ -35,6 +36,8 @@ function AddCondition() {
   } = useEdgeConditions(id);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
+
+  const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   const handleChange = (val: string, type: string, index: number) => {
     handleCondition(type, val, index);
@@ -73,6 +76,15 @@ function AddCondition() {
           <div className="flex gap-2 items-center flex-wrap">
             <div className="flex items-center gap-1">
               <SelectComponent
+                data={taskTypeOptions}
+                selected={condition.task}
+                placeholder={`Select Task`}
+                onSelectionChange={(id: string) => handleChange(id, "task", i)}
+              />
+            </div>
+
+            <div className="flex items-center gap-1">
+              <SelectComponent
                 data={functionOptions(parentStep)}
                 selected={condition.function}
                 placeholder={`Select Function`}
@@ -91,7 +103,6 @@ function AddCondition() {
                 onSelectionChange={(id: string) =>
                   handleChange(id, "operation", i)
                 }
-                containerClassName={""}
               />
             </div>
 
