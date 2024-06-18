@@ -131,6 +131,6 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
 def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     current_epoch = current_epoch_timestamp()
     data = request_message.data
-    pagerduty_data_fetch_storage_job(1, 2, raw_data_json=data)
+    pagerduty_data_fetch_storage_job(data)
     # print(request_message)
     return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=200)

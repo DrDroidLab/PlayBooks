@@ -307,8 +307,11 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Mimir Server Models"""
     GKE_CLUSTER: _SourceModelType.ValueType  # 1301
     """GKE Models"""
+    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1401
+    """Pagerduty Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
+
 UNKNOWN_MT: SourceModelType.ValueType  # 0
 NEW_RELIC_POLICY: SourceModelType.ValueType  # 1
 """New Relic Models"""
@@ -359,6 +362,8 @@ GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
 """Mimir Server Models"""
 GKE_CLUSTER: SourceModelType.ValueType  # 1301
 """GKE Models"""
+PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1401
+"""Pagerduty Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

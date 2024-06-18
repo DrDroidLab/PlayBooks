@@ -481,6 +481,7 @@ class PagerDutyConnectorDataReceived(models.Model):
     # connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
     incident_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     title = models.TextField(null=True, blank=True)
+    service_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     # alert_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     # alert_text = models.TextField(null=True, blank=True)
     # details = models.JSONField(null=True, blank=True)

@@ -1,0 +1,13 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+
+message PagerDutyAlertEntryPoint {
+    google.protobuf.StringValue pd_incident_id = 1;
+    google.protobuf.StringValue pd_incident_title = 2;
+    google.protobuf.StringValue pd_service_id = 3;
+    google.protobuf.StringValue pd_service_name = 4;
+ }

@@ -13,8 +13,10 @@ from connectors.assets.extractor.slack_metadata_extractor import title_identifie
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
 from connectors.crud.connectors_crud import get_db_connectors, get_db_connector_keys
 from connectors.models import SlackConnectorAlertType, SlackConnectorDataReceived, PagerDutyConnectorDataReceived
+from connectors.utils import generate_credentials_dict
 from executor.workflows.crud.workflow_entry_point_crud import get_db_workflow_entry_points
-from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows
+from executor.workflows.crud.workflow_execution_utils import trigger_slack_alert_entry_point_workflows, \
+    trigger_pagerduty_alert_entry_point_workflows
 from executor.workflows.entry_point.entry_point_evaluator_facade import entry_point_evaluator_facade
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from management.crud.task_crud import check_scheduled_or_running_task_run_for_task, get_or_create_task
@@ -317,7 +319,7 @@ slack_bot_handle_receive_message_postrun_notifier = publish_post_run_task(slack_
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pager_duty_handle_webhook_call(pagerduty_connector_id=1, event=None):
+def pager_duty_handle_webhook_call(pagerduty_connector_id, event=None):
     if event is None:
         event = {}
     try:
@@ -326,22 +328,19 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id=1, event=None):
             print(f"Error while handling PagerDuty handle_receive_message: Connector not found for connector_id: "
                   f"{pagerduty_connector_id}")
             return
-        pagerduty_connector = pagerduty_connector.first()
-        account_id = pagerduty_connector.account_id
+        pagerduty_connector_proto = pagerduty_connector.unmasked_proto
+        account_id = pagerduty_connector_proto.account_id.value
 
-        bot_auth_token = get_db_connector_keys(account_id=account_id, connector_id=pagerduty_connector.id,
-                                               key_type=SourceKeyType.PAGER_DUTY_API_KEY)
-        if not bot_auth_token:
-            print(f"Error while handling PagerDuty handle_receive_message: Bot auth token not found for connector_id: "
-                  f"{pagerduty_connector_id}")
-            return
+        generate_credentials_dict(pagerduty_connector.type, pagerduty_connector.keys)
+
         event_data = event.get('event', {}).get('data', {})
         incident_id = event_data.get('id')
         title = event_data.get('title')
         incident_created_at = event_data.get('created_at')
         # alerts = incident.get('alerts', [])
         # alert_id = alerts.get('id')
-        # alert_text = alerts.get('summary')
+        #alert_text =
+        service_id = event_data.get('service', {}).get('id')
         # details = alerts.get('body', {}).get('details', 'No Details')
         # alerts_created_at = alerts.get('created_at')
 
@@ -359,6 +358,7 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id=1, event=None):
             connector=pagerduty_connector,
             incident_id=incident_id,
             title=title,
+            service_id=service_id,
             incident_created_at=incident_created_at
             # alert_id=alert_id,
             # alert_text=alert_text,
@@ -367,30 +367,23 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id=1, event=None):
         )
         pagerduty_received_msg.save()
 
-        # change this line
         all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
-                                                                   entry_point_type=WorkflowEntryPointProto.ALERT)
+                                                                   entry_point_type=WorkflowEntryPoint.Type.PAGERDUTY_INCIDENT,
+                                                                   is_active=True)
         ep_protos = [e.proto for e in all_alert_type_entry_points]
 
         try:
-            entry_point_evaluator = get_entry_point_evaluator(WorkflowEntryPointProto.Type.ALERT)
+            entry_point_evaluator = entry_point_evaluator_facade(WorkflowEntryPoint.Type.ALERT)
         except Exception as e:
             print(f"Error while handling pagerduty_alert_trigger_playbook with error: {e} for event: {event} "
                   f"for account: {account_id}")
             return
 
+        pagerduty_alert_event = {'incident_id': incident_id, 'title': title, 'service_id': service_id}
         for ep in ep_protos:
-            alert_config = ep.alert_config
-            if alert_config.alert_type == WorkflowEntryPointAlertConfigProto.AlertType.PAGERDUTY_INCIDENT_ALERT:
-                pagerduty_alert = {
-                    'incident_id': incident_id,
-                    'title': title
-                }
-                is_triggered = entry_point_evaluator.evaluate(alert_config, alert_config.alert_type,
-                                                              pagerduty_alert)
-                if is_triggered:
-                    trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, data_timestamp)
-
+            is_triggered = entry_point_evaluator_facade.evaluate(ep, pagerduty_alert_event)
+            if is_triggered:
+                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, incident_created_at)
     except Exception as e:
         print(f"Error while handling pagerduty webhook call with error: {e} for event: {event}")
 
@@ -403,7 +396,8 @@ pager_duty_handle_webhook_call_postrun_notifier = publish_post_run_task(pager_du
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pagerduty_data_fetch_storage_job(account_id=1, connector_id=2, raw_data_json=None):
+def pagerduty_data_fetch_storage_job(raw_data_json=None):
+
     try:
         current_time = datetime.utcnow().replace(tzinfo=pytz.utc)
 
@@ -415,12 +409,13 @@ def pagerduty_data_fetch_storage_job(account_id=1, connector_id=2, raw_data_json
         event_id = raw_data.get('id')
         if not event_data:
             print(
-                f"pagerduty_data_fetch_storage_job: Found no data for incident_id: {event_id} at epoch: {current_time} with connector_id: {connector_id}")
+                f"pagerduty_data_fetch_storage_job: Found no data for incident_id: {event_id} at epoch: {current_time}")
             return
 
         incident_id = event_data.get('id')
         title = event_data.get('title')
         incident_created_at = event_data.get('created_at')
+        service_id = event_data.get('service', {}).get('id')
 
         data_timestamp = datetime.strptime(incident_created_at, '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=pytz.utc)
 
@@ -428,6 +423,7 @@ def pagerduty_data_fetch_storage_job(account_id=1, connector_id=2, raw_data_json
             incident_id=incident_id,
             title=title,
             incident_created_at=incident_created_at,
+            service_id=service_id,
         )
 
         if created:
