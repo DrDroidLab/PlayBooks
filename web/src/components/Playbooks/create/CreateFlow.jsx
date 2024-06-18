@@ -7,8 +7,11 @@ import ReactFlow, {
   addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { useDispatch } from "react-redux";
-import { addParentIndex } from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addParentIndex,
+  stepsSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
@@ -16,6 +19,7 @@ import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -32,6 +36,8 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
+  const { permanentView, isOpen } = usePermanentDrawerState();
+  const steps = useSelector(stepsSelector);
   const [graphRef, { width, height }] = useDimensions();
   const { graphData, dagreData } = useGraphDimensions(width, height);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -65,8 +71,11 @@ const CreateFlow = () => {
       })),
     );
     setEdges(dagreData.edges);
-    reactFlowInstance.fitView(fitViewOptions);
   }, [dagreData]);
+
+  useEffect(() => {
+    reactFlowInstance.fitView(fitViewOptions);
+  }, [permanentView, isOpen, dagreData, steps]);
 
   return (
     <div ref={graphRef} className="h-full w-full">
