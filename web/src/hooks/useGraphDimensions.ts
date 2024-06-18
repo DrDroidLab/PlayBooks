@@ -10,7 +10,7 @@ type GraphDimensions = {
 };
 
 function useGraphDimensions(width: number, height: number): GraphDimensions {
-  const { steps } = useSelector(playbookSelector);
+  const { steps, playbookEdges } = useSelector(playbookSelector);
   const graphData = fetchGraphData(steps);
   const dagreData = calculateData(graphData, width, height);
   const [data, setData] = useState(dagreData);
@@ -21,7 +21,7 @@ function useGraphDimensions(width: number, height: number): GraphDimensions {
       const dagreData = calculateData(graphData, width, height);
       setData(dagreData);
     }
-  }, [width, height, steps, steps.length]);
+  }, [width, height, steps, steps.length, playbookEdges]);
 
   return {
     graphData,

@@ -251,15 +251,16 @@ const playbookSlice = createSlice({
     },
     addParentIndex: (state, { payload }) => {
       const { index, parentIndex } = payload;
+      const parentExists = parentIndex !== undefined && parentIndex !== null;
       const step = state.steps[index];
-      if (step?.parentIndexes) {
+      if (step?.parentIndexes && parentExists) {
         step.parentIndexes.push(parentIndex);
       }
       state.playbookEdges.push({
-        id: `edge-${parentIndex}-${index}`,
-        source: `node-${parentIndex}`,
+        id: parentExists ? `edge-${parentIndex}-${index}` : `edge-${index}`,
+        source: parentExists ? `node-${parentIndex}` : `playbook`,
         target: `node-${index}`,
-        type: "custom",
+        type: parentExists ? "custom" : "",
       });
     },
     addStep: (state, { payload }) => {
