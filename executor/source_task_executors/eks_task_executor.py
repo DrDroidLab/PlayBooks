@@ -3,7 +3,7 @@ from operator import attrgetter
 from typing import Dict
 
 import kubernetes
-from google.protobuf.wrappers_pb2 import StringValue
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1ServiceList
 
 from connectors.utils import generate_credentials_dict
@@ -113,7 +113,8 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows, total_count=len(table_rows))
+            table = TableResult(raw_query=StringValue(value='Get Pods'), rows=table_rows,
+                                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get pods in eks: {e}")
@@ -169,7 +170,7 @@ class EksSourceManager(PlaybookSourceManager):
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
             table = TableResult(raw_query=StringValue(value='Get Deployments'), rows=table_rows,
-                                total_count=len(table_rows))
+                                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
@@ -224,7 +225,8 @@ class EksSourceManager(PlaybookSourceManager):
                 table_columns.append(
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows, total_count=len(table_rows))
+            table = TableResult(raw_query=StringValue(value='Get Events'), rows=table_rows,
+                                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get events in eks: {e}")
@@ -279,7 +281,7 @@ class EksSourceManager(PlaybookSourceManager):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
             table = TableResult(raw_query=StringValue(value='Get Services'), rows=table_rows,
-                                total_count=len(table_rows))
+                                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get services in eks: {e}")
