@@ -31,10 +31,10 @@ export const stateToStepRelation = (
 
       return {
         parent: {
-          reference_id: parent.reference_id,
+          reference_id: parent?.reference_id,
         },
         child: {
-          reference_id: child.reference_id,
+          reference_id: child?.reference_id,
         },
         condition:
           edge.conditions?.length > 0

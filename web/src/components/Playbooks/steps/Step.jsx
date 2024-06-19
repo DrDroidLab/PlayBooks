@@ -31,6 +31,7 @@ function Step({ step, index }) {
 
   function handleDeleteClick() {
     dispatch(deleteStep(step.stepIndex));
+    closeDrawer();
   }
 
   const handleDone = () => {

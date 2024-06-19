@@ -48,7 +48,7 @@ function Table({ condition, conditionIndex }) {
         {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
         <SelectComponent
           data={
-            condition.isNumeric
+            condition.isNumeric || condition.type === "ROW_COUNT"
               ? operationOptions
               : operationOptions.filter((e) => e.id === "EQUAL_O")
           }

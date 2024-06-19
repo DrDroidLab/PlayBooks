@@ -334,12 +334,12 @@ const playbookSlice = createSlice({
       if (index !== "" && index !== null && index !== undefined) {
         state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
+        console.log("index", index);
+        state.playbookEdges = state.playbookEdges.filter(
+          (e) => e.source !== `node-${index}` && e.target !== `node-${index}`,
+        );
+        state.permanentView = PermanentDrawerTypes.DEFAULT;
       }
-      state.playbookEdges.filter(
-        (e) =>
-          e.source !== state.currentStepIndex ||
-          e.target !== state.currentStepIndex,
-      );
     },
     updateStep: (state, { payload }) => {
       const index = payload.index;
