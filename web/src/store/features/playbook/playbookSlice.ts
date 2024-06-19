@@ -251,6 +251,8 @@ const playbookSlice = createSlice({
           target: `node-${index}`,
         });
       }
+
+      state.currentStepIndex = index.toString();
     },
     addParentIndex: (state, { payload }) => {
       const { index, parentIndex } = payload;
