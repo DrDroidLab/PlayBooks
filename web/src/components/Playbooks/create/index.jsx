@@ -40,7 +40,7 @@ const viewOptions = [
 
 function CreatePlaybook() {
   const navigate = useNavigate();
-  const { openDrawer } = usePermanentDrawerState();
+  const { openDrawer, permanentView } = usePermanentDrawerState();
   const { playbook_id: id } = useParams();
   const playbook = useSelector(playbookSelector);
   const dispatch = useDispatch();
@@ -153,13 +153,23 @@ function CreatePlaybook() {
           ) : (
             <Builder isLog={isPrefetched || executionId} />
           )}
-          <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
-            {!isEditing && (
+          {!isEditing && (
+            <div
+              className={`${
+                permanentView === PermanentDrawerTypes.DEFAULT
+                  ? "top-2"
+                  : "top-12"
+              } absolute right-2 flex items-end flex-col gap-2 z-10`}>
+              {permanentView !== PermanentDrawerTypes.TIMELINE && (
+                <CustomButton onClick={handleTimeline}>
+                  View Timeline
+                </CustomButton>
+              )}
               <CustomButton onClick={handlePlaybook}>
                 Go to Playbook
               </CustomButton>
-            )}
-          </div>
+            </div>
+          )}
         </main>
         {playbook.view === "builder" && <PermenantDrawer />}
       </div>

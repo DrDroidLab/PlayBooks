@@ -14,6 +14,7 @@ import {
   CheckCircleOutline,
   Delete,
   ErrorOutline,
+  VisibilityRounded,
 } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
@@ -43,7 +44,7 @@ export default function CustomNode({ data }) {
   };
 
   const handleClick = () => {
-    if (!isEditing) return;
+    // if (!isEditing) return;
     dispatch(setCurrentStepIndex(data.index));
     addAdditionalData({});
     openDrawer(PermanentDrawerTypes.STEP_DETAILS);
@@ -111,6 +112,11 @@ export default function CustomNode({ data }) {
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <CustomButton
+            onClick={handleClick}
+            className="text-violet-500 cursor-pointer">
+            <VisibilityRounded fontSize="medium" />
+          </CustomButton>
           <div onClick={handleNoAction}>
             <RunButton index={data.index} />
           </div>
