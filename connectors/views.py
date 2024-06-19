@@ -73,7 +73,6 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                          'connector_type': Source.REMOTE_SERVER})
                 break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
-    db_connector_metadata_models = []
     for c in connector_metadata_models:
         try:
             ConnectorMetadataModelStore.objects.update_or_create(account=db_connector.account,
