@@ -19,7 +19,7 @@ function HandleResultTypeForm({
 }: HandleResultTypePropTypes) {
   switch (resultType) {
     case ResultTypeTypes.TABLE:
-      return <Table />;
+      return <Table condition={condition} conditionIndex={conditionIndex} />;
     case ResultTypeTypes.TIMESERIES:
       return (
         <Timeseries condition={condition} conditionIndex={conditionIndex} />

@@ -72,26 +72,30 @@ function AddCondition() {
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
-          <div className="flex gap-2 items-center flex-wrap">
-            <HandleResultTypeForm
-              resultType={parentStep.resultType as ResultTypeType}
-              condition={condition}
-              conditionIndex={i}
-            />
+          <div className="flex flex-col gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
+              <HandleResultTypeForm
+                resultType={parentStep.resultType as ResultTypeType}
+                condition={condition}
+                conditionIndex={i}
+              />
+            </div>
 
-            {conditions.length === i + 1 && (
+            <div className="flex gap-2 flex-wrap">
+              {conditions.length === i + 1 && (
+                <CustomButton
+                  className="!text-sm !w-fit"
+                  onClick={addNewCondition}>
+                  <Add fontSize="inherit" />
+                </CustomButton>
+              )}
+
               <CustomButton
                 className="!text-sm !w-fit"
-                onClick={addNewCondition}>
-                <Add fontSize="inherit" />
+                onClick={() => deleteCondition(i)}>
+                <Delete fontSize="inherit" />
               </CustomButton>
-            )}
-
-            <CustomButton
-              className="!text-sm !w-fit"
-              onClick={() => deleteCondition(i)}>
-              <Delete fontSize="inherit" />
-            </CustomButton>
+            </div>
           </div>
         </div>
       ))}
