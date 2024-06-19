@@ -11,7 +11,7 @@ function handleResultType(resultType: ResultTypeType, condition: any) {
         operator: condition.operation,
         threshold: condition.value,
         column_name: condition.columnName,
-        [condition.isNumeric
+        [condition.isNumeric && condition.type === "COLUMN_VALUE"
           ? "numeric_value_threshold"
           : "string_value_threshold"]: condition.threshold,
       };
