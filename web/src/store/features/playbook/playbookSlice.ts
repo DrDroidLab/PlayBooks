@@ -335,7 +335,7 @@ const playbookSlice = createSlice({
         state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
         state.playbookEdges = state.playbookEdges.filter(
-          (e) => e.source !== `node-${index}` || e.target !== `node-${index}`,
+          (e) => e.source !== `node-${index}` && e.target !== `node-${index}`,
         );
         state.permanentView = PermanentDrawerTypes.DEFAULT;
       }
