@@ -1,8 +1,7 @@
 import { taskTypes } from "../../constants/taskTypes.ts";
 import { Step } from "../../types.ts";
-import { addConditionToEdgeByIndex } from "./addConditionToEdgeByIndex.ts";
 
-function handleTaskTypeOptions(step: Step, edgeIndex: number) {
+function handleTaskTypeOptions(step: Step) {
   const type = `${step.source} ${step.taskType}`;
   let options: any = [];
 
@@ -36,8 +35,6 @@ function handleTaskTypeOptions(step: Step, edgeIndex: number) {
       ];
       break;
   }
-
-  addConditionToEdgeByIndex("task", options[0].id, edgeIndex, 0);
 
   return options;
 }
