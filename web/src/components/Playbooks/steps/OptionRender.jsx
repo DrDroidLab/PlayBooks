@@ -13,6 +13,8 @@ export default function OptionRender({ data, removeErrors, index }) {
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
 
+  console.log("disable", isPrefetched);
+
   const handleChange = (...args) => {
     if (data.handleChange) {
       data.handleChange(...args);
