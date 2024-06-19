@@ -11,7 +11,6 @@ import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOption
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
 import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
 import extractNumbers from "../../utils/extractNumbers.ts";
-import HandleTypes from "./HandleTypes.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -69,7 +68,7 @@ function AddCondition() {
       </div>
 
       {conditions?.map((condition, i) => (
-        <div className="mt-2">
+        <div className="mt-2 border p-1 rounded-md">
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
@@ -80,18 +79,9 @@ function AddCondition() {
                 condition={condition}
                 conditionIndex={i}
               />
-              <HandleTypes condition={condition} conditionIndex={i} />
             </div>
 
             <div className="flex gap-2 flex-wrap">
-              {conditions.length === i + 1 && (
-                <CustomButton
-                  className="!text-sm !w-fit"
-                  onClick={addNewCondition}>
-                  <Add fontSize="inherit" />
-                </CustomButton>
-              )}
-
               <CustomButton
                 className="!text-sm !w-fit"
                 onClick={() => deleteCondition(i)}>
@@ -101,6 +91,10 @@ function AddCondition() {
           </div>
         </div>
       ))}
+
+      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewCondition}>
+        <Add fontSize="inherit" /> Add
+      </CustomButton>
     </div>
   );
 }
