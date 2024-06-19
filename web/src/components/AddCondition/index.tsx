@@ -7,7 +7,7 @@ import { additionalStateSelector } from "../../store/features/drawers/drawersSli
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import ValueComponent from "../ValueComponent/index.jsx";
 import CustomButton from "../common/CustomButton/index.tsx";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, ErrorOutlineRounded } from "@mui/icons-material";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
@@ -55,6 +55,20 @@ function AddCondition() {
         <span>Add Condition</span>
       </h1>
       <hr />
+
+      {(Object.keys(parentStep?.errors ?? {}).length > 0 ||
+        taskTypeOptions.length === 0) && (
+        <div className="bg-red-50 p-2 flex items-center gap-1 my-1 rounded flex-wrap">
+          <ErrorOutlineRounded
+            color="error"
+            component={"svg"}
+            fontSize="inherit"
+          />
+          <p className="text-xs">
+            You have not configured the parent step yet.
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col items-start gap-1 mt-4">
         <p className="text-xs text-violet-500 font-semibold">
