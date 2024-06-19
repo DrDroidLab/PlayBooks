@@ -65,8 +65,9 @@ class GrafanaSourceManager(PlaybookSourceManager):
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                                   label_option.value.value)
-            for key, value in global_variable_set.items():
-                promql_metric_query = promql_metric_query.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
@@ -140,8 +141,9 @@ class GrafanaSourceManager(PlaybookSourceManager):
             process_function = task.process_function.value
             promql_metric_query = task.promql_expression.value
 
-            for key, value in global_variable_set.items():
-                promql_metric_query = promql_metric_query.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
