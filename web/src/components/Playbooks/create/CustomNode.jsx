@@ -8,7 +8,7 @@ import {
   setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import {
   Add,
   CheckCircleOutline,
@@ -115,7 +115,9 @@ export default function CustomNode({ data }) {
           <CustomButton
             onClick={handleClick}
             className="text-violet-500 cursor-pointer">
-            <VisibilityRounded fontSize="medium" />
+            <Tooltip title={"Show Config"}>
+              <VisibilityRounded fontSize="medium" />
+            </Tooltip>
           </CustomButton>
           <div onClick={handleNoAction}>
             <RunButton index={data.index} />
