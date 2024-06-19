@@ -70,9 +70,10 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                 {item.playbooks?.length > 0
                   ? item.playbooks.map((e) => (
                       <div
+                        onClick={() => navigateToPlaybook(e.id)}
                         className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:!text-white"
                         key={e.id}>
-                        <p onClick={() => navigateToPlaybook(e.id)}>{e.name}</p>
+                        <p>{e.name}</p>
                       </div>
                     ))
                   : "--"}

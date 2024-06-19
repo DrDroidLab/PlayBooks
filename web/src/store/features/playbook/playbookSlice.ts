@@ -506,6 +506,8 @@ const playbookSlice = createSlice({
       state.lastUpdatedAt = null;
       state.currentStepIndex = null;
       state.view = initialState.view;
+      state.playbookEdges = [];
+      state.currentVisibleStep = undefined;
     },
     setSteps(state, { payload }) {
       state.steps = payload;

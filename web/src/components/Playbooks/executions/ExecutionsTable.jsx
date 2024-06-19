@@ -10,7 +10,7 @@ import PaginatedTable from "../../PaginatedTable.js";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
-import { handleStatus } from "../../../utils/handleStatus.tsx";
+// import { handleStatus } from "../../../utils/handleStatus.tsx";
 import handleToolLogos from "../../../utils/handleToolLogos.ts";
 
 const ExecutionsTableRender = ({ data }) => {
@@ -22,7 +22,7 @@ const ExecutionsTableRender = ({ data }) => {
             <TableCell className="!font-bold">Run ID</TableCell>
             <TableCell className="!font-bold">Playbook</TableCell>
             <TableCell className="!font-bold">Tools</TableCell>
-            <TableCell className="!font-bold">Status</TableCell>
+            {/* <TableCell className="!font-bold">Status</TableCell> */}
             <TableCell className="!font-bold">Executed At</TableCell>
             <TableCell className="!font-bold">Executed By</TableCell>
             {/* <TableCell className="!font-bold">Action</TableCell> */}
@@ -63,9 +63,9 @@ const ExecutionsTableRender = ({ data }) => {
                   ))}
                 </div>
               </TableCell>
-              <TableCell component="th" scope="row">
+              {/* <TableCell component="th" scope="row">
                 {handleStatus(item.status)}
-              </TableCell>
+              </TableCell> */}
               <TableCell component="td" scope="row">
                 {item.finished_at ?? item.created_at
                   ? renderTimestamp(item.finished_at ?? item.created_at)

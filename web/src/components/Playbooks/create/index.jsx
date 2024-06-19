@@ -156,7 +156,7 @@ function CreatePlaybook() {
           <div className="absolute top-2 right-2 flex flex-col items-start gap-4 z-10">
             {!isEditing && (
               <CustomButton onClick={handlePlaybook}>
-                View Playbook
+                Go to Playbook
               </CustomButton>
             )}
           </div>
