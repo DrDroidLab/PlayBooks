@@ -75,14 +75,16 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
     db_connector_metadata_models = []
     for c in connector_metadata_models:
-        c['account'] = account
-        c['connector'] = db_connector
-        db_connector_metadata_models.append(ConnectorMetadataModelStore(**c))
-    if db_connector_metadata_models:
         try:
-            ConnectorMetadataModelStore.objects.bulk_create(db_connector_metadata_models)
+            ConnectorMetadataModelStore.objects.update_or_create(account=db_connector.account,
+                                                                 connector=db_connector,
+                                                                 connector_type=c['connector_type'],
+                                                                 model_type=c['model_type'],
+                                                                 model_uid=c['model_uid'],
+                                                                 defaults={'is_active': True, 'metadata': None})
         except Exception as e:
-            logger.error(f"Failed to create connector metadata models: {str(e)}")
+            logger.error(f"Failed to create connector metadata model: {str(e)}")
+            continue
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
