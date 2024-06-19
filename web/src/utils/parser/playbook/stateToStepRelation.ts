@@ -1,6 +1,6 @@
 import { store } from "../../../store/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import { PlaybookContractStep } from "../../../types.ts";
+import { PlaybookContractStep, Step } from "../../../types.ts";
 
 function extractNumbers(input: string) {
   if (!input) return [];
@@ -16,7 +16,7 @@ function extractNumbers(input: string) {
 export const stateToStepRelation = (
   playbookContractSteps: PlaybookContractStep[],
 ) => {
-  const { playbookEdges } = playbookSelector(store.getState());
+  const { playbookEdges, steps } = playbookSelector(store.getState());
 
   const relations = (playbookEdges ?? [])
     .filter((e) => e.source !== "playbook")
@@ -25,6 +25,8 @@ export const stateToStepRelation = (
       const [childIndex] = extractNumbers(edge.target);
       const parent = playbookContractSteps[parentIndex];
       const child = playbookContractSteps[childIndex];
+
+      const parentStep: Step = steps[parentIndex];
 
       return {
         parent: {
@@ -38,13 +40,15 @@ export const stateToStepRelation = (
             ? {
                 rules: edge.conditions?.map((e) => {
                   return {
+                    type: parentStep.resultType,
                     task: {
                       reference_id: parent.tasks[0].reference_id,
                     },
-                    table: {
-                      type: e.function,
+                    [parentStep.resultType!.toLowerCase()]: {
+                      type: "CUMULATIVE",
+                      function: e.function,
                       operator: e.operation,
-                      numeric_value_threshold: e.value,
+                      threshold: e.value,
                     },
                   };
                 }),
