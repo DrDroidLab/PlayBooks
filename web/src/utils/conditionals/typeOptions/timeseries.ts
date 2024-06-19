@@ -5,6 +5,6 @@ export const timeseriesOptions = [
   },
   {
     id: "CUMULATIVE",
-    label: "Cumalative",
+    label: "Cumulative",
   },
 ];
