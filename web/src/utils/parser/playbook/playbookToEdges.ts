@@ -31,6 +31,7 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
         window: ruleType.window,
         columnName: ruleType.column_name,
         isNumeric: ruleType.numeric_value_threshold !== undefined,
+        conditionType: ruleType.type,
         type: rule.type,
       };
     });

@@ -23,6 +23,8 @@ function Timeseries({ condition, conditionIndex }) {
     handleCondition(type, val, conditionIndex);
   };
 
+  console.log("wohoo", condition.type);
+
   return (
     <>
       <div className="flex items-center gap-1">
@@ -37,9 +39,9 @@ function Timeseries({ condition, conditionIndex }) {
       <div className="flex items-center gap-1">
         <SelectComponent
           data={timeseriesOptions}
-          selected={condition.type}
+          selected={condition.conditionType}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) => handleChange(id, "type")}
+          onSelectionChange={(id: string) => handleChange(id, "conditionType")}
         />
       </div>
 

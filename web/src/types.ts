@@ -297,6 +297,7 @@ export interface Playbook {
   currentVisibleStep?: number;
   playbookEdges: any[];
   permanentView?: string;
+  connectorOptions?: any;
 }
 
 export interface Playground {
