@@ -1,27 +1,17 @@
 import React, { useEffect } from "react";
-import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import SelectComponent from "../SelectComponent/index.jsx";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
-import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
-import ValueComponent from "../ValueComponent/index.jsx";
 import CustomButton from "../common/CustomButton/index.tsx";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, ErrorOutlineRounded } from "@mui/icons-material";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
-
-function extractNumbers(input: string) {
-  if (!input) return [];
-  // Use regular expression to match numbers in the string
-  const numbers = input.match(/\d+/g);
-
-  // Convert the matched strings to integers
-  const result = numbers ? numbers.map(Number) : [];
-
-  return result;
-}
+import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
+import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
+import extractNumbers from "../../utils/extractNumbers.ts";
+import HandleTypes from "./HandleTypes.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -39,10 +29,6 @@ function AddCondition() {
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
-  const handleChange = (val: string, type: string, index: number) => {
-    handleCondition(type, val, index);
-  };
-
   useEffect(() => {
     if (conditions?.length === 0) {
       handleCondition("", "", 0);
@@ -55,6 +41,20 @@ function AddCondition() {
         <span>Add Condition</span>
       </h1>
       <hr />
+
+      {(Object.keys(parentStep?.errors ?? {}).length > 0 ||
+        taskTypeOptions.length === 0) && (
+        <div className="bg-red-50 p-2 flex items-center gap-1 my-1 rounded flex-wrap">
+          <ErrorOutlineRounded
+            color="error"
+            component={"svg"}
+            fontSize="inherit"
+          />
+          <p className="text-xs">
+            You have not configured the parent step yet.
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col items-start gap-1 mt-4">
         <p className="text-xs text-violet-500 font-semibold">
@@ -73,64 +73,31 @@ function AddCondition() {
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
-          <div className="flex gap-2 items-center flex-wrap">
-            <div className="flex items-center gap-1">
-              <SelectComponent
-                data={taskTypeOptions}
-                selected={condition.task}
-                placeholder={`Select Task`}
-                onSelectionChange={(id: string) => handleChange(id, "task", i)}
+          <div className="flex flex-col gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
+              <HandleResultTypeForm
+                resultType={parentStep.resultType as ResultTypeType}
+                condition={condition}
+                conditionIndex={i}
               />
+              <HandleTypes condition={condition} conditionIndex={i} />
             </div>
 
-            <div className="flex items-center gap-1">
-              <SelectComponent
-                data={functionOptions(parentStep)}
-                selected={condition.function}
-                placeholder={`Select Function`}
-                onSelectionChange={(id: string) =>
-                  handleChange(id, "function", i)
-                }
-              />
-            </div>
+            <div className="flex gap-2 flex-wrap">
+              {conditions.length === i + 1 && (
+                <CustomButton
+                  className="!text-sm !w-fit"
+                  onClick={addNewCondition}>
+                  <Add fontSize="inherit" />
+                </CustomButton>
+              )}
 
-            <div className="flex items-center gap-1">
-              {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
-              <SelectComponent
-                data={operationOptions}
-                selected={condition.operation}
-                placeholder={`Select Operator`}
-                onSelectionChange={(id: string) =>
-                  handleChange(id, "operation", i)
-                }
-              />
-            </div>
-
-            <div className="flex items-center gap-1">
-              {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
-              <ValueComponent
-                valueType={"STRING"}
-                onValueChange={(val: string) => handleChange(val, "value", i)}
-                value={condition.value}
-                valueOptions={[]}
-                placeHolder={"Enter Value of condition"}
-                length={200}
-              />
-            </div>
-
-            {conditions.length === i + 1 && (
               <CustomButton
                 className="!text-sm !w-fit"
-                onClick={addNewCondition}>
-                <Add fontSize="inherit" />
+                onClick={() => deleteCondition(i)}>
+                <Delete fontSize="inherit" />
               </CustomButton>
-            )}
-
-            <CustomButton
-              className="!text-sm !w-fit"
-              onClick={() => deleteCondition(i)}>
-              <Delete fontSize="inherit" />
-            </CustomButton>
+            </div>
           </div>
         </div>
       ))}

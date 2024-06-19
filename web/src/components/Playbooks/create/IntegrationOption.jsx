@@ -12,9 +12,12 @@ import { Tooltip } from "@mui/material";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 
 function IntegrationOption({ option }) {
   const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
+  const { openDrawer } = usePermanentDrawerState();
   const addtionalState = useSelector(additionalStateSelector);
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
@@ -59,6 +62,7 @@ function IntegrationOption({ option }) {
         }),
       );
       toggle();
+      openDrawer(PermanentDrawerTypes.STEP_DETAILS);
     }
   };
 

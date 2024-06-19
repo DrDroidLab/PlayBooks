@@ -3,33 +3,52 @@ import { Step } from "../../types.ts";
 
 function handleTaskTypeOptions(step: Step) {
   const type = `${step.source} ${step.taskType}`;
+  let options: any = [];
 
   switch (type) {
     case taskTypes.CLOUDWATCH_METRIC:
-      return step?.metric ?? [];
+      options =
+        step?.metric.map((e, i) => ({
+          id: `${i}`,
+          label: e.label,
+        })) ?? [];
+      break;
 
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
-      return step?.datadogMetric ?? [];
+      options =
+        step?.datadogMetric.map((e, i) => ({
+          id: `${i}`,
+          label: e.label,
+        })) ?? [];
+      break;
 
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
-      return step.golden_metrics ?? [];
+      options =
+        step.golden_metrics?.map((e, i) => ({
+          id: `${i}`,
+          label: e.label,
+        })) ?? [];
+      break;
 
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
-      return (
-        step.widget?.map((e) => ({
-          id: e?.widget_id,
+      options =
+        step.widget?.map((e, i) => ({
+          id: `${i}`,
           label: e?.widget_title ?? e?.widget_nrql_expression,
-        })) ?? []
-      );
+        })) ?? [];
+      break;
 
     default:
-      return [
+      options = [
         {
-          id: step.description,
+          id: "0",
           label: step.description,
         },
       ];
+      break;
   }
+
+  return options;
 }
 
 export default handleTaskTypeOptions;

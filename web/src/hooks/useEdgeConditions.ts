@@ -14,6 +14,7 @@ function useEdgeConditions(id: string) {
       function: "",
       operation: "",
       value: "",
+      task: "",
     };
     const temp = structuredClone(playbookEdges ?? []);
     const tempEdge = temp[edgeIndex];

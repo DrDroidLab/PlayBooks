@@ -1,6 +1,7 @@
 import { store } from "../../../store/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import { PlaybookContractStep } from "../../../types.ts";
+import { PlaybookContractStep, Step } from "../../../types.ts";
+import conditionToRule from "./conditionToRule.ts";
 
 function extractNumbers(input: string) {
   if (!input) return [];
@@ -16,7 +17,7 @@ function extractNumbers(input: string) {
 export const stateToStepRelation = (
   playbookContractSteps: PlaybookContractStep[],
 ) => {
-  const { playbookEdges } = playbookSelector(store.getState());
+  const { playbookEdges, steps } = playbookSelector(store.getState());
 
   const relations = (playbookEdges ?? [])
     .filter((e) => e.source !== "playbook")
@@ -25,6 +26,8 @@ export const stateToStepRelation = (
       const [childIndex] = extractNumbers(edge.target);
       const parent = playbookContractSteps[parentIndex];
       const child = playbookContractSteps[childIndex];
+
+      const parentStep: Step = steps[parentIndex];
 
       return {
         parent: {
@@ -36,18 +39,9 @@ export const stateToStepRelation = (
         condition:
           edge.conditions?.length > 0
             ? {
-                rules: edge.conditions?.map((e) => {
-                  return {
-                    task: {
-                      reference_id: parent.tasks[0].reference_id,
-                    },
-                    table: {
-                      type: e.function,
-                      operator: e.operation,
-                      numeric_value_threshold: e.value,
-                    },
-                  };
-                }),
+                rules: edge.conditions?.map((e) =>
+                  conditionToRule(parentStep, parent, e),
+                ),
                 logical_operator: edge.globalRule,
               }
             : {},

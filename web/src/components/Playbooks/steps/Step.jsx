@@ -10,17 +10,19 @@ import SelectInterpretation from "./Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
-import CustomButton from "../../common/CustomButton/index.tsx";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
-import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+// import useDrawerState from "../../../hooks/useDrawerState.ts";
+// import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 
-const id = DrawerTypes.ADD_DATA;
-const currentStepDrawerId = DrawerTypes.STEP_DETAILS;
+// const id = DrawerTypes.ADD_DATA;
+// const currentStepDrawerId = DrawerTypes.STEP_DETAILS;
 
 function Step({ step, index }) {
-  const { openDrawer, addAdditionalData } = useDrawerState(id);
-  const { closeDrawer: closeCurrentStep } = useDrawerState(currentStepDrawerId);
+  // const { openDrawer, addAdditionalData } = useDrawerState(id);
+  // const { closeDrawer: closeCurrentStep } = useDrawerState(currentStepDrawerId);
+  const { closeDrawer } = usePermanentDrawerState();
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
@@ -31,15 +33,19 @@ function Step({ step, index }) {
     dispatch(deleteStep(step.stepIndex));
   }
 
-  const handleAdd = (requireCondition = false) => {
-    addAdditionalData({
-      parentIndex: step.stepIndex,
-      requireCondition,
-      currentConditionParentIndex: step.stepIndex,
-    });
-    openDrawer();
-    closeCurrentStep(false);
+  const handleDone = () => {
+    closeDrawer();
   };
+
+  // const handleAdd = (requireCondition = false) => {
+  //   addAdditionalData({
+  //     parentIndex: step.stepIndex,
+  //     requireCondition,
+  //     currentConditionParentIndex: step.stepIndex,
+  //   });
+  //   openDrawer();
+  //   closeCurrentStep(false);
+  // };
 
   return (
     <div className="rounded my-2">
@@ -76,18 +82,21 @@ function Step({ step, index }) {
             </button>
           </div>
         )}
-        {!isPrefetched && (
+        <div className="flex mt-2">
+          <CustomButton onClick={handleDone}>Done</CustomButton>
+        </div>
+        {/* {!isPrefetched && (
           <div className="flex gap-2 mt-2">
             {step.source && (
               <div className="flex items-center gap-2">
                 <CustomButton onClick={handleAdd}>Add Next Step</CustomButton>
               </div>
             )}
-            {/* <CustomButton onClick={() => handleAdd(true)}>
+            <CustomButton onClick={() => handleAdd(true)}>
               Add Next Step With Condition
-            </CustomButton> */}
+            </CustomButton>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
