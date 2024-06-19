@@ -318,6 +318,7 @@ export interface PlaybookContractStep {
   external_links: ExternalLink[];
   tasks: PlaybookTask[];
   reference_id: string;
+  children: any;
 }
 
 export interface PlaybookContract {
