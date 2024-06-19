@@ -1,9 +1,10 @@
+import logging
 from typing import Union
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from django.http import HttpResponse
 
-from connectors.models import Site
+from connectors.models import Site, ConnectorMetadataModelStore
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
@@ -17,7 +18,7 @@ from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
-from protos.base_pb2 import Message, Meta, Page, TimeRange
+from protos.base_pb2 import Message, Meta, Page, TimeRange, SourceKeyType
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
     GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
@@ -31,6 +32,8 @@ from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto,
     SlackAlert as SlackAlertProto
 from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+
+logger = logging.getLogger(__name__)
 
 
 @web_api(CreateConnectorRequest)
@@ -52,7 +55,34 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                                                                        connector_keys)
             if db_agent_proxy_connector is None and err:
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
+
+    connector_metadata_models = []
+    if connector.type == Source.REMOTE_SERVER:
+        for key in connector_keys:
+            if key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
+                ssh_servers = key.key.value
+                ssh_servers = ssh_servers.replace(' ', '')
+                ssh_servers = ssh_servers.split(',')
+                ssh_servers = list(filter(None, ssh_servers))
+                for ssh_server in ssh_servers:
+                    if '@' not in ssh_server:
+                        return CreateConnectorResponse(success=BoolValue(value=False), message=Message(
+                            title='Invalid Remote Server Host. Please provide in the format user@host'))
+                    connector_metadata_models.append(
+                        {'model_type': SourceModelType.SSH_SERVER, 'model_uid': ssh_server, 'is_active': True,
+                         'connector_type': Source.REMOTE_SERVER})
+                break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
+    db_connector_metadata_models = []
+    for c in connector_metadata_models:
+        c['account'] = account
+        c['connector'] = db_connector
+        db_connector_metadata_models.append(ConnectorMetadataModelStore(**c))
+    if db_connector_metadata_models:
+        try:
+            ConnectorMetadataModelStore.objects.bulk_create(db_connector_metadata_models)
+        except Exception as e:
+            logger.error(f"Failed to create connector metadata models: {str(e)}")
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))

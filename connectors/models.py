@@ -175,24 +175,17 @@ integrations_connector_type_connector_keys_map = {
     ],
     Source.REMOTE_SERVER: [
         [
-            SourceKeyType.REMOTE_SERVER_USER,
-            SourceKeyType.REMOTE_SERVER_HOST,
-            SourceKeyType.REMOTE_SERVER_PASSWORD,
-            SourceKeyType.REMOTE_SERVER_PEM
-        ],
-        [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
         ],
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PEM
         ],
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PASSWORD
+        ],
+        [
         ]
     ],
     Source.AZURE: [
@@ -391,7 +384,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
                              SourceKeyType.AZURE_CLIENT_SECRET,
-                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,]:
+                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
