@@ -55,5 +55,7 @@ export const handleStepSourceExtractor = (step) => {
       break;
   }
 
+  console.log("hello");
+
   return { ...data, taskIds, showNotes: step?.notes ?? false };
 };

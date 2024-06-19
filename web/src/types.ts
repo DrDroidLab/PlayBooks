@@ -84,6 +84,7 @@ export interface Step {
   requireCondition: boolean;
   currentConditionParentIndex?: number;
   resultType?: string;
+  children?: any;
   taskIds?: string[];
 }
 
