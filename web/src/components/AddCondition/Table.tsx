@@ -59,7 +59,7 @@ function Table({ condition, conditionIndex }) {
           <ValueComponent
             valueType={"STRING"}
             onValueChange={(val: string) => handleChange(val, "columnName")}
-            value={condition.value}
+            value={condition.columnName}
             valueOptions={[]}
             placeHolder={"Enter column name"}
             length={200}
@@ -82,16 +82,12 @@ function Table({ condition, conditionIndex }) {
 
         <ValueComponent
           valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, "threshold")}
+          onValueChange={(val: string) => handleChange(val, "value")}
           value={condition.value}
           valueOptions={[]}
           placeHolder={"Enter threshold of condition"}
           length={200}
         />
-      </div>
-
-      <div className="flex items-center gap-1">
-        {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
       </div>
     </>
   );

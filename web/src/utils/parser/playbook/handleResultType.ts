@@ -10,6 +10,7 @@ function handleResultType(resultType: ResultTypeType, condition: any) {
         type: condition.type,
         operator: condition.operation,
         threshold: condition.value,
+        column_name: condition.columnName,
         [condition.isNumeric
           ? "numeric_value_threshold"
           : "string_value_threshold"]: condition.threshold,
