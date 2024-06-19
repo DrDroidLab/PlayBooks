@@ -1,6 +1,7 @@
 import { store } from "../../../store/index.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { PlaybookContractStep, Step } from "../../../types.ts";
+import conditionToRule from "./conditionToRule.ts";
 
 function extractNumbers(input: string) {
   if (!input) return [];
@@ -38,20 +39,9 @@ export const stateToStepRelation = (
         condition:
           edge.conditions?.length > 0
             ? {
-                rules: edge.conditions?.map((e) => {
-                  return {
-                    type: parentStep.resultType,
-                    task: {
-                      reference_id: parent.tasks[0].reference_id,
-                    },
-                    [parentStep.resultType!.toLowerCase()]: {
-                      type: "CUMULATIVE",
-                      function: e.function,
-                      operator: e.operation,
-                      threshold: e.value,
-                    },
-                  };
-                }),
+                rules: edge.conditions?.map((e) =>
+                  conditionToRule(parentStep, parent, e),
+                ),
                 logical_operator: edge.globalRule,
               }
             : {},

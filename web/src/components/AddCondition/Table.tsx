@@ -26,7 +26,7 @@ function Table({ condition, conditionIndex }) {
       <div className="flex items-center gap-1">
         <SelectComponent
           data={taskTypeOptions}
-          selected={condition.task}
+          selected={parseInt(condition.task ?? "id-0", 10)}
           placeholder={`Select Task`}
           onSelectionChange={(id: string) => handleChange(id, "task")}
         />
@@ -56,7 +56,7 @@ function Table({ condition, conditionIndex }) {
         <div className="flex flex-wrap gap-1">
           <ValueComponent
             valueType={"STRING"}
-            onValueChange={(val: string) => handleChange(val, "value")}
+            onValueChange={(val: string) => handleChange(val, "columnName")}
             value={condition.value}
             valueOptions={[]}
             placeHolder={"Enter column name"}
@@ -66,7 +66,7 @@ function Table({ condition, conditionIndex }) {
 
         <ValueComponent
           valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, "value")}
+          onValueChange={(val: string) => handleChange(val, "threshold")}
           value={condition.value}
           valueOptions={[]}
           placeHolder={"Enter threshold of condition"}
