@@ -9,10 +9,12 @@ import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
+import Checkbox from "../common/Checkbox/index.tsx";
+import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
 
 function Table({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
@@ -26,7 +28,7 @@ function Table({ condition, conditionIndex }) {
       <div className="flex items-center gap-1">
         <SelectComponent
           data={taskTypeOptions}
-          selected={parseInt(condition.task ?? "id-0", 10)}
+          selected={condition.task}
           placeholder={`Select Task`}
           onSelectionChange={(id: string) => handleChange(id, "task")}
         />
@@ -53,7 +55,7 @@ function Table({ condition, conditionIndex }) {
 
       <div className="flex flex-col gap-1">
         {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2 items-center">
           <ValueComponent
             valueType={"STRING"}
             onValueChange={(val: string) => handleChange(val, "columnName")}
@@ -61,6 +63,20 @@ function Table({ condition, conditionIndex }) {
             valueOptions={[]}
             placeHolder={"Enter column name"}
             length={200}
+          />
+          <Checkbox
+            id="isNumeric"
+            isChecked={condition.isNumeric}
+            onChange={() => {
+              addConditionToEdgeByIndex(
+                "isNumeric",
+                !condition.isNumeric,
+                edgeIndex,
+                conditionIndex,
+              );
+            }}
+            label="Is Numeric"
+            isSmall={true}
           />
         </div>
 
