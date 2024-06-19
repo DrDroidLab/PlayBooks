@@ -25,7 +25,11 @@ function HandleResultTypeForm({
         <Timeseries condition={condition} conditionIndex={conditionIndex} />
       );
     default:
-      return <>No Form Configured</>;
+      return (
+        <>
+          <p className="text-xs font-normal my-2">No Form Configured</p>
+        </>
+      );
   }
 }
 

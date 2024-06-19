@@ -4,6 +4,7 @@ import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
+import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 
 const emptyStep = {
   modelType: "",
@@ -99,6 +100,7 @@ const playbookSlice = createSlice({
         };
       });
       state.steps = playbookToSteps(payload, false);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
