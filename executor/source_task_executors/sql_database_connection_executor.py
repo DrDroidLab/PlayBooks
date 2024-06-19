@@ -43,8 +43,11 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
             query = query.strip()
             if query[-1] == ';':
                 query = query[:-1]
-            for key, value in global_variable_set.items():
-                query = query.replace(key, str(value))
+
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    query = query.replace(key, str(value))
+
             count_query = f"SELECT COUNT(*) FROM ({query}) AS subquery"
             if order_by_column and 'order by' not in query.lower():
                 query = f"{query} ORDER BY {order_by_column} DESC"

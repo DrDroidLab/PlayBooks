@@ -70,6 +70,8 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 if not global_variable_set:
                     if task_proto.global_variable_set:
                         global_variable_set = proto_to_dict(task_proto.global_variable_set)
+                    else:
+                        global_variable_set = {}
                 task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
                                                                                       global_variable_set,
                                                                                       task_proto)
