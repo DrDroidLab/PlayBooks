@@ -37,7 +37,7 @@ function AddCondition() {
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
 
-  const taskTypeOptions = handleTaskTypeOptions(parentStep);
+  const taskTypeOptions = handleTaskTypeOptions(parentStep, id);
 
   const handleChange = (val: string, type: string, index: number) => {
     handleCondition(type, val, index);
