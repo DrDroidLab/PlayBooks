@@ -176,6 +176,11 @@ integrations_connector_type_connector_keys_map = {
     Source.REMOTE_SERVER: [
         [
             SourceKeyType.REMOTE_SERVER_HOST,
+            SourceKeyType.REMOTE_SERVER_PEM,
+            SourceKeyType.REMOTE_SERVER_PASSWORD,
+        ],
+        [
+            SourceKeyType.REMOTE_SERVER_HOST,
         ],
         [
             SourceKeyType.REMOTE_SERVER_HOST,
