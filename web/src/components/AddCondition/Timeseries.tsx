@@ -9,6 +9,7 @@ import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOption
 import extractNumbers from "../../utils/extractNumbers.ts";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
+import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
 
 function Timeseries({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
@@ -29,6 +30,15 @@ function Timeseries({ condition, conditionIndex }) {
           selected={condition.task}
           placeholder={`Select Task`}
           onSelectionChange={(id: string) => handleChange(id, "task")}
+        />
+      </div>
+
+      <div className="flex items-center gap-1">
+        <SelectComponent
+          data={timeseriesOptions}
+          selected={condition.type}
+          placeholder={`Select Type`}
+          onSelectionChange={(id: string) => handleChange(id, "type")}
         />
       </div>
 

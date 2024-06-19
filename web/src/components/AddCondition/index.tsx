@@ -11,6 +11,7 @@ import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOption
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
 import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
 import extractNumbers from "../../utils/extractNumbers.ts";
+import HandleTypes from "./HandleTypes.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -79,6 +80,7 @@ function AddCondition() {
                 condition={condition}
                 conditionIndex={i}
               />
+              <HandleTypes condition={condition} conditionIndex={i} />
             </div>
 
             <div className="flex gap-2 flex-wrap">
