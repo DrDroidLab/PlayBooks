@@ -41,8 +41,9 @@ class ApiSourceManager(PlaybookSourceManager):
             http_request = api_task.http_request
             method = http_request.method
             url = http_request.url.value
-            for key, value in global_variable_set.items():
-                url = url.replace(f"{{{key}}}", value)
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    url = url.replace(f"{{{key}}}", value)
             headers = http_request.headers.value
             headers = json.loads(headers) if headers else {}
             if 'Content-Type' not in headers:

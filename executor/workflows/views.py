@@ -339,7 +339,8 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
-    test_workflow_notification(account.id, workflow, workflow.actions[0].type)
+    
+    test_workflow_notification(user, account.id, workflow, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 
 

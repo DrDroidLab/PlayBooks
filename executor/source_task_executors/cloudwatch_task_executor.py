@@ -140,8 +140,9 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             region = task.region.value
             log_group = task.log_group_name.value
             query_pattern = task.filter_query.value
-            for key, value in global_variable_set.items():
-                query_pattern = query_pattern.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    query_pattern = query_pattern.replace(key, str(value))
 
             logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
                                                                 client_type='logs')

@@ -247,8 +247,11 @@ class NewRelicSourceManager(PlaybookSourceManager):
             nrql_expression = task.nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
                 raise Exception("Invalid NRQL expression. TIMESERIES is missing in the NRQL expression")
-            for key, value in global_variable_set.items():
-                nrql_expression = nrql_expression.replace(key, str(value))
+
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    nrql_expression = nrql_expression.replace(key, str(value))
+
             if 'limit max timeseries' in nrql_expression.lower():
                 if 'LIMIT MAX TIMESERIES' in nrql_expression:
                     nrql_expression = nrql_expression.replace('LIMIT MAX TIMESERIES', 'TIMESERIES 5 MINUTE')
