@@ -124,6 +124,7 @@ const playbookSlice = createSlice({
       });
       state.currentPlaybook.isCopied = true;
       state.steps = playbookToSteps(payload, true);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = false;
     },
     setErrors(state, { payload }) {
@@ -155,6 +156,7 @@ const playbookSlice = createSlice({
       });
       state.isEditing = true;
       state.steps = playbookToSteps(payload, false);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
     },
     setName(state, { payload }) {
       state.name = payload;

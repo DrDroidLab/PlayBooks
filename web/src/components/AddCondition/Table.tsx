@@ -9,12 +9,11 @@ import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
-import Checkbox from "../common/Checkbox/index.tsx";
-import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import HandleTypes from "./HandleTypes.tsx";
 
 function Table({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
-  const { handleCondition, edgeIndex } = useEdgeConditions(id);
+  const { handleCondition } = useEdgeConditions(id);
   const [sourceId] = extractNumbers(source);
   const [parentStep] = useCurrentStep(sourceId);
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
@@ -43,10 +42,16 @@ function Table({ condition, conditionIndex }) {
         />
       </div>
 
+      <HandleTypes condition={condition} conditionIndex={conditionIndex} />
+
       <div className="flex items-center gap-1">
         {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
         <SelectComponent
-          data={operationOptions}
+          data={
+            condition.isNumeric
+              ? operationOptions
+              : operationOptions.filter((e) => e.id === "EQUAL_O")
+          }
           selected={condition.operation}
           placeholder={`Select Operator`}
           onSelectionChange={(id: string) => handleChange(id, "operation")}
@@ -54,32 +59,6 @@ function Table({ condition, conditionIndex }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <ValueComponent
-            valueType={"STRING"}
-            onValueChange={(val: string) => handleChange(val, "columnName")}
-            value={condition.columnName}
-            valueOptions={[]}
-            placeHolder={"Enter column name"}
-            length={200}
-          />
-          <Checkbox
-            id="isNumeric"
-            isChecked={condition.isNumeric}
-            onChange={() => {
-              addConditionToEdgeByIndex(
-                "isNumeric",
-                !condition.isNumeric,
-                edgeIndex,
-                conditionIndex,
-              );
-            }}
-            label="Is Numeric"
-            isSmall={true}
-          />
-        </div>
-
         <ValueComponent
           valueType={"STRING"}
           onValueChange={(val: string) => handleChange(val, "value")}

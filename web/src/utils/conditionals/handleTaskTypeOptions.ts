@@ -8,7 +8,7 @@ function handleTaskTypeOptions(step: Step) {
   switch (type) {
     case taskTypes.CLOUDWATCH_METRIC:
       options =
-        step?.metric.map((e, i) => ({
+        step?.metric?.map((e, i) => ({
           id: `${i}`,
           label: e.label,
         })) ?? [];
@@ -16,7 +16,7 @@ function handleTaskTypeOptions(step: Step) {
 
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       options =
-        step?.datadogMetric.map((e, i) => ({
+        step?.datadogMetric?.map((e, i) => ({
           id: `${i}`,
           label: e.label,
         })) ?? [];

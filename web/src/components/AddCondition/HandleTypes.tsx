@@ -3,6 +3,8 @@ import ValueComponent from "../ValueComponent";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
+import Checkbox from "../common/Checkbox/index.tsx";
+import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
 
 type HandleTypesPropTypes = {
   condition: any;
@@ -11,7 +13,7 @@ type HandleTypesPropTypes = {
 
 function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const type = condition.type;
 
   const handleChange = (val: string, type: string) => {
@@ -38,7 +40,34 @@ function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
     case "ROW_COUNT":
       return <></>;
     case "COLUMN_VALUE":
-      return <></>;
+      return (
+        <>
+          <div className="flex flex-wrap gap-2 items-center">
+            <ValueComponent
+              valueType={"STRING"}
+              onValueChange={(val: string) => handleChange(val, "columnName")}
+              value={condition.columnName}
+              valueOptions={[]}
+              placeHolder={"Enter column name"}
+              length={200}
+            />
+            <Checkbox
+              id="isNumeric"
+              isChecked={condition.isNumeric}
+              onChange={() => {
+                addConditionToEdgeByIndex(
+                  "isNumeric",
+                  !condition.isNumeric,
+                  edgeIndex,
+                  conditionIndex,
+                );
+              }}
+              label="Is Numeric"
+              isSmall={true}
+            />
+          </div>
+        </>
+      );
     default:
       return <></>;
   }
