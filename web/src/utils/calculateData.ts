@@ -33,14 +33,18 @@ export const calculateData = (
     height,
   });
 
-  const graphNodes = g.nodes().map((node) => {
-    const graphNode = g.node(node);
-    const newNode = nodes.find((e) => e.id === node);
-    newNode.position.x = graphNode.x;
-    newNode.position.y = graphNode.y;
+  const graphNodes = g
+    .nodes()
+    .map((node) => {
+      const graphNode = g.node(node);
+      const newNode = nodes.find((e) => e.id === node);
+      if (!newNode) return undefined;
+      newNode.position.x = graphNode.x;
+      newNode.position.y = graphNode.y;
 
-    return newNode;
-  });
+      return newNode;
+    })
+    .filter((e) => e !== undefined);
 
   return { nodes: graphNodes, edges };
 };

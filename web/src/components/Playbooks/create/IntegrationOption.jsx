@@ -40,7 +40,6 @@ function IntegrationOption({ option }) {
 
   const handleClick = () => {
     if (unsupported) return;
-    console.log("option", option);
     if (option.source) {
       dispatch(
         createStepWithSource({

@@ -1,22 +1,22 @@
 export const operationOptions = [
   {
-    id: "equals",
+    id: "EQUAL_O",
     label: "== (equal to)",
   },
   {
-    id: "greaterThan",
+    id: "GREATER_THAN_O",
     label: "> (greater than)",
   },
   {
-    id: "smallerThan",
+    id: "LESS_THAN_O",
     label: "< (smaller than)",
   },
   {
-    id: "greaterThanEquals",
+    id: "GREATER_THAN_EQUAL_O",
     label: ">= (greater than or equal to)",
   },
   {
-    id: "smallerThanEquals",
+    id: "LESS_THAN_EQUAL_O",
     label: "<= (smaller than or equal to)",
   },
 ];

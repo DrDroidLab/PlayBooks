@@ -1,10 +1,10 @@
 export const ruleOptions = [
   {
-    id: "or",
+    id: "OR_LO",
     label: "OR",
   },
   {
-    id: "and",
+    id: "AND_LO",
     label: "AND",
   },
 ];

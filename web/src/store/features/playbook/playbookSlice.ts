@@ -3,6 +3,7 @@ import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
+import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
 
 const emptyStep = {
   modelType: "",
@@ -38,6 +39,7 @@ const initialState: Playbook = {
   shouldScroll: undefined,
   currentVisibleStep: undefined,
   playbookEdges: [],
+  permanentView: undefined,
 };
 
 const playbookSlice = createSlice({
@@ -257,8 +259,12 @@ const playbookSlice = createSlice({
       if (step?.parentIndexes && parentExists) {
         step.parentIndexes.push(parentIndex);
       }
+      const id = parentExists
+        ? `edge-${parentIndex}-${index}`
+        : `edge-${index}`;
+      state.playbookEdges.filter((e) => e.id !== id);
       state.playbookEdges.push({
-        id: parentExists ? `edge-${parentIndex}-${index}` : `edge-${index}`,
+        id,
         source: parentExists ? `node-${parentIndex}` : `playbook`,
         target: `node-${index}`,
         type: parentExists ? "custom" : "",
@@ -305,6 +311,11 @@ const playbookSlice = createSlice({
           target: `node-${index}`,
         });
       }
+
+      state.currentStepIndex = index.toString();
+      state.permanentView = addConditions
+        ? PermanentDrawerTypes.STEP_DETAILS
+        : PermanentDrawerTypes.CONDITION;
     },
     toggleStep: (state, { payload }) => {
       // state.currentStepIndex =
@@ -318,6 +329,11 @@ const playbookSlice = createSlice({
         state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
       }
+      state.playbookEdges.filter(
+        (e) =>
+          e.source !== state.currentStepIndex ||
+          e.target !== state.currentStepIndex,
+      );
     },
     updateStep: (state, { payload }) => {
       const index = payload.index;

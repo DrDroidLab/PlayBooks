@@ -28,7 +28,7 @@ function RunButton({ index }: RunButtonProps) {
   const isExisting = useIsExisting();
   const [triggerStartExecution, { isLoading: executionLoading }] =
     useStartExecutionMutation();
-  const loading = step.outputLoading || executionLoading;
+  const loading = step?.outputLoading || executionLoading;
 
   const handleStartExecution = async () => {
     if (executionId) return;
@@ -50,7 +50,11 @@ function RunButton({ index }: RunButtonProps) {
     }
   };
 
-  if (isPrefetched || !step.source || unsupportedRunners.includes(step.source))
+  if (
+    isPrefetched ||
+    !step?.source ||
+    unsupportedRunners.includes(step?.source)
+  )
     return <></>;
 
   return (
