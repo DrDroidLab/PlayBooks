@@ -23,8 +23,6 @@ function Timeseries({ condition, conditionIndex }) {
     handleCondition(type, val, conditionIndex);
   };
 
-  console.log("wohoo", condition.type);
-
   return (
     <>
       <div className="flex items-center gap-1">
