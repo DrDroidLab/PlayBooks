@@ -23,13 +23,18 @@ import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
+import useHasChildren from "../../../hooks/useHasChildren.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
 export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
-  const { openDrawer, closeDrawer } = usePermanentDrawerState();
+  const {
+    toggle: togglePermanentDrawer,
+    openDrawer,
+    closeDrawer,
+  } = usePermanentDrawerState();
   const dispatch = useDispatch();
   const { currentStepIndex, executionId, steps } =
     useSelector(playbookSelector);
@@ -37,17 +42,23 @@ export default function CustomNode({ data }) {
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
+  const hasChildren = useHasChildren(step?.stepIndex);
 
   const handleNoAction = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleClick = () => {
+  const handleClick = (config = true) => {
     // if (!isEditing) return;
+    if (isPrefetched && !config) {
+      openDrawer(PermanentDrawerTypes.TIMELINE);
+      addAdditionalData({ showStepId: step.id ?? step.stepIndex });
+      return;
+    }
     dispatch(setCurrentStepIndex(data.index));
     addAdditionalData({});
-    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {
@@ -114,7 +125,7 @@ export default function CustomNode({ data }) {
         </div>
         <div className="flex items-center gap-1">
           <CustomButton
-            onClick={handleClick}
+            onClick={() => handleClick(false)}
             className="text-violet-500 cursor-pointer">
             <Tooltip title={"Show Config"}>
               <VisibilityRounded fontSize="medium" />
@@ -150,11 +161,13 @@ export default function CustomNode({ data }) {
           className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
         />
 
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
-        />
+        {hasChildren && (
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
+          />
+        )}
 
         {isEditing && (
           <NodeToolbar isVisible={true} position={Position.Bottom}>

@@ -12,6 +12,7 @@ import { setCurrentStepIndex } from "../store/features/playbook/playbookSlice.ts
 type DrawerState = {
   isOpen: boolean;
   openDrawer: (view: PermanentDrawerTypesKeys) => void;
+  toggle: (view: PermanentDrawerTypesKeys) => void;
   closeDrawer: () => void;
   addAdditionalData: (data: any) => void;
   additionalData: any;
@@ -25,6 +26,16 @@ function usePermanentDrawerState(): DrawerState {
   const isOpen = permanentView !== PermanentDrawerTypes.DEFAULT;
 
   const openDrawerFunction = (view: PermanentDrawerTypesKeys) => {
+    dispatch(setPermanentView(view));
+  };
+
+  const toggleDrawerFunction = (view: PermanentDrawerTypesKeys) => {
+    if (permanentView === view) {
+      dispatch(setPermanentView(PermanentDrawerTypes.DEFAULT));
+      dispatch(setCurrentStepIndex(null));
+      dispatch(setAdditionalState({}));
+      return;
+    }
     dispatch(setPermanentView(view));
   };
 
@@ -43,6 +54,7 @@ function usePermanentDrawerState(): DrawerState {
     isOpen,
     openDrawer: openDrawerFunction,
     closeDrawer: closeDrawerFunction,
+    toggle: toggleDrawerFunction,
     addAdditionalData,
     additionalData,
     permanentView,

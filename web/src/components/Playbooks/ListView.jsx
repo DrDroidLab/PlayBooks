@@ -7,17 +7,14 @@ import {
   toggleStep,
 } from "../../store/features/playbook/playbookSlice.ts";
 import Step from "./steps/Step.jsx";
-import StepActions from "./StepActions.jsx";
 import PlaybookTitle from "../common/PlaybookTitle.jsx";
 import GlobalVariables from "../common/GlobalVariable/index.jsx";
 import { setPlaybookState } from "../../store/features/timeRange/timeRangeSlice.ts";
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 const ListView = () => {
   const dispatch = useDispatch();
-  const { steps, executionId } = useSelector(playbookSelector);
-  const isPrefetched = useIsPrefetched();
+  const { steps } = useSelector(playbookSelector);
 
   useEffect(() => {
     dispatch(setPlaybookState());
@@ -25,9 +22,8 @@ const ListView = () => {
 
   return (
     <div className="flex flex-col h-full w-full lg:w-2/3 m-auto">
-      <div className="p-1 m-2 border rounded min-h-[100px]">
-        <GlobalVariables />
-      </div>
+      <GlobalVariables />
+
       <div className="flex-1 p-1 bg-white border rounded m-2 overflow-scroll">
         <div className="flex flex-col gap-2">
           {steps?.map((step, index) => (
@@ -48,7 +44,6 @@ const ListView = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          {!isPrefetched && !executionId && <StepActions />}
         </div>
       </div>
     </div>

@@ -41,6 +41,7 @@ const initialState: Playbook = {
   currentVisibleStep: undefined,
   playbookEdges: [],
   permanentView: undefined,
+  executionId: undefined,
 };
 
 const playbookSlice = createSlice({
@@ -104,6 +105,15 @@ const playbookSlice = createSlice({
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
+      const useState = payload.useState;
+
+      if (useState) {
+        state.name = "Copy of " + state.name;
+        state.currentPlaybook.isCopied = true;
+        state.isEditing = false;
+        return;
+      }
+
       state.name = "Copy of " + payload.name;
       state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
@@ -508,6 +518,7 @@ const playbookSlice = createSlice({
       state.view = initialState.view;
       state.playbookEdges = [];
       state.currentVisibleStep = undefined;
+      state.executionId = undefined;
     },
     setSteps(state, { payload }) {
       state.steps = payload;

@@ -22,9 +22,7 @@ function Builder({ isLog = false }) {
             </CustomButton>
           </>
         )}
-        <div className="bg-white p-1 rounded w-[300px]">
-          <GlobalVariables />
-        </div>
+        <GlobalVariables />
       </div>
       <AddDataDrawer />
       <TemplatesDrawer />

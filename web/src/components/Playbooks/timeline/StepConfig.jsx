@@ -4,18 +4,33 @@ import HandleOutput from "../steps/HandleOutput";
 import useVisibility from "../../../hooks/useVisibility.ts";
 import useScrollIntoView from "../../../hooks/useScrollIntoView.ts";
 import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 
 function StepConfig({ step, index, handleShowConfig }) {
   const [, setCurrentVisibleStep] = usePlaybookKey("currentVisibleStep");
+  const { additionalData } = usePermanentDrawerState();
   const scrollRef = useScrollIntoView(index);
-  const isVisible = useVisibility(scrollRef, 0.2);
+  const isVisible = useVisibility(scrollRef, 0.5);
+  const [, setShouldScroll] = usePlaybookKey("shouldScroll");
 
   useEffect(() => {
+    if (additionalData.showStepId === step?.id?.toString()) {
+      setCurrentVisibleStep(index);
+      setShouldScroll("default");
+    }
+
+    if (
+      additionalData.showStepId !== undefined &&
+      additionalData.showStepId !== null
+    ) {
+      return;
+    }
+
     if (isVisible) {
       setCurrentVisibleStep(index);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible]);
+  }, [isVisible, additionalData]);
 
   return (
     <div ref={scrollRef} className="border rounded p-1 bg-gray-100 h-full">
