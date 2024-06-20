@@ -8,7 +8,6 @@ import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 
 const emptyStep = {
-  id: generateUUIDWithoutHyphens(),
   modelType: "",
   source: "",
   assets: [],
@@ -273,6 +272,7 @@ const playbookSlice = createSlice({
       const index = state.steps.length;
       const currentStep = {
         ...emptyStep,
+        id: generateUUIDWithoutHyphens(),
         description: `Step-${index + 1}`,
         stepIndex: index,
         globalVariables: state.globalVariables ?? [],
@@ -308,6 +308,7 @@ const playbookSlice = createSlice({
         });
       }
 
+      console.log("current step", currentStep.id);
       state.currentStepId = currentStep.id.toString();
       state.permanentView = addConditions
         ? PermanentDrawerTypes.STEP_DETAILS

@@ -36,7 +36,7 @@ export default function CustomNode({ data }) {
     closeDrawer,
   } = usePermanentDrawerState();
   const dispatch = useDispatch();
-  const { currentStepId, executionId, steps } = useSelector(playbookSelector);
+  const { currentStepId, executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
@@ -78,10 +78,9 @@ export default function CustomNode({ data }) {
     handleNoAction(e);
     if (!isEditing) return;
     dispatch(addStep({ parentId: step?.id, addConditions: true }));
-    const id = `edge-${step?.id}-${steps[steps.length - 1].id}`;
     addAdditionalData({
       source,
-      id,
+      id: currentStepId,
     });
     openDrawer(PermanentDrawerTypes.CONDITION);
   };
