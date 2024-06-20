@@ -14,8 +14,6 @@ import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx"
 import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
-import useShowExecution from "../hooks/useShowExecution.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 
 const renderChildren = (children) => {
@@ -45,7 +43,6 @@ const Heading = ({
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const showExecution = useShowExecution();
   const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
 
   const handleRefreshButtonDisable = (isDisabled) => {
@@ -152,7 +149,6 @@ const Heading = ({
             </button>
           )} */}
           <HeadingPlaybookButtons />
-          {showExecution && <ExecutionButton />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

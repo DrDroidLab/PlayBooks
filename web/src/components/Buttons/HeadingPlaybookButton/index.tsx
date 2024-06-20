@@ -7,6 +7,7 @@ import useShowExecution from "../../../hooks/useShowExecution.ts";
 import ExecutionButton from "../ExecutionButton/index.tsx";
 import EditPlaybookButton from "../EditPlaybookButton/index.tsx";
 import CopyPlaybookButton from "../CopyPlaybookButton/index.tsx";
+import PastExecutionsButton from "../PastExecutionsButton/index.tsx";
 
 function HeadingPlaybookButtons() {
   const { view, currentPlaybook, isEditing } = useSelector(playbookSelector);
@@ -23,6 +24,7 @@ function HeadingPlaybookButtons() {
       {view === "builder" && !isPrefetched && <SavePlaybookButton />}
       {showExecution && <ExecutionButton />}
       {isPrefetched && <EditPlaybookButton />}
+      {!isPrefetched && <PastExecutionsButton />}
       {isEditing && !isPrefetched && <CopyPlaybookButton />}
     </div>
   );
