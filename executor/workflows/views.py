@@ -129,7 +129,12 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         requested_config = proto_to_dict(request_message.workflow_configuration)
         if requested_config:
             for key, value in requested_config.items():
-                workflow_config[key] = value
+                if key == 'global_variable_set':
+                    global_variable_set = workflow_config['global_variable_set']
+                    for k, v in value.items():
+                        global_variable_set[k] = v
+                else:
+                    workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
         execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
@@ -272,7 +277,12 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         requested_config = proto_to_dict(request_message.workflow_configuration)
         if requested_config:
             for key, value in requested_config.items():
-                workflow_config[key] = value
+                if key == 'global_variable_set':
+                    global_variable_set = workflow_config['global_variable_set']
+                    for k, v in value.items():
+                        global_variable_set[k] = v
+                else:
+                    workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
         execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
