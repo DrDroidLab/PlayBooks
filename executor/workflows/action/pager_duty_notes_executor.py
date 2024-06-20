@@ -1,5 +1,4 @@
 import logging
-import os
 
 from connectors.crud.connectors_crud import get_db_connectors
 from connectors.utils import generate_credentials_dict
@@ -22,9 +21,9 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
 
     def get_action_connector_processor(self, pagerduty_connector: ConnectorProto, **kwargs):
         if not pagerduty_connector:
-            db_connector = get_db_connectors(connector_type=Source.PAGER_DUTY)
+            db_connector = get_db_connectors(connector_type=Source.PAGER_DUTY, is_active=True)
             if not db_connector:
-                raise ValueError('Pagerduty connector is not configured')
+                raise ValueError('Active Pagerduty connector is not configured')
             db_connector = db_connector.first()
             pagerduty_connector = db_connector.unmasked_proto
 
@@ -34,11 +33,8 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
 
     def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
                 connector: ConnectorProto = None):
-        print("Executing PagerdutyNotesExecutor")
-        print("Action: ", action.pagerduty_notes)
         pd_config: PagerdutyNotesWorkflowAction = action.pagerduty_notes
-        incident_id = pd_config.pd_incident_id.value
-        print("Incident ID in executor: ", incident_id)
+        incident_id = pd_config.incident_id.value
         if not incident_id:
             raise ValueError('Pagerduty incident id is not configured in the notification config')
         logger.info(f"Sending note to incident {incident_id}")

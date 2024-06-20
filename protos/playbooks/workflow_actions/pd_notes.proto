@@ -5,5 +5,5 @@ import "google/protobuf/wrappers.proto";
 import "protos/base.proto";
 
 message PagerdutyNotesWorkflowAction {
-  google.protobuf.StringValue pd_incident_id  = 1;
+  google.protobuf.StringValue incident_id = 1;
 }

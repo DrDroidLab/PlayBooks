@@ -170,14 +170,13 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         if not playbook_executions:
             logger.error(f"Aborting workflow action execution as playbook execution not found for "
                          f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
-        thread_ts = None
-        pd_incident_id = None
+
         workflow_execution = workflow_executions.first()
-        print("wohoooooooo", workflow_execution)
-        print("wohoooooooo2", workflow_execution.metadata)
+        slack_thread_ts = None
+        pd_incident_id = None
         if workflow_execution.metadata:
-            thread_ts = workflow_execution.metadata.get('thread_ts', None)
-            pd_incident_id = workflow_execution.metadata.get('pd_incident_id', None)
+            slack_thread_ts = workflow_execution.metadata.get('thread_ts', None)
+            pd_incident_id = workflow_execution.metadata.get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
@@ -191,13 +190,15 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         for w_action in w_actions:
             if w_action.type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
                 w_action_dict = proto_to_dict(w_action)
-                w_action_dict['slack_thread_reply']['thread_ts'] = str(thread_ts)
+                w_action_dict['slack_thread_reply']['thread_ts'] = str(slack_thread_ts)
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             elif w_action.type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
+                if not pd_incident_id:
+                    logger.error(f"Pagerduty incident id not found for workflow_execution_id: {workflow_execution_id}")
+                    continue
                 w_action_dict = proto_to_dict(w_action)
-                print("wohoooooooo3", pd_incident_id)
-                w_action_dict['pagerduty_notes'] = {'pd_incident_id': pd_incident_id}
+                w_action_dict['pagerduty_notes'] = {'incident_id': pd_incident_id}
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             else:
@@ -252,7 +253,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
-    
+
     try:
         current_time = current_epoch_timestamp()
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
@@ -269,7 +270,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
-                                                                                        step_execution_logs)
+                                                                                           step_execution_logs)
 
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:

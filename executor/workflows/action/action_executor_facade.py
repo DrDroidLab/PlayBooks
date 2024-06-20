@@ -1,5 +1,5 @@
 from executor.workflows.action.action_executor import WorkflowActionExecutor
-from executor.workflows.action.pagerduty_notes_executor import PagerdutyNotesExecutor
+from executor.workflows.action.pager_duty_notes_executor import PagerdutyNotesExecutor
 from executor.workflows.action.slack_message_executor import SlackMessageExecutor
 from executor.workflows.action.slack_thread_reply_executor import SlackThreadReplyExecutor
 from protos.connectors.connector_pb2 import Connector
