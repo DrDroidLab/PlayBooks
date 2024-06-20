@@ -51,6 +51,11 @@ export default function CustomNode({ data }) {
 
   const handleClick = () => {
     // if (!isEditing) return;
+    if (isPrefetched) {
+      openDrawer(PermanentDrawerTypes.TIMELINE);
+      addAdditionalData({ showStepId: step.id ?? step.stepIndex });
+      return;
+    }
     dispatch(setCurrentStepIndex(data.index));
     addAdditionalData({});
     togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
@@ -84,6 +89,7 @@ export default function CustomNode({ data }) {
 
   return (
     <div
+      onClick={handleClick}
       className={`${
         currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
       } shadow-md rounded-md overflow-hidden`}>
