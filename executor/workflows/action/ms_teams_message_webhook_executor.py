@@ -47,60 +47,61 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                 playbook_name = interpretation.title.value
                 body_block = [{
                     "type": "TextBlock",
-                    "text": f"Hello team, here's the snapshot of Playbook [{playbook_name}]({playbook_url}) that's configured in the Workflow triggered.",
+                    "text": f"Hello team, here's the executed version of [{playbook_name}]({playbook_url}) that's configured in the Workflow triggered.",
                     "size": "large",
                     "wrap": True,
                     "style": "heading"
                 }]
-            step_execution = interpretation.title.value
-            interpretation_explainer = interpretation.description.value
-            interpretation_result = interpretation.summary.value
-            if interpretation.type == InterpretationProto.Type.IMAGE:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    },
-                    {
-                        "type": "Image",
-                        "url": interpretation.image_url.value,
-                        "size": "auto"
-                    }
-                ]
-            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    },
-                    {
-                        "type": "Image",
-                        "url": interpretation.file_path.value,
-                        "size": "auto"
-                    }
-                ]
             else:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    }
-                ]
+                step_execution = interpretation.title.value
+                interpretation_explainer = interpretation.description.value
+                interpretation_result = interpretation.summary.value
+                if interpretation.type == InterpretationProto.Type.IMAGE:
+                    body_block = [
+                        {
+                            "type": "TextBlock",
+                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        },
+                        {
+                            "type": "Image",
+                            "url": interpretation.image_url.value,
+                            "altText": step_execution
+                        }
+                    ]
+                elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                    body_block = [
+                        {
+                            "type": "TextBlock",
+                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        },
+                        {
+                            "type": "Image",
+                            "url": interpretation.file_path.value,
+                            "altText": step_execution
+                        }
+                    ]
+                else:
+                    body_block = [
+                        {
+                            "type": "TextBlock",
+                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }
+                    ]
             blocks.extend(body_block)
         payload = {"type": "message", "attachments": [{"contentType": "application/vnd.microsoft.card.adaptive",
                                                        "content": {"type": "AdaptiveCard", "version": "1.2",
                                                                    "body": blocks, "actions": [
                                                                {"type": "Action.OpenUrl",
-                                                                "title": f"View {playbook_name} Playbook",
+                                                                "title": f"View Current Execution for {playbook_name}",
                                                                 "url": f"{playbook_url}"}]}}]}
         message_params = {'payload': payload}
         try:

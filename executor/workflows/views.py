@@ -346,10 +346,6 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select the trigger type"))
 
-    if not workflow.entry_points[0].slack_channel_alert.slack_channel_id.value:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request", description="Select a slack channel"))
-
     if not workflow.actions or workflow.actions == []:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",

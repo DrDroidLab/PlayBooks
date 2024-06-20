@@ -105,8 +105,12 @@ def connectors_get(request_message: GetConnectorRequest) -> Union[GetConnectorRe
 @web_api(GetConnectorsListRequest)
 def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConnectorsListResponse, HttpResponse]:
     account: Account = get_request_account()
-    all_active_connectors = get_db_account_connectors(account, is_active=True)
-    all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
+    if request_message.connector_type:
+        all_active_connectors = get_db_account_connectors(account, is_active=True, connector_type=request_message.connector_type)
+        all_active_connector_protos = list(x.proto for x in all_active_connectors)
+    else:
+        all_active_connectors = get_db_account_connectors(account, is_active=True)
+        all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
     all_available_connectors = get_all_available_connectors()
     all_request_connectors = get_all_request_connectors()
     return GetConnectorsListResponse(success=BoolValue(value=True),
@@ -258,7 +262,6 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
 
     return GetSlackAlertTriggerOptionsResponse(
         alert_ops_options=AlertOpsOptions(comm_options=CommAlertOpsOptions(workspaces=comm_workspaces)))
-
 
 @web_api(GetSlackAlertsRequest)
 def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \

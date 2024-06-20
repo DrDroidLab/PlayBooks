@@ -241,6 +241,8 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         workflow.actions[0].slack_thread_reply.thread_ts.value = message_ts
     elif message_type == WorkflowActionProto.Type.SLACK_MESSAGE:
         logger.info("Sending test message")
+    elif message_type == WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
+        logger.info("Sending test MS Teams message")
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
