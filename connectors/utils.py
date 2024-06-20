@@ -20,7 +20,7 @@ from executor.source_processors.postgres_db_processor import PostgresDBProcessor
 from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
-from executor.source_processors.msteams_api_processor import MSTeamsApiProcessor
+from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import SourceKeyType, Source
@@ -204,8 +204,6 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['service_account_json'] = conn_key.key.value
     elif connector_type == Source.MS_TEAMS:
         for conn_key in connector_keys:
-            # if conn_key.key_type == SourceKeyType.MS_TEAMS_CONNECTOR_NAME:
-            #     credentials_dict['connector_name'] = conn_key.key.value
             if conn_key.key_type == SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL:
                 credentials_dict['webhook_url'] = conn_key.key.value
     else:

@@ -13,16 +13,16 @@ class MSTeamsApiProcessor(Processor):
         try:
             headers = {'Content-Type': 'application/json'}
             message_response = requests.post(self.__webhook_url, headers=headers, json=payload)
-            if message_response.status_code==200:
+            if message_response.status_code == 200:
                 try:
-                    if message_response.json()==1:
+                    if message_response.json() == 1:
                         return True
                 except Exception as e:
                     if "error" in message_response.text:
-                        logger.error("Error in sending message to MSTeams with error: "+message_response.text)
+                        logger.error("Error in sending message to MSTeams with error: " + message_response.text)
                     raise e
             else:
-                logger.error("Error in sending message to MSTeams with error: "+message_response.text)
+                logger.error("Error in sending message to MSTeams with error: " + message_response.text)
                 return False
         except Exception as e:
             logger.error(f"Error posting MSTeams message: {e}")
@@ -30,10 +30,10 @@ class MSTeamsApiProcessor(Processor):
     def test_connection(self):
         try:
             result = requests.post(self.__webhook_url, json={"text": "Test message"})
-            if (result.json()==1):
+            if result.json() == 1:
                 return True
         except Exception as e:
-            logger.error('Auth test failed:', e.response['error'])
+            logger.error(f"Error posting MSTeams message: {e}")
             return False
 
     def files_upload(self, file_path):
@@ -41,7 +41,7 @@ class MSTeamsApiProcessor(Processor):
             # code to upload file to Local server
             file_upload_successful = False
             if file_upload_successful:
-                return True            
+                return True
             return False
         except Exception as e:
             logger.error(f"Error posting MSTeams message: {e}")
