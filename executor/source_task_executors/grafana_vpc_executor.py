@@ -20,9 +20,9 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
         self.task_proto = Grafana
         self.task_type_callable_map = {
             Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
-                'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus based dashboard panels from Grafana VPC',
                 'category': 'Metrics'
             },
@@ -58,8 +58,9 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                                   label_option.value.value)
-            for key, value in global_variable_set.items():
-                promql_metric_query = promql_metric_query.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(vpc_connector)
 

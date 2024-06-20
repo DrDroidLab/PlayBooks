@@ -17,6 +17,75 @@ else:
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
+class _Function:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _FunctionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Function.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_F: _Function.ValueType  # 0
+    AVG_F: _Function.ValueType  # 1
+    SUM_F: _Function.ValueType  # 2
+    MIN_F: _Function.ValueType  # 3
+    MAX_F: _Function.ValueType  # 4
+    LAST_F: _Function.ValueType  # 5
+
+class Function(_Function, metaclass=_FunctionEnumTypeWrapper): ...
+
+UNKNOWN_F: Function.ValueType  # 0
+AVG_F: Function.ValueType  # 1
+SUM_F: Function.ValueType  # 2
+MIN_F: Function.ValueType  # 3
+MAX_F: Function.ValueType  # 4
+LAST_F: Function.ValueType  # 5
+global___Function = Function
+
+class _Operator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _OperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Operator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_O: _Operator.ValueType  # 0
+    GREATER_THAN_O: _Operator.ValueType  # 1
+    GREATER_THAN_EQUAL_O: _Operator.ValueType  # 2
+    LESS_THAN_O: _Operator.ValueType  # 3
+    LESS_THAN_EQUAL_O: _Operator.ValueType  # 4
+    EQUAL_O: _Operator.ValueType  # 5
+    NOT_EQUAL_O: _Operator.ValueType  # 6
+    LIKE_O: _Operator.ValueType  # 7
+
+class Operator(_Operator, metaclass=_OperatorEnumTypeWrapper): ...
+
+UNKNOWN_O: Operator.ValueType  # 0
+GREATER_THAN_O: Operator.ValueType  # 1
+GREATER_THAN_EQUAL_O: Operator.ValueType  # 2
+LESS_THAN_O: Operator.ValueType  # 3
+LESS_THAN_EQUAL_O: Operator.ValueType  # 4
+EQUAL_O: Operator.ValueType  # 5
+NOT_EQUAL_O: Operator.ValueType  # 6
+LIKE_O: Operator.ValueType  # 7
+global___Operator = Operator
+
+class _LogicalOperator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _LogicalOperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_LogicalOperator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_LO: _LogicalOperator.ValueType  # 0
+    AND_LO: _LogicalOperator.ValueType  # 1
+    OR_LO: _LogicalOperator.ValueType  # 2
+    NOT_LO: _LogicalOperator.ValueType  # 3
+
+class LogicalOperator(_LogicalOperator, metaclass=_LogicalOperatorEnumTypeWrapper): ...
+
+UNKNOWN_LO: LogicalOperator.ValueType  # 0
+AND_LO: LogicalOperator.ValueType  # 1
+OR_LO: LogicalOperator.ValueType  # 2
+NOT_LO: LogicalOperator.ValueType  # 3
+global___LogicalOperator = LogicalOperator
+
 class _Source:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType

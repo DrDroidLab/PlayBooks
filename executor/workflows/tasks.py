@@ -202,7 +202,7 @@ workflow_action_execution_failure_notifier = publish_task_failure(workflow_actio
 workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
 
 
-def test_workflow_notification(account_id, workflow, message_type):
+def test_workflow_notification(user, account_id, workflow, message_type):
     try:
         account = Account.objects.get(id=account_id)
     except Exception as e:
@@ -217,6 +217,7 @@ def test_workflow_notification(account_id, workflow, message_type):
         return
     playbook = playbooks.first()
     pb_proto = playbook.proto
+
     if message_type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
         logger.info("Sending test thread reply message")
         channel_id = workflow.entry_points[0].slack_channel_alert.slack_channel_id.value
@@ -241,10 +242,25 @@ def test_workflow_notification(account_id, workflow, message_type):
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
+    
     try:
-        step_execution_logs = execute_playbook_impl(tr, account, pb_proto)
-        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(pb_proto,
-                                                                                           step_execution_logs)
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+
+        if workflow.configuration.generate_summary and workflow.configuration.generate_summary.value:
+            execute_playbook(account_id, playbook_id, playbook_execution.id, proto_to_dict(time_range))
+
+        playbook_executions = get_db_playbook_execution(account, playbook_execution_id=playbook_execution.id)
+        playbook_execution = playbook_executions.first()
+        pe_proto: PlaybookExecution = playbook_execution.proto
+        p_proto = pe_proto.playbook
+        step_execution_logs = pe_proto.step_execution_logs
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
+                                                                                        step_execution_logs)
+
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")

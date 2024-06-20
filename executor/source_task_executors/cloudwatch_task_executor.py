@@ -21,16 +21,16 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         self.task_proto = Cloudwatch
         self.task_type_callable_map = {
             Cloudwatch.TaskType.METRIC_EXECUTION: {
-                'task_type': 'METRIC_EXECUTION',
                 'executor': self.execute_metric_execution,
                 'model_types': [SourceModelType.CLOUDWATCH_METRIC],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Metric from Cloudwatch',
                 'category': 'Metrics'
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
-                'task_type': 'FILTER_LOG_EVENTS',
                 'executor': self.execute_filter_log_events,
                 'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from Cloudwatch',
                 'category': 'Logs'
             },
@@ -140,8 +140,9 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             region = task.region.value
             log_group = task.log_group_name.value
             query_pattern = task.filter_query.value
-            for key, value in global_variable_set.items():
-                query_pattern = query_pattern.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    query_pattern = query_pattern.replace(key, str(value))
 
             logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
                                                                 client_type='logs')

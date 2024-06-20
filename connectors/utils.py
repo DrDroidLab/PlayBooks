@@ -17,6 +17,7 @@ from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
+from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
@@ -40,7 +41,8 @@ connector_type_api_processor_map = {
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
     Source.GRAFANA_MIMIR: MimirApiProcessor,
     Source.AZURE: AzureApiProcessor,
-    Source.GKE: GkeApiProcessor
+    Source.GKE: GkeApiProcessor,
+    Source.REMOTE_SERVER: RemoteServerProcessor
 }
 
 
@@ -169,9 +171,11 @@ def generate_credentials_dict(connector_type, connector_keys):
     elif connector_type == Source.REMOTE_SERVER:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
-                credentials_dict['remote_host'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_USER:
-                credentials_dict['remote_user'] = conn_key.key.value
+                ssh_servers = conn_key.key.value
+                ssh_servers = ssh_servers.replace(' ', '')
+                ssh_servers = ssh_servers.split(',')
+                ssh_servers = list(filter(None, ssh_servers))
+                credentials_dict['remote_host'] = ssh_servers[0]
             elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PEM:
                 credentials_dict['remote_pem'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PASSWORD:

@@ -20,9 +20,9 @@ class BashSourceManager(PlaybookSourceManager):
         self.task_proto = Bash
         self.task_type_callable_map = {
             Bash.TaskType.COMMAND: {
-                'task_type': 'COMMAND',
                 'executor': self.execute_command,
                 'model_types': [SourceModelType.SSH_SERVER],
+                'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute a BASH Command',
                 'category': 'Actions'
             },
@@ -62,12 +62,13 @@ class BashSourceManager(PlaybookSourceManager):
 
             command_str = bash_command.command.value
             commands = command_str.split('\n')
-            for key, value in global_variable_set.items():
-                updated_commands = []
-                for command in commands:
-                    command = command.replace(f"{{{key}}}", value)
-                    updated_commands.append(command)
-                commands = updated_commands
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    updated_commands = []
+                    for command in commands:
+                        command = command.replace(f"{{{key}}}", value)
+                        updated_commands.append(command)
+                    commands = updated_commands
             try:
                 outputs = {}
                 ssh_client = self.get_connector_processor(remote_server_connector)
