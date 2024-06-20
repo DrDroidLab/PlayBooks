@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 
-function useHasChildren(index: number) {
+function useHasChildren(id: string) {
   const { playbookEdges } = useSelector(playbookSelector);
 
   const childEdeges = (playbookEdges ?? []).findIndex(
-    (e) => e.source === `node-${index}`,
+    (e) => e.source === `node-${id}`,
   );
 
   return childEdeges !== -1;

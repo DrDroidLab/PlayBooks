@@ -3,17 +3,6 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import { PlaybookContractStep, Step } from "../../../types.ts";
 import conditionToRule from "./conditionToRule.ts";
 
-function extractNumbers(input: string) {
-  if (!input) return [];
-  // Use regular expression to match numbers in the string
-  const numbers = input.match(/\d+/g);
-
-  // Convert the matched strings to integers
-  const result = numbers ? numbers.map(Number) : [];
-
-  return result;
-}
-
 export const stateToStepRelation = (
   playbookContractSteps: PlaybookContractStep[],
 ) => {
@@ -22,8 +11,10 @@ export const stateToStepRelation = (
   const relations = (playbookEdges ?? [])
     .filter((e) => e.source !== "playbook")
     .map((edge) => {
-      const [parentIndex] = extractNumbers(edge.source);
-      const [childIndex] = extractNumbers(edge.target);
+      const parentId = edge.source.split("-")[1];
+      const childId = edge.target.split("-")[1];
+      const parentIndex = steps.findIndex((s) => s.id === parentId);
+      const childIndex = steps.findIndex((s) => s.id === childId);
       const parent = playbookContractSteps[parentIndex];
       const child = playbookContractSteps[childIndex];
 

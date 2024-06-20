@@ -40,8 +40,8 @@ export default function CustomNode({ data }) {
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
-  const source = `node-${step?.stepIndex}`;
-  const hasChildren = useHasChildren(step?.stepIndex);
+  const source = `node-${step?.id}`;
+  const hasChildren = useHasChildren(step?.id);
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -52,10 +52,10 @@ export default function CustomNode({ data }) {
     // if (!isEditing) return;
     if (isPrefetched && !config) {
       openDrawer(PermanentDrawerTypes.TIMELINE);
-      addAdditionalData({ showStepId: step.id ?? step.stepIndex });
+      addAdditionalData({ showStepId: step.id });
       return;
     }
-    dispatch(setCurrentStepId(data.index));
+    dispatch(setCurrentStepId(step.id));
     addAdditionalData({});
     togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
@@ -63,7 +63,7 @@ export default function CustomNode({ data }) {
   const handleDelete = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(deleteStep(data.index));
+    dispatch(deleteStep(step.id));
     closeDrawer();
   };
 
@@ -71,14 +71,14 @@ export default function CustomNode({ data }) {
     handleNoAction(e);
     if (!isEditing) return;
     toggleAddData();
-    addAdditionalData({ parentIndex: data.index });
+    addAdditionalData({ parentId: step.id });
   };
 
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(addStep({ parentIndex: step?.stepIndex, addConditions: true }));
-    const id = `edge-${step?.stepIndex}-${steps.length + 1}`;
+    dispatch(addStep({ parentId: step?.id, addConditions: true }));
+    const id = `edge-${step?.id}-${steps[steps.length - 1].id}`;
     addAdditionalData({
       source,
       id,
