@@ -3,7 +3,6 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,11 +23,10 @@ function RunButton({ index }: RunButtonProps) {
   const [, setSearchParams] = useSearchParams();
   const [step] = useCurrentStep(index);
   const dispatch = useDispatch();
-  const isPrefetched = useIsPrefetched();
   const isExisting = useIsExisting();
   const [triggerStartExecution, { isLoading: executionLoading }] =
     useStartExecutionMutation();
-  const loading = step.outputLoading || executionLoading;
+  const loading = step?.outputLoading || executionLoading;
 
   const handleStartExecution = async () => {
     if (executionId) return;
@@ -40,6 +38,7 @@ function RunButton({ index }: RunButtonProps) {
   };
 
   const handleExecuteStep = async () => {
+    if (loading) return;
     if (isExisting && !executionId && step.id) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
@@ -50,19 +49,20 @@ function RunButton({ index }: RunButtonProps) {
     }
   };
 
-  if (isPrefetched || !step.source || unsupportedRunners.includes(step.source))
-    return <></>;
+  if (!step?.source || unsupportedRunners.includes(step?.source)) return <></>;
 
   return (
     <Tooltip title="Run this Step">
-      <CustomButton onClick={handleExecuteStep}>
-        {loading ? "Running" : "Run"}
-        {loading ? (
-          <CircularProgress color="inherit" size={20} />
-        ) : (
-          <PlayArrowRounded fontSize="medium" />
-        )}
-      </CustomButton>
+      <>
+        <CustomButton onClick={handleExecuteStep}>
+          {loading ? "Running" : "Run"}
+          {loading ? (
+            <CircularProgress color="inherit" size={20} />
+          ) : (
+            <PlayArrowRounded fontSize="medium" />
+          )}
+        </CustomButton>
+      </>
     </Tooltip>
   );
 }

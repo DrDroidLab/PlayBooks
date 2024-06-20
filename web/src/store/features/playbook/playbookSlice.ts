@@ -1,7 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
+import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
+import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
+import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 
 const emptyStep = {
   modelType: "",
@@ -12,6 +15,8 @@ const emptyStep = {
   showError: false,
   stepType: null,
   action: {},
+  requireCondition: false,
+  currentConditionParentIndex: undefined,
 };
 
 const initialState: Playbook = {
@@ -31,7 +36,12 @@ const initialState: Playbook = {
   isEditing: false,
   lastUpdatedAt: null,
   currentStepIndex: null,
-  view: "step",
+  view: "builder",
+  shouldScroll: undefined,
+  currentVisibleStep: undefined,
+  playbookEdges: [],
+  permanentView: undefined,
+  executionId: undefined,
 };
 
 const playbookSlice = createSlice({
@@ -91,9 +101,19 @@ const playbookSlice = createSlice({
         };
       });
       state.steps = playbookToSteps(payload, false);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
+      const useState = payload.useState;
+
+      if (useState) {
+        state.name = "Copy of " + state.name;
+        state.currentPlaybook.isCopied = true;
+        state.isEditing = false;
+        return;
+      }
+
       state.name = "Copy of " + payload.name;
       state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
@@ -114,6 +134,7 @@ const playbookSlice = createSlice({
       });
       state.currentPlaybook.isCopied = true;
       state.steps = playbookToSteps(payload, true);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = false;
     },
     setErrors(state, { payload }) {
@@ -145,6 +166,7 @@ const playbookSlice = createSlice({
       });
       state.isEditing = true;
       state.steps = playbookToSteps(payload, false);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
     },
     setName(state, { payload }) {
       state.name = payload;
@@ -196,9 +218,12 @@ const playbookSlice = createSlice({
         step.isOpen = false;
       });
       const index = state.steps.length;
+      const parentIndex = payload.parentIndex;
+      const parentExists = parentIndex !== null && parentIndex !== undefined;
       state.steps.push({
         ...{
           source: payload.source,
+          stepIndex: index,
           taskType: payload.taskType,
           modelType: payload.modelType,
           selectedSource: payload.key,
@@ -214,20 +239,99 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
+          parentIndexes: parentExists ? [parentIndex] : [],
+          position: {
+            x: 0,
+            y: 0,
+          },
+          requireCondition: payload.requireCondition ?? false,
+          currentConditionParentIndex: payload.currentConditionParentIndex,
+          resultType: payload.resultType,
         },
         globalVariables: state.globalVariables ?? [],
       });
 
-      // state.currentStepIndex = index.toString();
+      if (parentExists) {
+        state.playbookEdges.push({
+          id: `edge-${parentIndex}-${index}`,
+          source: `node-${parentIndex}`,
+          target: `node-${index}`,
+          type: "custom",
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${index}`,
+          source: `playbook`,
+          target: `node-${index}`,
+        });
+      }
+
+      state.currentStepIndex = index.toString();
     },
-    addStep: (state) => {
+    addParentIndex: (state, { payload }) => {
+      const { index, parentIndex } = payload;
+      const parentExists = parentIndex !== undefined && parentIndex !== null;
+      const step = state.steps[index];
+      if (step?.parentIndexes && parentExists) {
+        step.parentIndexes.push(parentIndex);
+      }
+      const id = parentExists
+        ? `edge-${parentIndex}-${index}`
+        : `edge-${index}`;
+      state.playbookEdges.filter((e) => e.id !== id);
+      state.playbookEdges.push({
+        id,
+        source: parentExists ? `node-${parentIndex}` : `playbook`,
+        target: `node-${index}`,
+        type: parentExists ? "custom" : "",
+      });
+    },
+    addStep: (state, { payload }) => {
+      const { parentIndex, addConditions } = payload;
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
+      const index = state.steps.length;
       state.steps.push({
         ...emptyStep,
+        description: `Step-${index + 1}`,
+        stepIndex: index,
         globalVariables: state.globalVariables ?? [],
+        position: {
+          x: 0,
+          y: 0,
+        },
+        parentIndexes: parentIndex !== undefined ? [parentIndex] : [],
       });
+      if (parentIndex !== undefined) {
+        state.playbookEdges.push({
+          id: `edge-${parentIndex}-${index}`,
+          source: `node-${parentIndex}`,
+          target: `node-${index}`,
+          type: "custom",
+          conditions: addConditions
+            ? [
+                {
+                  function: "",
+                  operation: "",
+                  value: "",
+                },
+              ]
+            : [],
+          globalRule: addConditions ? ruleOptions[0].id : undefined,
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${index}`,
+          source: `playbook`,
+          target: `node-${index}`,
+        });
+      }
+
+      state.currentStepIndex = index.toString();
+      state.permanentView = addConditions
+        ? PermanentDrawerTypes.STEP_DETAILS
+        : PermanentDrawerTypes.CONDITION;
     },
     toggleStep: (state, { payload }) => {
       // state.currentStepIndex =
@@ -240,6 +344,10 @@ const playbookSlice = createSlice({
       if (index !== "" && index !== null && index !== undefined) {
         state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
+        state.playbookEdges = state.playbookEdges.filter(
+          (e) => e.source !== `node-${index}` && e.target !== `node-${index}`,
+        );
+        state.permanentView = PermanentDrawerTypes.DEFAULT;
       }
     },
     updateStep: (state, { payload }) => {
@@ -253,39 +361,6 @@ const playbookSlice = createSlice({
     changeProgress: (state, { payload }) => {
       if (state.steps[payload.index])
         state.steps[payload.index].executioninprogress = payload.progress;
-    },
-    selectSourceAndModel: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        index: number;
-        source: string;
-        modelType: string;
-        key: string;
-      }>,
-    ) => {
-      const currentStep = state.steps[payload.index];
-      if (
-        currentStep.source === payload.source &&
-        currentStep.modelType === payload.modelType
-      )
-        return;
-      state.steps[payload.index] = {
-        source: payload.source,
-        description: state?.steps[payload.index]?.description,
-        notes: state?.steps[payload.index]?.notes,
-        assets: [],
-        isOpen: true,
-        isPlayground: false,
-        globalVariables: state.globalVariables ?? [],
-        showError: false,
-        stepType: "data",
-        action: {},
-      };
-      state.steps[payload.index].source = payload.source;
-      state.steps[payload.index].modelType = payload.modelType;
-      state.steps[payload.index].selectedSource = payload.key;
     },
     selectNamespace: (state, { payload }) => {
       state.steps[payload.index].namespaceName = payload.namespace;
@@ -441,6 +516,9 @@ const playbookSlice = createSlice({
       state.lastUpdatedAt = null;
       state.currentStepIndex = null;
       state.view = initialState.view;
+      state.playbookEdges = [];
+      state.currentVisibleStep = undefined;
+      state.executionId = undefined;
     },
     setSteps(state, { payload }) {
       state.steps = payload;
@@ -528,12 +606,12 @@ export const {
   showStepConfig,
   createStepWithSource,
   addStep,
+  addParentIndex,
   toggleStep,
   deleteStep,
   updateStep,
   updateTitle,
   changeProgress,
-  selectSourceAndModel,
   setModelTypeOptions,
   selectNamespace,
   setTextNotes,

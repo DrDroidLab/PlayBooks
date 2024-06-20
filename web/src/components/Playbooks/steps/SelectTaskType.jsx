@@ -26,6 +26,7 @@ function SelectTaskType({ index }) {
         : currentConnector.source;
     updateCardByIndex("modelType", modelType, currentIndex);
     updateCardByIndex("taskType", id, currentIndex);
+    updateCardByIndex("resultType", currentTaskType.result_type, currentIndex);
     if (!step.userEnteredDescription)
       updateCardByIndex("description", val.type.display_name, currentIndex);
   }

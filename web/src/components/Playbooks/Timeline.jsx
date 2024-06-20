@@ -11,11 +11,12 @@ import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.jsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
+import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 
-function Timeline({ setTimelineOpen }) {
+function Timeline() {
   const { executionId } = useSelector(playbookSelector);
   const playbookSteps = useSelector(stepsSelector);
-  const [triggerGetPlaybookExeution, { isFetching }] =
+  const [triggerGetPlaybookExeution, { isLoading }] =
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
@@ -41,11 +42,10 @@ function Timeline({ setTimelineOpen }) {
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
     dispatch(showStepConfig(index));
-    setTimelineOpen(false);
   };
 
   useEffect(() => {
-    if (!executingStep?.outputLoading) {
+    if (!executingStep?.outputLoading && executionId) {
       populateData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +56,7 @@ function Timeline({ setTimelineOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [executionId]);
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loading title="Your timeline is loading..." />;
   }
 
@@ -87,6 +87,8 @@ function Timeline({ setTimelineOpen }) {
           stepIndex={lastStep}
         />
       )}
+
+      <ExecutionNavigateButtons steps={steps} />
     </main>
   );
 }

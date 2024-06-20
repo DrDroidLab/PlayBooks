@@ -1,18 +1,18 @@
-import React, { useState } from "react";
 import hljs from "highlight.js/lib/core";
 import yaml from "highlight.js/lib/languages/yaml";
 import curl from "highlight.js/lib/languages/bash";
-import CustomDrawer from "../CustomDrawer";
-import CopyCode from ".";
+import CustomDrawer from "../CustomDrawer/index.jsx";
+import CopyCode from "../CopyCode/index.jsx";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("curl", curl);
 
-function CopyCodeDrawer({ content, language, title, subtitle, help }) {
-  const [isOpen, setIsOpen] = useState(true);
+const id = DrawerTypes.COPY_CODE;
 
+function CopyCodeDrawer({ content, language, title, subtitle, help }) {
   return (
-    <CustomDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
+    <CustomDrawer id={id}>
       <div className="p-2">
         <div>
           <h1 className="font-bold text-xl">{title}</h1>

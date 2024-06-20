@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
@@ -8,20 +7,18 @@ import {
   handleTriggerInput,
   handleTriggerSelect,
 } from "../utils/handleInputs.ts";
-import AlertsTable from "./AlertsTable.jsx";
 import { CircularProgress } from "@mui/material";
 import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
-import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import { RefreshRounded } from "@mui/icons-material";
+import AlertsDrawer from "../../common/Drawers/AlertsDrawer.jsx";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 function SlackTriggerForm() {
   const { data: options, isFetching, refetch } = useGetTriggerOptionsQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
-  const [
-    triggerSearchTrigger,
-    { data: searchTriggerResult, isFetching: searchLoading },
-  ] = useLazyGetSearchTriggersQuery();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [triggerSearchTrigger] = useLazyGetSearchTriggersQuery();
+  const { toggle } = useDrawerState(DrawerTypes.ALERTS);
 
   const handleSubmit = () => {
     triggerSearchTrigger({
@@ -30,12 +27,11 @@ function SlackTriggerForm() {
       alert_type: currentWorkflow?.trigger?.source,
       filter_string: currentWorkflow?.trigger?.filterString,
     });
-    setIsDrawerOpen(true);
+    toggle();
   };
   const sources = options?.alert_types?.filter(
     (e) => e.channel_id === currentWorkflow.trigger.channel?.channel_id,
   );
-  const data = searchTriggerResult?.alerts ?? [];
 
   return (
     <div className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
@@ -97,17 +93,7 @@ function SlackTriggerForm() {
         className="text-xs bg-transparent hover:bg-violet-500 p-1 border-violet-500 border hover:text-white text-violet-500 rounded transition-all">
         Search
       </button>
-      <CustomDrawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
-        {searchLoading ? (
-          <CircularProgress size={20} style={{ marginLeft: "10px" }} />
-        ) : data ? (
-          <div className="bg-gray-100 p-2 h-full">
-            <AlertsTable data={data} />
-          </div>
-        ) : (
-          <></>
-        )}
-      </CustomDrawer>
+      <AlertsDrawer />
     </div>
   );
 }

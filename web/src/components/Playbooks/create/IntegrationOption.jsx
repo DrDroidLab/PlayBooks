@@ -9,8 +9,16 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 
-function IntegrationOption({ option, setIsOpen }) {
+function IntegrationOption({ option }) {
+  const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
+  const { openDrawer } = usePermanentDrawerState();
+  const addtionalState = useSelector(additionalStateSelector);
   const dispatch = useDispatch();
   const { connectorOptionsMap } = useSelector(playbookSelector);
   const unsupported = unsupportedBuilderOptions.includes(
@@ -46,9 +54,15 @@ function IntegrationOption({ option, setIsOpen }) {
           taskType: option.task_type,
           key: option.id,
           description: option.display_name,
+          parentIndex: addtionalState?.parentIndex,
+          requireCondition: addtionalState?.requireCondition,
+          currentConditionParentIndex:
+            addtionalState?.currentConditionParentIndex,
+          resultType: option.result_type,
         }),
       );
-      setIsOpen(false);
+      toggle();
+      openDrawer(PermanentDrawerTypes.STEP_DETAILS);
     }
   };
 
