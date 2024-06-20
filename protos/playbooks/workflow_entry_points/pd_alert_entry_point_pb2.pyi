@@ -16,30 +16,26 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class PagerDutyAlertEntryPoint(google.protobuf.message.Message):
+class PagerDutyIncidentEntryPoint(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     PD_INCIDENT_ID_FIELD_NUMBER: builtins.int
     PD_INCIDENT_TITLE_FIELD_NUMBER: builtins.int
     PD_SERVICE_ID_FIELD_NUMBER: builtins.int
-    PD_SERVICE_NAME_FIELD_NUMBER: builtins.int
     @property
     def pd_incident_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def pd_incident_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def pd_service_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def pd_service_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
         pd_incident_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         pd_incident_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
         pd_service_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        pd_service_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["pd_incident_id", b"pd_incident_id", "pd_incident_title", b"pd_incident_title", "pd_service_id", b"pd_service_id", "pd_service_name", b"pd_service_name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["pd_incident_id", b"pd_incident_id", "pd_incident_title", b"pd_incident_title", "pd_service_id", b"pd_service_id", "pd_service_name", b"pd_service_name"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["pd_incident_id", b"pd_incident_id", "pd_incident_title", b"pd_incident_title", "pd_service_id", b"pd_service_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["pd_incident_id", b"pd_incident_id", "pd_incident_title", b"pd_incident_title", "pd_service_id", b"pd_service_id"]) -> None: ...
 
-global___PagerDutyAlertEntryPoint = PagerDutyAlertEntryPoint
+global___PagerDutyIncidentEntryPoint = PagerDutyIncidentEntryPoint

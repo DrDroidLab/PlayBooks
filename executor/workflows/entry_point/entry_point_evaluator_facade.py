@@ -29,4 +29,4 @@ entry_point_evaluator_facade = WorkflowEntryPointEvaluatorFacade()
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.API, ApiEntryPointEvaluator())
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.SLACK_CHANNEL_ALERT,
                                       SlackChannelAlertEntryPointEvaluator())
-entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.PAGERDUTY_ALERT, PagerDutyAlertEntryPointEvaluator())
+entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.PAGERDUTY_INCIDENT, PagerDutyAlertEntryPointEvaluator())

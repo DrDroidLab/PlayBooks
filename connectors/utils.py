@@ -16,6 +16,7 @@ from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.pd_api_processor import PdApiProcessor
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
@@ -40,7 +41,8 @@ connector_type_api_processor_map = {
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
     Source.GRAFANA_MIMIR: MimirApiProcessor,
     Source.AZURE: AzureApiProcessor,
-    Source.GKE: GkeApiProcessor
+    Source.GKE: GkeApiProcessor,
+    Source.PAGER_DUTY: PdApiProcessor
 }
 
 
@@ -196,6 +198,10 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['project_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GKE_SERVICE_ACCOUNT_JSON:
                 credentials_dict['service_account_json'] = conn_key.key.value
+    elif connector_type == Source.PAGER_DUTY:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.PAGER_DUTY_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
     else:
         return None
     return credentials_dict

@@ -6,9 +6,9 @@ import "google/protobuf/wrappers.proto";
 
 message PagerDutyIncidentModel {
   google.protobuf.StringValue incident_id = 1;
-  google.protobuf.StringValue priority = 2;
-  google.protobuf.StringValue created_at = 3;
-  google.protobuf.StringValue alerts = 4;
+  google.protobuf.StringValue title = 2;
+  google.protobuf.StringValue service_id = 3;
+  google.protobuf.StringValue created_at= 4;
 }
 
 message PagerDutyAlertModel {

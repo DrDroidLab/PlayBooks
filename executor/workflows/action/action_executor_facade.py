@@ -1,4 +1,5 @@
 from executor.workflows.action.action_executor import WorkflowActionExecutor
+from executor.workflows.action.pagerduty_notes_executor import PagerdutyNotesExecutor
 from executor.workflows.action.slack_message_executor import SlackMessageExecutor
 from executor.workflows.action.slack_thread_reply_executor import SlackThreadReplyExecutor
 from protos.connectors.connector_pb2 import Connector
@@ -25,3 +26,4 @@ class WorkflowActionExecutorFacade:
 action_executor_facade = WorkflowActionExecutorFacade()
 action_executor_facade.register(WorkflowAction.Type.SLACK_MESSAGE, SlackMessageExecutor())
 action_executor_facade.register(WorkflowAction.Type.SLACK_THREAD_REPLY, SlackThreadReplyExecutor())
+action_executor_facade.register(WorkflowAction.Type.PAGERDUTY_NOTES, PagerdutyNotesExecutor())

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message PagerdutyNotesWorkflowAction {
+  google.protobuf.StringValue pd_incident_id  = 1;
+}
