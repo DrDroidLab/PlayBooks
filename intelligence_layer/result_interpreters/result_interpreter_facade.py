@@ -51,7 +51,6 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
                             description=StringValue(value=object_url))
     ]
     for i, step_log in enumerate(step_logs):
-        print(step_log)
         try:
             task_interpretations = []
             for task_execution_log in step_log.task_execution_logs:
@@ -69,14 +68,10 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
                 type=InterpretationProto.Type.SUMMARY,
                 title=title,
             )
-            print(interpretations)
             interpretations.append(base_step_interpretation)
-            print(interpretations)
             if step_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
                 interpretations.append(step_log.step_interpretation)
-            print(interpretations)
             interpretations.extend(task_interpretations)
-            print(interpretations)
         except Exception as e:
             logger.error(f"Failed to interpret playbook execution log with error: {e}")
             continue
