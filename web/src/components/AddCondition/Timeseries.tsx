@@ -6,7 +6,7 @@ import { additionalStateSelector } from "../../store/features/drawers/drawersSli
 import { useSelector } from "react-redux";
 import ValueComponent from "../ValueComponent/index.jsx";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
-import extractNumbers from "../../utils/extractNumbers.ts";
+import extractSource from "../../utils/extractSource.ts";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
@@ -15,7 +15,7 @@ import HandleTypes from "./HandleTypes.tsx";
 function Timeseries({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
-  const [sourceId] = extractNumbers(source);
+  const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 

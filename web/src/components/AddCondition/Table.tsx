@@ -4,7 +4,7 @@ import ValueComponent from "../ValueComponent";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
-import extractNumbers from "../../utils/extractNumbers.ts";
+import extractNumbers from "../../utils/extractSource.ts";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";

@@ -13,7 +13,7 @@ const initialPlaybookNode = {
 export const getNodes = (steps: Step[]) => {
   const nodes = steps.map((step, index) => {
     return {
-      id: `node-${step.stepIndex}`,
+      id: `node-${step.id}`,
       position: {
         x: step.position?.x ?? 0,
         y: step.position?.y ?? 0,
