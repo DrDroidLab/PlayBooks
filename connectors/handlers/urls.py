@@ -5,4 +5,5 @@ from . import views as handler_views
 urlpatterns = [
     # Slack event subscription webhook
     path('slack_bot/handle_callback_events', handler_views.slack_bot_handle_callback_events),
+    path('slack_bot/app_manifest_create', handler_views.slack_manifest_create),
 ]

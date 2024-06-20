@@ -10,20 +10,12 @@ import "highlight.js/styles/default.css";
 import CopyCodeDrawer from "../../common/CopyCode/CopyCodeDrawer.jsx";
 
 function SlackManifestGenerator() {
-  const [host, setHost] = useState("");
-  const dispatch = useDispatch();
   const [triggerManifest, { isLoading }] = useGenerateManifestMutation();
   const currentConnector = useSelector(connectorSelector);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!host) {
-      dispatch(showSnackbar("Please enter a host name"));
-      return;
-    }
-
-    triggerManifest(host);
+    triggerManifest();
   };
 
   return (
@@ -31,14 +23,6 @@ function SlackManifestGenerator() {
       <form
         onSubmit={handleSubmit}
         className="flex my-2 items-end gap-2 flex-wrap">
-        <HandleInputRender
-          option={{
-            type: "string",
-            label: "Host Name",
-            value: host,
-            handleChange: setHost,
-          }}
-        />
 
         <div className="flex items-center gap-2">
           <button className="p-1 text-violet-500 hover:text-white hover:bg-violet-500 border border-violet-500 text-xs rounded cursor-pointer transition-all">

@@ -272,58 +272,6 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
 
 
 @web_api(GetSlackAppManifestRequest)
-def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
-        Union[GetSlackAppManifestResponse, HttpResponse]:
-    account: Account = get_request_account()
-    host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
-
-    # read sample_manifest file string
-    sample_manifest = """
-display_information:
-    name: MyDroid
-    description: App for Automating Investigation & Actions
-    background_color: "#1f2126"
-features:
-    bot_user:
-        display_name: MyDroid
-        always_online: true
-oauth_config:
-    scopes:
-        bot:
-        - channels:history
-        - chat:write
-        - files:write
-        - conversations.connect:manage
-        - conversations.connect:write
-        - groups:write
-        - mpim:write
-        - im:write
-        - channels:manage
-        - channels:read
-        - groups:read
-        - mpim:read
-        - im:read
-        - groups:history
-settings:
-    event_subscriptions:
-        request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
-        bot_events:
-        - message.channels
-        - member_joined_channel
-        - message.groups
-    org_deploy_enabled: false
-    socket_mode_enabled: false
-    token_rotation_enabled: false
-    """
-
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
-    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
-
-
-@web_api(GetSlackAppManifestRequest)
 def save_site_url(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
