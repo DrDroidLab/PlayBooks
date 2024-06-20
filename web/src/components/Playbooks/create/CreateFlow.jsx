@@ -36,13 +36,17 @@ const edgeTypes = {
 };
 
 const CreateFlow = () => {
+  const reactFlowInstance = useReactFlow();
   const { permanentView, isOpen } = usePermanentDrawerState();
   const steps = useSelector(stepsSelector);
   const [graphRef, { width, height }] = useDimensions();
-  const { graphData, dagreData } = useGraphDimensions(width, height);
+  const { graphData, dagreData } = useGraphDimensions(
+    width,
+    height,
+    reactFlowInstance,
+  );
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
-  const reactFlowInstance = useReactFlow();
   const dispatch = useDispatch();
 
   const onConnect = useCallback(
@@ -63,7 +67,7 @@ const CreateFlow = () => {
 
   useEffect(() => {
     setNodes(
-      dagreData.nodes.map((node) => ({
+      dagreData?.nodes?.map((node) => ({
         ...node,
         data: {
           ...node.data,
