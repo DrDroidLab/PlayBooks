@@ -30,7 +30,11 @@ const addDataId = DrawerTypes.ADD_DATA;
 export default function CustomNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
-  const { openDrawer, closeDrawer } = usePermanentDrawerState();
+  const {
+    toggle: togglePermanentDrawer,
+    openDrawer,
+    closeDrawer,
+  } = usePermanentDrawerState();
   const dispatch = useDispatch();
   const { currentStepIndex, executionId, steps } =
     useSelector(playbookSelector);
@@ -49,7 +53,7 @@ export default function CustomNode({ data }) {
     // if (!isEditing) return;
     dispatch(setCurrentStepIndex(data.index));
     addAdditionalData({});
-    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {

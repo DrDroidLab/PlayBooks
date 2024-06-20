@@ -21,7 +21,7 @@ const CustomEdge = ({
   source,
 }) => {
   const { conditions } = useEdgeConditions(id);
-  const { openDrawer, addAdditionalData, additionalData } =
+  const { toggle, addAdditionalData, additionalData } =
     usePermanentDrawerState();
 
   const [edgePath, labelX, labelY] = getBezierPath({
@@ -40,7 +40,7 @@ const CustomEdge = ({
       source,
       id,
     });
-    openDrawer(PermanentDrawerTypes.CONDITION);
+    toggle(PermanentDrawerTypes.CONDITION);
   };
 
   return (
