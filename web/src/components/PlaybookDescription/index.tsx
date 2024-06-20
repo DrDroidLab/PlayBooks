@@ -8,9 +8,11 @@ import {
 
 function PlaybookDescription() {
   const dispatch = useDispatch();
-  const { description, currentPlaybook } = useSelector(playbookSelector);
+  const { description, currentPlaybook, isOnPlaybookPage } =
+    useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const isPlaybookPage = Object.keys(currentPlaybook).length > 0;
+  const isPlaybookPage =
+    Object.keys(currentPlaybook).length > 0 || isOnPlaybookPage;
 
   if (!isPlaybookPage) return;
   if (isPrefetched && !description) return;

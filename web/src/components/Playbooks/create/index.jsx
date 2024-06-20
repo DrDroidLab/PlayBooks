@@ -53,10 +53,12 @@ function CreatePlaybook() {
 
   useEffect(() => {
     dispatch(setPlaybookState());
+    dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: true }));
     return () => {
       dispatch(resetState());
       dispatch(resetDrawerState());
       dispatch(resetTimeRange());
+      dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: false }));
     };
   }, [dispatch]);
 
