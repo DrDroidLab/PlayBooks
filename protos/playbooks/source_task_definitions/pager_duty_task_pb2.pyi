@@ -19,21 +19,21 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class Pagerduty(google.protobuf.message.Message):
+class PagerDuty(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _TaskType:
         ValueType = typing.NewType("ValueType", builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Pagerduty._TaskType.ValueType], builtins.type):  # noqa: F821
+    class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[PagerDuty._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-        UNKNOWN: Pagerduty._TaskType.ValueType  # 0
-        SEND_NOTE: Pagerduty._TaskType.ValueType  # 1
+        UNKNOWN: PagerDuty._TaskType.ValueType  # 0
+        SEND_NOTE: PagerDuty._TaskType.ValueType  # 1
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
-    UNKNOWN: Pagerduty.TaskType.ValueType  # 0
-    SEND_NOTE: Pagerduty.TaskType.ValueType  # 1
+    UNKNOWN: PagerDuty.TaskType.ValueType  # 0
+    SEND_NOTE: PagerDuty.TaskType.ValueType  # 1
 
     @typing_extensions.final
     class SendNote(google.protobuf.message.Message):
@@ -60,17 +60,17 @@ class Pagerduty(google.protobuf.message.Message):
 
     TYPE_FIELD_NUMBER: builtins.int
     SEND_NOTE_FIELD_NUMBER: builtins.int
-    type: global___Pagerduty.TaskType.ValueType
+    type: global___PagerDuty.TaskType.ValueType
     @property
-    def send_note(self) -> global___Pagerduty.SendNote: ...
+    def send_note(self) -> global___PagerDuty.SendNote: ...
     def __init__(
         self,
         *,
-        type: global___Pagerduty.TaskType.ValueType = ...,
-        send_note: global___Pagerduty.SendNote | None = ...,
+        type: global___PagerDuty.TaskType.ValueType = ...,
+        send_note: global___PagerDuty.SendNote | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["send_note", b"send_note", "task", b"task"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["send_note", b"send_note", "task", b"task", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["send_note"] | None: ...
 
-global___Pagerduty = Pagerduty
+global___PagerDuty = PagerDuty

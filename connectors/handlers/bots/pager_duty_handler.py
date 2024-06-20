@@ -40,7 +40,7 @@ def handle_pd_incident(data: Dict):
     pagerduty_connector = active_account_pd_connectors.first()
     pagerduty_connector_proto: Connector = pagerduty_connector.unmasked_proto
 
-    event_data = event.get('event', {}).get('data', {})
+    event_data = event.get('data', {})
     incident_id = event_data.get('id')
     if not incident_id:
         logger.error(f"Error handling pagerduty event callback api: incident id not found in request data: {data}")

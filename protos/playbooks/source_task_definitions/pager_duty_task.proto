@@ -5,7 +5,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
 
-message Pagerduty {
+message PagerDuty {
   message SendNote {
     google.protobuf.StringValue service = 1;
     google.protobuf.StringValue incident = 2;
