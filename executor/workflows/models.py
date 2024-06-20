@@ -29,7 +29,9 @@ class WorkflowEntryPoint(models.Model):
 
     @property
     def proto(self) -> WorkflowEntryPointProto:
-        return dict_to_proto(self.entry_point, WorkflowEntryPointProto)
+        ep_proto = dict_to_proto(self.entry_point, WorkflowEntryPointProto)
+        ep_proto.id.value = self.id
+        return ep_proto
 
 
 class WorkflowAction(models.Model):
