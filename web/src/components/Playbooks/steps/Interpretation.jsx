@@ -5,8 +5,8 @@ import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
 
-function SelectInterpretation({ index }) {
-  const [step] = useCurrentStep(index);
+function SelectInterpretation({ id }) {
+  const [step] = useCurrentStep(id);
   const [selectInterpretation, setSelectInterpretation] = useState(
     step?.interpreter?.type ?? false,
   );
@@ -32,7 +32,7 @@ function SelectInterpretation({ index }) {
         onChange={toggleInterpretation}
       />
 
-      {selectInterpretation && <SelectInterpreterDropdown index={index} />}
+      {selectInterpretation && <SelectInterpreterDropdown id={id} />}
     </div>
   );
 }

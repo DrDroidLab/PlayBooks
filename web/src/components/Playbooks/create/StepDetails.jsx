@@ -1,18 +1,18 @@
 import { CircularProgress } from "@mui/material";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import Step from "../steps/Step.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 
 function StepDetails() {
-  const [step, currentStepIndex] = useCurrentStep();
+  const [step, currentStepId] = useCurrentStep();
   const isPrefetched = useIsPrefetched();
 
   const handleUpdateStepName = (e) => {
     const val = e.target.value;
-    updateCardByIndex("description", e.target.value, currentStepIndex);
+    updateCardById("description", e.target.value, currentStepId);
     if (val.trim())
-      updateCardByIndex("userEnteredDescription", true, currentStepIndex);
+      updateCardById("userEnteredDescription", true, currentStepId);
   };
 
   if (!Object.keys(step).length === 0) return <>No Step Found</>;
@@ -33,7 +33,7 @@ function StepDetails() {
           />
         </div>
       </div>
-      {currentStepIndex && <Step step={step} index={currentStepIndex} />}
+      {currentStepId && <Step id={currentStepId} />}
     </div>
   );
 }

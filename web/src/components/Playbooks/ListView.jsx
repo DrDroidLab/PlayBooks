@@ -31,16 +31,16 @@ const ListView = () => {
               key={index}
               aria-expanded={step.isOpen}
               expanded={step.isOpen}
-              onChange={() => dispatch(toggleStep(index))}
+              onChange={() => dispatch(toggleStep(step.id))}
               className="!rounded !shadow-none !border before:!content-none overflow-hidden aria-expanded:!m-0">
               <AccordionSummary
                 expandIcon={<KeyboardArrowDownRounded />}
                 aria-expanded={step.isOpen}
                 className="!bg-gray-100 !shadow-none !border-none hover:!bg-gray-50 !transition-all">
-                <PlaybookTitle step={step} index={index} />
+                <PlaybookTitle id={step.id} />
               </AccordionSummary>
               <AccordionDetails className="!p-2">
-                <Step step={step} index={index} />
+                <Step id={step.id} />
               </AccordionDetails>
             </Accordion>
           ))}

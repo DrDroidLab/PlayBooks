@@ -8,7 +8,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useDispatch } from "react-redux";
-import { addParentIndex } from "../../../store/features/playbook/playbookSlice.ts";
+import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
 import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
@@ -49,9 +49,9 @@ const CreateFlow = () => {
         nodes
           .filter((node) => node.id === source || node.selected)
           .reduce((eds, node) => {
-            const stepIndex = target.split("-")[1];
-            const parentIndex = node.id.split("-")[1];
-            dispatch(addParentIndex({ index: stepIndex, parentIndex }));
+            const stepId = target.split("-")[1];
+            const parentId = node.id.split("-")[1];
+            dispatch(addParentId({ id: stepId, parentId }));
             return addEdge({ source: node.id, target }, eds);
           }, eds),
       );

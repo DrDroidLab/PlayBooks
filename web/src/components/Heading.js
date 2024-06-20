@@ -4,17 +4,15 @@ import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
 import { Check, ChevronLeftRounded, Edit } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setName,
-} from "../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
+import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -35,7 +33,6 @@ const Heading = ({
   customTimeRange = false,
   isPlayground = false,
 }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const hasPreviousPage = useHasPreviousPage();
@@ -44,6 +41,7 @@ const Heading = ({
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
+  const [name, setName] = usePlaybookKey("name");
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -75,8 +73,8 @@ const Heading = ({
                     <>
                       <ValueComponent
                         valueType={"STRING"}
-                        onValueChange={(val) => dispatch(setName(val))}
-                        value={playbook.name}
+                        onValueChange={setName}
+                        value={name}
                         placeHolder={"Enter Playbook name"}
                         length={300}
                       />

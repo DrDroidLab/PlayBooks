@@ -1,5 +1,5 @@
 import { GET_ASSETS } from "../../../../../constants/index.ts";
-import { updateCardByIndex } from "../../../../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../../../../utils/execution/updateCardById.ts";
 import extractModelOptions from "../../../../../utils/extractModelOptions.ts";
 import getCurrentTask from "../../../../../utils/getCurrentTask.ts";
 import handleAssets from "../../../../../utils/handleAssets.ts";
@@ -8,9 +8,9 @@ import { setAssets } from "../../playbookSlice.ts";
 
 export const getAssetApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAssets: builder.query<any, number>({
-      query: (index) => {
-        const [task] = getCurrentTask(index);
+    getAssets: builder.query<any, string>({
+      query: (id) => {
+        const [task] = getCurrentTask(id);
         return {
           url: GET_ASSETS,
           method: "POST",
@@ -21,7 +21,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
         };
       },
       transformResponse: (response: any, _, arg) => {
-        const [task] = getCurrentTask(arg);
+        const [task, id] = getCurrentTask(arg);
         const data = response?.assets;
         if (data?.length === 0) return [];
         let connector_type = task.source;
@@ -30,21 +30,21 @@ export const getAssetApi = apiSlice.injectEndpoints({
 
         const assets = handleAssets(data, connector_type, arg);
         const modelOptions = extractModelOptions(assets, task);
-        updateCardByIndex("modelOptions", modelOptions, arg);
+        updateCardById("modelOptions", modelOptions, id);
         return assets;
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
-          updateCardByIndex("assetsLoading", true, arg);
+          updateCardById("assetsLoading", true, arg);
           const { data } = await queryFulfilled;
           // Dispatch an action to update the global state
-          dispatch(setAssets({ assets: data, index: arg }));
+          dispatch(setAssets({ assets: data, id: arg }));
         } catch (error) {
           // Handle any errors
           console.log(error);
         } finally {
-          updateCardByIndex("assetsLoading", false, arg);
+          updateCardById("assetsLoading", false, arg);
         }
       },
     }),
@@ -52,7 +52,5 @@ export const getAssetApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useLazyGetAssetsQuery,
-  useGetAssetsQuery,
   endpoints: { getAssets },
 } = getAssetApi;

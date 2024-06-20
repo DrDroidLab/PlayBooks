@@ -1,9 +1,4 @@
-import {
-  setDashboard,
-  setPage,
-  setWidget,
-} from "../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../store/index.ts";
+import { updateCardById } from "../execution/updateCardById.ts";
 import { OptionType } from "../playbooksData.ts";
 
 const getCurrentAsset = (task) => {
@@ -14,7 +9,7 @@ const getCurrentAsset = (task) => {
   return currentAsset;
 };
 
-export const newRelicEntityDashboardBuilder = (options, task, index) => {
+export const newRelicEntityDashboardBuilder = (options, task, id: string) => {
   return {
     triggerGetAssetsKey: "page",
     assetFilterQuery: {
@@ -46,7 +41,7 @@ export const newRelicEntityDashboardBuilder = (options, task, index) => {
             };
           }),
           handleChange: (_, val) => {
-            store.dispatch(setDashboard({ index, dashboard: val }));
+            updateCardById("dashboard", val, id);
           },
           selected: task?.dashboard?.id,
           helperText: task?.dashboard?.label,
@@ -67,7 +62,7 @@ export const newRelicEntityDashboardBuilder = (options, task, index) => {
           // requires: ['dashboard'],
           selected: task?.page?.page_name,
           handleChange: (_, val) => {
-            store.dispatch(setPage({ index, page: val.page }));
+            updateCardById("page", val.paage, id);
           },
         },
         {
@@ -85,13 +80,7 @@ export const newRelicEntityDashboardBuilder = (options, task, index) => {
                 })
               : [],
           handleChange: (val) => {
-            if (val)
-              store.dispatch(
-                setWidget({
-                  index,
-                  widget: val,
-                }),
-              );
+            if (val) updateCardById("widget", val, id);
           },
           // selected: task?.widget?.widget_id,
         },

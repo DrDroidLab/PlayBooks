@@ -1,7 +1,7 @@
 import getCurrentTask from "./getCurrentTask.ts";
 
-export default function handleAssets(data, connector_type, index) {
-  const [task] = getCurrentTask(index);
+export default function handleAssets(data, connector_type, id: string) {
+  const [task] = getCurrentTask(id);
   const source = connector_type.toLowerCase();
 
   switch (source) {

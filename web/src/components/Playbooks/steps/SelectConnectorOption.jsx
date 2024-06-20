@@ -5,7 +5,7 @@ import SelectComponent from "../../SelectComponent";
 import { RefreshRounded } from "@mui/icons-material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import { CircularProgress } from "@mui/material";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
@@ -14,16 +14,16 @@ import useDrawerState from "../../../hooks/useDrawerState.ts";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 
-function SelectConnectorOption({ index }) {
+function SelectConnectorOption({ id: stepId }) {
   const { connectorOptions } = useSelector(playbookSelector);
-  const [step, currentStepIndex] = useCurrentStep(index);
+  const [step, currentStepId] = useCurrentStep(stepId);
   const isPrefetched = useIsPrefetched();
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
   const { toggle } = useDrawerState(id);
 
   function handleConnectorOptionChange(id) {
-    updateCardByIndex("connectorType", id, currentStepIndex);
-    fetchData({ index: currentStepIndex });
+    updateCardById("connectorType", id, currentStepId);
+    fetchData({ id: currentStepId });
   }
 
   const currentConnectorOptions =

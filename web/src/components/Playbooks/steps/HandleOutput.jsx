@@ -5,8 +5,8 @@ import { SOURCES } from "../../../constants/index.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 
-function HandleOutput({ index, stepData, showHeading = true }) {
-  const [stepFromState] = useCurrentStep(index);
+function HandleOutput({ id, stepData, showHeading = true }) {
+  const [stepFromState] = useCurrentStep(id);
   const step = stepData ?? stepFromState;
   const showOutput = step.showOutput;
 

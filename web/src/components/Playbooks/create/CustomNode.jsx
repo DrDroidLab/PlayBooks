@@ -5,7 +5,7 @@ import {
   addStep,
   deleteStep,
   playbookSelector,
-  setCurrentStepIndex,
+  setCurrentStepId,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -36,8 +36,7 @@ export default function CustomNode({ data }) {
     closeDrawer,
   } = usePermanentDrawerState();
   const dispatch = useDispatch();
-  const { currentStepIndex, executionId, steps } =
-    useSelector(playbookSelector);
+  const { currentStepId, executionId, steps } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
@@ -56,7 +55,7 @@ export default function CustomNode({ data }) {
       addAdditionalData({ showStepId: step.id ?? step.stepIndex });
       return;
     }
-    dispatch(setCurrentStepIndex(data.index));
+    dispatch(setCurrentStepId(data.index));
     addAdditionalData({});
     togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
@@ -91,7 +90,7 @@ export default function CustomNode({ data }) {
     <div
       onClick={handleClick}
       className={`${
-        currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+        currentStepId === step.id.toString() ? "shadow-violet-500" : ""
       } shadow-md rounded-md overflow-hidden`}>
       <div className="w-full bg-gray-200 flex items-center justify-between p-1">
         <div className="flex items-center gap-1">
@@ -145,7 +144,7 @@ export default function CustomNode({ data }) {
       </div>
       <div
         className={`${
-          currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+          currentStepId === step.id.toString() ? "shadow-violet-500" : ""
         } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500`}>
         <div className="flex flex-col items-start gap-4">
           <p className="text-lg font-bold text-left z-10 break-word line-clamp-3">
