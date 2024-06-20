@@ -23,6 +23,7 @@ import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
+import useHasChildren from "../../../hooks/useHasChildren.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -37,6 +38,7 @@ export default function CustomNode({ data }) {
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
+  const hasChildren = useHasChildren(step?.stepIndex);
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -78,7 +80,6 @@ export default function CustomNode({ data }) {
 
   return (
     <div
-      onClick={handleClick}
       className={`${
         currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
       } shadow-md rounded-md overflow-hidden`}>
@@ -150,11 +151,13 @@ export default function CustomNode({ data }) {
           className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
         />
 
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
-        />
+        {hasChildren && (
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
+          />
+        )}
 
         {isEditing && (
           <NodeToolbar isVisible={true} position={Position.Bottom}>
