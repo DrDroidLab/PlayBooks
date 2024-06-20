@@ -130,7 +130,7 @@ export default function CustomNode({ data }) {
             </Tooltip>
           </CustomButton>
           <div onClick={handleNoAction}>
-            <RunButton index={data.index} />
+            <RunButton id={step.id} />
           </div>
           {isEditing && (
             <div
