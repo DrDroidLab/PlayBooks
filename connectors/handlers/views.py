@@ -7,9 +7,8 @@ from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 
 from accounts.models import get_request_account, Account
-from connectors.handlers.bots.pagerduty_handler import handle_pagerduty_incident
+from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
-from connectors.handlers.tasks import pagerduty_data_fetch_storage_job
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
 from utils.time_utils import current_epoch_timestamp
@@ -131,7 +130,7 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
 def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
-        handle_pagerduty_incident(data)
+        handle_pd_incident(data)
         return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')

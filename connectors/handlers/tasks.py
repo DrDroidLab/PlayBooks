@@ -320,7 +320,7 @@ slack_bot_handle_receive_message_postrun_notifier = publish_post_run_task(slack_
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pagerduty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
+def pager_duty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
     try:
         pagerduty_connector = get_db_connectors(connector_id=pagerduty_connector_id)
         pagerduty_connector = pagerduty_connector.first()
@@ -350,6 +350,6 @@ def pagerduty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
     return
 
 
-pagerduty_handle_webhook_call_prerun_notifier = publish_pre_run_task(pagerduty_handle_webhook_call)
-pagerduty_handle_webhook_call_failure_notifier = publish_task_failure(pagerduty_handle_webhook_call)
-pagerduty_handle_webhook_call_postrun_notifier = publish_post_run_task(pagerduty_handle_webhook_call)
+pagerduty_handle_webhook_call_prerun_notifier = publish_pre_run_task(pager_duty_handle_webhook_call)
+pagerduty_handle_webhook_call_failure_notifier = publish_task_failure(pager_duty_handle_webhook_call)
+pagerduty_handle_webhook_call_postrun_notifier = publish_post_run_task(pager_duty_handle_webhook_call)

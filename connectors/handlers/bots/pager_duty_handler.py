@@ -3,7 +3,7 @@ from typing import Dict
 
 from connectors.crud.connector_asset_model_crud import create_or_update_model_metadata
 from connectors.crud.connectors_crud import get_db_connectors
-from connectors.handlers.tasks import pagerduty_handle_webhook_call
+from connectors.handlers.tasks import pager_duty_handle_webhook_call
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import Source, SourceModelType
@@ -12,8 +12,8 @@ from protos.connectors.connector_pb2 import Connector
 logger = logging.getLogger(__name__)
 
 
-def create_or_update_pagerduty_incident_metadata(account_id, connector_id, incident_id, title=None, service_id=None,
-                                                 service_name=None):
+def create_or_update_pd_incident_metadata(account_id, connector_id, incident_id, title=None, service_id=None,
+                                          service_name=None):
     try:
         metadata = {
             'incident_id': incident_id,
@@ -31,13 +31,13 @@ def create_or_update_pagerduty_incident_metadata(account_id, connector_id, incid
         return None, False
 
 
-def handle_pagerduty_incident(data: Dict):
+def handle_pd_incident(data: Dict):
     event = data.get('event')
-    active_account_pagerduty_connectors = get_db_connectors(connector_type=Source.PAGER_DUTY, is_active=True)
-    if not active_account_pagerduty_connectors:
+    active_account_pd_connectors = get_db_connectors(connector_type=Source.PAGER_DUTY, is_active=True)
+    if not active_account_pd_connectors:
         logger.error(f"Error handling pagerduty event callback api: active pagerduty connector not found")
         raise Exception("No active pagerduty connector found")
-    pagerduty_connector = active_account_pagerduty_connectors.first()
+    pagerduty_connector = active_account_pd_connectors.first()
     pagerduty_connector_proto: Connector = pagerduty_connector.unmasked_proto
 
     event_data = event.get('event', {}).get('data', {})
@@ -63,11 +63,11 @@ def handle_pagerduty_incident(data: Dict):
     incident_status = event.get('data').get('status', '')
     if incident_status == 'triggered':
         try:
-            saved_task = get_or_create_task(pagerduty_handle_webhook_call.__name__, pagerduty_connector_proto.id.value,
+            saved_task = get_or_create_task(pager_duty_handle_webhook_call.__name__, pagerduty_connector_proto.id.value,
                                             pager_duty_incident)
             if not saved_task:
                 logger.error("Failed to create task for pagerduty incident fetch job")
-            task = pagerduty_handle_webhook_call.delay(pagerduty_connector_proto.id.value, pager_duty_incident)
+            task = pager_duty_handle_webhook_call.delay(pagerduty_connector_proto.id.value, pager_duty_incident)
             task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                               status=PeriodicTaskStatus.SCHEDULED,
                                               account_id=pagerduty_connector_proto.account_id.value)
@@ -76,10 +76,10 @@ def handle_pagerduty_incident(data: Dict):
             raise Exception("Error while creating task for pagerduty incident fetch job")
 
     try:
-        create_or_update_pagerduty_incident_metadata(account_id=pagerduty_connector_proto.account_id.value,
-                                                     connector_id=pagerduty_connector_proto.id.value,
-                                                     incident_id=incident_id, title=title, service_id=service_id,
-                                                     service_name=service_name)
+        create_or_update_pd_incident_metadata(account_id=pagerduty_connector_proto.account_id.value,
+                                              connector_id=pagerduty_connector_proto.id.value,
+                                              incident_id=incident_id, title=title, service_id=service_id,
+                                              service_name=service_name)
         return True
     except Exception as e:
         logger.error(
