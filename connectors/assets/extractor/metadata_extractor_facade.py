@@ -9,7 +9,6 @@ from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVp
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from connectors.assets.extractor.mimir_metadata_extractor import MimirSourceMetadataExtractor
 from connectors.assets.extractor.newrelic_metadata_extractor import NewrelicSourceMetadataExtractor
-from connectors.assets.extractor.remote_server_metadata_extractor import RemoteServerSourceMetadataExtractor
 from protos.base_pb2 import Source
 
 
@@ -36,7 +35,6 @@ source_metadata_extractor_facade.register(Source.GRAFANA, GrafanaSourceMetadataE
 source_metadata_extractor_facade.register(Source.GRAFANA_VPC, GrafanaVpcSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.CLICKHOUSE, ClickhouseSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.EKS, EksSourceMetadataExtractor)
-source_metadata_extractor_facade.register(Source.REMOTE_SERVER, RemoteServerSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.GRAFANA_MIMIR, MimirSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.AZURE, AzureConnectorMetadataExtractor)
 source_metadata_extractor_facade.register(Source.GKE, GkeSourceMetadataExtractor)
