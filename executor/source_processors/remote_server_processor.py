@@ -26,15 +26,16 @@ def reconstruct_rsa_key(key_string):
 class RemoteServerProcessor(Processor):
     client = None
 
-    def __init__(self, remote_host=None, remote_user=None, remote_password=None, remote_pem=None):
-        self.remote_host = remote_host
-        self.remote_user = remote_user
+    def __init__(self, remote_host=None, remote_password=None, remote_pem=None):
+        if remote_host:
+            self.remote_user = remote_host.split("@")[0]
+            self.remote_host = remote_host.split("@")[1]
         self.remote_password = remote_password
         self.remote_pem = remote_pem
 
     def get_connection(self):
         try:
-            if self.remote_host and self.remote_user and self.remote_password:
+            if self.remote_host and self.remote_password:
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.connect(hostname=self.remote_host, username=self.remote_user, password=self.remote_password)
@@ -56,11 +57,35 @@ class RemoteServerProcessor(Processor):
 
     def test_connection(self):
         try:
-            self.get_connection()
-            return True
+            command = 'echo "Connection successful"'
+            client = self.get_connection()
+            if client:
+                try:
+                    stdin, stdout, stderr = client.exec_command(command)
+                    output = stdout.read().decode('utf-8')
+                    return True if output.strip() == "Connection successful" else False
+                except paramiko.AuthenticationException as e:
+                    logger.error(f"Authentication error: {str(e)}")
+                    return False
+                except paramiko.SSHException as e:
+                    logger.error(f"SSH connection error: {str(e)}")
+                    return False
+                except Exception as e:
+                    logger.error(f"Error: {str(e)}")
+                    return False
+                finally:
+                    client.close()
+            else:
+                try:
+                    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE, universal_newlines=True)
+                    return True if result.stdout.strip() == "Connection successful" else False
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error executing command{command}: {e}")
+                    return False
         except Exception as e:
             logger.error(f"Exception occurred while creating remote connection with error: {e}")
-            raise e
+            return False
 
     def execute_command(self, command):
         try:
