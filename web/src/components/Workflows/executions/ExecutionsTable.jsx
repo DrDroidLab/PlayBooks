@@ -6,12 +6,18 @@ import {
   TableRow,
 } from "@mui/material";
 import PaginatedTable from "../../PaginatedTable.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
 import { handleStatus } from "../../../utils/handleStatus.tsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
 
 const ExecutionsTableRender = ({ data }) => {
+  const navigate = useNavigate();
+
+  const navigateToPlaybook = (id) => {
+    navigate(`/playbooks/${id}`);
+  };
+
   return (
     <>
       <Table stickyHeader>
@@ -51,9 +57,10 @@ const ExecutionsTableRender = ({ data }) => {
                   {item.workflow?.playbooks?.length > 0
                     ? item.workflow.playbooks.map((e) => (
                         <div
-                          className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
+                          onClick={() => navigateToPlaybook(e.id)}
+                          className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:!text-white"
                           key={e.id}>
-                          <div to={`/playbooks/${e.id}`}>{e.name}</div>
+                          <div>{e.name}</div>
                         </div>
                       ))
                     : "--"}

@@ -18,5 +18,6 @@ export const stateToStep = (step: Step, i?: number) => {
     tasks,
     notes: step.notes ?? "",
     interpreter_type: step.interpreter?.type,
+    children: step.children ?? [],
   };
 };

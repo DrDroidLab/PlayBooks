@@ -36,9 +36,9 @@ function Table({ condition, conditionIndex }) {
       <div className="flex items-center gap-1">
         <SelectComponent
           data={tableOptions}
-          selected={condition.type}
+          selected={condition.conditionType}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) => handleChange(id, "type")}
+          onSelectionChange={(id: string) => handleChange(id, "conditionType")}
         />
       </div>
 

@@ -334,7 +334,6 @@ const playbookSlice = createSlice({
       if (index !== "" && index !== null && index !== undefined) {
         state.steps.splice(parseInt(index, 10), 1);
         state.currentStepIndex = null;
-        console.log("index", index);
         state.playbookEdges = state.playbookEdges.filter(
           (e) => e.source !== `node-${index}` && e.target !== `node-${index}`,
         );
@@ -507,6 +506,8 @@ const playbookSlice = createSlice({
       state.lastUpdatedAt = null;
       state.currentStepIndex = null;
       state.view = initialState.view;
+      state.playbookEdges = [];
+      state.currentVisibleStep = undefined;
     },
     setSteps(state, { payload }) {
       state.steps = payload;

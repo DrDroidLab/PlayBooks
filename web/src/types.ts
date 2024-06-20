@@ -84,6 +84,7 @@ export interface Step {
   requireCondition: boolean;
   currentConditionParentIndex?: number;
   resultType?: string;
+  children?: any;
   taskIds?: string[];
 }
 
@@ -296,6 +297,7 @@ export interface Playbook {
   currentVisibleStep?: number;
   playbookEdges: any[];
   permanentView?: string;
+  connectorOptions?: any;
 }
 
 export interface Playground {
@@ -316,6 +318,7 @@ export interface PlaybookContractStep {
   external_links: ExternalLink[];
   tasks: PlaybookTask[];
   reference_id: string;
+  children: any;
 }
 
 export interface PlaybookContract {

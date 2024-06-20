@@ -8,12 +8,13 @@ import {
   setCurrentStepIndex,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import {
   Add,
   CheckCircleOutline,
   Delete,
   ErrorOutline,
+  VisibilityRounded,
 } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
@@ -30,12 +31,12 @@ export default function CustomNode({ data }) {
     useDrawerState(addDataId);
   const { openDrawer, closeDrawer } = usePermanentDrawerState();
   const dispatch = useDispatch();
-  const { currentStepIndex, executionId } = useSelector(playbookSelector);
+  const { currentStepIndex, executionId, steps } =
+    useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
   const source = `node-${step?.stepIndex}`;
-  const id = `edge-${step?.stepIndex}-${step?.stepIndex + 1}`;
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -43,7 +44,7 @@ export default function CustomNode({ data }) {
   };
 
   const handleClick = () => {
-    if (!isEditing) return;
+    // if (!isEditing) return;
     dispatch(setCurrentStepIndex(data.index));
     addAdditionalData({});
     openDrawer(PermanentDrawerTypes.STEP_DETAILS);
@@ -67,6 +68,7 @@ export default function CustomNode({ data }) {
     handleNoAction(e);
     if (!isEditing) return;
     dispatch(addStep({ parentIndex: step?.stepIndex, addConditions: true }));
+    const id = `edge-${step?.stepIndex}-${steps.length + 1}`;
     addAdditionalData({
       source,
       id,
@@ -111,6 +113,13 @@ export default function CustomNode({ data }) {
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <CustomButton
+            onClick={handleClick}
+            className="text-violet-500 cursor-pointer">
+            <Tooltip title={"Show Config"}>
+              <VisibilityRounded fontSize="medium" />
+            </Tooltip>
+          </CustomButton>
           <div onClick={handleNoAction}>
             <RunButton index={data.index} />
           </div>

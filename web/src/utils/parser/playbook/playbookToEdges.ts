@@ -2,6 +2,7 @@ import { PlaybookContract, Step } from "../../../types.ts";
 
 function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
   const stepRelations = playbook.step_relations ?? [];
+  const playbookSteps = playbook.steps ?? [];
   if (!stepRelations || stepRelations.length === 0) return [];
 
   const list: any = [];
@@ -31,8 +32,26 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
         window: ruleType.window,
         columnName: ruleType.column_name,
         isNumeric: ruleType.numeric_value_threshold !== undefined,
+        conditionType: ruleType.type,
         type: rule.type,
       };
+    });
+
+    const map = playbookSteps.reduce((childrenMapping, step) => {
+      step.children?.forEach((child) => {
+        childrenMapping[child.child.id] = true;
+      });
+      return childrenMapping;
+    }, {});
+
+    steps.forEach((step) => {
+      if (!map[step.id ?? ""]) {
+        list.push({
+          source: "playbook",
+          target: `node-${step.stepIndex}`,
+          id: `edge-${step.stepIndex}`,
+        });
+      }
     });
 
     list.push({

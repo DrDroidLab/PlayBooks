@@ -7,7 +7,7 @@ function handleResultType(resultType: ResultTypeType, condition: any) {
   switch (resultType) {
     case ResultTypeTypes.TABLE:
       return {
-        type: condition.type,
+        type: condition.conditionType,
         operator: condition.operation,
         threshold: condition.value,
         column_name: condition.columnName,
@@ -17,7 +17,7 @@ function handleResultType(resultType: ResultTypeType, condition: any) {
       };
     case ResultTypeTypes.TIMESERIES:
       return {
-        type: condition.type,
+        type: condition.conditionType,
         function: condition.function,
         operator: condition.operation,
         threshold: condition.value,
