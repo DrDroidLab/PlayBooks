@@ -13,12 +13,12 @@ import {
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
-import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
 import useShowExecution from "../hooks/useShowExecution.ts";
 import EditPlaybookButton from "./Buttons/EditPlaybookButton/index.tsx";
 import CopyPlaybookButton from "./Buttons/CopyPlaybookButton/index.tsx";
+import SavePlaybookButton from "./Buttons/SavePlaybookButton/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -47,7 +47,6 @@ const Heading = ({
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
-  const { executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const showExecution = useShowExecution();
 
@@ -99,7 +98,7 @@ const Heading = ({
                         showEditTitle ? () => setShowEdit(!showEdit) : () => {}
                       }
                       className="add_title">
-                      {playbook.isEditing && !executionId ? "Editing - " : ""}{" "}
+                      {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
                     </div>
                   )}
@@ -123,13 +122,13 @@ const Heading = ({
                   <input
                     className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
                     placeholder={
-                      isPrefetched || executionId
+                      isPrefetched
                         ? "Playbook Description goes here"
                         : "+ Add Description..."
                     }
                     value={playbook.description}
                     onChange={handleDescription}
-                    disabled={isPrefetched || executionId}
+                    disabled={isPrefetched}
                   />
                 )}
                 {!!subHeadingLink && !!subHeading ? (
@@ -155,12 +154,10 @@ const Heading = ({
             </button>
           )} */}
           {playbook.view === "builder" &&
-            !executionId &&
             !isPrefetched &&
             (Object.keys(playbook.currentPlaybook).length > 0 ||
-              showEditTitle) && <StepActions />}
+              showEditTitle) && <SavePlaybookButton />}
           {showExecution && <ExecutionButton />}
-
           {isPrefetched && <EditPlaybookButton />}
           {playbook.isEditing && !isPrefetched && <CopyPlaybookButton />}
           {renderChildren(children)}

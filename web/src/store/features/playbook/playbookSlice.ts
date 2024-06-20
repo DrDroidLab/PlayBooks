@@ -41,6 +41,7 @@ const initialState: Playbook = {
   currentVisibleStep: undefined,
   playbookEdges: [],
   permanentView: undefined,
+  executionId: undefined,
 };
 
 const playbookSlice = createSlice({
@@ -517,6 +518,7 @@ const playbookSlice = createSlice({
       state.view = initialState.view;
       state.playbookEdges = [];
       state.currentVisibleStep = undefined;
+      state.executionId = undefined;
     },
     setSteps(state, { payload }) {
       state.steps = payload;

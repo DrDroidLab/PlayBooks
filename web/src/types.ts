@@ -298,6 +298,7 @@ export interface Playbook {
   playbookEdges: any[];
   permanentView?: string;
   connectorOptions?: any;
+  executionId?: any;
 }
 
 export interface Playground {

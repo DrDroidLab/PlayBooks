@@ -7,17 +7,14 @@ import {
   toggleStep,
 } from "../../store/features/playbook/playbookSlice.ts";
 import Step from "./steps/Step.jsx";
-import StepActions from "./StepActions.jsx";
 import PlaybookTitle from "../common/PlaybookTitle.jsx";
 import GlobalVariables from "../common/GlobalVariable/index.jsx";
 import { setPlaybookState } from "../../store/features/timeRange/timeRangeSlice.ts";
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 const ListView = () => {
   const dispatch = useDispatch();
-  const { steps, executionId } = useSelector(playbookSelector);
-  const isPrefetched = useIsPrefetched();
+  const { steps } = useSelector(playbookSelector);
 
   useEffect(() => {
     dispatch(setPlaybookState());
@@ -48,7 +45,6 @@ const ListView = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          {!isPrefetched && !executionId && <StepActions />}
         </div>
       </div>
     </div>

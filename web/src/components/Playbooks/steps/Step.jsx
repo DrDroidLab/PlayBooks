@@ -13,8 +13,8 @@ import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
 // import useDrawerState from "../../../hooks/useDrawerState.ts";
 // import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
-import CustomButton from "../../common/CustomButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
 
 // const id = DrawerTypes.ADD_DATA;
 // const currentStepDrawerId = DrawerTypes.STEP_DETAILS;
@@ -33,10 +33,6 @@ function Step({ step, index }) {
     dispatch(deleteStep(step.stepIndex));
     closeDrawer();
   }
-
-  const handleDone = () => {
-    closeDrawer();
-  };
 
   // const handleAdd = (requireCondition = false) => {
   //   addAdditionalData({
@@ -83,9 +79,11 @@ function Step({ step, index }) {
             </button>
           </div>
         )}
-        <div className="flex mt-2">
-          <CustomButton onClick={handleDone}>Done</CustomButton>
-        </div>
+        {!isPrefetched && (
+          <div className="flex mt-2">
+            <SavePlaybookButton shouldNavigate={false} />
+          </div>
+        )}
         {/* {!isPrefetched && (
           <div className="flex gap-2 mt-2">
             {step.source && (
