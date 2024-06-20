@@ -28,6 +28,22 @@ class PdApiProcessor(Processor):
             logger.error(f"Error fetching incident: {incident_id}, Error: {e}")
             return None
 
+    def fetch_services(self):
+        try:
+            services = self.client.rget("/services")
+            return services
+        except Exception as e:
+            logger.error(f"Error fetching services: {e}")
+            return None
+
+    def fetch_service(self, service_id: str):
+        try:
+            service = self.client.rget(f"/services/{service_id}")
+            return service
+        except Exception as e:
+            logger.error(f"Error fetching service: {service_id}, Error: {e}")
+            return None
+
     def fetch_alerts(self, incident_id: str):
         try:
             alerts = self.client.rget(f"incident/{incident_id}/alerts")
@@ -52,13 +68,15 @@ class PdApiProcessor(Processor):
 
     def create_note(self, incident_id: str, content):
         try:
-            note = self.client.rpost(f"incidents/{incident_id}/notes", json={
-                {
-                    "note": {
-                        "content": content
-                    }
+            content_payload = {
+                "note": {
+                    "content": content
                 }
-            })
+            }
+            url = f"incidents/{incident_id}/notes"
+            header = {'From': 'karan.sirohi@drdroid.io'}
+            print(url, header,content_payload)
+            note = self.client.rpost(url, json=content_payload, headers=header)
             return note
         except Exception as e:
             logger.error(f"Error creating note for incident:{incident_id}, Error: {e}")

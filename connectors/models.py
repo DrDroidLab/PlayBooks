@@ -474,15 +474,23 @@ class SlackConnectorDataReceived(models.Model):
     received_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
+# class PagerDutyConnectorAlertType(models.Model):
+#     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+#     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+#     incident_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+#     title = models.TextField(null=True, blank=True)
+#     service_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+#     service_name = models.TextField(null=True, blank=True)
+#     incident_created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
 class PagerDutyConnectorDataReceived(models.Model):
-    # account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
-    # connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
     incident_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     title = models.TextField(null=True, blank=True)
     service_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    # alert_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    # alert_text = models.TextField(null=True, blank=True)
-    # details = models.JSONField(null=True, blank=True)
+    service_name = models.TextField(null=True, blank=True)
     incident_created_at = models.DateTimeField(blank=True, null=True, db_index=True)
 
 

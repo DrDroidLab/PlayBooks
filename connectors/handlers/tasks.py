@@ -26,6 +26,8 @@ from utils.time_utils import get_current_time
 from protos.base_pb2 import Source, SourceModelType, SourceKeyType
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
+logger = logging.getLogger(__name__)
+
 
 @shared_task(max_retries=3, default_retry_delay=10)
 def slack_bot_data_fetch_storage_job(account_id, connector_id, source_metadata_model_id, channel_id: str,
@@ -319,87 +321,85 @@ slack_bot_handle_receive_message_postrun_notifier = publish_post_run_task(slack_
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pager_duty_handle_webhook_call(pagerduty_connector_id, event=None):
+def pagerduty_handle_webhook_call(pagerduty_connector_id, event=None):
     if event is None:
         event = {}
     try:
         pagerduty_connector = get_db_connectors(connector_id=pagerduty_connector_id)
+        pagerduty_connector = pagerduty_connector.first()
         if not pagerduty_connector:
-            print(f"Error while handling PagerDuty handle_receive_message: Connector not found for connector_id: "
-                  f"{pagerduty_connector_id}")
+            logger.error(
+                f"Error while handling PagerDuty handle_receive_message: Connector not found for connector_id: "
+                f"{pagerduty_connector_id}")
             return
-        pagerduty_connector_proto = pagerduty_connector.unmasked_proto
-        account_id = pagerduty_connector_proto.account_id.value
-
-        generate_credentials_dict(pagerduty_connector.type, pagerduty_connector.keys)
+        account_id = pagerduty_connector.account_id
+        if not account_id:
+            logger.error(
+                f"Error while handling PagerDuty handle_receive_message: Account not found for connector_id: "
+                f"{pagerduty_connector_id}")
+            return
 
         event_data = event.get('event', {}).get('data', {})
         incident_id = event_data.get('id')
         title = event_data.get('title')
-        incident_created_at = event_data.get('created_at')
-        # alerts = incident.get('alerts', [])
-        # alert_id = alerts.get('id')
-        #alert_text =
         service_id = event_data.get('service', {}).get('id')
-        # details = alerts.get('body', {}).get('details', 'No Details')
-        # alerts_created_at = alerts.get('created_at')
-
-        if not incident_created_at:
-            data_timestamp = datetime.utcnow()
-        else:
-            data_timestamp = datetime.strptime(incident_created_at, '%Y-%m-%dT%H:%M:%S%z')
+        service_name = event_data.get('service', {}).get('summary')
 
         if not incident_id:
-            print(f"Incident ID not found, ignoring incident: {incident_id}")
+            logger.error(f"Incident ID not found, ignoring incident: {incident_id}")
             return
 
+        # PagerDutyConnectorAlertType.objects.get_or_create(
+        #     account_id=account_id,
+        #     connector=pagerduty_connector,
+        #     incident_id=incident_id,
+        #     title=title,
+        #     service_id=service_id,
+        #     service_name=service_name)
+
         pagerduty_received_msg = PagerDutyConnectorDataReceived(
-            account_id=pagerduty_connector.account_id,
-            connector=pagerduty_connector,
+            account_id=account_id,
+            connector_id=pagerduty_connector.id,
             incident_id=incident_id,
             title=title,
             service_id=service_id,
-            incident_created_at=incident_created_at
-            # alert_id=alert_id,
-            # alert_text=alert_text,
-            # details=details,
-            # data_timestamp=data_timestamp
+            service_name=service_name
         )
         pagerduty_received_msg.save()
-
         all_alert_type_entry_points = get_db_workflow_entry_points(account_id=account_id,
                                                                    entry_point_type=WorkflowEntryPoint.Type.PAGERDUTY_INCIDENT,
                                                                    is_active=True)
         ep_protos = [e.proto for e in all_alert_type_entry_points]
-
-        try:
-            entry_point_evaluator = entry_point_evaluator_facade(WorkflowEntryPoint.Type.ALERT)
-        except Exception as e:
-            print(f"Error while handling pagerduty_alert_trigger_playbook with error: {e} for event: {event} "
-                  f"for account: {account_id}")
-            return
-
         pagerduty_alert_event = {'incident_id': incident_id, 'title': title, 'service_id': service_id}
         for ep in ep_protos:
             is_triggered = entry_point_evaluator_facade.evaluate(ep, pagerduty_alert_event)
             if is_triggered:
-                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, incident_created_at)
+                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, incident_id)
     except Exception as e:
-        print(f"Error while handling pagerduty webhook call with error: {e} for event: {event}")
+        logger.error(f"Error while handling pagerduty webhook call with error: {e} for event: {event}")
 
     return
 
 
-pager_duty_handle_webhook_call_prerun_notifier = publish_pre_run_task(pager_duty_handle_webhook_call)
-pager_duty_handle_webhook_call_failure_notifier = publish_task_failure(pager_duty_handle_webhook_call)
-pager_duty_handle_webhook_call_postrun_notifier = publish_post_run_task(pager_duty_handle_webhook_call)
+pagerduty_handle_webhook_call_prerun_notifier = publish_pre_run_task(pagerduty_handle_webhook_call)
+pagerduty_handle_webhook_call_failure_notifier = publish_task_failure(pagerduty_handle_webhook_call)
+pagerduty_handle_webhook_call_postrun_notifier = publish_post_run_task(pagerduty_handle_webhook_call)
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
-def pagerduty_data_fetch_storage_job(raw_data_json=None):
-
+def pagerduty_data_fetch_storage_job(account_id=None, connector_id=None, source_metadata_model_id=None, service_id=None, raw_data_json=None):
     try:
+
         current_time = datetime.utcnow().replace(tzinfo=pytz.utc)
+        pagerduty_connector = get_db_connectors()
+        pagerduty_connector = pagerduty_connector.first()
+        pagerduty_connector_id = pagerduty_connector.id
+        # pagerduty_account_id = pagerduty_connector.account.id
+        if not pagerduty_connector:
+            logger.error(
+                f"Error while handling PagerDuty handle_receive_message: Connector not found for connector_id: "
+                f"{pagerduty_connector_id}")
+            return
 
         if isinstance(raw_data_json, dict):
             raw_data_json = json.dumps(raw_data_json)
@@ -408,7 +408,7 @@ def pagerduty_data_fetch_storage_job(raw_data_json=None):
         event_data = raw_data.get('event', {}).get('data', {})
         event_id = raw_data.get('id')
         if not event_data:
-            print(
+            logger.error(
                 f"pagerduty_data_fetch_storage_job: Found no data for incident_id: {event_id} at epoch: {current_time}")
             return
 
@@ -416,21 +416,28 @@ def pagerduty_data_fetch_storage_job(raw_data_json=None):
         title = event_data.get('title')
         incident_created_at = event_data.get('created_at')
         service_id = event_data.get('service', {}).get('id')
-
-        data_timestamp = datetime.strptime(incident_created_at, '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=pytz.utc)
+        service_name = event_data.get('service', {}).get('summary')
 
         incident, created = PagerDutyConnectorDataReceived.objects.update_or_create(
+            account_id=pagerduty_connector.account_id,
+            connector_id=pagerduty_connector_id,
             incident_id=incident_id,
             title=title,
-            incident_created_at=incident_created_at,
             service_id=service_id,
+            service_name=service_name,
+            incident_created_at=incident_created_at
         )
 
         if created:
-            print(f"Created new incident record for incident_id: {event_id}")
+            logger.info(f"Created new incident record for incident_id: {incident_id}")
         else:
-            print(f"Updated existing incident record for incident_id: {event_id}")
+            logger.info(f"Updated existing incident record for incident_id: {incident_id}")
 
     except Exception as e:
-        print(f"Error in pagerduty_data_fetch_storage_job: {e}")
+        logger.error(f"Error in pagerduty_data_fetch_storage_job: {e}")
         raise e
+
+
+pagerduty_data_fetch_storage_job_prerun_notifier = publish_pre_run_task(pagerduty_data_fetch_storage_job)
+pagerduty_data_fetch_storage_job_failure_notifier = publish_task_failure(pagerduty_data_fetch_storage_job)
+pagerduty_data_fetch_storage_job_postrun_notifier = publish_post_run_task(pagerduty_data_fetch_storage_job)

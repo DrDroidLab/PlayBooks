@@ -13,6 +13,7 @@ import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.playbooks.playbook_pb2
 import protos.playbooks.workflow_actions.api_trigger_pb2
+import protos.playbooks.workflow_actions.pd_notes_pb2
 import protos.playbooks.workflow_actions.slack_message_pb2
 import protos.playbooks.workflow_actions.slack_thread_reply_pb2
 import protos.playbooks.workflow_entry_points.api_entry_point_pb2
@@ -140,19 +141,19 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         UNKNOWN: WorkflowEntryPoint._Type.ValueType  # 0
         API: WorkflowEntryPoint._Type.ValueType  # 1
         SLACK_CHANNEL_ALERT: WorkflowEntryPoint._Type.ValueType  # 2
-        PAGERDUTY_ALERT: WorkflowEntryPoint._Type.ValueType  # 3
+        PAGERDUTY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 3
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowEntryPoint.Type.ValueType  # 0
     API: WorkflowEntryPoint.Type.ValueType  # 1
     SLACK_CHANNEL_ALERT: WorkflowEntryPoint.Type.ValueType  # 2
-    PAGERDUTY_ALERT: WorkflowEntryPoint.Type.ValueType  # 3
+    PAGERDUTY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 3
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     API_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_ALERT_FIELD_NUMBER: builtins.int
-    PAGERDUTY_ALERT_FIELD_NUMBER: builtins.int
+    PAGERDUTY_INCIDENT_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowEntryPoint.Type.ValueType
@@ -161,7 +162,7 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     @property
     def slack_channel_alert(self) -> protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint: ...
     @property
-    def pagerduty_alert(self) -> protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyAlertEntryPoint: ...
+    def pagerduty_incident(self) -> protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyIncidentEntryPoint: ...
     def __init__(
         self,
         *,
@@ -169,11 +170,11 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         type: global___WorkflowEntryPoint.Type.ValueType = ...,
         api: protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint | None = ...,
         slack_channel_alert: protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint | None = ...,
-        pagerduty_alert: protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyAlertEntryPoint | None = ...,
+        pagerduty_incident: protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyIncidentEntryPoint | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_alert", b"pagerduty_alert", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_alert", b"pagerduty_alert", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "pagerduty_alert"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "pagerduty_incident"] | None: ...
 
 global___WorkflowEntryPoint = WorkflowEntryPoint
 
@@ -193,12 +194,14 @@ class WorkflowAction(google.protobuf.message.Message):
         API: WorkflowAction._Type.ValueType  # 1
         SLACK_MESSAGE: WorkflowAction._Type.ValueType  # 2
         SLACK_THREAD_REPLY: WorkflowAction._Type.ValueType  # 3
+        PAGERDUTY_NOTES: WorkflowAction._Type.ValueType  # 4
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowAction.Type.ValueType  # 0
     API: WorkflowAction.Type.ValueType  # 1
     SLACK_MESSAGE: WorkflowAction.Type.ValueType  # 2
     SLACK_THREAD_REPLY: WorkflowAction.Type.ValueType  # 3
+    PAGERDUTY_NOTES: WorkflowAction.Type.ValueType  # 4
 
     @typing_extensions.final
     class WorkflowActionConnectorSource(google.protobuf.message.Message):
@@ -228,6 +231,7 @@ class WorkflowAction(google.protobuf.message.Message):
     API_FIELD_NUMBER: builtins.int
     SLACK_MESSAGE_FIELD_NUMBER: builtins.int
     SLACK_THREAD_REPLY_FIELD_NUMBER: builtins.int
+    PAGERDUTY_NOTES_FIELD_NUMBER: builtins.int
     type: global___WorkflowAction.Type.ValueType
     source: protos.base_pb2.Source.ValueType
     @property
@@ -238,6 +242,8 @@ class WorkflowAction(google.protobuf.message.Message):
     def slack_message(self) -> protos.playbooks.workflow_actions.slack_message_pb2.SlackMessageWorkflowAction: ...
     @property
     def slack_thread_reply(self) -> protos.playbooks.workflow_actions.slack_thread_reply_pb2.SlackThreadReplyWorkflowAction: ...
+    @property
+    def pagerduty_notes(self) -> protos.playbooks.workflow_actions.pd_notes_pb2.PagerdutyNotesWorkflowAction: ...
     def __init__(
         self,
         *,
@@ -247,10 +253,11 @@ class WorkflowAction(google.protobuf.message.Message):
         api: protos.playbooks.workflow_actions.api_trigger_pb2.ApiTriggerWorkflowAction | None = ...,
         slack_message: protos.playbooks.workflow_actions.slack_message_pb2.SlackMessageWorkflowAction | None = ...,
         slack_thread_reply: protos.playbooks.workflow_actions.slack_thread_reply_pb2.SlackThreadReplyWorkflowAction | None = ...,
+        pagerduty_notes: protos.playbooks.workflow_actions.pd_notes_pb2.PagerdutyNotesWorkflowAction | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "notification_config", b"notification_config", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "notification_config", b"notification_config", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "source", b"source", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["api", "slack_message", "slack_thread_reply"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "source", b"source", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["api", "slack_message", "slack_thread_reply", "pagerduty_notes"] | None: ...
 
 global___WorkflowAction = WorkflowAction
 

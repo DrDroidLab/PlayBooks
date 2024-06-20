@@ -22,27 +22,27 @@ class PagerDutyIncidentModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     INCIDENT_ID_FIELD_NUMBER: builtins.int
-    PRIORITY_FIELD_NUMBER: builtins.int
+    TITLE_FIELD_NUMBER: builtins.int
+    SERVICE_ID_FIELD_NUMBER: builtins.int
     CREATED_AT_FIELD_NUMBER: builtins.int
-    ALERTS_FIELD_NUMBER: builtins.int
     @property
     def incident_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def priority(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def service_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def created_at(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def alerts(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
         incident_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        priority: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        title: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        service_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        alerts: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["alerts", b"alerts", "created_at", b"created_at", "incident_id", b"incident_id", "priority", b"priority"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["alerts", b"alerts", "created_at", b"created_at", "incident_id", b"incident_id", "priority", b"priority"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_id", b"service_id", "title", b"title"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_id", b"service_id", "title", b"title"]) -> None: ...
 
 global___PagerDutyIncidentModel = PagerDutyIncidentModel
 

@@ -5,9 +5,8 @@ import "google/protobuf/wrappers.proto";
 import "protos/base.proto";
 
 
-message PagerDutyAlertEntryPoint {
+message PagerDutyIncidentEntryPoint {
     google.protobuf.StringValue pd_incident_id = 1;
     google.protobuf.StringValue pd_incident_title = 2;
     google.protobuf.StringValue pd_service_id = 3;
-    google.protobuf.StringValue pd_service_name = 4;
  }

@@ -1,0 +1,10 @@
+export POSTGRES_HOST=localhost
+export POSTGRES_USER=user
+export POSTGRES_DB=db
+export POSTGRES_PASSWORD=pass
+export CELERY_BROKER_URL=redis://localhost:6379/0
+export CELERY_RESULT_BACKEND=redis://localhost:6379/0
+export REDIS_URL=redis://localhost:6379/0
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export CELERY_QUEUE=workflow_scheduler
+sh scripts/start-celery-worker.sh
