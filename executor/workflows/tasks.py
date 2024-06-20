@@ -71,8 +71,8 @@ def workflow_scheduler():
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                pb_run_uuid = str(uuid.uuid4())
-                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{pb_run_uuid}'
+                uuid_str = uuid.uuid4().hex
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
                 if update_time_range:
                     time_range_proto = dict_to_proto(update_time_range, TimeRange)
                 else:
@@ -248,7 +248,8 @@ def test_workflow_notification(user, account_id, workflow, message_type):
     try:
         current_time = current_epoch_timestamp()
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
-        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+        uuid_str = uuid.uuid4().hex
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
 
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
 
