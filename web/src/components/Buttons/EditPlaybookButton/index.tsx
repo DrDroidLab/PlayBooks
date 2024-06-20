@@ -1,25 +1,27 @@
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { resetDrawerState } from "../../../store/features/drawers/drawersSlice.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { SlowMotionVideoRounded } from "@mui/icons-material";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { EditRounded } from "@mui/icons-material";
 
-function PastExecutionsButton() {
+function EditPlaybookButton() {
+  const playbook = useSelector(playbookSelector);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handlePastExecutions = () => {
+  const handlePlaybook = () => {
     dispatch(resetDrawerState());
-    navigate(`/playbooks/executions/list`);
+    navigate(`/playbooks/${playbook.id}`);
   };
 
   return (
-    <CustomButton onClick={handlePastExecutions}>
-      <SlowMotionVideoRounded />
-      <p>Past Executions</p>
+    <CustomButton onClick={handlePlaybook}>
+      <EditRounded />
+      <p>Edit Playbook</p>
     </CustomButton>
   );
 }
 
-export default PastExecutionsButton;
+export default EditPlaybookButton;

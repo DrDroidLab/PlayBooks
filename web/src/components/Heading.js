@@ -16,10 +16,7 @@ import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
 import useShowExecution from "../hooks/useShowExecution.ts";
-import EditPlaybookButton from "./Buttons/EditPlaybookButton/index.tsx";
-import CopyPlaybookButton from "./Buttons/CopyPlaybookButton/index.tsx";
-import SavePlaybookButton from "./Buttons/SavePlaybookButton/index.tsx";
-import PastExecutionsButton from "./Buttons/EditPlaybookButton/index.tsx";
+import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -37,7 +34,6 @@ const Heading = ({
   defaultTimeRange = undefined,
   defaultCustomTimeRange = undefined,
   defaultCustomTillNowTimeRange = undefined,
-  showEditTitle = false,
   customTimeRange = false,
   isPlayground = false,
 }) => {
@@ -50,6 +46,7 @@ const Heading = ({
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const showExecution = useShowExecution();
+  const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -94,16 +91,16 @@ const Heading = ({
                     </>
                   ) : (
                     <div
-                      style={!showEditTitle ? {} : { cursor: "pointer" }}
+                      style={!isPlaybookPage ? {} : { cursor: "pointer" }}
                       onClick={
-                        showEditTitle ? () => setShowEdit(!showEdit) : () => {}
+                        isPlaybookPage ? () => setShowEdit(!showEdit) : () => {}
                       }
                       className="add_title">
                       {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
                     </div>
                   )}
-                  {showEditTitle && !isPrefetched && (
+                  {isPlaybookPage && !isPrefetched && (
                     <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
                       <div
                         className="icon"
@@ -119,7 +116,7 @@ const Heading = ({
                   </div>
                 ) : null}
                 {(Object.keys(playbook.currentPlaybook).length > 0 ||
-                  showEditTitle) && (
+                  isPlaybookPage) && (
                   <input
                     className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
                     placeholder={
@@ -154,16 +151,8 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" &&
-            !isPrefetched &&
-            (Object.keys(playbook.currentPlaybook).length > 0 ||
-              showEditTitle) && <SavePlaybookButton />}
+          <HeadingPlaybookButtons />
           {showExecution && <ExecutionButton />}
-          {isPrefetched && <EditPlaybookButton />}
-          {playbook.isEditing && !isPrefetched && <CopyPlaybookButton />}
-          {!isPrefetched &&
-            (Object.keys(playbook.currentPlaybook).length > 0 ||
-              showEditTitle) && <PastExecutionsButton />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

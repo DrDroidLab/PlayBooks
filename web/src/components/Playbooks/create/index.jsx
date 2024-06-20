@@ -106,7 +106,6 @@ function CreatePlaybook() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
-        showEditTitle={playbook}
         showRunAll={true}
       />
       <div className="flex h-[calc(100%-80px)]">
