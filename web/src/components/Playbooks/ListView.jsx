@@ -22,9 +22,8 @@ const ListView = () => {
 
   return (
     <div className="flex flex-col h-full w-full lg:w-2/3 m-auto">
-      <div className="p-1 m-2 border rounded min-h-[100px]">
-        <GlobalVariables />
-      </div>
+      <GlobalVariables />
+
       <div className="flex-1 p-1 bg-white border rounded m-2 overflow-scroll">
         <div className="flex flex-col gap-2">
           {steps?.map((step, index) => (

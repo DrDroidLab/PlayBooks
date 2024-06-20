@@ -13,7 +13,7 @@ function HeadingPlaybookButtons() {
   const { view, currentPlaybook, isEditing } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const showExecution = useShowExecution();
-  const isPlaybookPage = Object.keys(currentPlaybook).length > 0;
+  const isPlaybookPage = Object.keys(currentPlaybook ?? {}).length > 0;
 
   if (!isPlaybookPage) {
     return null;

@@ -8,13 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   setName,
-  setPlaybookKey,
 } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
+import PlaybookDescription from "./PlaybookDescription/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -54,11 +54,6 @@ const Heading = ({
     } else {
       navigate("/", { replace: true });
     }
-  };
-
-  const handleDescription = (e) => {
-    const value = e.target.value;
-    dispatch(setPlaybookKey({ key: "description", value: value }));
   };
 
   return (
@@ -112,20 +107,7 @@ const Heading = ({
                     {subHeading}
                   </div>
                 ) : null}
-                {(Object.keys(playbook.currentPlaybook).length > 0 ||
-                  isPlaybookPage) && (
-                  <input
-                    className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
-                    placeholder={
-                      isPrefetched
-                        ? "Playbook Description goes here"
-                        : "+ Add Description..."
-                    }
-                    value={playbook.description}
-                    onChange={handleDescription}
-                    disabled={isPrefetched}
-                  />
-                )}
+                <PlaybookDescription />
                 {!!subHeadingLink && !!subHeading ? (
                   <a
                     style={{ color: "blue", fontSize: "15px" }}

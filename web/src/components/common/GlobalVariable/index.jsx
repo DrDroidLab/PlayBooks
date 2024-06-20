@@ -25,8 +25,15 @@ function GlobalVariables() {
     dispatch(deleteVariable({ index }));
   };
 
+  if (isPrefetched && playbook?.globalVariables?.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="text-sm">
+    <div
+      className={`${
+        playbook.view === "builder" ? "w-[300px] my-0" : ""
+      } text-sm p-1 my-2 border rounded min-h-[100px] bg-white`}>
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
           <button
