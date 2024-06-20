@@ -59,17 +59,19 @@ const CustomEdge = ({
         height={foreignObjectSize}
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
-        <body className={`flex items-center justify-center w-full h-full`}>
+        <div className={`flex items-center justify-center w-full h-full`}>
           {conditions.length > 0 && (
             <CustomButton
               className={`${
                 additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
               } w-10 h-10 items-center !text-xl p-0 justify-center font-normal`}
               onClick={handleAddConditionClick}>
-              <Tooltip title="Condition">{`{ }`}</Tooltip>
+              <Tooltip title="Condition">
+                <>{`{ }`}</>
+              </Tooltip>
             </CustomButton>
           )}
-        </body>
+        </div>
       </foreignObject>
     </>
   );

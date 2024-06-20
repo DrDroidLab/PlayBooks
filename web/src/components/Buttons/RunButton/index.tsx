@@ -38,6 +38,7 @@ function RunButton({ index }: RunButtonProps) {
   };
 
   const handleExecuteStep = async () => {
+    if (loading) return;
     if (isExisting && !executionId && step.id) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
@@ -52,14 +53,16 @@ function RunButton({ index }: RunButtonProps) {
 
   return (
     <Tooltip title="Run this Step">
-      <CustomButton onClick={handleExecuteStep}>
-        {loading ? "Running" : "Run"}
-        {loading ? (
-          <CircularProgress color="inherit" size={20} />
-        ) : (
-          <PlayArrowRounded fontSize="medium" />
-        )}
-      </CustomButton>
+      <>
+        <CustomButton onClick={handleExecuteStep}>
+          {loading ? "Running" : "Run"}
+          {loading ? (
+            <CircularProgress color="inherit" size={20} />
+          ) : (
+            <PlayArrowRounded fontSize="medium" />
+          )}
+        </CustomButton>
+      </>
     </Tooltip>
   );
 }
