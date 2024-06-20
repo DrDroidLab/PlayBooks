@@ -23,7 +23,7 @@ const handleImageSrc = (
 export default function handleToolLogos(playbook) {
   const steps = playbook.steps;
 
-  const tools = steps.reduce((tools, step) => {
+  const tools = steps?.reduce((tools, step) => {
     const task = step.tasks[0];
     const image = handleImageSrc(task.source, task.modelType, task.taskType);
     return [
@@ -35,5 +35,5 @@ export default function handleToolLogos(playbook) {
     ];
   }, []);
 
-  return tools;
+  return tools ?? [];
 }
