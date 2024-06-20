@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { calculateData } from "../utils/calculateData.ts";
 import { ReactFlowInstance } from "reactflow";
+import usePermanentDrawerState from "./usePermanentDrawerState.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -20,7 +21,8 @@ function useGraphDimensions(
   height: number,
   instance: ReactFlowInstance<any, any>,
 ): GraphDimensions {
-  const { steps, playbookEdges, permanentView } = useSelector(playbookSelector);
+  const { steps, playbookEdges } = useSelector(playbookSelector);
+  const { permanentView, isOpen } = usePermanentDrawerState();
   const graphData = fetchGraphData();
   // const dagreData = calculateData(graphData, width, height);
   const [data, setData] = useState<any>({});
@@ -31,9 +33,11 @@ function useGraphDimensions(
       const dagreData = calculateData(graphData, width, height);
       setData(dagreData);
     }
-  }, [width, height, steps, playbookEdges, permanentView]);
+    instance.fitView(fitViewOptions);
+  }, [width, height, steps, playbookEdges, permanentView, instance, isOpen]);
 
   instance.fitView(fitViewOptions);
+
   return {
     graphData,
     dagreData: data,
