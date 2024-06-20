@@ -322,7 +322,7 @@ const playbookSlice = createSlice({
       const id = payload;
       if (id) {
         const index = state.steps.findIndex((step) => step.id === id);
-        if (index) state.steps.splice(index, 1);
+        if (index !== undefined && index !== null) state.steps.splice(index, 1);
         state.currentStepId = undefined;
         state.playbookEdges = state.playbookEdges.filter(
           (e) => e.source !== `node-${id}` && e.target !== `node-${id}`,
