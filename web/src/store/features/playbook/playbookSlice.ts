@@ -104,6 +104,15 @@ const playbookSlice = createSlice({
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
+      const useState = payload.useState;
+
+      if (useState) {
+        state.name = "Copy of " + state.name;
+        state.currentPlaybook.isCopied = true;
+        state.isEditing = false;
+        return;
+      }
+
       state.name = "Copy of " + payload.name;
       state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(

@@ -1,14 +1,8 @@
-import { Grid, Tooltip } from "@mui/material";
+import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import styles from "./index.module.css";
-import {
-  Check,
-  ChevronLeftRounded,
-  ContentCopy,
-  Edit,
-} from "@mui/icons-material";
+import { Check, ChevronLeftRounded, Edit } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,6 +17,8 @@ import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
 import useShowExecution from "../hooks/useShowExecution.ts";
+import EditPlaybookButton from "./Buttons/EditPlaybookButton/index.tsx";
+import CopyPlaybookButton from "./Buttons/CopyPlaybookButton/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -42,8 +38,6 @@ const Heading = ({
   defaultCustomTillNowTimeRange = undefined,
   showEditTitle = false,
   customTimeRange = false,
-  copyPlaybook = false,
-  showCopy = false,
   isPlayground = false,
 }) => {
   const dispatch = useDispatch();
@@ -118,15 +112,6 @@ const Heading = ({
                       </div>
                     </button>
                   )}
-                  {(showCopy || playbook.isEditing) && (
-                    <button
-                      className={styles["pb-button"]}
-                      onClick={copyPlaybook}>
-                      <Tooltip title="Copy this Playbook">
-                        <ContentCopy />
-                      </Tooltip>
-                    </button>
-                  )}
                 </div>
                 {!!subHeading && !subHeadingLink ? (
                   <div className="text-xs font-normal text-gray-400">
@@ -175,6 +160,9 @@ const Heading = ({
             (Object.keys(playbook.currentPlaybook).length > 0 ||
               showEditTitle) && <StepActions />}
           {showExecution && <ExecutionButton />}
+
+          {isPrefetched && <EditPlaybookButton />}
+          {playbook.isEditing && !isPrefetched && <CopyPlaybookButton />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

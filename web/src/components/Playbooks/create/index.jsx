@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Heading from "../../Heading";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
   setPlaybookDataBeta,
-  copyPlaybook,
   setView,
   setPlaybookKey,
 } from "../../../store/features/playbook/playbookSlice.ts";
@@ -13,13 +12,12 @@ import {
   resetTimeRange,
   setPlaybookState,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import ListView from "../ListView.jsx";
 import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
-import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import PermenantDrawer from "../../common/PermenantDrawer/index.tsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
@@ -39,14 +37,11 @@ const viewOptions = [
 ];
 
 function CreatePlaybook() {
-  const navigate = useNavigate();
   const { openDrawer, permanentView } = usePermanentDrawerState();
   const { playbook_id: id } = useParams();
   const playbook = useSelector(playbookSelector);
   const dispatch = useDispatch();
-  const copied = useRef(false);
   const playbookDataRef = useRef(null);
-  const [copyLoading, setCopyLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
@@ -73,26 +68,8 @@ function CreatePlaybook() {
     dispatch(setPlaybookDataBeta(res));
   };
 
-  const handleCopyPlaybook = async () => {
-    setCopyLoading(true);
-    const res = playbookDataRef.current;
-    dispatch(copyPlaybook(res));
-    copied.current = true;
-    setTimeout(() => {
-      setCopyLoading(false);
-      navigate("/playbooks/create", {
-        replace: true,
-      });
-    }, COPY_LOADING_DELAY);
-  };
-
   const handleSelect = (_, option) => {
     dispatch(setView(option.id));
-  };
-
-  const handlePlaybook = () => {
-    dispatch(resetDrawerState());
-    navigate(`/playbooks/${playbook.id}`);
   };
 
   const handleTimeline = () => {
@@ -117,10 +94,6 @@ function CreatePlaybook() {
     return <Loading />;
   }
 
-  if (copyLoading) {
-    return <Loading title="Copying your playbook..." />;
-  }
-
   return (
     <div className="h-screen overflow-hidden">
       <Heading
@@ -133,7 +106,6 @@ function CreatePlaybook() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
-        copyPlaybook={handleCopyPlaybook}
         showEditTitle={playbook}
         showRunAll={true}
       />
@@ -165,9 +137,6 @@ function CreatePlaybook() {
                   View Timeline
                 </CustomButton>
               )}
-              <CustomButton onClick={handlePlaybook}>
-                Go to Playbook
-              </CustomButton>
             </div>
           )}
         </main>
