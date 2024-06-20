@@ -49,9 +49,9 @@ export default function CustomNode({ data }) {
     e.stopPropagation();
   };
 
-  const handleClick = () => {
+  const handleClick = (config = true) => {
     // if (!isEditing) return;
-    if (isPrefetched) {
+    if (isPrefetched && !config) {
       openDrawer(PermanentDrawerTypes.TIMELINE);
       addAdditionalData({ showStepId: step.id ?? step.stepIndex });
       return;
@@ -125,7 +125,7 @@ export default function CustomNode({ data }) {
         </div>
         <div className="flex items-center gap-1">
           <CustomButton
-            onClick={handleClick}
+            onClick={() => handleClick(false)}
             className="text-violet-500 cursor-pointer">
             <Tooltip title={"Show Config"}>
               <VisibilityRounded fontSize="medium" />
