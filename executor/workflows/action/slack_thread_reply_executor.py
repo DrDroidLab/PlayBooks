@@ -40,7 +40,11 @@ class SlackThreadReplyExecutor(WorkflowActionExecutor):
         blocks = []
         file_uploads = []
         for i, interpretation in enumerate(execution_output):
-            title = f'{interpretation.title.value}'
+            if i==0 and interpretation.type == InterpretationProto.Type.SUMMARY:
+                title = f'Hello team, here is snapshot of playbook <{interpretation.description.value}|{interpretation.title.value}> ' \
+                f'that is configured for this alert'
+            else:
+                title = f'{interpretation.title.value}'
             description = interpretation.description.value
             summary = interpretation.summary.value
             block_text = title

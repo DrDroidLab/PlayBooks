@@ -7,6 +7,8 @@ from google.protobuf.wrappers_pb2 import StringValue
 from intelligence_layer.result_interpreters.basic_result_interpreter import basic_result_interpreter
 from intelligence_layer.result_interpreters.llm_chat_gpt_vision_result_interpreter import \
     llm_chat_gpt_vision_result_interpreter
+from intelligence_layer.result_interpreters.llm_chat_gpt_text_result_interpreter import \
+    llm_chat_gpt_text_result_interpreter
 from intelligence_layer.result_interpreters.step_interpreter import basic_step_summariser, \
     llm_chat_gpt_step_summariser
 
@@ -24,6 +26,8 @@ def task_result_interpret(interpreter_type: InterpreterType, task: PlaybookTask,
         return basic_result_interpreter.interpret(task_result)
     elif interpreter_type == InterpreterType.LLM_CHAT_GPT_VISION_I:
         return llm_chat_gpt_vision_result_interpreter.interpret(task_result)
+    elif interpreter_type == InterpreterType.LLM_CHAT_GPT_text_string:
+        return llm_chat_gpt_text_result_interpreter.interpret(task_result)
     else:
         logger.error(f"Unsupported interpreter type: {interpreter_type}")
         return InterpretationProto()
@@ -46,12 +50,11 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
     enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
     object_url = build_absolute_uri(None, location, protocol, enabled)
-    base_title = f'Hello team, here is snapshot of playbook <{object_url}|{playbook.name.value}> ' \
-                 f'that is configured for this alert'
     interpretations: [InterpretationProto] = [
-        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=base_title))
+        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=playbook.name.value),description =StringValue(value=object_url))
     ]
     for i, step_log in enumerate(step_logs):
+        print(step_log)
         try:
             task_interpretations = []
             for task_execution_log in step_log.task_execution_logs:
@@ -69,10 +72,14 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
                 type=InterpretationProto.Type.SUMMARY,
                 title=title,
             )
+            print(interpretations)
             interpretations.append(base_step_interpretation)
+            print(interpretations)
             if step_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
                 interpretations.append(step_log.step_interpretation)
+            print(interpretations)
             interpretations.extend(task_interpretations)
+            print(interpretations)
         except Exception as e:
             logger.error(f"Failed to interpret playbook execution log with error: {e}")
             continue

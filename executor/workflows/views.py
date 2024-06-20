@@ -123,9 +123,10 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         workflow: WorkflowProto = account_workflow.proto_partial
         schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        if request_message.workflow_configuration:
+        #The Previous code was fetching the workflow configuration incorrectly. Even if there was no configuration, it was fetching it successfully as proto implicitly defines every variable.
+        if request_message.HasField('workflow_configuration'):
             workflow_config = request_message.workflow_configuration
-        elif workflow.configuration:
+        elif workflow.HasField('configuration'):
             workflow_config = workflow.configuration
         else:
             workflow_config: WorkflowConfiguration = WorkflowConfiguration()
@@ -263,13 +264,13 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         workflow: WorkflowProto = account_workflow.proto_partial
         schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        if request_message.workflow_configuration:
+        if request_message.HasField('workflow_configuration'):
             workflow_config = request_message.workflow_configuration
-        elif workflow.configuration:
+        elif workflow.HasField('configuration'):
             workflow_config = workflow.configuration
         else:
             workflow_config: WorkflowConfiguration = WorkflowConfiguration()
-
+        print("workflow_config", workflow_config)
         execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
                                                                   schedule, current_time_utc, workflow_run_uuid,
                                                                   user.email, None, workflow_config)

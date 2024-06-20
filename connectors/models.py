@@ -38,6 +38,7 @@ integrations_connector_type_display_name_map = {
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
     Source.AZURE: 'AZURE',
     Source.GKE: 'GKE KUBERNETES',
+    Source.MS_TEAMS: 'MS TEAMS',
 }
 
 integrations_connector_type_category_map = {
@@ -66,6 +67,7 @@ integrations_connector_type_category_map = {
     Source.REMOTE_SERVER: 'Remote Server',
     Source.GRAFANA_MIMIR: 'APM Tools',
     Source.GKE: 'Cloud',
+    Source.MS_TEAMS: 'Alert Channels',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -206,6 +208,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.GKE_PROJECT_ID,
             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
         ]
+    ],
+    Source.MS_TEAMS: [
+        [
+            SourceKeyType.MS_TEAMS_CONNECTOR_NAME,
+            SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL,
+        ]
     ]
 }
 
@@ -262,6 +270,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
     SourceKeyType.GKE_PROJECT_ID: 'Project ID',
     SourceKeyType.GKE_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
+    SourceKeyType.MS_TEAMS_CONNECTOR_NAME:'Connector Name',
+    SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL:'Webhook URL',
 }
 
 

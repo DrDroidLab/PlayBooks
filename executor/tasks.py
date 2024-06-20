@@ -182,6 +182,10 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
             updated_global_variable_set = dict_to_proto(execution_global_variable_set, Struct)
         step_execution_logs: [PlaybookStepExecutionLog] = execute_playbook_impl(tr, account, pb_proto,
                                                                                 updated_global_variable_set)
+        print("step_execution_logs")
+        for log in step_execution_logs:
+            print(log)
+        #something is wrong here
         store_step_execution_logs(account, pb, pb_execution, step_execution_logs)
         update_db_account_playbook_execution_status(account, playbook_execution_id,
                                                     PlaybookExecutionStatusType.FINISHED)

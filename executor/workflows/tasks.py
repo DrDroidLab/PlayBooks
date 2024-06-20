@@ -89,6 +89,7 @@ def workflow_scheduler():
                     logger.error(f"Failed to create workflow execution task for account: {account.id}, workflow_id: "
                                  f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
                     continue
+                print("workflow_execution_configuration in scheduler", workflow_execution_configuration)
                 task = workflow_executor.delay(account.id, workflow_id, wf_execution.id, pb_id, playbook_execution.id,
                                                time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
@@ -120,9 +121,13 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
     try:
         create_workflow_execution_log(account_id, workflow_id, workflow_execution_id, playbook_execution_id)
         workflow_config = WorkflowConfigurationProto()
+        print("workflow_config cp1", workflow_config)
         if workflow_execution_configuration:
             workflow_config = dict_to_proto(workflow_execution_configuration, WorkflowConfigurationProto)
-        if workflow_config.generate_summary and workflow_config.generate_summary.value:
+        print("workflow_config cp2", workflow_config)
+        print("workflow_config.generate_summary.value", workflow_config.generate_summary.value)
+        print("workflow_config.HasField('generate_summary')",workflow_config.HasField('generate_summary'))
+        if workflow_config.HasField('generate_summary') and workflow_config.generate_summary.value:
             execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         try:
             saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
@@ -178,9 +183,12 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
+        print(p_proto)
         step_execution_logs = pe_proto.step_execution_logs
+        print("step_execution_logs", step_execution_logs)
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
                                                                                            step_execution_logs)
+        print("execution_output", execution_output)
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
