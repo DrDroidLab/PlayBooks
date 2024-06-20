@@ -10,7 +10,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.tasks import execute_playbook, execute_playbook_impl
+from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
     update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
