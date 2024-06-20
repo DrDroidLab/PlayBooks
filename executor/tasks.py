@@ -138,8 +138,11 @@ def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookPro
         if not global_variable_set:
             global_variable_set = playbook.global_variable_set
         step_execution_logs = []
-        graph_view = get_playbook_steps_graph_view(playbook.step_relations)
         step_id_def_map = get_playbook_steps_id_def_map(playbook.steps)
+        if playbook.step_relations:
+            graph_view = get_playbook_steps_graph_view(playbook.step_relations)
+        else:
+            graph_view = {step_id: [] for step_id in step_id_def_map}
         for step_id in graph_view:
             step_execution_logs.extend(
                 execute_playbook_step_with_children_impl(tr, account, step_id_def_map, step_id, global_variable_set))
