@@ -13,7 +13,7 @@ import "protos/playbooks/workflow_schedules/interval_schedule.proto";
 import "protos/playbooks/workflow_schedules/one_off_schedule.proto";
 
 import "protos/playbooks/workflow_entry_points/slack_alert_entry_point.proto";
-import "protos/playbooks/workflow_entry_points/pd_alert_entry_point.proto";
+import "protos/playbooks/workflow_entry_points/pd_incident_entry_point.proto";
 import "protos/playbooks/workflow_entry_points/api_entry_point.proto";
 
 import "protos/playbooks/workflow_actions/api_trigger.proto";

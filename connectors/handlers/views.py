@@ -129,8 +129,10 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
 @csrf_exempt
 @api_view(['POST'])
 def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
-
-    data = request_message.data
-    handle_pagerduty_incident(data)
-    print(request_message)
-    return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+    try:
+        data = request_message.data
+        handle_pagerduty_incident(data)
+        return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+    except Exception as e:
+        logger.error(f'Error handling pagerduty incident: {str(e)}')
+        return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)

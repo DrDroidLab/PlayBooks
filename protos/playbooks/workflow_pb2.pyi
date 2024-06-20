@@ -17,7 +17,7 @@ import protos.playbooks.workflow_actions.pd_notes_pb2
 import protos.playbooks.workflow_actions.slack_message_pb2
 import protos.playbooks.workflow_actions.slack_thread_reply_pb2
 import protos.playbooks.workflow_entry_points.api_entry_point_pb2
-import protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2
+import protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2
 import protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2
 import protos.playbooks.workflow_schedules.cron_schedule_pb2
 import protos.playbooks.workflow_schedules.interval_schedule_pb2
@@ -162,7 +162,7 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     @property
     def slack_channel_alert(self) -> protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint: ...
     @property
-    def pagerduty_incident(self) -> protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyIncidentEntryPoint: ...
+    def pagerduty_incident(self) -> protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint: ...
     def __init__(
         self,
         *,
@@ -170,7 +170,7 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         type: global___WorkflowEntryPoint.Type.ValueType = ...,
         api: protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint | None = ...,
         slack_channel_alert: protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint | None = ...,
-        pagerduty_incident: protos.playbooks.workflow_entry_points.pd_alert_entry_point_pb2.PagerDutyIncidentEntryPoint | None = ...,
+        pagerduty_incident: protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
