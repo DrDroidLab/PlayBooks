@@ -19,6 +19,7 @@ import useShowExecution from "../hooks/useShowExecution.ts";
 import EditPlaybookButton from "./Buttons/EditPlaybookButton/index.tsx";
 import CopyPlaybookButton from "./Buttons/CopyPlaybookButton/index.tsx";
 import SavePlaybookButton from "./Buttons/SavePlaybookButton/index.tsx";
+import PastExecutionsButton from "./Buttons/EditPlaybookButton/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -160,6 +161,9 @@ const Heading = ({
           {showExecution && <ExecutionButton />}
           {isPrefetched && <EditPlaybookButton />}
           {playbook.isEditing && !isPrefetched && <CopyPlaybookButton />}
+          {!isPrefetched &&
+            (Object.keys(playbook.currentPlaybook).length > 0 ||
+              showEditTitle) && <PastExecutionsButton />}
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker
