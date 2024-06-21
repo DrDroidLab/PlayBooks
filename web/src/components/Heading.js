@@ -40,7 +40,7 @@ const Heading = ({
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
+  const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
   const [name, setName] = usePlaybookKey("name");
   const [executionId] = usePlaybookKey("executionId");
 
@@ -82,9 +82,11 @@ const Heading = ({
                     </>
                   ) : (
                     <div
-                      style={!isPlaybookPage ? {} : { cursor: "pointer" }}
+                      style={!isOnPlaybookPage ? {} : { cursor: "pointer" }}
                       onClick={
-                        isPlaybookPage ? () => setShowEdit(!showEdit) : () => {}
+                        isOnPlaybookPage
+                          ? () => setShowEdit(!showEdit)
+                          : () => {}
                       }
                       className="add_title">
                       {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
@@ -92,7 +94,7 @@ const Heading = ({
                       {isPrefetched && <> - {executionId}</>}
                     </div>
                   )}
-                  {isPlaybookPage && !isPrefetched && (
+                  {isOnPlaybookPage && !isPrefetched && (
                     <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
                       <div
                         className="icon"
