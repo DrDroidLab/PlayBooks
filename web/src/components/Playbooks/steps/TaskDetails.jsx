@@ -6,15 +6,14 @@ import {
   setErrors,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import OptionRender from "./OptionRender.jsx";
-import VariablesBox from "./VariablesBox.jsx";
 import { InfoOutlined } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { constructBuilder } from "../../../utils/playbooksData.ts";
 import { deepEqual } from "../../../utils/deepEqual.ts";
 
-function TaskDetails({ index }) {
-  const data = constructBuilder(index);
-  const [step, currentStepIndex] = useCurrentStep(index);
+function TaskDetails({ id }) {
+  const data = constructBuilder(id);
+  const [step, currentStepId] = useCurrentStep(id);
   const dispatch = useDispatch();
   const prevError = useRef(null);
   const { view } = useSelector(playbookSelector);
@@ -36,7 +35,7 @@ function TaskDetails({ index }) {
     }
 
     prevError.current = errors;
-    dispatch(setErrors({ errors, index: currentStepIndex }));
+    dispatch(setErrors({ errors, id: currentStepId }));
   };
 
   const removeErrors = (key) => {
@@ -44,7 +43,7 @@ function TaskDetails({ index }) {
     delete errors[key];
 
     prevError.current = errors;
-    dispatch(setErrors({ errors, index: currentStepIndex }));
+    dispatch(setErrors({ errors, id: currentStepId }));
   };
 
   useEffect(() => {
@@ -70,14 +69,14 @@ function TaskDetails({ index }) {
     <div className="relative mt-2">
       {data?.builder?.map((step, index) => (
         <div
-          key={index}
+          key={`data-${index}`}
           className={`flex gap-2 flex-wrap ${
             view === "builder" ? "flex-col" : "flex-row"
           }`}>
           {step.map((value, index) =>
             value.condition ?? true ? (
               <div
-                key={index}
+                key={`data-step-${index}`}
                 style={{
                   display: "flex",
                   flexDirection: view === "builder" ? "column" : "row",
@@ -91,7 +90,7 @@ function TaskDetails({ index }) {
                 <OptionRender
                   data={value}
                   removeErrors={removeErrors}
-                  index={currentStepIndex}
+                  id={currentStepId}
                 />
               </div>
             ) : (
@@ -106,7 +105,6 @@ function TaskDetails({ index }) {
           {step.message}
         </div>
       )}
-      <VariablesBox />
     </div>
   );
 }

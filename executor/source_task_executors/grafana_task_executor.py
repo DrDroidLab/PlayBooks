@@ -20,16 +20,16 @@ class GrafanaSourceManager(PlaybookSourceManager):
         self.task_proto = Grafana
         self.task_type_callable_map = {
             Grafana.TaskType.PROMQL_METRIC_EXECUTION: {
-                'task_type': 'PROMQL_METRIC_EXECUTION',
                 'executor': self.execute_promql_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus based dashboard panels from Grafana',
                 'category': 'Metrics'
             },
             Grafana.TaskType.PROMETHEUS_DATASOURCE_METRIC_EXECUTION: {
-                'task_type': 'PROMETHEUS_DATASOURCE_METRIC_EXECUTION',
                 'executor': self.execute_prometheus_datasource_metric_execution,
                 'model_types': [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus Data Sources from Grafana',
                 'category': 'Metrics'
             },
@@ -65,8 +65,9 @@ class GrafanaSourceManager(PlaybookSourceManager):
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                                   label_option.value.value)
-            for key, value in global_variable_set.items():
-                promql_metric_query = promql_metric_query.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
@@ -140,15 +141,17 @@ class GrafanaSourceManager(PlaybookSourceManager):
             process_function = task.process_function.value
             promql_metric_query = task.promql_expression.value
 
-            for key, value in global_variable_set.items():
-                promql_metric_query = promql_metric_query.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Datasource_Uid -> {}, Promql_Metric_Query -> {}, Start_Time "
                 "-> {}, End_Time -> {}, Period -> {}".format(
-                    "Grafana", grafana_connector.account_id.value, datasource_uid, promql_metric_query, start_time, end_time, period
+                    "Grafana", grafana_connector.account_id.value, datasource_uid, promql_metric_query, start_time,
+                    end_time, period
                 ), flush=True)
 
             response = grafana_api_processor.fetch_promql_metric_timeseries(datasource_uid, promql_metric_query,

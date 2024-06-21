@@ -3,14 +3,17 @@ import { useGetTemplatesQuery } from "../../../store/features/templates/api/inde
 import Loading from "../../common/Loading/index.tsx";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../../store/features/playbook/playbookSlice.ts";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
-function TemplatesList({ setImportFromTemplatesOpen }) {
+function TemplatesList() {
+  const { toggle } = useDrawerState(DrawerTypes.TEMPLATES);
   const { data: templates, isLoading } = useGetTemplatesQuery();
   const dispatch = useDispatch();
 
   const handleImportTemplate = (template) => {
     dispatch(copyPlaybook(template));
-    setImportFromTemplatesOpen(false);
+    toggle();
   };
 
   if (isLoading) {

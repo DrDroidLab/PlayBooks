@@ -18,13 +18,13 @@ function ExecutingStep({ handleShowConfig }) {
         <h1 className="font-semibold text-lg line-clamp-3">
           {executingStep.description}
         </h1>
-        <div onClick={() => handleShowConfig(executingStep.id)}>
+        {/* <div onClick={() => handleShowConfig(executingStep.id)}>
           (
           <span className="text-violet-500 cursor-pointer hover:underline">
             Show Config
           </span>
           )
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center gap-2 mt-3">
         <CircularProgress size={20} />

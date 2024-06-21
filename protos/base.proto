@@ -3,6 +3,33 @@ import "google/protobuf/wrappers.proto";
 
 package protos;
 
+enum Function {
+  UNKNOWN_F = 0;
+  AVG_F = 1;
+  SUM_F = 2;
+  MIN_F = 3;
+  MAX_F = 4;
+  LAST_F = 5;
+}
+
+enum Operator {
+  UNKNOWN_O = 0;
+  GREATER_THAN_O = 1;
+  GREATER_THAN_EQUAL_O = 2;
+  LESS_THAN_O = 3;
+  LESS_THAN_EQUAL_O = 4;
+  EQUAL_O = 5;
+  NOT_EQUAL_O = 6;
+  LIKE_O = 7;
+}
+
+enum LogicalOperator {
+  UNKNOWN_LO = 0;
+  AND_LO = 1;
+  OR_LO = 2;
+  NOT_LO = 3;
+}
+
 message TimeRange {
   uint64 time_geq = 1;
   uint64 time_lt = 2;

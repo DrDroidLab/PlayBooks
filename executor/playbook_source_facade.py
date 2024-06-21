@@ -24,7 +24,7 @@ from executor.utils.playbooks_builder_utils import model_type_display_name_maps
 
 from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookSourceOptions
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookSourceOptions, PlaybookTaskResultType
 
 from protos.playbooks.playbook_pb2 import PlaybookTask
 
@@ -57,12 +57,14 @@ class PlaybookSourceFacade:
                 logger.error(f'Error while getting connector options for source: {str(e)}')
             st_map = manager.get_task_type_callable_map()
             all_task_types = []
+            task_proto = manager.task_proto
             for task_type, task_info in st_map.items():
                 display_name = task_info['display_name']
-                task_type_name = task_info.get('task_type', task_type)
+                task_type_name = task_proto.TaskType.Name(task_type)
                 task_type_category = task_info.get('category', 'Others')
                 model_types = task_info['model_types']
                 model_options: [PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] = []
+                task_result_type = task_info.get('result_type', PlaybookTaskResultType.UNKNOWN)
                 for m in model_types:
                     model_type_display_name = model_type_display_name_maps.get(m, SourceModelType.Name(m))
                     model_options.append(
@@ -72,7 +74,8 @@ class PlaybookSourceFacade:
                     PlaybookSourceOptions.TaskTypeOption(display_name=StringValue(value=display_name),
                                                          task_type=StringValue(value=task_type_name),
                                                          category=StringValue(value=task_type_category),
-                                                         supported_model_types=model_options))
+                                                         supported_model_types=model_options,
+                                                         result_type=task_result_type))
             display_name = integrations_connector_type_display_name_map.get(source, Source.Name(source))
             source_options.append(PlaybookSourceOptions(source=source,
                                                         display_name=StringValue(value=display_name),

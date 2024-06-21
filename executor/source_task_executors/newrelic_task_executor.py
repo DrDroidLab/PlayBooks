@@ -30,23 +30,23 @@ class NewRelicSourceManager(PlaybookSourceManager):
         self.task_proto = NewRelic
         self.task_type_callable_map = {
             NewRelic.TaskType.ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION: {
-                'task_type': 'ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION',
                 'executor': self.execute_entity_application_golden_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a New Relic golden metric',
                 'category': 'Metrics'
             },
             NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
-                'task_type': 'ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION',
                 'executor': self.execute_entity_dashboard_widget_nrql_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a metric from New Relic dashboard',
                 'category': 'Metrics'
             },
             NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
-                'task_type': 'NRQL_METRIC_EXECUTION',
                 'executor': self.execute_nrql_metric_execution,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a custom NRQL query',
                 'category': 'Metrics'
             },
@@ -247,8 +247,11 @@ class NewRelicSourceManager(PlaybookSourceManager):
             nrql_expression = task.nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
                 raise Exception("Invalid NRQL expression. TIMESERIES is missing in the NRQL expression")
-            for key, value in global_variable_set.items():
-                nrql_expression = nrql_expression.replace(key, str(value))
+
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    nrql_expression = nrql_expression.replace(key, str(value))
+
             if 'limit max timeseries' in nrql_expression.lower():
                 if 'LIMIT MAX TIMESERIES' in nrql_expression:
                     nrql_expression = nrql_expression.replace('LIMIT MAX TIMESERIES', 'TIMESERIES 5 MINUTE')

@@ -1,8 +1,7 @@
-import { store } from "../../store/index.ts";
-import { setRequiresFormula } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
+import { updateCardById } from "../execution/updateCardById.ts";
 
-export const datadogRawQueryBuilder = (task, index) => {
+export const datadogRawQueryBuilder = (task, id: string) => {
   return {
     builder: [
       [
@@ -21,12 +20,7 @@ export const datadogRawQueryBuilder = (task, index) => {
           type: OptionType.BUTTON,
           selected: task.requiresFormula,
           handleClick: () => {
-            store.dispatch(
-              setRequiresFormula({
-                index,
-                requiresFormula: !task.requiresFormula,
-              }),
-            );
+            updateCardById("requiresFormula", !task.requiresFormula, id);
           },
           additionalProps: {
             length: 400,
