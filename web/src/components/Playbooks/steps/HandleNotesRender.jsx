@@ -11,7 +11,7 @@ function HandleNotesRender({ id }) {
   const [step] = useCurrentStep(id);
 
   const toggleNotes = () => {
-    dispatch(toggleNotesVisibility(id));
+    dispatch(toggleNotesVisibility({ id }));
   };
 
   return (
