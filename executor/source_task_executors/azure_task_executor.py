@@ -23,9 +23,9 @@ class AzureSourceManager(PlaybookSourceManager):
         self.task_proto = Azure
         self.task_type_callable_map = {
             Azure.TaskType.FILTER_LOG_EVENTS: {
-                'task_type': 'FILTER_LOG_EVENTS',
                 'executor': self.filter_log_events,
                 'model_types': [SourceModelType.AZURE_WORKSPACE],
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch logs from Azure Log Analytics Workspace',
                 'category': 'Logs'
             },
@@ -49,8 +49,9 @@ class AzureSourceManager(PlaybookSourceManager):
             timespan = timedelta(hours=int(timespan_delta)) if timespan_delta else timedelta(
                 seconds=end_time - start_time)
             query_pattern = task.filter_query.value
-            for key, value in global_variable_set.items():
-                query_pattern = query_pattern.replace(key, str(value))
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    query_pattern = query_pattern.replace(key, str(value))
 
             azure_api_processor = self.get_connector_processor(azure_connector)
 

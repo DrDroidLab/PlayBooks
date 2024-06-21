@@ -1,28 +1,17 @@
-import { Grid, Tooltip } from "@mui/material";
+import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import styles from "./index.module.css";
-import {
-  Check,
-  ChevronLeftRounded,
-  ContentCopy,
-  Edit,
-} from "@mui/icons-material";
+import { Check, Edit, HomeRounded } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setName,
-  setPlaybookKey,
-} from "../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
-import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
-import StepActions from "./Playbooks/create/StepActions.jsx";
+import { useNavigate } from "react-router-dom";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import ExecutionButton from "./Buttons/ExecutionButton/index.tsx";
-import useShowExecution from "../hooks/useShowExecution.ts";
+import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
+import PlaybookDescription from "./PlaybookDescription/index.tsx";
+import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -40,37 +29,29 @@ const Heading = ({
   defaultTimeRange = undefined,
   defaultCustomTimeRange = undefined,
   defaultCustomTillNowTimeRange = undefined,
-  showEditTitle = false,
   customTimeRange = false,
-  copyPlaybook = false,
-  showCopy = false,
   isPlayground = false,
 }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const hasPreviousPage = useHasPreviousPage();
+  // const location = useLocation();
+  // const hasPreviousPage = useHasPreviousPage();
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
-  const { executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const showExecution = useShowExecution();
+  const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
+  const [name, setName] = usePlaybookKey("name");
+  const [executionId] = usePlaybookKey("executionId");
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
   };
   const goBack = () => {
-    if (location.key !== "default") {
-      navigate(-1);
-    } else {
-      navigate("/", { replace: true });
-    }
-  };
-
-  const handleDescription = (e) => {
-    const value = e.target.value;
-    dispatch(setPlaybookKey({ key: "description", value: value }));
+    // if (location.key !== "default") {
+    //   navigate(-1);
+    // } else {
+    navigate("/");
+    // }
   };
 
   return (
@@ -79,9 +60,11 @@ const Heading = ({
         style={{ zIndex: "90" }}
         className="w-full h-[80px] top-0 py-3 flex justify-between bg-white border-b border-gray-300 px-4 items-center sticky">
         <div className="flex gap-2 items-center">
-          {hasPreviousPage && (
-            <div className="cursor-pointer text-xl font-bold" onClick={goBack}>
-              <ChevronLeftRounded />
+          {isOnPlaybookPage && (
+            <div
+              className="cursor-pointer text-xl font-bold hover:text-violet-500 transition-all"
+              onClick={goBack}>
+              <HomeRounded />
             </div>
           )}
           <div className="flex-col justify-items-center">
@@ -92,24 +75,27 @@ const Heading = ({
                     <>
                       <ValueComponent
                         valueType={"STRING"}
-                        onValueChange={(val) => dispatch(setName(val))}
-                        value={playbook.name}
+                        onValueChange={setName}
+                        value={name}
                         placeHolder={"Enter Playbook name"}
                         length={300}
                       />
                     </>
                   ) : (
                     <div
-                      style={!showEditTitle ? {} : { cursor: "pointer" }}
+                      style={!isOnPlaybookPage ? {} : { cursor: "pointer" }}
                       onClick={
-                        showEditTitle ? () => setShowEdit(!showEdit) : () => {}
+                        isOnPlaybookPage
+                          ? () => setShowEdit(!showEdit)
+                          : () => {}
                       }
                       className="add_title">
-                      {playbook.isEditing && !executionId ? "Editing - " : ""}{" "}
+                      {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
+                      {isPrefetched && <> - {executionId}</>}
                     </div>
                   )}
-                  {showEditTitle && !isPrefetched && (
+                  {isOnPlaybookPage && !isPrefetched && (
                     <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
                       <div
                         className="icon"
@@ -118,35 +104,13 @@ const Heading = ({
                       </div>
                     </button>
                   )}
-                  {(showCopy || playbook.isEditing) && (
-                    <button
-                      className={styles["pb-button"]}
-                      onClick={copyPlaybook}>
-                      <Tooltip title="Copy this Playbook">
-                        <ContentCopy />
-                      </Tooltip>
-                    </button>
-                  )}
                 </div>
                 {!!subHeading && !subHeadingLink ? (
                   <div className="text-xs font-normal text-gray-400">
                     {subHeading}
                   </div>
                 ) : null}
-                {(Object.keys(playbook.currentPlaybook).length > 0 ||
-                  showEditTitle) && (
-                  <input
-                    className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
-                    placeholder={
-                      isPrefetched || executionId
-                        ? "Playbook Description goes here"
-                        : "+ Add Description..."
-                    }
-                    value={playbook.description}
-                    onChange={handleDescription}
-                    disabled={isPrefetched || executionId}
-                  />
-                )}
+                <PlaybookDescription />
                 {!!subHeadingLink && !!subHeading ? (
                   <a
                     style={{ color: "blue", fontSize: "15px" }}
@@ -169,10 +133,7 @@ const Heading = ({
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
           )} */}
-          {playbook.view === "builder" && !executionId && !isPrefetched && (
-            <StepActions />
-          )}
-          {showExecution && <ExecutionButton />}
+          <HeadingPlaybookButtons />
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

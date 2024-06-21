@@ -1,9 +1,10 @@
+import logging
 from typing import Union
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from django.http import HttpResponse
 
-from connectors.models import Site
+from connectors.models import Site, ConnectorMetadataModelStore
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
@@ -17,7 +18,7 @@ from playbooks.utils.decorators import api_blocked, web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
-from protos.base_pb2 import Message, Meta, Page, TimeRange
+from protos.base_pb2 import Message, Meta, Page, TimeRange, SourceKeyType
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
     GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
@@ -31,6 +32,8 @@ from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto,
     SlackAlert as SlackAlertProto
 from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+
+logger = logging.getLogger(__name__)
 
 
 @api_blocked
@@ -53,7 +56,35 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                                                                        connector_keys)
             if db_agent_proxy_connector is None and err:
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
+
+    connector_metadata_models = []
+    if connector.type == Source.REMOTE_SERVER:
+        for key in connector_keys:
+            if key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
+                ssh_servers = key.key.value
+                ssh_servers = ssh_servers.replace(' ', '')
+                ssh_servers = ssh_servers.split(',')
+                ssh_servers = list(filter(None, ssh_servers))
+                for ssh_server in ssh_servers:
+                    if '@' not in ssh_server:
+                        return CreateConnectorResponse(success=BoolValue(value=False), message=Message(
+                            title='Invalid Remote Server Host. Please provide in the format user@host'))
+                    connector_metadata_models.append(
+                        {'model_type': SourceModelType.SSH_SERVER, 'model_uid': ssh_server, 'is_active': True,
+                         'connector_type': Source.REMOTE_SERVER})
+                break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
+    for c in connector_metadata_models:
+        try:
+            ConnectorMetadataModelStore.objects.update_or_create(account=db_connector.account,
+                                                                 connector=db_connector,
+                                                                 connector_type=c['connector_type'],
+                                                                 model_type=c['model_type'],
+                                                                 model_uid=c['model_uid'],
+                                                                 defaults={'is_active': True, 'metadata': None})
+        except Exception as e:
+            logger.error(f"Failed to create connector metadata model: {str(e)}")
+            continue
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
@@ -272,59 +303,6 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
                                             alert_timestamp=int(a['data_timestamp'].timestamp())))
     return GetSlackAlertsResponse(meta=get_meta(page=page, total_count=total_count),
                                   slack_alerts=slack_alerts)
-
-
-@api_blocked
-@web_api(GetSlackAppManifestRequest)
-def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
-        Union[GetSlackAppManifestResponse, HttpResponse]:
-    account: Account = get_request_account()
-    host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
-
-    # read sample_manifest file string
-    sample_manifest = """
-display_information:
-    name: MyDroid
-    description: App for Automating Investigation & Actions
-    background_color: "#1f2126"
-features:
-    bot_user:
-        display_name: MyDroid
-        always_online: true
-oauth_config:
-    scopes:
-        bot:
-        - channels:history
-        - chat:write
-        - files:write
-        - conversations.connect:manage
-        - conversations.connect:write
-        - groups:write
-        - mpim:write
-        - im:write
-        - channels:manage
-        - channels:read
-        - groups:read
-        - mpim:read
-        - im:read
-        - groups:history
-settings:
-    event_subscriptions:
-        request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
-        bot_events:
-        - message.channels
-        - member_joined_channel
-        - message.groups
-    org_deploy_enabled: false
-    socket_mode_enabled: false
-    token_rotation_enabled: false
-    """
-
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
-    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
 
 @api_blocked

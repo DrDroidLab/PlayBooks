@@ -20,9 +20,9 @@ class BashSourceManager(PlaybookSourceManager):
         self.task_proto = Bash
         self.task_type_callable_map = {
             Bash.TaskType.COMMAND: {
-                'task_type': 'COMMAND',
                 'executor': self.execute_command,
                 'model_types': [SourceModelType.SSH_SERVER],
+                'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute a BASH Command',
                 'category': 'Actions'
             },
@@ -43,12 +43,15 @@ class BashSourceManager(PlaybookSourceManager):
         if remote_server_connector:
             generated_credentials = generate_credentials_dict(remote_server_connector.type,
                                                               remote_server_connector.keys)
+        if 'remote_server_str' in kwargs:
+            remote_server_str = kwargs.get('remote_server_str')
+            generated_credentials['remote_host'] = remote_server_str
         return RemoteServerProcessor(**generated_credentials)
 
     def execute_command(self, time_range: TimeRange, global_variable_set: Dict, bash_task: Bash,
                         remote_server_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            bash_command: Bash = bash_task.command
+            bash_command: Bash.Command = bash_task.command
             remote_server_str = bash_command.remote_server.value if bash_command.remote_server else None
             if remote_server_str and not remote_server_connector:
                 ssh_server_asset = get_db_connector_metadata_models(model_type=SourceModelType.SSH_SERVER,
@@ -62,15 +65,16 @@ class BashSourceManager(PlaybookSourceManager):
 
             command_str = bash_command.command.value
             commands = command_str.split('\n')
-            for key, value in global_variable_set.items():
-                updated_commands = []
-                for command in commands:
-                    command = command.replace(f"{{{key}}}", value)
-                    updated_commands.append(command)
-                commands = updated_commands
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    updated_commands = []
+                    for command in commands:
+                        command = command.replace(f"{{{key}}}", value)
+                        updated_commands.append(command)
+                    commands = updated_commands
             try:
                 outputs = {}
-                ssh_client = self.get_connector_processor(remote_server_connector)
+                ssh_client = self.get_connector_processor(remote_server_connector, remote_server_str=remote_server_str)
                 for command in commands:
                     command_to_execute = command
                     output = ssh_client.execute_command(command_to_execute)

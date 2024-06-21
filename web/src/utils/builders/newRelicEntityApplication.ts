@@ -1,10 +1,9 @@
-import { setGoldenMetrics } from "../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../store/index.ts";
+import { updateCardById } from "../execution/updateCardById.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { OptionType } from "../playbooksData.ts";
 
-const getCurrentAsset = (index) => {
-  const [task] = getCurrentTask(index);
+const getCurrentAsset = (id: string) => {
+  const [task] = getCurrentTask(id);
   if (!Array.isArray(task?.assets)) return [];
   const currentAsset = task?.assets?.find(
     (e) => e.application_name === task?.application_name,
@@ -13,7 +12,7 @@ const getCurrentAsset = (index) => {
   return currentAsset;
 };
 
-export const newRelicEntityApplicationBuilder = (options, task, index) => {
+export const newRelicEntityApplicationBuilder = (options, task, id) => {
   return {
     triggerGetAssetsKey: "application_name",
     assetFilterQuery: {
@@ -38,7 +37,7 @@ export const newRelicEntityApplicationBuilder = (options, task, index) => {
           key: "golden_metric",
           label: "Metric",
           type: OptionType.MULTI_SELECT,
-          options: getCurrentAsset(index)?.golden_metrics?.map((e) => {
+          options: getCurrentAsset(id)?.golden_metrics?.map((e) => {
             return {
               id: e.golden_metric_name,
               label: e.golden_metric_name,
@@ -47,7 +46,7 @@ export const newRelicEntityApplicationBuilder = (options, task, index) => {
           }),
           selected: task.golden_metrics,
           handleChange: (val) => {
-            if (val) store.dispatch(setGoldenMetrics({ index, metric: val }));
+            updateCardById("golden_metrics", val, id);
           },
         },
         {

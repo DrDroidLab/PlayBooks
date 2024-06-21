@@ -1,5 +1,5 @@
 import { InfoOutlined } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender";
 import { useDispatch, useSelector } from "react-redux";
 import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
@@ -7,38 +7,34 @@ import { useGenerateManifestMutation } from "../../../store/features/integration
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { CircularProgress } from "@mui/material";
 import "highlight.js/styles/default.css";
-import CopyCodeDrawer from "../../common/CopyCode/CopyCodeDrawer.jsx";
+import CopyCodeDrawer from "../../common/Drawers/CopyCodeDrawer.jsx";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
+import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+
+const id = DrawerTypes.COPY_CODE;
 
 function SlackManifestGenerator() {
-  const [host, setHost] = useState("");
-  const dispatch = useDispatch();
   const [triggerManifest, { isLoading }] = useGenerateManifestMutation();
   const currentConnector = useSelector(connectorSelector);
+  const { openDrawer } = useDrawerState(id);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!host) {
-      dispatch(showSnackbar("Please enter a host name"));
-      return;
-    }
-
-    triggerManifest(host);
+    triggerManifest();
   };
+
+  useEffect(() => {
+    if (currentConnector.manifest) {
+      openDrawer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentConnector.manifest]);
 
   return (
     <main className="p-2 my-2 rounded bg-white border mr-3">
       <form
         onSubmit={handleSubmit}
         className="flex my-2 items-end gap-2 flex-wrap">
-        <HandleInputRender
-          option={{
-            type: "string",
-            label: "Host Name",
-            value: host,
-            handleChange: setHost,
-          }}
-        />
 
         <div className="flex items-center gap-2">
           <button className="p-1 text-violet-500 hover:text-white hover:bg-violet-500 border border-violet-500 text-xs rounded cursor-pointer transition-all">

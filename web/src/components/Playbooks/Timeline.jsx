@@ -11,23 +11,28 @@ import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.jsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
+import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 
-function Timeline({ setTimelineOpen }) {
+function Timeline() {
   const { executionId } = useSelector(playbookSelector);
   const playbookSteps = useSelector(stepsSelector);
-  const [triggerGetPlaybookExeution, { isFetching }] =
+  const [triggerGetPlaybookExeution, { isLoading }] =
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
 
-  const lastStep = (playbookSteps ?? []).findIndex(
-    (step) => step.id === steps[steps.length - 1]?.id,
+  const lastStep = (playbookSteps ?? []).find(
+    (step) => step.id === steps[(steps?.length || 1) - 1]?.id,
   );
 
-  const showNextStepExecution = lastStep < playbookSteps.length - 1;
+  const showNextStepExecution = lastStep?.stepIndex < playbookSteps?.length - 1;
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
+
+  const nextStep = showNextStepExecution
+    ? playbookSteps[lastStep?.stepIndex + 1]
+    : {};
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -41,11 +46,10 @@ function Timeline({ setTimelineOpen }) {
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
     dispatch(showStepConfig(index));
-    setTimelineOpen(false);
   };
 
   useEffect(() => {
-    if (!executingStep?.outputLoading) {
+    if (!executingStep?.outputLoading && executionId) {
       populateData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +60,7 @@ function Timeline({ setTimelineOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [executionId]);
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loading title="Your timeline is loading..." />;
   }
 
@@ -84,9 +88,11 @@ function Timeline({ setTimelineOpen }) {
       {showNextStepExecution && !executingStep && (
         <ExecuteNextStep
           handleShowConfig={handleShowConfig}
-          stepIndex={lastStep}
+          stepId={nextStep.id}
         />
       )}
+
+      <ExecutionNavigateButtons steps={steps} />
     </main>
   );
 }

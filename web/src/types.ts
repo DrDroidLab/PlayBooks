@@ -1,6 +1,6 @@
 export interface Step {
   name?: string;
-  id?: string;
+  id: string;
   query?: string;
   dimension?: string;
   namespace?: string;
@@ -78,6 +78,19 @@ export interface Step {
   taskType?: string;
   iframe_url?: string;
   zone?: any;
+  position?: StepPosition;
+  stepIndex: number;
+  parentIds?: number[];
+  requireCondition: boolean;
+  currentConditionParentIndex?: number;
+  resultType?: string;
+  children?: any;
+  taskIds?: string[];
+}
+
+export interface StepPosition {
+  x: number;
+  y: number;
 }
 
 export interface GoldenMetric {
@@ -258,6 +271,7 @@ export interface PlaybookTask {
   global_variable_set?: any;
   interpreter_type?: string;
   task_connector_sources: any;
+  reference_id: string;
 }
 
 export interface GlobalVariable {
@@ -270,7 +284,6 @@ export interface Playbook {
   name?: string;
   description?: string;
   currentPlaybook?: any;
-  currentStepIndex?: string | null;
   steps: Step[];
   playbooks: any;
   meta: any;
@@ -279,6 +292,13 @@ export interface Playbook {
   lastUpdatedAt?: Date | null;
   view: string;
   interpreterTypes: any[];
+  shouldScroll?: string;
+  currentVisibleStep?: number;
+  playbookEdges: any[];
+  permanentView?: string;
+  connectorOptions?: any;
+  executionId?: any;
+  currentStepId?: any;
 }
 
 export interface Playground {
@@ -298,6 +318,8 @@ export interface PlaybookContractStep {
   description: string;
   external_links: ExternalLink[];
   tasks: PlaybookTask[];
+  reference_id: string;
+  children: any;
 }
 
 export interface PlaybookContract {
@@ -306,6 +328,7 @@ export interface PlaybookContract {
   description?: string;
   global_variable_set: any;
   steps: PlaybookContractStep[];
+  step_relations: any;
 }
 
 // Response types for the first API

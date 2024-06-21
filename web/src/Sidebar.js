@@ -60,7 +60,7 @@ function Sidebar() {
               <img
                 src="/logo/drdroid-logo-full.png"
                 alt="Logo"
-                style={{ width: "100px" }}
+                style={{ width: "150px" }}
                 className="main_logo_option"
               />
             </div>
