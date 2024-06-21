@@ -62,7 +62,7 @@ export const newRelicEntityDashboardBuilder = (options, task, id: string) => {
           // requires: ['dashboard'],
           selected: task?.page?.page_name,
           handleChange: (_, val) => {
-            updateCardById("page", val.paage, id);
+            updateCardById("page", val.page, id);
           },
         },
         {
