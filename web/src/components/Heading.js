@@ -42,6 +42,7 @@ const Heading = ({
   const isPrefetched = useIsPrefetched();
   const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
   const [name, setName] = usePlaybookKey("name");
+  const [executionId] = usePlaybookKey("executionId");
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
@@ -88,6 +89,7 @@ const Heading = ({
                       className="add_title">
                       {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
+                      {isPrefetched && <> - {executionId}</>}
                     </div>
                   )}
                   {isPlaybookPage && !isPrefetched && (
