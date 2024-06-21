@@ -4,7 +4,6 @@ import Sidebar from "./Sidebar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "../src/Layout.css";
 import CustomContainer from "./components/CustomContainer";
-import FakeLoading from "./components/common/Loading/FakeLoading.tsx";
 
 function Layout() {
   const theme = createTheme({
@@ -33,7 +32,6 @@ function Layout() {
           className="w-full lg:w-10/12 main1 overflow-y-scroll"
           style={{ background: "#F8FAFC" }}>
           <CustomContainer>
-            <FakeLoading />
             <Outlet />
           </CustomContainer>
         </main>
