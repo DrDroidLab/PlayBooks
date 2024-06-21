@@ -309,7 +309,6 @@ const playbookSlice = createSlice({
       }
 
       state.currentStepId = currentStep.id.toString();
-      state.id = "wohoooooo";
       state.permanentView = addConditions
         ? PermanentDrawerTypes.STEP_DETAILS
         : PermanentDrawerTypes.CONDITION;
