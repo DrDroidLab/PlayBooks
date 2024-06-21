@@ -16,6 +16,11 @@ export const handleEntryPointsInjector =
           slack_alert_type: workflow.trigger?.source,
           slack_alert_filter_string: workflow.trigger?.filterString,
         };
+      case Types.WorkflowEntryPointOptions.PAGERDUTY_INCIDENT:
+        return {
+          service_name: workflow.trigger?.serviceName,
+          incident_title: workflow.trigger?.title,
+        };
 
       default:
         return {};

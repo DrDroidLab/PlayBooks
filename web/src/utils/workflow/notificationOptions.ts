@@ -15,6 +15,12 @@ export const notificationOptions = [
         type: "checkbox",
         group: "notification",
       },
+      {
+        id: "pagerduty_notes",
+        label: "Send a note to PagerDuty",
+        type: "checkbox",
+        group: "notification",
+      },
     ],
   },
 ];

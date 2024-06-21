@@ -331,9 +331,9 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
             return
         pagerduty_connector_proto: Connector = pagerduty_connector.unmasked_proto
         account_id = pagerduty_connector_proto.account_id.value
-        if 'incident_id' not in pager_duty_incident or 'service_id' not in pager_duty_incident:
+        if 'incident_id' not in pager_duty_incident or 'service_name' not in pager_duty_incident:
             logger.error(
-                f"Error while handling pagerduty webhook call: Incident id or service id not found for pagerduty event")
+                f"Error while handling pagerduty webhook call: Incident id or service name not found for pagerduty event")
             return
 
         all_pd_incident_entry_points = get_db_workflow_entry_points(account_id=account_id,

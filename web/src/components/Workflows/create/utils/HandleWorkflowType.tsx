@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import SlackTriggerForm from "../../triggers/SlackTriggerForm";
 import CopyCode from "../../../common/CopyCode/index.jsx";
 import { WorkflowEntryPointOptions } from "../../../../utils/workflow/types/entryPoint.ts";
+import PagerdutyTriggerForm from "../../triggers/PagerdutyTriggerForm.jsx";
 
 function HandleWorkflowType() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -11,6 +12,9 @@ function HandleWorkflowType() {
   switch (currentWorkflow.workflowType) {
     case WorkflowEntryPointOptions.SLACK_CHANNEL_ALERT:
       return <SlackTriggerForm />;
+
+    case WorkflowEntryPointOptions.PAGERDUTY_INCIDENT:
+      return <PagerdutyTriggerForm />;
 
     case WorkflowEntryPointOptions.API:
       if (currentWorkflow.curl)
@@ -23,7 +27,8 @@ function HandleWorkflowType() {
                 className="underline text-violet-500"
                 href="https://curlconverter.com/"
                 target="_blank"
-                rel="noreferrer">
+                rel="noreferrer"
+              >
                 https://curlconverter.com/
               </a>
               .
