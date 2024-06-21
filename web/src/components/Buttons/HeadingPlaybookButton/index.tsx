@@ -24,10 +24,10 @@ function HeadingPlaybookButtons() {
   return (
     <div className="flex gap-2 items-center">
       {view === "builder" && !isPrefetched && <SavePlaybookButton />}
+      {isEditing && !isPrefetched && <CopyPlaybookButton />}
       {showExecution && <ExecutionButton />}
       {isPrefetched && <EditPlaybookButton />}
       {!isPrefetched && <PastExecutionsButton />}
-      {isEditing && !isPrefetched && <CopyPlaybookButton />}
     </div>
   );
 }

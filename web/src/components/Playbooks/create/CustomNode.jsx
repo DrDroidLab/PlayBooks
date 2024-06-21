@@ -35,6 +35,7 @@ export default function CustomNode({ data }) {
     toggle: togglePermanentDrawer,
     openDrawer,
     closeDrawer,
+    permanentView,
   } = usePermanentDrawerState();
   const dispatch = useDispatch();
   const { currentStepId, executionId } = useSelector(playbookSelector);
@@ -49,16 +50,24 @@ export default function CustomNode({ data }) {
     e.stopPropagation();
   };
 
-  const handleClick = (config = true) => {
+  const handleClick = (e, config = true) => {
     // if (!isEditing) return;
+    handleNoAction(e);
     if (isPrefetched && !config) {
-      openDrawer(PermanentDrawerTypes.TIMELINE);
       addAdditionalData({ showStepId: step.id });
+      openDrawer(PermanentDrawerTypes.TIMELINE);
+      return;
+    }
+    if (
+      permanentView === PermanentDrawerTypes.STEP_DETAILS &&
+      currentStepId === step.id
+    ) {
+      togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
       return;
     }
     dispatch(setCurrentStepId(step.id));
     addAdditionalData({});
-    togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {
@@ -91,7 +100,7 @@ export default function CustomNode({ data }) {
 
   return (
     <div
-      onClick={handleClick}
+      onClick={(e) => handleClick(e, false)}
       className={`${
         currentStepId === step.id.toString() ? "shadow-violet-500" : ""
       } shadow-md rounded-md overflow-hidden`}>
@@ -127,7 +136,7 @@ export default function CustomNode({ data }) {
         </div>
         <div className="flex items-center gap-1">
           <CustomButton
-            onClick={() => handleClick(false)}
+            onClick={handleClick}
             className="text-violet-500 cursor-pointer">
             <Tooltip title={"Show Config"}>
               <VisibilityRounded fontSize="medium" />
