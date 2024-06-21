@@ -42,10 +42,10 @@ function RunButton({ id }: RunButtonProps) {
     if (isExisting && !executionId && step.id) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      await executeStep(step, id);
+      await executeStep(step, step.id);
       setSearchParams({ executionId: id });
     } else {
-      executeStep(step, id);
+      executeStep(step, step.id);
     }
   };
 

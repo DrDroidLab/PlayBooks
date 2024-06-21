@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 export const stateToStep = (step: Step, i?: number) => {
   const tasks = stepToTasks(step);
   return {
-    id: step.id.length > 10 ? "0" : step.id,
+    id: step?.id?.length > 10 ? "0" : step.id,
     reference_id: uuidv4(),
     name: step.name!,
     description:
