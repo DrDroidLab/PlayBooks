@@ -21,14 +21,18 @@ function Timeline() {
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
 
-  const lastStep = (playbookSteps ?? []).findIndex(
-    (step) => step.id === steps[steps.length - 1]?.id,
+  const lastStep = (playbookSteps ?? []).find(
+    (step) => step.id === steps[(steps?.length || 1) - 1]?.id,
   );
 
-  const showNextStepExecution = lastStep < playbookSteps.length - 1;
+  const showNextStepExecution = lastStep?.stepIndex < playbookSteps?.length - 1;
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
+
+  const nextStep = showNextStepExecution
+    ? playbookSteps[lastStep?.stepIndex + 1]
+    : {};
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -84,7 +88,7 @@ function Timeline() {
       {showNextStepExecution && !executingStep && (
         <ExecuteNextStep
           handleShowConfig={handleShowConfig}
-          stepIndex={lastStep}
+          stepId={nextStep.id}
         />
       )}
 

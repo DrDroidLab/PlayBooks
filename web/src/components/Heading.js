@@ -2,19 +2,16 @@ import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import { Check, ChevronLeftRounded, Edit } from "@mui/icons-material";
+import { Check, Edit, HomeRounded } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setName,
-} from "../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
-import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
+import { useNavigate } from "react-router-dom";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
+import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -35,25 +32,26 @@ const Heading = ({
   customTimeRange = false,
   isPlayground = false,
 }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const hasPreviousPage = useHasPreviousPage();
+  // const location = useLocation();
+  // const hasPreviousPage = useHasPreviousPage();
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const isPlaybookPage = Object.keys(playbook.currentPlaybook).length > 0;
+  const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
+  const [name, setName] = usePlaybookKey("name");
+  const [executionId] = usePlaybookKey("executionId");
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
   };
   const goBack = () => {
-    if (location.key !== "default") {
-      navigate(-1);
-    } else {
-      navigate("/", { replace: true });
-    }
+    // if (location.key !== "default") {
+    //   navigate(-1);
+    // } else {
+    navigate("/");
+    // }
   };
 
   return (
@@ -62,9 +60,11 @@ const Heading = ({
         style={{ zIndex: "90" }}
         className="w-full h-[80px] top-0 py-3 flex justify-between bg-white border-b border-gray-300 px-4 items-center sticky">
         <div className="flex gap-2 items-center">
-          {hasPreviousPage && (
-            <div className="cursor-pointer text-xl font-bold" onClick={goBack}>
-              <ChevronLeftRounded />
+          {isOnPlaybookPage && (
+            <div
+              className="cursor-pointer text-xl font-bold hover:text-violet-500 transition-all"
+              onClick={goBack}>
+              <HomeRounded />
             </div>
           )}
           <div className="flex-col justify-items-center">
@@ -75,24 +75,27 @@ const Heading = ({
                     <>
                       <ValueComponent
                         valueType={"STRING"}
-                        onValueChange={(val) => dispatch(setName(val))}
-                        value={playbook.name}
+                        onValueChange={setName}
+                        value={name}
                         placeHolder={"Enter Playbook name"}
                         length={300}
                       />
                     </>
                   ) : (
                     <div
-                      style={!isPlaybookPage ? {} : { cursor: "pointer" }}
+                      style={!isOnPlaybookPage ? {} : { cursor: "pointer" }}
                       onClick={
-                        isPlaybookPage ? () => setShowEdit(!showEdit) : () => {}
+                        isOnPlaybookPage
+                          ? () => setShowEdit(!showEdit)
+                          : () => {}
                       }
                       className="add_title">
                       {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
+                      {isPrefetched && <> - {executionId}</>}
                     </div>
                   )}
-                  {isPlaybookPage && !isPrefetched && (
+                  {isOnPlaybookPage && !isPrefetched && (
                     <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
                       <div
                         className="icon"

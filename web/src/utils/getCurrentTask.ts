@@ -1,15 +1,15 @@
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { store } from "../store/index.ts";
 
-function getCurrentTask(index?: number) {
-  const { steps, currentStepIndex } = playbookSelector(store.getState());
-  const currentIndex = index ?? currentStepIndex;
+function getCurrentTask(id?: string) {
+  const { steps, currentStepId } = playbookSelector(store.getState());
+  const currentId = id ?? currentStepId;
   const task =
-    steps.length > 0 && currentIndex !== null && currentIndex !== undefined
-      ? steps[currentIndex]
+    steps.length > 0 && currentId
+      ? steps.find((step) => step.id === currentId)
       : {};
 
-  return [task, currentIndex];
+  return [task, currentId];
 }
 
 export default getCurrentTask;

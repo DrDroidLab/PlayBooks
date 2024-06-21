@@ -4,19 +4,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
-import { updateCardByIndex } from "../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../utils/execution/updateCardById.ts";
 import RunButton from "../Buttons/RunButton/index.tsx";
+import useCurrentStep from "../../hooks/useCurrentStep.ts";
 
-function PlaybookTitle({ step, index }) {
+function PlaybookTitle({ id }) {
   const isPrefetched = useIsPrefetched();
+  const [step] = useCurrentStep(id);
+
   const editCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex("editTitle", true, index);
+    updateCardById("editTitle", true, id);
   };
 
   const cancelEditCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex("editTitle", false, index);
+    updateCardById("editTitle", false, id);
   };
 
   return (
@@ -45,7 +48,8 @@ function PlaybookTitle({ step, index }) {
         {!step.editTitle && (
           <div>
             <b>
-              {index + 1}: {step.description || `Step - ${index + 1}`}
+              {step.stepIndex + 1}:{" "}
+              {step.description || `Step - ${step.stepIndex + 1}`}
             </b>
             {!isPrefetched && (
               <button onClick={editCardTitle}>
@@ -65,9 +69,9 @@ function PlaybookTitle({ step, index }) {
             placeHolder={`Enter Title`}
             valueType={"STRING"}
             onValueChange={(val) => {
-              updateCardByIndex("description", val, index);
+              updateCardById("description", val, id);
               if (val.trim())
-                updateCardByIndex("userEnteredDescription", true, index);
+                updateCardById("userEnteredDescription", true, id);
             }}
             value={step.description}
             length={200}
@@ -77,7 +81,7 @@ function PlaybookTitle({ step, index }) {
           </button>
         </div>
       )}
-      <RunButton index={index} />
+      <RunButton id={id} />
     </div>
   );
 }

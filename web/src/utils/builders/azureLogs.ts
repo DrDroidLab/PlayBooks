@@ -1,13 +1,7 @@
-import { store } from "../../store/index.ts";
-import {
-  setAzureLogQuery,
-  setTimespan,
-  setWorkspaceId,
-} from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
-import { updateCardByIndex } from "../execution/updateCardByIndex.ts";
+import { updateCardById } from "../execution/updateCardById.ts";
 
-export const azureLogsBuilder = (options: any, task, index) => {
+export const azureLogsBuilder = (options: any, task, id: string) => {
   return {
     builder: [
       [
@@ -22,8 +16,8 @@ export const azureLogsBuilder = (options: any, task, index) => {
           })),
           helperText: task.workspaceName,
           handleChange: (_, val) => {
-            store.dispatch(setWorkspaceId({ index, workspaceId: val.id }));
-            updateCardByIndex("workspaceName", val.workspace.name, index);
+            updateCardById("workspaceId", val.id, id);
+            updateCardById("workspaceName", val.workspace.name, id);
           },
         },
       ],
@@ -32,19 +26,11 @@ export const azureLogsBuilder = (options: any, task, index) => {
           key: "filter_query",
           label: "Log Filter Query",
           type: OptionType.MULTILINE,
-          handleChange: (e) => {
-            store.dispatch(
-              setAzureLogQuery({ index, filterQuery: e.target.value }),
-            );
-          },
         },
         {
           key: "timespan",
           label: "Timespan (hours)",
           type: OptionType.TEXT_ROW,
-          handleChange: (val) => {
-            store.dispatch(setTimespan({ index, timespan: val }));
-          },
         },
       ],
     ],

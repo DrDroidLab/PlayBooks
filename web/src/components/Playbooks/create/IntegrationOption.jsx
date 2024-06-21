@@ -54,10 +54,9 @@ function IntegrationOption({ option }) {
           taskType: option.task_type,
           key: option.id,
           description: option.display_name,
-          parentIndex: addtionalState?.parentIndex,
+          parentId: addtionalState?.parentId,
           requireCondition: addtionalState?.requireCondition,
-          currentConditionParentIndex:
-            addtionalState?.currentConditionParentIndex,
+          currentConditionParentId: addtionalState?.currentConditionParentId,
           resultType: option.result_type,
         }),
       );

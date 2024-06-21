@@ -3,12 +3,12 @@ import SelectComponent from "../../SelectComponent";
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function SelectTaskType({ index }) {
+function SelectTaskType({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
-  const [step, currentIndex] = useCurrentStep(index);
+  const [step, currentId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
   const currentConnector = connectorOptions?.find(
     (e) => e.id === step?.source,
@@ -24,11 +24,11 @@ function SelectTaskType({ index }) {
       currentTaskType.supported_model_types?.length > 0
         ? currentTaskType.supported_model_types[0].model_type
         : currentConnector.source;
-    updateCardByIndex("modelType", modelType, currentIndex);
-    updateCardByIndex("taskType", id, currentIndex);
-    updateCardByIndex("resultType", currentTaskType.result_type, currentIndex);
+    updateCardById("modelType", modelType, currentId);
+    updateCardById("taskType", id, currentId);
+    updateCardById("resultType", currentTaskType.result_type, currentId);
     if (!step.userEnteredDescription)
-      updateCardByIndex("description", val.type.display_name, currentIndex);
+      updateCardById("description", val.type.display_name, currentId);
   }
 
   return (

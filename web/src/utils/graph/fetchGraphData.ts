@@ -11,7 +11,7 @@ export type GraphData = {
 export default function fetchGraphData() {
   const steps = stepsSelector(store.getState());
   const nodes = getNodes(steps);
-  const edges = getEdges(steps);
+  const edges = getEdges();
 
   return {
     nodes,

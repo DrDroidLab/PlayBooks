@@ -10,7 +10,7 @@ import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
 import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
-import extractNumbers from "../../utils/extractNumbers.ts";
+import extractSource from "../../utils/extractSource.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -23,7 +23,7 @@ function AddCondition() {
     deleteCondition,
     handleGlobalRule,
   } = useEdgeConditions(id);
-  const [sourceId] = extractNumbers(source);
+  const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);

@@ -3,18 +3,18 @@ import { PlaybookContract, Step } from "../../../types.ts";
 function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
   const stepRelations = playbook.step_relations ?? [];
   const playbookSteps = playbook.steps ?? [];
-  if (!stepRelations || stepRelations.length === 0) return [];
 
   const list: any = [];
   for (let edge of Object.values(stepRelations ?? {})) {
     const playbookEdge = edge as any;
-    const parentStep = steps.find((e) => e.id === playbookEdge.parent.id);
-    const childStepIndex = steps.findIndex(
-      (e) => e.id === playbookEdge.child.id,
-    );
-    const source = `node-${parentStep?.stepIndex}`;
-    const target = `node-${childStepIndex}`;
-    const id = `edge-${parentStep?.stepIndex}-${childStepIndex}`;
+    const parentStepId = playbookEdge.parent.id;
+    const childStepId = playbookEdge.child.id;
+
+    const parentStep = steps.find((step) => step.id === parentStepId);
+
+    const source = `node-${parentStepId}`;
+    const target = `node-${childStepId}`;
+    const id = `edge-${parentStepId}-${childStepId}`;
     const globalRule = playbookEdge?.condition?.logical_operator;
 
     const conditions = (playbookEdge?.condition?.rules ?? []).map((rule) => {
@@ -37,23 +37,6 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
       };
     });
 
-    const map = playbookSteps.reduce((childrenMapping, step) => {
-      step.children?.forEach((child) => {
-        childrenMapping[child.child.id] = true;
-      });
-      return childrenMapping;
-    }, {});
-
-    steps.forEach((step) => {
-      if (!map[step.id ?? ""]) {
-        list.push({
-          source: "playbook",
-          target: `node-${step.stepIndex}`,
-          id: `edge-${step.stepIndex}`,
-        });
-      }
-    });
-
     list.push({
       source,
       target,
@@ -63,6 +46,23 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
       type: conditions.length > 0 ? "custom" : "",
     });
   }
+
+  const map = playbookSteps.reduce((childrenMapping, step) => {
+    step.children?.forEach((child) => {
+      childrenMapping[child.child.id] = true;
+    });
+    return childrenMapping;
+  }, {});
+
+  steps.forEach((step) => {
+    if (!map[step.id ?? ""]) {
+      list.push({
+        source: "playbook",
+        target: `node-${step.id}`,
+        id: `edge-${step.id}`,
+      });
+    }
+  });
 
   return list;
 }

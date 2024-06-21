@@ -59,7 +59,7 @@ function StepConfig({ step, index, handleShowConfig }) {
           </p>
         </div>
       </div>
-      <HandleOutput index={index} stepData={step} showHeading={false} />
+      <HandleOutput id={step.id} stepData={step} showHeading={false} />
     </div>
   );
 }

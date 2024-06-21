@@ -1,5 +1,3 @@
-import { store } from "../../store/index.ts";
-import { setDatadogMetric } from "../../store/features/playbook/playbookSlice.ts";
 import { OptionType } from "../playbooksData.ts";
 
 const getCurrentAsset = (task) => {
@@ -10,7 +8,7 @@ const getCurrentAsset = (task) => {
   return currentAsset;
 };
 
-export const datadogBuilder = (options, task, index) => {
+export const datadogBuilder = (options, task, id: string) => {
   return {
     triggerGetAssetsKey: "datadogMetricFamily",
     assetFilterQuery: {
@@ -70,9 +68,6 @@ export const datadogBuilder = (options, task, index) => {
               };
             }),
           selected: task?.datadogMetric,
-          handleChange: (val) => {
-            if (val) store.dispatch(setDatadogMetric({ index, metric: val }));
-          },
         },
       ],
     ],

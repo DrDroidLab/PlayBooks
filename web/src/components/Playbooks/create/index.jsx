@@ -7,6 +7,7 @@ import {
   setPlaybookDataBeta,
   setView,
   setPlaybookKey,
+  resetExecutions,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
@@ -49,14 +50,19 @@ function CreatePlaybook() {
 
   useEffect(() => {
     dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+    if (!executionId) {
+      dispatch(resetExecutions());
+    }
   }, [executionId, dispatch]);
 
   useEffect(() => {
     dispatch(setPlaybookState());
+    dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: true }));
     return () => {
       dispatch(resetState());
       dispatch(resetDrawerState());
       dispatch(resetTimeRange());
+      dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: false }));
     };
   }, [dispatch]);
 

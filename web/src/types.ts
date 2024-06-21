@@ -1,6 +1,6 @@
 export interface Step {
   name?: string;
-  id?: string;
+  id: string;
   query?: string;
   dimension?: string;
   namespace?: string;
@@ -80,7 +80,7 @@ export interface Step {
   zone?: any;
   position?: StepPosition;
   stepIndex: number;
-  parentIndexes?: number[];
+  parentIds?: number[];
   requireCondition: boolean;
   currentConditionParentIndex?: number;
   resultType?: string;
@@ -284,7 +284,6 @@ export interface Playbook {
   name?: string;
   description?: string;
   currentPlaybook?: any;
-  currentStepIndex?: string | null;
   steps: Step[];
   playbooks: any;
   meta: any;
@@ -299,6 +298,7 @@ export interface Playbook {
   permanentView?: string;
   connectorOptions?: any;
   executionId?: any;
+  currentStepId?: any;
 }
 
 export interface Playground {

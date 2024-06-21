@@ -4,16 +4,16 @@ import AddSource from "./AddSource.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
 
-function Query({ index }) {
-  const [step] = useCurrentStep(index);
+function Query({ id }) {
+  const [step] = useCurrentStep(id);
 
   return (
     <div>
       <div className="flex items-center gap-2">
-        <AddSource index={index} />
+        <AddSource id={id} />
       </div>
 
-      {step?.source && <PlaybookStep index={index} />}
+      {step?.source && <PlaybookStep id={id} />}
       <AddDataSourcesDrawer />
     </div>
   );
