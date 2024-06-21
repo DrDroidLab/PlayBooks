@@ -15,7 +15,6 @@ export const fetchData = async (val: any = undefined) => {
     connectorsWithoutAssets.includes(val?.connector_type)
   )
     return;
-  console.log("curr", currentId);
   if (step.connectorType && step.modelType) await getAssetsFunction(currentId);
 };
 

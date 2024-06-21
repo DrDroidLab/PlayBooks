@@ -24,6 +24,7 @@ import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentD
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import useHasChildren from "../../../hooks/useHasChildren.ts";
+import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -77,10 +78,13 @@ export default function CustomNode({ data }) {
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(addStep({ parentId: step?.id, addConditions: true }));
+    const parentId = step.id;
+
+    const id = generateUUIDWithoutHyphens();
+    dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
     addAdditionalData({
       source,
-      id: currentStepId,
+      id: `edge-${parentId}-${id}`,
     });
     openDrawer(PermanentDrawerTypes.CONDITION);
   };

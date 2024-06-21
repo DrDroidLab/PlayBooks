@@ -265,14 +265,14 @@ const playbookSlice = createSlice({
       });
     },
     addStep: (state, { payload }) => {
-      const { parentId, addConditions } = payload;
+      const { parentId, addConditions, id } = payload;
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
       const index = state.steps.length;
       const currentStep = {
         ...emptyStep,
-        id: generateUUIDWithoutHyphens(),
+        id: id ?? generateUUIDWithoutHyphens(),
         description: `Step-${index + 1}`,
         stepIndex: index,
         globalVariables: state.globalVariables ?? [],
@@ -308,8 +308,8 @@ const playbookSlice = createSlice({
         });
       }
 
-      console.log("current step", currentStep.id);
       state.currentStepId = currentStep.id.toString();
+      state.id = "wohoooooo";
       state.permanentView = addConditions
         ? PermanentDrawerTypes.STEP_DETAILS
         : PermanentDrawerTypes.CONDITION;

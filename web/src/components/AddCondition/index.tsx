@@ -23,6 +23,7 @@ function AddCondition() {
     deleteCondition,
     handleGlobalRule,
   } = useEdgeConditions(id);
+  console.log("source", id);
   const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
 
