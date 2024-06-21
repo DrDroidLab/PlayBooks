@@ -2,13 +2,12 @@ import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import { Check, ChevronLeftRounded, Edit } from "@mui/icons-material";
+import { Check, Edit, HomeRounded } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
-import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
+import { useNavigate } from "react-router-dom";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
@@ -34,8 +33,8 @@ const Heading = ({
   isPlayground = false,
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const hasPreviousPage = useHasPreviousPage();
+  // const location = useLocation();
+  // const hasPreviousPage = useHasPreviousPage();
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
@@ -48,11 +47,11 @@ const Heading = ({
     setIsRefreshBtnDisabled(isDisabled);
   };
   const goBack = () => {
-    if (location.key !== "default") {
-      navigate(-1);
-    } else {
-      navigate("/", { replace: true });
-    }
+    // if (location.key !== "default") {
+    //   navigate(-1);
+    // } else {
+    navigate("/");
+    // }
   };
 
   return (
@@ -61,9 +60,11 @@ const Heading = ({
         style={{ zIndex: "90" }}
         className="w-full h-[80px] top-0 py-3 flex justify-between bg-white border-b border-gray-300 px-4 items-center sticky">
         <div className="flex gap-2 items-center">
-          {hasPreviousPage && (
-            <div className="cursor-pointer text-xl font-bold" onClick={goBack}>
-              <ChevronLeftRounded />
+          {isOnPlaybookPage && (
+            <div
+              className="cursor-pointer text-xl font-bold hover:text-violet-500 transition-all"
+              onClick={goBack}>
+              <HomeRounded />
             </div>
           )}
           <div className="flex-col justify-items-center">
