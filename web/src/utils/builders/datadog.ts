@@ -1,5 +1,4 @@
 import { OptionType } from "../playbooksData.ts";
-import { updateCardById } from "../execution/updateCardById.ts";
 
 const getCurrentAsset = (task) => {
   const currentAsset = task?.assets?.find(
@@ -69,9 +68,6 @@ export const datadogBuilder = (options, task, id: string) => {
               };
             }),
           selected: task?.datadogMetric,
-          handleChange: (val) => {
-            updateCardById("datadogMetric", val, id);
-          },
         },
       ],
     ],

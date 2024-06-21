@@ -384,6 +384,17 @@ const playbookSlice = createSlice({
       state.currentVisibleStep = undefined;
       state.executionId = undefined;
     },
+    resetExecutions(state) {
+      state.executionId = undefined;
+      state.steps.map((step) => ({
+        ...step,
+        showOutput: false,
+        outputError: false,
+        showError: false,
+        outputLoading: false,
+        outputs: [],
+      }));
+    },
     setSteps(state, { payload }) {
       state.steps = payload;
     },
@@ -441,6 +452,7 @@ export const {
   setActionKey,
   setPlaybookKey,
   addParentId,
+  resetExecutions,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

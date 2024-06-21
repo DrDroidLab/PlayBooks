@@ -79,10 +79,6 @@ export const newRelicEntityDashboardBuilder = (options, task, id: string) => {
                   };
                 })
               : [],
-          handleChange: (val) => {
-            if (val) updateCardById("widget", val, id);
-          },
-          // selected: task?.widget?.widget_id,
         },
       ],
       [
