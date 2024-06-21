@@ -58,7 +58,9 @@ function SavePlaybookButton({
       }).unwrap();
       if (shouldNavigate) {
         navigate(`/playbooks`);
+        return;
       }
+      window.location.reload();
     } catch (e) {
       console.log(e);
     }
