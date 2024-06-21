@@ -119,7 +119,11 @@ function Login() {
                     justifyContent: "center",
                     margin: "30px",
                   }}>
-                  <img src={"/logo/drdroid-logo-full.png"} alt="DrDroid Logo" />
+                  <img
+                    src={"/logo/drdroid-logo-full.png"}
+                    width={200}
+                    alt="DrDroid Logo"
+                  />
                 </Box>
 
                 {prevState === "signup_filled" ? (
