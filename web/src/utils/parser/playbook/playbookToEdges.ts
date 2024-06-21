@@ -3,7 +3,6 @@ import { PlaybookContract, Step } from "../../../types.ts";
 function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
   const stepRelations = playbook.step_relations ?? [];
   const playbookSteps = playbook.steps ?? [];
-  if (!stepRelations || stepRelations.length === 0) return [];
 
   const list: any = [];
   for (let edge of Object.values(stepRelations ?? {})) {
@@ -38,23 +37,6 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
       };
     });
 
-    const map = playbookSteps.reduce((childrenMapping, step) => {
-      step.children?.forEach((child) => {
-        childrenMapping[child.child.id] = true;
-      });
-      return childrenMapping;
-    }, {});
-
-    steps.forEach((step) => {
-      if (!map[step.id ?? ""]) {
-        list.push({
-          source: "playbook",
-          target: `node-${step.id}`,
-          id: `edge-${step.id}`,
-        });
-      }
-    });
-
     list.push({
       source,
       target,
@@ -64,6 +46,23 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
       type: conditions.length > 0 ? "custom" : "",
     });
   }
+
+  const map = playbookSteps.reduce((childrenMapping, step) => {
+    step.children?.forEach((child) => {
+      childrenMapping[child.child.id] = true;
+    });
+    return childrenMapping;
+  }, {});
+
+  steps.forEach((step) => {
+    if (!map[step.id ?? ""]) {
+      list.push({
+        source: "playbook",
+        target: `node-${step.id}`,
+        id: `edge-${step.id}`,
+      });
+    }
+  });
 
   return list;
 }
