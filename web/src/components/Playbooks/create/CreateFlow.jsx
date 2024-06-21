@@ -60,15 +60,19 @@ const CreateFlow = () => {
   );
 
   useEffect(() => {
-    setNodes(
-      dagreData?.nodes?.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-        },
-      })),
-    );
-    setEdges(dagreData.edges);
+    if (dagreData?.nodes?.length > 0) {
+      setNodes(
+        dagreData?.nodes?.map((node) => ({
+          ...node,
+          data: {
+            ...node.data,
+          },
+        })),
+      );
+    }
+    if (dagreData?.edges?.length > 0) {
+      setEdges(dagreData.edges);
+    }
   }, [dagreData]);
 
   return (

@@ -83,9 +83,9 @@ function SavePlaybookButton({
 
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
-      if (shouldNavigate) {
-        navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
-      }
+      // if (shouldNavigate) {
+      navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
+      // }
     } catch (e) {
       console.error(e);
     }
