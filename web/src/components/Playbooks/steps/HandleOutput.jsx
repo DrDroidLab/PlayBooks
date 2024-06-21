@@ -34,7 +34,7 @@ function HandleOutput({ id, stepData, showHeading = true }) {
             <div
               className={`${
                 !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
-              } bg-gray-50 p-1 h-full`}>
+              } bg-gray-50 p-1 h-full w-full`}>
               <PlaybookStepOutput showHeading={showHeading} stepOutput={null} />
             </div>
           )}
