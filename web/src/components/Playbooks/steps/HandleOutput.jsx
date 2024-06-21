@@ -35,7 +35,7 @@ function HandleOutput({ id, stepData, showHeading = true }) {
               className={`${
                 !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
               } bg-gray-50 p-1 h-full`}>
-              <PlaybookStepOutput stepOutput={null} />
+              <PlaybookStepOutput showHeading={showHeading} stepOutput={null} />
             </div>
           )}
           {(step.outputs?.data ?? [])?.map((output, index) => {
@@ -46,7 +46,10 @@ function HandleOutput({ id, stepData, showHeading = true }) {
                   !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
                 } h-full bg-gray-50 p-1 flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
                 <div className="w-full">
-                  <PlaybookStepOutput stepOutput={output} />
+                  <PlaybookStepOutput
+                    showHeading={showHeading}
+                    stepOutput={output}
+                  />
                 </div>
                 {Object.keys(output?.interpretation).length > 0 &&
                   unsupportedInterpreterTypes.includes(
