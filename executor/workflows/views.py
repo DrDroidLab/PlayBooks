@@ -339,7 +339,7 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
-    
+
     test_workflow_notification(user, account.id, workflow, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 
@@ -374,3 +374,13 @@ def generate_curl(request_message: ExecuteWorkflowRequest) -> HttpResponse:
     headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {account_api_token.key}'}
     curl = construct_curl('POST', uri, headers=headers, payload=payload)
     return HttpResponse(curl, content_type="text/plain", status=200)
+
+
+@web_api(ExecuteWorkflowRequest)
+def pd_generate_webhook(request_message: ExecuteWorkflowRequest) -> HttpResponse:
+    location = '/pagerduty/handle_incidents/'
+    protocol = settings.WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL
+    enabled = settings.WORKFLOW_EXECUTE_API_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    return HttpResponse(uri, content_type="text/plain", status=200)

@@ -23,12 +23,15 @@ class PagerDutyIncidentModel(google.protobuf.message.Message):
 
     INCIDENT_ID_FIELD_NUMBER: builtins.int
     TITLE_FIELD_NUMBER: builtins.int
+    SERVICE_ID_FIELD_NUMBER: builtins.int
     SERVICE_NAME_FIELD_NUMBER: builtins.int
     CREATED_AT_FIELD_NUMBER: builtins.int
     @property
     def incident_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def service_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def service_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -38,11 +41,12 @@ class PagerDutyIncidentModel(google.protobuf.message.Message):
         *,
         incident_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         title: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        service_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         service_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_name", b"service_name", "title", b"title"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_name", b"service_name", "title", b"title"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_id", b"service_id", "service_name", b"service_name", "title", b"title"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "incident_id", b"incident_id", "service_id", b"service_id", "service_name", b"service_name", "title", b"title"]) -> None: ...
 
 global___PagerDutyIncidentModel = PagerDutyIncidentModel
 
