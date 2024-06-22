@@ -52,6 +52,8 @@ function CreatePlaybook() {
     dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
     if (!executionId) {
       dispatch(resetExecutions());
+      dispatch(resetDrawerState());
+      dispatch(setPlaybookState());
     }
   }, [executionId, dispatch]);
 
@@ -62,7 +64,6 @@ function CreatePlaybook() {
       dispatch(resetState());
       dispatch(resetDrawerState());
       dispatch(resetTimeRange());
-      dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: false }));
     };
   }, [dispatch]);
 

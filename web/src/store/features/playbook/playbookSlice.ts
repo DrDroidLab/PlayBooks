@@ -43,6 +43,7 @@ const initialState: Playbook = {
   permanentView: undefined,
   executionId: undefined,
   currentStepId: undefined,
+  isOnPlaybookPage: false,
 };
 
 const playbookSlice = createSlice({
@@ -383,13 +384,14 @@ const playbookSlice = createSlice({
       state.playbookEdges = [];
       state.currentVisibleStep = undefined;
       state.executionId = undefined;
+      state.isOnPlaybookPage = false;
     },
     resetExecutions(state) {
       state.executionId = undefined;
-      state.steps.map((step) => ({
+      state.steps = state.steps.map((step) => ({
         ...step,
         showOutput: false,
-        outputError: false,
+        outputError: "",
         showError: false,
         outputLoading: false,
         outputs: [],

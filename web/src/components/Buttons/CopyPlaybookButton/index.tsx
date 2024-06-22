@@ -33,7 +33,7 @@ function CopyPlaybookButton() {
       <Tooltip title="Duplicate this Playbook">
         <>
           <ContentCopy />
-          <p>Duplicate Playbook</p>
+          <p>Duplicate</p>
         </>
       </Tooltip>
     </CustomButton>
