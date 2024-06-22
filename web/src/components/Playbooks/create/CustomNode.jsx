@@ -185,7 +185,7 @@ export default function CustomNode({ data }) {
             <CustomButton
               onClick={handleNoAction}
               className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
-              <Add fontSize="inherit" />
+              <Add fontSize="small" />
             </CustomButton>
 
             <div className="absolute top-0 left-full add-step-buttons transition-all">

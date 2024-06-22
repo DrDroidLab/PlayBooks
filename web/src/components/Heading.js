@@ -83,13 +83,14 @@ const Heading = ({
                     </>
                   ) : (
                     <div
-                      style={!isOnPlaybookPage ? {} : { cursor: "pointer" }}
+                      className={`${
+                        !isOnPlaybookPage ? "" : "cursor-pointer text-sm"
+                      }`}
                       onClick={
                         isOnPlaybookPage
                           ? () => setShowEdit(!showEdit)
                           : () => {}
-                      }
-                      className="add_title">
+                      }>
                       {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
                       {isPrefetched && <> - {executionId}</>}
