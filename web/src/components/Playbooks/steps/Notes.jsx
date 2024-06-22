@@ -37,8 +37,8 @@ const codePreview = {
   icon: <Button />,
 };
 
-function Notes({ index }) {
-  const [step] = useCurrentStep(index);
+function Notes({ id }) {
+  const [step] = useCurrentStep(id);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
   const isExisting = useIsExisting();
@@ -87,7 +87,7 @@ function Notes({ index }) {
               <MDEditor
                 value={step.notes}
                 onChange={(val) => {
-                  dispatch(addNotes({ notes: val, index }));
+                  dispatch(addNotes({ notes: val, id }));
                 }}
                 height={100}
                 style={{

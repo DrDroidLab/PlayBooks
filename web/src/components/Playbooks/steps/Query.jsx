@@ -1,26 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
 import PlaybookStep from "./PlaybookStep";
-import CustomDrawer from "../../common/CustomDrawer/index.jsx";
 import AddSource from "./AddSource.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
 
-function Query({ index }) {
-  const [step] = useCurrentStep(index);
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+function Query({ id }) {
+  const [step] = useCurrentStep(id);
 
   return (
     <div>
       <div className="flex items-center gap-2">
-        <AddSource index={index} />
+        <AddSource id={id} />
       </div>
 
-      {step?.source && <PlaybookStep index={index} />}
-      <CustomDrawer
-        isOpen={isDrawerOpen}
-        setIsOpen={setDrawerOpen}
-        src={"/data-sources/add"}
-      />
+      {step?.source && <PlaybookStep id={id} />}
+      <AddDataSourcesDrawer />
     </div>
   );
 }

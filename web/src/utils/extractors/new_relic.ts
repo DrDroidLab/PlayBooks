@@ -36,7 +36,9 @@ export const extractNewRelicTasks = (step: any) => {
       id: newRelicTask?.dashboard_guid,
       label: newRelicTask?.dashboard_name,
     },
-    golden_metrics: tasks.map(() => {
+    golden_metrics: tasks.map((task) => {
+      const newRelicTask =
+        task[stepSource.toLowerCase()][taskType.toLowerCase()];
       return {
         id: newRelicTask?.golden_metric_name,
         label: newRelicTask?.golden_metric_name,
@@ -53,7 +55,9 @@ export const extractNewRelicTasks = (step: any) => {
       page_guid: newRelicTask?.page_guid,
       page_name: newRelicTask?.page_name,
     },
-    widget: tasks.map(() => {
+    widget: tasks.map((task) => {
+      const newRelicTask =
+        task[stepSource.toLowerCase()][taskType.toLowerCase()];
       return {
         id: newRelicTask?.widget_id,
         label: newRelicTask?.widget_nrql_expression,

@@ -16,7 +16,8 @@ function ExecutionButton() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentPlaybook = useSelector(playbookSelector);
-  const [step] = useCurrentStep(0);
+  const { steps } = useSelector(playbookSelector);
+  const [step] = useCurrentStep(steps?.length > 0 ? steps[0].id : undefined);
   const [searchParams, setSearchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const [triggerStartExecution, { isLoading: executionLoading }] =
@@ -30,7 +31,7 @@ function ExecutionButton() {
       setSearchParams({ executionId: data.playbook_run_id });
       const id = data.playbook_run_id;
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      await executeStep(step, 0);
+      if (step) await executeStep(step, step.id);
     }
   };
 

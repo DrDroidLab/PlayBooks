@@ -2,17 +2,17 @@
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import { CircularProgress } from "@mui/material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function SelectInterpreterDropdown({ index }) {
+function SelectInterpreterDropdown({ id }) {
   const { data, isFetching } = usePlaybookBuilderOptionsQuery();
-  const [step, currentIndex] = useCurrentStep(index);
+  const [step, currentId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
 
   const handleInterpreterChange = (value) => {
-    updateCardByIndex("interpreter", value?.interpreter, currentIndex);
+    updateCardById("interpreter", value?.interpreter, currentId);
   };
 
   return (

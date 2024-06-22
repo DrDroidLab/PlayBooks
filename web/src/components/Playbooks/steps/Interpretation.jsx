@@ -4,16 +4,18 @@ import SelectInterpreterDropdown from "./SelectInterpreterDropdown";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
-function SelectInterpretation({ index }) {
-  const [step] = useCurrentStep(index);
+function SelectInterpretation({ id }) {
+  const [step] = useCurrentStep(id);
   const [selectInterpretation, setSelectInterpretation] = useState(
     step?.interpreter?.type ?? false,
   );
   const { data } = usePlaybookBuilderOptionsQuery();
+  const isPrefetched = useIsPrefetched();
 
   const toggleInterpretation = () => {
-    setSelectInterpretation(!selectInterpretation);
+    if (!isPrefetched) setSelectInterpretation(!selectInterpretation);
   };
 
   if (
@@ -30,9 +32,10 @@ function SelectInterpretation({ index }) {
         isChecked={selectInterpretation}
         label="Enable Insights"
         onChange={toggleInterpretation}
+        disabled={isPrefetched}
       />
 
-      {selectInterpretation && <SelectInterpreterDropdown index={index} />}
+      {selectInterpretation && <SelectInterpreterDropdown id={id} />}
     </div>
   );
 }

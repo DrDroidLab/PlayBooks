@@ -43,12 +43,15 @@ class BashSourceManager(PlaybookSourceManager):
         if remote_server_connector:
             generated_credentials = generate_credentials_dict(remote_server_connector.type,
                                                               remote_server_connector.keys)
+        if 'remote_server_str' in kwargs:
+            remote_server_str = kwargs.get('remote_server_str')
+            generated_credentials['remote_host'] = remote_server_str
         return RemoteServerProcessor(**generated_credentials)
 
     def execute_command(self, time_range: TimeRange, global_variable_set: Dict, bash_task: Bash,
                         remote_server_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            bash_command: Bash = bash_task.command
+            bash_command: Bash.Command = bash_task.command
             remote_server_str = bash_command.remote_server.value if bash_command.remote_server else None
             if remote_server_str and not remote_server_connector:
                 ssh_server_asset = get_db_connector_metadata_models(model_type=SourceModelType.SSH_SERVER,
@@ -71,7 +74,7 @@ class BashSourceManager(PlaybookSourceManager):
                     commands = updated_commands
             try:
                 outputs = {}
-                ssh_client = self.get_connector_processor(remote_server_connector)
+                ssh_client = self.get_connector_processor(remote_server_connector, remote_server_str=remote_server_str)
                 for command in commands:
                     command_to_execute = command
                     output = ssh_client.execute_command(command_to_execute)

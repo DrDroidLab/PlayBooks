@@ -62,9 +62,9 @@ const TypingDropdown = ({
         }}
         className={`${
           error ? "border-red" : ""
-        } flex flex-wrap items-center gap-2 justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none`}>
+        } flex flex-wrap items-center gap-2 justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none overflow-hidden`}>
         <input
-          className="w-full h-full rounded outline-none min-w-[200px] font-medium"
+          className="w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis"
           type="text"
           placeholder={placeholder}
           value={selected}

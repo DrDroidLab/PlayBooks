@@ -1,12 +1,7 @@
-import {
-  setDataSource,
-  setGrafanaExpression,
-  setGrafanaQuery,
-} from "../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../store/index.ts";
+import { updateCardById } from "../execution/updateCardById.ts";
 import { OptionType } from "../playbooksData.ts";
 
-export const grafanaDataSourceBuilder = (options: any, task, index) => {
+export const grafanaDataSourceBuilder = (options: any, task, id: string) => {
   return {
     builder: [
       [
@@ -21,14 +16,9 @@ export const grafanaDataSourceBuilder = (options: any, task, index) => {
             };
           }),
           handleChange: (_, val) => {
-            store.dispatch(setDataSource({ index, datasource: val }));
+            updateCardById("datasource", val, id);
             if (!task?.grafanaQuery?.expression) {
-              store.dispatch(
-                setGrafanaQuery({
-                  index,
-                  query: { expression: "" },
-                }),
-              );
+              updateCardById("grafanaQuery", { query: { expression: "" } }, id);
             }
           },
           helperText: task.datasource?.label,
@@ -41,9 +31,8 @@ export const grafanaDataSourceBuilder = (options: any, task, index) => {
           type: OptionType.MULTILINE,
           value: task?.grafanaQuery?.expression,
           handleChange: (e) => {
-            store.dispatch(
-              setGrafanaExpression({ index, expression: e.target.value }),
-            );
+            const val = e.target.value;
+            updateCardById("grafanaQuery", { expression: val }, id);
           },
           condition: task?.grafanaQuery,
         },
