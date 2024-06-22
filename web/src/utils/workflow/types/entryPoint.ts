@@ -1,7 +1,7 @@
 export enum WorkflowEntryPointOptions {
   API = "api",
   SLACK_CHANNEL_ALERT = "slack_channel_alert",
-  PAGERDUTY_INCIDENT = "service_name",
+  PAGERDUTY_INCIDENT = "pagerduty_incident",
 }
 
 export type WorkflowEntryPointContractType = {
@@ -10,5 +10,5 @@ export type WorkflowEntryPointContractType = {
   slack_alert_type?: string;
   slack_alert_filter_string?: string;
   service_name?: string;
-  title?: string;
+  incident_title?: string;
 };

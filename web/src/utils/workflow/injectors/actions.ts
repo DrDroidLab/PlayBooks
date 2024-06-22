@@ -19,9 +19,7 @@ export const handleActionsInjector = (): Types.WorkflowActionContractType => {
           workflow.trigger?.channel?.channel_id,
       };
     case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
-      return {
-        pagerduty_incident: workflow.trigger?.serviceName?.title,
-      };
+      return {};
     default:
       return {};
   }

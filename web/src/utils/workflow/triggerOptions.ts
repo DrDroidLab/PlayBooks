@@ -9,6 +9,6 @@ export const triggerOptions = [
   },
   {
     id: "pagerduty_incident",
-    label: "Pagerduty",
+    label: "PagerDuty",
   },
 ];

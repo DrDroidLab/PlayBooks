@@ -1,13 +1,16 @@
-import { GENERATE_CURL } from "../../../../constants/index.ts";
+import { GENERATE_WEBHOOK } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setCurrentWorkflowKey } from "../workflowSlice.ts";
 
-export const generateCurlApi = apiSlice.injectEndpoints({
+export const generateWebhookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    generateCurl: builder.mutation<any, void>({
-      query: () => ({
-        url: GENERATE_CURL,
+    generateWebhook: builder.mutation<any, string>({
+      query: (workflow_name) => ({
+        url: GENERATE_WEBHOOK,
         method: "POST",
+        body: {
+          workflow_name,
+        },
         responseHandler: "text",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -15,7 +18,7 @@ export const generateCurlApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled;
           dispatch(
             setCurrentWorkflowKey({
-              key: "curl",
+              key: "webhook",
               value: data,
             })
           );
@@ -27,4 +30,4 @@ export const generateCurlApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGenerateCurlMutation } = generateCurlApi;
+export const { useGenerateWebhookMutation } = generateWebhookApi;

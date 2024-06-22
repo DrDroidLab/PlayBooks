@@ -2,7 +2,7 @@ import * as Types from "../types/index.ts";
 
 export const handleActionsExtractor = (
   type: Types.WorkflowActionOptions,
-  workflowAction: Types.WorkflowActionContractType,
+  workflowAction: Types.WorkflowActionContractType
 ) => {
   switch (type) {
     case Types.WorkflowActionOptions.SLACK_MESSAGE:
@@ -18,6 +18,8 @@ export const handleActionsExtractor = (
           },
         },
       };
+    case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
+      return {};
 
     default:
       return {};
