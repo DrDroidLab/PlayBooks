@@ -1,8 +1,3 @@
-import {
-  setSteps,
-  stepsSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../../store/index.ts";
 import { GlobalVariable, Step } from "../../../types.ts";
 import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
@@ -52,19 +47,6 @@ export const executionToPlaybook = (playbook_execution) => {
 
     list.push(stepData);
   }
-
-  const playbookSteps = stepsSelector(store.getState());
-  const steps = playbookSteps.map((step: Step) => {
-    const found = list.find(
-      (stepData) => stepData.id.toString() === step.id.toString(),
-    );
-    if (found) {
-      return found;
-    } else {
-      return step;
-    }
-  });
-  store.dispatch(setSteps(steps));
 
   return list;
 };
