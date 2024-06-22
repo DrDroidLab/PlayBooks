@@ -244,6 +244,7 @@ const playbookSlice = createSlice({
           id: `edge-${id}`,
           source: `playbook`,
           target: `node-${id}`,
+          type: "custom",
         });
       }
 
@@ -262,7 +263,7 @@ const playbookSlice = createSlice({
         id: edgeId,
         source: parentExists ? `node-${parentId}` : `playbook`,
         target: `node-${id}`,
-        type: parentExists ? "custom" : "",
+        type: "custom",
       });
     },
     addStep: (state, { payload }) => {

@@ -3,9 +3,10 @@ export default function extractSource(input: string): string {
 
   const split = input.split("-");
 
-  if (split.length > 0) {
-    return split[1];
-  } else {
-    return "";
+  switch (split.length) {
+    case 0:
+      return "";
+    default:
+      return split[split.length - 1];
   }
 }
