@@ -72,7 +72,7 @@ const Heading = ({
               <div className="text-xs sm:text-lg font-semibold text-gray-800">
                 <div className="flex gap-2 items-center">
                   {showEdit ? (
-                    <>
+                    <form onSubmit={() => setShowEdit(!showEdit)}>
                       <ValueComponent
                         valueType={"STRING"}
                         onValueChange={setName}
@@ -80,7 +80,7 @@ const Heading = ({
                         placeHolder={"Enter Playbook name"}
                         length={300}
                       />
-                    </>
+                    </form>
                   ) : (
                     <div
                       className={`${
