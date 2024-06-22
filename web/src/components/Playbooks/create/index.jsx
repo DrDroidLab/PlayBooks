@@ -62,7 +62,6 @@ function CreatePlaybook() {
       dispatch(resetState());
       dispatch(resetDrawerState());
       dispatch(resetTimeRange());
-      dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: false }));
     };
   }, [dispatch]);
 
