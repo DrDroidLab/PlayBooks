@@ -299,6 +299,7 @@ export interface Playbook {
   connectorOptions?: any;
   executionId?: any;
   currentStepId?: any;
+  isOnPlaybookPage: boolean;
 }
 
 export interface Playground {

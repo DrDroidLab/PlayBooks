@@ -53,12 +53,12 @@ function ExecutionButton() {
       {executionId ? (
         <CustomButton onClick={handleStopExecution}>
           <StopCircleRounded />
-          <span>Stop Execution</span>
+          <span>Stop</span>
         </CustomButton>
       ) : (
         <CustomButton onClick={handleStartExecution}>
           <PlayArrowRounded />
-          <span>Start Execution</span>
+          <span>Start</span>
         </CustomButton>
       )}
     </>
