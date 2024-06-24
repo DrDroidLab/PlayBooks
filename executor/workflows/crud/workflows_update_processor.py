@@ -75,6 +75,9 @@ class WorkflowsUpdateProcessor(UpdateProcessorMixin):
                 action_mapping.is_active = False
                 action_mapping.save(update_fields=['is_active'])
             updated_workflow = update_op.workflow
+            if updated_workflow.name.value != elem.name:
+                elem.name = updated_workflow.name.value
+                elem.save(update_fields=['name'])
             updated_elem, err = update_or_create_db_workflow(elem.account, elem.created_by, updated_workflow,
                                                              update_mode=True)
             if err:
