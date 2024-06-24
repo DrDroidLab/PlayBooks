@@ -6,11 +6,11 @@ import { additionalStateSelector } from "../../store/features/drawers/drawersSli
 import { useSelector } from "react-redux";
 import ValueComponent from "../ValueComponent/index.jsx";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
-import extractSource from "../../utils/extractSource.ts";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
 import HandleTypes from "./HandleTypes.tsx";
+import { extractSource } from "../../utils/extractData.ts";
 
 function Timeseries({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);

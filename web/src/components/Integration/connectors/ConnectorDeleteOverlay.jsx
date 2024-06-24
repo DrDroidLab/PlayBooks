@@ -5,6 +5,7 @@ import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 import { useDeleteConnectorMutation } from "../../../store/features/integrations/api/index.ts";
+import { useNavigate } from "react-router-dom";
 
 const ConnectorDeleteOverlay = ({
   isOpen,
@@ -12,19 +13,22 @@ const ConnectorDeleteOverlay = ({
   toggleOverlay,
   connector,
 }) => {
-  const [deleteConnector, { isLoading, isSuccess, data }] =
+  const navigate = useNavigate();
+  const [deleteConnector, { isLoading, isSuccess }] =
     useDeleteConnectorMutation();
+
   const handleSuccess = (e) => {
     e.preventDefault();
     e.stopPropagation();
     deleteConnector(connector.id);
+    navigate("/data-sources", { replace: true });
   };
 
   useEffect(() => {
     if (isSuccess) {
       successCb();
     }
-  }, [data]);
+  }, [isSuccess]);
 
   return (
     <>

@@ -17,7 +17,7 @@ const emptyStep = {
   stepType: null,
   action: {},
   requireCondition: false,
-  currentConditionParentIndex: undefined,
+  isEditing: true,
 };
 
 const initialState: Playbook = {
@@ -220,7 +220,6 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
-          parentIds: parentExists ? [parentId] : [],
           position: {
             x: 0,
             y: 0,
@@ -230,6 +229,7 @@ const playbookSlice = createSlice({
           resultType: payload.resultType,
         },
         globalVariables: state.globalVariables ?? [],
+        isEditing: true,
       });
 
       if (parentExists) {
@@ -244,6 +244,7 @@ const playbookSlice = createSlice({
           id: `edge-${id}`,
           source: `playbook`,
           target: `node-${id}`,
+          type: "custom",
         });
       }
 
@@ -252,17 +253,13 @@ const playbookSlice = createSlice({
     addParentId: (state, { payload }) => {
       const { id, parentId } = payload;
       const parentExists = parentId !== undefined && parentId !== null;
-      const step = state.steps.find((s) => s.id === id);
-      if (step?.parentIds && parentExists) {
-        step.parentIds.push(parentId);
-      }
       const edgeId = parentExists ? `edge-${parentId}-${id}` : `edge-${id}`;
       state.playbookEdges.filter((e) => e.id !== id);
       state.playbookEdges.push({
         id: edgeId,
         source: parentExists ? `node-${parentId}` : `playbook`,
         target: `node-${id}`,
-        type: parentExists ? "custom" : "",
+        type: "custom",
       });
     },
     addStep: (state, { payload }) => {
@@ -281,7 +278,6 @@ const playbookSlice = createSlice({
           x: 0,
           y: 0,
         },
-        parentIndexes: parentId !== undefined ? [parentId] : [],
       };
       state.steps.push(currentStep);
       if (parentId !== undefined) {
@@ -334,7 +330,10 @@ const playbookSlice = createSlice({
     updateStep: (state, { payload }) => {
       const id = payload.id;
       const step = state.steps?.find((step) => step.id === id);
-      if (step) step[payload.key] = payload.value;
+      if (step) {
+        step[payload.key] = payload.value;
+        step.isEditing = true;
+      }
     },
     setAssets(state, { payload }) {
       const { id } = payload;
@@ -347,14 +346,20 @@ const playbookSlice = createSlice({
       const { id, notes } = payload;
       if (id) {
         const step = state.steps?.find((step) => step.id === id);
-        if (step) step.notes = notes;
+        if (step) {
+          step.notes = notes;
+          step.isEditing = true;
+        }
       }
     },
     addExternalLinks(state, { payload }) {
       const { id, links } = payload;
       if (id) {
         const step = state.steps?.find((step) => step.id === id);
-        if (step) step.externalLinks = links;
+        if (step) {
+          step.externalLinks = links;
+          step.isEditing = true;
+        }
       }
     },
     toggleExternalLinkVisibility(state, { payload }) {
@@ -395,6 +400,7 @@ const playbookSlice = createSlice({
         showError: false,
         outputLoading: false,
         outputs: [],
+        relationLogs: [],
       }));
     },
     setSteps(state, { payload }) {
@@ -403,11 +409,13 @@ const playbookSlice = createSlice({
     setNRQLData(state, { payload }) {
       const { id, key, value } = payload;
       const step = state.steps?.find((step) => step.id === id);
-      if (step)
+      if (step) {
         step.nrqlData = {
           ...step?.nrqlData,
           [key]: value,
         };
+        step.isEditing = true;
+      }
     },
     setLastUpdatedAt(state) {
       state.lastUpdatedAt = new Date();
@@ -415,7 +423,10 @@ const playbookSlice = createSlice({
     setActionKey(state, { payload }) {
       const { id, key, value } = payload;
       const step = state.steps?.find((step) => step.id === id);
-      if (step) step.action[key] = value;
+      if (step) {
+        step.action[key] = value;
+        step.isEditing = true;
+      }
     },
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
