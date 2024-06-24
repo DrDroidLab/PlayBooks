@@ -10,6 +10,7 @@ interface CheckboxProps {
   isSmall?: boolean;
   info?: string;
   onChange: (id: string) => void;
+  disabled?: boolean;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -20,6 +21,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   onChange,
   isSmall = false,
   info,
+  disabled = false,
 }) => {
   return (
     <div className="flex flex-col gap-2">
@@ -32,11 +34,12 @@ const Checkbox: React.FC<CheckboxProps> = ({
             type="checkbox"
             className="sr-only"
             checked={isChecked}
+            disabled={disabled}
             onChange={() => onChange(id)}
           />
           <div
-            className={`${
-              isSmall ? "w-4 h-4" : "w-5 h-5"
+            className={`${isSmall ? "w-4 h-4" : "w-5 h-5"} ${
+              disabled ? "bg-gray-200" : ""
             } inline-block rounded border transition duration-300 ease-in-out ${
               isChecked ? "bg-violet-500 border-violet-500" : "border-gray-300"
             }`}>

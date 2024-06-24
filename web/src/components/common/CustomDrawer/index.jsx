@@ -2,39 +2,48 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CloseRounded } from "@mui/icons-material";
+import useDrawerState from "../../../hooks/useDrawerState.ts";
 
 const CustomDrawer = ({
-  isOpen,
-  setIsOpen,
+  id,
   children,
-  src,
+  src = undefined,
   openFrom = "right",
   addtionalStyles,
   showOverlay = true,
   startFrom = "0",
+  OnClose,
 }) => {
+  const { isOpen, closeDrawer } = useDrawerState(id);
   const drawerRef = useRef(null);
   const drawerVariants = {
     open: { x: 0 },
     closed: { x: `${(openFrom === "right" ? 1 : -1) * 100}%` },
   };
 
+  const close = () => {
+    if (OnClose) {
+      OnClose();
+    }
+    if (isOpen) closeDrawer();
+  };
+
   // Handle keyboard interactions
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        setIsOpen(false);
+        close();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [setIsOpen]);
+  }, [close]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (drawerRef?.current && !drawerRef?.current?.contains(event.target)) {
-        setIsOpen(false);
+        close();
       }
     };
 
@@ -53,6 +62,7 @@ const CustomDrawer = ({
         />
       )}
       <motion.div
+        id={id}
         ref={drawerRef}
         initial="closed"
         animate={isOpen ? "open" : "closed"}
@@ -63,7 +73,7 @@ const CustomDrawer = ({
           openFrom === "right" ? "right-0" : "left-0"
         } h-full bg-white shadow-lg z-[100] w-full lg:w-1/2`}>
         <div className={`flex ${openFrom === "left" ? "justify-end" : ""}`}>
-          <button onClick={() => setIsOpen(false)} className="text-2xl p-2">
+          <button onClick={close} className="text-2xl p-2">
             <CloseRounded />
           </button>
         </div>

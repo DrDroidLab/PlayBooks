@@ -1,72 +1,95 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import ReactFlow, { Background, Controls, useNodesState, useEdgesState } from 'reactflow';
-import 'reactflow/dist/style.css';
-import { useSelector } from 'react-redux';
-import { stepsSelector } from '../../../store/features/playbook/playbookSlice.ts';
-import { useEffect } from 'react';
-import CustomNode from './CustomNode.jsx';
-import { useReactFlow } from 'reactflow';
-import ParentNode from './ParentNode.jsx';
+import ReactFlow, {
+  Background,
+  Controls,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { useDispatch } from "react-redux";
+import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
+import { useCallback, useEffect } from "react";
+import CustomNode from "./CustomNode.jsx";
+import { useReactFlow } from "reactflow";
+import ParentNode from "./ParentNode.jsx";
+import CustomEdge from "./CustomEdge.jsx";
+import useDimensions from "../../../hooks/useDimensions.ts";
+import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+
+const fitViewOptions = {
+  maxZoom: 0.75,
+  duration: 500,
+};
 
 const nodeTypes = {
   custom: CustomNode,
-  parent: ParentNode
+  parent: ParentNode,
 };
 
-const initialPlaybookNode = {
-  id: 'playbook',
-  position: { x: 0, y: 0 },
-  data: {
-    label: 'Playbook',
-    index: 0
-  },
-  type: 'parent'
+const edgeTypes = {
+  custom: CustomEdge,
 };
 
 const CreateFlow = () => {
-  const steps = useSelector(stepsSelector);
   const reactFlowInstance = useReactFlow();
-  const [nodes, setNodes, onNodesChange] = useNodesState([initialPlaybookNode]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const stepNodes = steps.map((step, index) => {
-    return {
-      id: `node-${index}`,
-      position: {
-        x: -(250 * (steps.length / 2 + 1 / 2)) + 250 * (index + 1),
-        y: 300
-      },
-      data: {
-        step,
-        index
-      },
-      type: 'custom'
-    };
-  });
+  const [graphRef, { width, height }] = useDimensions();
+  const { graphData, dagreData } = useGraphDimensions(
+    width,
+    height,
+    reactFlowInstance,
+  );
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
+  const dispatch = useDispatch();
 
-  const stepEdges = steps.map((_, index) => {
-    return { id: `edge-${index}`, source: `playbook`, target: `node-${index}` };
-  });
+  const onConnect = useCallback(
+    ({ source, target }) => {
+      return setEdges((eds) =>
+        nodes
+          .filter((node) => node.id === source || node.selected)
+          .reduce((eds, node) => {
+            const stepId = target.split("-")[1];
+            const parentId = node.id.split("-")[1];
+            dispatch(addParentId({ id: stepId, parentId }));
+            return addEdge({ source: node.id, target }, eds);
+          }, eds),
+      );
+    },
+    [nodes],
+  );
 
   useEffect(() => {
-    setNodes([...stepNodes, initialPlaybookNode]);
-    setEdges(stepEdges);
-    reactFlowInstance.fitView();
-  }, [steps]);
+    if (dagreData?.nodes?.length > 0) {
+      setNodes(
+        dagreData?.nodes?.map((node) => ({
+          ...node,
+          data: {
+            ...node.data,
+          },
+        })),
+      );
+    }
+    if (dagreData?.edges?.length > 0) {
+      setEdges(dagreData.edges);
+    }
+  }, [dagreData]);
 
   return (
-    <div className="h-full w-full">
+    <div ref={graphRef} className="h-full w-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         minZoom={-Infinity}
         fitView
         maxZoom={0.75}
-        fitViewOptions={{ maxZoom: 0.75 }}
-        className="bg-gray-50"
-      >
+        fitViewOptions={fitViewOptions}
+        onConnect={onConnect}
+        className="bg-gray-50">
         <Controls />
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>

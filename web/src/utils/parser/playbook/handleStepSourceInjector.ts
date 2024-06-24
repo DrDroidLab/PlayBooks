@@ -6,8 +6,9 @@ import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 
 export const handleStepSourceInjector = (step): PlaybookTask[] => {
   let baseTask: PlaybookTask = {
-    name: step.name ?? uuidv4(),
-    id: step.id ?? "0",
+    name: uuidv4(),
+    reference_id: uuidv4(),
+    id: "0",
     source: step.source,
     description: step.description ?? "",
     interpreter_type: step.interpreter?.type,

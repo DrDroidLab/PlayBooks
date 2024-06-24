@@ -11,7 +11,7 @@ const OutputTypes = {
   TABLE: "TABLE",
 };
 
-const PlaybookStepOutput = ({ stepOutput }) => {
+const PlaybookStepOutput = ({ stepOutput, showHeading }) => {
   const [step] = useCurrentStep();
   const out = stepOutput?.result;
   const error = step?.outputError ?? out?.error;
@@ -41,6 +41,7 @@ const PlaybookStepOutput = ({ stepOutput }) => {
           title={"Results"}
           result={out}
           timestamp={out.timestamp}
+          showHeading={showHeading}
           step={step}
         />
       );

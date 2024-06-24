@@ -94,7 +94,6 @@ function PlaybookLogs() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
-        showEditTitle={playbook}
       />
       <div className="flex flex-col h-[calc(100%-80px)]">
         <main className="relative flex flex-1">
