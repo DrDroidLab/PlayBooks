@@ -33,7 +33,7 @@ function DeleteStepButton({ stepId }) {
 
   return (
     <button
-      className="w-fit cursor-pointer hover:text-violet-500"
+      className="w-fit cursor-pointer text-violet-500 hover:text-gray-400"
       onClick={handleDelete}>
       <Delete fontSize="medium" />
     </button>
