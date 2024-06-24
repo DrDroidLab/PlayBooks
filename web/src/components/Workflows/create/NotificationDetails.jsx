@@ -9,13 +9,15 @@ import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import SelectComponent from "../../SelectComponent/index.jsx";
 import { useGetTriggerOptionsQuery } from "../../../store/features/triggers/api/getTriggerOptionsApi.ts";
 import { CircularProgress } from "@mui/material";
+import { useGetMSTeamsWebhookOptionsQuery } from "../../../store/features/triggers/api/getMSTeamsWebhookOptionsApi.ts";
 // import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
 
 function NotificationDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const { data: options, isFetching } = useGetTriggerOptionsQuery();
+  const { data: msTeamsOptions, isFetching:msTeamsFetching } = useGetMSTeamsWebhookOptionsQuery();
   const dispatch = useDispatch();
-
+  
   return (
     <div>
       <label className="text-sm mb-2 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block font-medium">
@@ -83,6 +85,32 @@ function NotificationDetails() {
           />
         </div>
       )}
+
+      {currentWorkflow.notification === "ms_teams_message_webhook" && (
+        <div className="flex items-center gap-2 mt-2">
+          <p className="text-xs font-bold text-gray-500">Select Webhook</p>
+          {msTeamsFetching && <CircularProgress size={20} />}
+          <SelectComponent
+            data={msTeamsOptions?.map((e) => {
+              return {
+                id: e.keyId,
+                label: e.name
+              };
+            })}
+            placeholder="Select Webhook"
+            onSelectionChange={(_, val) => {
+              handleInput("webhook", val.id);
+            }}
+            selected={
+              currentWorkflow?.webhook??
+              ""
+            }
+            error={currentWorkflow?.errors?.webhook ?? false}
+            searchable={true}
+          />
+        </div>
+      )}
+
     </div>
   );
 }

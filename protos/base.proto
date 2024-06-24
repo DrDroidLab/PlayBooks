@@ -123,6 +123,7 @@ enum Source {
   AZURE = 42;
   GRAFANA_MIMIR = 43;
   GKE = 44;
+  MS_TEAMS = 45;
 }
 
 enum SourceKeyType {
@@ -208,6 +209,8 @@ enum SourceKeyType {
 
   GKE_PROJECT_ID = 60;
   GKE_SERVICE_ACCOUNT_JSON = 61;
+
+  MS_TEAMS_CONNECTOR_WEBHOOK_URL = 62;
 }
 
 enum SourceModelType {
@@ -276,4 +279,7 @@ enum SourceModelType {
 
   // GKE Models
   GKE_CLUSTER = 1301;
+
+  // MS TEAMS Models
+  MS_TEAMS_CHANNEL = 1401;
 }
