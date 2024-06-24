@@ -11,7 +11,7 @@ function handleEdgeColor(edgeId: string) {
   const sourceId = extractSource(edgeId);
   const parentId = extractParent(edgeId);
   const [childStep] = getCurrentTask(sourceId);
-  const logs = extractLogs(childStep.id, parentId);
+  const logs = childStep?.id ? extractLogs(childStep.id, parentId) : [];
   const log = logs?.length > 0 ? logs[0] : null;
 
   if (id === edgeId) {
