@@ -47,6 +47,7 @@ function CreatePlaybook() {
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
+  const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
 
   useEffect(() => {
     dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
@@ -67,12 +68,11 @@ function CreatePlaybook() {
     };
   }, [dispatch]);
 
-  const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
-
   const fetchPlaybook = async () => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     playbookDataRef.current = res;
     dispatch(setPlaybookDataBeta(res));
+    if (executionId) handleTimeline();
   };
 
   const handleSelect = (_, option) => {
@@ -84,18 +84,11 @@ function CreatePlaybook() {
   };
 
   useEffect(() => {
-    if (id) {
+    if (id || executionId) {
       fetchPlaybook();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  useEffect(() => {
-    if (executionId) {
-      handleTimeline();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executionId]);
+  }, [id, executionId]);
 
   if (isLoading) {
     return <Loading />;
