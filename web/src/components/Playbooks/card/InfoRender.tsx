@@ -4,6 +4,7 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { InfoTypes } from "../../../utils/playbook/stepInformation/InfoTypes.ts";
 import Text from "./info/Text.tsx";
 import Chips from "./info/Chips.tsx";
+import getNestedValue from "../../../utils/getNestedValue.ts";
 
 type InfoRenderPropTypes = {
   stepId: string;
@@ -12,7 +13,7 @@ type InfoRenderPropTypes = {
 
 function InfoRender({ stepId, info }: InfoRenderPropTypes) {
   const [step] = useCurrentStep(stepId);
-  const value = step[info.key];
+  const value = getNestedValue(step, info.key);
 
   switch (info.type) {
     case InfoTypes.TEXT:

@@ -27,9 +27,9 @@ export default function handleStepInformation(
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       return StepInformation.datadogService;
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
-      return [];
+      return StepInformation.grafanaPromQL;
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
-      return [];
+      return StepInformation.newRelicApplication;
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
       return [];
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:

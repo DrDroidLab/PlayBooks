@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { Link, Notes } from "@mui/icons-material";
 import DeleteStepButton from "../../Buttons/DeleteStepButton/index.tsx";
+import getNestedValue from "../../../utils/getNestedValue.ts";
 
 type StepInformationPropTypes = {
   stepId: string;
@@ -25,7 +26,7 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
       <div className="flex flex-col gap-2">
         {handleStepInformation(step.id).map((info, i) => (
           <div className="flex flex-col" key={i}>
-            {step[info.key] && (
+            {getNestedValue(step, info.key) && (
               <>
                 <p className="text-xs font-semibold">{info.label}</p>
                 <InfoRender info={info} stepId={step.id} />
@@ -40,8 +41,6 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
             <p className="line-clamp-2 text-xs">{step.notes}</p>
           </div>
         )}
-
-        {console.log(step.externalLinks)}
 
         {step?.externalLinks?.length > 0 && (
           <div className="flex gap-2 items-center">
