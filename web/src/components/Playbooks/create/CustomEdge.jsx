@@ -53,6 +53,7 @@ const CustomEdge = ({
         markerEnd={markerEnd}
         style={{
           stroke: handleEdgeColor(id),
+          strokeWidth: 2,
         }}
       />
       <foreignObject
