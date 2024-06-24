@@ -25,14 +25,23 @@ function Timeline() {
   const lastStep = (playbookSteps ?? []).find(
     (step) => step.id === steps[(steps?.length || 1) - 1]?.id,
   );
+  const relationLogs = lastStep?.relationLogs ?? [];
+  const nextPossibleStepLogs = relationLogs?.filter(
+    (log) => log.evaluation_result,
+  );
 
-  const showNextStepExecution = lastStep?.stepIndex < playbookSteps?.length - 1;
+  const showNextStepExecution =
+    nextPossibleStepLogs.length > 0 &&
+    nextPossibleStepLogs.findIndex((log) => log.evaluation_result) !== -1;
+
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
 
   const nextStep = showNextStepExecution
-    ? playbookSteps[lastStep?.stepIndex + 1]
+    ? playbookSteps.find(
+        (e) => e.id === nextPossibleStepLogs[0].relation?.child?.id,
+      )
     : {};
 
   const addOutputsToSteps = (timelineSteps) => {

@@ -389,6 +389,7 @@ const playbookSlice = createSlice({
         showError: false,
         outputLoading: false,
         outputs: [],
+        relationLogs: [],
       }));
     },
     setSteps(state, { payload }) {

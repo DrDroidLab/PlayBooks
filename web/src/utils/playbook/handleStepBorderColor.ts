@@ -9,11 +9,17 @@ function handleStepBorderColor(stepId: string) {
     return logResults;
   }, []);
 
-  if (step?.outputs?.data?.length > 0 || results.find((result) => result)) {
+  if (
+    step?.outputs?.data?.length > 0 ||
+    (results.length > 0 && results.find((result) => result))
+  ) {
     return "green";
   }
 
-  if (step?.outputError || results.findIndex((result) => result) === -1) {
+  if (
+    step?.outputError ||
+    (results.length > 0 && results.findIndex((result) => result) === -1)
+  ) {
     return "red";
   }
 }
