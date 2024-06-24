@@ -23,7 +23,7 @@ function StepButtons({ stepId, handleClick }) {
         </Tooltip>
       </CustomButton>
       <div onClick={handleNoAction}>
-        <RunButton id={step.id} showText={false} />
+        <RunButton id={step.id} />
       </div>
     </div>
   );

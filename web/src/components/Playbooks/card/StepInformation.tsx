@@ -25,8 +25,12 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
       <div className="flex flex-col gap-2">
         {handleStepInformation(step.id).map((info, i) => (
           <div className="flex flex-col" key={i}>
-            <p className="text-xs font-semibold">{info.label}</p>
-            <InfoRender info={info} stepId={step.id} />
+            {step[info.key] && (
+              <>
+                <p className="text-xs font-semibold">{info.label}</p>
+                <InfoRender info={info} stepId={step.id} />
+              </>
+            )}
           </div>
         ))}
 
