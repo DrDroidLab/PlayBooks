@@ -48,7 +48,9 @@ const CustomEdge = ({
     <>
       <path
         id={id}
-        className={`react-flow__edge-path`}
+        className={`react-flow__edge-path ${
+          handleEdgeColor(id) === "green" ? "animated-dotted-line" : ""
+        }`}
         d={edgePath}
         markerEnd={markerEnd}
         style={{
