@@ -14,8 +14,7 @@ import useHasChildren from "../../../hooks/useHasChildren.ts";
 import handleStepBorderColor from "../../../utils/playbook/handleStepBorderColor.ts";
 import StepTitle from "../card/StepTitle.tsx";
 import AddButtonOptions from "../card/AddButtonOptions.tsx";
-import handleStepInformation from "../../../utils/playbook/stepInformation/handleStepInformation.ts";
-import InfoRender from "../card/InfoRender.tsx";
+import StepInformation from "../card/StepInformation.tsx";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -67,17 +66,8 @@ export default function CustomNode({ data }) {
       } rounded-md overflow-hidden border border-transparent`}
       style={{ borderColor: handleStepBorderColor(step.id) }}>
       <StepTitle stepId={step.id} handleClick={handleClick} />
-      <div
-        className={`${
-          currentStepId === step.id.toString() ? "shadow-violet-500" : ""
-        } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500 flex flex-col gap-2`}>
-        {handleStepInformation(step.id).map((info, i) => (
-          <div className="flex flex-col">
-            <p className="text-xs font-semibold">{info.label}</p>
-            <InfoRender info={info} stepId={step.id} key={i} />
-          </div>
-        ))}
-      </div>
+
+      <StepInformation stepId={step.id} />
 
       <Handle
         type="target"
