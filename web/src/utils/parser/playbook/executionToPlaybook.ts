@@ -44,6 +44,7 @@ export const executionToPlaybook = (playbook_execution) => {
       stepType: "",
       action: "",
       relationLogs,
+      isEditing: false,
       ...data,
     };
 

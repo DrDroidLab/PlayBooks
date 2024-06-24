@@ -17,6 +17,7 @@ const emptyStep = {
   stepType: null,
   action: {},
   requireCondition: false,
+  isEditing: true,
 };
 
 const initialState: Playbook = {
@@ -228,6 +229,7 @@ const playbookSlice = createSlice({
           resultType: payload.resultType,
         },
         globalVariables: state.globalVariables ?? [],
+        isEditing: true,
       });
 
       if (parentExists) {
@@ -328,7 +330,10 @@ const playbookSlice = createSlice({
     updateStep: (state, { payload }) => {
       const id = payload.id;
       const step = state.steps?.find((step) => step.id === id);
-      if (step) step[payload.key] = payload.value;
+      if (step) {
+        step[payload.key] = payload.value;
+        step.isEditing = true;
+      }
     },
     setAssets(state, { payload }) {
       const { id } = payload;
@@ -341,14 +346,20 @@ const playbookSlice = createSlice({
       const { id, notes } = payload;
       if (id) {
         const step = state.steps?.find((step) => step.id === id);
-        if (step) step.notes = notes;
+        if (step) {
+          step.notes = notes;
+          step.isEditing = true;
+        }
       }
     },
     addExternalLinks(state, { payload }) {
       const { id, links } = payload;
       if (id) {
         const step = state.steps?.find((step) => step.id === id);
-        if (step) step.externalLinks = links;
+        if (step) {
+          step.externalLinks = links;
+          step.isEditing = true;
+        }
       }
     },
     toggleExternalLinkVisibility(state, { payload }) {
@@ -398,11 +409,13 @@ const playbookSlice = createSlice({
     setNRQLData(state, { payload }) {
       const { id, key, value } = payload;
       const step = state.steps?.find((step) => step.id === id);
-      if (step)
+      if (step) {
         step.nrqlData = {
           ...step?.nrqlData,
           [key]: value,
         };
+        step.isEditing = true;
+      }
     },
     setLastUpdatedAt(state) {
       state.lastUpdatedAt = new Date();
@@ -410,7 +423,10 @@ const playbookSlice = createSlice({
     setActionKey(state, { payload }) {
       const { id, key, value } = payload;
       const step = state.steps?.find((step) => step.id === id);
-      if (step) step.action[key] = value;
+      if (step) {
+        step.action[key] = value;
+        step.isEditing = true;
+      }
     },
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
