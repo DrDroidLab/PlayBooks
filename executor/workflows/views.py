@@ -5,11 +5,12 @@ from typing import Union
 
 import traceback
 
+import uuid
 from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
@@ -20,6 +21,7 @@ from executor.workflows.tasks import test_workflow_notification
 from playbooks.utils.decorators import web_api, account_post_api, account_get_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
+from utils.proto_utils import proto_to_dict, dict_to_proto
 from utils.time_utils import current_datetime
 from protos.base_pb2 import Meta, Message, Page
 from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, CreateWorkflowRequest, \
@@ -27,9 +29,7 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
     ExecutionsWorkflowsGetAllResponse
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowConfiguration, WorkflowExecution, WorkflowExecutionStatusType
-from utils.proto_utils import dict_to_proto
+from protos.playbooks.workflow_pb2 import Workflow, WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ def workflows_get(request_message: GetWorkflowsRequest) -> Union[GetWorkflowsRes
 def workflows_create(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
-    workflow: WorkflowProto = request_message.workflow
+    workflow: Workflow = request_message.workflow
     if not workflow or not workflow.name:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Missing name/workflow"))
@@ -119,19 +119,27 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
     try:
-        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
-        workflow: WorkflowProto = account_workflow.proto_partial
+        uuid_str = uuid.uuid4().hex
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
+        workflow: Workflow = account_workflow.proto_partial
         schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        if request_message.workflow_configuration:
-            workflow_config = request_message.workflow_configuration
-        elif workflow.configuration:
-            workflow_config = workflow.configuration
-        else:
-            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
+        workflow_config = proto_to_dict(workflow.configuration)
+
+        requested_config = proto_to_dict(request_message.workflow_configuration)
+        if requested_config:
+            for key, value in requested_config.items():
+                if key == 'global_variable_set':
+                    global_variable_set = workflow_config['global_variable_set']
+                    for k, v in value.items():
+                        global_variable_set[k] = v
+                else:
+                    workflow_config[key] = value
+
+        workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
         execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
                                                                   current_time_utc, workflow_run_uuid, user.email, None,
-                                                                  workflow_config)
+                                                                  workflow_config_proto)
         if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Failed to Schedule Workflow Execution",
@@ -259,20 +267,27 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                             status=500,
                             content_type='application/json')
     try:
-        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run'
-        workflow: WorkflowProto = account_workflow.proto_partial
+        uuid_str = uuid.uuid4().hex
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
+        workflow: Workflow = account_workflow.proto_partial
         schedule = workflow.schedule
         schedule_type = account_workflow.schedule_type
-        if request_message.workflow_configuration:
-            workflow_config = request_message.workflow_configuration
-        elif workflow.configuration:
-            workflow_config = workflow.configuration
-        else:
-            workflow_config: WorkflowConfiguration = WorkflowConfiguration()
+        workflow_config = proto_to_dict(workflow.configuration)
 
+        requested_config = proto_to_dict(request_message.workflow_configuration)
+        if requested_config:
+            for key, value in requested_config.items():
+                if key == 'global_variable_set':
+                    global_variable_set = workflow_config['global_variable_set']
+                    for k, v in value.items():
+                        global_variable_set[k] = v
+                else:
+                    workflow_config[key] = value
+
+        workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
         execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
                                                                   schedule, current_time_utc, workflow_run_uuid,
-                                                                  user.email, None, workflow_config)
+                                                                  user.email, None, workflow_config_proto)
         if err:
             return HttpResponse(json.dumps(
                 {'success': False, 'error_message': f'Failed to schedule workflow execution'}),
@@ -321,7 +336,7 @@ def workflows_execution_api_get(request_message: HttpRequest) -> Union[Execution
 def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union[CreateWorkflowResponse, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
-    workflow: WorkflowProto = request_message.workflow
+    workflow: Workflow = request_message.workflow
 
     if not workflow.playbooks or workflow.playbooks == []:
         return CreateWorkflowResponse(success=BoolValue(value=False),
@@ -331,15 +346,11 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request", description="Select the trigger type"))
 
-    if not workflow.entry_points[0].slack_channel_alert.slack_channel_id.value:
-        return CreateWorkflowResponse(success=BoolValue(value=False),
-                                      message=Message(title="Invalid Request", description="Select a slack channel"))
-
     if not workflow.actions or workflow.actions == []:
         return CreateWorkflowResponse(success=BoolValue(value=False),
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
-    
+
     test_workflow_notification(user, account.id, workflow, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 

@@ -25,6 +25,7 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import useHasChildren from "../../../hooks/useHasChildren.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import handleStepBorderColor from "../../../utils/playbook/handleStepBorderColor.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -102,8 +103,11 @@ export default function CustomNode({ data }) {
     <div
       onClick={(e) => handleClick(e, false)}
       className={`${
-        currentStepId === step.id.toString() ? "shadow-violet-500" : ""
-      } shadow-md rounded-md overflow-hidden`}>
+        currentStepId === step.id.toString()
+          ? "shadow-md shadow-violet-500"
+          : ""
+      } rounded-md overflow-hidden border border-transparent`}
+      style={{ borderColor: handleStepBorderColor(step.id) }}>
       <div className="w-full bg-gray-200 flex items-center justify-between p-1">
         <div className="flex items-center gap-1">
           {data?.step?.source && (

@@ -18,7 +18,11 @@ export const handleActionsExtractor = (
           },
         },
       };
-
+      case Types.WorkflowActionOptions.MS_TEAMS_MESSAGE_WEBHOOK:
+        return {
+          webhook: workflowAction.ms_teams_connector_webhook_url,
+        };
+  
     default:
       return {};
   }

@@ -109,3 +109,15 @@ td {
   display: flex;
   flex: 1;
 }
+
+/* Add this to your CSS file (e.g., styles.css) */
+.animated-dotted-line {
+  stroke-dasharray: 5;
+  animation: dash-animation 1s linear infinite;
+}
+
+@keyframes dash-animation {
+  to {
+    stroke-dashoffset: -20;
+  }
+}

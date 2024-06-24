@@ -43,7 +43,7 @@ function IntegrationsList() {
   }, [query]);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <div className="sticky top-0 bg-white z-10">
         <h2 className="mt-4 font-bold text-sm">Add Data</h2>
         <input
@@ -60,7 +60,7 @@ function IntegrationsList() {
           Looking for integrations...
         </div>
       )}
-      <div className="flex flex-col gap-4 h-screen">
+      <div className="flex flex-col gap-4 flex-1 pb-40">
         {query ? (
           items.length === 0 ? (
             <p className="text-sm">No integrations found.</p>

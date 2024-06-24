@@ -424,4 +424,14 @@ export const cardsData = [
     buttonLink: "/integrations/gke",
     docs: "https://docs.drdroid.io/docs/google-cloud-gke",
   },
-];
+  {
+    id: 47,
+    url: "/integrations/ms_teams_logo.png",
+    title: "MS Teams",
+    enum: "MS_TEAMS",
+    desc: "Connect to MS Teams using Webhook",
+    buttonTitle: "Connect",
+    buttonType: "link",
+    buttonLink: "/integrations/ms_teams",
+    docs: "https://docs.drdroid.io/docs/ms-teams",
+  },];

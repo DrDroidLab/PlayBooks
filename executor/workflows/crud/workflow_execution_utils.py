@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta
 
+import uuid
 from django.conf import settings
 
 from accounts.models import Account
@@ -28,10 +29,11 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
     for wfm in all_wf_mappings:
         workflow = wfm.workflow
         workflow_proto: Workflow = workflow.proto_partial
-        workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run'
+        uuid_str = uuid.uuid4().hex
+        workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run_{uuid_str}'
         schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
         create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
-                                       current_time_utc, workflow_run_id, 'SLACK_ALERT',
+                                       current_time_utc, workflow_run_uuid, 'SLACK_ALERT',
                                        metadata={'thread_ts': thread_ts}, workflow_config=workflow_proto.configuration)
 
 

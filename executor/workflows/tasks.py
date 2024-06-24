@@ -10,7 +10,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
-from executor.tasks import execute_playbook, execute_playbook_impl
+from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
     update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
@@ -71,8 +71,8 @@ def workflow_scheduler():
         all_playbook_ids = [pb.id for pb in all_pbs]
         for pb_id in all_playbook_ids:
             try:
-                pb_run_uuid = str(uuid.uuid4())
-                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{pb_run_uuid}'
+                uuid_str = uuid.uuid4().hex
+                playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
                 if update_time_range:
                     time_range_proto = dict_to_proto(update_time_range, TimeRange)
                 else:
@@ -89,6 +89,7 @@ def workflow_scheduler():
                     logger.error(f"Failed to create workflow execution task for account: {account.id}, workflow_id: "
                                  f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
                     continue
+                logger.info("workflow_execution_configuration in scheduler", workflow_execution_configuration)
                 task = workflow_executor.delay(account.id, workflow_id, wf_execution.id, pb_id, playbook_execution.id,
                                                time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
@@ -122,7 +123,7 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
         workflow_config = WorkflowConfigurationProto()
         if workflow_execution_configuration:
             workflow_config = dict_to_proto(workflow_execution_configuration, WorkflowConfigurationProto)
-        if workflow_config.generate_summary and workflow_config.generate_summary.value:
+        if workflow_config.generate_summary.value:
             execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         try:
             saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
@@ -179,6 +180,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
+
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
                                                                                            step_execution_logs)
         workflow = workflows.first()
@@ -239,14 +241,17 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         workflow.actions[0].slack_thread_reply.thread_ts.value = message_ts
     elif message_type == WorkflowActionProto.Type.SLACK_MESSAGE:
         logger.info("Sending test message")
+    elif message_type == WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
+        logger.info("Sending test MS Teams message")
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
-    
+
     try:
         current_time = current_epoch_timestamp()
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
-        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+        uuid_str = uuid.uuid4().hex
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
 
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
 
@@ -259,7 +264,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
-                                                                                        step_execution_logs)
+                                                                                           step_execution_logs)
 
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
