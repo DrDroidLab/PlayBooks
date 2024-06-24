@@ -10,39 +10,25 @@ import SelectInterpretation from "./Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
 import HandleNotesRender from "./HandleNotesRender.jsx";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
-// import useDrawerState from "../../../hooks/useDrawerState.ts";
-// import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-// const id = DrawerTypes.ADD_DATA;
-// const currentStepDrawerId = DrawerTypes.STEP_DETAILS;
-
-function Step({ step, index }) {
-  // const { openDrawer, addAdditionalData } = useDrawerState(id);
-  // const { closeDrawer: closeCurrentStep } = useDrawerState(currentStepDrawerId);
+function Step({ id: stepId }) {
+  const [step] = useCurrentStep(stepId);
   const { closeDrawer } = usePermanentDrawerState();
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
   const dispatch = useDispatch();
+  const id = step?.id;
 
   function handleDeleteClick() {
-    dispatch(deleteStep(step.stepIndex));
+    dispatch(deleteStep(id));
     closeDrawer();
   }
-
-  // const handleAdd = (requireCondition = false) => {
-  //   addAdditionalData({
-  //     parentIndex: step.stepIndex,
-  //     requireCondition,
-  //     currentConditionParentIndex: step.stepIndex,
-  //   });
-  //   openDrawer();
-  //   closeCurrentStep(false);
-  // };
 
   return (
     <div className="rounded my-2">
@@ -50,7 +36,7 @@ function Step({ step, index }) {
         <div className="flex text-sm">
           {isPrefetched && step.description && (
             <div className="flex gap-5">
-              <ExternalLinksList index={index} />
+              <ExternalLinksList id={id} />
             </div>
           )}
         </div>
@@ -61,18 +47,18 @@ function Step({ step, index }) {
             <b>{!addQuery ? "+ Add Data" : "Data"}</b>
           </div>
 
-          {addQuery && <Query index={index} />}
+          {addQuery && <Query id={id} />}
         </div>
-        <HandleNotesRender index={index} step={step} />
-        <SelectInterpretation index={index} />
-        <HandleExternalLinksRender index={index} step={step} />
+        <HandleNotesRender id={id} />
+        <SelectInterpretation id={id} />
+        <HandleExternalLinksRender id={id} />
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
-            <RunButton index={index} />
+            <RunButton id={id} />
             <button
               className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
-              onClick={() => handleDeleteClick(index)}>
+              onClick={handleDeleteClick}>
               <Tooltip title="Remove this Step">
                 <Delete />
               </Tooltip>
@@ -84,18 +70,6 @@ function Step({ step, index }) {
             <SavePlaybookButton shouldNavigate={false} />
           </div>
         )}
-        {/* {!isPrefetched && (
-          <div className="flex gap-2 mt-2">
-            {step.source && (
-              <div className="flex items-center gap-2">
-                <CustomButton onClick={handleAdd}>Add Next Step</CustomButton>
-              </div>
-            )}
-            <CustomButton onClick={() => handleAdd(true)}>
-              Add Next Step With Condition
-            </CustomButton>
-          </div>
-        )} */}
       </div>
     </div>
   );

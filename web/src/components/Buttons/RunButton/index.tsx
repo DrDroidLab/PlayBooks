@@ -15,13 +15,13 @@ import { useStartExecutionMutation } from "../../../store/features/playbook/api/
 import { useSearchParams } from "react-router-dom";
 
 type RunButtonProps = {
-  index: number;
+  id: string;
 };
 
-function RunButton({ index }: RunButtonProps) {
+function RunButton({ id }: RunButtonProps) {
   const { executionId, currentPlaybook } = useSelector(playbookSelector);
   const [, setSearchParams] = useSearchParams();
-  const [step] = useCurrentStep(index);
+  const [step] = useCurrentStep(id);
   const dispatch = useDispatch();
   const isExisting = useIsExisting();
   const [triggerStartExecution, { isLoading: executionLoading }] =
@@ -42,10 +42,10 @@ function RunButton({ index }: RunButtonProps) {
     if (isExisting && !executionId && step.id) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      await executeStep(step, index);
+      await executeStep(step, step.id);
       setSearchParams({ executionId: id });
     } else {
-      executeStep(step, index);
+      executeStep(step, step.id);
     }
   };
 

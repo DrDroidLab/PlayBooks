@@ -1,18 +1,14 @@
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 
-export default function useCurrentStep(index?: number, stepData?: any) {
-  const { currentStepIndex, steps, connectorOptions } =
+export default function useCurrentStep(id?: string, stepData?: any) {
+  const { currentStepId, steps, connectorOptions } =
     useSelector(playbookSelector);
 
-  // const currentTaskType = taskTypes?.find(
-  //   (e) => e.task_type === id,
-  // );
-
-  const currentIndex = index ?? currentStepIndex;
+  const currentId = id ?? currentStepId;
   const step =
-    steps.length > 0 && currentIndex !== null && currentIndex !== undefined
-      ? steps[currentIndex]
+    steps.length > 0 && currentId
+      ? steps.find((step) => step.id === currentId)
       : {};
   const currentConnector = connectorOptions?.find(
     (e) => e.id === step?.source,
@@ -23,6 +19,6 @@ export default function useCurrentStep(index?: number, stepData?: any) {
 
   return [
     { ...(stepData ?? step), resultType: taskType?.result_type },
-    currentIndex,
+    currentId,
   ];
 }

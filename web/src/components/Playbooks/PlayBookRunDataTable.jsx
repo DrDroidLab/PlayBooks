@@ -15,7 +15,7 @@ import {
 import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
 import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 
-const PlayBookRunDataTable = ({ title, result, timestamp }) => {
+const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -41,13 +41,16 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
   const shouldNoWrap = columnLength < 5;
 
   return (
-    <div className={styles["graph-box"]}>
+    <div
+      className={`${
+        showHeading ? "h-full" : "h-auto"
+      } border p-2 rounded mb-1 overflow-auto`}>
       <p className={styles["graph-title"]}>{title}</p>
       {!showTable && <p className={styles["graph-error"]}>No data available</p>}
       {showTable && (
         <Table
           stickyHeader
-          className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2`}>
+          className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2 h-full`}>
           <TableHead>
             <TableRow>
               {tableData[0]?.columns

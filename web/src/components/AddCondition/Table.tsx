@@ -4,17 +4,17 @@ import ValueComponent from "../ValueComponent";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
-import extractNumbers from "../../utils/extractNumbers.ts";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
+import extractSource from "../../utils/extractSource.ts";
 
 function Table({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
-  const [sourceId] = extractNumbers(source);
+  const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 

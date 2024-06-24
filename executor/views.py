@@ -3,6 +3,7 @@ import os
 import json
 from typing import Union
 
+import uuid
 from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
@@ -295,7 +296,8 @@ def playbook_run_v2(request_message: RunPlaybookRequestV2) -> Union[RunPlaybookR
     db_playbook = None
     db_playbook_execution = None
     if playbook.id and playbook.id.value:
-        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook.id.value}_pb_run'
+        uuid_str = uuid.uuid4().hex
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook.id.value}_pb_run_{uuid_str}'
         try:
             db_playbook = account.playbook_set.get(id=playbook.id.value, is_active=True)
             db_playbook_execution = create_playbook_execution(account, time_range, playbook.id.value, playbook_run_uuid,
@@ -474,7 +476,8 @@ def playbooks_execute(request_message: ExecutePlaybookRequest) -> Union[ExecuteP
     if not playbook_id:
         return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                        message=Message(title="Invalid Request", description="Missing playbook_id"))
-    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+    uuid_str = uuid.uuid4().hex
+    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
     try:
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
@@ -591,7 +594,8 @@ def playbooks_api_execute(request_message: ExecutePlaybookRequest) -> Union[Exec
     if not playbook_id:
         return ExecutePlaybookResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                        message=Message(title="Invalid Request", description="Missing playbook_id"))
-    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+    uuid_str = uuid.uuid4().hex
+    playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
     try:
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
@@ -748,7 +752,8 @@ def playbooks_execution_create(request_message: PlaybookExecutionCreateRequest) 
                                                message=Message(title="Invalid Request",
                                                                description="Missing playbook_id"))
     try:
-        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run'
+        uuid_str = uuid.uuid4().hex
+        playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
         playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
     except Exception as e:
         logger.error(e)

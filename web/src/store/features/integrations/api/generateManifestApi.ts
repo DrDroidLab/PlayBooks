@@ -5,12 +5,10 @@ import { setKey } from "../integrationsSlice.ts";
 export const generateManifestApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     generateManifest: builder.mutation<any, string>({
-      query: (host_name) => ({
+      query: () => ({
         url: GENERATE_MANIFEST,
         method: "POST",
-        body: {
-          host_name,
-        },
+        body: {},
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {

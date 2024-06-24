@@ -73,7 +73,7 @@ export const cloudwatchMetricBuilder = (options, task) => {
           key: "namespaceName",
           label: "Namespace",
           type: OptionType.TYPING_DROPDOWN,
-          options: options?.map((namespace, i) => {
+          options: options?.map((namespace) => {
             return {
               id: namespace,
               label: namespace,

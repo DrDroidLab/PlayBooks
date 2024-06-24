@@ -15,6 +15,12 @@ export const notificationOptions = [
         type: "checkbox",
         group: "notification",
       },
+      {
+        id: "ms_teams_message_webhook",
+        label: "Send via MS Teams Webhook",
+        type: "checkbox",
+        group: "notification",
+      },
     ],
   },
 ];

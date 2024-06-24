@@ -110,9 +110,14 @@ global___GetConnectorResponse = GetConnectorResponse
 class GetConnectorsListRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+    connector_type: protos.base_pb2.Source.ValueType
     def __init__(
         self,
+        *,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
     ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type"]) -> None: ...
 
 global___GetConnectorsListRequest = GetConnectorsListRequest
 

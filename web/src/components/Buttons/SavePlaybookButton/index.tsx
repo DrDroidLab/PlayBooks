@@ -58,7 +58,9 @@ function SavePlaybookButton({
       }).unwrap();
       if (shouldNavigate) {
         navigate(`/playbooks`);
+        return;
       }
+      window.location.reload();
     } catch (e) {
       console.log(e);
     }
@@ -83,9 +85,9 @@ function SavePlaybookButton({
 
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
-      if (shouldNavigate) {
-        navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
-      }
+      // if (shouldNavigate) {
+      navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
+      // }
     } catch (e) {
       console.error(e);
     }

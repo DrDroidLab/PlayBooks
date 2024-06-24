@@ -5,7 +5,7 @@ import {
   addStep,
   deleteStep,
   playbookSelector,
-  setCurrentStepIndex,
+  setCurrentStepId,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { cardsData } from "../../../utils/cardsData.js";
 import { CircularProgress, Tooltip } from "@mui/material";
@@ -24,6 +24,7 @@ import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentD
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import useHasChildren from "../../../hooks/useHasChildren.ts";
+import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -34,37 +35,45 @@ export default function CustomNode({ data }) {
     toggle: togglePermanentDrawer,
     openDrawer,
     closeDrawer,
+    permanentView,
   } = usePermanentDrawerState();
   const dispatch = useDispatch();
-  const { currentStepIndex, executionId, steps } =
-    useSelector(playbookSelector);
+  const { currentStepId, executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const step = data.step;
-  const source = `node-${step?.stepIndex}`;
-  const hasChildren = useHasChildren(step?.stepIndex);
+  const source = `node-${step?.id}`;
+  const hasChildren = useHasChildren(step?.id);
 
   const handleNoAction = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleClick = (config = true) => {
+  const handleClick = (e, config = true) => {
     // if (!isEditing) return;
+    handleNoAction(e);
     if (isPrefetched && !config) {
+      addAdditionalData({ showStepId: step.id });
       openDrawer(PermanentDrawerTypes.TIMELINE);
-      addAdditionalData({ showStepId: step.id ?? step.stepIndex });
       return;
     }
-    dispatch(setCurrentStepIndex(data.index));
+    if (
+      permanentView === PermanentDrawerTypes.STEP_DETAILS &&
+      currentStepId === step.id
+    ) {
+      togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
+      return;
+    }
+    dispatch(setCurrentStepId(step.id));
     addAdditionalData({});
-    togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };
 
   const handleDelete = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(deleteStep(data.index));
+    dispatch(deleteStep(step.id));
     closeDrawer();
   };
 
@@ -72,26 +81,28 @@ export default function CustomNode({ data }) {
     handleNoAction(e);
     if (!isEditing) return;
     toggleAddData();
-    addAdditionalData({ parentIndex: data.index });
+    addAdditionalData({ parentId: step.id });
   };
 
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    dispatch(addStep({ parentIndex: step?.stepIndex, addConditions: true }));
-    const id = `edge-${step?.stepIndex}-${steps.length + 1}`;
+    const parentId = step.id;
+
+    const id = generateUUIDWithoutHyphens();
+    dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
     addAdditionalData({
       source,
-      id,
+      id: `edge-${parentId}-${id}`,
     });
     openDrawer(PermanentDrawerTypes.CONDITION);
   };
 
   return (
     <div
-      onClick={handleClick}
+      onClick={(e) => handleClick(e, false)}
       className={`${
-        currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+        currentStepId === step.id.toString() ? "shadow-violet-500" : ""
       } shadow-md rounded-md overflow-hidden`}>
       <div className="w-full bg-gray-200 flex items-center justify-between p-1">
         <div className="flex items-center gap-1">
@@ -125,14 +136,14 @@ export default function CustomNode({ data }) {
         </div>
         <div className="flex items-center gap-1">
           <CustomButton
-            onClick={() => handleClick(false)}
+            onClick={handleClick}
             className="text-violet-500 cursor-pointer">
             <Tooltip title={"Show Config"}>
               <VisibilityRounded fontSize="medium" />
             </Tooltip>
           </CustomButton>
           <div onClick={handleNoAction}>
-            <RunButton index={data.index} />
+            <RunButton id={step.id} />
           </div>
           {isEditing && (
             <div
@@ -145,7 +156,7 @@ export default function CustomNode({ data }) {
       </div>
       <div
         className={`${
-          currentStepIndex === data.index.toString() ? "shadow-violet-500" : ""
+          currentStepId === step.id.toString() ? "shadow-violet-500" : ""
         } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500`}>
         <div className="flex flex-col items-start gap-4">
           <p className="text-lg font-bold text-left z-10 break-word line-clamp-3">
@@ -174,7 +185,7 @@ export default function CustomNode({ data }) {
             <CustomButton
               onClick={handleNoAction}
               className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
-              <Add fontSize="inherit" />
+              <Add fontSize="small" />
             </CustomButton>
 
             <div className="absolute top-0 left-full add-step-buttons transition-all">

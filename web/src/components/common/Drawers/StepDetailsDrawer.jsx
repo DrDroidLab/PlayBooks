@@ -1,7 +1,7 @@
 import React from "react";
 import CustomDrawer from "../CustomDrawer/index.jsx";
 import { useDispatch } from "react-redux";
-import { setCurrentStepIndex } from "../../../store/features/playbook/playbookSlice.ts";
+import { setCurrentStepId } from "../../../store/features/playbook/playbookSlice.ts";
 import StepDetails from "../../Playbooks/create/StepDetails.jsx";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
@@ -13,7 +13,7 @@ function StepDetailsDrawer() {
   return (
     <CustomDrawer
       id={id}
-      onClose={() => dispatch(setCurrentStepIndex(null))}
+      onClose={() => dispatch(setCurrentStepId(null))}
       addtionalStyles={"lg:w-[50%]"}
       showOverlay={true}
       startFrom="80">

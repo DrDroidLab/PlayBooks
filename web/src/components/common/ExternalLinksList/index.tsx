@@ -2,8 +2,8 @@ import React from "react";
 import { Launch } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function ExternalLinksList({ index }) {
-  const [step] = useCurrentStep(index);
+function ExternalLinksList({ id }) {
+  const [step] = useCurrentStep(id);
 
   if (!step) return <></>;
   return (

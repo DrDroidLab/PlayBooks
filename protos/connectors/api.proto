@@ -28,6 +28,7 @@ message GetConnectorResponse {
 }
 
 message GetConnectorsListRequest {
+  Source connector_type = 1;
 }
 
 message GetConnectorsListResponse {

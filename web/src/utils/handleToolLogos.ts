@@ -26,6 +26,11 @@ export default function handleToolLogos(playbook) {
   const tools = steps?.reduce((tools, step) => {
     const task = step.tasks[0];
     const image = handleImageSrc(task.source, task.modelType, task.taskType);
+
+    if (tools.findIndex((e) => e.image === image) !== -1) {
+      return tools;
+    }
+
     return [
       ...tools,
       {
