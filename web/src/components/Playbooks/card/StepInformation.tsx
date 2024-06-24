@@ -36,14 +36,14 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
         ))}
 
         {step.notes && (
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-1 items-center flex-wrap">
             <Notes fontSize="small" />
             <p className="line-clamp-2 text-xs">{step.notes}</p>
           </div>
         )}
 
         {step?.externalLinks?.length > 0 && (
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
             <Link fontSize="small" />
             {step.externalLinks?.map((link) => (
               <a
