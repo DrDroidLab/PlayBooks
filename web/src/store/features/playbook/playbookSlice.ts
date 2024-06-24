@@ -17,7 +17,6 @@ const emptyStep = {
   stepType: null,
   action: {},
   requireCondition: false,
-  currentConditionParentIndex: undefined,
 };
 
 const initialState: Playbook = {
@@ -220,7 +219,6 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
-          parentIds: parentExists ? [parentId] : [],
           position: {
             x: 0,
             y: 0,
@@ -253,10 +251,6 @@ const playbookSlice = createSlice({
     addParentId: (state, { payload }) => {
       const { id, parentId } = payload;
       const parentExists = parentId !== undefined && parentId !== null;
-      const step = state.steps.find((s) => s.id === id);
-      if (step?.parentIds && parentExists) {
-        step.parentIds.push(parentId);
-      }
       const edgeId = parentExists ? `edge-${parentId}-${id}` : `edge-${id}`;
       state.playbookEdges.filter((e) => e.id !== id);
       state.playbookEdges.push({
@@ -282,7 +276,6 @@ const playbookSlice = createSlice({
           x: 0,
           y: 0,
         },
-        parentIndexes: parentId !== undefined ? [parentId] : [],
       };
       state.steps.push(currentStep);
       if (parentId !== undefined) {

@@ -8,6 +8,7 @@ export const executionToPlaybook = (playbook_execution) => {
   const list: Step[] = [];
   for (let [i, stepExecutionLog] of Object.entries(stepExecutionLogs)) {
     const step = structuredClone((stepExecutionLog as any).step);
+    const relationLogs = (stepExecutionLog as any)?.relation_execution_logs;
     step.tasks = (stepExecutionLog as any)?.task_execution_logs?.map(
       (log) => log.task,
     );
@@ -42,6 +43,7 @@ export const executionToPlaybook = (playbook_execution) => {
       isPlayground: false,
       stepType: "",
       action: "",
+      relationLogs,
       ...data,
     };
 
