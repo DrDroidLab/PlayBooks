@@ -9,7 +9,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 
-from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
@@ -27,9 +27,8 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
     ExecutionsWorkflowsGetAllResponse
-from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowConfiguration, WorkflowExecution, WorkflowExecutionStatusType
-from utils.proto_utils import dict_to_proto
+from protos.playbooks.workflow_pb2 import Workflow as WorkflowProto, \
+    WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
 logger = logging.getLogger(__name__)
@@ -374,13 +373,3 @@ def generate_curl(request_message: ExecuteWorkflowRequest) -> HttpResponse:
     headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {account_api_token.key}'}
     curl = construct_curl('POST', uri, headers=headers, payload=payload)
     return HttpResponse(curl, content_type="text/plain", status=200)
-
-
-@web_api(ExecuteWorkflowRequest)
-def pd_generate_webhook(request_message: ExecuteWorkflowRequest) -> HttpResponse:
-    location = '/pagerduty/handle_incidents/'
-    protocol = settings.WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL
-    enabled = settings.WORKFLOW_EXECUTE_API_USE_SITE
-    uri = build_absolute_uri(None, location, protocol, enabled)
-
-    return HttpResponse(uri, content_type="text/plain", status=200)

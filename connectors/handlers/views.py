@@ -5,15 +5,18 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
+from django.conf import settings
 
 from accounts.models import get_request_account, Account
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
+from protos.playbooks.api_pb2 import ExecuteWorkflowRequest
 from utils.time_utils import current_epoch_timestamp
 from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
+from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -135,3 +138,13 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
+
+
+@web_api(ExecuteWorkflowRequest)
+def pd_generate_webhook(request_message: ExecuteWorkflowRequest) -> HttpResponse:
+    location = '/connectors/handlers/pagerduty/handle_incidents/'
+    protocol = settings.WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL
+    enabled = settings.WORKFLOW_EXECUTE_API_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    return HttpResponse(uri, content_type="text/plain", status=200)

@@ -6,4 +6,5 @@ urlpatterns = [
     # Slack event subscription webhook
     path('slack_bot/handle_callback_events', handler_views.slack_bot_handle_callback_events),
     path('pagerduty/handle_incidents', handler_views.pagerduty_handle_incidents),
+    path('generate/webhook', handler_views.pd_generate_webhook)
 ]
