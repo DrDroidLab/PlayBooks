@@ -14,21 +14,13 @@ import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 const id = DrawerTypes.COPY_CODE;
 
 function SlackManifestGenerator() {
-  const [host, setHost] = useState("");
-  const dispatch = useDispatch();
   const [triggerManifest, { isLoading }] = useGenerateManifestMutation();
   const currentConnector = useSelector(connectorSelector);
   const { openDrawer } = useDrawerState(id);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!host) {
-      dispatch(showSnackbar("Please enter a host name"));
-      return;
-    }
-
-    triggerManifest(host);
+    triggerManifest();
   };
 
   useEffect(() => {
@@ -43,14 +35,6 @@ function SlackManifestGenerator() {
       <form
         onSubmit={handleSubmit}
         className="flex my-2 items-end gap-2 flex-wrap">
-        <HandleInputRender
-          option={{
-            type: "string",
-            label: "Host Name",
-            value: host,
-            handleChange: setHost,
-          }}
-        />
 
         <div className="flex items-center gap-2">
           <button className="p-1 text-violet-500 hover:text-white hover:bg-violet-500 border border-violet-500 text-xs rounded cursor-pointer transition-all">

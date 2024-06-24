@@ -10,11 +10,18 @@ function handleNotificationOptions() {
       return [
         NotificationOptionTypes.SLACK_MESSAGE,
         NotificationOptionTypes.THREAD_REPLY,
+        NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
       ];
     case "api":
-      return [NotificationOptionTypes.SLACK_MESSAGE];
+      return [
+        NotificationOptionTypes.SLACK_MESSAGE,
+        NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
+      ];
     case "pagerduty_incident":
-      return [NotificationOptionTypes.PAGERDUTY_NOTES];
+      return [
+        NotificationOptionTypes.PAGERDUTY_NOTES,
+        NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
+      ];
   }
 }
 

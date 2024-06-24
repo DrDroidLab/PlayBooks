@@ -137,6 +137,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     AZURE: _Source.ValueType  # 42
     GRAFANA_MIMIR: _Source.ValueType  # 43
     GKE: _Source.ValueType  # 44
+    MS_TEAMS: _Source.ValueType  # 45
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -185,6 +186,7 @@ BASH: Source.ValueType  # 41
 AZURE: Source.ValueType  # 42
 GRAFANA_MIMIR: Source.ValueType  # 43
 GKE: Source.ValueType  # 44
+MS_TEAMS: Source.ValueType  # 45
 global___Source = Source
 
 class _SourceKeyType:
@@ -254,6 +256,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
     GKE_PROJECT_ID: _SourceKeyType.ValueType  # 60
     GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 61
+    MS_TEAMS_CONNECTOR_WEBHOOK_URL: _SourceKeyType.ValueType  # 62
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -318,6 +321,7 @@ AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
 AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
 GKE_PROJECT_ID: SourceKeyType.ValueType  # 60
 GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 61
+MS_TEAMS_CONNECTOR_WEBHOOK_URL: SourceKeyType.ValueType  # 62
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -376,7 +380,9 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Mimir Server Models"""
     GKE_CLUSTER: _SourceModelType.ValueType  # 1301
     """GKE Models"""
-    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1401
+    MS_TEAMS_CHANNEL: _SourceModelType.ValueType  # 1401
+    """MS TEAMS Models"""
+    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1501
     """Pagerduty Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
@@ -431,7 +437,9 @@ GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
 """Mimir Server Models"""
 GKE_CLUSTER: SourceModelType.ValueType  # 1301
 """GKE Models"""
-PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1401
+MS_TEAMS_CHANNEL: SourceModelType.ValueType  # 1401
+"""MS TEAMS Models"""
+PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
 """Pagerduty Models"""
 global___SourceModelType = SourceModelType
 

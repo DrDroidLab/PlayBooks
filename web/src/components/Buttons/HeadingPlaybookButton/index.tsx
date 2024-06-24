@@ -10,14 +10,11 @@ import CopyPlaybookButton from "../CopyPlaybookButton/index.tsx";
 import PastExecutionsButton from "../PastExecutionsButton/index.tsx";
 
 function HeadingPlaybookButtons() {
-  const { view, currentPlaybook, isEditing, isOnPlaybookPage } =
-    useSelector(playbookSelector);
+  const { view, isEditing, isOnPlaybookPage } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const showExecution = useShowExecution();
-  const isPlaybookPage =
-    Object.keys(currentPlaybook ?? {}).length > 0 || isOnPlaybookPage;
 
-  if (!isPlaybookPage) {
+  if (!isOnPlaybookPage) {
     return null;
   }
 

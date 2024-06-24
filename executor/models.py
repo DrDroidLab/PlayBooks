@@ -427,6 +427,7 @@ class PlayBookExecution(models.Model):
                     task_execution_logs=logs
                 ))
         else:
+            playbook_step_execution_logs = playbook_step_execution_logs.order_by('id')
             step_execution_logs = [pel.proto for pel in playbook_step_execution_logs]
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookExecutionProto(
@@ -497,6 +498,7 @@ class PlayBookStepExecutionLog(models.Model):
     def proto(self) -> PlaybookStepExecutionLogProto:
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         logs = self.playbooktaskexecutionlog_set.all()
+        logs = logs.order_by('id')
         task_execution_logs = [pel.proto for pel in logs]
         relation_execution_logs = self.playbooksteprelationexecutionlog_set.all()
         relation_execution_log_protos = [rel.proto for rel in relation_execution_logs]

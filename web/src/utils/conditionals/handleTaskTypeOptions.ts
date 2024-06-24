@@ -42,7 +42,7 @@ function handleTaskTypeOptions(step: Step) {
       options = [
         {
           id: "0",
-          label: step.description,
+          label: step.description ?? step.taskType,
         },
       ];
       break;

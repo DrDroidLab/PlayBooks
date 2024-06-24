@@ -38,6 +38,7 @@ integrations_connector_type_display_name_map = {
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
     Source.AZURE: 'AZURE',
     Source.GKE: 'GKE KUBERNETES',
+    Source.MS_TEAMS: 'MS TEAMS',
 }
 
 integrations_connector_type_category_map = {
@@ -45,27 +46,28 @@ integrations_connector_type_category_map = {
     Source.GOOGLE_CHAT: 'Alert Channels',
     Source.PAGER_DUTY: 'Alert Channels',
     Source.OPS_GENIE: 'Alert Channels',
+    Source.MS_TEAMS: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
     Source.DATADOG: 'APM Tools',
     Source.DATADOG_OAUTH: 'APM Tools',
     Source.GRAFANA: 'APM Tools',
     Source.GRAFANA_VPC: 'APM Tools',
-    Source.GITHUB_ACTIONS: 'CI/CD',
     Source.ELASTIC_APM: 'APM Tools',
     Source.VICTORIA_METRICS: 'APM Tools',
     Source.PROMETHEUS: 'APM Tools',
+    Source.GRAFANA_MIMIR: 'APM Tools',
+    Source.GITHUB_ACTIONS: 'CI/CD',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
     Source.EKS: 'Cloud',
     Source.AZURE: 'Cloud',
+    Source.GKE: 'Cloud',
     Source.CLICKHOUSE: 'Database',
     Source.POSTGRES: 'Database',
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
-    Source.GRAFANA_MIMIR: 'APM Tools',
-    Source.GKE: 'Cloud',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -211,6 +213,11 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.GKE_PROJECT_ID,
             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
         ]
+    ],
+    Source.MS_TEAMS: [
+        [
+            SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL,
+        ]
     ]
 }
 
@@ -267,6 +274,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
     SourceKeyType.GKE_PROJECT_ID: 'Project ID',
     SourceKeyType.GKE_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
+    SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL: 'Webhook URL',
 }
 
 

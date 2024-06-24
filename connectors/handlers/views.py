@@ -25,10 +25,6 @@ logger = logging.getLogger(__name__)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
-    host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
 
     # read sample_manifest file string
     sample_manifest = """
@@ -69,20 +65,14 @@ settings:
     token_rotation_enabled: false
     """
 
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+    host_name = Site.objects.filter(is_active=True).first()
 
-    site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
-    active_sites = Site.objects.filter(is_active=True)
-    http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
+    if not host_name:
+        return GetSlackAppManifestResponse(success=BoolValue(value=False),
+                                           app_manifest=StringValue(value="Host name not found for generating Manifest"))
 
-    if active_sites:
-        site = active_sites.first()
-        site.domain = site_domain
-        site.name = 'MyDroid'
-        site.protocol = http_protocol
-        site.save()
-    else:
-        Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
+    manifest_hostname = host_name.protocol + '://' + host_name.domain
+    app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 

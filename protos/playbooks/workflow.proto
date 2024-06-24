@@ -20,6 +20,7 @@ import "protos/playbooks/workflow_actions/api_trigger.proto";
 import "protos/playbooks/workflow_actions/slack_message.proto";
 import "protos/playbooks/workflow_actions/slack_thread_reply.proto";
 import "protos/playbooks/workflow_actions/pd_notes.proto";
+import "protos/playbooks/workflow_actions/ms_teams_message_webhook.proto";
 
 enum WorkflowExecutionStatusType {
   UNKNOWN_WORKFLOW_STATUS = 0;
@@ -83,7 +84,8 @@ message WorkflowAction {
     API = 1;
     SLACK_MESSAGE = 2;
     SLACK_THREAD_REPLY = 3;
-    PAGERDUTY_NOTES = 4;
+    MS_TEAMS_MESSAGE_WEBHOOK = 4;
+    PAGERDUTY_NOTES = 5;
   }
   Type type = 1;
   Source source = 2;
@@ -92,7 +94,8 @@ message WorkflowAction {
     ApiTriggerWorkflowAction api = 101;
     SlackMessageWorkflowAction slack_message = 102;
     SlackThreadReplyWorkflowAction slack_thread_reply = 103;
-    PagerdutyNotesWorkflowAction pagerduty_notes = 104;
+    MSTeamsMessageWebhookWorkflowAction ms_teams_message_webhook = 104;
+    PagerdutyNotesWorkflowAction pagerduty_notes = 105;
   }
 }
 
