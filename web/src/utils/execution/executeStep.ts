@@ -20,9 +20,10 @@ export async function executeStep(step: Step, id?: string) {
   updateCardById("showOutput", false, id);
 
   try {
-    const res = executionId
-      ? await store.dispatch(executionStepExecute.initiate(stepData)).unwrap()
-      : await store.dispatch(executePlaybookStep.initiate(stepData)).unwrap();
+    const res =
+      executionId && !step.isEditing
+        ? await store.dispatch(executionStepExecute.initiate(stepData)).unwrap()
+        : await store.dispatch(executePlaybookStep.initiate(stepData)).unwrap();
     const outputList: any = [];
     const output = res?.step_execution_log;
     for (let outputData of output?.task_execution_logs ?? []) {

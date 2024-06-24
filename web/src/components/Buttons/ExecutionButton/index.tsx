@@ -28,10 +28,10 @@ function ExecutionButton() {
     const response = await triggerStartExecution(currentPlaybook.id);
     if ("data" in response) {
       const { data } = response;
-      setSearchParams({ executionId: data.playbook_run_id });
       const id = data.playbook_run_id;
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
       if (step) await executeStep(step, step.id);
+      setSearchParams({ executionId: data.playbook_run_id });
     }
   };
 

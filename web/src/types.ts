@@ -80,12 +80,11 @@ export interface Step {
   zone?: any;
   position?: StepPosition;
   stepIndex: number;
-  parentIds?: number[];
   requireCondition: boolean;
-  currentConditionParentIndex?: number;
   resultType?: string;
   children?: any;
   taskIds?: string[];
+  isEditing: boolean;
 }
 
 export interface StepPosition {

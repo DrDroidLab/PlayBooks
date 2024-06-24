@@ -10,7 +10,7 @@ import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
 import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
-import extractSource from "../../utils/extractSource.ts";
+import { extractSource } from "../../utils/extractData.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);

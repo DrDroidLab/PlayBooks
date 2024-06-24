@@ -1,7 +1,6 @@
 import React from "react";
 import SelectInterpretation from "./Interpretation";
 import PlaybookStepOutput from "./PlaybookStepOutput";
-import { SOURCES } from "../../../constants/index.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 
@@ -12,7 +11,7 @@ function HandleOutput({ id, stepData, showHeading = true }) {
 
   return (
     <div>
-      {showOutput && step.source !== SOURCES.TEXT && (
+      {showOutput && (
         <>
           {showHeading && (
             <p className={"text-sm mt-2 text-violet-500"}>
@@ -35,7 +34,11 @@ function HandleOutput({ id, stepData, showHeading = true }) {
               className={`${
                 !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
               } bg-gray-50 p-1 h-full w-full`}>
-              <PlaybookStepOutput showHeading={showHeading} stepOutput={null} />
+              <PlaybookStepOutput
+                showHeading={showHeading}
+                stepOutput={null}
+                stepId={step.id}
+              />
             </div>
           )}
           {(step.outputs?.data ?? [])?.map((output, index) => {
@@ -49,6 +52,7 @@ function HandleOutput({ id, stepData, showHeading = true }) {
                   <PlaybookStepOutput
                     showHeading={showHeading}
                     stepOutput={output}
+                    stepId={step.id}
                   />
                 </div>
                 {Object.keys(output?.interpretation).length > 0 &&
