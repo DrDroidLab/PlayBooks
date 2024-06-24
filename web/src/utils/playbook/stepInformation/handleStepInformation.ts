@@ -31,37 +31,31 @@ export default function handleStepInformation(
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return StepInformation.newRelicApplication;
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
-      return [];
+      return StepInformation.azureLogs;
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
-      return [];
+      return StepInformation.nrql;
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
-      return [];
+      return StepInformation.newRelicDashboard;
     case taskTypes.EKS_GET_DEPLOYMENTS:
-      return [];
     case taskTypes.EKS_GET_EVENTS:
-      return [];
     case taskTypes.EKS_GET_PODS:
-      return [];
     case taskTypes.EKS_GET_SERVICES:
-      return [];
+      return StepInformation.eks;
     case taskTypes.GKE_GET_DEPLOYMENTS:
-      return [];
     case taskTypes.GKE_GET_EVENTS:
-      return [];
     case taskTypes.GKE_GET_PODS:
-      return [];
     case taskTypes.GKE_GET_SERVICES:
       return [];
     case taskTypes.BASH_COMMAND:
-      return [];
+      return StepInformation.bash;
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
-      return [];
+      return StepInformation.datadogCustom;
     case taskTypes.API_HTTP_REQUEST:
-      return [];
+      return StepInformation.api;
     case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
-      return [];
+      return StepInformation.sql;
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
-      return [];
+      return StepInformation.mimir;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
 
