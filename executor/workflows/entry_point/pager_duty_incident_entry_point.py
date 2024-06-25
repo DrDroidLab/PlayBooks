@@ -17,6 +17,6 @@ class PagerDutyIncidentEntryPointEvaluator(WorkflowEntryPointEvaluator):
             return False
         if pd_incident_config.service_name and \
                 pd_incident_config.service_name.value and \
-                pd_incident_config.service_name.value != incident.get('service_name', ''):
+                pd_incident_config.service_name.value not in incident.get('service_name', ''):
             return False
         return True
