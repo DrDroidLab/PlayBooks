@@ -1,0 +1,9 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message MSTeamsMessageWebhookWorkflowAction {
+  google.protobuf.StringValue ms_teams_connector_webhook_url = 1;
+}
