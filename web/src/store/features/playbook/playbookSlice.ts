@@ -435,11 +435,9 @@ const playbookSlice = createSlice({
     pushToExecutionStack(state, { payload }) {
       const nextPossibleStepLogs = payload;
       nextPossibleStepLogs.forEach((log) => {
-        if (log.evaluation_result) {
-          const stepId = log.relation.child.id;
-          if (!state.executionStack.includes(stepId)) {
-            state.executionStack.push(stepId);
-          }
+        const stepId = log.relation.child.id;
+        if (!state.executionStack.includes(stepId)) {
+          state.executionStack.push(stepId);
         }
       });
     },
