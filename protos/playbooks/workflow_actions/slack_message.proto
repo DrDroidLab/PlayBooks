@@ -6,4 +6,5 @@ import "protos/base.proto";
 
 message SlackMessageWorkflowAction {
   google.protobuf.StringValue slack_channel_id = 1;
+  google.protobuf.StringValue thread_ts = 2;
 }
