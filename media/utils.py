@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
-from media.models import Image
+from media.models import Image, CSVFile
 from PIL import Image as PILImage
 
 from utils.time_utils import current_milli_time
@@ -34,7 +34,7 @@ def generate_local_csv_path(file_name: str = None):
     if not file_name:
         file_name = f'{current_milli_time()}_{randon_name}' + '.csv'
     if not file_name.endswith('.csv'):
-        file_name += '.png'
+        file_name += '.csv'
     file_path = os.path.join('files', file_name)
     return os.path.join(settings.MEDIA_ASSETS_ROOT, file_path)
 
@@ -54,6 +54,28 @@ def save_image_to_db(image_file_path, image_title: str = 'Untitled', image_descr
         if remove_file_from_os:
             try:
                 os.remove(image_file_path)
+            except Exception as e:
+                logger.warning(f'Error removing image file from OS: {e}')
+        return object_url
+    except Exception as e:
+        logger.error(f'Error saving image to database: {e}')
+        raise e
+
+
+def save_csv_to_db(csv_file_path, csv_title: str = 'Untitled', csv_description: str = None,
+                   csv_metadata: dict = None, remove_file_from_os=False) -> str:
+    try:
+        csv_file_instance = CSVFile.objects.create(title=csv_title, description=csv_description, metadata=csv_metadata)
+        csv_file_instance.save_csv_as_blob(csv_file_path)
+
+        location = settings.MEDIA_STORAGE_LOCATION + '?uuid=' + str(csv_file_instance.uuid)
+        protocol = settings.MEDIA_STORAGE_SITE_HTTP_PROTOCOL
+        enabled = settings.MEDIA_STORAGE_USE_SITE
+        object_url = build_absolute_uri(None, location, protocol, enabled)
+
+        if remove_file_from_os:
+            try:
+                os.remove(csv_file_path)
             except Exception as e:
                 logger.warning(f'Error removing image file from OS: {e}')
         return object_url

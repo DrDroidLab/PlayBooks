@@ -82,7 +82,7 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                         },
                         {
                             "type": "Image",
-                            "url": interpretation.file_path.value,
+                            "url": interpretation.object_url.value,
                             "altText": step_execution
                         }
                     ]
