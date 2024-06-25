@@ -44,7 +44,7 @@ function PlaybookLogs() {
 
   useEffect(() => {
     if (playbook_run_id) {
-      triggerGetPlaybookLog({ playbookRunId: playbook_run_id });
+      triggerGetPlaybookLog();
     }
   }, [playbook_run_id]);
 

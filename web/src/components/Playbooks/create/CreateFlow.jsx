@@ -16,7 +16,6 @@ import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
-import useZoom from "../../../hooks/useZoom.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -43,15 +42,6 @@ const CreateFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
   const dispatch = useDispatch();
-  const { onZoomChange } = useZoom();
-
-  const fitView = useCallback(() => {
-    if (reactFlowInstance.current) {
-      reactFlowInstance.current.fitView(fitViewOptions);
-      const { zoom } = reactFlowInstance.current.toObject();
-      onZoomChange(zoom);
-    }
-  }, []);
 
   const onConnect = useCallback(
     ({ source, target }) => {
@@ -98,12 +88,11 @@ const CreateFlow = () => {
         maxZoom={1}
         zoomOnScroll={true}
         zoomOnPinch={true}
-        fitView={fitView}
-        onMoveEnd={(_, viewport) => onZoomChange(viewport)}
+        fitView
         fitViewOptions={fitViewOptions}
         onConnect={onConnect}
         className="bg-gray-50">
-        <Controls fitView={fitView} />
+        <Controls />
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
     </div>

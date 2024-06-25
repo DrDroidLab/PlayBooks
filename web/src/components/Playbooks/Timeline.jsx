@@ -15,8 +15,8 @@ function Timeline() {
   const playbookSteps = useSelector(stepsSelector);
   const { isLoading } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
-  const { steps, showNextStepExecution, nextStep, executingStep } =
-    useExecutionStack();
+  const { steps, nextStep, executingStep } = useExecutionStack();
+  const showNextStepExecution = Object.keys(nextStep ?? {}).length > 0;
 
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);

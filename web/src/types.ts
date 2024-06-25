@@ -85,6 +85,7 @@ export interface Step {
   children?: any;
   taskIds?: string[];
   isEditing: boolean;
+  relationLogs?: any;
 }
 
 export interface StepPosition {
