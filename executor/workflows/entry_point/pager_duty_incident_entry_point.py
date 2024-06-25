@@ -11,12 +11,12 @@ class PagerDutyIncidentEntryPointEvaluator(WorkflowEntryPointEvaluator):
         pd_incident_config: PagerDutyIncidentEntryPoint = pd_incident_ep.pagerduty_incident
         if not pd_incident_config:
             return False
-        if pd_incident_config.incident_title and \
-                pd_incident_config.incident_title.value and \
-                pd_incident_config.incident_title.value != incident.get('title', ''):
-            return False
         if pd_incident_config.service_name and \
                 pd_incident_config.service_name.value and \
                 pd_incident_config.service_name.value != incident.get('service_name', ''):
+            return False
+        if pd_incident_config.incident_title and \
+                pd_incident_config.incident_title.value and \
+                pd_incident_config.incident_title.value not in incident.get('title', ''):
             return False
         return True
