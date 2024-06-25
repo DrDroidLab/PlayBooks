@@ -45,7 +45,7 @@ const initialState: Playbook = {
   currentStepId: undefined,
   isOnPlaybookPage: false,
   executionStack: [],
-  zoomLevel: 1,
+  zoomLevel: 0.75,
 };
 
 const playbookSlice = createSlice({
@@ -392,6 +392,7 @@ const playbookSlice = createSlice({
       state.currentVisibleStep = undefined;
       state.executionId = undefined;
       state.isOnPlaybookPage = false;
+      state.zoomLevel = 0.75;
     },
     resetExecutions(state) {
       state.executionId = undefined;

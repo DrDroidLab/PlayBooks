@@ -47,7 +47,7 @@ const CreateFlow = () => {
 
   const fitView = useCallback(() => {
     if (reactFlowInstance.current) {
-      reactFlowInstance.current.fitView();
+      reactFlowInstance.current.fitView(fitViewOptions);
       const { zoom } = reactFlowInstance.current.toObject();
       onZoomChange(zoom);
     }
@@ -95,10 +95,10 @@ const CreateFlow = () => {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         minZoom={-Infinity}
-        fitView={fitView}
         maxZoom={1}
         zoomOnScroll={true}
         zoomOnPinch={true}
+        fitView={fitView}
         onMoveEnd={(_, viewport) => onZoomChange(viewport)}
         fitViewOptions={fitViewOptions}
         onConnect={onConnect}
