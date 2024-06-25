@@ -81,9 +81,11 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                             "weight": "lighter"
                         },
                         {
-                            "type": "Image",
-                            "url": interpretation.object_url.value,
-                            "altText": step_execution
+                            "type": "TextBlock",
+                            "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
                         }
                     ]
                 else:
