@@ -45,7 +45,7 @@ export default function handleStepInformation(
     case taskTypes.GKE_GET_EVENTS:
     case taskTypes.GKE_GET_PODS:
     case taskTypes.GKE_GET_SERVICES:
-      return [];
+      return StepInformation.eks;
     case taskTypes.BASH_COMMAND:
       return StepInformation.bash;
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:

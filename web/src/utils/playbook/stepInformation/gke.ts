@@ -8,7 +8,7 @@ export const eks = [
   },
   {
     label: "Namespace",
-    key: "namespace",
+    key: "eksNamespace",
     type: InfoTypes.TEXT,
   },
 ];
