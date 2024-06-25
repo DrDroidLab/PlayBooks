@@ -3,6 +3,7 @@ import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
+  pushToExecutionStack,
   setSteps as setStepsInPlaybook,
   showStepConfig,
   stepsSelector,
@@ -37,6 +38,10 @@ function Timeline() {
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
+
+  const addNextStepsToStack = () => {
+    dispatch(pushToExecutionStack(nextPossibleStepLogs));
+  };
 
   const nextStep = showNextStepExecution
     ? playbookSteps.find(
@@ -90,6 +95,13 @@ function Timeline() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps]);
+
+  useEffect(() => {
+    if (nextPossibleStepLogs.length > 0) {
+      addNextStepsToStack();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextPossibleStepLogs]);
 
   if (isLoading) {
     return <Loading title="Your timeline is loading..." />;

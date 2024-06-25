@@ -299,6 +299,7 @@ export interface Playbook {
   executionId?: any;
   currentStepId?: any;
   isOnPlaybookPage: boolean;
+  executionStack: any[];
 }
 
 export interface Playground {
