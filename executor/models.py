@@ -1,4 +1,6 @@
 from datetime import timezone
+from hashlib import md5
+
 from django.db import models
 from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -584,11 +586,17 @@ class PlayBookStepRelation(models.Model):
     parent = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, related_name='parent_step', db_index=True)
     child = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, related_name='child_step', db_index=True)
     condition = models.JSONField(null=True, blank=True)
+    condition_md5 = models.CharField(max_length=256, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = [['account', 'playbook', 'parent', 'child']]
+        unique_together = [['account', 'playbook', 'parent', 'child', 'condition_md5']]
+
+    def save(self, **kwargs):
+        if self.condition:
+            self.condition_md5 = md5(str(self.condition).encode('utf-8')).hexdigest()
+        super().save(**kwargs)
 
     @property
     def proto(self) -> PlaybookStepRelationProto:
