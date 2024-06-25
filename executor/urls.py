@@ -18,7 +18,6 @@ urlpatterns = [
     # Playbooks CRUD
     path('get', executor_views.playbooks_get),  # Deprecated
     path('get/v2', executor_views.playbooks_get_v2),
-    path('search', executor_views.playbooks_search),
 
     path('create', executor_views.playbooks_create),  # Deprecated
     path('create/v2', executor_views.playbooks_create_v2),
