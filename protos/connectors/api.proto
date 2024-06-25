@@ -137,3 +137,8 @@ message GetConnectedPlaybooksResponse {
   Message message = 3;
   repeated Playbook connected_playbooks = 4;
 }
+
+
+message GetPagerDutyWebhookRequest {}
+
+message GetPagerDutyWebhookResponse {}
