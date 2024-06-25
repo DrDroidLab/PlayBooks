@@ -443,6 +443,9 @@ const playbookSlice = createSlice({
         }
       });
     },
+    popFromExecutionStack(state) {
+      if (state.executionStack.length > 0) state.executionStack.pop();
+    },
   },
 });
 
@@ -479,6 +482,7 @@ export const {
   addParentId,
   resetExecutions,
   pushToExecutionStack,
+  popFromExecutionStack,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

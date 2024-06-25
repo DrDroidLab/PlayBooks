@@ -3,7 +3,6 @@ import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
-  pushToExecutionStack,
   setSteps as setStepsInPlaybook,
   showStepConfig,
   stepsSelector,
@@ -14,6 +13,7 @@ import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.jsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
 import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
+import useExecutionStack from "../../hooks/useExecutionStack.ts";
 
 function Timeline() {
   const { executionId } = useSelector(playbookSelector);
@@ -22,6 +22,7 @@ function Timeline() {
     useLazyGetPlaybookExecutionQuery();
   const [steps, setSteps] = useState([]);
   const dispatch = useDispatch();
+  const { executionStack, push } = useExecutionStack();
 
   const lastStep = (playbookSteps ?? []).find(
     (step) => step.id === steps[(steps?.length || 1) - 1]?.id,
@@ -39,15 +40,12 @@ function Timeline() {
     (step) => step.outputLoading,
   );
 
-  const addNextStepsToStack = () => {
-    dispatch(pushToExecutionStack(nextPossibleStepLogs));
-  };
-
-  const nextStep = showNextStepExecution
-    ? playbookSteps.find(
-        (e) => e.id === nextPossibleStepLogs[0].relation?.child?.id,
-      )
-    : {};
+  const nextStep =
+    executionStack?.length > 0
+      ? playbookSteps.find(
+          (e) => e.id === executionStack[executionStack.length - 1],
+        )
+      : {};
 
   const addOutputsToSteps = (timelineSteps) => {
     const steps = playbookSteps?.map((step) => {
@@ -97,8 +95,8 @@ function Timeline() {
   }, [steps]);
 
   useEffect(() => {
-    if (nextPossibleStepLogs.length > 0) {
-      addNextStepsToStack();
+    if (nextPossibleStepLogs.length > 0 && !executingStep?.outputLoading) {
+      push(nextPossibleStepLogs);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextPossibleStepLogs]);

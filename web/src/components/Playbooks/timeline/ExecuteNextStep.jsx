@@ -3,11 +3,14 @@ import { executeStep } from "../../../utils/execution/executeStep.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useExecutionStack from "../../../hooks/useExecutionStack.ts";
 
 function ExecuteNextStep({ handleShowConfig, stepId }) {
   const [step, id] = useCurrentStep(stepId);
+  const { pop } = useExecutionStack();
 
   const handleExecuteNextStep = () => {
+    pop();
     executeStep(step, id);
   };
 
