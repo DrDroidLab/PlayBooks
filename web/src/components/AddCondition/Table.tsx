@@ -9,7 +9,7 @@ import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOption
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
-import extractSource from "../../utils/extractSource.ts";
+import { extractSource } from "../../utils/extractData.ts";
 
 function Table({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);

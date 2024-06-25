@@ -6,6 +6,7 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.tsx";
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
+import IframeRender from "../options/IframeRender.tsx";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [step, currentStepId] = useCurrentStep(id);
@@ -19,15 +20,6 @@ export default function OptionRender({ data, removeErrors, id }) {
     }
 
     removeErrors(data.key);
-  };
-
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
   };
 
   const handleTextAreaChange = (e) => {
@@ -149,27 +141,7 @@ export default function OptionRender({ data, removeErrors, id }) {
       );
 
     case "iframe-render":
-      return (
-        <>
-          {isValidUrl(data.value) ? (
-            <iframe
-              src={data.value}
-              title="iframe"
-              className="w-full h-full"
-              style={{
-                height: "500px",
-                marginTop: "10px",
-                border: "1px solid #ccc",
-              }}
-              allowFullScreen
-            />
-          ) : (
-            <p style={{ color: "red", marginTop: "10px", fontSize: "12px" }}>
-              Invalid URL
-            </p>
-          )}
-        </>
-      );
+      return <IframeRender url={data.value} />;
 
     case "multi-select":
       // if (!(data.options?.length > 0)) return;

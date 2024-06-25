@@ -43,7 +43,7 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
       id,
       globalRule,
       conditions,
-      type: conditions.length > 0 ? "custom" : "",
+      type: "custom",
     });
   }
 
@@ -60,6 +60,7 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
         source: "playbook",
         target: `node-${step.id}`,
         id: `edge-${step.id}`,
+        type: "custom",
       });
     }
   });
