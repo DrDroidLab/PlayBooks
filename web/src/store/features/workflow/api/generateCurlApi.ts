@@ -4,10 +4,13 @@ import { setCurrentWorkflowKey } from "../workflowSlice.ts";
 
 export const generateCurlApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    generateCurl: builder.mutation<any, void>({
-      query: () => ({
+    generateCurl: builder.mutation<any, string>({
+      query: (workflow_name) => ({
         url: GENERATE_CURL,
         method: "POST",
+        body: {
+          workflow_name,
+        },
         responseHandler: "text",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -17,7 +20,7 @@ export const generateCurlApi = apiSlice.injectEndpoints({
             setCurrentWorkflowKey({
               key: "curl",
               value: data,
-            })
+            }),
           );
         } catch (e) {
           console.log(e);

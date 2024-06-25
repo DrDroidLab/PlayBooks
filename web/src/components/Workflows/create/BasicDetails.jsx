@@ -29,7 +29,7 @@ function BasicDetails() {
         setCurrentWorkflowKey({
           key: "curl",
           value: undefined,
-        })
+        }),
       );
     }
     await triggerGenerateCurl(currentWorkflow.name);
@@ -62,8 +62,7 @@ function BasicDetails() {
         <div className="space-y-2">
           <label
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook"
-          >
+            htmlFor="playbook">
             Workflow Name
           </label>
           <ValueComponent
@@ -83,8 +82,7 @@ function BasicDetails() {
           <div className="flex">
             <label
               className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              htmlFor="playbook"
-            >
+              htmlFor="playbook">
               Trigger Type
             </label>
             &nbsp;
@@ -94,8 +92,7 @@ function BasicDetails() {
                 rel="noreferrer"
                 style={{ color: "#9553fe" }}
                 href="https://docs.drdroid.io/docs/workflows#triggers"
-                target="_blank"
-              >
+                target="_blank">
                 here
               </a>
               )

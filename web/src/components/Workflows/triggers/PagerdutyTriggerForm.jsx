@@ -8,10 +8,22 @@ function PagerdutyTriggerForm() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
 
   return (
-    <div className="flex flex-col gap-2 items-start max-full rounded">
+    <div className="flex flex-col gap-2 items-start max-full rounded bg-gray-50 p-2">
+      {currentWorkflow.webhook && (
+        <div className="flex flex-col gap-2 lg:w-1/2">
+          <p className="text-sm p-2 border border-violet-500 bg-violet-50 rounded">
+            Add these Webhook details in your PagerDuty Generic Webhook(V3) page.
+          </p>
+          <CopyCode content={currentWorkflow.webhook} language={"curl"} />
+        </div>
+      )}
       <div className="max-w-[415px] flex flex-col gap-2 items-start">
+        <div className="text-sm flex items-center gap-2 w-full">
+          <p className="text-sm">Filters</p>
+          <p className="text-gray-500 text-xs italic">(Enter service and title to select incidents)</p>
+        </div>
         <div className="text-sm flex items-center gap-2 justify-between w-full">
-          <p className="text-xs">Service Name</p>
+          <p className="text-xs">Service</p>
           <ValueComponent
             valueType={"STRING"}
             onValueChange={(val) => {
@@ -37,14 +49,6 @@ function PagerdutyTriggerForm() {
           />
         </div>
       </div>
-      {currentWorkflow.webhook && (
-        <div className="flex flex-col gap-2 lg:w-1/2">
-          <CopyCode content={currentWorkflow.webhook} language={"curl"} />
-          <p className="text-sm p-2 border border-violet-500 bg-violet-50 rounded">
-            Add this Webhook URL in your PagerDuty Generic Webhook(V3) page.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
