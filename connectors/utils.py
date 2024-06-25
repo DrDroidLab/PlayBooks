@@ -212,6 +212,8 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.PAGER_DUTY_API_KEY:
                 credentials_dict['api_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL:
+                credentials_dict['configured_email'] = conn_key.key.value
     else:
         return None
     return credentials_dict
