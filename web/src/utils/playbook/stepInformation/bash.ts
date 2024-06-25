@@ -4,7 +4,7 @@ export const bash = [
   {
     label: "Server",
     key: "remote_server",
-    type: InfoTypes.CHIPS,
+    type: InfoTypes.TEXT,
   },
   {
     label: "Command",

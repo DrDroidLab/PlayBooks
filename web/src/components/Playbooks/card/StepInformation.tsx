@@ -23,9 +23,9 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
       className={`${
         currentStepId === step.id.toString() ? "shadow-violet-500" : ""
       } px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500 flex justify-between`}>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-1 text-ellipsis overflow-hidden">
         {handleStepInformation(step.id).map((info, i) => (
-          <div className="flex flex-col" key={i}>
+          <div className="flex flex-col flex-1 text-ellipsis" key={i}>
             {getNestedValue(step, info.key) && (
               <>
                 <p className="text-xs font-semibold">{info.label}</p>
