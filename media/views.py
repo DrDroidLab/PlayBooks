@@ -35,7 +35,9 @@ class CSVView(View):
             title = csv.title
             if not title or title == 'Untitled':
                 title = 'Untitled-{}'.format(csv.uuid)
-            response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(title)
+            if not title.endswith('.csv'):
+                title += '.csv'
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(title)
             response.write(csv_text)
             return response
         except Exception as e:
