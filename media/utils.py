@@ -68,7 +68,7 @@ def save_csv_to_db(csv_file_path, csv_title: str = 'Untitled', csv_description: 
         csv_file_instance = CSVFile.objects.create(title=csv_title, description=csv_description, metadata=csv_metadata)
         csv_file_instance.save_csv_as_blob(csv_file_path)
 
-        location = settings.MEDIA_STORAGE_LOCATION + '?uuid=' + str(csv_file_instance.uuid)
+        location = settings.CSV_FILE_MEDIA_STORAGE_LOCATION + '?uuid=' + str(csv_file_instance.uuid)
         protocol = settings.MEDIA_STORAGE_SITE_HTTP_PROTOCOL
         enabled = settings.MEDIA_STORAGE_USE_SITE
         object_url = build_absolute_uri(None, location, protocol, enabled)
