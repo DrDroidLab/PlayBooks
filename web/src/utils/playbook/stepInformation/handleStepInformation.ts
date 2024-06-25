@@ -29,11 +29,11 @@ export default function handleStepInformation(
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
       return StepInformation.grafanaPromQL;
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
-      return StepInformation.newRelicApplication;
+      return StepInformation.nrql;
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
       return StepInformation.azureLogs;
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
-      return StepInformation.nrql;
+      return StepInformation.newRelicApplication;
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
       return StepInformation.newRelicDashboard;
     case taskTypes.EKS_GET_DEPLOYMENTS:

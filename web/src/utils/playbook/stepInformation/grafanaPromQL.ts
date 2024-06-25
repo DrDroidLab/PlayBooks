@@ -3,7 +3,7 @@ import { InfoTypes } from "./InfoTypes.ts";
 export const grafanaPromQL = [
   {
     label: "Datasource",
-    key: "datasource",
+    key: "datasource.label",
     type: InfoTypes.TEXT,
   },
   {
