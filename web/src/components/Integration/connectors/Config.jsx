@@ -177,7 +177,7 @@ function Config({ connector, connectorActive, id }) {
         connector={{ ...connector, id }}
         toggleOverlay={() => setIsDeleting(!isDeleting)}
         successCb={() => {
-          window.location.href = "/data-sources";
+          navigate("/data-sources");
         }}
       />
     </>
