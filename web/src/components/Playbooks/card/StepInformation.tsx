@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import InfoRender from "./InfoRender.tsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import handleStepInformation from "../../../utils/playbook/stepInformation/handleStepInformation.ts";
@@ -15,6 +15,10 @@ type StepInformationPropTypes = {
 function StepInformation({ stepId }: StepInformationPropTypes) {
   const [step] = useCurrentStep(stepId);
   const { currentStepId } = useSelector(playbookSelector);
+
+  const handleNoAction = (e: MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+  };
 
   if (!step.id) return;
 
@@ -50,7 +54,8 @@ function StepInformation({ stepId }: StepInformationPropTypes) {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="line-clamp-2 text-xs text-violet-500 underline">
+                className="line-clamp-2 text-xs text-violet-500 underline"
+                onClick={handleNoAction}>
                 {link.name || link.url}
               </a>
             ))}
