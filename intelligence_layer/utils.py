@@ -7,8 +7,8 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import math
 
-from media.utils import save_image_to_db
-from protos.playbooks.playbook_commons_pb2 import TimeseriesResult
+from media.utils import save_image_to_db, save_csv_to_db
+from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, TableResult
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ def table_result_to_df(table_result):
     return pd.DataFrame(data)
 
 
-def generate_graph_for_metric_timeseries_result(timeseries: TimeseriesResult, file_key, image_title='Untitled') -> str:
+def generate_graph_for_timeseries_result(timeseries: TimeseriesResult, file_key, image_title='Untitled') -> str:
     max_items_per_row = 5
     df = timeseries_result_to_df(timeseries)
     if df.empty:
@@ -97,6 +97,19 @@ def generate_graph_for_metric_timeseries_result(timeseries: TimeseriesResult, fi
     try:
         pio.write_image(fig, file_key)
         object_url = save_image_to_db(file_key, image_title, remove_file_from_os=True)
+        return object_url
+    except Exception as e:
+        logger.error(f'Error generating graph using metric timeseries data: {e}')
+        raise e
+
+
+def generate_csv_for_table_result(table: TableResult, csv_file_path, csv_file_title='Untitled') -> str:
+    df = table_result_to_df(table)
+    df.to_csv(csv_file_path, index=False)
+    if df.empty:
+        return ''
+    try:
+        object_url = save_csv_to_db(csv_file_path, csv_file_title)
         return object_url
     except Exception as e:
         logger.error(f'Error generating graph using metric timeseries data: {e}')

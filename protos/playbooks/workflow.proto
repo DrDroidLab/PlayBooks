@@ -13,11 +13,13 @@ import "protos/playbooks/workflow_schedules/interval_schedule.proto";
 import "protos/playbooks/workflow_schedules/one_off_schedule.proto";
 
 import "protos/playbooks/workflow_entry_points/slack_alert_entry_point.proto";
+import "protos/playbooks/workflow_entry_points/pd_incident_entry_point.proto";
 import "protos/playbooks/workflow_entry_points/api_entry_point.proto";
 
 import "protos/playbooks/workflow_actions/api_trigger.proto";
 import "protos/playbooks/workflow_actions/slack_message.proto";
 import "protos/playbooks/workflow_actions/slack_thread_reply.proto";
+import "protos/playbooks/workflow_actions/pd_notes.proto";
 import "protos/playbooks/workflow_actions/ms_teams_message_webhook.proto";
 
 enum WorkflowExecutionStatusType {
@@ -57,12 +59,14 @@ message WorkflowEntryPoint {
     UNKNOWN = 0;
     API = 1;
     SLACK_CHANNEL_ALERT = 2;
+    PAGERDUTY_INCIDENT = 3;
   }
   google.protobuf.UInt64Value id = 1;
   Type type = 2;
   oneof config {
     ApiWorkflowEntryPoint api = 101;
     SlackChannelAlertEntryPoint slack_channel_alert = 102;
+    PagerDutyIncidentEntryPoint pagerduty_incident = 103;
   }
 }
 
@@ -81,6 +85,7 @@ message WorkflowAction {
     SLACK_MESSAGE = 2;
     SLACK_THREAD_REPLY = 3;
     MS_TEAMS_MESSAGE_WEBHOOK = 4;
+    PAGERDUTY_NOTES = 5;
   }
   Type type = 1;
   Source source = 2;
@@ -90,6 +95,7 @@ message WorkflowAction {
     SlackMessageWorkflowAction slack_message = 102;
     SlackThreadReplyWorkflowAction slack_thread_reply = 103;
     MSTeamsMessageWebhookWorkflowAction ms_teams_message_webhook = 104;
+    PagerdutyNotesWorkflowAction pagerduty_notes = 105;
   }
 }
 

@@ -7,7 +7,7 @@ from connectors.crud.connectors_crud import get_db_connectors, get_db_account_co
 from connectors.models import integrations_connector_type_display_name_map
 from executor.source_processors.openai_api_processor import OpenAiApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter import ResultInterpreter
-from intelligence_layer.utils import generate_graph_for_metric_timeseries_result
+from intelligence_layer.utils import generate_graph_for_timeseries_result
 
 from media.utils import generate_local_image_path
 from protos.base_pb2 import Source as ConnectorType, SourceKeyType, Source
@@ -120,7 +120,7 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
                 metric_name = timeseries_result.metric_name.value
                 metric_source = integrations_connector_type_display_name_map.get(task_result.source,
                                                                                  Source.Name(task_result.source))
-                object_url = generate_graph_for_metric_timeseries_result(timeseries_result, file_key, metric_expression)
+                object_url = generate_graph_for_timeseries_result(timeseries_result, file_key, metric_expression)
                 if not object_url:
                     return Interpretation()
                 inference = vision_api_evaluation_function(open_ai_api_key, data_type, object_url)

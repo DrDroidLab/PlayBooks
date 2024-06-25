@@ -71,6 +71,12 @@ integrations_connector_type_category_map = {
 }
 
 integrations_connector_type_connector_keys_map = {
+    Source.PAGER_DUTY: [
+        [
+            SourceKeyType.PAGER_DUTY_API_KEY,
+            SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL
+        ]
+    ],
     Source.SLACK: [
         [
             SourceKeyType.SLACK_BOT_AUTH_TOKEN,
@@ -251,6 +257,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.POSTGRES_PORT: 'Port',
     SourceKeyType.POSTGRES_DATABASE: 'Database',
     SourceKeyType.PAGER_DUTY_API_KEY: 'API Key',
+    SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL: 'Configured Email',
     SourceKeyType.OPS_GENIE_API_KEY: 'API Key',
     SourceKeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     SourceKeyType.SLACK_APP_ID: 'App ID',
@@ -385,6 +392,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
                              SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.AGENT_PROXY_API_KEY,
+                             SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.GITHUB_ACTIONS_TOKEN,
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,

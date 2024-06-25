@@ -139,10 +139,12 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                         }
                         r['task'] = condition_task
 
+                condition_md5 = md5(str(condition).encode('utf-8')).hexdigest()
                 PlayBookStepRelation.objects.get_or_create(account=account,
                                                            playbook=db_playbook,
                                                            parent_id=parent_step_id,
                                                            child_id=child_step_id,
+                                                           condition_md5=condition_md5,
                                                            defaults={'condition': condition, 'is_active': True})
             except Exception as e:
                 logger.error(f"Failed to create step relations for playbook {db_playbook.name} with error {e}")

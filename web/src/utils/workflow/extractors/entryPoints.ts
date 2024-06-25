@@ -2,7 +2,7 @@ import * as Types from "../types/index.ts";
 
 export const handleEntryPointsExtractor = (
   type: Types.WorkflowEntryPointOptions,
-  entryPoint: Types.WorkflowEntryPointContractType,
+  entryPoint: Types.WorkflowEntryPointContractType
 ) => {
   switch (type) {
     case Types.WorkflowEntryPointOptions.API:
@@ -16,6 +16,13 @@ export const handleEntryPointsExtractor = (
           },
           source: entryPoint.slack_alert_type,
           filterString: entryPoint.slack_alert_filter_string,
+        },
+      };
+    case Types.WorkflowEntryPointOptions.PAGERDUTY_INCIDENT:
+      return {
+        trigger: {
+          serviceName: entryPoint.service_name,
+          title: entryPoint.incident_title,
         },
       };
 

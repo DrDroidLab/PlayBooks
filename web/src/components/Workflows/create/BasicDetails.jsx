@@ -13,11 +13,14 @@ import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import HandleWorkflowType from "./utils/HandleWorkflowType.tsx";
 import { useGenerateCurlMutation } from "../../../store/features/workflow/api/generateCurlApi.ts";
 import PlaybookDetails from "./PlaybookDetails.jsx";
+import { useGenerateWebhookMutation } from "../../../store/features/workflow/api/generateWebHookApi.ts";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const [triggerGenerateCurl, { isLoading: generateCurlLoading }] =
     useGenerateCurlMutation();
+  const [triggerGenerateWebhook, { isLoading: generateWebhookLoading }] =
+    useGenerateWebhookMutation();
   const dispatch = useDispatch();
 
   const handleGenerateCurl = async () => {
@@ -32,10 +35,25 @@ function BasicDetails() {
     await triggerGenerateCurl(currentWorkflow.name);
   };
 
-  useEffect(() => {
-    if (currentWorkflow?.workflowType === "api") {
-      handleGenerateCurl();
+  const handleGenerateWebhook = async () => {
+    await triggerGenerateWebhook();
+  };
+
+  const handleWorkflowType = () => {
+    switch (currentWorkflow?.workflowType) {
+      case "api":
+        handleGenerateCurl();
+        return;
+      case "pagerduty_incident":
+        handleGenerateWebhook();
+        return;
+      default:
+        return;
     }
+  };
+
+  useEffect(() => {
+    handleWorkflowType();
   }, [currentWorkflow.name, currentWorkflow?.workflowType]);
 
   return (
@@ -106,7 +124,9 @@ function BasicDetails() {
                 // </button>
                 <p className="text-sm">(Enter workflow name to see the curl)</p>
               )}
-            {generateCurlLoading && <CircularProgress size={20} />}
+            {(generateCurlLoading || generateWebhookLoading) && (
+              <CircularProgress size={20} />
+            )}
           </div>
         </div>
         <HandleWorkflowType />
