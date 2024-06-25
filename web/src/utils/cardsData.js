@@ -60,7 +60,7 @@ export const cardsData = [
   },
   {
     id: 4,
-    url: "/integrations/PagerDuty-logo.svg",
+    url: "/integrations/pagerduty_logo.png",
     title: "PAGERDUTY",
     enum: "PAGER_DUTY",
     desc: "Authorise Doctor Droid to read incidents from PagerDuty",
@@ -434,4 +434,5 @@ export const cardsData = [
     buttonType: "link",
     buttonLink: "/integrations/ms_teams",
     docs: "https://docs.drdroid.io/docs/ms-teams",
-  },];
+  },
+];
