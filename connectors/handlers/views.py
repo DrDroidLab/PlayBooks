@@ -11,11 +11,8 @@ from accounts.models import get_request_account, Account
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
-from playbooks.base_settings import PAGERDUTY_WEBHOOK_LOCATION
 from playbooks.utils.decorators import web_api
-from protos.playbooks.api_pb2 import ExecuteWorkflowRequest
 from utils.time_utils import current_epoch_timestamp
-from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
 from utils.uri_utils import build_absolute_uri
 
@@ -135,7 +132,7 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
 @csrf_exempt
 @api_view(['POST'])
 def pagerduty_generate_webhook(request_message: HttpRequest) -> HttpResponse:
-    location = PAGERDUTY_WEBHOOK_LOCATION
+    location = settings.PAGERDUTY_WEBHOOK_LOCATION
     protocol = settings.PAGERDUTY_WEBHOOK_HTTP_PROTOCOL
     enabled = settings.PAGERDUTY_WEBHOOK_USE_SITE
     uri = build_absolute_uri(None, location, protocol, enabled)

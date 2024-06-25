@@ -46,7 +46,6 @@ message Meta {
   Page page = 2;
   google.protobuf.UInt32Value total_count = 3;
   google.protobuf.BoolValue show_inactive = 4;
-  google.protobuf.StringValue search_query = 5;
 }
 
 message Message {

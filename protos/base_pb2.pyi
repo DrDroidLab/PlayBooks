@@ -490,7 +490,6 @@ class Meta(google.protobuf.message.Message):
     PAGE_FIELD_NUMBER: builtins.int
     TOTAL_COUNT_FIELD_NUMBER: builtins.int
     SHOW_INACTIVE_FIELD_NUMBER: builtins.int
-    SEARCH_QUERY_FIELD_NUMBER: builtins.int
     @property
     def time_range(self) -> global___TimeRange: ...
     @property
@@ -499,8 +498,6 @@ class Meta(google.protobuf.message.Message):
     def total_count(self) -> google.protobuf.wrappers_pb2.UInt32Value: ...
     @property
     def show_inactive(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-    @property
-    def search_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
@@ -508,10 +505,9 @@ class Meta(google.protobuf.message.Message):
         page: global___Page | None = ...,
         total_count: google.protobuf.wrappers_pb2.UInt32Value | None = ...,
         show_inactive: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-        search_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["page", b"page", "search_query", b"search_query", "show_inactive", b"show_inactive", "time_range", b"time_range", "total_count", b"total_count"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["page", b"page", "search_query", b"search_query", "show_inactive", b"show_inactive", "time_range", b"time_range", "total_count", b"total_count"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["page", b"page", "show_inactive", b"show_inactive", "time_range", b"time_range", "total_count", b"total_count"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["page", b"page", "show_inactive", b"show_inactive", "time_range", b"time_range", "total_count", b"total_count"]) -> None: ...
 
 global___Meta = Meta
 

@@ -379,38 +379,6 @@ def playbooks_get_v2(request_message: GetPlaybooksRequestV2) -> Union[GetPlayboo
     return GetPlaybooksResponseV2(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
 
 
-@web_api(GetPlaybooksRequestV2)
-def playbooks_search(request_message: SearchPlaybooksRequest) -> Union[SearchPlaybooksResponse, HttpResponse]:
-    account: Account = get_request_account()
-    meta: Meta = request_message.meta
-    show_inactive = meta.show_inactive
-    page: Page = meta.page
-    search_query = meta.search_query
-    list_all = True
-
-    qs: QuerySet = account.playbook_set.all()
-
-    if request_message.playbook_ids:
-        qs = qs.filter(id__in=request_message.playbook_ids)
-        list_all = False
-    elif not show_inactive or not show_inactive.value:
-        qs = qs.filter(is_active=True)
-
-    if search_query:
-        qs = qs.annotate(similarity=TrigramSimilarity('name', search_query)).filter(similarity__gt=0.3).order_by(
-            '-similarity', '-created_at')
-    else:
-        qs = qs.order_by('-created_at')
-
-    total_count = qs.count()
-    qs = filter_page(qs, page)
-
-    playbooks_list = list(pb.proto_partial for pb in qs)
-    if not list_all:
-        playbooks_list = list(pb.proto for pb in qs)
-    return SearchPlaybooksResponse(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
-
-
 @web_api(CreatePlaybookRequest)
 @deprecated
 def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:

@@ -483,52 +483,6 @@ class GetPlaybooksResponseV2(google.protobuf.message.Message):
 global___GetPlaybooksResponseV2 = GetPlaybooksResponseV2
 
 @typing_extensions.final
-class SearchPlaybooksRequest(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    META_FIELD_NUMBER: builtins.int
-    PLAYBOOK_IDS_FIELD_NUMBER: builtins.int
-    SEARCH_QUERY_FIELD_NUMBER: builtins.int
-    @property
-    def meta(self) -> protos.base_pb2.Meta: ...
-    @property
-    def playbook_ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
-    @property
-    def search_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    def __init__(
-        self,
-        *,
-        meta: protos.base_pb2.Meta | None = ...,
-        playbook_ids: collections.abc.Iterable[builtins.int] | None = ...,
-        search_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "search_query", b"search_query"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbook_ids", b"playbook_ids", "search_query", b"search_query"]) -> None: ...
-
-global___SearchPlaybooksRequest = SearchPlaybooksRequest
-
-@typing_extensions.final
-class SearchPlaybooksResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    META_FIELD_NUMBER: builtins.int
-    PLAYBOOKS_FIELD_NUMBER: builtins.int
-    @property
-    def meta(self) -> protos.base_pb2.Meta: ...
-    @property
-    def playbooks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_pb2.Playbook]: ...
-    def __init__(
-        self,
-        *,
-        meta: protos.base_pb2.Meta | None = ...,
-        playbooks: collections.abc.Iterable[protos.playbooks.playbook_pb2.Playbook] | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbooks", b"playbooks"]) -> None: ...
-
-global___SearchPlaybooksResponse = SearchPlaybooksResponse
-
-@typing_extensions.final
 class CreatePlaybookRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
