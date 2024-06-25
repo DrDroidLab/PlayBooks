@@ -300,6 +300,7 @@ export interface Playbook {
   currentStepId?: any;
   isOnPlaybookPage: boolean;
   executionStack: any[];
+  zoomLevel: number;
 }
 
 export interface Playground {

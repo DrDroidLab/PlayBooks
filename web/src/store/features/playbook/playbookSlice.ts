@@ -45,6 +45,7 @@ const initialState: Playbook = {
   currentStepId: undefined,
   isOnPlaybookPage: false,
   executionStack: [],
+  zoomLevel: 1,
 };
 
 const playbookSlice = createSlice({

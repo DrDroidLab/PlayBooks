@@ -36,8 +36,6 @@ function useGraphDimensions(
     instance.fitView(fitViewOptions);
   }, [width, height, steps, playbookEdges, permanentView, instance, isOpen]);
 
-  instance.fitView(fitViewOptions);
-
   return {
     graphData,
     dagreData: data,
