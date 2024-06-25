@@ -28,7 +28,6 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
             pagerduty_connector = db_connector.unmasked_proto
 
         generated_credentials = generate_credentials_dict(pagerduty_connector.type, pagerduty_connector.keys)
-        print("fetched credentials for PD connector")
         return PdApiProcessor(**generated_credentials)
 
     def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
@@ -43,9 +42,8 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
                 title = f'Hello team, here is snapshot of playbook: {interpretation.title.value}, link: {interpretation.description.value} ' \
                         f'that is configured for this incident'
             else:
-                title = f'{interpretation.title.value}'
+                continue
             note_text = title
-            print(note_text)
             note_params = {'incident_id': incident_id, 'content': note_text}
             try:
                 pd_api_processor = self.get_action_connector_processor(connector)

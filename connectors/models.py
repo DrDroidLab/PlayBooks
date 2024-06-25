@@ -74,6 +74,7 @@ integrations_connector_type_connector_keys_map = {
     Source.PAGER_DUTY: [
         [
             SourceKeyType.PAGER_DUTY_API_KEY,
+            SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL
         ]
     ],
     Source.SLACK: [
@@ -256,6 +257,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.POSTGRES_PORT: 'Port',
     SourceKeyType.POSTGRES_DATABASE: 'Database',
     SourceKeyType.PAGER_DUTY_API_KEY: 'API Key',
+    SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL: 'Configured Email',
     SourceKeyType.OPS_GENIE_API_KEY: 'API Key',
     SourceKeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     SourceKeyType.SLACK_APP_ID: 'App ID',

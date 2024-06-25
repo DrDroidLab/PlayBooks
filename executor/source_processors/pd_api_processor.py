@@ -9,8 +9,9 @@ logger = logging.getLogger(__name__)
 class PdApiProcessor(Processor):
     client = None
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, configured_email):
         self.__api_key = api_key
+        self.__configured_email = configured_email
         self.client = APISession(self.__api_key)
 
     def fetch_incidents(self):
@@ -74,8 +75,8 @@ class PdApiProcessor(Processor):
                 }
             }
             url = f"incidents/{incident_id}/notes"
-            header = {'From': 'karan.sirohi@drdroid.io'}
-            print(url, header,content_payload)
+            header = {'From': self.__configured_email}
+            print(url, header, content_payload)
             note = self.client.rpost(url, json=content_payload, headers=header)
             return note
         except Exception as e:
