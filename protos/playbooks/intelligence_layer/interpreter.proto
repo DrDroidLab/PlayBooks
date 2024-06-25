@@ -27,4 +27,5 @@ message Interpretation {
   google.protobuf.StringValue summary = 5;
   google.protobuf.StringValue image_url = 6;
   google.protobuf.StringValue file_path = 7;
+  google.protobuf.StringValue object_url = 8;
 }
