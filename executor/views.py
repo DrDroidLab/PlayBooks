@@ -8,6 +8,8 @@ from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.postgres.search import TrigramSimilarity
+
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
@@ -52,7 +54,8 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
-    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest
+    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
+    SearchPlaybooksResponse, SearchPlaybooksRequest
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -374,6 +377,38 @@ def playbooks_get_v2(request_message: GetPlaybooksRequestV2) -> Union[GetPlayboo
         playbooks_list = list(pb.proto for pb in qs)
 
     return GetPlaybooksResponseV2(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
+
+
+@web_api(GetPlaybooksRequestV2)
+def playbooks_search(request_message: SearchPlaybooksRequest) -> Union[SearchPlaybooksResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    show_inactive = meta.show_inactive
+    page: Page = meta.page
+    search_query = meta.search_query
+    list_all = True
+
+    qs: QuerySet = account.playbook_set.all()
+
+    if request_message.playbook_ids:
+        qs = qs.filter(id__in=request_message.playbook_ids)
+        list_all = False
+    elif not show_inactive or not show_inactive.value:
+        qs = qs.filter(is_active=True)
+
+    if search_query:
+        qs = qs.annotate(similarity=TrigramSimilarity('name', search_query)).filter(similarity__gt=0.3).order_by(
+            '-similarity', '-created_at')
+    else:
+        qs = qs.order_by('-created_at')
+
+    total_count = qs.count()
+    qs = filter_page(qs, page)
+
+    playbooks_list = list(pb.proto_partial for pb in qs)
+    if not list_all:
+        playbooks_list = list(pb.proto for pb in qs)
+    return SearchPlaybooksResponse(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
 
 
 @web_api(CreatePlaybookRequest)

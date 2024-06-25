@@ -7,5 +7,5 @@ urlpatterns = [
     path('slack_bot/handle_callback_events', handler_views.slack_bot_handle_callback_events),
     path('slack_bot/app_manifest_create', handler_views.slack_manifest_create),
     path('pagerduty/handle_incidents', handler_views.pagerduty_handle_incidents),
-    path('generate/webhook', handler_views.pd_generate_webhook)
+    path('pagerduty/generate/webhook', handler_views.pagerduty_generate_webhook)
 ]

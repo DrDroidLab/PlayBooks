@@ -123,6 +123,17 @@ message GetPlaybooksResponseV2 {
   repeated Playbook playbooks = 2;
 }
 
+message SearchPlaybooksRequest {
+  Meta meta = 1;
+  repeated uint64 playbook_ids = 2;
+  google.protobuf.StringValue search_query = 3;
+}
+
+message SearchPlaybooksResponse {
+  Meta meta = 1;
+repeated Playbook playbooks = 2;
+}
+
 message CreatePlaybookRequest {
   string name = 1;
   DeprecatedPlaybook playbook = 2;
