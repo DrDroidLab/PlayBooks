@@ -40,18 +40,11 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
         logger.info(f"Sending note to incident {incident_id}")
         for i, interpretation in enumerate(execution_output):
             if i == 0 and interpretation.type == InterpretationProto.Type.SUMMARY:
-
-                title = f'Hello team, here is snapshot of playbook <{interpretation.description.value}|{interpretation.title.value}> ' \
+                title = f'Hello team, here is snapshot of playbook: {interpretation.title.value}, link: {interpretation.description.value} ' \
                         f'that is configured for this incident'
             else:
                 title = f'{interpretation.title.value}'
-            description = interpretation.description.value
-            summary = interpretation.summary.value
             note_text = title
-            if description:
-                note_text += f'\n{description}'
-            if summary:
-                note_text += f'\n{summary}'
             print(note_text)
             note_params = {'incident_id': incident_id, 'content': note_text}
             try:

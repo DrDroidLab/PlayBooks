@@ -6,17 +6,19 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function HandleExternalLinksRender({ step, index }) {
+function HandleExternalLinksRender({ id }) {
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
+  const [step] = useCurrentStep(id);
 
   const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility({ index }));
+    dispatch(toggleExternalLinkVisibility({ id }));
   };
 
   const setLinks = (links) => {
-    dispatch(addExternalLinks({ links, index }));
+    dispatch(addExternalLinks({ links, id }));
   };
 
   return (

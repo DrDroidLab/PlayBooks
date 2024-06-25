@@ -42,10 +42,15 @@ class StepConditionEvaluator:
             return any(all_evaluations), {'evaluation_results': all_evaluation_results}
         elif logical_operator == LogicalOperator.NOT_LO and len(all_evaluations) == 1:
             return not all(all_evaluations), {'evaluation_results': all_evaluation_results}
-        elif logical_operator == LogicalOperator.NOT_LO and len(all_evaluations) > 1:
-            raise ValueError(f"Logical operator {logical_operator} not supported for multiple evaluations")
-        elif logical_operator == LogicalOperator.UNKNOWN_LO and len(all_evaluations) == 1:
-            return all_evaluations[0], {'evaluation_results': all_evaluation_results}
+        elif logical_operator == LogicalOperator.NOT_LO:
+            if len(all_evaluations) > 1:
+                raise ValueError(f"Logical operator {logical_operator} not supported for multiple evaluations")
+            return not all(all_evaluations), {'evaluation_results': all_evaluation_results}
+        elif logical_operator == LogicalOperator.UNKNOWN_LO:
+            if len(all_evaluations) == 1:
+                return all_evaluations[0], {'evaluation_results': all_evaluation_results}
+            elif len(all_evaluations) == 0:
+                return True, {}
         else:
             raise ValueError(f"Logical operator {logical_operator} not supported")
 

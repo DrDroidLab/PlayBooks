@@ -8,4 +8,5 @@ export const connectorsWithoutAssets = [
   connectors.SQL_DATABASE_CONNECTION,
   connectors.REMOTE_SERVER,
   connectors.POSTGRES,
+  connectors.MS_TEAMS
 ];

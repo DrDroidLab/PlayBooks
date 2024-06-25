@@ -46,10 +46,9 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
     enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
     object_url = build_absolute_uri(None, location, protocol, enabled)
-    base_title = f'Hello team, here is snapshot of playbook <{object_url}|{playbook.name.value}> ' \
-                 f'that is configured for this alert'
     interpretations: [InterpretationProto] = [
-        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=base_title))
+        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=playbook.name.value),
+                            description=StringValue(value=object_url))
     ]
     for i, step_log in enumerate(step_logs):
         try:

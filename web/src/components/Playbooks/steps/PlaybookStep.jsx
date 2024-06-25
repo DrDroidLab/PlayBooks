@@ -4,8 +4,8 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import HandleOutput from "./HandleOutput.jsx";
 
-const PlaybookStep = ({ index }) => {
-  const [step, currentStepIndex] = useCurrentStep(index);
+const PlaybookStep = ({ id }) => {
+  const [step, currentStepId] = useCurrentStep(id);
   const showOutput = step.showOutput;
   const [showConfig, setShowConfig] = useState(!showOutput);
 
@@ -19,14 +19,14 @@ const PlaybookStep = ({ index }) => {
 
   useEffect(() => {
     if (
-      currentStepIndex !== null &&
+      currentStepId !== null &&
       step?.source &&
       step?.modelType &&
       step.connectorType
     ) {
-      fetchData({ index: currentStepIndex });
+      fetchData({ index: currentStepId });
     }
-  }, [currentStepIndex, step?.source, step?.modelType, step?.connectorType]);
+  }, [currentStepId, step?.source, step?.modelType, step?.connectorType]);
 
   return (
     <div className="flex flex-col gap-2 mt-2">
@@ -37,9 +37,9 @@ const PlaybookStep = ({ index }) => {
           {showConfig ? "Hide" : "Show"} Config
         </button>
       )}
-      {showConfig && step && <TaskDetails index={index} />}
+      {showConfig && step && <TaskDetails id={id} />}
 
-      <HandleOutput index={index} />
+      <HandleOutput id={id} />
     </div>
   );
 };

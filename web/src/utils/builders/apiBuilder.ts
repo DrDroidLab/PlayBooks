@@ -4,7 +4,7 @@ import { OptionType } from "../playbooksData.ts";
 
 const methodOptions = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 
-export const apiBuilder = (task, index) => {
+export const apiBuilder = (task, id) => {
   return {
     builder: [
       [
@@ -15,7 +15,7 @@ export const apiBuilder = (task, index) => {
           options: methodOptions.map((x) => ({ id: x, label: x })),
           selected: task.action?.method,
           handleChange: (val) => {
-            store.dispatch(setActionKey({ index, key: "method", value: val }));
+            store.dispatch(setActionKey({ id, key: "method", value: val }));
           },
         },
       ],
@@ -26,7 +26,7 @@ export const apiBuilder = (task, index) => {
           type: OptionType.TEXT_ROW,
           selected: task.action?.url,
           handleChange: (val) => {
-            store.dispatch(setActionKey({ index, key: "url", value: val }));
+            store.dispatch(setActionKey({ id, key: "url", value: val }));
           },
         },
       ],
@@ -37,7 +37,7 @@ export const apiBuilder = (task, index) => {
           selected: task.action?.headers,
           handleChange: (e) => {
             store.dispatch(
-              setActionKey({ index, key: "headers", value: e.target.value }),
+              setActionKey({ id, key: "headers", value: e.target.value }),
             );
           },
         },
@@ -49,7 +49,7 @@ export const apiBuilder = (task, index) => {
           selected: task.action?.payload,
           handleChange: (e) => {
             store.dispatch(
-              setActionKey({ index, key: "payload", value: e.target.value }),
+              setActionKey({ id, key: "payload", value: e.target.value }),
             );
           },
         },
@@ -61,7 +61,7 @@ export const apiBuilder = (task, index) => {
           type: OptionType.TEXT_ROW,
           selected: task.action?.timeout,
           handleChange: (val) => {
-            store.dispatch(setActionKey({ index, key: "timeout", value: val }));
+            store.dispatch(setActionKey({ id, key: "timeout", value: val }));
           },
         },
       ],

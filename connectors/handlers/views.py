@@ -5,15 +5,18 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
+from django.conf import settings
 
 from accounts.models import get_request_account, Account
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
+from protos.playbooks.api_pb2 import ExecuteWorkflowRequest
 from utils.time_utils import current_epoch_timestamp
 from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
+from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +25,6 @@ logger = logging.getLogger(__name__)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
-    host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
 
     # read sample_manifest file string
     sample_manifest = """
@@ -66,20 +65,14 @@ settings:
     token_rotation_enabled: false
     """
 
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+    host_name = Site.objects.filter(is_active=True).first()
 
-    site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
-    active_sites = Site.objects.filter(is_active=True)
-    http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
+    if not host_name:
+        return GetSlackAppManifestResponse(success=BoolValue(value=False),
+                                           app_manifest=StringValue(value="Host name not found for generating Manifest"))
 
-    if active_sites:
-        site = active_sites.first()
-        site.domain = site_domain
-        site.name = 'MyDroid'
-        site.protocol = http_protocol
-        site.save()
-    else:
-        Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
+    manifest_hostname = host_name.protocol + '://' + host_name.domain
+    app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
@@ -135,3 +128,13 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
+
+
+@web_api(ExecuteWorkflowRequest)
+def pd_generate_webhook(request_message: ExecuteWorkflowRequest) -> HttpResponse:
+    location = '/connectors/handlers/pagerduty/handle_incidents/'
+    protocol = settings.WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL
+    enabled = settings.WORKFLOW_EXECUTE_API_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    return HttpResponse(uri, content_type="text/plain", status=200)
