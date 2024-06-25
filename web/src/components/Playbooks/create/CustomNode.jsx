@@ -85,7 +85,7 @@ export default function CustomNode({ data }) {
 
       {isEditing && (
         <NodeToolbar isVisible={true} position={Position.Bottom}>
-          <AddButtonOptions />
+          <AddButtonOptions stepId={step.id} />
         </NodeToolbar>
       )}
     </div>
