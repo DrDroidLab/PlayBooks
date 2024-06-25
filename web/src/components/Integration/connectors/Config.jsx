@@ -13,6 +13,7 @@ import {
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { cardsData } from "../../../utils/cardsData.js";
 
 function Config({ connector, connectorActive, id }) {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ function Config({ connector, connectorActive, id }) {
       isFetching: testConnectionLoading,
     },
   ] = useLazyTestConnectionQuery();
+  const cardData = cardsData.find((el) => el.enum === connector?.type);
 
   const handleClick = async (_, test = false) => {
     if (connectorActive) {
@@ -71,16 +73,15 @@ function Config({ connector, connectorActive, id }) {
   return (
     <>
       {connector.type === "SLACK" && <SlackManifestGenerator />}
-
       <div className={styles["container"]}>
         <div className={styles["heading"]}>
           <span>{connector?.display_name ?? connector?.type} Keys</span>
-          {connector?.docs && (
+          {cardData?.docs && (
             <span>
               (
               <a
                 className="text-violet-500 cursor-pointer"
-                href={connector.docs}
+                href={cardData?.docs}
                 target="_blank"
                 rel="noreferrer">
                 Docs
@@ -176,7 +177,7 @@ function Config({ connector, connectorActive, id }) {
         connector={{ ...connector, id }}
         toggleOverlay={() => setIsDeleting(!isDeleting)}
         successCb={() => {
-          window.location.href = "/data-sources";
+          navigate("/data-sources");
         }}
       />
     </>

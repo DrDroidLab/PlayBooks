@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
-function IntegrationsList({ setIsOpen }) {
+function IntegrationsList() {
   const { data, isLoading } = usePlaybookBuilderOptionsQuery();
   const supportedTaskTypes = data?.supportedTaskTypes;
   const [query, setQuery] = useState("");
@@ -43,7 +43,7 @@ function IntegrationsList({ setIsOpen }) {
   }, [query]);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <div className="sticky top-0 bg-white z-10">
         <h2 className="mt-4 font-bold text-sm">Add Data</h2>
         <input
@@ -60,19 +60,13 @@ function IntegrationsList({ setIsOpen }) {
           Looking for integrations...
         </div>
       )}
-      <div className="flex flex-col gap-4 h-screen">
+      <div className="flex flex-col gap-4 flex-1 pb-40">
         {query ? (
           items.length === 0 ? (
             <p className="text-sm">No integrations found.</p>
           ) : (
             items.map((option, index) => {
-              return (
-                <IntegrationOption
-                  key={index}
-                  option={option}
-                  setIsOpen={setIsOpen}
-                />
-              );
+              return <IntegrationOption key={index} option={option} />;
             })
           )
         ) : (
@@ -84,11 +78,7 @@ function IntegrationsList({ setIsOpen }) {
                   <p className="text-xs">No integrations yet.</p>
                 )}
                 {integrationGroups[group].options.map((option, index) => (
-                  <IntegrationOption
-                    key={index}
-                    option={option}
-                    setIsOpen={setIsOpen}
-                  />
+                  <IntegrationOption key={index} option={option} />
                 ))}
               </div>
             </div>

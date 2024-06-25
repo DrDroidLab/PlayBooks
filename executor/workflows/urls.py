@@ -12,17 +12,15 @@ urlpatterns = [
 
     # Execution APIs
     path('execute', workflow_views.workflows_execute),
-    path('executions/get', workflow_views.workflows_execution_get),  # deprecated
-    path('executions/get/v2', workflow_views.workflows_execution_get_v2),
     path('executions/list', workflow_views.workflows_execution_list),
+    path('executions/get/all', workflow_views.workflows_execution_get_all),
+    path('executions/get', workflow_views.workflows_execution_get),
 
     # API based executions
     path(settings.WORKFLOW_EXECUTE_API_PATH, workflow_views.workflows_api_execute),
-    path(settings.WORKFLOW_EXECUTIONS_GET_API_PATH, workflow_views.workflows_execution_api_get),  # deprecated
-    path(settings.WORKFLOW_EXECUTIONS_GET_API_PATH_V2, workflow_views.workflows_execution_api_get_v2),
+    path(settings.WORKFLOW_EXECUTIONS_GET_API_PATH, workflow_views.workflows_execution_api_get),
 
     # Platform APIs
     path('test_notification', workflow_views.test_workflows_notification),
     path('generate/curl', workflow_views.generate_curl),
-
 ]

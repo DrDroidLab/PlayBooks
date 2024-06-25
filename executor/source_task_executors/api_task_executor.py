@@ -27,9 +27,9 @@ class ApiSourceManager(PlaybookSourceManager):
         self.task_proto = Api
         self.task_type_callable_map = {
             Api.TaskType.HTTP_REQUEST: {
-                'task_type': 'HTTP_REQUEST',
                 'executor': self.execute_http_request,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.API_RESPONSE,
                 'display_name': 'Trigger an API',
                 'category': 'Actions'
             },
@@ -41,8 +41,9 @@ class ApiSourceManager(PlaybookSourceManager):
             http_request = api_task.http_request
             method = http_request.method
             url = http_request.url.value
-            for key, value in global_variable_set.items():
-                url = url.replace(f"{{{key}}}", value)
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    url = url.replace(f"{{{key}}}", value)
             headers = http_request.headers.value
             headers = json.loads(headers) if headers else {}
             if 'Content-Type' not in headers:

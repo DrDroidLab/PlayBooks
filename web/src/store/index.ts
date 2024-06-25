@@ -7,6 +7,8 @@ import integrationsSlice from "./features/integrations/integrationsSlice.ts";
 import timeRangeSlice from "./features/timeRange/timeRangeSlice.ts";
 import snackbarSlice from "./features/snackbar/snackbarSlice.ts";
 import workflowSlice from "./features/workflow/workflowSlice.ts";
+import drawersSlice from "./features/drawers/drawersSlice.ts";
+import fakeLoadingSlice from "./features/fakeLoading/fakeLoadingSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +19,8 @@ export const store = configureStore({
     integrations: integrationsSlice,
     workflows: workflowSlice,
     snackbar: snackbarSlice,
+    drawers: drawersSlice,
+    fakeLoading: fakeLoadingSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

@@ -4,15 +4,15 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import { useSelector } from "react-redux";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 
-function SelectSource({ index }) {
+function SelectSource({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
-  const [step, currentStepIndex] = useCurrentStep(index);
+  const [step, currentStepId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
 
   function handleSourceChange(id) {
-    updateCardByIndex("source", id, currentStepIndex);
+    updateCardById("source", id, currentStepId);
   }
 
   return (

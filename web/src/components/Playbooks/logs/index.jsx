@@ -18,7 +18,6 @@ import { useParams } from "react-router-dom";
 import Loading from "../../common/Loading/index.tsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
-import { updateCardByIndex } from "../../../utils/execution/updateCardByIndex.ts";
 import { executionToPlaybook } from "../../../utils/parser/playbook/executionToPlaybook.ts";
 import Builder from "../create/Builder.jsx";
 import ListView from "../ListView.jsx";
@@ -42,7 +41,6 @@ function PlaybookLogs() {
   const { view } = useSelector(playbookSelector);
   const playbook = data?.playbook_execution?.playbook;
   const timeRange = data?.playbook_execution?.time_range;
-  const outputs = data?.playbook_execution?.step_execution_logs;
 
   useEffect(() => {
     if (playbook_run_id) {
@@ -83,26 +81,9 @@ function PlaybookLogs() {
   const populateData = () => {
     const pbData = executionToPlaybook(data?.playbook_execution);
     dispatch(setSteps(pbData));
-
-    for (let output of outputs) {
-      const outputList = [];
-      const stepIndex = pbData.findIndex((step) => step.id === output.step.id);
-      if (stepIndex === isNaN || stepIndex === -1) continue;
-      for (let outputData of output.task_execution_logs) {
-        outputList.push(outputData);
-      }
-      updateCardByIndex("showOutput", true, stepIndex);
-      updateCardByIndex(
-        "outputs",
-        {
-          data: outputList,
-        },
-        stepIndex,
-      );
-    }
   };
 
-  const handleSelect = (option) => {
+  const handleSelect = (_, option) => {
     dispatch(setView(option.id));
   };
 
@@ -113,7 +94,6 @@ function PlaybookLogs() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
-        showEditTitle={playbook}
       />
       <div className="flex flex-col h-[calc(100%-80px)]">
         <main className="relative flex flex-1">

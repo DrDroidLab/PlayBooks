@@ -1,0 +1,10 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message CronSchedule {
+  google.protobuf.UInt64Value duration_in_seconds = 1;
+  google.protobuf.StringValue rule = 2;
+  google.protobuf.StringValue timezone = 3;
+}

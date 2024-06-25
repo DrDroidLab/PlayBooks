@@ -3,7 +3,7 @@ from typing import Dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.documentation_task_pb2 import Documentation
 
 
@@ -14,16 +14,16 @@ class DocumentationSourceManager(PlaybookSourceManager):
         self.task_proto = Documentation
         self.task_type_callable_map = {
             Documentation.TaskType.MARKDOWN: {
-                'task_type': 'MARKDOWN',
                 'executor': self.execute_markdown,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.UNKNOWN,
                 'display_name': 'Write Markdown Documentation',
                 'category': 'Documentation'
             },
             Documentation.TaskType.IFRAME: {
-                'task_type': 'IFRAME',
                 'executor': self.execute_iframe,
                 'model_types': [],
+                'result_type': PlaybookTaskResultType.UNKNOWN,
                 'display_name': 'Embed an IFrame',
                 'category': 'Documentation'
             },

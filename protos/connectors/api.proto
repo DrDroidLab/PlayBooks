@@ -28,6 +28,7 @@ message GetConnectorResponse {
 }
 
 message GetConnectorsListRequest {
+  Source connector_type = 1;
 }
 
 message GetConnectorsListResponse {
@@ -136,3 +137,8 @@ message GetConnectedPlaybooksResponse {
   Message message = 3;
   repeated Playbook connected_playbooks = 4;
 }
+
+
+message GetPagerDutyWebhookRequest {}
+
+message GetPagerDutyWebhookResponse {}

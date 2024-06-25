@@ -1,7 +1,7 @@
 import { store } from "../store/index.ts";
 import { stepsSelector } from "../store/features/playbook/playbookSlice.ts";
 import { showSnackbar } from "../store/features/snackbar/snackbarSlice.ts";
-import { updateCardByIndex } from "./execution/updateCardByIndex.ts";
+import { updateCardById } from "./execution/updateCardById.ts";
 
 export default function handlePlaybookSavingValidations() {
   const steps = stepsSelector(store.getState());
@@ -12,9 +12,9 @@ export default function handlePlaybookSavingValidations() {
     error = "You cannot save a playbook with no steps";
   }
 
-  steps?.forEach((step, index) => {
+  steps?.forEach((step) => {
     if (Object.keys(step.errors ?? {}).length > 0) {
-      updateCardByIndex("showError", true, index);
+      updateCardById("showError", true, step.id);
       error = "Please fix the errors in the playbook";
     }
   });

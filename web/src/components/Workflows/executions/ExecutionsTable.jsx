@@ -12,6 +12,12 @@ import { handleStatus } from "../../../utils/handleStatus.tsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
 
 const ExecutionsTableRender = ({ data }) => {
+  // const navigate = useNavigate();
+
+  // const navigateToPlaybook = (id) => {
+  //   navigate(`/playbooks/${id}`);
+  // };
+
   return (
     <>
       <Table stickyHeader>
@@ -51,9 +57,9 @@ const ExecutionsTableRender = ({ data }) => {
                   {item.workflow?.playbooks?.length > 0
                     ? item.workflow.playbooks.map((e) => (
                         <div
-                          className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
+                          className="p-1 text-xs border rounded bg-gray-50 w-fit transition-all"
                           key={e.id}>
-                          <Link to={`/playbooks/${e.id}`}>{e.name}</Link>
+                          <div>{e.name}</div>
                         </div>
                       ))
                     : "--"}

@@ -1,37 +1,25 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { updateStep } from "../../../store/features/playbook/playbookSlice.ts";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.tsx";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
+import IframeRender from "../options/IframeRender.tsx";
 
-export default function OptionRender({ data, removeErrors, index }) {
-  const [step, currentStepIndex] = useCurrentStep(index);
-  const dispatch = useDispatch();
+export default function OptionRender({ data, removeErrors, id }) {
+  const [step, currentStepId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
 
   const handleChange = (...args) => {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(
-        updateStep({ index: currentStepIndex, key: data.key, value: args[0] }),
-      );
+      updateCardById(data.key, args[0], currentStepId);
     }
 
     removeErrors(data.key);
-  };
-
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
   };
 
   const handleTextAreaChange = (e) => {
@@ -39,9 +27,7 @@ export default function OptionRender({ data, removeErrors, index }) {
     if (data.handleChange) {
       data.handleChange(e);
     } else {
-      dispatch(
-        updateStep({ index: currentStepIndex, key: data.key, value: val }),
-      );
+      updateCardById(data.key, val, currentStepId);
     }
 
     removeErrors(data.key);
@@ -51,9 +37,7 @@ export default function OptionRender({ data, removeErrors, index }) {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(
-        updateStep({ index: currentStepIndex, key: data.key, value: args[0] }),
-      );
+      updateCardById(data.key, args[0], currentStepId);
     }
 
     removeErrors(data.key);
@@ -63,7 +47,7 @@ export default function OptionRender({ data, removeErrors, index }) {
     if (data.handleChange && option) {
       data.handleChange(value, option);
     } else {
-      dispatch(updateStep({ index: currentStepIndex, key: data.key, value }));
+      updateCardById(data.key, value, currentStepId);
     }
 
     removeErrors(data.key);
@@ -157,27 +141,7 @@ export default function OptionRender({ data, removeErrors, index }) {
       );
 
     case "iframe-render":
-      return (
-        <>
-          {isValidUrl(data.value) ? (
-            <iframe
-              src={data.value}
-              title="iframe"
-              className="w-full h-full"
-              style={{
-                height: "500px",
-                marginTop: "10px",
-                border: "1px solid #ccc",
-              }}
-              allowFullScreen
-            />
-          ) : (
-            <p style={{ color: "red", marginTop: "10px", fontSize: "12px" }}>
-              Invalid URL
-            </p>
-          )}
-        </>
-      );
+      return <IframeRender url={data.value} />;
 
     case "multi-select":
       // if (!(data.options?.length > 0)) return;

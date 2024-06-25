@@ -28,6 +28,9 @@ export const playbookToSteps = (playbook: any, isCopied = false): Step[] => {
       isPlayground: false,
       stepType: "",
       action: "",
+      stepIndex: i,
+      children: step.children,
+      isEditing: false,
       ...data,
     };
 

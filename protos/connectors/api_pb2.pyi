@@ -110,9 +110,14 @@ global___GetConnectorResponse = GetConnectorResponse
 class GetConnectorsListRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+    connector_type: protos.base_pb2.Source.ValueType
     def __init__(
         self,
+        *,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
     ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type"]) -> None: ...
 
 global___GetConnectorsListRequest = GetConnectorsListRequest
 
@@ -561,3 +566,23 @@ class GetConnectedPlaybooksResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["connected_playbooks", b"connected_playbooks", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
 
 global___GetConnectedPlaybooksResponse = GetConnectedPlaybooksResponse
+
+@typing_extensions.final
+class GetPagerDutyWebhookRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetPagerDutyWebhookRequest = GetPagerDutyWebhookRequest
+
+@typing_extensions.final
+class GetPagerDutyWebhookResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetPagerDutyWebhookResponse = GetPagerDutyWebhookResponse

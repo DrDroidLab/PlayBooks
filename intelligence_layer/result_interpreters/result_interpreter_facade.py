@@ -46,22 +46,20 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
     protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
     enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
     object_url = build_absolute_uri(None, location, protocol, enabled)
-    base_title = f'Hello team, here is snapshot of playbook <{object_url}|{playbook.name.value}> ' \
-                 f'that is configured for this alert'
     interpretations: [InterpretationProto] = [
-        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=base_title))
+        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=playbook.name.value),
+                            description=StringValue(value=object_url))
     ]
     for i, step_log in enumerate(step_logs):
         try:
-            step = step_log.step
-            interpreter_type = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
             task_interpretations = []
-            for log in step_log.logs:
-                task = log.task
-                task_result = log.task_execution_result
-                task_interpretations.append(task_result_interpret(interpreter_type, task, task_result))
+            for task_execution_log in step_log.task_execution_logs:
+                if task_execution_log.interpretation and task_execution_log.interpretation.type != InterpretationProto.Type.UNKNOWN:
+                    task_interpretations.append(task_execution_log.interpretation)
+            if step_log.step_interpretation.type == InterpretationProto.Type.UNKNOWN and len(task_interpretations) == 0:
+                continue
             step_name = step_log.step.name.value
-            if not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
+            if step_name and not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
                 title = StringValue(value=f'Step {i + 1}: {step_name}')
             else:
                 title = StringValue(value=f'Step {i + 1}')
@@ -71,9 +69,8 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
                 title=title,
             )
             interpretations.append(base_step_interpretation)
-            step_interpretation_result = step_result_interpret(interpreter_type, step_log.step, step_log.logs)
-            if step_interpretation_result and step_interpretation_result.type != InterpretationProto.Type.UNKNOWN:
-                interpretations.append(step_interpretation_result)
+            if step_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
+                interpretations.append(step_log.step_interpretation)
             interpretations.extend(task_interpretations)
         except Exception as e:
             logger.error(f"Failed to interpret playbook execution log with error: {e}")

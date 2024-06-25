@@ -17,6 +17,75 @@ else:
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
+class _Function:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _FunctionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Function.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_F: _Function.ValueType  # 0
+    AVG_F: _Function.ValueType  # 1
+    SUM_F: _Function.ValueType  # 2
+    MIN_F: _Function.ValueType  # 3
+    MAX_F: _Function.ValueType  # 4
+    LAST_F: _Function.ValueType  # 5
+
+class Function(_Function, metaclass=_FunctionEnumTypeWrapper): ...
+
+UNKNOWN_F: Function.ValueType  # 0
+AVG_F: Function.ValueType  # 1
+SUM_F: Function.ValueType  # 2
+MIN_F: Function.ValueType  # 3
+MAX_F: Function.ValueType  # 4
+LAST_F: Function.ValueType  # 5
+global___Function = Function
+
+class _Operator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _OperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Operator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_O: _Operator.ValueType  # 0
+    GREATER_THAN_O: _Operator.ValueType  # 1
+    GREATER_THAN_EQUAL_O: _Operator.ValueType  # 2
+    LESS_THAN_O: _Operator.ValueType  # 3
+    LESS_THAN_EQUAL_O: _Operator.ValueType  # 4
+    EQUAL_O: _Operator.ValueType  # 5
+    NOT_EQUAL_O: _Operator.ValueType  # 6
+    LIKE_O: _Operator.ValueType  # 7
+
+class Operator(_Operator, metaclass=_OperatorEnumTypeWrapper): ...
+
+UNKNOWN_O: Operator.ValueType  # 0
+GREATER_THAN_O: Operator.ValueType  # 1
+GREATER_THAN_EQUAL_O: Operator.ValueType  # 2
+LESS_THAN_O: Operator.ValueType  # 3
+LESS_THAN_EQUAL_O: Operator.ValueType  # 4
+EQUAL_O: Operator.ValueType  # 5
+NOT_EQUAL_O: Operator.ValueType  # 6
+LIKE_O: Operator.ValueType  # 7
+global___Operator = Operator
+
+class _LogicalOperator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _LogicalOperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_LogicalOperator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_LO: _LogicalOperator.ValueType  # 0
+    AND_LO: _LogicalOperator.ValueType  # 1
+    OR_LO: _LogicalOperator.ValueType  # 2
+    NOT_LO: _LogicalOperator.ValueType  # 3
+
+class LogicalOperator(_LogicalOperator, metaclass=_LogicalOperatorEnumTypeWrapper): ...
+
+UNKNOWN_LO: LogicalOperator.ValueType  # 0
+AND_LO: LogicalOperator.ValueType  # 1
+OR_LO: LogicalOperator.ValueType  # 2
+NOT_LO: LogicalOperator.ValueType  # 3
+global___LogicalOperator = LogicalOperator
+
 class _Source:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
@@ -68,6 +137,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     AZURE: _Source.ValueType  # 42
     GRAFANA_MIMIR: _Source.ValueType  # 43
     GKE: _Source.ValueType  # 44
+    MS_TEAMS: _Source.ValueType  # 45
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -116,6 +186,7 @@ BASH: Source.ValueType  # 41
 AZURE: Source.ValueType  # 42
 GRAFANA_MIMIR: Source.ValueType  # 43
 GKE: Source.ValueType  # 44
+MS_TEAMS: Source.ValueType  # 45
 global___Source = Source
 
 class _SourceKeyType:
@@ -167,6 +238,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     POSTGRES_OPTIONS: _SourceKeyType.ValueType  # 38
     SQL_DATABASE_CONNECTION_STRING_URI: _SourceKeyType.ValueType  # 39
     PAGER_DUTY_API_KEY: _SourceKeyType.ValueType  # 41
+    PAGER_DUTY_CONFIGURED_EMAIL: _SourceKeyType.ValueType  # 63
     OPS_GENIE_API_KEY: _SourceKeyType.ValueType  # 42
     AGENT_PROXY_HOST: _SourceKeyType.ValueType  # 43
     AGENT_PROXY_API_KEY: _SourceKeyType.ValueType  # 44
@@ -185,6 +257,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
     GKE_PROJECT_ID: _SourceKeyType.ValueType  # 60
     GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 61
+    MS_TEAMS_CONNECTOR_WEBHOOK_URL: _SourceKeyType.ValueType  # 62
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -231,6 +304,7 @@ POSTGRES_DATABASE: SourceKeyType.ValueType  # 37
 POSTGRES_OPTIONS: SourceKeyType.ValueType  # 38
 SQL_DATABASE_CONNECTION_STRING_URI: SourceKeyType.ValueType  # 39
 PAGER_DUTY_API_KEY: SourceKeyType.ValueType  # 41
+PAGER_DUTY_CONFIGURED_EMAIL: SourceKeyType.ValueType  # 63
 OPS_GENIE_API_KEY: SourceKeyType.ValueType  # 42
 AGENT_PROXY_HOST: SourceKeyType.ValueType  # 43
 AGENT_PROXY_API_KEY: SourceKeyType.ValueType  # 44
@@ -249,6 +323,7 @@ AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
 AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
 GKE_PROJECT_ID: SourceKeyType.ValueType  # 60
 GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 61
+MS_TEAMS_CONNECTOR_WEBHOOK_URL: SourceKeyType.ValueType  # 62
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -307,6 +382,10 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Mimir Server Models"""
     GKE_CLUSTER: _SourceModelType.ValueType  # 1301
     """GKE Models"""
+    MS_TEAMS_CHANNEL: _SourceModelType.ValueType  # 1401
+    """MS TEAMS Models"""
+    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1501
+    """Pagerduty Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -360,6 +439,10 @@ GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
 """Mimir Server Models"""
 GKE_CLUSTER: SourceModelType.ValueType  # 1301
 """GKE Models"""
+MS_TEAMS_CHANNEL: SourceModelType.ValueType  # 1401
+"""MS TEAMS Models"""
+PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
+"""Pagerduty Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

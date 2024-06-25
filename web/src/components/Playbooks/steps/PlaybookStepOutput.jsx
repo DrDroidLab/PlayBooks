@@ -3,6 +3,7 @@ import PlayBookRunDataTable from "../PlayBookRunDataTable";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput";
 import PlaybookBashActionOutput from "../PlaybookBashActionOutput";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import HandleUnkownOutput from "../HandleUnkownOutput.tsx";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
@@ -11,8 +12,8 @@ const OutputTypes = {
   TABLE: "TABLE",
 };
 
-const PlaybookStepOutput = ({ stepOutput }) => {
-  const [step] = useCurrentStep();
+const PlaybookStepOutput = ({ stepOutput, showHeading, stepId }) => {
+  const [step] = useCurrentStep(stepId);
   const out = stepOutput?.result;
   const error = step?.outputError ?? out?.error;
 
@@ -41,70 +42,19 @@ const PlaybookStepOutput = ({ stepOutput }) => {
           title={"Results"}
           result={out}
           timestamp={out.timestamp}
+          showHeading={showHeading}
           step={step}
         />
       );
     default:
       return (
-        <PlayBookRunMetricGraph
+        <HandleUnkownOutput
           error={error}
-          title={
-            error ? "Error from Source" : "No data available for this step"
-          }
+          stepId={stepId}
+          showHeading={showHeading}
         />
       );
   }
-
-  // return (
-  //   <div style={{ marginTop: "5px" }}>
-  //     {out?.metric_task_execution_result?.result?.timeseries && (
-  //       <PlayBookRunMetricGraph
-  //         title={
-  //           out?.metric_task_execution_result?.metric_expression || "Results"
-  //         }
-  //         result={out.metric_task_execution_result.result}
-  //         timestamp={out.timestamp}
-  //         step={step}
-  //       />
-  //     )}
-  //     {out?.metric_task_execution_result?.result?.table_result?.rows && (
-  //       <PlayBookRunDataTable
-  //         title={"Results"}
-  //         result={out.metric_task_execution_result.result}
-  //         timestamp={out.timestamp}
-  //         step={step}
-  //       />
-  //     )}
-  //     {out?.data_fetch_task_execution_result?.result?.table_result?.rows && (
-  //       <PlayBookRunDataTable
-  //         title={"Results"}
-  //         result={out.data_fetch_task_execution_result.result}
-  //         timestamp={out.timestamp}
-  //         step={step}
-  //       />
-  //     )}
-  //     {out?.action_task_execution_result?.result && (
-  //       <PlaybookActionOutput
-  //         result={out?.action_task_execution_result?.result}
-  //       />
-  //     )}
-  //     {out.type === "API_RESPONSE" && (
-  //       <PlaybookAPIActionOutput output={out.api_response} />
-  //     )}
-  //     {(!out ||
-  //       (!out?.metric_task_execution_result?.result?.timeseries &&
-  //         !out?.metric_task_execution_result?.result?.table_result?.rows &&
-  //         !out?.data_fetch_task_execution_result?.result?.table_result?.rows &&
-  //         !out?.action_task_execution_result?.result)) && (
-  //       <PlayBookRunMetricGraph
-  //         error={error}
-  //         title={
-  //           error ? "Error from Source" : "No data available for this step"
-  //         }
-  //       />
-  //     )}
-  //   </div>
-  // );
 };
 
 export default PlaybookStepOutput;

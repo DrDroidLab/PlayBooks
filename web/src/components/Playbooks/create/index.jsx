@@ -1,24 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Heading from "../../Heading";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
   setPlaybookDataBeta,
-  copyPlaybook,
   setView,
+  setPlaybookKey,
+  resetExecutions,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
   setPlaybookState,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import ListView from "../ListView.jsx";
 import Builder from "./Builder.jsx";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
-import { COPY_LOADING_DELAY } from "../../../constants/index.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import PermenantDrawer from "../../common/PermenantDrawer/index.tsx";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
+import { resetDrawerState } from "../../../store/features/drawers/drawersSlice.ts";
 
 const viewOptions = [
   {
@@ -32,60 +38,60 @@ const viewOptions = [
 ];
 
 function CreatePlaybook() {
-  const navigate = useNavigate();
+  const { openDrawer, permanentView } = usePermanentDrawerState();
   const { playbook_id: id } = useParams();
   const playbook = useSelector(playbookSelector);
   const dispatch = useDispatch();
-  const copied = useRef(false);
   const playbookDataRef = useRef(null);
-  const [copyLoading, setCopyLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const executionId = searchParams.get("executionId");
+  const isPrefetched = useIsPrefetched();
+  const isEditing = !isPrefetched && !executionId;
+  const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
+
+  useEffect(() => {
+    dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+    if (!executionId) {
+      dispatch(resetExecutions());
+      dispatch(resetDrawerState());
+      dispatch(setPlaybookState());
+    }
+  }, [executionId, dispatch]);
 
   useEffect(() => {
     dispatch(setPlaybookState());
+    dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: true }));
     return () => {
       dispatch(resetState());
+      dispatch(resetDrawerState());
       dispatch(resetTimeRange());
     };
   }, [dispatch]);
-
-  const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
 
   const fetchPlaybook = async () => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     playbookDataRef.current = res;
     dispatch(setPlaybookDataBeta(res));
+    if (executionId) handleTimeline();
   };
 
-  const handleCopyPlaybook = async () => {
-    setCopyLoading(true);
-    const res = playbookDataRef.current;
-    dispatch(copyPlaybook(res));
-    copied.current = true;
-    setTimeout(() => {
-      setCopyLoading(false);
-      navigate("/playbooks/create", {
-        replace: true,
-      });
-    }, COPY_LOADING_DELAY);
-  };
-
-  const handleSelect = (option) => {
+  const handleSelect = (_, option) => {
     dispatch(setView(option.id));
   };
 
+  const handleTimeline = () => {
+    openDrawer(PermanentDrawerTypes.TIMELINE);
+  };
+
   useEffect(() => {
-    if (id) {
+    if (id || executionId) {
       fetchPlaybook();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, executionId]);
 
   if (isLoading) {
     return <Loading />;
-  }
-
-  if (copyLoading) {
-    return <Loading title="Copying your playbook..." />;
   }
 
   return (
@@ -100,11 +106,9 @@ function CreatePlaybook() {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
-        copyPlaybook={handleCopyPlaybook}
-        showEditTitle={playbook}
         showRunAll={true}
       />
-      <div className="flex flex-col h-[calc(100%-80px)]">
+      <div className="flex h-[calc(100%-80px)]">
         <main className="relative flex flex-1">
           <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
             <TabsComponent
@@ -113,20 +117,31 @@ function CreatePlaybook() {
               selectedId={playbook.view}
             />
           </div>
-          {/* <button
-            onClick={() => dispatch(toggleView())}
-            className="absolute top-2 left-1/2 -translate-x-1/2 border border-violet-500 text-violet-500 p-1 rounded transition-all hover:text-white hover:bg-violet-500 text-sm z-10">
-            Toggle View
-          </button> */}
           {playbook.view === "step" ? (
             <div className="flex justify-center w-full absolute top-14 h-[calc(100%-3.5rem)]">
               <ListView />
             </div>
           ) : (
-            <Builder />
+            <Builder isLog={isPrefetched || executionId} />
+          )}
+          {!isEditing && (
+            <div
+              className={`${
+                permanentView === PermanentDrawerTypes.DEFAULT
+                  ? "top-2"
+                  : "top-12"
+              } absolute right-2 flex items-end flex-col gap-2 z-10`}>
+              {permanentView !== PermanentDrawerTypes.TIMELINE && (
+                <CustomButton onClick={handleTimeline}>
+                  View Timeline
+                </CustomButton>
+              )}
+            </div>
           )}
         </main>
+        {playbook.view === "builder" && <PermenantDrawer />}
       </div>
+      {/* <ConditionDrawer /> */}
     </div>
   );
 }

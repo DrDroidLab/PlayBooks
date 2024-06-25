@@ -1,43 +1,49 @@
 import { store } from "../../store/index.ts";
-import { executePlaybookStep } from "../../store/features/playbook/api/index.ts";
+import {
+  executePlaybookStep,
+  executionStepExecute,
+} from "../../store/features/playbook/api/index.ts";
 import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
-import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { updateCardById } from "./updateCardById.ts";
+import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
-export async function executeStep(step: Step, index?: number) {
+export async function executeStep(step: Step, id?: string) {
+  const { executionId } = playbookSelector(store.getState());
   if (Object.keys(step.errors ?? {}).length > 0) {
-    updateCardByIndex("showError", true, index);
+    updateCardById("showError", true, id);
     return;
   }
 
   const stepData = stateToStep(step);
-  updateCardByIndex("outputLoading", true, index);
-  updateCardByIndex("showOutput", false, index);
+  updateCardById("outputLoading", true, id);
+  updateCardById("showOutput", false, id);
 
   try {
-    const res = await store
-      .dispatch(executePlaybookStep.initiate(stepData))
-      .unwrap();
+    const res =
+      executionId && !step.isEditing
+        ? await store.dispatch(executionStepExecute.initiate(stepData)).unwrap()
+        : await store.dispatch(executePlaybookStep.initiate(stepData)).unwrap();
     const outputList: any = [];
     const output = res?.step_execution_log;
     for (let outputData of output?.task_execution_logs ?? []) {
       outputList.push(outputData);
     }
-    updateCardByIndex("showOutput", true, index);
-    updateCardByIndex(
+    updateCardById("showOutput", true, id);
+    updateCardById(
       "outputs",
       {
         data: outputList,
         stepInterpretation: output.step_interpretation,
       },
-      index,
+      id,
     );
   } catch (e) {
-    updateCardByIndex("showError", true, index);
-    updateCardByIndex("outputError", e.message, index);
+    updateCardById("showError", true, id);
+    updateCardById("outputError", e.message, id);
     console.error(e);
   } finally {
-    updateCardByIndex("showOutput", true, index);
-    updateCardByIndex("outputLoading", false, index);
+    updateCardById("showOutput", true, id);
+    updateCardById("outputLoading", false, id);
   }
 }

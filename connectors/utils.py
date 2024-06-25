@@ -16,9 +16,12 @@ from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from executor.source_processors.pd_api_processor import PdApiProcessor
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
+from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
+from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import SourceKeyType, Source
@@ -40,7 +43,10 @@ connector_type_api_processor_map = {
     Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
     Source.GRAFANA_MIMIR: MimirApiProcessor,
     Source.AZURE: AzureApiProcessor,
-    Source.GKE: GkeApiProcessor
+    Source.GKE: GkeApiProcessor,
+    Source.REMOTE_SERVER: RemoteServerProcessor,
+    Source.MS_TEAMS: MSTeamsApiProcessor,
+    Source.PAGER_DUTY: PdApiProcessor
 }
 
 
@@ -169,9 +175,11 @@ def generate_credentials_dict(connector_type, connector_keys):
     elif connector_type == Source.REMOTE_SERVER:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
-                credentials_dict['remote_host'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_USER:
-                credentials_dict['remote_user'] = conn_key.key.value
+                ssh_servers = conn_key.key.value
+                ssh_servers = ssh_servers.replace(' ', '')
+                ssh_servers = ssh_servers.split(',')
+                ssh_servers = list(filter(None, ssh_servers))
+                credentials_dict['remote_host'] = ssh_servers[0]
             elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PEM:
                 credentials_dict['remote_pem'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.REMOTE_SERVER_PASSWORD:
@@ -196,6 +204,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['project_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GKE_SERVICE_ACCOUNT_JSON:
                 credentials_dict['service_account_json'] = conn_key.key.value
+    elif connector_type == Source.MS_TEAMS:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL:
+                credentials_dict['webhook_url'] = conn_key.key.value
+    elif connector_type == Source.PAGER_DUTY:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.PAGER_DUTY_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL:
+                credentials_dict['configured_email'] = conn_key.key.value
     else:
         return None
     return credentials_dict

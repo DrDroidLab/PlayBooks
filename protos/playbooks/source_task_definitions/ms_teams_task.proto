@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+
+message MSTeams {
+  message SendMessageWebhook {
+    google.protobuf.StringValue webhook = 1;
+    google.protobuf.Struct payload = 2;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SEND_MESSAGE_WEBHOOK = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SendMessageWebhook send_message_webhook = 2;
+  }
+}

@@ -165,4 +165,7 @@ cython_debug/
 redeploy.sh
 start_celery.sh
 start_server.sh
+start_celery_beat.sh
 web/nginx.local.conf
+
+dev_scripts

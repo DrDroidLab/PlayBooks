@@ -32,7 +32,9 @@ export const extracDatadogTasks = (step: any) => {
     datadogService: datadogTask?.service_name,
     datadogMetricFamily: datadogTask?.metric_family,
     datadogEnvironment: datadogTask?.environment_name,
-    datadogMetric: tasks.map(() => {
+    datadogMetric: tasks.map((task) => {
+      const datadogTask =
+        task[stepSource.toLowerCase()][taskType.toLowerCase()];
       return {
         id: datadogTask?.metric,
         label: datadogTask?.metric,
