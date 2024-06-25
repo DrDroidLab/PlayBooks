@@ -37,6 +37,26 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
                                        metadata={'thread_ts': thread_ts}, workflow_config=workflow_proto.configuration)
 
 
+def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, incident_id) -> (bool, str):
+    try:
+        account = Account.objects.get(id=account_id)
+    except Account.DoesNotExist:
+        return False, f'Account with id: {account_id} not found'
+    current_time_utc = current_datetime()
+    all_wf_mappings = get_db_workflow_entry_point_mappings(account_id=account_id, entry_point_id=entry_point_id,
+                                                           is_active=True)
+    for wfm in all_wf_mappings:
+        workflow = wfm.workflow
+        workflow_proto: Workflow = workflow.proto_partial
+        uuid_str = uuid.uuid4().hex
+        workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run_{uuid_str}'
+        schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
+        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
+                                       current_time_utc, workflow_run_id, 'PAGERDUTY',
+                                       metadata={'incident_id': incident_id},
+                                       workflow_config=workflow_proto.configuration)
+
+
 def create_workflow_execution_util(account: Account, workflow_id, schedule_type, schedule, scheduled_at,
                                    workflow_run_uuid, triggered_by=None, metadata=None, workflow_config=None) -> \
         (bool, str):

@@ -5,6 +5,7 @@ import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { Tooltip } from "@mui/material";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import handleEdgeColor from "../../../utils/playbook/handleEdgeColor.ts";
 
 const foreignObjectSize = 60;
 
@@ -47,11 +48,14 @@ const CustomEdge = ({
     <>
       <path
         id={id}
-        className={`react-flow__edge-path`}
+        className={`react-flow__edge-path ${
+          handleEdgeColor(id) === "green" ? "animated-dotted-line" : ""
+        }`}
         d={edgePath}
         markerEnd={markerEnd}
         style={{
-          stroke: additionalData.id === id ? "rgba(139, 92, 246, 1)" : "",
+          stroke: handleEdgeColor(id),
+          strokeWidth: 2,
         }}
       />
       <foreignObject

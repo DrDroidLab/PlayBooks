@@ -282,4 +282,7 @@ enum SourceModelType {
 
   // MS TEAMS Models
   MS_TEAMS_CHANNEL = 1401;
+
+  // Pagerduty Models
+  PAGERDUTY_INCIDENT = 1501;
 }

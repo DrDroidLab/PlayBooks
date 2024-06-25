@@ -326,6 +326,11 @@ GLOBAL_ACCOUNT_PASSWORD_CONTEXT_CACHE = {
 WORKFLOW_SCHEDULER_INTERVAL = env.int("WORKFLOW_SCHEDULER_INTERVAL", default=10)
 
 SITE_DEFAULT_HTTP_PROTOCOL = env.str("SITE_DEFAULT_HTTP_PROTOCOL", default='http')
+PAGERDUTY_WEBHOOK_LOCATION = env.str("PAGERDUTY_WEBHOOK_LOCATION", default='/connectors/handlers/pagerduty'
+                                                                           '/handle_incidents')
+PAGERDUTY_WEBHOOK_HTTP_PROTOCOL = env.str("PAGERDUTY_WEBHOOK_HTTP_PROTOCOL", default='https')
+PAGERDUTY_WEBHOOK_USE_SITE = env.bool("PAGERDUTY_WEBHOOK_USE_SITE", default=True)
+
 
 RESET_PASSWORD_LOCATION = env.str("RESET_PASSWORD_PAGE_URL", default='/reset-password-confirm/?reset_token={}&email={}')
 RESET_PASSWORD_SITE_HTTP_PROTOCOL = env.str("RESET_PASSWORD_SITE_HTTP_PROTOCOL", default='http')

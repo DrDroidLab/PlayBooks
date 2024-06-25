@@ -81,9 +81,11 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                             "weight": "lighter"
                         },
                         {
-                            "type": "Image",
-                            "url": interpretation.file_path.value,
-                            "altText": step_execution
+                            "type": "TextBlock",
+                            "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
                         }
                     ]
                 else:
@@ -105,7 +107,10 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                                                                 "url": f"{playbook_url}"}]}}]}
         message_params = {'payload': payload}
         try:
-            ms_teams_api_processor = self.get_action_connector_processor(connector)
+            if webhook_url:
+                ms_teams_api_processor = MSTeamsApiProcessor(webhook_url=webhook_url)
+            else:
+                ms_teams_api_processor = self.get_action_connector_processor(connector)
             ms_teams_api_processor.send_webhook_message(**message_params)
             return True
         except Exception as e:

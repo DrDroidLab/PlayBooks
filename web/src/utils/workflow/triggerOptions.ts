@@ -7,4 +7,8 @@ export const triggerOptions = [
     id: "api",
     label: "API Trigger",
   },
+  {
+    id: "pagerduty_incident",
+    label: "PagerDuty",
+  },
 ];

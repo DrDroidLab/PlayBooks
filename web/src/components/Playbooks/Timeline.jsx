@@ -3,6 +3,7 @@ import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
+  setSteps as setStepsInPlaybook,
   showStepConfig,
   stepsSelector,
 } from "../../store/features/playbook/playbookSlice.ts";
@@ -24,15 +25,38 @@ function Timeline() {
   const lastStep = (playbookSteps ?? []).find(
     (step) => step.id === steps[(steps?.length || 1) - 1]?.id,
   );
+  const relationLogs = lastStep?.relationLogs ?? [];
+  const nextPossibleStepLogs = relationLogs?.filter(
+    (log) => log.evaluation_result,
+  );
 
-  const showNextStepExecution = lastStep?.stepIndex < playbookSteps?.length - 1;
+  const showNextStepExecution =
+    nextPossibleStepLogs.length > 0 &&
+    nextPossibleStepLogs.findIndex((log) => log.evaluation_result) !== -1;
+
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
   );
 
   const nextStep = showNextStepExecution
-    ? playbookSteps[lastStep?.stepIndex + 1]
+    ? playbookSteps.find(
+        (e) => e.id === nextPossibleStepLogs[0].relation?.child?.id,
+      )
     : {};
+
+  const addOutputsToSteps = (timelineSteps) => {
+    const steps = playbookSteps?.map((step) => {
+      const found = timelineSteps.find(
+        (stepData) => stepData.id.toString() === step.id.toString(),
+      );
+      if (found) {
+        return found;
+      } else {
+        return step;
+      }
+    });
+    if (steps.length > 0) dispatch(setStepsInPlaybook(steps));
+  };
 
   const populateData = async () => {
     const data = await triggerGetPlaybookExeution(
@@ -59,6 +83,13 @@ function Timeline() {
     if (executionId) populateData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [executionId]);
+
+  useEffect(() => {
+    if (steps?.length > 0 && playbookSteps?.length > 0) {
+      addOutputsToSteps(steps);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [steps]);
 
   if (isLoading) {
     return <Loading title="Your timeline is loading..." />;
