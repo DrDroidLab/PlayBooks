@@ -16,9 +16,10 @@ import { useSearchParams } from "react-router-dom";
 
 type RunButtonProps = {
   id: string;
+  showText?: boolean;
 };
 
-function RunButton({ id }: RunButtonProps) {
+function RunButton({ id, showText = true }: RunButtonProps) {
   const { executionId, currentPlaybook } = useSelector(playbookSelector);
   const [, setSearchParams] = useSearchParams();
   const [step] = useCurrentStep(id);
@@ -55,7 +56,7 @@ function RunButton({ id }: RunButtonProps) {
     <Tooltip title="Run this Step">
       <>
         <CustomButton onClick={handleExecuteStep}>
-          {loading ? "Running" : "Run"}
+          {showText && (loading ? "Running" : "Run")}
           {loading ? (
             <CircularProgress color="inherit" size={20} />
           ) : (
