@@ -43,7 +43,7 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
                 title = f'Hello team, here is snapshot of playbook: {interpretation.title.value}, link: {interpretation.description.value} ' \
                         f'that is configured for this incident'
             else:
-                title = f'{interpretation.title.value}'
+                continue
             note_text = title
             print(note_text)
             note_params = {'incident_id': incident_id, 'content': note_text}
