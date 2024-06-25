@@ -5,16 +5,19 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
+from django.conf import settings
 
 from accounts.models import get_request_account, Account
+from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api
 from utils.time_utils import current_epoch_timestamp
-from protos.base_pb2 import Message
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
+from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
+
 
 @web_api(GetSlackAppManifestRequest)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
@@ -64,7 +67,8 @@ settings:
 
     if not host_name:
         return GetSlackAppManifestResponse(success=BoolValue(value=False),
-                                           app_manifest=StringValue(value="Host name not found for generating Manifest"))
+                                           app_manifest=StringValue(
+                                               value="Host name not found for generating Manifest"))
 
     manifest_hostname = host_name.protocol + '://' + host_name.domain
     app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
@@ -111,3 +115,25 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
         else:
             return JsonResponse({'success': False, 'message': f"Received invalid data type: {d_type}"}, status=400)
     return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=400)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
+    try:
+        data = request_message.data
+        handle_pd_incident(data)
+        return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+    except Exception as e:
+        logger.error(f'Error handling pagerduty incident: {str(e)}')
+        return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def pagerduty_generate_webhook(request_message: HttpRequest) -> HttpResponse:
+    location = settings.PAGERDUTY_WEBHOOK_LOCATION
+    protocol = settings.PAGERDUTY_WEBHOOK_HTTP_PROTOCOL
+    enabled = settings.PAGERDUTY_WEBHOOK_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+    return HttpResponse(uri, content_type="text/plain", status=200)

@@ -171,10 +171,13 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         if not playbook_executions:
             logger.error(f"Aborting workflow action execution as playbook execution not found for "
                          f"account_id: {account_id}, playbook_execution_id: {playbook_execution_id}")
-        thread_ts = None
+
         workflow_execution = workflow_executions.first()
+        slack_thread_ts = None
+        pd_incident_id = None
         if workflow_execution.metadata:
-            thread_ts = workflow_execution.metadata.get('thread_ts', None)
+            slack_thread_ts = workflow_execution.metadata.get('thread_ts', None)
+            pd_incident_id = workflow_execution.metadata.get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
@@ -189,7 +192,15 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         for w_action in w_actions:
             if w_action.type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
                 w_action_dict = proto_to_dict(w_action)
-                w_action_dict['slack_thread_reply']['thread_ts'] = str(thread_ts)
+                w_action_dict['slack_thread_reply']['thread_ts'] = str(slack_thread_ts)
+                updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                action_executor_facade.execute(updated_w_action, execution_output)
+            elif w_action.type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
+                if not pd_incident_id:
+                    logger.error(f"Pagerduty incident id not found for workflow_execution_id: {workflow_execution_id}")
+                    continue
+                w_action_dict = proto_to_dict(w_action)
+                w_action_dict['pagerduty_notes'] = {'incident_id': pd_incident_id}
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             else:

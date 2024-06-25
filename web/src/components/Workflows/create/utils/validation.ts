@@ -90,7 +90,7 @@ export const validate = () => {
       dispatch(removeErrorKey("channel"));
     }
   }
-
+  
   if (error) {
     return false;
   } else {

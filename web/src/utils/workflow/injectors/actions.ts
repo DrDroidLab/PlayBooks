@@ -20,9 +20,10 @@ export const handleActionsInjector = (): Types.WorkflowActionContractType => {
       };
     case Types.WorkflowActionOptions.MS_TEAMS_MESSAGE_WEBHOOK:
       return {
-        ms_teams_connector_webhook_url:
-          workflow?.webhook
+        ms_teams_connector_webhook_url: workflow?.ms_webhook,
       };
+    case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
+      return {};
     default:
       return {};
   }

@@ -25,7 +25,7 @@ export const getTriggerOptionsApi = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(
-            setCurrentWorkflowTriggerKey({ key: "workflowId", value: data.id }),
+            setCurrentWorkflowTriggerKey({ key: "workflowId", value: data.id })
           );
         } catch (error) {
           console.log(error);

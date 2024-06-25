@@ -382,6 +382,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """GKE Models"""
     MS_TEAMS_CHANNEL: _SourceModelType.ValueType  # 1401
     """MS TEAMS Models"""
+    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1501
+    """Pagerduty Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -437,6 +439,8 @@ GKE_CLUSTER: SourceModelType.ValueType  # 1301
 """GKE Models"""
 MS_TEAMS_CHANNEL: SourceModelType.ValueType  # 1401
 """MS TEAMS Models"""
+PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
+"""Pagerduty Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
