@@ -10,7 +10,7 @@ class PdApiProcessor(Processor):
     client = None
 
     def __init__(self, api_key, configured_email):
-        self.__api_key = api_key,
+        self.__api_key = api_key
         self.__configured_email = configured_email
         self.client = APISession(self.__api_key)
 
