@@ -7,6 +7,9 @@ import Overlay from "../../Overlay/index.jsx";
 import { CloseRounded } from "@mui/icons-material";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import TestConnectorButton from "../../Buttons/TestConnectorButton/index.tsx";
+import ShowTestConnectorResult from "../../ShowTestConnectorResult/index.tsx";
 
 const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
   const naviagte = useNavigate();
@@ -79,17 +82,9 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
               </div>
             ))}
             <div className={styles.actions}>
-              <button
-                className={styles["submitButton"]}
-                onClick={toggleOverlay}>
-                Cancel
-              </button>
-              <button
-                className={styles["submitButtonRight"]}
-                sx={{ marginLeft: "5px" }}
-                onClick={handleSuccess}>
-                Yes
-              </button>
+              <CustomButton onClick={toggleOverlay}>Cancel</CustomButton>
+              <CustomButton onClick={handleSuccess}>Yes</CustomButton>
+              <TestConnectorButton connector={connector} />
               {isLoading && (
                 <CircularProgress
                   style={{
@@ -99,6 +94,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
                 />
               )}
             </div>
+            <ShowTestConnectorResult />
           </div>
         </Overlay>
       )}
