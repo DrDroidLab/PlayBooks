@@ -8,8 +8,18 @@ import {
   setHighlightedIndex,
   searchSelector,
 } from "../store/features/search/searchSlice.ts";
-import { useEffect, useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  ChangeEvent,
+  FormEvent,
+  KeyboardEvent,
+} from "react";
 import React from "react";
+
+interface Option {
+  label: string;
+}
 
 const useSearch = () => {
   const dispatch = useDispatch();
@@ -28,13 +38,13 @@ const useSearch = () => {
     if (!value) {
       dispatch(
         setFilteredOptions(
-          options?.filter((option) => !selected.includes(option.label)),
+          options?.filter((option: Option) => !selected.includes(option.label)),
         ),
       );
       return;
     }
     const filtered = options?.filter(
-      (option) =>
+      (option: Option) =>
         option.label.toLowerCase().includes(value.toLowerCase()) &&
         !selected.includes(option.label),
     );
@@ -46,7 +56,7 @@ const useSearch = () => {
     dispatch(setIsOpen(false));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (filteredOptions.length > 0 && isOpen) {
       dispatch(addSelected(filteredOptions[highlightedIndex].label));
@@ -54,12 +64,12 @@ const useSearch = () => {
     resetState();
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setValue(e.target.value));
     dispatch(setIsOpen(true));
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (
       e.key === "Backspace" &&
       value.trim().length === 0 &&
@@ -83,7 +93,7 @@ const useSearch = () => {
     }
   };
 
-  const highlightMatch = (optionLabel, value) => {
+  const highlightMatch = (optionLabel: string, value: string) => {
     const parts = optionLabel.split(new RegExp(`(${value})`, "gi"));
     return (
       <>
@@ -103,8 +113,11 @@ const useSearch = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         dispatch(setIsOpen(false));
       }
     };
