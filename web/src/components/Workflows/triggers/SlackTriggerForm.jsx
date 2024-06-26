@@ -47,7 +47,7 @@ function SlackTriggerForm() {
           })}
           placeholder="Select Channel"
           onSelectionChange={(_, val) => {
-            handleTriggerSelect("channel", val.channel);
+            handleTriggerSelect("channel", val?.channel);
           }}
           selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}

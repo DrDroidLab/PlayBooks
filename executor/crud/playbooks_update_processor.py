@@ -49,6 +49,10 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
                 for mapping in all_playbook_step_task_connector_mappings:
                     mapping.is_active = False
                     mapping.save(update_fields=['is_active'])
+                all_playbook_step_relations = elem.playbooksteprelation_set.all()
+                for relation in all_playbook_step_relations:
+                    relation.is_active = False
+                    relation.save(update_fields=['is_active'])
                 random_generated_str = str(uuid.uuid4())
                 elem.name = f"{elem.name}###(inactive)###{random_generated_str}"
                 elem.save(update_fields=['is_active', 'name'])
@@ -71,6 +75,10 @@ class PlaybooksUpdateProcessor(UpdateProcessorMixin):
             for mapping in all_playbook_step_task_connector_mappings:
                 mapping.is_active = False
                 mapping.save(update_fields=['is_active'])
+            all_playbook_step_relations = elem.playbooksteprelation_set.all()
+            for relation in all_playbook_step_relations:
+                relation.is_active = False
+                relation.save(update_fields=['is_active'])
             updated_playbook = update_op.playbook
             if updated_playbook.name.value != elem.name:
                 elem.name = updated_playbook.name.value

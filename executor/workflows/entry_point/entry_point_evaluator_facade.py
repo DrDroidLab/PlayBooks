@@ -2,6 +2,7 @@ import logging
 
 from executor.workflows.entry_point.api_entry_point import ApiEntryPointEvaluator
 from executor.workflows.entry_point.entry_point_evaluator import WorkflowEntryPointEvaluator
+from executor.workflows.entry_point.pager_duty_incident_entry_point import PagerDutyIncidentEntryPointEvaluator
 from executor.workflows.entry_point.slack_channel_alert_entry_point import SlackChannelAlertEntryPointEvaluator
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
@@ -28,3 +29,4 @@ entry_point_evaluator_facade = WorkflowEntryPointEvaluatorFacade()
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.API, ApiEntryPointEvaluator())
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.SLACK_CHANNEL_ALERT,
                                       SlackChannelAlertEntryPointEvaluator())
+entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.PAGERDUTY_INCIDENT, PagerDutyIncidentEntryPointEvaluator())
