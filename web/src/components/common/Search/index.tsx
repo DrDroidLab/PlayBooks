@@ -48,6 +48,25 @@ const Search = ({ options }) => {
     setIsOpen(true);
   };
 
+  const highlightMatch = (optionLabel: string, value: string) => {
+    const parts = optionLabel.split(new RegExp(`(${value})`, "gi"));
+    return (
+      <>
+        {parts.map((part, index) => (
+          <span
+            key={index}
+            className={
+              part.toLowerCase() === value.toLowerCase()
+                ? "text-violet-500"
+                : undefined
+            }>
+            {part}
+          </span>
+        ))}
+      </>
+    );
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (
@@ -102,13 +121,13 @@ const Search = ({ options }) => {
             {filteredOptions?.map((option: any, index: number) => (
               <div
                 key={index}
-                className="block px-4 py-2 text-xs hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                className="block px-4 py-2 text-xs hover:bg-gray-100 hover:text-gray-900 cursor-pointer font-medium"
                 role="menuitem"
                 onClick={(e) => {
                   e.preventDefault();
                   addToArray(option.label);
                 }}>
-                {option.label}
+                {highlightMatch(option.label, value)}
               </div>
             ))}
           </div>
