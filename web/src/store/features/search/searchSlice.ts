@@ -52,6 +52,12 @@ const searchSlice = createSlice({
     setOptions: (state, action: PayloadAction<string[]>) => {
       state.options = action.payload;
     },
+    clear: (state) => {
+      state.value = "";
+      state.isOpen = false;
+      state.selected = [];
+      state.highlightedIndex = 0;
+    },
   },
 });
 
@@ -64,6 +70,7 @@ export const {
   removeSelected,
   setHighlightedIndex,
   setOptions,
+  clear,
 } = searchSlice.actions;
 
 export default searchSlice.reducer;

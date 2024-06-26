@@ -5,6 +5,7 @@ import {
   setFilteredOptions,
   addSelected,
   searchSelector,
+  clear,
 } from "../store/features/search/searchSlice.ts";
 import { useEffect, useRef, ChangeEvent, FormEvent } from "react";
 
@@ -28,6 +29,10 @@ const useSearch = () => {
   const resetState = () => {
     dispatch(setValue(""));
     dispatch(setIsOpen(false));
+  };
+
+  const clearFunction = () => {
+    dispatch(clear());
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -86,6 +91,7 @@ const useSearch = () => {
     handleChange,
     dropdownRef,
     resetState,
+    clear: clearFunction,
   };
 };
 
