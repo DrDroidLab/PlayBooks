@@ -1,123 +1,41 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CloseRounded } from "@mui/icons-material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
+import useSearch from "../../../hooks/useSearch.tsx";
+import {
+  addSelected,
+  removeSelected,
+  setIsOpen,
+  setOptions,
+} from "../../../store/features/search/searchSlice.ts";
+import { useDispatch } from "react-redux";
 
 const Search = ({ options }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [filteredOptions, setFilteredOptions] = useState(options);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const dropdownRef = useRef<any>(null);
+  const {
+    value,
+    isOpen,
+    filteredOptions,
+    selected,
+    highlightedIndex,
+    handleSubmit,
+    handleChange,
+    handleKeyDown,
+    highlightMatch,
+    dropdownRef,
+    resetState,
+  } = useSearch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!value) {
-      setFilteredOptions(
-        options?.filter((option) => !selected.includes(option.label)),
-      );
-      setHighlightedIndex(0);
-      return;
-    }
-    const filtered = options.filter(
-      (option) =>
-        option.label.toLowerCase().includes(value.toLowerCase()) &&
-        !selected.includes(option.label),
-    );
-    setFilteredOptions(filtered);
-    setHighlightedIndex(0);
-  }, [value, options, selected]);
-
-  const resetState = () => {
-    setValue("");
-    setIsOpen(false);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (filteredOptions.length > 0) {
-      addToArray(filteredOptions[highlightedIndex].label);
-    }
-  };
-
-  const addToArray = (value: string) => {
-    if (selected.includes(value) || value.trim().length === 0) {
-      return;
-    }
-    setSelected((selected) => [...selected, value]);
-    resetState();
-  };
-
-  const removeFromArray = (val: string) => {
-    setSelected((selected) => selected.filter((item) => item !== val));
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValue(val);
-    setIsOpen(true);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (
-      e.key === "Backspace" &&
-      value.trim().length === 0 &&
-      selected.length > 0
-    ) {
-      removeFromArray(selected[selected.length - 1]);
-    } else if (e.key === "ArrowDown" && filteredOptions.length > 0) {
-      setHighlightedIndex(
-        (prevIndex) => (prevIndex + 1) % filteredOptions.length,
-      );
-    } else if (e.key === "ArrowUp" && filteredOptions.length > 0) {
-      setHighlightedIndex(
-        (prevIndex) =>
-          (prevIndex - 1 + filteredOptions.length) % filteredOptions.length,
-      );
-    } else if (e.key === "Enter" && filteredOptions.length > 0) {
-      addToArray(filteredOptions[highlightedIndex].label);
-    }
-  };
-
-  const highlightMatch = (optionLabel: string, value: string) => {
-    const parts = optionLabel.split(new RegExp(`(${value})`, "gi"));
-    return (
-      <>
-        {parts.map((part, index) => (
-          <span
-            key={index}
-            className={
-              part.toLowerCase() === value.toLowerCase()
-                ? "text-violet-500"
-                : undefined
-            }>
-            {part}
-          </span>
-        ))}
-      </>
-    );
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (
-        dropdownRef?.current &&
-        !dropdownRef?.current?.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+    // Set initial options
+    dispatch(setOptions(options));
+  }, [dispatch, options]);
 
   return (
     <div ref={dropdownRef} className="relative w-full inline-block text-left">
       <div
         className={`flex flex-wrap items-center gap-1 w-full p-2 rounded border border-lightgray bg-white text-sm focus:outline-none`}>
-        {selected.map((item: any) => (
+        {selected.map((item) => (
           <div
             key={item}
             className="flex gap-1 bg-gray-200 p-1 rounded items-center">
@@ -125,7 +43,7 @@ const Search = ({ options }) => {
             <CloseRounded
               className="cursor-pointer"
               fontSize="small"
-              onClick={() => removeFromArray(item)}
+              onClick={() => dispatch(removeSelected(item))}
             />
           </div>
         ))}
@@ -136,7 +54,7 @@ const Search = ({ options }) => {
             placeholder={"Start Searching..."}
             value={value}
             onChange={handleChange}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => dispatch(setIsOpen(!isOpen))}
             onKeyDown={handleKeyDown}
           />
         </form>
@@ -152,7 +70,7 @@ const Search = ({ options }) => {
             {filteredOptions.length === 0 && (
               <p className="text-xs font-medium px-4 py-2">No matches found</p>
             )}
-            {filteredOptions?.map((option: any, index: number) => (
+            {filteredOptions.map((option, index) => (
               <div
                 key={index}
                 className={`block px-4 py-2 text-xs hover:bg-gray-100 hover:text-gray-900 cursor-pointer font-medium ${
@@ -161,7 +79,8 @@ const Search = ({ options }) => {
                 role="menuitem"
                 onClick={(e) => {
                   e.preventDefault();
-                  addToArray(option.label);
+                  dispatch(addSelected(option.label));
+                  resetState();
                 }}>
                 {highlightMatch(option.label, value)}
               </div>
