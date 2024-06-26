@@ -1,8 +1,8 @@
 import getCurrentTask from "../getCurrentTask.ts";
-import handleErrorMessage from "../playbook/handleErrorMessage.ts";
+import handleErrorMessage from "../playbook/handleErrorMessage.tsx";
 import { StepStateType, StepStates } from "./StepStates.ts";
 
-function handleStepState(stepId: string) {
+function handleStepState(stepId: string, log?: any) {
   const [step] = getCurrentTask(stepId);
 
   const isLoading = step.outputLoading;
@@ -22,6 +22,19 @@ function handleStepState(stepId: string) {
 
   let state: StepStateType = StepStates.DEFAULT;
 
+  if (log) {
+    if (!log?.evaluation_result) {
+      state = StepStates.ERROR;
+    } else {
+      state = StepStates.SUCCESS;
+    }
+
+    return {
+      state,
+      errorMessage,
+    };
+  }
+
   if (isLoading) {
     state = StepStates.LOADING;
   } else if (hasError) {
@@ -29,7 +42,7 @@ function handleStepState(stepId: string) {
   } else if (hasSuccess) {
     state = StepStates.SUCCESS;
   } else {
-    state = StepStates.ERROR;
+    state = StepStates.DEFAULT;
   }
 
   return {
