@@ -71,6 +71,13 @@ const integrationsSlice = createSlice({
     setTestConnectorData(state, { payload }) {
       state.testData = payload;
     },
+    resetIntegrationState(state) {
+      state.testData = {};
+      state.currentConnector = {};
+      state.agentProxy = {};
+      state.keyOptions = {};
+      state.vpcConnectors = {};
+    },
   },
 });
 
@@ -85,6 +92,7 @@ export const {
   setKey,
   setAgentProxyKey,
   setTestConnectorData,
+  resetIntegrationState,
 } = integrationsSlice.actions;
 
 export default integrationsSlice.reducer;
