@@ -19,7 +19,7 @@ export const calculateData = (
     g.setNode(node.id, {
       label: node.id,
       width: 350,
-      height: node.type === "custom" ? 250 : 200,
+      height: node.type === "custom" ? 450 : 200,
     });
   });
 

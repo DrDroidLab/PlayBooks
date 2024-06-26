@@ -19,6 +19,7 @@ function handleNotificationOptions() {
       ];
     case "pagerduty_incident":
       return [
+        NotificationOptionTypes.SLACK_MESSAGE,
         NotificationOptionTypes.PAGERDUTY_NOTES,
         NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
       ];

@@ -1,8 +1,4 @@
-const NotificationOptionTypes = {
-  THREAD_REPLY: "slack_thread_reply",
-  SLACK_MESSAGE: "slack_message",
-  PAGERDUTY_NOTES: "pagerduty_notes",
-};
+import { NotificationOptionTypes } from "../notificationOptionTypes.ts";
 
 export const notificationOptions = [
   {
@@ -22,7 +18,7 @@ export const notificationOptions = [
         group: "notification",
       },
       {
-        id: "ms_teams_message_webhook",
+        id: NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
         label: "Send via MS Teams Webhook",
         type: "checkbox",
         group: "notification",

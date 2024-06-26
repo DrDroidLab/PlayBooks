@@ -14,7 +14,7 @@ type HandleTypesPropTypes = {
 function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
-  const type = condition.type;
+  const type = condition.conditionType;
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);
