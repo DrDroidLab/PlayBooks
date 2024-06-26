@@ -3,7 +3,7 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const getMSTeamsWebhookOptionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getMSTeamsWebhookOptions: builder.query<any, any>({
+    getMSTeamsWebhookOptions: builder.query<any, void>({
       query: () => ({
         url: ALL_CONNECTORS,
         method: "POST",
@@ -16,7 +16,7 @@ export const getMSTeamsWebhookOptionsApi = apiSlice.injectEndpoints({
           const active_webhooks = response.connectors.map((connector: any) => ({
             name: connector.name,
             keyId: connector.keys.find(
-              (key: any) => key.key_type === "MS_TEAMS_CONNECTOR_WEBHOOK_URL"
+              (key: any) => key.key_type === "MS_TEAMS_CONNECTOR_WEBHOOK_URL",
             )?.key,
           }));
           return active_webhooks;
