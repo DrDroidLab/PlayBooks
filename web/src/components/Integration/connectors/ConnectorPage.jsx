@@ -103,11 +103,7 @@ function ConnectorPageBeta() {
         value={selectedTab}
         index={0}
         className={styles["config-section"]}>
-        <Config
-          id={id}
-          connector={connector}
-          connectorActive={id !== undefined && id !== null}
-        />
+        <Config connector={connector} />
       </TabPanel>
 
       {isActive && containsAssets && (
