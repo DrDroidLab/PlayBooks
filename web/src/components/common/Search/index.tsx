@@ -7,18 +7,25 @@ const Search = ({ options }) => {
   const [value, setValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [selected, setSelected] = useState<string[]>([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const dropdownRef = useRef<any>(null);
 
   useEffect(() => {
     if (!value) {
-      setFilteredOptions(options);
+      setFilteredOptions(
+        options?.filter((option) => !selected.includes(option.label)),
+      );
+      setHighlightedIndex(0);
       return;
     }
-    const filtered = options.filter((option: any) =>
-      option.label.toLowerCase().includes(value.toLowerCase()),
+    const filtered = options.filter(
+      (option) =>
+        option.label.toLowerCase().includes(value.toLowerCase()) &&
+        !selected.includes(option.label),
     );
     setFilteredOptions(filtered);
-  }, [value, options]);
+    setHighlightedIndex(0);
+  }, [value, options, selected]);
 
   const resetState = () => {
     setValue("");
@@ -27,7 +34,9 @@ const Search = ({ options }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addToArray(value);
+    if (filteredOptions.length > 0) {
+      addToArray(filteredOptions[highlightedIndex].label);
+    }
   };
 
   const addToArray = (value: string) => {
@@ -55,6 +64,17 @@ const Search = ({ options }) => {
       selected.length > 0
     ) {
       removeFromArray(selected[selected.length - 1]);
+    } else if (e.key === "ArrowDown" && filteredOptions.length > 0) {
+      setHighlightedIndex(
+        (prevIndex) => (prevIndex + 1) % filteredOptions.length,
+      );
+    } else if (e.key === "ArrowUp" && filteredOptions.length > 0) {
+      setHighlightedIndex(
+        (prevIndex) =>
+          (prevIndex - 1 + filteredOptions.length) % filteredOptions.length,
+      );
+    } else if (e.key === "Enter" && filteredOptions.length > 0) {
+      addToArray(filteredOptions[highlightedIndex].label);
     }
   };
 
@@ -122,17 +142,22 @@ const Search = ({ options }) => {
         </form>
       </div>
 
-      {isOpen && filteredOptions.length > 0 && (
+      {isOpen && (
         <div className="origin-top-right absolute left-0 mt-2 w-full max-h-36 overflow-scroll rounded-md shadow-lg bg-white z-10">
           <div
             className="py-1"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu">
+            {filteredOptions.length === 0 && (
+              <p className="text-xs font-medium px-4 py-2">No matches found</p>
+            )}
             {filteredOptions?.map((option: any, index: number) => (
               <div
                 key={index}
-                className="block px-4 py-2 text-xs hover:bg-gray-100 hover:text-gray-900 cursor-pointer font-medium"
+                className={`block px-4 py-2 text-xs hover:bg-gray-100 hover:text-gray-900 cursor-pointer font-medium ${
+                  index === highlightedIndex ? "bg-gray-200" : ""
+                }`}
                 role="menuitem"
                 onClick={(e) => {
                   e.preventDefault();
