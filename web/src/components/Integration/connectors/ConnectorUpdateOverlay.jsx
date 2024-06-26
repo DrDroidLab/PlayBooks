@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import TestConnectorButton from "../../Buttons/TestConnectorButton/index.tsx";
 import ShowTestConnectorResult from "../../ShowTestConnectorResult/index.tsx";
+import AffectedPlaybooks from "../../AffectedPlaybooks/index.tsx";
 
 const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
   const naviagte = useNavigate();
@@ -81,6 +82,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
                 />
               </div>
             ))}
+            <AffectedPlaybooks id={connector.id} />
             <div className={styles.actions}>
               <CustomButton onClick={toggleOverlay}>Cancel</CustomButton>
               <CustomButton onClick={handleSuccess}>Yes</CustomButton>
