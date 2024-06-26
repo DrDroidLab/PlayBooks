@@ -8,6 +8,9 @@ import TableSkeleton from "../Skeleton/TableLoader";
 
 import PlaybookTable from "./PlayBookTable";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
+import CustomButton from "../common/CustomButton/index.tsx";
+import { Add } from "@mui/icons-material";
+import Search from "../common/Search/index.tsx";
 
 const Playbooks = () => {
   const navigate = useNavigate();
@@ -30,6 +33,11 @@ const Playbooks = () => {
     });
   };
 
+  const searchOptions = playbookList?.map((e) => ({
+    id: e.id,
+    label: e.name,
+  }));
+
   return (
     <div>
       <Heading
@@ -38,13 +46,11 @@ const Playbooks = () => {
         onRefreshCb={false}
       />
       <main className="flex flex-col gap-4 p-2 pt-4">
-        <div className="flex items-center justify-between">
-          <button
-            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg !text-white"
-            onClick={handleCreatePlaybook}
-            style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
-            + Create Playbook
-          </button>
+        <div className="flex items-center gap-2">
+          <CustomButton onClick={handleCreatePlaybook}>
+            <Add fontSize="small" /> Create Playbook
+          </CustomButton>
+          <Search options={searchOptions} />
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <PlaybookTable
