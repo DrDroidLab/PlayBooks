@@ -213,6 +213,11 @@ enum SourceKeyType {
   GKE_SERVICE_ACCOUNT_JSON = 61;
 
   MS_TEAMS_CONNECTOR_WEBHOOK_URL = 62;
+
+  ELASTIC_SEARCH_HOST = 64;
+  ELASTIC_SEARCH_PORT = 65;
+  ELASTIC_SEARCH_API_KEY_ID = 66;
+  ELASTIC_SEARCH_API_KEY = 67;
 }
 
 enum SourceModelType {
@@ -287,4 +292,7 @@ enum SourceModelType {
 
   // Pagerduty Models
   PAGERDUTY_INCIDENT = 1501;
+
+  // Elastic Search Models
+  ELASTIC_SEARCH_INDEX = 1601;
 }
