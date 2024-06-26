@@ -48,6 +48,16 @@ const Search = ({ options }) => {
     setIsOpen(true);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Backspace" &&
+      value.trim().length === 0 &&
+      selected.length > 0
+    ) {
+      removeFromArray(selected[selected.length - 1]);
+    }
+  };
+
   const highlightMatch = (optionLabel: string, value: string) => {
     const parts = optionLabel.split(new RegExp(`(${value})`, "gi"));
     return (
@@ -107,6 +117,7 @@ const Search = ({ options }) => {
             value={value}
             onChange={handleChange}
             onClick={() => setIsOpen(!isOpen)}
+            onKeyDown={handleKeyDown}
           />
         </form>
       </div>
