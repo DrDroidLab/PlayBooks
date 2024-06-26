@@ -5,9 +5,11 @@ import {
   setFilteredOptions,
   addSelected,
   searchSelector,
+  setSelected,
   clear,
 } from "../store/features/search/searchSlice.ts";
 import { useEffect, useRef, ChangeEvent, FormEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface Option {
   label: string;
@@ -25,6 +27,7 @@ const useSearch = () => {
   } = useSelector(searchSelector);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const resetState = () => {
     dispatch(setValue(""));
@@ -80,6 +83,23 @@ const useSearch = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef, dispatch]);
+
+  useEffect(() => {
+    const selectedParams = searchParams.get("selected");
+    if (selectedParams) {
+      const selectedArray = selectedParams.split(",");
+      dispatch(setSelected(selectedArray));
+    }
+  }, [dispatch, searchParams]);
+
+  useEffect(() => {
+    if (selected.length > 0) {
+      searchParams.set("selected", selected.join(","));
+    } else {
+      searchParams.delete("selected");
+    }
+    setSearchParams(searchParams);
+  }, [selected, setSearchParams, searchParams]);
 
   return {
     value,
