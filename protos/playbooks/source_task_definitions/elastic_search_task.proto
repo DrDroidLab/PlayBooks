@@ -7,7 +7,7 @@ import "google/protobuf/wrappers.proto";
 message ElasticSearch {
 
   message QueryIndex {
-    google.protobuf.StringValue index_name = 1;
+    google.protobuf.StringValue index = 1;
     google.protobuf.StringValue query = 2;
   }
 

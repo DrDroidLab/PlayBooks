@@ -8,6 +8,7 @@ from executor.source_task_executors.api_task_executor import ApiSourceManager
 from executor.source_task_executors.azure_task_executor import AzureSourceManager
 from executor.source_task_executors.bash_task_executor import BashSourceManager
 from executor.source_task_executors.documentation_task_executor import DocumentationSourceManager
+from executor.source_task_executors.elastic_search_task_executor import ElasticSearchSourceManager
 from executor.source_task_executors.gke_task_executor import GkeSourceManager
 from executor.source_task_executors.grafana_task_executor import GrafanaSourceManager
 from executor.source_task_executors.grafana_vpc_executor import GrafanaVpcSourceManager
@@ -109,6 +110,7 @@ playbook_source_facade.register(Source.GKE, GkeSourceManager())
 playbook_source_facade.register(Source.POSTGRES, PostgresSourceManager())
 playbook_source_facade.register(Source.CLICKHOUSE, ClickhouseSourceManager())
 playbook_source_facade.register(Source.SQL_DATABASE_CONNECTION, SqlDatabaseConnectionSourceManager())
+playbook_source_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceManager())
 
 playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
