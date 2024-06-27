@@ -31,7 +31,7 @@ COPY --from=builder /app/build /usr/share/nginx/html
 COPY env.template.js /usr/share/nginx/html
 
 # Create a script to substitute environment variables and start nginx
-RUN echo 'envsubst < /usr/share/nginx/html/env.template.js > /usr/share/nginx/html/env.js && exec nginx -g "daemon off;"' > /docker-entrypoint.sh
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 # Expose port 80
