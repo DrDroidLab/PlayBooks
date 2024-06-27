@@ -27,6 +27,15 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy from the stahg 1
 COPY --from=builder /app/build /usr/share/nginx/html
 
+# Copy the env template to the build directory
+COPY env.template.js /usr/share/nginx/html
+
+# Create a script to substitute environment variables and start nginx
+RUN echo 'envsubst < /usr/share/nginx/html/env.template.js > /usr/share/nginx/html/env.js && exec nginx -g "daemon off;"' > /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port 80
 EXPOSE 80
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# Use the script as the entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
