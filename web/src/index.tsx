@@ -13,9 +13,6 @@ import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
 import Loading from "./components/common/Loading/index.tsx";
 import { ReactFlowProvider } from "reactflow";
 
-console.log("config", config);
-console.log('REACT_APP_POSTHOG_ENABLED:', window._env_.REACT_APP_POSTHOG_ENABLED);
-
 if (config.posthogEnabled === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
     api_host: "https://pumpkins.drdroid.io",

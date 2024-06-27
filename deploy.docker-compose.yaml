@@ -161,12 +161,8 @@ services:
       - mynetwork
 
   web:
-    # image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
-    # platform: linux/amd64
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-    image: web
+    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
+    platform: linux/amd64
     environment:
       - REACT_APP_POSTHOG_ENABLED=true
     ports:
