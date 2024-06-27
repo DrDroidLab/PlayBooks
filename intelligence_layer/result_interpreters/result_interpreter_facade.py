@@ -59,10 +59,10 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
             if step_log.step_interpretation.type == InterpretationProto.Type.UNKNOWN and len(task_interpretations) == 0:
                 continue
             step_name = step_log.step.name.value
-            if step_name and not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
-                title = StringValue(value=f'Step {i + 1}: {step_name}')
-            else:
-                title = StringValue(value=f'Step {i + 1}')
+            # if step_name and not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
+            title = StringValue(value=f'Step {i + 1}: {step_name}')
+            # else:
+            #     title = StringValue(value=f'Step {i + 1}')
 
             base_step_interpretation = InterpretationProto(
                 type=InterpretationProto.Type.SUMMARY,

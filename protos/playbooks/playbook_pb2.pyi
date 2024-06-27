@@ -347,6 +347,7 @@ class PlaybookStepRelationExecutionLog(google.protobuf.message.Message):
     RELATION_FIELD_NUMBER: builtins.int
     EVALUATION_RESULT_FIELD_NUMBER: builtins.int
     EVALUATION_OUTPUT_FIELD_NUMBER: builtins.int
+    STEP_RELATION_INTERPRETATION_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -355,6 +356,8 @@ class PlaybookStepRelationExecutionLog(google.protobuf.message.Message):
     def evaluation_result(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     @property
     def evaluation_output(self) -> google.protobuf.struct_pb2.Struct: ...
+    @property
+    def step_relation_interpretation(self) -> protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation: ...
     def __init__(
         self,
         *,
@@ -362,9 +365,10 @@ class PlaybookStepRelationExecutionLog(google.protobuf.message.Message):
         relation: global___PlaybookStepRelation | None = ...,
         evaluation_result: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         evaluation_output: google.protobuf.struct_pb2.Struct | None = ...,
+        step_relation_interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["evaluation_output", b"evaluation_output", "evaluation_result", b"evaluation_result", "id", b"id", "relation", b"relation"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["evaluation_output", b"evaluation_output", "evaluation_result", b"evaluation_result", "id", b"id", "relation", b"relation"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["evaluation_output", b"evaluation_output", "evaluation_result", b"evaluation_result", "id", b"id", "relation", b"relation", "step_relation_interpretation", b"step_relation_interpretation"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["evaluation_output", b"evaluation_output", "evaluation_result", b"evaluation_result", "id", b"id", "relation", b"relation", "step_relation_interpretation", b"step_relation_interpretation"]) -> None: ...
 
 global___PlaybookStepRelationExecutionLog = PlaybookStepRelationExecutionLog
 

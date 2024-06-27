@@ -14,6 +14,8 @@ from executor.task_result_conditional_evaluators.step_condition_evaluator import
 from executor.utils.playbook_step_utils import get_playbook_steps_graph_view, get_playbook_steps_id_def_map
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
+from intelligence_layer.result_interpreters.step_relation_interpreters.step_relation_interpreter import \
+    step_relation_interpret
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType
@@ -99,10 +101,14 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 condition_evaluation_result = False
                 condition_evaluation_output = {'error': str(exc) if exc else 'Unknown Error'}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
+            step_relation_interpretation = InterpretationProto()
+            if condition_evaluation_result:
+                step_relation_interpretation = step_relation_interpret(relation_proto)
             relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
                                                                       evaluation_result=BoolValue(
                                                                           value=condition_evaluation_result),
-                                                                      evaluation_output=condition_evaluation_output_proto)
+                                                                      evaluation_output=condition_evaluation_output_proto,
+                                                                      step_relation_interpretation=step_relation_interpretation)
             relation_execution_logs.append(relation_execution_log)
         step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
                                                       step_interpretation=step_interpretation,
