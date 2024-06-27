@@ -71,11 +71,22 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
             for hit in hits:
                 table_columns = []
                 for column, value in hit.items():
-                    table_column = TableResult.TableColumn(name=StringValue(value=column),
-                                                           value=StringValue(value=str(value)))
-                    table_columns.append(table_column)
+                    if column == '_source':
+                        try:
+                            for key, val in value.items():
+                                table_column = TableResult.TableColumn(name=StringValue(value=key),
+                                                                       value=StringValue(value=str(val)))
+                                table_columns.append(table_column)
+                        except Exception as e:
+                            table_column = TableResult.TableColumn(name=StringValue(value=column),
+                                                                   value=StringValue(value=str(value)))
+                            table_columns.append(table_column)
+                    else:
+                        table_column = TableResult.TableColumn(name=StringValue(value=column),
+                                                               value=StringValue(value=str(value)))
+                        table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=query,
+            table = TableResult(raw_query=StringValue(value=query),
                                 total_count=UInt64Value(value=count_result),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
