@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message ElasticSearch {
+
+  message QueryIndex {
+    google.protobuf.StringValue index = 1;
+    google.protobuf.StringValue query = 2;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    QUERY_INDEX = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    QueryIndex query_index = 2;
+  }
+}
