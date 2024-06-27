@@ -40,7 +40,7 @@ class ElasticSearchApiProcessor(Processor):
     def fetch_indices(self):
         try:
             connection = self.get_connection()
-            indices = connection.indices.get_alias("*")
+            indices = connection.indices.get_alias()
             connection.close()
             return list(indices.keys())
         except Exception as e:
