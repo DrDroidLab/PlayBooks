@@ -4,7 +4,7 @@ import { store } from "../../store/index.ts";
 
 export const getEdges = () => {
   const { playbookEdges } = playbookSelector(store.getState());
-  const stepEdges = playbookEdges.map((edge) => ({
+  const stepEdges = playbookEdges?.map((edge) => ({
     ...edge,
     markerEnd: {
       type: MarkerType.ArrowClosed,

@@ -5,6 +5,7 @@ import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
 import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
+import { RootState } from "../../index.ts";
 
 const emptyStep: Step = {
   id: "",
@@ -140,8 +141,12 @@ const playbookSlice = createSlice({
                 x: 0,
                 y: 0,
               },
+              taskType: payload.taskType,
             },
-            [payload.taskType as TaskType]: {},
+            [payload.source.toLowerCase() as TaskType]: {
+              type: payload.taskType,
+              [payload.taskType.toLowerCase()]: {},
+            },
             description:
               payload.description ?? integrationSentenceMap[payload.modelType],
           },
@@ -414,7 +419,10 @@ export const {
 
 export default playbookSlice.reducer;
 
-export const playbookSelector = (state) => state.playbook;
-export const stepsSelector = (state) => state.playbook?.steps ?? [];
-export const playbooksSelector = (state) => state.playbook.playbooks;
-export const metaSelector = (state) => state.playbook.meta;
+export const playbookSelector = (state: RootState) => state.playbook;
+export const playbooksSelector = (state: RootState) => state.playbook.playbooks;
+export const metaSelector = (state: RootState) => state.playbook.meta;
+export const currentPlaybookSelector = (state: RootState) =>
+  state.playbook.currentPlaybook;
+export const stepsSelector = (state: RootState) =>
+  state.playbook.currentPlaybook?.ui_requirement.tasks ?? [];

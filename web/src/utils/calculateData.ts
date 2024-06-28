@@ -15,7 +15,7 @@ export const calculateData = (
     return {};
   });
 
-  nodes.forEach((node) => {
+  nodes?.forEach((node) => {
     g.setNode(node.id, {
       label: node.id,
       width: 350,
@@ -23,7 +23,7 @@ export const calculateData = (
     });
   });
 
-  edges.forEach((edge) => {
+  edges?.forEach((edge) => {
     g.setEdge(edge.source, edge.target);
   });
 

@@ -10,10 +10,11 @@ type TaskUIRequirement = {
   };
   assets?: any;
   nrqlData?: any;
+  taskType?: string;
 };
 
 export type Task = {
-  id?: number;
+  id?: string;
   source: string;
   reference_id?: string;
   name?: string;
@@ -24,4 +25,4 @@ export type Task = {
   interpreter_type: string;
   task_connector_sources: TaskConnectorSource[];
   ui_requirement: TaskUIRequirement;
-} & TaskDetails;
+} & Partial<TaskDetails>;

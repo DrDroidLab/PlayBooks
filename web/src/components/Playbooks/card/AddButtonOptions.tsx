@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
-import {
-  addStep,
-  playbookSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
@@ -47,7 +44,7 @@ function AddButtonOptions({ stepId }) {
     const parentId = step.id;
 
     const id = generateUUIDWithoutHyphens();
-    dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
+    // dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
     addAdditionalData({
       source,
       id: `edge-${parentId}-${id}`,

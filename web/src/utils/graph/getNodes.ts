@@ -1,4 +1,4 @@
-import { Step } from "../../types.ts";
+import { Step } from "../../types/index.ts";
 
 const initialPlaybookNode = {
   id: "playbook",
@@ -15,8 +15,8 @@ export const getNodes = (steps: Step[]) => {
     return {
       id: `node-${step.id}`,
       position: {
-        x: step.position?.x ?? 0,
-        y: step.position?.y ?? 0,
+        // x: step.position?.x ?? 0,
+        // y: step.position?.y ?? 0,
       },
       data: {
         step,

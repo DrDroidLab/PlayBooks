@@ -3,7 +3,7 @@ import { Handle, NodeToolbar, Position } from "reactflow";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
-  setCurrentStepId,
+  setCurrentVisibleTask,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
@@ -51,7 +51,7 @@ export default function CustomNode({ data }) {
       togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
       return;
     }
-    dispatch(setCurrentStepId(step.id));
+    dispatch(setCurrentVisibleTask(step.id));
     addAdditionalData({});
     openDrawer(PermanentDrawerTypes.STEP_DETAILS);
   };

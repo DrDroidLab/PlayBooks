@@ -1,4 +1,4 @@
-import { TaskType } from "./index.ts";
+import { Sources } from "./sources.ts";
 import {
   Documentation,
   Cloudwatch,
@@ -17,36 +17,26 @@ import {
   ElasticSearch,
 } from "./taskTypes/index.ts";
 
-export type TaskDetails = {
-  [K in TaskType]?: K extends TaskType.Documentation
-    ? Documentation
-    : K extends TaskType.Cloudwatch
-    ? Cloudwatch
-    : K extends TaskType.Grafana
-    ? Grafana
-    : K extends TaskType.NewRelic
-    ? NewRelic
-    : K extends TaskType.Datadog
-    ? Datadog
-    : K extends TaskType.Clickhouse
-    ? Clickhouse
-    : K extends TaskType.Postgres
-    ? Postgres
-    : K extends TaskType.Eks
-    ? Eks
-    : K extends TaskType.SqlDatabaseConnection
-    ? SqlDatabaseConnection
-    : K extends TaskType.Api
-    ? Api
-    : K extends TaskType.Bash
-    ? Bash
-    : K extends TaskType.GrafanaMimir
-    ? GrafanaMimir
-    : K extends TaskType.Azure
-    ? Azure
-    : K extends TaskType.Gke
-    ? Gke
-    : K extends TaskType.ElasticSearch
-    ? ElasticSearch
-    : never;
+type TaskDetailsMapping = {
+  [Sources.Documentation]: Documentation;
+  [Sources.Cloudwatch]: Cloudwatch;
+  [Sources.Grafana]: Grafana;
+  [Sources.Datadog]: Datadog;
+  [Sources.Clickhouse]: Clickhouse;
+  [Sources.NewRelic]: NewRelic;
+  [Sources.Postgres]: Postgres;
+  [Sources.Eks]: Eks;
+  [Sources.SqlDatabaseConnection]: SqlDatabaseConnection;
+  [Sources.Api]: Api;
+  [Sources.Bash]: Bash;
+  [Sources.GrafanaMimir]: GrafanaMimir;
+  [Sources.Azure]: Azure;
+  [Sources.Gke]: Gke;
+  [Sources.ElasticSearch]: ElasticSearch;
 };
+
+export type TaskDetails = {
+  [K in keyof TaskDetailsMapping]: {
+    type: K;
+  } & { [P in K]: TaskDetailsMapping[K] };
+}[keyof TaskDetailsMapping];

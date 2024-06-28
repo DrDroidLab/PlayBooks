@@ -1,6 +1,6 @@
 import { getNodes } from "./getNodes.ts";
 import { getEdges } from "./getEdges.ts";
-import { stepsSelector } from "../../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
 
 export type GraphData = {
@@ -9,8 +9,8 @@ export type GraphData = {
 };
 
 export default function fetchGraphData() {
-  const steps = stepsSelector(store.getState());
-  const nodes = getNodes(steps);
+  const playbook = currentPlaybookSelector(store.getState());
+  const nodes = [];
   const edges = getEdges();
 
   return {
