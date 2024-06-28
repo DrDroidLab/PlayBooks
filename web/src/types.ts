@@ -1,9 +1,6 @@
 export interface Step {
   name?: string;
   id: string;
-  query?: string;
-  dimension?: string;
-  namespace?: string;
   description?: string;
   externalLinks?: ExternalLink[];
   isPrefetched?: boolean;
@@ -68,7 +65,6 @@ export interface Step {
   requiresFormula?: boolean;
   showExternalLinks?: boolean;
   showNotes?: boolean;
-  stepType: string | null;
   action: any;
   connector_type?: any;
   model_type?: any;

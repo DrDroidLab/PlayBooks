@@ -1,48 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
 import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import { Step, PlaybookUIState } from "../../../types/index.ts";
 
-const emptyStep = {
-  modelType: "",
-  source: "",
-  assets: [],
-  isOpen: true,
-  isPlayground: false,
-  showError: false,
-  stepType: null,
-  action: {},
-  requireCondition: false,
-  isEditing: true,
+const emptyStep: Step = {
+  id: "",
+  tasks: [],
+  uiRequirements: {
+    isEditing: true,
+    isOpen: true,
+    showError: false,
+    isCopied: false,
+  },
 };
 
-const initialState: Playbook = {
-  id: null,
-  name: "",
-  globalVariables: [],
-  interpreterTypes: [],
-  steps: [],
+const initialState: PlaybookUIState = {
   playbooks: [],
-  currentPlaybook: {},
+  currentPlaybook: {
+    id: "",
+    global_variable_set: [],
+    steps: [],
+    step_relations: [],
+  },
   meta: {
     page: {
       limit: 10,
       offset: 0,
     },
   },
-  isEditing: false,
-  lastUpdatedAt: null,
-  view: "builder",
   shouldScroll: undefined,
-  currentVisibleStep: undefined,
-  playbookEdges: [],
   permanentView: undefined,
   executionId: undefined,
-  currentStepId: undefined,
   isOnPlaybookPage: false,
 };
 
@@ -218,7 +210,6 @@ const playbookSlice = createSlice({
           isPlayground: false,
           globalVariables: state.globalVariables ?? [],
           showError: false,
-          stepType: "data",
           action: {},
           position: {
             x: 0,
