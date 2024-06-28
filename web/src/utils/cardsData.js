@@ -140,7 +140,6 @@ export const cardsData = [
     title: "ELASTIC SEARCH",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
-    buttonTitle: "Request Access",
     buttonType: "available",
   },
   {
