@@ -26,7 +26,7 @@ function AffectedPlaybooks({ id }) {
   return (
     <div className="my-1">
       <p className="text-xs">
-        Following Playbooks will be affected: ({data?.length})
+        Playbooks affected by this change: ({data?.length})
       </p>
       {isFetching && <p className="text-xs">Loading...</p>}
       <div className="flex flex-wrap gap-2 my-1">
