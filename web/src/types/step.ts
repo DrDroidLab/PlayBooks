@@ -14,6 +14,8 @@ type StepUIRequirements = {
   outputError?: string;
   errors?: any;
   resultType?: string;
+  showExternalLinks?: boolean;
+  showNotes?: boolean;
 };
 
 export interface Step {

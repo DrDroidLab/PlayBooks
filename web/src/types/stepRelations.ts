@@ -26,7 +26,7 @@ type StepCondition = {
 
 export type StepRelation = {
   id: string;
-  parent: Step;
+  parent: Step | string;
   child: Step;
   condition?: StepCondition;
 };

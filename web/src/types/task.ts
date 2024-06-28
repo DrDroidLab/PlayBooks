@@ -2,6 +2,16 @@ import { GlobalVariableSet } from "./globalVariableSet.ts";
 import { TaskConnectorSource } from "./taskConnectorSources.ts";
 import { TaskDetails } from "./taskDetails.ts";
 
+type TaskUIRequirement = {
+  isOpen: boolean;
+  position: {
+    x: number;
+    y: number;
+  };
+  assets?: any;
+  nrqlData?: any;
+};
+
 export type Task = {
   id?: number;
   source: string;
@@ -13,4 +23,5 @@ export type Task = {
   global_variable_set?: GlobalVariableSet;
   interpreter_type: string;
   task_connector_sources: TaskConnectorSource[];
+  ui_requirement: TaskUIRequirement;
 } & TaskDetails;
