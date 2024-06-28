@@ -3,8 +3,6 @@ import { Task } from "./task.ts";
 
 type StepUIRequirements = {
   isOpen: boolean;
-  isEditing: boolean;
-  isCopied: boolean;
   showError: boolean;
   stepIndex?: number;
   isPrefetched?: boolean;

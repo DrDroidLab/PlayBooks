@@ -6,10 +6,14 @@ import {
 import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardById } from "./updateCardById.ts";
-import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import {
+  playbookSelector,
+  popFromExecutionStack,
+} from "../../store/features/playbook/playbookSlice.ts";
 
 export async function executeStep(step: Step, id?: string) {
   const { executionId } = playbookSelector(store.getState());
+  const dispatch = store.dispatch;
   if (Object.keys(step.errors ?? {}).length > 0) {
     updateCardById("showError", true, id);
     return;
@@ -18,6 +22,8 @@ export async function executeStep(step: Step, id?: string) {
   const stepData = stateToStep(step);
   updateCardById("outputLoading", true, id);
   updateCardById("showOutput", false, id);
+
+  dispatch(popFromExecutionStack());
 
   try {
     const res =

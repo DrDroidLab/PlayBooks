@@ -4,16 +4,14 @@ import { integrationSentenceMap } from "../../../utils/integrationOptions/index.
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
 import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
-import { Step, PlaybookUIState } from "../../../types/index.ts";
+import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
 
 const emptyStep: Step = {
   id: "",
   tasks: [],
   uiRequirements: {
-    isEditing: true,
     isOpen: true,
     showError: false,
-    isCopied: false,
   },
 };
 
@@ -40,6 +38,8 @@ const initialState: PlaybookUIState = {
   isOnPlaybookPage: false,
   isCopied: false,
   isEditing: false,
+  executionStack: [],
+  zoomLevel: 0.75,
 };
 
 const playbookSlice = createSlice({
@@ -141,7 +141,7 @@ const playbookSlice = createSlice({
                 y: 0,
               },
             },
-            [payload.taskType]: {},
+            [payload.taskType as TaskType]: {},
             description:
               payload.description ?? integrationSentenceMap[payload.modelType],
           },
@@ -326,6 +326,7 @@ const playbookSlice = createSlice({
       state.permanentView = PermanentDrawerTypes.DEFAULT;
       state.playbooks = [];
       state.shouldScroll = false;
+      state.zoomLevel = 0.75;
     },
     resetExecutions(state) {
       state.executionId = undefined;
@@ -365,6 +366,18 @@ const playbookSlice = createSlice({
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
     },
+    pushToExecutionStack(state, { payload }) {
+      const nextPossibleStepLogs = payload;
+      nextPossibleStepLogs.forEach((log) => {
+        const stepId = log.relation.child.id;
+        if (!state.executionStack.includes(stepId)) {
+          state.executionStack.push(stepId);
+        }
+      });
+    },
+    popFromExecutionStack(state) {
+      if (state.executionStack.length > 0) state.executionStack.pop();
+    },
   },
 });
 
@@ -395,6 +408,8 @@ export const {
   setActionKey,
   setPlaybookKey,
   resetExecutions,
+  pushToExecutionStack,
+  popFromExecutionStack,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

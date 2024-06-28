@@ -28,4 +28,6 @@ export type PlaybookUIState = {
   permanentView?: string;
   shouldScroll?: boolean;
   executionId?: string;
+  executionStack?: any;
+  zoomLevel?: any;
 };
