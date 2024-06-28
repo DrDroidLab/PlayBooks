@@ -40,6 +40,7 @@ integrations_connector_type_display_name_map = {
     Source.GKE: 'GKE KUBERNETES',
     Source.MS_TEAMS: 'MS TEAMS',
     Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
+    Source.GRAFANA_LOKI: 'GRAFANA LOKI',
 }
 
 integrations_connector_type_category_map = {
@@ -59,6 +60,7 @@ integrations_connector_type_category_map = {
     Source.PROMETHEUS: 'APM Tools',
     Source.GRAFANA_MIMIR: 'APM Tools',
     Source.ELASTIC_SEARCH: 'APM Tools',
+    Source.GRAFANA_LOKI: 'APM Tools',
     Source.GITHUB_ACTIONS: 'CI/CD',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
@@ -238,6 +240,20 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.ELASTIC_SEARCH_HOST,
         ]
     ],
+    Source.GRAFANA_LOKI: [
+        [
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_API_KEY,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_API_KEY
+        ],
+        [
+            SourceKeyType.GRAFANA_LOKI_HOST
+        ]
+    ],
 }
 
 integrations_connector_key_display_name_map = {
@@ -298,7 +314,9 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.ELASTIC_SEARCH_HOST: 'Host',
     SourceKeyType.ELASTIC_SEARCH_PORT: 'Port',
     SourceKeyType.ELASTIC_SEARCH_API_KEY_ID: 'API Key ID',
-    SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key'
+    SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key',
+    SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
+    SourceKeyType.GRAFANA_LOKI_API_KEY: 'API Key',
 }
 
 
