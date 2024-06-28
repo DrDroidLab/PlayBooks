@@ -258,6 +258,10 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GKE_PROJECT_ID: _SourceKeyType.ValueType  # 60
     GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 61
     MS_TEAMS_CONNECTOR_WEBHOOK_URL: _SourceKeyType.ValueType  # 62
+    ELASTIC_SEARCH_HOST: _SourceKeyType.ValueType  # 64
+    ELASTIC_SEARCH_PORT: _SourceKeyType.ValueType  # 65
+    ELASTIC_SEARCH_API_KEY_ID: _SourceKeyType.ValueType  # 66
+    ELASTIC_SEARCH_API_KEY: _SourceKeyType.ValueType  # 67
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -324,6 +328,10 @@ AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
 GKE_PROJECT_ID: SourceKeyType.ValueType  # 60
 GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 61
 MS_TEAMS_CONNECTOR_WEBHOOK_URL: SourceKeyType.ValueType  # 62
+ELASTIC_SEARCH_HOST: SourceKeyType.ValueType  # 64
+ELASTIC_SEARCH_PORT: SourceKeyType.ValueType  # 65
+ELASTIC_SEARCH_API_KEY_ID: SourceKeyType.ValueType  # 66
+ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 67
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -386,6 +394,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """MS TEAMS Models"""
     PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1501
     """Pagerduty Models"""
+    ELASTIC_SEARCH_INDEX: _SourceModelType.ValueType  # 1601
+    """Elastic Search Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -443,6 +453,8 @@ MS_TEAMS_CHANNEL: SourceModelType.ValueType  # 1401
 """MS TEAMS Models"""
 PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
 """Pagerduty Models"""
+ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
+"""Elastic Search Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
