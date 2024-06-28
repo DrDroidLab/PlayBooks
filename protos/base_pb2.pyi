@@ -138,6 +138,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     GRAFANA_MIMIR: _Source.ValueType  # 43
     GKE: _Source.ValueType  # 44
     MS_TEAMS: _Source.ValueType  # 45
+    GRAFANA_LOKI: _Source.ValueType  # 46
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -187,6 +188,7 @@ AZURE: Source.ValueType  # 42
 GRAFANA_MIMIR: Source.ValueType  # 43
 GKE: Source.ValueType  # 44
 MS_TEAMS: Source.ValueType  # 45
+GRAFANA_LOKI: Source.ValueType  # 46
 global___Source = Source
 
 class _SourceKeyType:
@@ -262,6 +264,9 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     ELASTIC_SEARCH_PORT: _SourceKeyType.ValueType  # 65
     ELASTIC_SEARCH_API_KEY_ID: _SourceKeyType.ValueType  # 66
     ELASTIC_SEARCH_API_KEY: _SourceKeyType.ValueType  # 67
+    GRAFANA_LOKI_HOST: _SourceKeyType.ValueType  # 68
+    GRAFANA_LOKI_PORT: _SourceKeyType.ValueType  # 69
+    GRAFANA_LOKI_API_KEY: _SourceKeyType.ValueType  # 70
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -332,6 +337,9 @@ ELASTIC_SEARCH_HOST: SourceKeyType.ValueType  # 64
 ELASTIC_SEARCH_PORT: SourceKeyType.ValueType  # 65
 ELASTIC_SEARCH_API_KEY_ID: SourceKeyType.ValueType  # 66
 ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 67
+GRAFANA_LOKI_HOST: SourceKeyType.ValueType  # 68
+GRAFANA_LOKI_PORT: SourceKeyType.ValueType  # 69
+GRAFANA_LOKI_API_KEY: SourceKeyType.ValueType  # 70
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:

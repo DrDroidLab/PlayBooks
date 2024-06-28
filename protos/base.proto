@@ -124,6 +124,7 @@ enum Source {
   GRAFANA_MIMIR = 43;
   GKE = 44;
   MS_TEAMS = 45;
+  GRAFANA_LOKI = 46;
 }
 
 enum SourceKeyType {
@@ -218,6 +219,10 @@ enum SourceKeyType {
   ELASTIC_SEARCH_PORT = 65;
   ELASTIC_SEARCH_API_KEY_ID = 66;
   ELASTIC_SEARCH_API_KEY = 67;
+
+  GRAFANA_LOKI_HOST = 68;
+  GRAFANA_LOKI_PORT = 69;
+  GRAFANA_LOKI_API_KEY = 70;
 }
 
 enum SourceModelType {
