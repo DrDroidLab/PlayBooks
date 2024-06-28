@@ -10,7 +10,6 @@ import {
 import { KeyboardArrowDownRounded } from "@mui/icons-material";
 
 export const ElasticSearchAssets = ({ assets }) => {
-  console.log("ass", assets);
   return (
     <div className="flex flex-col gap-2">
       {assets && assets.length > 0 && (
