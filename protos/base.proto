@@ -221,8 +221,7 @@ enum SourceKeyType {
   ELASTIC_SEARCH_API_KEY = 67;
 
   GRAFANA_LOKI_HOST = 68;
-  GRAFANA_LOKI_PORT = 69;
-  GRAFANA_LOKI_API_KEY = 70;
+  GRAFANA_LOKI_API_KEY = 69;
 }
 
 enum SourceModelType {
