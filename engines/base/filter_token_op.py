@@ -1,12 +1,11 @@
 import abc
-from functools import reduce
 from typing import Union
 
 from django.db.models import F, Q, Value
 
 from engines.base.literal import is_scalar
-from engines.base.token import Filterable, ColumnToken, OpToken, LiteralToken, AttributeToken, AttributeTokenV2
-from protos.engines.query_base_pb2 import Op
+from engines.base.token import Filterable, ColumnToken, OpToken, LiteralToken
+from protos.base_pb2 import Op
 
 
 class TokenFilterOp(abc.ABC):
@@ -147,96 +146,3 @@ class LiteralArrayColumnTokenFilterOp(ColumnTokenFilterOp):
             return ~Q(**{f'{lhs}': Value([None])})
         elif op == Op.IS_NULL:
             return Q(**{f'{lhs}': Value([None])})
-
-
-class AttributeTokenFilterOp(TokenFilterOp):
-    @staticmethod
-    def typecheck(lhs_token, op, rhs):
-        if op == Op.IN and type(rhs) is not list:
-            raise ValueError(f'IN expects a list type for values, query op not supported for {lhs_token}')
-        elif op == Op.NOT_IN and type(rhs) is not list:
-            raise ValueError(f'NOT_IN expects a list type for values, query op not supported for {lhs_token}')
-        return
-
-    def process(self, lhs_token: AttributeToken, op_token: OpToken, rhs_token: Union[Filterable, LiteralToken]):
-        lhs = lhs_token.filter_key()
-        op = op_token.op
-
-        if isinstance(rhs_token, Filterable):
-            rhs = F(rhs_token.filter_key())
-        elif isinstance(rhs_token, LiteralToken):
-            rhs = rhs_token.literal_value
-            self.typecheck(lhs_token, op, rhs)
-        else:
-            raise ValueError('RHS must be Filterable or Literal')
-
-        if op == Op.EQ:
-            return Q(**{lhs: rhs})
-        elif op == Op.NEQ:
-            return ~Q(**{lhs: rhs})
-        elif op == Op.GT:
-            return Q(**{f'{lhs}__gt': rhs})
-        elif op == Op.LT:
-            return Q(**{f'{lhs}__lt': rhs})
-        elif op == Op.GTE:
-            return Q(**{f'{lhs}__gte': rhs})
-        elif op == Op.LTE:
-            return Q(**{f'{lhs}__lte': rhs})
-        elif op == Op.IN:
-            return Q(**{f'{lhs}__in': rhs})
-        elif op == Op.NOT_IN:
-            return ~Q(**{f'{lhs}__in': rhs})
-        elif op == Op.IS_NULL:
-            return Q(**{f'{lhs}__isnull': True})
-        elif op == Op.EXISTS:
-            return Q(**{f'{lhs}__isnull': False})
-        else:
-            raise ValueError(f'Query op not supported for {lhs_token}')
-
-
-class AttributeTokenV2FilterOp(TokenFilterOp):
-    @staticmethod
-    def typecheck(lhs_token, op, rhs):
-        if op == Op.IN and type(rhs) is not list:
-            raise ValueError(f'IN expects a list type for values, query op not supported for {lhs_token}')
-        elif op == Op.NOT_IN and type(rhs) is not list:
-            raise ValueError(f'NOT_IN expects a list type for values, query op not supported for {lhs_token}')
-        return
-
-    def process(self, lhs_token: AttributeTokenV2, op_token: OpToken, rhs_token: Union[Filterable, LiteralToken]):
-        lhs_list = lhs_token.filter_key()
-        op = op_token.op
-
-        if isinstance(rhs_token, Filterable):
-            rhs = F(rhs_token.filter_key())
-        elif isinstance(rhs_token, LiteralToken):
-            rhs = rhs_token.literal_value
-            self.typecheck(lhs_token, op, rhs)
-        else:
-            raise ValueError('RHS must be Filterable or Literal')
-        filter_list = []
-        for lhs in lhs_list:
-            if op == Op.EQ:
-                filter_list.append(Q(**{lhs: rhs}))
-            elif op == Op.NEQ:
-                filter_list.append(~Q(**{lhs: rhs}))
-            elif op == Op.GT:
-                filter_list.append(Q(**{f'{lhs}__gt': rhs}))
-            elif op == Op.LT:
-                filter_list.append(Q(**{f'{lhs}__lt': rhs}))
-            elif op == Op.GTE:
-                filter_list.append(Q(**{f'{lhs}__gte': rhs}))
-            elif op == Op.LTE:
-                filter_list.append(Q(**{f'{lhs}__lte': rhs}))
-            elif op == Op.IN:
-                filter_list.append(Q(**{f'{lhs}__in': rhs}))
-            elif op == Op.NOT_IN:
-                filter_list.append(~Q(**{f'{lhs}__in': rhs}))
-            elif op == Op.IS_NULL:
-                filter_list.append(Q(**{f'{lhs}__isnull': True}))
-            elif op == Op.EXISTS:
-                filter_list.append(Q(**{f'{lhs}__isnull': False}))
-            else:
-                raise ValueError(f'Query op not supported for {lhs_token}')
-
-        return reduce(lambda x, y: x | y, filter_list)

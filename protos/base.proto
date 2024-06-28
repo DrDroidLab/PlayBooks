@@ -30,6 +30,31 @@ enum LogicalOperator {
   NOT_LO = 3;
 }
 
+enum Op {
+  UNKNOWN_OP = 0;
+  EQ = 1;
+  NEQ = 2;
+  GT = 3;
+  LT = 4;
+  GTE = 5;
+  LTE = 6;
+  IN = 7;
+  NOT_IN = 8;
+  IS_NULL = 9;
+  EXISTS = 10;
+
+  AND = 20;
+  OR = 21;
+  NOT = 22;
+}
+
+message OpDescription {
+  Op op = 1;
+  string label = 2;
+  bool is_unary = 3;
+  bool is_logical = 4;
+}
+
 message TimeRange {
   uint64 time_geq = 1;
   uint64 time_lt = 2;

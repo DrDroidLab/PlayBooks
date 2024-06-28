@@ -3,7 +3,7 @@ from datetime import datetime
 
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, DoubleValue, Int64Value, BoolValue
 
-from protos.engines.literal_pb2 import Literal, LiteralType, IdLiteral
+from protos.literal_pb2 import Literal, LiteralType, IdLiteral
 
 _SCALAR_LITERALS = {
     LiteralType.STRING,

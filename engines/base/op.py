@@ -1,5 +1,6 @@
-from protos.engines.literal_pb2 import LiteralType, LiteralTypeDescription
-from protos.engines.query_base_pb2 import OpDescription, Op, OpRhs, OpMapping
+from protos.literal_pb2 import LiteralType, LiteralTypeDescription
+from protos.engines.query_base_pb2 import OpRhs, OpMapping
+from protos.base_pb2 import Op, OpDescription
 
 OP_DESCRIPTIONS = [
     OpDescription(op=Op.EQ, label='='),

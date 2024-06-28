@@ -9,7 +9,8 @@ import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
-import protos.engines.literal_pb2
+import protos.base_pb2
+import protos.literal_pb2
 import sys
 import typing
 
@@ -19,45 +20,6 @@ else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
-
-class _Op:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _OpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Op.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    UNKNOWN_OP: _Op.ValueType  # 0
-    EQ: _Op.ValueType  # 1
-    NEQ: _Op.ValueType  # 2
-    GT: _Op.ValueType  # 3
-    LT: _Op.ValueType  # 4
-    GTE: _Op.ValueType  # 5
-    LTE: _Op.ValueType  # 6
-    IN: _Op.ValueType  # 7
-    NOT_IN: _Op.ValueType  # 8
-    IS_NULL: _Op.ValueType  # 9
-    EXISTS: _Op.ValueType  # 10
-    AND: _Op.ValueType  # 20
-    OR: _Op.ValueType  # 21
-    NOT: _Op.ValueType  # 22
-
-class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
-
-UNKNOWN_OP: Op.ValueType  # 0
-EQ: Op.ValueType  # 1
-NEQ: Op.ValueType  # 2
-GT: Op.ValueType  # 3
-LT: Op.ValueType  # 4
-GTE: Op.ValueType  # 5
-LTE: Op.ValueType  # 6
-IN: Op.ValueType  # 7
-NOT_IN: Op.ValueType  # 8
-IS_NULL: Op.ValueType  # 9
-EXISTS: Op.ValueType  # 10
-AND: Op.ValueType  # 20
-OR: Op.ValueType  # 21
-NOT: Op.ValueType  # 22
-global___Op = Op
 
 class _SortOrder:
     ValueType = typing.NewType("ValueType", builtins.int)
@@ -75,42 +37,18 @@ DESC: SortOrder.ValueType  # 1
 global___SortOrder = SortOrder
 
 @typing_extensions.final
-class OpDescription(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    OP_FIELD_NUMBER: builtins.int
-    LABEL_FIELD_NUMBER: builtins.int
-    IS_UNARY_FIELD_NUMBER: builtins.int
-    IS_LOGICAL_FIELD_NUMBER: builtins.int
-    op: global___Op.ValueType
-    label: builtins.str
-    is_unary: builtins.bool
-    is_logical: builtins.bool
-    def __init__(
-        self,
-        *,
-        op: global___Op.ValueType = ...,
-        label: builtins.str = ...,
-        is_unary: builtins.bool = ...,
-        is_logical: builtins.bool = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["is_logical", b"is_logical", "is_unary", b"is_unary", "label", b"label", "op", b"op"]) -> None: ...
-
-global___OpDescription = OpDescription
-
-@typing_extensions.final
 class OpRhs(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     OP_FIELD_NUMBER: builtins.int
     RHS_FIELD_NUMBER: builtins.int
-    op: global___Op.ValueType
-    rhs: protos.engines.literal_pb2.LiteralType.ValueType
+    op: protos.base_pb2.Op.ValueType
+    rhs: protos.literal_pb2.LiteralType.ValueType
     def __init__(
         self,
         *,
-        op: global___Op.ValueType = ...,
-        rhs: protos.engines.literal_pb2.LiteralType.ValueType = ...,
+        op: protos.base_pb2.Op.ValueType = ...,
+        rhs: protos.literal_pb2.LiteralType.ValueType = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["op", b"op", "rhs", b"rhs"]) -> None: ...
 
@@ -122,13 +60,13 @@ class OpMapping(google.protobuf.message.Message):
 
     LHS_FIELD_NUMBER: builtins.int
     OP_RHS_FIELD_NUMBER: builtins.int
-    lhs: protos.engines.literal_pb2.LiteralType.ValueType
+    lhs: protos.literal_pb2.LiteralType.ValueType
     @property
     def op_rhs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___OpRhs]: ...
     def __init__(
         self,
         *,
-        lhs: protos.engines.literal_pb2.LiteralType.ValueType = ...,
+        lhs: protos.literal_pb2.LiteralType.ValueType = ...,
         op_rhs: collections.abc.Iterable[global___OpRhs] | None = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["lhs", b"lhs", "op_rhs", b"op_rhs"]) -> None: ...
@@ -142,87 +80,36 @@ class ColumnIdentifier(google.protobuf.message.Message):
     NAME_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     name: builtins.str
-    type: protos.engines.literal_pb2.LiteralType.ValueType
+    type: protos.literal_pb2.LiteralType.ValueType
     def __init__(
         self,
         *,
         name: builtins.str = ...,
-        type: protos.engines.literal_pb2.LiteralType.ValueType = ...,
+        type: protos.literal_pb2.LiteralType.ValueType = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "type", b"type"]) -> None: ...
 
 global___ColumnIdentifier = ColumnIdentifier
 
 @typing_extensions.final
-class AttributeIdentifier(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    NAME_FIELD_NUMBER: builtins.int
-    PATH_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    name: builtins.str
-    path: builtins.str
-    type: protos.engines.literal_pb2.LiteralType.ValueType
-    def __init__(
-        self,
-        *,
-        name: builtins.str = ...,
-        path: builtins.str = ...,
-        type: protos.engines.literal_pb2.LiteralType.ValueType = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "path", b"path", "type", b"type"]) -> None: ...
-
-global___AttributeIdentifier = AttributeIdentifier
-
-@typing_extensions.final
-class AttributeIdentifierV2(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    NAME_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    PATH_FIELD_NUMBER: builtins.int
-    name: builtins.str
-    type: protos.engines.literal_pb2.LiteralType.ValueType
-    @property
-    def path(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
-    def __init__(
-        self,
-        *,
-        name: builtins.str = ...,
-        type: protos.engines.literal_pb2.LiteralType.ValueType = ...,
-        path: collections.abc.Iterable[builtins.str] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["name", b"name", "path", b"path", "type", b"type"]) -> None: ...
-
-global___AttributeIdentifierV2 = AttributeIdentifierV2
-
-@typing_extensions.final
 class Expression(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     COLUMN_IDENTIFIER_FIELD_NUMBER: builtins.int
-    ATTRIBUTE_IDENTIFIER_FIELD_NUMBER: builtins.int
-    ATTRIBUTE_IDENTIFIER_V2_FIELD_NUMBER: builtins.int
     LITERAL_FIELD_NUMBER: builtins.int
     @property
     def column_identifier(self) -> global___ColumnIdentifier: ...
     @property
-    def attribute_identifier(self) -> global___AttributeIdentifier: ...
-    @property
-    def attribute_identifier_v2(self) -> global___AttributeIdentifierV2: ...
-    @property
-    def literal(self) -> protos.engines.literal_pb2.Literal: ...
+    def literal(self) -> protos.literal_pb2.Literal: ...
     def __init__(
         self,
         *,
         column_identifier: global___ColumnIdentifier | None = ...,
-        attribute_identifier: global___AttributeIdentifier | None = ...,
-        attribute_identifier_v2: global___AttributeIdentifierV2 | None = ...,
-        literal: protos.engines.literal_pb2.Literal | None = ...,
+        literal: protos.literal_pb2.Literal | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["attribute_identifier", b"attribute_identifier", "attribute_identifier_v2", b"attribute_identifier_v2", "column_identifier", b"column_identifier", "literal", b"literal", "value", b"value"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["attribute_identifier", b"attribute_identifier", "attribute_identifier_v2", b"attribute_identifier_v2", "column_identifier", b"column_identifier", "literal", b"literal", "value", b"value"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["value", b"value"]) -> typing_extensions.Literal["column_identifier", "attribute_identifier", "attribute_identifier_v2", "literal"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["column_identifier", b"column_identifier", "literal", b"literal", "value", b"value"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["column_identifier", b"column_identifier", "literal", b"literal", "value", b"value"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["value", b"value"]) -> typing_extensions.Literal["column_identifier", "literal"] | None: ...
 
 global___Expression = Expression
 
@@ -236,7 +123,7 @@ class Filter(google.protobuf.message.Message):
     FILTERS_FIELD_NUMBER: builtins.int
     @property
     def lhs(self) -> global___Expression: ...
-    op: global___Op.ValueType
+    op: protos.base_pb2.Op.ValueType
     @property
     def rhs(self) -> global___Expression: ...
     @property
@@ -245,7 +132,7 @@ class Filter(google.protobuf.message.Message):
         self,
         *,
         lhs: global___Expression | None = ...,
-        op: global___Op.ValueType = ...,
+        op: protos.base_pb2.Op.ValueType = ...,
         rhs: global___Expression | None = ...,
         filters: collections.abc.Iterable[global___Filter] | None = ...,
     ) -> None: ...

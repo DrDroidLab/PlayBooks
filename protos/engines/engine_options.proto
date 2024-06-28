@@ -3,8 +3,9 @@ syntax = "proto3";
 package protos.engines;
 
 import "protos/engines/query_base.proto";
-import "protos/engines/literal.proto";
+import "protos/literal.proto";
 import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
 
 
 message GlobalQueryOptions {
@@ -27,35 +28,8 @@ message ColumnOption {
   IdOption id_option = 10;
 }
 
-message AttributeOption {
-  message ColumnContext {
-    IdLiteral id = 1 ;
-    string alias = 2;
-  }
-
-  string name = 1;
-  string path = 2;
-  LiteralType type = 3;
-  string alias = 4;
-  repeated ColumnContext column_context = 5;
-  string path_alias = 6;
-  bool is_groupable = 7;
-}
-
-
-message AttributeOptionV2 {
-  string name = 1;
-  repeated string path = 2;
-  LiteralType type = 3;
-}
 
 message QueryOptions {
   repeated ColumnOption column_options = 1;
-  repeated AttributeOption attribute_options = 2;
 }
 
-
-message QueryOptionsV2 {
-  repeated ColumnOption column_options = 1;
-  repeated AttributeOptionV2 attribute_options_v2 = 2;
-}

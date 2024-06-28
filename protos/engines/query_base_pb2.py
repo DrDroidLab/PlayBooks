@@ -11,39 +11,32 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protos.engines import literal_pb2 as protos_dot_engines_dot_literal__pb2
+from protos import literal_pb2 as protos_dot_literal__pb2
+from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/engines/query_base.proto\x12\x0eprotos.engines\x1a\x1cprotos/engines/literal.proto\x1a\x1egoogle/protobuf/wrappers.proto\"d\n\rOpDescription\x12\x1e\n\x02op\x18\x01 \x01(\x0e\x32\x12.protos.engines.Op\x12\r\n\x05label\x18\x02 \x01(\t\x12\x10\n\x08is_unary\x18\x03 \x01(\x08\x12\x12\n\nis_logical\x18\x04 \x01(\x08\"Q\n\x05OpRhs\x12\x1e\n\x02op\x18\x01 \x01(\x0e\x32\x12.protos.engines.Op\x12(\n\x03rhs\x18\x02 \x01(\x0e\x32\x1b.protos.engines.LiteralType\"\\\n\tOpMapping\x12(\n\x03lhs\x18\x01 \x01(\x0e\x32\x1b.protos.engines.LiteralType\x12%\n\x06op_rhs\x18\x02 \x03(\x0b\x32\x15.protos.engines.OpRhs\"K\n\x10\x43olumnIdentifier\x12\x0c\n\x04name\x18\x01 \x01(\t\x12)\n\x04type\x18\x02 \x01(\x0e\x32\x1b.protos.engines.LiteralType\"\\\n\x13\x41ttributeIdentifier\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\t\x12)\n\x04type\x18\x03 \x01(\x0e\x32\x1b.protos.engines.LiteralType\"^\n\x15\x41ttributeIdentifierV2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12)\n\x04type\x18\x02 \x01(\x0e\x32\x1b.protos.engines.LiteralType\x12\x0c\n\x04path\x18\x03 \x03(\t\"\x8f\x02\n\nExpression\x12=\n\x11\x63olumn_identifier\x18\x01 \x01(\x0b\x32 .protos.engines.ColumnIdentifierH\x00\x12\x43\n\x14\x61ttribute_identifier\x18\x02 \x01(\x0b\x32#.protos.engines.AttributeIdentifierH\x00\x12H\n\x17\x61ttribute_identifier_v2\x18\x03 \x01(\x0b\x32%.protos.engines.AttributeIdentifierV2H\x00\x12*\n\x07literal\x18\x04 \x01(\x0b\x32\x17.protos.engines.LiteralH\x00\x42\x07\n\x05value\"\xa3\x01\n\x06\x46ilter\x12\'\n\x03lhs\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\x1e\n\x02op\x18\x02 \x01(\x0e\x32\x12.protos.engines.Op\x12\'\n\x03rhs\x18\x03 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\'\n\x07\x66ilters\x18\x04 \x03(\x0b\x32\x16.protos.engines.Filter\"\xb7\x01\n\x0cQueryRequest\x12&\n\x06\x66ilter\x18\x01 \x01(\x0b\x32\x16.protos.engines.Filter\x12-\n\tselection\x18\x02 \x03(\x0b\x32\x1a.protos.engines.Expression\x12\x1b\n\x13\x64istinct_selections\x18\t \x01(\x08\x12\x33\n\x08order_by\x18\n \x01(\x0b\x32!.protos.engines.OrderByExpression\"\xce\x01\n\x11OrderByExpression\x12.\n\nexpression\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12(\n\x05order\x18\x02 \x01(\x0e\x32\x19.protos.engines.SortOrder\x12/\n\x0b\x61llow_nulls\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12.\n\nnulls_last\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValue*\x8e\x01\n\x02Op\x12\x0e\n\nUNKNOWN_OP\x10\x00\x12\x06\n\x02\x45Q\x10\x01\x12\x07\n\x03NEQ\x10\x02\x12\x06\n\x02GT\x10\x03\x12\x06\n\x02LT\x10\x04\x12\x07\n\x03GTE\x10\x05\x12\x07\n\x03LTE\x10\x06\x12\x06\n\x02IN\x10\x07\x12\n\n\x06NOT_IN\x10\x08\x12\x0b\n\x07IS_NULL\x10\t\x12\n\n\x06\x45XISTS\x10\n\x12\x07\n\x03\x41ND\x10\x14\x12\x06\n\x02OR\x10\x15\x12\x07\n\x03NOT\x10\x16*\x1e\n\tSortOrder\x12\x07\n\x03\x41SC\x10\x00\x12\x08\n\x04\x44\x45SC\x10\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/engines/query_base.proto\x12\x0eprotos.engines\x1a\x14protos/literal.proto\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"A\n\x05OpRhs\x12\x16\n\x02op\x18\x01 \x01(\x0e\x32\n.protos.Op\x12 \n\x03rhs\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"T\n\tOpMapping\x12 \n\x03lhs\x18\x01 \x01(\x0e\x32\x13.protos.LiteralType\x12%\n\x06op_rhs\x18\x02 \x03(\x0b\x32\x15.protos.engines.OpRhs\"C\n\x10\x43olumnIdentifier\x12\x0c\n\x04name\x18\x01 \x01(\t\x12!\n\x04type\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"x\n\nExpression\x12=\n\x11\x63olumn_identifier\x18\x01 \x01(\x0b\x32 .protos.engines.ColumnIdentifierH\x00\x12\"\n\x07literal\x18\x04 \x01(\x0b\x32\x0f.protos.LiteralH\x00\x42\x07\n\x05value\"\x9b\x01\n\x06\x46ilter\x12\'\n\x03lhs\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\x16\n\x02op\x18\x02 \x01(\x0e\x32\n.protos.Op\x12\'\n\x03rhs\x18\x03 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\'\n\x07\x66ilters\x18\x04 \x03(\x0b\x32\x16.protos.engines.Filter\"\xb7\x01\n\x0cQueryRequest\x12&\n\x06\x66ilter\x18\x01 \x01(\x0b\x32\x16.protos.engines.Filter\x12-\n\tselection\x18\x02 \x03(\x0b\x32\x1a.protos.engines.Expression\x12\x1b\n\x13\x64istinct_selections\x18\t \x01(\x08\x12\x33\n\x08order_by\x18\n \x01(\x0b\x32!.protos.engines.OrderByExpression\"\xce\x01\n\x11OrderByExpression\x12.\n\nexpression\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12(\n\x05order\x18\x02 \x01(\x0e\x32\x19.protos.engines.SortOrder\x12/\n\x0b\x61llow_nulls\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12.\n\nnulls_last\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValue*\x1e\n\tSortOrder\x12\x07\n\x03\x41SC\x10\x00\x12\x08\n\x04\x44\x45SC\x10\x01\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.engines.query_base_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _OP._serialized_start=1495
-  _OP._serialized_end=1637
-  _SORTORDER._serialized_start=1639
-  _SORTORDER._serialized_end=1669
-  _OPDESCRIPTION._serialized_start=113
-  _OPDESCRIPTION._serialized_end=213
-  _OPRHS._serialized_start=215
-  _OPRHS._serialized_end=296
-  _OPMAPPING._serialized_start=298
-  _OPMAPPING._serialized_end=390
-  _COLUMNIDENTIFIER._serialized_start=392
-  _COLUMNIDENTIFIER._serialized_end=467
-  _ATTRIBUTEIDENTIFIER._serialized_start=469
-  _ATTRIBUTEIDENTIFIER._serialized_end=561
-  _ATTRIBUTEIDENTIFIERV2._serialized_start=563
-  _ATTRIBUTEIDENTIFIERV2._serialized_end=657
-  _EXPRESSION._serialized_start=660
-  _EXPRESSION._serialized_end=931
-  _FILTER._serialized_start=934
-  _FILTER._serialized_end=1097
-  _QUERYREQUEST._serialized_start=1100
-  _QUERYREQUEST._serialized_end=1283
-  _ORDERBYEXPRESSION._serialized_start=1286
-  _ORDERBYEXPRESSION._serialized_end=1492
+  _SORTORDER._serialized_start=1021
+  _SORTORDER._serialized_end=1051
+  _OPRHS._serialized_start=124
+  _OPRHS._serialized_end=189
+  _OPMAPPING._serialized_start=191
+  _OPMAPPING._serialized_end=275
+  _COLUMNIDENTIFIER._serialized_start=277
+  _COLUMNIDENTIFIER._serialized_end=344
+  _EXPRESSION._serialized_start=346
+  _EXPRESSION._serialized_end=466
+  _FILTER._serialized_start=469
+  _FILTER._serialized_end=624
+  _QUERYREQUEST._serialized_start=627
+  _QUERYREQUEST._serialized_end=810
+  _ORDERBYEXPRESSION._serialized_start=813
+  _ORDERBYEXPRESSION._serialized_end=1019
 # @@protoc_insertion_point(module_scope)

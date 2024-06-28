@@ -2,34 +2,11 @@ syntax = "proto3";
 
 package protos.engines;
 
-import "protos/engines/literal.proto";
+import "protos/literal.proto";
+import "protos/base.proto";
 
 import "google/protobuf/wrappers.proto";
 
-enum Op {
-  UNKNOWN_OP = 0;
-  EQ = 1;
-  NEQ = 2;
-  GT = 3;
-  LT = 4;
-  GTE = 5;
-  LTE = 6;
-  IN = 7;
-  NOT_IN = 8;
-  IS_NULL = 9;
-  EXISTS = 10;
-
-  AND = 20;
-  OR = 21;
-  NOT = 22;
-}
-
-message OpDescription {
-  Op op = 1;
-  string label = 2;
-  bool is_unary = 3;
-  bool is_logical = 4;
-}
 
 message OpRhs {
   Op op = 1;
@@ -46,24 +23,9 @@ message ColumnIdentifier {
   LiteralType type = 2;
 }
 
-message AttributeIdentifier {
-  string name = 1;
-  string path = 2;
-  LiteralType type = 3;
-}
-
-
-message AttributeIdentifierV2 {
-  string name = 1;
-  LiteralType type = 2;
-  repeated string path = 3;
-}
-
 message Expression {
   oneof value {
     ColumnIdentifier column_identifier = 1;
-    AttributeIdentifier attribute_identifier = 2;
-    AttributeIdentifierV2 attribute_identifier_v2 = 3;
     Literal literal = 4;
   }
 }

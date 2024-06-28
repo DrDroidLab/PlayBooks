@@ -4,13 +4,14 @@ from django.db.models import Q
 
 from engines.base.filter_token_op import NumericColumnTokenFilterOp, StringColumnTokenFilterOp, \
     BooleanColumnTokenFilterOp, TimestampColumnTokenFilterOp, IDColumnTokenFilterOp, LiteralArrayColumnTokenFilterOp, \
-    AttributeTokenFilterOp, TokenFilterOp, AttributeTokenV2FilterOp
+    TokenFilterOp
 from engines.base.literal import is_scalar
 from engines.base.op import validate_query
-from engines.base.token import Token, OpToken, AttributeToken, ColumnToken, Filterable, Annotable, ExpressionTokenizer, \
-    LiteralToken, AttributeTokenV2
-from protos.engines.literal_pb2 import LiteralType
-from protos.engines.query_base_pb2 import Op, Filter as FilterProto
+from engines.base.token import Token, OpToken, ColumnToken, Filterable, Annotable, ExpressionTokenizer, \
+    LiteralToken
+from protos.literal_pb2 import LiteralType
+from protos.engines.query_base_pb2 import Filter as FilterProto
+from protos.base_pb2 import Op
 
 CONNECTOR_OPS = [Op.AND, Op.OR, Op.NOT]
 
@@ -47,15 +48,8 @@ class FilterTokenProcessor:
 
         self._default_array_column_literal_filter_op = LiteralArrayColumnTokenFilterOp()
 
-        self._attribute_filter_op = AttributeTokenFilterOp()
-        self._attribute_filter_op_v2 = AttributeTokenV2FilterOp()
-
     def _get_lhs_token_filter_op(self, lhs: Filterable) -> TokenFilterOp:
-        if isinstance(lhs, AttributeToken):
-            return self._attribute_filter_op
-        elif isinstance(lhs, AttributeTokenV2):
-            return self._attribute_filter_op_v2
-        elif isinstance(lhs, ColumnToken):
+        if isinstance(lhs, ColumnToken):
             if lhs.column.token_filter_op and isinstance(lhs.column.token_filter_op, TokenFilterOp):
                 return lhs.column.token_filter_op
             if is_scalar(lhs.column.type):
