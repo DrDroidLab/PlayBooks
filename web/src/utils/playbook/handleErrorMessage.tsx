@@ -10,7 +10,7 @@ function handleErrorMessage(stepId: string): React.ReactNode | undefined {
   const errorKeys = Object.keys(step?.errors ?? {});
   if (errorKeys.length === 0) return undefined;
 
-  return errorKeys.map((key) => <p>{step.errors[key].message}</p>);
+  return errorKeys.map((key) => <li>{step.errors[key].message}</li>);
 }
 
 export default handleErrorMessage;
