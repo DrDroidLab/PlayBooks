@@ -70,7 +70,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       tasks = Injector.injectAzureLogTasks(step, baseTask);
       break;
     case SOURCES.ELASTIC_SEARCH:
-      tasks = Injector.injectAzureLogTasks(step, baseTask);
+      tasks = Injector.injectElasticSearchTasks(step, baseTask);
       break;
     default:
       break;
