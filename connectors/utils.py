@@ -12,8 +12,10 @@ from executor.source_processors.azure_api_processor import AzureApiProcessor
 from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
+from executor.source_processors.elastic_search_api_processor import ElasticSearchApiProcessor
 from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
+from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from executor.source_processors.pd_api_processor import PdApiProcessor
@@ -46,7 +48,9 @@ connector_type_api_processor_map = {
     Source.GKE: GkeApiProcessor,
     Source.REMOTE_SERVER: RemoteServerProcessor,
     Source.MS_TEAMS: MSTeamsApiProcessor,
-    Source.PAGER_DUTY: PdApiProcessor
+    Source.PAGER_DUTY: PdApiProcessor,
+    Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
+    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor
 }
 
 
