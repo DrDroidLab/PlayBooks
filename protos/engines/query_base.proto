@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package protos.engines;
+
+import "protos/engines/literal.proto";
+
+import "google/protobuf/wrappers.proto";
+
+enum Op {
+  UNKNOWN_OP = 0;
+  EQ = 1;
+  NEQ = 2;
+  GT = 3;
+  LT = 4;
+  GTE = 5;
+  LTE = 6;
+  IN = 7;
+  NOT_IN = 8;
+  IS_NULL = 9;
+  EXISTS = 10;
+
+  AND = 20;
+  OR = 21;
+  NOT = 22;
+}
+
+message OpDescription {
+  Op op = 1;
+  string label = 2;
+  bool is_unary = 3;
+  bool is_logical = 4;
+}
+
+message OpRhs {
+  Op op = 1;
+  LiteralType rhs = 2;
+}
+
+message OpMapping {
+  LiteralType lhs = 1;
+  repeated OpRhs op_rhs = 2;
+}
+
+message ColumnIdentifier {
+  string name = 1;
+  LiteralType type = 2;
+}
+
+message AttributeIdentifier {
+  string name = 1;
+  string path = 2;
+  LiteralType type = 3;
+}
+
+
+message AttributeIdentifierV2 {
+  string name = 1;
+  LiteralType type = 2;
+  repeated string path = 3;
+}
+
+message Expression {
+  oneof value {
+    ColumnIdentifier column_identifier = 1;
+    AttributeIdentifier attribute_identifier = 2;
+    AttributeIdentifierV2 attribute_identifier_v2 = 3;
+    Literal literal = 4;
+  }
+}
+
+message Filter {
+  Expression lhs = 1;
+  Op op = 2;
+  Expression rhs = 3;
+  repeated Filter filters = 4;
+}
+
+message QueryRequest {
+  Filter filter = 1;
+  repeated Expression selection = 2;
+
+  bool distinct_selections = 9;
+  OrderByExpression order_by = 10;
+}
+
+
+message OrderByExpression {
+  Expression expression = 1;
+  SortOrder order = 2;
+  google.protobuf.BoolValue allow_nulls = 3;
+  google.protobuf.BoolValue nulls_last = 4;
+}
+
+enum SortOrder {
+  ASC = 0;
+  DESC = 1;
+}

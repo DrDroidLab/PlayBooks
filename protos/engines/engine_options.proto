@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package protos.engines;
+
+import "protos/engines/query_base.proto";
+import "protos/engines/literal.proto";
+import "google/protobuf/wrappers.proto";
+
+
+message GlobalQueryOptions {
+  repeated OpDescription op_descriptions = 1;
+  repeated OpMapping op_mapping = 2;
+  repeated LiteralTypeDescription literal_type_description = 3;
+}
+
+message ColumnOption {
+  message IdOption {
+    IdLiteral.Type type = 1;
+    map<uint64, string> long_options = 2;
+    map<string, string> string_options = 3;
+  }
+
+  string name = 1;
+  string alias = 2;
+  LiteralType type = 3;
+  bool is_groupable = 5;
+  IdOption id_option = 10;
+}
+
+message AttributeOption {
+  message ColumnContext {
+    IdLiteral id = 1 ;
+    string alias = 2;
+  }
+
+  string name = 1;
+  string path = 2;
+  LiteralType type = 3;
+  string alias = 4;
+  repeated ColumnContext column_context = 5;
+  string path_alias = 6;
+  bool is_groupable = 7;
+}
+
+
+message AttributeOptionV2 {
+  string name = 1;
+  repeated string path = 2;
+  LiteralType type = 3;
+}
+
+message QueryOptions {
+  repeated ColumnOption column_options = 1;
+  repeated AttributeOption attribute_options = 2;
+}
+
+
+message QueryOptionsV2 {
+  repeated ColumnOption column_options = 1;
+  repeated AttributeOptionV2 attribute_options_v2 = 2;
+}
