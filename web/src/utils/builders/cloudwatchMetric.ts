@@ -43,7 +43,7 @@ const getDimensionValues = (task: Task) => {
       ?.dimensions ?? {};
   const list: any = [];
   const dimension = Object.values(dimensions)?.find(
-    (el: any) => el.name === data.dimensionName,
+    (el: any) => el.name === data.dimension_name,
   );
   for (let val of (dimension as any)?.values ?? []) {
     list.push({
@@ -61,7 +61,7 @@ const getMetrics = (task: Task) => {
   return (
     currentAsset?.region_dimension_map
       ?.find((el) => el.region === data.region)
-      ?.dimensions?.find((el) => el.name === data.dimensionName)
+      ?.dimensions?.find((el) => el.name === data.dimension_name)
       ?.metrics?.map((el) => {
         return {
           id: el,
