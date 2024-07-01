@@ -1,17 +1,27 @@
+import { Task } from "../../types/task.ts";
 import { OptionType } from "../playbooksData.ts";
 
-const getCurrentAsset = (task) => {
-  const currentAsset = task?.assets?.find(
-    (e) => e.namespace === task.namespaceName,
+const getTaskData = (task: Task) => {
+  const source = task.source;
+  const taskType = task[source?.toLowerCase()]?.type;
+
+  return task[source?.toLowerCase()][taskType?.toLowerCase()];
+};
+
+const getCurrentAsset = (task: Task) => {
+  const data = getTaskData(task);
+  const currentAsset = task?.ui_requirement.assets?.find(
+    (e) => e.namespace === data.namespace,
   );
 
   return currentAsset;
 };
 
-const getDimensionNames = (task) => {
+const getDimensionNames = (task: Task) => {
+  const data = getTaskData(task);
   const currentAsset = getCurrentAsset(task);
   const dimensions: any =
-    currentAsset?.region_dimension_map?.find((el) => el.region === task.region)
+    currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
   for (let [idx, dimension] of Object.entries(dimensions)) {
@@ -25,14 +35,15 @@ const getDimensionNames = (task) => {
   return list;
 };
 
-const getDimensionValues = (task) => {
+const getDimensionValues = (task: Task) => {
+  const data = getTaskData(task);
   const currentAsset = getCurrentAsset(task);
   const dimensions: any =
-    currentAsset?.region_dimension_map?.find((el) => el.region === task.region)
+    currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
   const dimension = Object.values(dimensions)?.find(
-    (el: any) => el.name === task.dimensionName,
+    (el: any) => el.name === data.dimensionName,
   );
   for (let val of (dimension as any)?.values ?? []) {
     list.push({
@@ -44,12 +55,13 @@ const getDimensionValues = (task) => {
   return list;
 };
 
-const getMetrics = (task) => {
+const getMetrics = (task: Task) => {
+  const data = getTaskData(task);
   const currentAsset = getCurrentAsset(task);
   return (
     currentAsset?.region_dimension_map
-      ?.find((el) => el.region === task.region)
-      ?.dimensions?.find((el) => el.name === task.dimensionName)
+      ?.find((el) => el.region === data.region)
+      ?.dimensions?.find((el) => el.name === data.dimensionName)
       ?.metrics?.map((el) => {
         return {
           id: el,
@@ -70,7 +82,7 @@ export const cloudwatchMetricBuilder = (options, task) => {
     builder: [
       [
         {
-          key: "namespaceName",
+          key: "namespace",
           label: "Namespace",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((namespace) => {
@@ -89,13 +101,13 @@ export const cloudwatchMetricBuilder = (options, task) => {
           }),
         },
         {
-          key: "dimensionName",
+          key: "dimension_name",
           label: "Dimension Name",
           type: OptionType.TYPING_DROPDOWN,
           options: getDimensionNames(task),
         },
         {
-          key: "dimensionValue",
+          key: "dimension_value",
           label: "Dimension Value",
           type: OptionType.TYPING_DROPDOWN,
           options: getDimensionValues(task),

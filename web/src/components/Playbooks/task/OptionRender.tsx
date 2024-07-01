@@ -13,15 +13,16 @@ export default function OptionRender({ data, removeErrors, id }) {
   const taskType = task?.[source?.toLowerCase()]?.type ?? "";
   const taskData =
     task?.[source?.toLowerCase()]?.[taskType?.toLowerCase()] ?? {};
+  const key = `${source.toLowerCase()}.${taskType.toLowerCase()}.${data.key}`;
 
   const handleChange = (...args) => {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      updateCardById(data.key, args[0], currentTaskId);
+      updateCardById(key, args[0], currentTaskId);
     }
 
-    removeErrors(data.key);
+    removeErrors(key);
   };
 
   const handleTextAreaChange = (e) => {
@@ -29,30 +30,30 @@ export default function OptionRender({ data, removeErrors, id }) {
     if (data.handleChange) {
       data.handleChange(e);
     } else {
-      updateCardById(data.key, val, currentTaskId);
+      updateCardById(key, val, currentTaskId);
     }
 
-    removeErrors(data.key);
+    removeErrors(key);
   };
 
   const multiSelectChange = (...args) => {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      updateCardById(data.key, args[0], currentTaskId);
+      updateCardById(key, args[0], currentTaskId);
     }
 
-    removeErrors(data.key);
+    removeErrors(key);
   };
 
   const handleTypingDropdownChange = (value, option) => {
     if (data.handleChange && option) {
       data.handleChange(value, option);
     } else {
-      updateCardById(data.key, value, currentTaskId);
+      updateCardById(key, value, currentTaskId);
     }
 
-    removeErrors(data.key);
+    removeErrors(key);
   };
 
   const error = data.key

@@ -26,7 +26,7 @@ function StepNode({ data }) {
       <div className="flex flex-col gap-1 mt-2">
         {step.tasks.map((stepTask) => {
           const task = tasks?.find((task) => task.id === stepTask);
-          return <TaskNode taskId={task?.id} />;
+          return <TaskNode key={stepTask} taskId={task?.id} />;
         })}
       </div>
 
