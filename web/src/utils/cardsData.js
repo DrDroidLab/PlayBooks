@@ -435,4 +435,11 @@ export const cardsData = [
     buttonLink: "/integrations/ms_teams",
     docs: "https://docs.drdroid.io/docs/ms-teams",
   },
+  {
+    id: 48,
+    url: "/integrations/grafana_loki_logo.svg",
+    enum: "GRAFANA_LOKI",
+    desc: "Connect to Grafana Loki",
+    // docs: "https://docs.drdroid.io/docs/ms-teams",
+  },
 ];
