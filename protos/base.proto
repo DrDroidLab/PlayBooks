@@ -21,6 +21,8 @@ enum Operator {
   EQUAL_O = 5;
   NOT_EQUAL_O = 6;
   LIKE_O = 7;
+  EXISTS_O = 8;
+  CONTAINS_O = 9;
 }
 
 enum LogicalOperator {
