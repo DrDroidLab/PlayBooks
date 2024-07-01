@@ -28,7 +28,7 @@ function TaskDetails({ id }) {
         }
         if (!step[value.key]) {
           errors[value.key] = {
-            message: "Please enter a value",
+            message: `Invalid value for ${value.label}`,
           };
         }
       }

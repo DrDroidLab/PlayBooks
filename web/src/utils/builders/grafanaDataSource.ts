@@ -27,6 +27,7 @@ export const grafanaDataSourceBuilder = (options: any, task, id: string) => {
       ],
       [
         {
+          key: "grafanaQuery",
           label: "PromQL",
           type: OptionType.MULTILINE,
           value: task?.grafanaQuery?.expression,

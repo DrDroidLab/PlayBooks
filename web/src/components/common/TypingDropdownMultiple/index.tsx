@@ -87,7 +87,7 @@ const TypingDropdownMultiple = ({
             backgroundColor: disabled ? "#efefef" : "",
           }}
           className={`${
-            error ? "border-red" : ""
+            error ? "border-red-500" : ""
           } flex flex-wrap items-center gap-2 max-w-[220px] justify-between w-full rounded border border-lightgray p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none`}>
           <input
             className="w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium"

@@ -35,6 +35,11 @@ export async function executeStep(step: Step, id?: string) {
     for (let outputData of output?.task_execution_logs ?? []) {
       outputList.push(outputData);
     }
+    const outputErrors = outputList?.filter(
+      (output: any) => output?.result?.error,
+    );
+    const error = outputErrors.length > 0 ? outputErrors[0] : undefined;
+
     updateCardById("showOutput", true, id);
     updateCardById(
       "outputs",
@@ -44,6 +49,10 @@ export async function executeStep(step: Step, id?: string) {
       },
       id,
     );
+    if (error) {
+      updateCardById("showError", true, id);
+      updateCardById("outputError", error.result?.error, id);
+    }
   } catch (e) {
     updateCardById("showError", true, id);
     updateCardById("outputError", e.message, id);

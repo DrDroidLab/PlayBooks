@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addStep,
   playbookSelector,
+  setPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { stepsToPlaybook } from "../../utils/parser/playbook/stepsToplaybook.ts";
 import SavePlaybookOverlay from "./SavePlaybookOverlay.jsx";
@@ -15,6 +16,7 @@ import {
   useCreatePlaybookMutation,
 } from "../../store/features/playbook/api/index.ts";
 import { renderTimestamp } from "../../utils/DateUtils.js";
+import handlePlaybookSavingValidations from "../../utils/handlePlaybookSavingValidations.ts";
 
 function StepActions() {
   const navigate = useNavigate();
@@ -39,8 +41,12 @@ function StepActions() {
 
   const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
+    dispatch(setPlaybookKey({ key: "name", value: pbName }));
 
     const playbook = stepsToPlaybook(playbookVal, steps);
+
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
 
     const playbookObj = {
       playbook: {
@@ -62,6 +68,10 @@ function StepActions() {
   const handlePlaybookUpdate = async () => {
     setIsSavePlaybookOverlayOpen(false);
     const playbook = stepsToPlaybook(playbookVal, steps);
+
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
+
     try {
       await triggerUpdatePlaybook({ ...playbook, id: playbookVal.id }).unwrap();
     } catch (e) {
