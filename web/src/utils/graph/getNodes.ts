@@ -1,3 +1,5 @@
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import { store } from "../../store/index.ts";
 import { Step } from "../../types/index.ts";
 
 const initialPlaybookNode = {
@@ -10,7 +12,10 @@ const initialPlaybookNode = {
   type: "parent",
 };
 
-export const getNodes = (steps: Step[]) => {
+export const getNodes = () => {
+  const playbook = currentPlaybookSelector(store.getState());
+  const steps: Step[] = playbook?.steps ?? [];
+  console.log("steps: ", steps);
   const nodes = steps.map((step, index) => {
     return {
       id: `node-${step.id}`,

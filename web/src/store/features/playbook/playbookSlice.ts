@@ -167,7 +167,7 @@ const playbookSlice = createSlice({
         });
       } else {
         state.currentPlaybook!.step_relations.push({
-          id: `edge-${parentId}-${stepId}`,
+          id: `edge-${stepId}`,
           parent: "playbook",
           child: newStep,
         });
