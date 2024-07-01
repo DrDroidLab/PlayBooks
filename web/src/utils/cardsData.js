@@ -279,7 +279,6 @@ export const cardsData = [
     title: "ELASTIC APM",
     enum: "ELASTIC_APM",
     desc: "Share metrics of your service from Elastic APM",
-    buttonTitle: "Request Access",
     buttonType: "available",
   },
   {
