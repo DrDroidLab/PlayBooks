@@ -15,7 +15,6 @@ const initialPlaybookNode = {
 export const getNodes = () => {
   const playbook = currentPlaybookSelector(store.getState());
   const steps: Step[] = playbook?.steps ?? [];
-  console.log("steps: ", steps);
   const nodes = steps.map((step, index) => {
     return {
       id: `node-${step.id}`,

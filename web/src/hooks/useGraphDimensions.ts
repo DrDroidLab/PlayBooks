@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import fetchGraphData from "../utils/graph/fetchGraphData.ts";
 import { useSelector } from "react-redux";
-import {
-  currentPlaybookSelector,
-  playbookSelector,
-} from "../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { calculateData } from "../utils/calculateData.ts";
 import { ReactFlowInstance } from "reactflow";
 import usePermanentDrawerState from "./usePermanentDrawerState.ts";
@@ -24,11 +21,9 @@ function useGraphDimensions(
   height: number,
   instance: ReactFlowInstance<any, any>,
 ): GraphDimensions {
-  // const { steps, playbookEdges } = useSelector(playbookSelector);
   const playbook = useSelector(currentPlaybookSelector);
   const { permanentView, isOpen } = usePermanentDrawerState();
   const graphData = fetchGraphData();
-  // const dagreData = calculateData(graphData, width, height);
   const [data, setData] = useState<any>({});
 
   useEffect(() => {

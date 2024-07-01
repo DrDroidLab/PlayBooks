@@ -10,8 +10,6 @@ export default function fetchGraphData() {
   const nodes = getNodes();
   const edges = getEdges();
 
-  console.log("nodes", nodes);
-
   return {
     nodes,
     edges,
