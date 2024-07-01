@@ -17,6 +17,10 @@ export default function handlePlaybookSavingValidations() {
       updateCardById("showError", true, step.id);
       error = "Please fix the errors in the playbook";
     }
+    if (!step.taskType) {
+      updateCardById("showError", true, step.id);
+      error = "Please select a task type for each step";
+    }
   });
 
   if (error) {

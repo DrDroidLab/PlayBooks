@@ -24,11 +24,11 @@ def numeric_function_result_operator_threshold(function_result, operator, thresh
         raise ValueError(f'Operator {operator} not supported')
 
 
-def string_function_result_operator_threshold(function_result, operator, threshold):
+def string_function_result_operator_threshold(column_value, operator, threshold):
     if operator == Operator.EQUAL_O:
-        return function_result == threshold
-    elif operator == Operator.LIKE_O:
-        return function_result in threshold
+        return column_value == threshold
+    elif operator == Operator.CONTAINS_O:
+        return threshold in column_value
     else:
         raise ValueError(f'Operator {operator} not supported')
 
@@ -39,22 +39,20 @@ def table_row_count_operator(operator, threshold, row_count):
     return numeric_function_result_operator_threshold(row_count, operator, threshold), row_count
 
 
-def table_column_value_operator(operator, column, table_result: TableResult, threshold):
-    first_row = table_result.rows[0]
-    if not first_row:
-        raise ValueError('Table result does not contain any rows')
-    column_value = None
-    for column in first_row.columns:
-        if column.name.value == column:
-            column_value = column.value.value
-            break
-    if not column_value:
-        raise ValueError(f'Column {column} not found in table result')
-    if type(threshold) == float or type(threshold) == int:
-        column_value = float(column_value)
-        return numeric_function_result_operator_threshold(column_value, operator, threshold), column_value
-    elif type(threshold) == str:
-        return string_function_result_operator_threshold(column_value, operator, threshold), column_value
+def table_column_value_operator(operator, column, threshold, table_result: TableResult):
+    for r in table_result.rows:
+        if not r:
+            continue
+        for c in r.columns:
+            if c.name.value == column:
+                column_value = c.value.value
+                if type(threshold) == float or type(threshold) == int:
+                    column_value = float(column_value)
+                    if numeric_function_result_operator_threshold(column_value, operator, threshold):
+                        return True, column_value
+                elif type(threshold) == str:
+                    if string_function_result_operator_threshold(column_value, operator, threshold):
+                        return True, column_value
     return False, None
 
 
@@ -81,7 +79,7 @@ class TableResultEvaluator(TaskResultEvaluator):
             evaluation, value = table_row_count_operator(operator, threshold, table_result.total_count.value)
             return evaluation, {'value': value}
         elif rule_type == TableResultRule.Type.COLUMN_VALUE:
-            evaluation, value = table_column_value_operator(operator, column, table_result, threshold)
+            evaluation, value = table_column_value_operator(operator, column, threshold, table_result)
             return evaluation, {'value': value}
         else:
             raise ValueError(f'Rule type {rule_type} not supported')

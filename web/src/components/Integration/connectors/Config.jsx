@@ -1,9 +1,4 @@
 import styles from "./index.module.css";
-import ConnectorUpdateOverlay from "./ConnectorUpdateOverlay";
-import ConnectorDeleteOverlay from "./ConnectorDeleteOverlay";
-import { useState } from "react";
-import { useCreateConnectorMutation } from "../../../store/features/integrations/api/index.ts";
-import { useLazyTestConnectionQuery } from "../../../store/features/integrations/api/testConnectionApi.ts";
 import SlackManifestGenerator from "./SlackManifestGenerator.jsx";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
 import ValueComponent from "../../ValueComponent/index.jsx";
@@ -12,63 +7,17 @@ import {
   setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { cardsData } from "../../../utils/cardsData.js";
+import ConfigButtons from "./ConfigButtons.tsx";
 
-function Config({ connector, connectorActive, id }) {
-  const navigate = useNavigate();
+function Config({ connector }) {
+  const { id } = useParams();
+  const connectorActive = id !== undefined && id !== null;
   const keyOptions = connector?.keys ?? [];
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
-  const [createConnector, { isLoading: saveLoading }] =
-    useCreateConnectorMutation();
-  const [
-    triggerTestConnection,
-    {
-      currentData: testData,
-      error: testError,
-      isFetching: testConnectionLoading,
-    },
-  ] = useLazyTestConnectionQuery();
   const cardData = cardsData.find((el) => el.enum === connector?.type);
-
-  const handleClick = async (_, test = false) => {
-    if (connectorActive) {
-      setIsUpdating(true);
-    } else {
-      const formattedKeys = [];
-      keyOptions?.forEach((e) => {
-        formattedKeys.push({
-          key_type: e.key_type,
-          key: (currentConnector[e.key_type] === "SSL_VERIFY"
-            ? currentConnector[e.key_type] !== ""
-              ? currentConnector[e.key_type]
-              : false
-            : currentConnector[e.key_type]
-          )?.toString(),
-        });
-      });
-      if (test) {
-        await triggerTestConnection({
-          type: connector.type,
-          keys: formattedKeys,
-          name: currentConnector.name,
-        });
-      } else {
-        const res = await createConnector({
-          type: connector.type,
-          keys: formattedKeys,
-          name: currentConnector.name,
-        });
-        if (res.data?.success) {
-          // window.location.reload();
-          navigate("/data-sources");
-        }
-      }
-    }
-  };
 
   return (
     <>
@@ -122,64 +71,7 @@ function Config({ connector, connectorActive, id }) {
         </>
       </div>
 
-      <button
-        className="text-xs bg-white hover:text-white hover:bg-violet-500 hover:color-white-500 py-1 px-1 border border-gray-400 rounded shadow"
-        onClick={handleClick}
-        style={{
-          marginBottom: "12px",
-        }}>
-        {connectorActive ? "Update" : saveLoading ? "Loading..." : "Save"}
-      </button>
-
-      {connectorActive && (
-        <button
-          className="text-xs bg-white hover:text-white hover:bg-violet-500 hover:color-white-500 py-1 px-1 border border-gray-400 rounded shadow"
-          onClick={async () => {
-            setIsDeleting(true);
-          }}
-          style={{
-            marginLeft: "12px",
-            marginBottom: "12px",
-          }}>
-          Delete
-        </button>
-      )}
-
-      {!connectorActive && (
-        <button
-          className="text-xs bg-white hover:text-white hover:bg-violet-500 hover:color-white-500 py-1 px-1 border border-gray-400 rounded shadow"
-          onClick={(e) => handleClick(e, true)}
-          style={{
-            marginLeft: "12px",
-            marginBottom: "12px",
-          }}
-          disabled={testConnectionLoading}>
-          {testConnectionLoading ? "Checking connection..." : "Test Connection"}
-        </button>
-      )}
-
-      {(testData?.message || testError) && !testConnectionLoading && (
-        <p style={testError ? { color: "red" } : {}} className="text-xs">
-          {testData?.message?.title ||
-            testError?.message ||
-            testError?.toString()}
-        </p>
-      )}
-
-      <ConnectorUpdateOverlay
-        isOpen={isUpdating}
-        connector={{ ...connector, id }}
-        toggleOverlay={() => setIsUpdating(!isUpdating)}
-        saveCallback={() => {}}
-      />
-      <ConnectorDeleteOverlay
-        isOpen={isDeleting}
-        connector={{ ...connector, id }}
-        toggleOverlay={() => setIsDeleting(!isDeleting)}
-        successCb={() => {
-          navigate("/data-sources");
-        }}
-      />
+      <ConfigButtons connector={connector} />
     </>
   );
 }
