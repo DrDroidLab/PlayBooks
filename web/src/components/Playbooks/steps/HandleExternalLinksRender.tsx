@@ -11,7 +11,7 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 function HandleExternalLinksRender({ id }) {
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
-  const [step] = useCurrentStep(id);
+  const step = useCurrentStep(id);
 
   const toggleExternalLinks = () => {
     dispatch(toggleExternalLinkVisibility({ id }));
@@ -28,10 +28,11 @@ function HandleExternalLinksRender({ id }) {
           <div
             className="mt-2 text-sm cursor-pointer text-violet-500"
             onClick={toggleExternalLinks}>
-            <b>{step.showExternalLinks ? "-" : "+"}</b> Add External Links
+            <b>{step?.uiRequirements.showExternalLinks ? "-" : "+"}</b> Add
+            External Links
           </div>
-          {step.showExternalLinks && (
-            <ExternalLinks links={step.externalLinks} setLinks={setLinks} />
+          {step?.uiRequirements.showExternalLinks && (
+            <ExternalLinks links={step.external_links} setLinks={setLinks} />
           )}
         </>
       )}

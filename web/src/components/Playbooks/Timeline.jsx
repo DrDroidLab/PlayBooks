@@ -1,7 +1,7 @@
 import { useGetPlaybookExecutionQuery } from "../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  showStepConfig,
+  showTaskConfig,
   stepsSelector,
 } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
@@ -20,7 +20,7 @@ function Timeline() {
 
   const handleShowConfig = (stepId) => {
     const index = playbookSteps.findIndex((step) => step.id === stepId);
-    dispatch(showStepConfig(index));
+    dispatch(showTaskConfig(index));
   };
 
   if (isLoading) {

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addStep,
   playbookSelector,
-  setLastUpdatedAt,
   setPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
 import { stepsToPlaybook } from "../../utils/parser/playbook/stepsToplaybook.ts";
@@ -75,7 +74,6 @@ function StepActions() {
 
     try {
       await triggerUpdatePlaybook({ ...playbook, id: playbookVal.id }).unwrap();
-      dispatch(setLastUpdatedAt());
     } catch (e) {
       console.log(e);
     }

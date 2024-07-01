@@ -4,9 +4,9 @@ import { addNotes } from "../../../store/features/playbook/playbookSlice.ts";
 import rehypeSanitize from "rehype-sanitize";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useIsExisting from "../../../hooks/useIsExisting.ts";
+import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 const Button = () => {
   const { preview, dispatch } = useContext(EditorContext);
@@ -38,7 +38,7 @@ const codePreview = {
 };
 
 function Notes({ id }) {
-  const [step] = useCurrentStep(id);
+  const [task] = useCurrentTask(id);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
   const isExisting = useIsExisting();
@@ -47,8 +47,8 @@ function Notes({ id }) {
     <>
       <div
         style={
-          isExisting && !step?.isCopied
-            ? step?.notes
+          isExisting
+            ? task?.notes
               ? {
                   display: "flex",
                   marginTop: "5px",
@@ -66,10 +66,10 @@ function Notes({ id }) {
         <div
           data-color-mode="light"
           style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          {isPrefetched && !step?.isCopied ? (
-            step?.notes && (
+          {isPrefetched ? (
+            task?.notes && (
               <MDEditor.Markdown
-                source={step.notes}
+                source={task.notes}
                 height={100}
                 style={{
                   whiteSpace: "pre-wrap",
@@ -85,7 +85,7 @@ function Notes({ id }) {
           ) : (
             <>
               <MDEditor
-                value={step.notes}
+                value={task.notes}
                 onChange={(val) => {
                   dispatch(addNotes({ notes: val, id }));
                 }}

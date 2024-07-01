@@ -5,7 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  playbookSelector,
+  currentPlaybookSelector,
   setPlaybookKey,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,9 +15,9 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 function ExecutionButton() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentPlaybook = useSelector(playbookSelector);
-  const { steps } = useSelector(playbookSelector);
-  const [step] = useCurrentStep(steps?.length > 0 ? steps[0].id : undefined);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const steps = currentPlaybook?.steps ?? [];
+  const step = useCurrentStep(steps?.length > 0 ? steps[0].id : undefined);
   const [searchParams, setSearchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const [triggerStartExecution, { isLoading: executionLoading }] =
@@ -25,7 +25,10 @@ function ExecutionButton() {
 
   const handleStartExecution = async () => {
     if (executionId) return;
-    const response = await triggerStartExecution(currentPlaybook.id);
+    if (!currentPlaybook?.id) return;
+    const response = await triggerStartExecution(
+      parseInt(currentPlaybook.id, 10),
+    );
     if ("data" in response) {
       const { data } = response;
       const id = data.playbook_run_id;
@@ -37,7 +40,7 @@ function ExecutionButton() {
 
   const handleStopExecution = () => {
     if (!executionId) return;
-    navigate(`/playbooks/${currentPlaybook.id}`, { replace: true });
+    navigate(`/playbooks/${currentPlaybook?.id}`, { replace: true });
   };
 
   return (

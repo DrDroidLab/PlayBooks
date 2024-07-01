@@ -8,7 +8,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useDispatch } from "react-redux";
-import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
+// import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
 import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
@@ -16,6 +16,7 @@ import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+import StepNode from "./nodes/StepNode.tsx";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -24,6 +25,7 @@ const fitViewOptions = {
 
 const nodeTypes = {
   custom: CustomNode,
+  step: StepNode,
   parent: ParentNode,
 };
 
@@ -51,7 +53,7 @@ const CreateFlow = () => {
           .reduce((eds, node) => {
             const stepId = target.split("-")[1];
             const parentId = node.id.split("-")[1];
-            dispatch(addParentId({ id: stepId, parentId }));
+            // dispatch(addParentId({ id: stepId, parentId }));
             return addEdge({ source: node.id, target }, eds);
           }, eds),
       );

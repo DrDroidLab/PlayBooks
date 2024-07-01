@@ -1,14 +1,11 @@
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
-import {
-  addStep,
-  playbookSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
@@ -18,8 +15,7 @@ import useZoom from "../../../hooks/useZoom.ts";
 const addDataId = DrawerTypes.ADD_DATA;
 
 function AddButtonOptions({ stepId }) {
-  const [step] = useCurrentStep(stepId);
-  const dispatch = useDispatch();
+  const step = useCurrentStep(stepId);
   const source = `node-${step?.id}`;
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
@@ -38,16 +34,16 @@ function AddButtonOptions({ stepId }) {
     handleNoAction(e);
     if (!isEditing) return;
     toggleAddData();
-    addAdditionalData({ parentId: step.id });
+    addAdditionalData({ parentId: step?.id });
   };
 
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    const parentId = step.id;
+    const parentId = step?.id;
 
     const id = generateUUIDWithoutHyphens();
-    dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
+    // dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
     addAdditionalData({
       source,
       id: `edge-${parentId}-${id}`,

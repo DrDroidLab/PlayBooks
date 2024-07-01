@@ -3,7 +3,7 @@ import {
   executePlaybookStep,
   executionStepExecute,
 } from "../../store/features/playbook/api/index.ts";
-import { Step } from "../../types.ts";
+import { Step } from "../../types/index.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardById } from "./updateCardById.ts";
 import {

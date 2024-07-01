@@ -7,7 +7,7 @@ import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function SelectInterpretation({ id }) {
-  const [step] = useCurrentStep(id);
+  const step = useCurrentStep(id);
   const [selectInterpretation, setSelectInterpretation] = useState(
     step?.interpreter?.type ?? false,
   );

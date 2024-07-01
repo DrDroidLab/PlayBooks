@@ -2,7 +2,7 @@ import React from "react";
 import { cardsData } from "../../../utils/cardsData";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createStepWithSource,
+  createTaskWithSource,
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
@@ -45,7 +45,7 @@ function IntegrationOption({ option }) {
     if (unsupported) return;
     if (option.source) {
       dispatch(
-        createStepWithSource({
+        createTaskWithSource({
           source: option.source,
           modelType:
             option.supported_model_types?.length > 0
@@ -57,11 +57,12 @@ function IntegrationOption({ option }) {
           parentId: addtionalState?.parentId,
           requireCondition: addtionalState?.requireCondition,
           currentConditionParentId: addtionalState?.currentConditionParentId,
+          stepId: addtionalState?.stepId,
           resultType: option.result_type,
         }),
       );
       toggle();
-      openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+      openDrawer(PermanentDrawerTypes.TASK_DETAILS);
     }
   };
 

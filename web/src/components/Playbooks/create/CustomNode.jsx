@@ -3,7 +3,7 @@ import { Handle, NodeToolbar, Position } from "reactflow";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
-  setCurrentStepId,
+  setCurrentVisibleTask,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
@@ -17,6 +17,7 @@ import AddButtonOptions from "../card/AddButtonOptions.tsx";
 import StepInformation from "../card/StepInformation.tsx";
 
 const addDataId = DrawerTypes.ADD_DATA;
+const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
 export default function CustomNode({ data }) {
   const { addAdditionalData } = useDrawerState(addDataId);
@@ -44,16 +45,13 @@ export default function CustomNode({ data }) {
       openDrawer(PermanentDrawerTypes.TIMELINE);
       return;
     }
-    if (
-      permanentView === PermanentDrawerTypes.STEP_DETAILS &&
-      currentStepId === step.id
-    ) {
-      togglePermanentDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    if (permanentView === stepDetailsId && currentStepId === step.id) {
+      togglePermanentDrawer(stepDetailsId);
       return;
     }
-    dispatch(setCurrentStepId(step.id));
+    dispatch(setCurrentVisibleTask(step.id));
     addAdditionalData({});
-    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+    openDrawer(stepDetailsId);
   };
 
   return (

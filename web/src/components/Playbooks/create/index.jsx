@@ -108,7 +108,7 @@ function CreatePlaybook() {
             </div>
           )}
         </main>
-        {playbook.view === "builder" && <PermenantDrawer />}
+        <PermenantDrawer />
       </div>
       {/* <ConditionDrawer /> */}
     </div>

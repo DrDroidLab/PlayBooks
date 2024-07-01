@@ -7,7 +7,7 @@ import {
   additionalStateSelector,
 } from "../store/features/drawers/drawersSlice.ts";
 import { PermanentDrawerTypes } from "../store/features/drawers/permanentDrawerTypes.ts";
-import { setCurrentStepId } from "../store/features/playbook/playbookSlice.ts";
+import { setCurrentVisibleTask } from "../store/features/playbook/playbookSlice.ts";
 
 type DrawerState = {
   isOpen: boolean;
@@ -32,7 +32,7 @@ function usePermanentDrawerState(): DrawerState {
   const toggleDrawerFunction = (view: PermanentDrawerTypesKeys) => {
     if (permanentView === view) {
       dispatch(setPermanentView(PermanentDrawerTypes.DEFAULT));
-      dispatch(setCurrentStepId(null));
+      dispatch(setCurrentVisibleTask(null));
       dispatch(setAdditionalState({}));
       return;
     }
@@ -41,12 +41,12 @@ function usePermanentDrawerState(): DrawerState {
 
   const closeDrawerFunction = () => {
     dispatch(setPermanentView(PermanentDrawerTypes.DEFAULT));
-    dispatch(setCurrentStepId(null));
+    dispatch(setCurrentVisibleTask(null));
     dispatch(setAdditionalState({}));
   };
 
   const addAdditionalData = (data: any) => {
-    dispatch(setCurrentStepId(null));
+    dispatch(setCurrentVisibleTask(null));
     dispatch(setAdditionalState(data));
   };
 

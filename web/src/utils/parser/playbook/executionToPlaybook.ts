@@ -41,7 +41,6 @@ export const executionToPlaybook = (playbook_execution) => {
       ),
       showError: false,
       isPlayground: false,
-      stepType: "",
       action: "",
       relationLogs,
       isEditing: false,
