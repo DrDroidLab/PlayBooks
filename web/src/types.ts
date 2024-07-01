@@ -85,6 +85,8 @@ export interface Step {
   children?: any;
   taskIds?: string[];
   isEditing: boolean;
+  start_time?: string;
+  end_time?: string;
 }
 
 export interface StepPosition {
