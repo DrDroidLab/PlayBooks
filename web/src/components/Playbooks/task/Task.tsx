@@ -49,7 +49,7 @@ function Task({ id }) {
         </div>
         <HandleNotesRender id={currentTaskId} />
         <SelectInterpretation id={currentTaskId} />
-        <HandleExternalLinksRender id={currentTaskId} />
+        {/* <HandleExternalLinksRender id={currentTaskId} /> */}
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">

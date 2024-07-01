@@ -46,7 +46,7 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
           </div>
         )}
 
-        {(step?.external_links?.length ?? 0) > 0 && (
+        {/* {(step?.external_links?.length ?? 0) > 0 && (
           <div className="flex gap-2 items-center flex-wrap">
             <Link fontSize="small" />
             {step?.external_links?.map((link) => (
@@ -60,7 +60,7 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
               </a>
             ))}
           </div>
-        )}
+        )} */}
       </div>
       <div className="flex-[0.1] self-end">
         <DeleteTaskButton taskId={task.id} />

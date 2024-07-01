@@ -339,11 +339,11 @@ const playbookSlice = createSlice({
     addNotes(state, { payload }) {
       const { id, notes } = payload;
       if (id) {
-        const step = state.currentPlaybook!.steps?.find(
-          (step) => step.id === id,
+        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
+          (task) => task.id === id,
         );
-        if (step) {
-          step.notes = notes;
+        if (task) {
+          task.notes = notes;
         }
       }
     },
@@ -361,22 +361,22 @@ const playbookSlice = createSlice({
     toggleExternalLinkVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const step = state.currentPlaybook!.steps?.find(
+        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
           (step) => step.id === id,
         );
-        if (step)
-          step.uiRequirements.showExternalLinks =
-            !step.uiRequirements.showExternalLinks;
+        if (task)
+          task.ui_requirement.showExternalLinks =
+            !task.ui_requirement.showExternalLinks;
       }
     },
     toggleNotesVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const step = state.currentPlaybook!.steps?.find(
-          (step) => step.id === id,
+        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
+          (task) => task.id === id,
         );
-        if (step)
-          step.uiRequirements.showNotes = !step.uiRequirements.showNotes;
+        if (task)
+          task.ui_requirement.showNotes = !task.ui_requirement.showNotes;
       }
     },
     resetState(state) {
