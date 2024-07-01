@@ -86,7 +86,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
             <div className={styles.actions}>
               <CustomButton onClick={toggleOverlay}>Cancel</CustomButton>
               <CustomButton onClick={handleSuccess}>Yes</CustomButton>
-              <TestConnectorButton connector={connector} />
+              <TestConnectorButton connector={connector} formData={formData} />
               {isLoading && (
                 <CircularProgress
                   style={{

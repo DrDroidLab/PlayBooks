@@ -5,7 +5,7 @@ import { connectorSelector } from "../../../store/features/integrations/integrat
 import { useLazyTestConnectionQuery } from "../../../store/features/integrations/api/testConnectionApi.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 
-function TestConnectorButton({ id, connector }) {
+function TestConnectorButton({ id, connector, formData }) {
   const dispatch = useDispatch();
   const currentConnector = useSelector(connectorSelector);
   const [triggerTestConnection, { isFetching: testConnectionLoading }] =
@@ -14,9 +14,9 @@ function TestConnectorButton({ id, connector }) {
 
   const handleClick = async () => {
     const formattedKeys: any = [];
-    const error = keyOptions.findIndex(
-      (op) => currentConnector[op.key_type] !== "",
-    );
+    const error = keyOptions.findIndex((op) => {
+      return formData[op.key_type] === "";
+    });
     if (error !== -1) {
       dispatch(showSnackbar("Please fill all the required fields."));
       return;
@@ -24,11 +24,11 @@ function TestConnectorButton({ id, connector }) {
     keyOptions?.forEach((e) => {
       formattedKeys.push({
         key_type: e.key_type,
-        key: (currentConnector[e.key_type] === "SSL_VERIFY"
-          ? currentConnector[e.key_type] !== ""
-            ? currentConnector[e.key_type]
+        key: (formData[e.key_type] === "SSL_VERIFY"
+          ? formData[e.key_type] !== ""
+            ? formData[e.key_type]
             : false
-          : currentConnector[e.key_type]
+          : formData[e.key_type]
         )?.toString(),
       });
     });

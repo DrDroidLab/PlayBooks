@@ -13,7 +13,11 @@ function ConfigButtons({ connector }) {
     <>
       <div className="flex flex-wrap gap-2 items-center">
         <UpdateConnectorButton id={id} connector={connector} />
-        <TestConnectorButton id={id} connector={connector} />
+        <TestConnectorButton
+          id={id}
+          connector={connector}
+          formData={connector}
+        />
         {connectorActive && (
           <DeleteConnectorButton connector={connector} id={id} />
         )}
