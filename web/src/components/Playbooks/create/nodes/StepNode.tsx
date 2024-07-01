@@ -41,13 +41,13 @@ function StepNode({ data }) {
         className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
       />
 
-      {hasChildren && (
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
-        />
-      )}
+      {/* {hasChildren && ( */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
+      />
+      {/* )} */}
 
       {isEditing && (
         <NodeToolbar isVisible={true} position={Position.Bottom}>

@@ -85,11 +85,13 @@ const playbookSlice = createSlice({
       );
 
       relations.forEach((relation) => {
+        const sourceId =
+          typeof relation.parent !== "string" ? relation.parent.id : "";
+        const targetId = relation.child.id;
         relation.source =
-          typeof relation.parent !== "string"
-            ? `node-${relation.parent.id}`
-            : "playbook";
-        relation.target = `node-${relation.child.id}`;
+          typeof relation.parent !== "string" ? `node-${sourceId}` : "playbook";
+        relation.target = `node-${targetId}`;
+        relation.id = `edge-${sourceId}-${targetId}`;
       });
 
       if (state.currentPlaybook)
