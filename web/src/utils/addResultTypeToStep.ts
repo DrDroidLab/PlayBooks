@@ -12,7 +12,7 @@ function addResultTypeToStep(step: Step) {
   const taskTypes = currentConnector?.supported_task_type_options ?? [];
   const taskType = taskTypes.find((e) => e.task_type === step.taskType);
 
-  updateCardById("resultType", taskType.result_type, step.id);
+  updateCardById("resultType", taskType?.result_type, step.id);
 }
 
 export default addResultTypeToStep;
