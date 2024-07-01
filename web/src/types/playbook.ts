@@ -30,4 +30,5 @@ export type PlaybookUIState = {
   executionId?: string;
   executionStack?: any;
   zoomLevel?: any;
+  connectorOptions?: any;
 };

@@ -42,6 +42,7 @@ const initialState: PlaybookUIState = {
   isEditing: false,
   executionStack: [],
   zoomLevel: 0.75,
+  connectorOptions: [],
 };
 
 const playbookSlice = createSlice({

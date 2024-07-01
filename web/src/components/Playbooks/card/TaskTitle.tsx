@@ -7,7 +7,6 @@ import HandleTaskIcon from "./HandleTaskIcon.tsx";
 function TaskTitle({ taskId }) {
   const [task] = useCurrentTask(taskId);
 
-  console.log("task", task);
   return (
     <div className="bg-gray-200 flex items-center justify-between p-2 w-[300px]">
       <div className="flex items-center gap-1">

@@ -17,6 +17,8 @@ type TaskUIRequirement = {
   errors?: any;
   showOutput?: boolean;
   outputs?: any;
+  userEnteredDescription?: boolean;
+  assetsLoading?: boolean;
 };
 
 export type Task = {
