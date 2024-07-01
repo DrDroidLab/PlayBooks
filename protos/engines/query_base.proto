@@ -2,11 +2,9 @@ syntax = "proto3";
 
 package protos.engines;
 
-import "protos/literal.proto";
-import "protos/base.proto";
-
 import "google/protobuf/wrappers.proto";
-
+import "protos/base.proto";
+import "protos/literal.proto";
 
 message OpRhs {
   Op op = 1;
@@ -26,7 +24,7 @@ message ColumnIdentifier {
 message Expression {
   oneof value {
     ColumnIdentifier column_identifier = 1;
-    Literal literal = 4;
+    Literal literal = 2;
   }
 }
 
@@ -39,21 +37,4 @@ message Filter {
 
 message QueryRequest {
   Filter filter = 1;
-  repeated Expression selection = 2;
-
-  bool distinct_selections = 9;
-  OrderByExpression order_by = 10;
-}
-
-
-message OrderByExpression {
-  Expression expression = 1;
-  SortOrder order = 2;
-  google.protobuf.BoolValue allow_nulls = 3;
-  google.protobuf.BoolValue nulls_last = 4;
-}
-
-enum SortOrder {
-  ASC = 0;
-  DESC = 1;
 }

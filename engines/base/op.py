@@ -25,6 +25,7 @@ STRING_OPS_RHS_MAP = [
     OpRhs(op=Op.IS_NULL, rhs=LiteralType.NULL_STRING),
     OpRhs(op=Op.EXISTS, rhs=LiteralType.NULL_STRING)
 ]
+
 LONG_OPS_RHS_MAP = [
     OpRhs(op=Op.EQ, rhs=LiteralType.LONG),
     OpRhs(op=Op.NEQ, rhs=LiteralType.LONG),
@@ -37,6 +38,7 @@ LONG_OPS_RHS_MAP = [
     OpRhs(op=Op.IS_NULL, rhs=LiteralType.NULL_NUMBER),
     OpRhs(op=Op.EXISTS, rhs=LiteralType.NULL_NUMBER),
 ]
+
 DOUBLE_OPS_RHS_MAP = [
     OpRhs(op=Op.EQ, rhs=LiteralType.DOUBLE),
     OpRhs(op=Op.NEQ, rhs=LiteralType.DOUBLE),
@@ -49,12 +51,14 @@ DOUBLE_OPS_RHS_MAP = [
     OpRhs(op=Op.IS_NULL, rhs=LiteralType.NULL_NUMBER),
     OpRhs(op=Op.EXISTS, rhs=LiteralType.NULL_NUMBER),
 ]
+
 BOOLEAN_OPS_RHS_MAP = [
     OpRhs(op=Op.EQ, rhs=LiteralType.BOOLEAN),
     OpRhs(op=Op.NEQ, rhs=LiteralType.BOOLEAN),
     OpRhs(op=Op.IS_NULL, rhs=LiteralType.NULL_NUMBER),
     OpRhs(op=Op.EXISTS, rhs=LiteralType.NULL_NUMBER),
 ]
+
 TIMESTAMP_OPS_RHS_MAP = [
     OpRhs(op=Op.EQ, rhs=LiteralType.TIMESTAMP),
     OpRhs(op=Op.GT, rhs=LiteralType.TIMESTAMP),
@@ -62,10 +66,12 @@ TIMESTAMP_OPS_RHS_MAP = [
     OpRhs(op=Op.GTE, rhs=LiteralType.TIMESTAMP),
     OpRhs(op=Op.LTE, rhs=LiteralType.TIMESTAMP),
 ]
+
 ID_LITERAL_OPS_RHS_MAP = [
     OpRhs(op=Op.EQ, rhs=LiteralType.ID),
     OpRhs(op=Op.IN, rhs=LiteralType.ID_ARRAY),
 ]
+
 OP_MAPPINGS = [
     OpMapping(lhs=LiteralType.STRING, op_rhs=STRING_OPS_RHS_MAP),
     OpMapping(lhs=LiteralType.LONG, op_rhs=LONG_OPS_RHS_MAP),
@@ -106,5 +112,4 @@ def validate_query(lhs_type: LiteralType, op: Op, rhs_type: LiteralType) -> (boo
             break
     if rhs == LiteralType.UNKNOWN_LT or rhs_type != rhs:
         return False, "rhs type: {}".format(rhs_type)
-
     return True, ""

@@ -55,6 +55,15 @@ message OpDescription {
   bool is_logical = 4;
 }
 
+
+enum Context {
+  UNKNOWN_C = 0;
+  PLAYBOOK = 1;
+  PLAYBOOK_EXECUTION = 2;
+  WORKFLOW = 3;
+  WORKFLOW_EXECUTION = 4;
+}
+
 message TimeRange {
   uint64 time_geq = 1;
   uint64 time_lt = 2;

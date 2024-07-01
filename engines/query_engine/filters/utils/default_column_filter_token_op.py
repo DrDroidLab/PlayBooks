@@ -1,46 +1,9 @@
-import abc
-from typing import Union
+from django.db.models import Q, Value
 
-from django.db.models import F, Q, Value
-
+from engines.query_engine.filters.filter_token_op import ColumnTokenFilterOp
 from engines.base.literal import is_scalar
-from engines.base.token import Filterable, ColumnToken, OpToken, LiteralToken
+from engines.base.token import LiteralToken
 from protos.base_pb2 import Op
-
-
-class TokenFilterOp(abc.ABC):
-    def process(self, lhs, op, rhs):
-        pass
-
-
-class ColumnTokenFilterOp(TokenFilterOp):
-    supported_ops = None
-
-    def process(self, lhs_token: ColumnToken, op_token: OpToken, rhs_token: Union[Filterable, LiteralToken]):
-        lhs = lhs_token.filter_key()
-        op = op_token.op
-
-        rhs = self.rhs(rhs_token)
-
-        if lhs_token.column.supported_ops:
-            if op not in lhs_token.column.supported_ops:
-                raise ValueError(f'Query {op} not supported for {lhs_token}')
-        else:
-            if self.supported_ops and op not in self.supported_ops:
-                raise ValueError(f'Query {op} not supported for {lhs_token}')
-
-        return self.q(lhs, op, rhs)
-
-    def rhs(self, rhs_token):
-        if isinstance(rhs_token, Filterable):
-            return F(rhs_token.filter_key())
-        elif isinstance(rhs_token, LiteralToken):
-            return rhs_token.literal_value
-        else:
-            raise ValueError('RHS must be Filterable or Literal')
-
-    def q(self, lhs, op, rhs):
-        pass
 
 
 class IDColumnTokenFilterOp(ColumnTokenFilterOp):

@@ -6,35 +6,17 @@ import builtins
 import collections.abc
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
-import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
-import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.literal_pb2
 import sys
-import typing
 
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 8):
     import typing as typing_extensions
 else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
-
-class _SortOrder:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
-
-class _SortOrderEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SortOrder.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
-    ASC: _SortOrder.ValueType  # 0
-    DESC: _SortOrder.ValueType  # 1
-
-class SortOrder(_SortOrder, metaclass=_SortOrderEnumTypeWrapper): ...
-
-ASC: SortOrder.ValueType  # 0
-DESC: SortOrder.ValueType  # 1
-global___SortOrder = SortOrder
 
 @typing_extensions.final
 class OpRhs(google.protobuf.message.Message):
@@ -146,53 +128,14 @@ class QueryRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     FILTER_FIELD_NUMBER: builtins.int
-    SELECTION_FIELD_NUMBER: builtins.int
-    DISTINCT_SELECTIONS_FIELD_NUMBER: builtins.int
-    ORDER_BY_FIELD_NUMBER: builtins.int
     @property
     def filter(self) -> global___Filter: ...
-    @property
-    def selection(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]: ...
-    distinct_selections: builtins.bool
-    @property
-    def order_by(self) -> global___OrderByExpression: ...
     def __init__(
         self,
         *,
         filter: global___Filter | None = ...,
-        selection: collections.abc.Iterable[global___Expression] | None = ...,
-        distinct_selections: builtins.bool = ...,
-        order_by: global___OrderByExpression | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["filter", b"filter", "order_by", b"order_by"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["distinct_selections", b"distinct_selections", "filter", b"filter", "order_by", b"order_by", "selection", b"selection"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter", b"filter"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter", b"filter"]) -> None: ...
 
 global___QueryRequest = QueryRequest
-
-@typing_extensions.final
-class OrderByExpression(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    EXPRESSION_FIELD_NUMBER: builtins.int
-    ORDER_FIELD_NUMBER: builtins.int
-    ALLOW_NULLS_FIELD_NUMBER: builtins.int
-    NULLS_LAST_FIELD_NUMBER: builtins.int
-    @property
-    def expression(self) -> global___Expression: ...
-    order: global___SortOrder.ValueType
-    @property
-    def allow_nulls(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-    @property
-    def nulls_last(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
-    def __init__(
-        self,
-        *,
-        expression: global___Expression | None = ...,
-        order: global___SortOrder.ValueType = ...,
-        allow_nulls: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-        nulls_last: google.protobuf.wrappers_pb2.BoolValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["allow_nulls", b"allow_nulls", "expression", b"expression", "nulls_last", b"nulls_last"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["allow_nulls", b"allow_nulls", "expression", b"expression", "nulls_last", b"nulls_last", "order", b"order"]) -> None: ...
-
-global___OrderByExpression = OrderByExpression

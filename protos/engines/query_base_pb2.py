@@ -11,20 +11,18 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from protos import literal_pb2 as protos_dot_literal__pb2
-from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
+from protos import base_pb2 as protos_dot_base__pb2
+from protos import literal_pb2 as protos_dot_literal__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/engines/query_base.proto\x12\x0eprotos.engines\x1a\x14protos/literal.proto\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"A\n\x05OpRhs\x12\x16\n\x02op\x18\x01 \x01(\x0e\x32\n.protos.Op\x12 \n\x03rhs\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"T\n\tOpMapping\x12 \n\x03lhs\x18\x01 \x01(\x0e\x32\x13.protos.LiteralType\x12%\n\x06op_rhs\x18\x02 \x03(\x0b\x32\x15.protos.engines.OpRhs\"C\n\x10\x43olumnIdentifier\x12\x0c\n\x04name\x18\x01 \x01(\t\x12!\n\x04type\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"x\n\nExpression\x12=\n\x11\x63olumn_identifier\x18\x01 \x01(\x0b\x32 .protos.engines.ColumnIdentifierH\x00\x12\"\n\x07literal\x18\x04 \x01(\x0b\x32\x0f.protos.LiteralH\x00\x42\x07\n\x05value\"\x9b\x01\n\x06\x46ilter\x12\'\n\x03lhs\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\x16\n\x02op\x18\x02 \x01(\x0e\x32\n.protos.Op\x12\'\n\x03rhs\x18\x03 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\'\n\x07\x66ilters\x18\x04 \x03(\x0b\x32\x16.protos.engines.Filter\"\xb7\x01\n\x0cQueryRequest\x12&\n\x06\x66ilter\x18\x01 \x01(\x0b\x32\x16.protos.engines.Filter\x12-\n\tselection\x18\x02 \x03(\x0b\x32\x1a.protos.engines.Expression\x12\x1b\n\x13\x64istinct_selections\x18\t \x01(\x08\x12\x33\n\x08order_by\x18\n \x01(\x0b\x32!.protos.engines.OrderByExpression\"\xce\x01\n\x11OrderByExpression\x12.\n\nexpression\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12(\n\x05order\x18\x02 \x01(\x0e\x32\x19.protos.engines.SortOrder\x12/\n\x0b\x61llow_nulls\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12.\n\nnulls_last\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValue*\x1e\n\tSortOrder\x12\x07\n\x03\x41SC\x10\x00\x12\x08\n\x04\x44\x45SC\x10\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fprotos/engines/query_base.proto\x12\x0eprotos.engines\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\x1a\x14protos/literal.proto\"A\n\x05OpRhs\x12\x16\n\x02op\x18\x01 \x01(\x0e\x32\n.protos.Op\x12 \n\x03rhs\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"T\n\tOpMapping\x12 \n\x03lhs\x18\x01 \x01(\x0e\x32\x13.protos.LiteralType\x12%\n\x06op_rhs\x18\x02 \x03(\x0b\x32\x15.protos.engines.OpRhs\"C\n\x10\x43olumnIdentifier\x12\x0c\n\x04name\x18\x01 \x01(\t\x12!\n\x04type\x18\x02 \x01(\x0e\x32\x13.protos.LiteralType\"x\n\nExpression\x12=\n\x11\x63olumn_identifier\x18\x01 \x01(\x0b\x32 .protos.engines.ColumnIdentifierH\x00\x12\"\n\x07literal\x18\x02 \x01(\x0b\x32\x0f.protos.LiteralH\x00\x42\x07\n\x05value\"\x9b\x01\n\x06\x46ilter\x12\'\n\x03lhs\x18\x01 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\x16\n\x02op\x18\x02 \x01(\x0e\x32\n.protos.Op\x12\'\n\x03rhs\x18\x03 \x01(\x0b\x32\x1a.protos.engines.Expression\x12\'\n\x07\x66ilters\x18\x04 \x03(\x0b\x32\x16.protos.engines.Filter\"6\n\x0cQueryRequest\x12&\n\x06\x66ilter\x18\x01 \x01(\x0b\x32\x16.protos.engines.Filterb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.engines.query_base_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _SORTORDER._serialized_start=1021
-  _SORTORDER._serialized_end=1051
   _OPRHS._serialized_start=124
   _OPRHS._serialized_end=189
   _OPMAPPING._serialized_start=191
@@ -35,8 +33,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _EXPRESSION._serialized_end=466
   _FILTER._serialized_start=469
   _FILTER._serialized_end=624
-  _QUERYREQUEST._serialized_start=627
-  _QUERYREQUEST._serialized_end=810
-  _ORDERBYEXPRESSION._serialized_start=813
-  _ORDERBYEXPRESSION._serialized_end=1019
+  _QUERYREQUEST._serialized_start=626
+  _QUERYREQUEST._serialized_end=680
 # @@protoc_insertion_point(module_scope)

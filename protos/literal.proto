@@ -36,7 +36,7 @@ message IdLiteral {
 
 message Literal {
   // Referenced from: https://github.com/hypertrace/entity-service/blob/main/entity-service-api/src/main/proto/org/hypertrace/entity/query/service/v1/value.proto
-  LiteralType literal_type = 1;
+  LiteralType type = 1;
 
   google.protobuf.StringValue string = 2;
   google.protobuf.Int64Value long = 3;

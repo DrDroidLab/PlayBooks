@@ -102,7 +102,7 @@ global___IdLiteral = IdLiteral
 class Literal(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    LITERAL_TYPE_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
     STRING_FIELD_NUMBER: builtins.int
     LONG_FIELD_NUMBER: builtins.int
     DOUBLE_FIELD_NUMBER: builtins.int
@@ -115,7 +115,7 @@ class Literal(google.protobuf.message.Message):
     BYTES_ARRAY_FIELD_NUMBER: builtins.int
     BOOLEAN_ARRAY_FIELD_NUMBER: builtins.int
     ID_ARRAY_FIELD_NUMBER: builtins.int
-    literal_type: global___LiteralType.ValueType
+    type: global___LiteralType.ValueType
     """Referenced from: https://github.com/hypertrace/entity-service/blob/main/entity-service-api/src/main/proto/org/hypertrace/entity/query/service/v1/value.proto"""
     @property
     def string(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -143,7 +143,7 @@ class Literal(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        literal_type: global___LiteralType.ValueType = ...,
+        type: global___LiteralType.ValueType = ...,
         string: google.protobuf.wrappers_pb2.StringValue | None = ...,
         long: google.protobuf.wrappers_pb2.Int64Value | None = ...,
         double: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
@@ -158,7 +158,7 @@ class Literal(google.protobuf.message.Message):
         id_array: collections.abc.Iterable[global___IdLiteral] | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["boolean", b"boolean", "double", b"double", "id", b"id", "long", b"long", "string", b"string"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["boolean", b"boolean", "boolean_array", b"boolean_array", "bytes_array", b"bytes_array", "double", b"double", "double_array", b"double_array", "id", b"id", "id_array", b"id_array", "literal_type", b"literal_type", "long", b"long", "long_array", b"long_array", "string", b"string", "string_array", b"string_array", "timestamp", b"timestamp"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["boolean", b"boolean", "boolean_array", b"boolean_array", "bytes_array", b"bytes_array", "double", b"double", "double_array", b"double_array", "id", b"id", "id_array", b"id_array", "long", b"long", "long_array", b"long_array", "string", b"string", "string_array", b"string_array", "timestamp", b"timestamp", "type", b"type"]) -> None: ...
 
 global___Literal = Literal
 

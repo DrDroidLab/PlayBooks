@@ -1,4 +1,3 @@
-from collections import defaultdict
 from datetime import datetime
 
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, DoubleValue, Int64Value, BoolValue
@@ -14,9 +13,19 @@ _SCALAR_LITERALS = {
     LiteralType.ID
 }
 
+_GROUPABLE_LITERALS = {
+    LiteralType.STRING,
+    LiteralType.LONG,
+    LiteralType.BOOLEAN
+}
+
 
 def is_scalar(lt: LiteralType):
     return lt in _SCALAR_LITERALS
+
+
+def is_groupable(literal_type: LiteralType) -> bool:
+    return literal_type in _GROUPABLE_LITERALS
 
 
 def literal_to_obj(lt: Literal):
@@ -56,7 +65,6 @@ def literal_to_obj(lt: Literal):
         return ''
     elif lt.literal_type == LiteralType.NULL_NUMBER:
         return 0
-
     return None
 
 
@@ -97,45 +105,25 @@ def display_literal(lt: Literal):
         return '""'
     elif lt.literal_type == LiteralType.NULL_NUMBER:
         return 0
-
     return None
 
 
 def obj_to_literal(o, is_id=False):
     if o is None:
-        return Literal(literal_type=LiteralType.NULL_NUMBER)
+        return Literal(type=LiteralType.NULL_NUMBER)
     elif isinstance(o, bool):
-        return Literal(literal_type=LiteralType.BOOLEAN, boolean=BoolValue(value=o))
+        return Literal(type=LiteralType.BOOLEAN, boolean=BoolValue(value=o))
     elif isinstance(o, str):
         if is_id:
-            return Literal(
-                literal_type=LiteralType.ID,
-                id=IdLiteral(type=IdLiteral.Type.STRING, string=StringValue(value=o))
-            )
-        return Literal(literal_type=LiteralType.STRING, string=StringValue(value=o))
+            return Literal(type=LiteralType.ID, id=IdLiteral(type=IdLiteral.Type.STRING, string=StringValue(value=o)))
+        return Literal(type=LiteralType.STRING, string=StringValue(value=o))
     elif isinstance(o, int):
         if is_id:
-            return Literal(
-                literal_type=LiteralType.ID,
-                id=IdLiteral(type=IdLiteral.Type.LONG, long=UInt64Value(value=o))
-            )
-        return Literal(literal_type=LiteralType.LONG, long=Int64Value(value=o))
+            return Literal(type=LiteralType.ID, id=IdLiteral(type=IdLiteral.Type.LONG, long=UInt64Value(value=o)))
+        return Literal(type=LiteralType.LONG, long=Int64Value(value=o))
     elif isinstance(o, float):
-        return Literal(literal_type=LiteralType.DOUBLE, double=DoubleValue(value=o))
+        return Literal(type=LiteralType.DOUBLE, double=DoubleValue(value=o))
     elif isinstance(o, datetime):
-        return Literal(literal_type=LiteralType.TIMESTAMP, timestamp=int(o.timestamp()))
+        return Literal(type=LiteralType.TIMESTAMP, timestamp=int(o.timestamp()))
     else:
         raise ValueError('Unexpected type')
-
-
-
-_literal_type_is_groupable = defaultdict(lambda: False, {
-    LiteralType.STRING: True,
-    LiteralType.LONG: True,
-    LiteralType.BOOLEAN: True,
-    LiteralType.DOUBLE: False
-})
-
-
-def literal_type_is_groupable(literal_type: LiteralType) -> bool:
-    return _literal_type_is_groupable.get(literal_type, False)

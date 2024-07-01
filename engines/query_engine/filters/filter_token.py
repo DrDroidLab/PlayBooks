@@ -2,16 +2,16 @@ from typing import List, Dict
 
 from django.db.models import Q
 
-from engines.base.filter_token_op import NumericColumnTokenFilterOp, StringColumnTokenFilterOp, \
-    BooleanColumnTokenFilterOp, TimestampColumnTokenFilterOp, IDColumnTokenFilterOp, LiteralArrayColumnTokenFilterOp, \
-    TokenFilterOp
+from engines.query_engine.filters.filter_token_op import TokenFilterOp
+from engines.query_engine.filters.utils.default_column_filter_token_op import NumericColumnTokenFilterOp, \
+    StringColumnTokenFilterOp, BooleanColumnTokenFilterOp, TimestampColumnTokenFilterOp, IDColumnTokenFilterOp, \
+    LiteralArrayColumnTokenFilterOp
 from engines.base.literal import is_scalar
 from engines.base.op import validate_query
-from engines.base.token import Token, OpToken, ColumnToken, Filterable, Annotable, ExpressionTokenizer, \
-    LiteralToken
-from protos.literal_pb2 import LiteralType
-from protos.engines.query_base_pb2 import Filter as FilterProto
+from engines.base.token import Token, OpToken, Filterable, ColumnToken, Annotable, ExpressionTokenizer, LiteralToken
 from protos.base_pb2 import Op
+from protos.engines.query_base_pb2 import Filter as FilterProto
+from protos.literal_pb2 import LiteralType
 
 CONNECTOR_OPS = [Op.AND, Op.OR, Op.NOT]
 
@@ -168,29 +168,3 @@ class FilterTokenEvaluator:
         q = self._filter_token_processor.process(filter_token)
         filter_qs = qs.annotate(**annotations).filter(q)
         return filter_qs
-
-
-class FilterEngine:
-    def __init__(self, columns):
-        self.columns = columns
-        self._filter_tokenizer = FilterTokenizer(columns)
-        self._filter_token_validator = FilterTokenValidator()
-        self._filter_token_evaluator = FilterTokenEvaluator()
-
-    def tokenize(self, filter_proto: FilterProto) -> FilterToken:
-        return self._filter_tokenizer.tokenize(filter_proto)
-
-    def validate(self, filter_token: FilterToken) -> (bool, str):
-        return self._filter_token_validator.validate(filter_token)
-
-    def evaluate(self, qs, filter_token: FilterToken):
-        return self._filter_token_evaluator.process(qs, filter_token)
-
-    def process(self, qs, filter_proto: FilterProto):
-        filter_token: FilterToken = self.tokenize(filter_proto)
-        if not filter_token:
-            return qs
-        query_validation_check, err = self.validate(filter_token)
-        if not query_validation_check:
-            raise ValueError(err)
-        return self.evaluate(qs, filter_token)

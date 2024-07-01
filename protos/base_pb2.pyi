@@ -125,6 +125,27 @@ OR: Op.ValueType  # 21
 NOT: Op.ValueType  # 22
 global___Op = Op
 
+class _Context:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _ContextEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Context.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_C: _Context.ValueType  # 0
+    PLAYBOOK: _Context.ValueType  # 1
+    PLAYBOOK_EXECUTION: _Context.ValueType  # 2
+    WORKFLOW: _Context.ValueType  # 3
+    WORKFLOW_EXECUTION: _Context.ValueType  # 4
+
+class Context(_Context, metaclass=_ContextEnumTypeWrapper): ...
+
+UNKNOWN_C: Context.ValueType  # 0
+PLAYBOOK: Context.ValueType  # 1
+PLAYBOOK_EXECUTION: Context.ValueType  # 2
+WORKFLOW: Context.ValueType  # 3
+WORKFLOW_EXECUTION: Context.ValueType  # 4
+global___Context = Context
+
 class _Source:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType

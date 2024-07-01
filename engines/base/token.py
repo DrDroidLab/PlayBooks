@@ -2,7 +2,7 @@ import abc
 from abc import abstractmethod
 from typing import Dict
 
-from engines.base.column import Column, BaseColumn
+from engines.query_engine.columns.column import Column, Column
 from engines.base.literal import literal_to_obj, display_literal
 from protos.literal_pb2 import Literal, LiteralType
 from protos.engines.query_base_pb2 import ColumnIdentifier
@@ -22,26 +22,6 @@ class Annotable(abc.ABC):
         pass
 
 
-class Groupable(abc.ABC):
-    @abstractmethod
-    def group_key(self):
-        pass
-
-    @abstractmethod
-    def group_label_metadata(self):
-        pass
-
-    @abstractmethod
-    def group_label(self, obj):
-        pass
-
-
-class Orderable(abc.ABC):
-    @abstractmethod
-    def order_key(self):
-        pass
-
-
 class Token(abc.ABC):
     @abstractmethod
     def display(self) -> str:
@@ -51,7 +31,7 @@ class Token(abc.ABC):
         return self.display()
 
 
-class ColumnToken(Token, Filterable, Annotable, Groupable, Orderable):
+class ColumnToken(Token, Filterable, Annotable):
     column: Column = None
     column_identifier: ColumnIdentifier = None
 
@@ -68,12 +48,6 @@ class ColumnToken(Token, Filterable, Annotable, Groupable, Orderable):
 
     def annotations(self):
         return self.column.annotate()
-
-    def group_key(self):
-        return self.column_identifier.name
-
-    def order_key(self):
-        return self.column_identifier.name
 
 
 class LiteralToken(Token):
@@ -99,7 +73,7 @@ class OpToken(Token):
 
 
 class ExpressionTokenizer:
-    def __init__(self, columns: Dict[str, BaseColumn]):
+    def __init__(self, columns: Dict[str, Column]):
         self._columns = columns
 
     def _column_tokenizer(self, identifier: ColumnIdentifier) -> Token:
@@ -113,4 +87,5 @@ class ExpressionTokenizer:
             return self._column_tokenizer(expression.column_identifier)
         elif expression.HasField('literal'):
             return LiteralToken(literal=expression.literal)
-        return None
+        else:
+            raise ValueError('Invalid filter expression type')
