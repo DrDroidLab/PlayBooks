@@ -3,9 +3,12 @@ import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import TaskTitle from "../../card/TaskTitle.tsx";
 import handleTaskBorderColor from "../../../../utils/playbook/handleTaskBorderColor.ts";
 import TaskInformation from "../../card/TaskInformation.tsx";
-import { setCurrentVisibleTask } from "../../../../store/features/playbook/playbookSlice.ts";
+import {
+  playbookSelector,
+  setCurrentVisibleTask,
+} from "../../../../store/features/playbook/playbookSlice.ts";
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 
 const taskDetailsId = PermanentDrawerTypes.TASK_DETAILS;
@@ -15,6 +18,7 @@ function TaskNode({ taskId }) {
   const dispatch = useDispatch();
   const { toggle, openDrawer, permanentView, addAdditionalData } =
     usePermanentDrawerState();
+  const { currentVisibleTask } = useSelector(playbookSelector);
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -23,12 +27,12 @@ function TaskNode({ taskId }) {
 
   const handleClick = (e) => {
     handleNoAction(e);
-    if (permanentView === taskDetailsId) {
+    if (permanentView === taskDetailsId && currentVisibleTask === taskId) {
       toggle(taskDetailsId);
       return;
     }
-    dispatch(setCurrentVisibleTask(taskId));
     addAdditionalData({});
+    dispatch(setCurrentVisibleTask(taskId));
     openDrawer(taskDetailsId);
   };
 
