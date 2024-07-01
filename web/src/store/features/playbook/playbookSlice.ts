@@ -124,9 +124,9 @@ const playbookSlice = createSlice({
       if (task) task.ui_requirement.isOpen = true;
     },
     createTaskWithSource(state, { payload }) {
-      const parentId = payload.parentId;
+      const { parentId, stepId: existingStepId } = payload;
       const parentExists = parentId !== null && parentId !== undefined;
-      const stepId = generateUUIDWithoutHyphens();
+      const stepId = existingStepId ?? generateUUIDWithoutHyphens();
       const taskId = generateUUIDWithoutHyphens();
 
       const task: Task = {
@@ -151,6 +151,14 @@ const playbookSlice = createSlice({
         description:
           payload.description ?? integrationSentenceMap[payload.modelType],
       };
+
+      if (existingStepId) {
+        const step = state.currentPlaybook?.steps.find((e) => e.id === stepId);
+        step?.tasks.push(taskId);
+        state.currentPlaybook?.ui_requirement.tasks.push(task);
+
+        return;
+      }
 
       const newStep: Step = {
         ...emptyStep,

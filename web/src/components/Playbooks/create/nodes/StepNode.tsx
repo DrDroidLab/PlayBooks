@@ -10,8 +10,16 @@ import { Handle, NodeToolbar, Position } from "reactflow";
 import AddButtonOptions from "../../card/AddButtonOptions.tsx";
 import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import CustomButton from "../../../common/CustomButton/index.tsx";
+import { Add } from "@mui/icons-material";
+import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
+import useDrawerState from "../../../../hooks/useDrawerState.ts";
+
+const addDataId = DrawerTypes.ADD_DATA;
 
 function StepNode({ data }) {
+  const { toggle: toggleAddData, addAdditionalData } =
+    useDrawerState(addDataId);
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const { executionId } = useSelector(playbookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks;
@@ -19,6 +27,11 @@ function StepNode({ data }) {
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const hasChildren = useHasChildren(step?.id);
+
+  const handleAddTask = () => {
+    toggleAddData();
+    addAdditionalData({ stepId: step?.id });
+  };
 
   return (
     <div className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
@@ -28,6 +41,12 @@ function StepNode({ data }) {
           const task = tasks?.find((task) => task.id === stepTask);
           return <TaskNode key={stepTask} taskId={task?.id} />;
         })}
+      </div>
+      <div className="mt-2">
+        <CustomButton onClick={handleAddTask}>
+          <Add fontSize="small" />
+          <p>Add Task</p>
+        </CustomButton>
       </div>
 
       <Handle

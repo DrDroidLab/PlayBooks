@@ -57,6 +57,7 @@ function IntegrationOption({ option }) {
           parentId: addtionalState?.parentId,
           requireCondition: addtionalState?.requireCondition,
           currentConditionParentId: addtionalState?.currentConditionParentId,
+          stepId: addtionalState?.stepId,
           resultType: option.result_type,
         }),
       );
