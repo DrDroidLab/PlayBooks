@@ -29,4 +29,6 @@ export type StepRelation = {
   parent: Step | string;
   child: Step;
   condition?: StepCondition;
+  target?: string;
+  source?: string;
 };

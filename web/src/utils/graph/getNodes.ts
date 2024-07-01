@@ -18,10 +18,6 @@ export const getNodes = () => {
   const nodes = steps.map((step, index) => {
     return {
       id: `node-${step.id}`,
-      position: {
-        // x: step.position?.x ?? 0,
-        // y: step.position?.y ?? 0,
-      },
       data: {
         step,
         index,

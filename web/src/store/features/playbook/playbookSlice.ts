@@ -79,6 +79,21 @@ const playbookSlice = createSlice({
       });
 
       state.currentPlaybook = { ...payload, ui_requirement: { tasks } };
+
+      const relations = structuredClone(
+        state.currentPlaybook?.step_relations ?? [],
+      );
+
+      relations.forEach((relation) => {
+        relation.source =
+          typeof relation.parent !== "string"
+            ? `node-${relation.parent.id}`
+            : "playbook";
+        relation.target = `node-${relation.child.id}`;
+      });
+
+      if (state.currentPlaybook)
+        state.currentPlaybook.step_relations = relations;
       // state.currentPlaybook!.steps = playbookToSteps(payload, false) as any;
       // state.currentPlaybook!.step_relations = playbookToEdges(
       //   payload,
