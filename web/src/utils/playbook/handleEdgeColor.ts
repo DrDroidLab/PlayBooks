@@ -1,5 +1,7 @@
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { store } from "../../store/index.ts";
+import { StepStates } from "../execution/StepStates.ts";
+import handleStepState from "../execution/handleStepState.ts";
 import { extractParent, extractSource } from "../extractData.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { extractLogs } from "./extractLogs.ts";
@@ -18,12 +20,15 @@ function handleEdgeColor(edgeId: string) {
     return "rgba(139, 92, 246, 1)";
   }
 
-  if (childStep?.outputs?.data?.length > 0 || log?.evaluation_result === true) {
-    return "green";
-  }
+  const { state: stepState } = handleStepState(parentId, log);
 
-  if (childStep?.outputError || log?.evaluation_result === false) {
-    return "red";
+  switch (stepState) {
+    case StepStates.SUCCESS:
+      return "green";
+    case StepStates.ERROR:
+      return "red";
+    default:
+      return undefined;
   }
 }
 

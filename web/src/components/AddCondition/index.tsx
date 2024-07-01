@@ -11,6 +11,7 @@ import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOption
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
 import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
 import { extractSource } from "../../utils/extractData.ts";
+import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -95,6 +96,8 @@ function AddCondition() {
       <CustomButton className="!text-sm !w-fit my-2" onClick={addNewCondition}>
         <Add fontSize="inherit" /> Add
       </CustomButton>
+
+      <SavePlaybookButton shouldNavigate={false} />
     </div>
   );
 }
