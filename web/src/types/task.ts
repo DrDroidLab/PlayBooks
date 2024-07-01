@@ -4,6 +4,7 @@ import { TaskDetails } from "./taskDetails.ts";
 
 type TaskUIRequirement = {
   isOpen: boolean;
+  stepId: string;
   position: {
     x: number;
     y: number;
@@ -11,6 +12,11 @@ type TaskUIRequirement = {
   assets?: any;
   nrqlData?: any;
   taskType?: string;
+  outputLoading?: boolean;
+  outputError?: boolean;
+  errors?: any;
+  showOutput?: boolean;
+  outputs?: any;
 };
 
 export type Task = {

@@ -6,6 +6,7 @@ import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
 import { RootState } from "../../index.ts";
+import { Task } from "../../../types/task.ts";
 
 const emptyStep: Step = {
   id: "",
@@ -126,34 +127,37 @@ const playbookSlice = createSlice({
       const stepId = generateUUIDWithoutHyphens();
       const taskId = generateUUIDWithoutHyphens();
 
-      const newStep = {
+      const task: Task = {
+        id: taskId,
+        source: payload.source,
+        interpreter_type: "",
+        task_connector_sources: [],
+        ui_requirement: {
+          isOpen: true,
+          position: {
+            x: 0,
+            y: 0,
+          },
+          taskType: payload.taskType,
+          stepId: stepId,
+        },
+        [payload.source.toLowerCase() as TaskType]: {
+          type: payload.taskType,
+          [payload.taskType.toLowerCase()]: {},
+        },
+        description:
+          payload.description ?? integrationSentenceMap[payload.modelType],
+      };
+
+      const newStep: Step = {
         ...emptyStep,
         id: stepId,
-        tasks: [
-          {
-            id: taskId,
-            source: payload.source,
-            interpreter_type: "",
-            task_connector_sources: [],
-            ui_requirement: {
-              isOpen: true,
-              position: {
-                x: 0,
-                y: 0,
-              },
-              taskType: payload.taskType,
-            },
-            [payload.source.toLowerCase() as TaskType]: {
-              type: payload.taskType,
-              [payload.taskType.toLowerCase()]: {},
-            },
-            description:
-              payload.description ?? integrationSentenceMap[payload.modelType],
-          },
-        ],
+        description: `Step-${(state.currentPlaybook?.steps?.length ?? 0) + 1}`,
+        tasks: [task.id!],
       };
 
       state.currentPlaybook!.steps.push(newStep);
+      state.currentPlaybook!.ui_requirement.tasks.push(task);
 
       const parentStep = state.currentPlaybook!.steps.find(
         (step) => step.id === parentId,
@@ -255,6 +259,34 @@ const playbookSlice = createSlice({
           state.currentPlaybook!.step_relations.filter((relation) =>
             relation.id.includes(id),
           );
+        }
+        state.permanentView = PermanentDrawerTypes.DEFAULT;
+      }
+    },
+    deleteTask: (state, { payload }) => {
+      const id = payload;
+      if (id) {
+        const task = state.currentPlaybook!.ui_requirement.tasks?.find(
+          (task) => task.id === id,
+        );
+        const taskIndex = state.currentPlaybook!.ui_requirement.tasks.findIndex(
+          (task) => task.id === id,
+        );
+        if (task) {
+          const stepId = task.ui_requirement.stepId;
+          const step = state.currentPlaybook!.steps.find(
+            (step) => step.id === stepId,
+          );
+          const taskIndexInStep = step?.tasks.findIndex(
+            (e) => (e as string) === id,
+          );
+          if (
+            taskIndexInStep !== undefined &&
+            taskIndexInStep !== null &&
+            taskIndexInStep !== -1
+          )
+            step?.tasks.splice(taskIndexInStep, 1);
+          state.currentPlaybook!.ui_requirement.tasks.splice(taskIndex, 1);
         }
         state.permanentView = PermanentDrawerTypes.DEFAULT;
       }
@@ -415,6 +447,7 @@ export const {
   resetExecutions,
   pushToExecutionStack,
   popFromExecutionStack,
+  deleteTask,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
