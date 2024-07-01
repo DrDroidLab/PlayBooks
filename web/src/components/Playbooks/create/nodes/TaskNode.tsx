@@ -3,12 +3,33 @@ import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import TaskTitle from "../../card/TaskTitle.tsx";
 import handleTaskBorderColor from "../../../../utils/playbook/handleTaskBorderColor.ts";
 import TaskInformation from "../../card/TaskInformation.tsx";
+import { setCurrentVisibleTask } from "../../../../store/features/playbook/playbookSlice.ts";
+import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
+import { useDispatch } from "react-redux";
+import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 
 function TaskNode({ taskId }) {
   const [task] = useCurrentTask(taskId);
+  const dispatch = useDispatch();
+  const { toggle, openDrawer, permanentView, addAdditionalData } =
+    usePermanentDrawerState();
   console.log("task", task);
 
-  const handleClick = () => {};
+  const handleNoAction = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleClick = (e) => {
+    handleNoAction(e);
+    if (permanentView === PermanentDrawerTypes.STEP_DETAILS) {
+      toggle(PermanentDrawerTypes.STEP_DETAILS);
+      return;
+    }
+    dispatch(setCurrentVisibleTask(taskId));
+    addAdditionalData({});
+    openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+  };
 
   return (
     <div
