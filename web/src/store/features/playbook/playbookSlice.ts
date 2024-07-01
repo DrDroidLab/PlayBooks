@@ -94,11 +94,6 @@ const playbookSlice = createSlice({
 
       if (state.currentPlaybook)
         state.currentPlaybook.step_relations = relations;
-      // state.currentPlaybook!.steps = playbookToSteps(payload, false) as any;
-      // state.currentPlaybook!.step_relations = playbookToEdges(
-      //   payload,
-      //   [],
-      // ) as any;
     },
     copyPlaybook(state, { payload }) {
       const useState = payload.useState;
