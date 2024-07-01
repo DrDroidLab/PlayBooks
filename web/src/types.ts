@@ -85,6 +85,7 @@ export interface Step {
   children?: any;
   taskIds?: string[];
   isEditing: boolean;
+  relationLogs?: any;
 }
 
 export interface StepPosition {
@@ -299,6 +300,8 @@ export interface Playbook {
   executionId?: any;
   currentStepId?: any;
   isOnPlaybookPage: boolean;
+  executionStack: any[];
+  zoomLevel: number;
 }
 
 export interface Playground {

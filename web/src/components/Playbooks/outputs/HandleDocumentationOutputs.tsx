@@ -6,7 +6,6 @@ import Notes from "../steps/Notes.jsx";
 
 function HandleDocumentationOutputs({ stepId }) {
   const [step] = useCurrentStep(stepId);
-  console.log("step", step);
   const type = `${step.source} ${step.taskType}`;
 
   switch (type) {
