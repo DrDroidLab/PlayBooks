@@ -13,6 +13,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
 import { useSearchParams } from "react-router-dom";
+import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 type RunButtonProps = {
   id: string;
@@ -22,16 +23,20 @@ type RunButtonProps = {
 function RunButton({ id, showText = true }: RunButtonProps) {
   const { executionId, currentPlaybook } = useSelector(playbookSelector);
   const [, setSearchParams] = useSearchParams();
-  const [step] = useCurrentStep(id);
+  const [task] = useCurrentTask(id);
+  const step = useCurrentStep(task?.ui_requirement.stepId);
   const dispatch = useDispatch();
   const isExisting = useIsExisting();
   const [triggerStartExecution, { isLoading: executionLoading }] =
     useStartExecutionMutation();
-  const loading = step?.outputLoading || executionLoading;
+  const loading = task?.ui_requirement?.outputLoading || executionLoading;
 
   const handleStartExecution = async () => {
     if (executionId) return;
-    const response = await triggerStartExecution(currentPlaybook.id);
+    if (!currentPlaybook?.id) return;
+    const response = await triggerStartExecution(
+      parseInt(currentPlaybook.id, 10),
+    );
     if ("data" in response) {
       const { data } = response;
       return data.playbook_run_id;
@@ -40,17 +45,18 @@ function RunButton({ id, showText = true }: RunButtonProps) {
 
   const handleExecuteStep = async () => {
     if (loading) return;
-    if (isExisting && !executionId && step.id && !step.isEditing) {
+    if (isExisting && !executionId && task?.ui_requirement.stepId) {
       const id = await handleStartExecution();
       dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      await executeStep(step, step.id);
+      if (step) await executeStep(step, step.id);
       setSearchParams({ executionId: id });
     } else {
-      executeStep(step, step.id);
+      if (step) executeStep(step, step.id);
     }
   };
 
-  if (!step?.source || unsupportedRunners.includes(step?.source)) return <></>;
+  if (!task?.source || unsupportedRunners.includes(task?.source ?? ""))
+    return <></>;
 
   return (
     <Tooltip title="Run this Step">

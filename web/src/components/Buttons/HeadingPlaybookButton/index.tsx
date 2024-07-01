@@ -10,7 +10,7 @@ import CopyPlaybookButton from "../CopyPlaybookButton/index.tsx";
 import PastExecutionsButton from "../PastExecutionsButton/index.tsx";
 
 function HeadingPlaybookButtons() {
-  const { view, isEditing, isOnPlaybookPage } = useSelector(playbookSelector);
+  const { isEditing, isOnPlaybookPage } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const showExecution = useShowExecution();
 
@@ -20,7 +20,7 @@ function HeadingPlaybookButtons() {
 
   return (
     <div className="flex gap-2 items-center">
-      {view === "builder" && !isPrefetched && <SavePlaybookButton />}
+      {!isPrefetched && <SavePlaybookButton />}
       {isEditing && !isPrefetched && <CopyPlaybookButton />}
       {showExecution && <ExecutionButton />}
       {isPrefetched && <EditPlaybookButton />}

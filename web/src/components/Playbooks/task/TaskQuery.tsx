@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
 import React from "react";
 import AddSource from "./AddSource.tsx";
 import TaskBlock from "./TaskBlock.tsx";
+import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 function TaskQuery({ id }) {
-  const [step] = useCurrentStep(id);
+  const [task] = useCurrentTask(id);
 
   return (
     <div>
@@ -14,7 +14,7 @@ function TaskQuery({ id }) {
         <AddSource id={id} />
       </div>
 
-      {step?.source && <TaskBlock id={id} />}
+      {task?.source && <TaskBlock id={id} />}
       <AddDataSourcesDrawer />
     </div>
   );

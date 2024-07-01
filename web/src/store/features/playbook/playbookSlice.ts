@@ -159,21 +159,21 @@ const playbookSlice = createSlice({
         tasks: [task.id!],
       };
 
-      state.currentPlaybook!.steps.push(newStep);
-      state.currentPlaybook!.ui_requirement.tasks.push(task);
+      state.currentPlaybook?.steps.push(newStep);
+      state.currentPlaybook?.ui_requirement.tasks.push(task);
 
-      const parentStep = state.currentPlaybook!.steps.find(
+      const parentStep = state.currentPlaybook?.steps.find(
         (step) => step.id === parentId,
       );
 
       if (parentExists) {
-        state.currentPlaybook!.step_relations.push({
+        state.currentPlaybook?.step_relations.push({
           id: `edge-${parentId}-${stepId}`,
           parent: parentStep!,
           child: newStep,
         });
       } else {
-        state.currentPlaybook!.step_relations.push({
+        state.currentPlaybook?.step_relations.push({
           id: `edge-${stepId}`,
           parent: "playbook",
           child: newStep,

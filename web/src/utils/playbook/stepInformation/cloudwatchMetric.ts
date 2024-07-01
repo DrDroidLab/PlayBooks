@@ -3,7 +3,7 @@ import { InfoTypes } from "./InfoTypes.ts";
 export const cloudwatchMetric = [
   {
     label: "Dimension",
-    key: "dimensionName",
+    key: "dimension_name",
     type: InfoTypes.TEXT,
   },
   {

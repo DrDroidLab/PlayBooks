@@ -22,6 +22,8 @@ type TaskUIRequirement = {
   model_type?: string;
   modelOptions?: any;
   showError?: boolean;
+  showNotes?: boolean;
+  showExternalLinks?: boolean;
 };
 
 export type Task = {

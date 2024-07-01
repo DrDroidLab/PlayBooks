@@ -5,19 +5,24 @@ import handleStepInformation from "../../../utils/playbook/stepInformation/handl
 import { Link, Notes } from "@mui/icons-material";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
+import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 type TaskInformationPropTypes = {
   taskId: string | undefined;
 };
 
 function TaskInformation({ taskId }: TaskInformationPropTypes) {
-  const [task] = useCurrentStep(taskId);
+  const [task, , taskType] = useCurrentTask(taskId);
+  const step = useCurrentStep(task?.ui_requirement.stepId);
 
   const handleNoAction = (e: MouseEvent<HTMLElement>) => {
     e.stopPropagation();
   };
 
-  if (!task.id) return;
+  if (!task?.id) return;
+
+  const taskData =
+    task[task.source.toLowerCase() ?? ""][taskType?.toLowerCase()];
 
   return (
     <div
@@ -25,10 +30,10 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
       <div className="flex flex-col gap-2 flex-1 text-ellipsis overflow-hidden">
         {handleStepInformation(task.id).map((info, i) => (
           <div className="flex flex-col flex-1 text-ellipsis" key={i}>
-            {getNestedValue(task, info.key) && (
+            {getNestedValue(taskData, info.key) && (
               <>
                 <p className="text-xs font-semibold">{info.label}</p>
-                <InfoRender info={info} stepId={task.id} />
+                <InfoRender info={info} taskId={task?.id ?? ""} />
               </>
             )}
           </div>
@@ -41,10 +46,10 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
           </div>
         )}
 
-        {task?.externalLinks?.length > 0 && (
+        {(step?.external_links?.length ?? 0) > 0 && (
           <div className="flex gap-2 items-center flex-wrap">
             <Link fontSize="small" />
-            {task.externalLinks?.map((link) => (
+            {step?.external_links?.map((link) => (
               <a
                 href={link.url}
                 target="_blank"
