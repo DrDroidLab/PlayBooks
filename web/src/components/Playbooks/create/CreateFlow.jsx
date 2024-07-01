@@ -16,6 +16,7 @@ import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+import StepNode from "./nodes/StepNode.tsx";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -24,6 +25,7 @@ const fitViewOptions = {
 
 const nodeTypes = {
   custom: CustomNode,
+  step: StepNode,
   parent: ParentNode,
 };
 

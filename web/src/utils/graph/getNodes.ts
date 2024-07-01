@@ -26,7 +26,7 @@ export const getNodes = () => {
         step,
         index,
       },
-      type: "custom",
+      type: "step",
     };
   });
 
