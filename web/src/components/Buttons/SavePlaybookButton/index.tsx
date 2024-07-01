@@ -11,6 +11,8 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
 import { stepsToPlaybook } from "../../../utils/parser/playbook/stepsToplaybook.ts";
 import { useNavigate } from "react-router-dom";
+import { setPlaybookKey } from "../../../store/features/playbook/playbookSlice.ts";
+import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSavingValidations.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 
@@ -68,12 +70,12 @@ function SavePlaybookButton({
 
   const handlePlaybookSave = async ({ pbName, description }) => {
     setIsSavePlaybookOverlayOpen(false);
+    dispatch(setPlaybookKey({ key: "name", value: pbName }));
 
     const playbook = stepsToPlaybook(currentPlaybook, steps);
-    if (steps?.length === 0) {
-      dispatch(showSnackbar("You cannot save a playbook with no steps"));
-      return;
-    }
+
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
 
     const playbookObj = {
       playbook: {

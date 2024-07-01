@@ -22,6 +22,8 @@ function PlaybookTitle({ id }) {
     updateCardById("editTitle", false, id);
   };
 
+  if (!step) return;
+
   return (
     <div className="flex items-center justify-between gap-2 w-full mr-2">
       <div
