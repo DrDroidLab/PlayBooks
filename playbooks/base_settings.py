@@ -47,6 +47,7 @@ LOCAL_APPS = [
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
     'connectors.handlers.apps.HandlersConfig',
+    'engines.apps.EnginesConfig',
 ]
 
 THIRD_PARTY_APPS = [
