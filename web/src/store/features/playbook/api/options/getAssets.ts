@@ -15,8 +15,8 @@ export const getAssetApi = apiSlice.injectEndpoints({
           url: GET_ASSETS,
           method: "POST",
           body: {
-            connector_id: task?.connectorType,
-            type: task?.modelType,
+            connector_id: task?.task_connector_sources?.[0]?.id,
+            type: task?.ui_requirement.model_type,
           },
         };
       },
@@ -24,13 +24,15 @@ export const getAssetApi = apiSlice.injectEndpoints({
         const [task, id] = getCurrentTask(arg);
         const data = response?.assets;
         if (data?.length === 0) return [];
-        let connector_type = task.source;
+        let connector_type = task?.source;
         if (connector_type?.includes("_VPC"))
           connector_type = connector_type.replace("_VPC", "");
 
-        const assets = handleAssets(data, connector_type, arg);
-        const modelOptions = extractModelOptions(assets, task);
-        updateCardById("modelOptions", modelOptions, id);
+        const assets = handleAssets(data, arg);
+        if (task) {
+          const modelOptions = extractModelOptions(assets, task);
+          updateCardById("ui_requirement.modelOptions", modelOptions, id);
+        }
         return assets;
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {

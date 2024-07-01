@@ -19,6 +19,8 @@ type TaskUIRequirement = {
   outputs?: any;
   userEnteredDescription?: boolean;
   assetsLoading?: boolean;
+  model_type?: string;
+  modelOptions?: any;
 };
 
 export type Task = {

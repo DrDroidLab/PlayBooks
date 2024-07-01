@@ -61,7 +61,7 @@ function IntegrationOption({ option }) {
         }),
       );
       toggle();
-      openDrawer(PermanentDrawerTypes.STEP_DETAILS);
+      openDrawer(PermanentDrawerTypes.TASK_DETAILS);
     }
   };
 

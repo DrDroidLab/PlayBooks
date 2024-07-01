@@ -7,7 +7,7 @@ import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
 import useDrawerState from "../../../../hooks/useDrawerState.ts";
-import { fetchData } from "../../../../utils/fetchAssetModelOptions";
+import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import React from "react";
 import SelectComponent from "../../../SelectComponent/index.jsx";
 import CustomButton from "../../../common/CustomButton/index.tsx";
@@ -22,7 +22,7 @@ function SelectConnectorOption({ id: taskId }) {
   const { toggle } = useDrawerState(id);
 
   function handleConnectorOptionChange(id) {
-    updateCardById("connectorType", id, currentTaskId);
+    updateCardById("task_connector_sources.0.id", id, currentTaskId);
     fetchData({ id: currentTaskId });
   }
 

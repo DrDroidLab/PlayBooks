@@ -8,7 +8,7 @@ import { PermanentDrawerTypes } from "../../../../store/features/drawers/permane
 import { useDispatch } from "react-redux";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 
-const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
+const taskDetailsId = PermanentDrawerTypes.TASK_DETAILS;
 
 function TaskNode({ taskId }) {
   const [task] = useCurrentTask(taskId);
@@ -23,13 +23,13 @@ function TaskNode({ taskId }) {
 
   const handleClick = (e) => {
     handleNoAction(e);
-    if (permanentView === stepDetailsId) {
-      toggle(stepDetailsId);
+    if (permanentView === taskDetailsId) {
+      toggle(taskDetailsId);
       return;
     }
     dispatch(setCurrentVisibleTask(taskId));
     addAdditionalData({});
-    openDrawer(stepDetailsId);
+    openDrawer(taskDetailsId);
   };
 
   return (

@@ -1,16 +1,19 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../../../../store/features/playbook/playbookSlice";
-import useCurrentTask from "../../../../hooks/useCurrentTask";
-import { updateCardById } from "../../../../utils/execution/updateCardById";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  playbookSelector,
+  updateSource,
+} from "../../../../store/features/playbook/playbookSlice.ts";
+import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import SelectComponent from "../../../SelectComponent";
 
 function SelectSource({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
   const [task, currentStepId] = useCurrentTask(id);
+  const dispatch = useDispatch();
 
   function handleSourceChange(id) {
-    updateCardById("source", id, currentStepId);
+    dispatch(updateSource({ id: currentStepId, value: id }));
   }
 
   return (

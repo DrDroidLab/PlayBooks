@@ -5,6 +5,7 @@ import { permanentViewSelector } from "../../../store/features/drawers/drawersSl
 import StepDetails from "../../Playbooks/create/StepDetails.jsx";
 import AddCondition from "../../AddCondition/index.tsx";
 import Timeline from "../../Playbooks/Timeline.jsx";
+import TaskDetailsDrawer from "../../Playbooks/create/TaskDetailsDrawer.tsx";
 
 function HandlePermanentDrawerData() {
   const permanentView = useSelector(permanentViewSelector);
@@ -14,6 +15,8 @@ function HandlePermanentDrawerData() {
       return <AddCondition />;
     case PermanentDrawerTypes.STEP_DETAILS:
       return <StepDetails />;
+    case PermanentDrawerTypes.TASK_DETAILS:
+      return <TaskDetailsDrawer />;
     case PermanentDrawerTypes.TIMELINE:
       return <Timeline />;
     default:

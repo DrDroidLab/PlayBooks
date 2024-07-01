@@ -1,7 +1,8 @@
 import { taskTypes } from "../constants/index.ts";
+import { Task } from "../types/task.ts";
 
-export default function extractModelOptions(assets, task) {
-  switch (`${task?.source} ${task?.taskType}`) {
+export default function extractModelOptions(assets: any, task: Task) {
+  switch (`${task?.source} ${task?.[task?.source?.toLowerCase()].type}`) {
     case taskTypes.CLOUDWATCH_LOG_GROUP:
       return {
         regions: assets.map((asset) => asset.region),

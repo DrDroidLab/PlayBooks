@@ -7,6 +7,7 @@ import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphen
 import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
 import { RootState } from "../../index.ts";
 import { Task } from "../../../types/task.ts";
+import setNestedValue from "../../../utils/setNestedValue.ts";
 
 const emptyStep: Step = {
   id: "",
@@ -141,6 +142,7 @@ const playbookSlice = createSlice({
           },
           taskType: payload.taskType,
           stepId: stepId,
+          model_type: payload.modelType,
         },
         [payload.source.toLowerCase() as TaskType]: {
           type: payload.taskType,
@@ -294,11 +296,35 @@ const playbookSlice = createSlice({
     },
     updateTask: (state, { payload }) => {
       const id = payload.id;
-      const task = state.currentPlaybook!.ui_requirement.tasks.find(
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
         (e) => e.id === id,
       );
       if (task) {
-        task[payload.key] = payload.value;
+        task = setNestedValue(task, payload.key, payload.value);
+        // task[payload.key] = payload.value;
+      }
+    },
+    updateSource: (state, { payload }) => {
+      const id = payload.id;
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (e) => e.id === id,
+      );
+      if (task) {
+        delete task[task?.source?.toLowerCase()];
+        task.source = payload.value;
+        task[task?.source?.toLowerCase()] = {};
+      }
+    },
+    updateTaskType: (state, { payload }) => {
+      const id = payload.id;
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (e) => e.id === id,
+      );
+      if (task) {
+        const type: string = task[task?.source?.toLowerCase()].type;
+        delete task[task?.source?.toLowerCase()][type?.toLowerCase()];
+        task[task?.source?.toLowerCase()].type = payload.value;
+        task[task?.source?.toLowerCase()][payload.value?.toLowerCase()] = {};
       }
     },
     setAssets(state, { payload }) {
@@ -449,6 +475,8 @@ export const {
   pushToExecutionStack,
   popFromExecutionStack,
   deleteTask,
+  updateSource,
+  updateTaskType,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

@@ -1,8 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../../../../store/features/playbook/playbookSlice";
-import useCurrentTask from "../../../../hooks/useCurrentTask";
-import { updateCardById } from "../../../../utils/execution/updateCardById";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  playbookSelector,
+  updateTaskType,
+} from "../../../../store/features/playbook/playbookSlice.ts";
+import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
+import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import SelectComponent from "../../../SelectComponent";
 
 function SelectTaskType({ id }) {
@@ -11,6 +14,8 @@ function SelectTaskType({ id }) {
   const currentConnector = connectorOptions?.find(
     (e) => e.id === task?.source,
   )?.connector;
+  const taskType = task?.[task?.source?.toLowerCase()]?.type;
+  const dispatch = useDispatch();
 
   const taskTypes = currentConnector?.supported_task_type_options ?? [];
 
@@ -18,13 +23,12 @@ function SelectTaskType({ id }) {
     const currentTaskType = currentConnector?.supported_task_type_options?.find(
       (e) => e.task_type === id,
     );
-    const modelType =
-      currentTaskType.supported_model_types?.length > 0
-        ? currentTaskType.supported_model_types[0].model_type
-        : currentConnector.source;
-    updateCardById("modelType", modelType, currentId);
-    updateCardById("taskType", id, currentId);
-    updateCardById("resultType", currentTaskType.result_type, currentId);
+    dispatch(updateTaskType({ id: currentId, value: id }));
+    updateCardById(
+      "ui_requirement.resultType",
+      currentTaskType.result_type,
+      currentId,
+    );
     if (!task?.ui_requirement?.userEnteredDescription)
       updateCardById("description", val.type.display_name, currentId);
   }
@@ -40,7 +44,7 @@ function SelectTaskType({ id }) {
         }))}
         placeholder="Select Task Type"
         onSelectionChange={handleTaskTypeChange}
-        selected={task?.type}
+        selected={taskType}
         searchable={true}
       />
     </div>

@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PlaybookStep from "../steps/PlaybookStep.jsx";
-import AddSource from "../steps/AddSource.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
 import React from "react";
+import AddSource from "./AddSource.tsx";
 
 function TaskQuery({ id }) {
   const [step] = useCurrentStep(id);

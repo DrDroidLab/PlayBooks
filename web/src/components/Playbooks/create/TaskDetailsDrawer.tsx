@@ -5,7 +5,7 @@ import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import Task from "../task/Task.tsx";
 
-function StepDetails() {
+function TaskDetailsDrawer() {
   const [task, currentTaskId] = useCurrentTask();
   const taskRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +20,7 @@ function StepDetails() {
     taskRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [taskRef, currentTaskId]);
 
-  if (!(Object.keys(task ?? {}).length === 0)) return <>No Task Found</>;
+  if (Object.keys(task ?? {}).length === 0) return <>No Task Found</>;
 
   return (
     <div ref={taskRef} className="p-2 min-h-screen mb-16">
@@ -43,4 +43,4 @@ function StepDetails() {
   );
 }
 
-export default StepDetails;
+export default TaskDetailsDrawer;
