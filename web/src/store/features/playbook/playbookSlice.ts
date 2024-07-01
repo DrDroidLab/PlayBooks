@@ -78,10 +78,6 @@ const playbookSlice = createSlice({
         tasks.push(...stepTasks);
       });
 
-      // state.currentPlaybook?.steps.forEach((step) => {
-      //   step.tasks = step.tasks.map((task) => task.id);
-      // });
-
       state.currentPlaybook = { ...payload, ui_requirement: { tasks } };
       // state.currentPlaybook!.steps = playbookToSteps(payload, false) as any;
       // state.currentPlaybook!.step_relations = playbookToEdges(
