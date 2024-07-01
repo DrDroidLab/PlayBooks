@@ -1,9 +1,10 @@
 import React from "react";
 import { Step } from "../../../../types/index.ts";
 import TaskNode from "./TaskNode.tsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
+  deleteStep,
   playbookSelector,
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import { Handle, NodeToolbar, Position } from "reactflow";
@@ -11,15 +12,17 @@ import AddButtonOptions from "../../card/AddButtonOptions.tsx";
 import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import CustomButton from "../../../common/CustomButton/index.tsx";
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import useDrawerState from "../../../../hooks/useDrawerState.ts";
+import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
 function StepNode({ data }) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
+  const { closeDrawer } = usePermanentDrawerState();
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const { executionId } = useSelector(playbookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks;
@@ -27,10 +30,16 @@ function StepNode({ data }) {
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const hasChildren = useHasChildren(step?.id);
+  const dispatch = useDispatch();
 
   const handleAddTask = () => {
     toggleAddData();
     addAdditionalData({ stepId: step?.id });
+  };
+
+  const handleDeleteStep = () => {
+    dispatch(deleteStep(step.id));
+    closeDrawer();
   };
 
   return (
@@ -42,10 +51,14 @@ function StepNode({ data }) {
           return <TaskNode key={stepTask} taskId={task?.id} />;
         })}
       </div>
-      <div className="mt-2">
+      <div className="flex justify-between mt-2">
         <CustomButton onClick={handleAddTask}>
           <Add fontSize="small" />
           <p>Add Task</p>
+        </CustomButton>
+
+        <CustomButton onClick={handleDeleteStep}>
+          <Delete />
         </CustomButton>
       </div>
 
