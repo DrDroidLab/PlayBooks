@@ -157,13 +157,15 @@ const playbookSlice = createSlice({
         step?.tasks.push(taskId);
         state.currentPlaybook?.ui_requirement.tasks.push(task);
 
+        state.currentVisibleTask = taskId;
+
         return;
       }
 
       const newStep: Step = {
         ...emptyStep,
         id: stepId,
-        description: `Step-${(state.currentPlaybook?.steps?.length ?? 0) + 1}`,
+        description: `Step-${stepId}`,
         tasks: [task.id!],
       };
 
