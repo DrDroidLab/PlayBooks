@@ -12,3 +12,4 @@ export * from "./bash.ts";
 export * from "./sqlRawQuery.ts";
 export * from "./azure.ts";
 export * from "./gke.ts";
+export * from "./loki.ts";
