@@ -21,6 +21,7 @@ type TaskUIRequirement = {
   assetsLoading?: boolean;
   model_type?: string;
   modelOptions?: any;
+  showError?: boolean;
 };
 
 export type Task = {

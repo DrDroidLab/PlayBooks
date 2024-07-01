@@ -4,7 +4,7 @@ import PlaybookStepOutput from "./PlaybookStepOutput";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 
-function HandleOutput({ id, stepData, showHeading = true }) {
+function HandleOutput({ id, stepData = undefined, showHeading = true }) {
   const [stepFromState] = useCurrentStep(id);
   const step = stepData ?? stepFromState;
   const showOutput = step.showOutput;
