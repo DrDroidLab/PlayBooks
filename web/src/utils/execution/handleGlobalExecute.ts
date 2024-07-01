@@ -5,7 +5,7 @@ import {
 } from "../../store/features/playbook/playbookSlice.ts";
 import { stepsToPlaybook } from "../parser/playbook/stepsToplaybook.ts";
 import { executePlaybook } from "../../store/features/playbook/api/executePlaybookApi.ts";
-import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { updateCardById } from "./updateCardById.ts";
 import { Step } from "../../types.ts";
 import { unsupportedRunners } from "../unsupportedRunners.ts";
 
@@ -17,7 +17,7 @@ export default async function handleGlobalExecute() {
   try {
     steps.forEach((step, i) => {
       if (!unsupportedRunners.includes(step.source))
-        updateCardByIndex("outputLoading", true, i);
+        updateCardById("outputLoading", true, step.id);
     });
     const res = await store
       .dispatch(executePlaybook.initiate(playbookData))
@@ -28,25 +28,25 @@ export default async function handleGlobalExecute() {
       const stepFromReq = stepOutput.step;
       const logs = stepOutput.task_execution_logs;
       const interpretation = stepOutput.step_interpretation;
-      const stepIndex = steps.findIndex((step) => step.id === stepFromReq.id);
+      const stepId = steps.find((step) => step.id === stepFromReq.id)?.id;
 
       for (let log of logs) {
         const error = log.result?.error;
         if (error) {
-          updateCardByIndex("outputError", error, stepIndex);
+          updateCardById("outputError", error, stepId);
           break;
         }
       }
 
-      updateCardByIndex("outputLoading", false, stepIndex);
-      updateCardByIndex("showOutput", true, stepIndex);
-      updateCardByIndex(
+      updateCardById("outputLoading", false, stepId);
+      updateCardById("showOutput", true, stepId);
+      updateCardById(
         "outputs",
         {
           data: logs,
           stepInterpretation: interpretation,
         },
-        stepIndex,
+        stepId,
       );
     }
   } catch (e) {

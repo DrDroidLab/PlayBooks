@@ -10,6 +10,7 @@ import { useGetConnectorAssetsQuery } from "../../../store/features/integrations
 import { EksClusterAssets } from "./assets/EksClusterAssets.jsx";
 import { AzureAssets } from "./assets/AzureAssets.jsx";
 import { GkeAssets } from "./assets/GkeAssets.jsx";
+import { ElasticSearchAssets } from "./assets/ElasticSearch.jsx";
 
 function Assets({ connector, id }) {
   const { data, isFetching, error } = useGetConnectorAssetsQuery(id);
@@ -52,6 +53,9 @@ function Assets({ connector, id }) {
 
     case connectors.GKE:
       return <GkeAssets assets={assets} />;
+
+    case connectors.ELASTIC_SEARCH:
+      return <ElasticSearchAssets assets={assets} />;
 
     default:
       return <></>;

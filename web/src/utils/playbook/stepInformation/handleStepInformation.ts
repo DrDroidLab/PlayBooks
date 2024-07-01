@@ -56,6 +56,8 @@ export default function handleStepInformation(
       return StepInformation.sql;
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
       return StepInformation.mimir;
+    case taskTypes.ELASTIC_SEARCH_QUERY_INDEX:
+      return StepInformation.elasticSearch;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
 
