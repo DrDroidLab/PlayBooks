@@ -64,12 +64,30 @@ const playbookSlice = createSlice({
       state.currentPlaybook = payload;
     },
     setPlaybookDataBeta(state, { payload }) {
-      state.currentPlaybook = payload;
-      state.currentPlaybook!.steps = playbookToSteps(payload, false) as any;
-      state.currentPlaybook!.step_relations = playbookToEdges(
-        payload,
-        [],
-      ) as any;
+      const tasks: Task[] = [];
+
+      state.currentPlaybook = { ...payload, ui_requirement: { tasks: [] } };
+
+      payload?.steps.forEach((step) => {
+        const stepTasks: any[] = (step.tasks as Task[]).map((e) => ({
+          ...e,
+          ui_requirement: {
+            stepId: step.id,
+          },
+        }));
+        tasks.push(...stepTasks);
+      });
+
+      // state.currentPlaybook?.steps.forEach((step) => {
+      //   step.tasks = step.tasks.map((task) => task.id);
+      // });
+
+      state.currentPlaybook = { ...payload, ui_requirement: { tasks } };
+      // state.currentPlaybook!.steps = playbookToSteps(payload, false) as any;
+      // state.currentPlaybook!.step_relations = playbookToEdges(
+      //   payload,
+      //   [],
+      // ) as any;
     },
     copyPlaybook(state, { payload }) {
       const useState = payload.useState;

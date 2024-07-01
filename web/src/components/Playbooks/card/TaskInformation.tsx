@@ -1,8 +1,7 @@
-import React, { MouseEvent } from "react";
+import React from "react";
 import InfoRender from "./InfoRender.tsx";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import handleStepInformation from "../../../utils/playbook/stepInformation/handleStepInformation.ts";
-import { Link, Notes } from "@mui/icons-material";
+import { Notes } from "@mui/icons-material";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
@@ -13,11 +12,11 @@ type TaskInformationPropTypes = {
 
 function TaskInformation({ taskId }: TaskInformationPropTypes) {
   const [task, , taskType] = useCurrentTask(taskId);
-  const step = useCurrentStep(task?.ui_requirement.stepId);
+  // const step = useCurrentStep(task?.ui_requirement.stepId);
 
-  const handleNoAction = (e: MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-  };
+  // const handleNoAction = (e: MouseEvent<HTMLElement>) => {
+  //   e.stopPropagation();
+  // };
 
   if (!task?.id) return;
 

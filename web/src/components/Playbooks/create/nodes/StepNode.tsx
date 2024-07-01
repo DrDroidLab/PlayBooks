@@ -16,7 +16,7 @@ import StepButtons from "../../steps/StepButtons.tsx";
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const { executionId } = useSelector(playbookSelector);
-  const tasks = currentPlaybook?.ui_requirement.tasks;
+  const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
@@ -26,8 +26,10 @@ function StepNode({ data }) {
     <div className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
-        {step.tasks.map((stepTask) => {
-          const task = tasks?.find((task) => task.id === stepTask);
+        {step?.tasks.map((stepTask) => {
+          const taskId = typeof stepTask === "string" ? stepTask : stepTask.id;
+          const task = tasks?.find((task) => task.id === taskId);
+          if (!task) return null;
           return <TaskNode key={stepTask} taskId={task?.id} />;
         })}
       </div>
