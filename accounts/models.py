@@ -159,8 +159,14 @@ class User(AbstractUser):
 
     @property
     def proto(self):
-        return UserProto(id=self.id, email=self.email, first_name=self.first_name, last_name=self.last_name,
+        user_proto=UserProto(id=self.id, email=self.email, first_name=self.first_name, last_name=self.last_name,
                          user_flags=self.user_flags_proto)
+        if self.last_login:
+            last_login_proto = Timestamp()
+            last_login_proto.FromDatetime(self.last_login)
+            user_proto.last_login.CopyFrom(last_login_proto)
+
+        return user_proto
 
 
 class UserInvitation(models.Model):

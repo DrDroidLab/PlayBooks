@@ -72,12 +72,15 @@ class User(google.protobuf.message.Message):
     FIRST_NAME_FIELD_NUMBER: builtins.int
     LAST_NAME_FIELD_NUMBER: builtins.int
     USER_FLAGS_FIELD_NUMBER: builtins.int
+    LAST_LOGIN_FIELD_NUMBER: builtins.int
     id: builtins.int
     email: builtins.str
     first_name: builtins.str
     last_name: builtins.str
     @property
     def user_flags(self) -> global___UserFlags: ...
+    @property
+    def last_login(self) -> google.protobuf.timestamp_pb2.Timestamp: ...
     def __init__(
         self,
         *,
@@ -86,8 +89,9 @@ class User(google.protobuf.message.Message):
         first_name: builtins.str = ...,
         last_name: builtins.str = ...,
         user_flags: global___UserFlags | None = ...,
+        last_login: google.protobuf.timestamp_pb2.Timestamp | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["user_flags", b"user_flags"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["email", b"email", "first_name", b"first_name", "id", b"id", "last_name", b"last_name", "user_flags", b"user_flags"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["last_login", b"last_login", "user_flags", b"user_flags"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["email", b"email", "first_name", b"first_name", "id", b"id", "last_login", b"last_login", "last_name", b"last_name", "user_flags", b"user_flags"]) -> None: ...
 
 global___User = User
