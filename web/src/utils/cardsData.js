@@ -141,6 +141,7 @@ export const cardsData = [
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
     buttonType: "available",
+    docs: "https://docs.drdroid.io/docs/elk"
   },
   {
     id: 11,

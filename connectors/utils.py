@@ -228,6 +228,10 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['api_key_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_API_KEY:
                 credentials_dict['api_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
+                credentials_dict['ssl_verify'] = 'true'
+                if conn_key.key.value.lower() == 'false':
+                    credentials_dict['ssl_verify'] = 'false'
             if 'port' not in credentials_dict:
                 credentials_dict['port'] = '9200'
     elif connector_type == Source.GRAFANA_LOKI:
