@@ -6,7 +6,11 @@ export const injectElasticSearchTasks = (
 ): PlaybookTask[] => {
   let task = {
     index: step.index!,
-    query: step.query!,
+    lucene_query: step.query!,
+    "limit": step.size ?? 50,
+    "offset": 0,
+    "sort_desc": "@timestamp",
+    "timestamp_field": "@timestamp"
   };
 
   return [

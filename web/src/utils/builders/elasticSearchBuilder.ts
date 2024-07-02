@@ -21,6 +21,13 @@ export const elasticSearchBuilder = (options: any) => {
           type: OptionType.MULTILINE,
         },
       ],
+      [
+        {
+          key: "size",
+          label: "Size",
+          type: OptionType.TEXT,
+        },
+      ],
     ],
   };
 };
