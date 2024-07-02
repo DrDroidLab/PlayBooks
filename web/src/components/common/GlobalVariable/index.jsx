@@ -31,9 +31,7 @@ function GlobalVariables() {
 
   return (
     <div
-      className={`${
-        playbook.view === "builder" ? "w-[300px] my-0" : ""
-      } text-sm p-1 my-2 border rounded min-h-[100px] bg-white`}>
+      className={`w-[300px] my-0 text-sm p-1 border rounded min-h-[100px] bg-white`}>
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
           <button

@@ -210,12 +210,6 @@ const playbookSlice = createSlice({
           parent: parentStep!,
           child: newStep,
         });
-      } else {
-        state.currentPlaybook?.step_relations.push({
-          id: `edge-${stepId}`,
-          parent: "playbook",
-          child: newStep,
-        });
       }
 
       state.currentVisibleTask = taskId;

@@ -16,11 +16,13 @@ function stateToPlaybook() {
 
   playbook.steps = playbook.steps.map((step: Step) => ({
     ...step,
-    tasks: step.tasks.map((taskId: Task | string) =>
-      tasks.find(
+    id: "",
+    tasks: step.tasks.map((taskId: Task | string) => ({
+      ...tasks.find(
         (task) => task.id === (typeof taskId === "string" ? taskId : task.id),
       ),
-    ),
+      id: "",
+    })),
   }));
 
   playbook.step_relations = playbook.step_relations.map((relation) => ({
@@ -36,7 +38,8 @@ function stateToPlaybook() {
     },
     condition: relation.condition,
   }));
-  console.log("play", playbook);
+
+  return playbook;
 }
 
 export default stateToPlaybook;
