@@ -22,8 +22,8 @@ const emptyStep: Step = {
 const initialState: PlaybookUIState = {
   playbooks: [],
   currentPlaybook: {
-    id: "",
-    global_variable_set: [],
+    id: undefined,
+    global_variable_set: {},
     steps: [],
     step_relations: [],
     ui_requirement: {
@@ -173,7 +173,10 @@ const playbookSlice = createSlice({
         },
         [payload.source.toLowerCase() as TaskType]: {
           type: payload.taskType,
-          [payload.taskType.toLowerCase()]: {},
+          [payload.taskType.toLowerCase()]: {
+            process_function: "timeseries",
+            statistic: "Average",
+          },
         },
         description:
           payload.description ?? integrationSentenceMap[payload.modelType],

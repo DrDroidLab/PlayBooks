@@ -38,5 +38,7 @@ type TaskDetailsMapping = {
 export type TaskDetails = {
   [K in keyof TaskDetailsMapping]: {
     type: K;
+    process_function: string;
+    statistic: string;
   } & { [P in K]: TaskDetailsMapping[K] };
 }[keyof TaskDetailsMapping];

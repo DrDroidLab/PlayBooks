@@ -16,17 +16,18 @@ function stateToPlaybook() {
 
   playbook.steps = playbook.steps.map((step: Step) => ({
     ...step,
-    id: "",
+    id: "0",
     tasks: step.tasks.map((taskId: Task | string) => ({
       ...tasks.find(
         (task) => task.id === (typeof taskId === "string" ? taskId : task.id),
       ),
-      id: "",
+      id: "0",
+      interpreter_type: undefined,
     })),
   }));
 
   playbook.step_relations = playbook.step_relations.map((relation) => ({
-    id: "",
+    id: "0",
     parent: {
       reference_id:
         typeof relation.parent !== "string"
