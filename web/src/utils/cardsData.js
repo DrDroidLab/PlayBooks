@@ -440,6 +440,6 @@ export const cardsData = [
     url: "/integrations/grafana_loki_logo.svg",
     enum: "GRAFANA_LOKI",
     desc: "Connect to Grafana Loki",
-    // docs: "https://docs.drdroid.io/docs/ms-teams",
+    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
   },
 ];
