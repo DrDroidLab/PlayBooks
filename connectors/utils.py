@@ -220,7 +220,9 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['configured_email'] = conn_key.key.value
     elif connector_type == Source.ELASTIC_SEARCH:
         for conn_key in connector_keys:
-            if conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_HOST:
+            if conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_PROTOCOL:
+                credentials_dict['protocol'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_HOST:
                 credentials_dict['host'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_PORT:
                 credentials_dict['port'] = conn_key.key.value
@@ -229,9 +231,9 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_API_KEY:
                 credentials_dict['api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
-                credentials_dict['ssl_verify'] = 'true'
+                credentials_dict['verify_certs'] = True
                 if conn_key.key.value.lower() == 'false':
-                    credentials_dict['ssl_verify'] = 'false'
+                    credentials_dict['verify_certs'] = False
             if 'port' not in credentials_dict:
                 credentials_dict['port'] = '9200'
     elif connector_type == Source.GRAFANA_LOKI:

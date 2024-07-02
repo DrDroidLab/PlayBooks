@@ -10,19 +10,20 @@ logger = logging.getLogger(__name__)
 class ElasticSearchApiProcessor(Processor):
     client = None
 
-    def __init__(self, host: str, port: str, api_key_id: str, api_key: str, ssl_verify='true'):
+    def __init__(self, protocol: str, host: str, port: str, api_key_id: str, api_key: str, verify_certs: bool = False):
+        self.protocol = protocol
         self.host = host
         self.port = int(port) if port else 9200
+        self.verify_certs = verify_certs
         self.__api_key_id = api_key_id
         self.__api_key = api_key
-        self.__ssl_verify = False if ssl_verify and ssl_verify.lower() == 'false' else True
 
     def get_connection(self):
         try:
             client = Elasticsearch(
-                [f"{self.host}:{self.port}"],
+                [f"{self.protocol}://{self.host}:{self.port}"],
                 api_key=(self.__api_key_id, self.__api_key),
-                verify_certs=self.__ssl_verify
+                verify_certs=self.verify_certs
             )
             return client
         except Exception as e:
