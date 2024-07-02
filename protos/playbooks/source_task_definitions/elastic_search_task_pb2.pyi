@@ -28,44 +28,60 @@ class ElasticSearch(google.protobuf.message.Message):
     class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ElasticSearch._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: ElasticSearch._TaskType.ValueType  # 0
-        QUERY_INDEX: ElasticSearch._TaskType.ValueType  # 1
+        QUERY_LOGS: ElasticSearch._TaskType.ValueType  # 1
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: ElasticSearch.TaskType.ValueType  # 0
-    QUERY_INDEX: ElasticSearch.TaskType.ValueType  # 1
+    QUERY_LOGS: ElasticSearch.TaskType.ValueType  # 1
 
     @typing_extensions.final
-    class QueryIndex(google.protobuf.message.Message):
+    class QueryLogs(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         INDEX_FIELD_NUMBER: builtins.int
-        QUERY_FIELD_NUMBER: builtins.int
+        LUCENE_QUERY_FIELD_NUMBER: builtins.int
+        LIMIT_FIELD_NUMBER: builtins.int
+        OFFSET_FIELD_NUMBER: builtins.int
+        SORT_DESC_FIELD_NUMBER: builtins.int
+        TIMESTAMP_FIELD_FIELD_NUMBER: builtins.int
         @property
         def index(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def lucene_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def limit(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def offset(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def sort_desc(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timestamp_field(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
             index: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            lucene_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            sort_desc: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timestamp_field: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["index", b"index", "query", b"query"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["index", b"index", "query", b"query"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["index", b"index", "limit", b"limit", "lucene_query", b"lucene_query", "offset", b"offset", "sort_desc", b"sort_desc", "timestamp_field", b"timestamp_field"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["index", b"index", "limit", b"limit", "lucene_query", b"lucene_query", "offset", b"offset", "sort_desc", b"sort_desc", "timestamp_field", b"timestamp_field"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
-    QUERY_INDEX_FIELD_NUMBER: builtins.int
+    QUERY_LOGS_FIELD_NUMBER: builtins.int
     type: global___ElasticSearch.TaskType.ValueType
     @property
-    def query_index(self) -> global___ElasticSearch.QueryIndex: ...
+    def query_logs(self) -> global___ElasticSearch.QueryLogs: ...
     def __init__(
         self,
         *,
         type: global___ElasticSearch.TaskType.ValueType = ...,
-        query_index: global___ElasticSearch.QueryIndex | None = ...,
+        query_logs: global___ElasticSearch.QueryLogs | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["query_index", b"query_index", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["query_index", b"query_index", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["query_index"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["query_logs", b"query_logs", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["query_logs", b"query_logs", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["query_logs"] | None: ...
 
 global___ElasticSearch = ElasticSearch

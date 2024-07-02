@@ -21,4 +21,5 @@ export const connectors = {
   AZURE: "AZURE",
   MS_TEAMS: "MS_TEAMS",
   GRAFANA_LOKI: "GRAFANA_LOKI",
+  ELASTIC_SEARCH: "ELASTIC_SEARCH",
 };

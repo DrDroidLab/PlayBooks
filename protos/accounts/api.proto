@@ -78,3 +78,18 @@ message ResetPasswordConfirmResponse {
   bool success = 1;
   Message message = 2;
 }
+
+/////// Okta Auth APIs //////
+message OktaAuthData {
+  google.protobuf.UInt64Value pk = 1;
+  google.protobuf.StringValue email = 2;
+  google.protobuf.StringValue first_name = 3;
+  google.protobuf.StringValue last_name = 4;
+  google.protobuf.BoolValue is_new_user = 5;
+}
+
+message OktaAuthResponse {
+  google.protobuf.StringValue access_token = 3;
+  google.protobuf.StringValue refresh_token = 4;
+  OktaAuthData user = 5;
+}

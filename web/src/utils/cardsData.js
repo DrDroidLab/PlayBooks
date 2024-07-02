@@ -140,8 +140,8 @@ export const cardsData = [
     title: "ELASTIC SEARCH",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
-    buttonTitle: "Request Access",
     buttonType: "available",
+    docs: "https://docs.drdroid.io/docs/elk"
   },
   {
     id: 11,
@@ -280,7 +280,6 @@ export const cardsData = [
     title: "ELASTIC APM",
     enum: "ELASTIC_APM",
     desc: "Share metrics of your service from Elastic APM",
-    buttonTitle: "Request Access",
     buttonType: "available",
   },
   {

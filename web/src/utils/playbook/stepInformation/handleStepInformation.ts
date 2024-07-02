@@ -58,6 +58,8 @@ export default function handleStepInformation(
       return StepInformation.mimir;
     case taskTypes.GRAFANA_LOKI_QUERY_LOGS:
       return StepInformation.loki;
+    case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
+      return StepInformation.elasticSearch;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
 
