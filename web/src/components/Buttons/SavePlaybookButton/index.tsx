@@ -57,7 +57,7 @@ function SavePlaybookButton({
     }
 
     try {
-      await triggerUpdatePlaybook(currentPlaybook).unwrap();
+      await triggerUpdatePlaybook(stateToPlaybook()).unwrap();
       if (shouldNavigate) {
         navigate(`/playbooks`);
         return;
@@ -76,7 +76,7 @@ function SavePlaybookButton({
     // if (error) return;
 
     const playbookObj = {
-      playbook: currentPlaybook,
+      playbook: stateToPlaybook(),
     };
 
     try {
@@ -90,10 +90,6 @@ function SavePlaybookButton({
   };
 
   const handleSaveCallback = (args: any) => {
-    stateToPlaybook();
-
-    return;
-
     if (isEditing) {
       handlePlaybookUpdate();
     } else {
