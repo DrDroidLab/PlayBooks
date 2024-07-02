@@ -6,18 +6,22 @@ import "google/protobuf/wrappers.proto";
 
 message ElasticSearch {
 
-  message QueryIndex {
+  message QueryLogs {
     google.protobuf.StringValue index = 1;
-    google.protobuf.StringValue query = 2;
+    google.protobuf.StringValue lucene_query = 2;
+    google.protobuf.UInt64Value limit = 3;
+    google.protobuf.UInt64Value offset = 4;
+    google.protobuf.StringValue sort_desc = 5;
+    google.protobuf.StringValue timestamp_field = 6;
   }
 
   enum TaskType {
     UNKNOWN = 0;
-    QUERY_INDEX = 1;
+    QUERY_LOGS = 1;
   }
 
   TaskType type = 1;
   oneof task {
-    QueryIndex query_index = 2;
+    QueryLogs query_logs = 2;
   }
 }
