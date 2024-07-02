@@ -63,14 +63,7 @@ const CreateFlow = () => {
 
   useEffect(() => {
     if (dagreData?.nodes?.length > 0) {
-      setNodes(
-        dagreData?.nodes?.map((node) => ({
-          ...node,
-          data: {
-            ...node.data,
-          },
-        })),
-      );
+      setNodes(dagreData?.nodes);
     }
     if (dagreData?.edges?.length > 0) {
       setEdges(dagreData.edges);

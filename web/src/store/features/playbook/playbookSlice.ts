@@ -337,7 +337,13 @@ const playbookSlice = createSlice({
       );
       if (task) {
         task = setNestedValue(task, payload.key, payload.value);
-        // task[payload.key] = payload.value;
+      }
+    },
+    updateStep: (state, { payload }) => {
+      const id = payload.id;
+      let step = state.currentPlaybook!.steps.find((e) => e.id === id);
+      if (step) {
+        step = setNestedValue(step, payload.key, payload.value);
       }
     },
     updateSource: (state, { payload }) => {
@@ -513,6 +519,7 @@ export const {
   deleteTask,
   updateSource,
   updateTaskType,
+  updateStep,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

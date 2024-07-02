@@ -8,10 +8,11 @@ import {
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import { Handle, NodeToolbar, Position } from "reactflow";
 import AddButtonOptions from "../../card/AddButtonOptions.tsx";
-import useHasChildren from "../../../../hooks/useHasChildren.ts";
+// import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import StepTitle from "../../steps/StepTitle.tsx";
 import StepButtons from "../../steps/StepButtons.tsx";
+import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
 
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
@@ -20,17 +21,20 @@ function StepNode({ data }) {
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
-  const hasChildren = useHasChildren(step?.id);
+  // const hasChildren = useHasChildren(step?.id);
+  const stepRef = useStepDimensions(step?.id);
 
   return (
-    <div className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
+    <div
+      ref={stepRef}
+      className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
         {step?.tasks.map((stepTask) => {
           const taskId = typeof stepTask === "string" ? stepTask : stepTask.id;
           const task = tasks?.find((task) => task.id === taskId);
           if (!task) return null;
-          return <TaskNode key={stepTask} taskId={task?.id} />;
+          return <TaskNode key={stepTask?.id ?? stepTask} taskId={task?.id} />;
         })}
       </div>
       <StepButtons step={step} />

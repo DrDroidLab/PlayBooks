@@ -22,6 +22,10 @@ export const getNodes = () => {
         x: 0,
         y: 0,
       },
+      dimensions: {
+        width: step?.uiRequirements?.width ?? 350,
+        height: step?.uiRequirements?.height ?? 250,
+      },
       data: {
         step,
         index,

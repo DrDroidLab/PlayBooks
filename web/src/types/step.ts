@@ -14,6 +14,8 @@ type StepUIRequirements = {
   resultType?: string;
   showExternalLinks?: boolean;
   showNotes?: boolean;
+  width?: number;
+  height?: number;
 };
 
 export interface Step {
