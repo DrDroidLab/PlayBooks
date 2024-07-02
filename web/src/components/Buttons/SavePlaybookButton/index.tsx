@@ -76,7 +76,7 @@ function SavePlaybookButton({
     // if (error) return;
 
     const playbookObj = {
-      playbook: stateToPlaybook(),
+      playbook: { ...stateToPlaybook(), name: pbName, description },
     };
 
     try {

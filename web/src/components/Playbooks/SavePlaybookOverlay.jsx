@@ -26,6 +26,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
       return;
     }
     dispatch(setPlaybookKey({ key: "description", value: description }));
+    dispatch(setPlaybookKey({ key: "name", value: name }));
     saveCallback({
       pbName: name || playbookName,
       description,
