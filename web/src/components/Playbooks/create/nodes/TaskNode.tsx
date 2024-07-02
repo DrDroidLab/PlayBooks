@@ -41,8 +41,12 @@ function TaskNode({ taskId }) {
       onClick={handleClick}
       className={`rounded-md overflow-hidden border border-transparent`}
       style={{ borderColor: handleTaskBorderColor(taskId) }}>
-      <TaskTitle taskId={task?.id} />
-      <TaskInformation taskId={task?.id} />
+      <div className="add-button">
+        <TaskTitle taskId={task?.id} />
+      </div>
+      <div className="add-step-buttons transition-all">
+        <TaskInformation taskId={task?.id} />
+      </div>
     </div>
   );
 }

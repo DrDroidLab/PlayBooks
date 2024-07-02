@@ -12,7 +12,7 @@ function useStepDimensions(stepId: string) {
   };
 
   useEffect(() => {
-    if (stepRef) {
+    if (stepRef.current) {
       setDimensions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

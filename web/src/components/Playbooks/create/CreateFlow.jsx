@@ -12,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { useCallback, useEffect } from "react";
 import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
-import ParentNode from "./ParentNode.jsx";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
@@ -26,7 +25,6 @@ const fitViewOptions = {
 const nodeTypes = {
   custom: CustomNode,
   step: StepNode,
-  parent: ParentNode,
 };
 
 const edgeTypes = {

@@ -2,16 +2,6 @@ import { currentPlaybookSelector } from "../../store/features/playbook/playbookS
 import { store } from "../../store/index.ts";
 import { Step } from "../../types/index.ts";
 
-const initialPlaybookNode = {
-  id: "playbook",
-  position: { x: 0, y: 0 },
-  data: {
-    label: "Playbook",
-    index: 0,
-  },
-  type: "parent",
-};
-
 export const getNodes = () => {
   const playbook = currentPlaybookSelector(store.getState());
   const steps: Step[] = playbook?.steps ?? [];
@@ -34,5 +24,5 @@ export const getNodes = () => {
     };
   });
 
-  return [initialPlaybookNode, ...nodes];
+  return nodes;
 };
