@@ -51,7 +51,7 @@ const playbookSlice = createSlice({
   initialState,
   reducers: {
     setPlaybooks(state, { payload }) {
-      if (Object.keys(state.meta).length > 0) {
+      if (Object.keys(state.meta ?? {}).length > 0) {
         state.playbooks.push(...payload);
       } else {
         state.playbooks = [...payload];
@@ -422,7 +422,7 @@ const playbookSlice = createSlice({
       }
     },
     resetState(state) {
-      state.currentPlaybook = undefined;
+      state.currentPlaybook = initialState.currentPlaybook;
       state.currentVisibleTask = undefined;
       state.executionId = undefined;
       state.isCopied = false;
