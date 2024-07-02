@@ -24,10 +24,14 @@ export const signupApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled;
           const accessToken = data?.access_token;
           const refreshToken = data?.refresh_token;
-          dispatch(setCredentials({ accessToken, refreshToken, email }));
+          const lastLogin = data?.last_login;
+          dispatch(
+            setCredentials({ accessToken, refreshToken, email, lastLogin }),
+          );
           localStorage.setItem("email", email);
           localStorage.setItem("access_token", accessToken);
           localStorage.setItem("refresh_token", accessToken);
+          localStorage.setItem("lastLogin", lastLogin);
           posthog.identify(email, {
             email: email,
             first_name,
