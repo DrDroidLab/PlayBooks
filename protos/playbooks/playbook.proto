@@ -7,7 +7,7 @@ import "google/protobuf/struct.proto";
 import "protos/playbooks/playbook_commons.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 
-import "protos/playbooks/decision_task_definitions/decision_task.proto";
+import "protos/playbooks/playbook_task_result_evaluator.proto";
 
 import "protos/playbooks/source_task_definitions/cloudwatch_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_task.proto";
@@ -21,7 +21,8 @@ import "protos/playbooks/source_task_definitions/documentation_task.proto";
 import "protos/playbooks/source_task_definitions/promql_task.proto";
 import "protos/playbooks/source_task_definitions/azure_task.proto";
 import "protos/playbooks/source_task_definitions/gke_task.proto";
-import "protos/playbooks/playbook_task_result_evaluator.proto";
+import "protos/playbooks/source_task_definitions/elastic_search_task.proto";
+import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
 
 
 // Playbook Task Protos
@@ -56,6 +57,8 @@ message PlaybookTask {
     PromQl grafana_mimir = 112;
     Azure azure = 113;
     Gke gke = 114;
+    ElasticSearch elastic_search = 115;
+    GrafanaLoki grafana_loki = 116;
   }
 }
 

@@ -12,8 +12,10 @@ from executor.source_processors.azure_api_processor import AzureApiProcessor
 from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
+from executor.source_processors.elastic_search_api_processor import ElasticSearchApiProcessor
 from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
+from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from executor.source_processors.pd_api_processor import PdApiProcessor
@@ -46,7 +48,9 @@ connector_type_api_processor_map = {
     Source.GKE: GkeApiProcessor,
     Source.REMOTE_SERVER: RemoteServerProcessor,
     Source.MS_TEAMS: MSTeamsApiProcessor,
-    Source.PAGER_DUTY: PdApiProcessor
+    Source.PAGER_DUTY: PdApiProcessor,
+    Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
+    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor
 }
 
 
@@ -214,6 +218,28 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL:
                 credentials_dict['configured_email'] = conn_key.key.value
+    elif connector_type == Source.ELASTIC_SEARCH:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_HOST:
+                credentials_dict['host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_PORT:
+                credentials_dict['port'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_API_KEY_ID:
+                credentials_dict['api_key_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
+            if 'port' not in credentials_dict:
+                credentials_dict['port'] = '9200'
+    elif connector_type == Source.GRAFANA_LOKI:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.GRAFANA_LOKI_HOST:
+                credentials_dict['host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GRAFANA_LOKI_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
+                credentials_dict['ssl_verify'] = 'true'
+                if conn_key.key.value.lower() == 'false':
+                    credentials_dict['ssl_verify'] = 'false'
     else:
         return None
     return credentials_dict

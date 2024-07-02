@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { stepsSelector } from "../../../store/features/playbook/playbookSlice.ts";
 
-function ExecutingStep({ handleShowConfig }) {
+function ExecutingStep() {
   const playbookSteps = useSelector(stepsSelector);
   const executingStep = (playbookSteps ?? []).find(
     (step) => step.outputLoading,
