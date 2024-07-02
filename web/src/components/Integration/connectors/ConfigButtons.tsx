@@ -4,10 +4,13 @@ import UpdateConnectorButton from "../../Buttons/UpdateConnectorButton/index.tsx
 import DeleteConnectorButton from "../../Buttons/DeleteConnectorButton/index.tsx";
 import TestConnectorButton from "../../Buttons/TestConnectorButton/index.tsx";
 import ShowTestConnectorResult from "../../ShowTestConnectorResult/index.tsx";
+import { useSelector } from "react-redux";
+import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 
 function ConfigButtons({ connector }) {
   const { id } = useParams();
   const connectorActive = id !== undefined && id !== null;
+  const currentConnector = useSelector(connectorSelector);
 
   return (
     <>
@@ -16,7 +19,7 @@ function ConfigButtons({ connector }) {
         <TestConnectorButton
           id={id}
           connector={connector}
-          formData={connector}
+          formData={connectorActive ? connector : currentConnector}
         />
         {connectorActive && (
           <DeleteConnectorButton connector={connector} id={id} />

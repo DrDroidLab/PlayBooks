@@ -15,6 +15,7 @@ function TestConnectorButton({ id, connector, formData }) {
   const handleClick = async () => {
     const formattedKeys: any = [];
     const error = keyOptions.findIndex((op) => {
+      if (op.key_type === "SSL_VERIFY") return false;
       return formData[op.key_type] === "";
     });
     if (error !== -1) {
