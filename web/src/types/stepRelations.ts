@@ -24,11 +24,20 @@ type StepCondition = {
   logical_opertaor: LogicalOperator;
 };
 
+export type StepRelationContract = {
+  id: string;
+  parent: {
+    reference_id: string;
+  };
+  child: {
+    reference_id: string;
+  };
+  condition?: StepCondition;
+};
+
 export type StepRelation = {
   id: string;
   parent: Step | string;
   child: Step;
   condition?: StepCondition;
-  target?: string;
-  source?: string;
 };

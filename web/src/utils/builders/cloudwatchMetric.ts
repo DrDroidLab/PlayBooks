@@ -42,7 +42,6 @@ const getDimensionValues = (task: Task) => {
     currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
-  console.log("dimension", dimensions);
   const dimension = Object.values(dimensions)?.find(
     (el: any) => el.name === data.dimensions?.[0]?.name,
   );

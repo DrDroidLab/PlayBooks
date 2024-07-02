@@ -38,7 +38,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           // Wait for the query to complete
-          updateCardById("assetsLoading", true, arg);
+          updateCardById("ui_requirement.assetsLoading", true, arg);
           const { data } = await queryFulfilled;
           // Dispatch an action to update the global state
           dispatch(setAssets({ assets: data, id: arg }));
@@ -46,7 +46,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
           // Handle any errors
           console.log(error);
         } finally {
-          updateCardById("assetsLoading", false, arg);
+          updateCardById("ui_requirement.assetsLoading", false, arg);
         }
       },
     }),

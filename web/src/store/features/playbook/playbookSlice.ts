@@ -8,11 +8,12 @@ import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
 import { RootState } from "../../index.ts";
 import { Task } from "../../../types/task.ts";
 import setNestedValue from "../../../utils/setNestedValue.ts";
+import { v4 as uuidv4 } from "uuid";
 
 const emptyStep: Step = {
   id: "",
   tasks: [],
-  uiRequirements: {
+  ui_requirement: {
     isOpen: true,
     showError: false,
   },
@@ -87,11 +88,10 @@ const playbookSlice = createSlice({
 
       relations.forEach((relation) => {
         const sourceId =
-          typeof relation.parent !== "string" ? relation.parent.id : "";
-        const targetId = relation.child.id;
-        relation.source =
-          typeof relation.parent !== "string" ? `node-${sourceId}` : "playbook";
-        relation.target = `node-${targetId}`;
+          typeof relation.parent !== "string"
+            ? (relation.parent as Step).id
+            : "";
+        const targetId = (relation.child as Step).id;
         relation.id = `edge-${sourceId}-${targetId}`;
       });
 
@@ -123,7 +123,7 @@ const playbookSlice = createSlice({
           (step) => step.id === id,
         );
         if (step) {
-          step.uiRequirements.errors = errors;
+          step.ui_requirement.errors = errors;
         }
       }
     },
@@ -158,6 +158,7 @@ const playbookSlice = createSlice({
 
       const task: Task = {
         id: taskId,
+        reference_id: uuidv4(),
         source: payload.source,
         interpreter_type: "",
         task_connector_sources: [],
@@ -192,6 +193,7 @@ const playbookSlice = createSlice({
       const newStep: Step = {
         ...emptyStep,
         id: stepId,
+        reference_id: uuidv4(),
         description: `Step-${stepId}`,
         tasks: [task.id!],
       };

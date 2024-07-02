@@ -7,8 +7,8 @@ function useStepDimensions(stepId: string) {
   const setDimensions = () => {
     const height = (stepRef.current?.clientHeight ?? 0) + 200;
     const width = (stepRef.current?.clientWidth ?? 0) + 20;
-    updateStepById("uiRequirements.width", width, stepId);
-    updateStepById("uiRequirements.height", height, stepId);
+    updateStepById("ui_requirement.width", width, stepId);
+    updateStepById("ui_requirement.height", height, stepId);
   };
 
   useEffect(() => {

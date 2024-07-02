@@ -7,14 +7,17 @@ import {
   useUpdatePlaybookMutation,
 } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import {
+  currentPlaybookSelector,
+  playbookSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
-import { stepsToPlaybook } from "../../../utils/parser/playbook/stepsToplaybook.ts";
 import { useNavigate } from "react-router-dom";
 import { setPlaybookKey } from "../../../store/features/playbook/playbookSlice.ts";
 import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSavingValidations.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import stateToPlaybook from "../../../utils/parser/playbook/stateToPlaybook.ts";
 
 type SavePlaybookButtonPropTypes = {
   shouldNavigate?: boolean;
@@ -26,8 +29,8 @@ function SavePlaybookButton({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { closeDrawer } = usePermanentDrawerState();
-  const { isEditing, steps } = useSelector(playbookSelector);
-  const currentPlaybook = useSelector(playbookSelector);
+  const { isEditing } = useSelector(playbookSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
   const [isSavePlaybookOverlayOpen, setIsSavePlaybookOverlayOpen] =
     useState(false);
 
@@ -48,16 +51,13 @@ function SavePlaybookButton({
 
   const handlePlaybookUpdate = async () => {
     setIsSavePlaybookOverlayOpen(false);
-    const playbook = stepsToPlaybook(currentPlaybook, steps);
-    if (steps?.length === 0) {
+    if (currentPlaybook?.steps?.length === 0) {
       dispatch(showSnackbar("You cannot save a playbook with no steps"));
       return;
     }
+
     try {
-      await triggerUpdatePlaybook({
-        ...playbook,
-        id: currentPlaybook.id,
-      }).unwrap();
+      await triggerUpdatePlaybook(currentPlaybook).unwrap();
       if (shouldNavigate) {
         navigate(`/playbooks`);
         return;
@@ -72,17 +72,11 @@ function SavePlaybookButton({
     setIsSavePlaybookOverlayOpen(false);
     dispatch(setPlaybookKey({ key: "name", value: pbName }));
 
-    const playbook = stepsToPlaybook(currentPlaybook, steps);
-
-    const error = handlePlaybookSavingValidations();
-    if (error) return;
+    // const error = handlePlaybookSavingValidations();
+    // if (error) return;
 
     const playbookObj = {
-      playbook: {
-        ...playbook,
-        name: pbName,
-        description,
-      },
+      playbook: currentPlaybook,
     };
 
     try {
@@ -96,6 +90,10 @@ function SavePlaybookButton({
   };
 
   const handleSaveCallback = (args: any) => {
+    stateToPlaybook();
+
+    return;
+
     if (isEditing) {
       handlePlaybookUpdate();
     } else {

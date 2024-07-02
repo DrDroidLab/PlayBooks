@@ -28,5 +28,5 @@ export interface Step {
   interpreter_type?: string;
   tasks: Task[] | string[];
   children?: [];
-  uiRequirements: StepUIRequirements;
+  ui_requirement: StepUIRequirements;
 }

@@ -28,10 +28,10 @@ function HandleExternalLinksRender({ id }) {
           <div
             className="mt-2 text-sm cursor-pointer text-violet-500"
             onClick={toggleExternalLinks}>
-            <b>{step?.uiRequirements.showExternalLinks ? "-" : "+"}</b> Add
+            <b>{step?.ui_requirement.showExternalLinks ? "-" : "+"}</b> Add
             External Links
           </div>
-          {step?.uiRequirements.showExternalLinks && (
+          {step?.ui_requirement.showExternalLinks && (
             <ExternalLinks links={step.external_links} setLinks={setLinks} />
           )}
         </>

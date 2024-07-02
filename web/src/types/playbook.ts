@@ -1,6 +1,6 @@
 import { GlobalVariableSet } from "./globalVariableSet.ts";
 import { Step } from "./step.ts";
-import { StepRelation } from "./stepRelations.ts";
+import { StepRelation, StepRelationContract } from "./stepRelations.ts";
 import { Task } from "./task.ts";
 
 type PlaybookUIRequirement = {
@@ -13,7 +13,7 @@ export type Playbook = {
   name?: string;
   description?: string;
   steps: Step[];
-  step_relations: StepRelation[];
+  step_relations: (StepRelation | StepRelationContract)[];
   ui_requirement: PlaybookUIRequirement;
 };
 
