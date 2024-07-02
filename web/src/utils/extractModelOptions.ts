@@ -121,6 +121,10 @@ export default function extractModelOptions(assets: any, task: Task) {
       return {
         ssh_servers: assets?.map((asset) => asset.name) ?? [],
       };
+    case taskTypes.ELASTIC_SEARCH_QUERY_INDEX:
+      return {
+        indexes: assets?.map((asset) => asset.index) ?? [],
+      };
     default:
       return [];
   }
