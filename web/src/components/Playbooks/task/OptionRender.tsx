@@ -6,14 +6,14 @@ import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.ts
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import IframeRender from "../options/IframeRender.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import getNestedValue from "../../../utils/getNestedValue.ts";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
   const source = task?.source ?? "";
   const taskType = task?.[source?.toLowerCase()]?.type ?? "";
-  const taskData =
-    task?.[source?.toLowerCase()]?.[taskType?.toLowerCase()] ?? {};
   const key = `${source.toLowerCase()}.${taskType.toLowerCase()}.${data.key}`;
+  const value = getNestedValue(task, key, undefined);
 
   const handleChange = (...args) => {
     if (data.handleChange) {
@@ -49,6 +49,8 @@ export default function OptionRender({ data, removeErrors, id }) {
   const handleTypingDropdownChange = (value, option) => {
     if (data.handleChange && option) {
       data.handleChange(value, option);
+    } else if (data.handleKeyChange) {
+      data.handleKeyChange(value);
     } else {
       updateCardById(key, value, currentTaskId);
     }
@@ -79,7 +81,7 @@ export default function OptionRender({ data, removeErrors, id }) {
             data={data.options ?? []}
             placeholder={`Select ${data.label}`}
             onSelectionChange={handleChange}
-            selected={data.selected ?? taskData[`${data.key}`]}
+            selected={data.selected ?? value}
             searchable={true}
             disabled={data.disabled}
             error={error}
@@ -110,7 +112,7 @@ export default function OptionRender({ data, removeErrors, id }) {
             placeHolder={`Enter ${data?.label}`}
             valueType={"STRING"}
             onValueChange={handleChange}
-            value={data.selected || taskData[`${data.key}`]}
+            value={data.selected || value}
             error={error}
             disabled={false}
             {...data.additionalProps}
@@ -128,7 +130,7 @@ export default function OptionRender({ data, removeErrors, id }) {
               "w-full border border-gray-300 p-1 rounded mt-1 text-sm resize-none text-[#676666] h-32"
             }
             rows={4}
-            value={data.value ?? data.selected ?? taskData[`${data.key}`]}
+            value={data.value ?? data.selected ?? value}
             onChange={handleTextAreaChange}
             disabled={data.disabled}
             style={error ? { borderColor: "red" } : {}}
@@ -161,7 +163,7 @@ export default function OptionRender({ data, removeErrors, id }) {
           </p>
           <TypingDropdownMultiple
             data={data.options ?? []}
-            selected={data.selected ?? taskData[`${data.key}`]}
+            selected={data.selected ?? value}
             placeholder={data.placeholder ?? `Select ${data.label}`}
             handleChange={multiSelectChange}
             disabled={data.disabled}
@@ -186,7 +188,7 @@ export default function OptionRender({ data, removeErrors, id }) {
           <div className="flex gap-1 items-center">
             <TypingDropdown
               data={data.options ?? []}
-              selected={data.selected ?? taskData[`${data.key}`]}
+              selected={data.selected ?? value}
               placeholder={data.placeholder ?? `Select ${data.label}`}
               handleChange={handleTypingDropdownChange}
               disabled={data.disabled}

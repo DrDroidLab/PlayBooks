@@ -69,6 +69,7 @@ const playbookSlice = createSlice({
       state.currentPlaybook = { ...payload, ui_requirement: { tasks: [] } };
 
       payload?.steps.forEach((step) => {
+        console.log("step", step);
         const stepTasks: any[] = (step.tasks as Task[]).map((e) => ({
           ...e,
           ui_requirement: {

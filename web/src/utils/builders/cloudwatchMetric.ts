@@ -42,8 +42,9 @@ const getDimensionValues = (task: Task) => {
     currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
+  console.log("dimension", dimensions);
   const dimension = Object.values(dimensions)?.find(
-    (el: any) => el.name === data.dimension_name,
+    (el: any) => el.name === data.dimensions?.[0]?.name,
   );
   for (let val of (dimension as any)?.values ?? []) {
     list.push({
@@ -61,7 +62,7 @@ const getMetrics = (task: Task) => {
   return (
     currentAsset?.region_dimension_map
       ?.find((el) => el.region === data.region)
-      ?.dimensions?.find((el) => el.name === data.dimension_name)
+      ?.dimensions?.find((el) => el.name === data.dimensions?.[0]?.name)
       ?.metrics?.map((el) => {
         return {
           id: el,
@@ -73,12 +74,6 @@ const getMetrics = (task: Task) => {
 
 export const cloudwatchMetricBuilder = (options, task) => {
   return {
-    triggerGetAssetsKey: "namespaceName",
-    assetFilterQuery: {
-      cloudwatch_metric_model_filters: {
-        namespaces: [task.namespaceName],
-      },
-    },
     builder: [
       [
         {
@@ -101,24 +96,23 @@ export const cloudwatchMetricBuilder = (options, task) => {
           }),
         },
         {
-          key: "dimension_name",
+          key: `dimensions.0.name`,
           label: "Dimension Name",
           type: OptionType.TYPING_DROPDOWN,
           options: getDimensionNames(task),
         },
         {
-          key: "dimension_value",
+          key: `dimensions.0.value`,
           label: "Dimension Value",
           type: OptionType.TYPING_DROPDOWN,
           options: getDimensionValues(task),
         },
         {
-          key: "metric",
+          key: "metric_name",
           label: "Metric",
           placeholder: "Add Metric",
-          type: OptionType.MULTI_SELECT,
+          type: OptionType.TYPING_DROPDOWN,
           options: getMetrics(task),
-          selected: task?.metric,
         },
       ],
     ],
