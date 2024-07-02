@@ -96,7 +96,7 @@ class LiteralArrayColumnTokenFilterOp(ColumnTokenFilterOp):
     def rhs(self, rhs_token):
         if not isinstance(rhs_token, LiteralToken):
             raise ValueError('RHS must be Literal')
-        if is_scalar(rhs_token.literal.literal_type):
+        if is_scalar(rhs_token.literal.type):
             return [rhs_token.literal_value]
         return rhs_token.literal_value
 

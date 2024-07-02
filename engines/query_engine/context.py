@@ -7,8 +7,8 @@ from engines.query_engine.filters.filter_engine import FilterEngine
 from executor.models import PlayBookExecution, PlayBook
 from executor.workflows.models import WorkflowExecution, Workflow
 from protos.base_pb2 import Op, Context
-from protos.engines.query_base_pb2 import Filter, ColumnIdentifier, Expression, QueryRequest
 from protos.literal_pb2 import IdLiteral, Literal, LiteralType
+from protos.query_base_pb2 import Filter, Expression, ColumnIdentifier, QueryRequest
 
 
 class ContextResolver:

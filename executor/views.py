@@ -6,15 +6,15 @@ from typing import Union
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
 
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
+from engines.query_engine.query_engine import playbook_search_engine, playbook_execution_search_engine
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution, \
     update_db_account_playbook_execution_status
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
@@ -37,7 +37,7 @@ from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookExecutionStatusType
-from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, PlaybookStepExecutionLog, \
+from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, \
     PlaybookExecution, Playbook
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
@@ -52,7 +52,8 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
-    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest
+    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
+    SearchPlaybooksRequest, SearchPlaybooksResponse, ExecutionPlaybookSearchRequest, ExecutionPlaybookSearchResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -376,6 +377,26 @@ def playbooks_get_v2(request_message: GetPlaybooksRequestV2) -> Union[GetPlayboo
     return GetPlaybooksResponseV2(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_list)
 
 
+@web_api(SearchPlaybooksRequest)
+def playbooks_search(request_message: SearchPlaybooksRequest) -> Union[SearchPlaybooksResponse, HttpResponse]:
+    account: Account = get_request_account()
+    page = request_message.meta.page
+    query_request = request_message.query_request
+
+    qs: QuerySet = account.playbook_set.all()
+    if qs is None or not qs.exists():
+        return JsonResponse({'error': 'No playbooks found for the account'}, status=404)
+
+    qs = qs.filter(account_id=account.id)
+    qs = playbook_search_engine.process_query(qs, query_request)
+
+    total_count = qs.count()
+    qs = filter_page(qs, page)
+    playbooks_protos = [pb.proto for pb in qs]
+
+    return SearchPlaybooksResponse(meta=get_meta(page=page, total_count=total_count), playbooks=playbooks_protos)
+
+
 @web_api(CreatePlaybookRequest)
 @deprecated
 def playbooks_create(request_message: CreatePlaybookRequest) -> Union[CreatePlaybookResponse, HttpResponse]:
@@ -556,6 +577,27 @@ def playbooks_execution_get_v2(request_message: ExecutionPlaybookGetRequestV2) -
     time_range_proto = dict_to_proto(time_range, TimeRange) if time_range else TimeRange()
     return ExecutionPlaybookGetResponseV2(meta=get_meta(time_range_proto), success=BoolValue(value=True),
                                           playbook_execution=playbook_execution.proto)
+
+
+@web_api(ExecutionPlaybookSearchRequest)
+def playbooks_execution_search(request_message: ExecutionPlaybookSearchRequest) -> Union[
+    ExecutionPlaybookSearchResponse, HttpResponse]:
+
+    account: Account = get_request_account()
+    page = request_message.meta.page
+
+    qs: QuerySet = account.playbookexecution_set.all()
+    if qs is None or not qs.exists():
+        return JsonResponse({'error': 'No playbook executions found for the account'}, status=404)
+
+    qs = qs.filter(account_id=account.id)
+    qs = playbook_execution_search_engine.process_query(qs, request_message.query_request)
+
+    total_count = qs.count()
+    qs = filter_page(qs, page)
+    playbook_exec_protos = [e.proto for e in qs]
+
+    return ExecutionPlaybookSearchResponse(meta=get_meta(page=page, total_count=total_count), playbook_executions=playbook_exec_protos)
 
 
 @web_api(ExecutionsPlaybooksListRequest)

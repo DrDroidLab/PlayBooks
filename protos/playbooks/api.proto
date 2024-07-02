@@ -5,6 +5,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
 import "protos/base.proto";
+import "protos/query_base.proto";
 import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
 import "protos/playbooks/workflow.proto";
@@ -123,6 +124,16 @@ message GetPlaybooksResponseV2 {
   repeated Playbook playbooks = 2;
 }
 
+message SearchPlaybooksRequest {
+  Meta meta = 1;
+  QueryRequest query_request = 2;
+}
+
+message SearchPlaybooksResponse {
+  Meta meta = 1;
+  repeated Playbook playbooks = 2;
+}
+
 message CreatePlaybookRequest {
   string name = 1;
   DeprecatedPlaybook playbook = 2;
@@ -204,6 +215,17 @@ message ExecutionPlaybookGetResponseV2 {
   PlaybookExecution playbook_execution = 4;
 }
 
+message ExecutionPlaybookSearchRequest {
+  Meta meta = 1;
+  QueryRequest query_request = 2;
+}
+
+message ExecutionPlaybookSearchResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  repeated PlaybookExecution playbook_executions = 3;
+}
+
 message ExecutionPlaybookAPIGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
@@ -275,6 +297,16 @@ message GetWorkflowsResponse {
   repeated Workflow workflows = 2;
 }
 
+message SearchWorkflowsRequest {
+  Meta meta = 1;
+  QueryRequest query_request = 2;
+}
+
+message SearchWorkflowsResponse {
+  Meta meta = 1;
+  repeated Workflow workflows = 2;
+}
+
 message CreateWorkflowRequest {
   string name = 1;
   Workflow workflow = 2;
@@ -320,6 +352,17 @@ message ExecutionWorkflowGetResponse {
   google.protobuf.BoolValue success = 2;
   Message message = 3;
   WorkflowExecution workflow_execution = 4;
+}
+
+message ExecutionWorkflowSearchRequest {
+  Meta meta = 1;
+  QueryRequest query_request = 2;
+}
+
+message ExecutionWorkflowSearchResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  repeated WorkflowExecution workflow_executions = 3;
 }
 
 message ExecutionsWorkflowsListRequest {

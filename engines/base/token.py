@@ -2,12 +2,11 @@ import abc
 from abc import abstractmethod
 from typing import Dict
 
-from engines.query_engine.columns.column import Column, Column
+from engines.query_engine.columns.column import Column
 from engines.base.literal import literal_to_obj, display_literal
 from protos.literal_pb2 import Literal, LiteralType
-from protos.engines.query_base_pb2 import ColumnIdentifier
 from protos.base_pb2 import Op
-from protos.engines.query_base_pb2 import Expression as ExpressionProto
+from protos.query_base_pb2 import ColumnIdentifier, Expression as ExpressionProto
 
 
 class Filterable(abc.ABC):
@@ -87,5 +86,4 @@ class ExpressionTokenizer:
             return self._column_tokenizer(expression.column_identifier)
         elif expression.HasField('literal'):
             return LiteralToken(literal=expression.literal)
-        else:
-            raise ValueError('Invalid filter expression type')
+        return None

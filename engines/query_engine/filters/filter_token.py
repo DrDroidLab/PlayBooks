@@ -10,8 +10,8 @@ from engines.base.literal import is_scalar
 from engines.base.op import validate_query
 from engines.base.token import Token, OpToken, Filterable, ColumnToken, Annotable, ExpressionTokenizer, LiteralToken
 from protos.base_pb2 import Op
-from protos.engines.query_base_pb2 import Filter as FilterProto
 from protos.literal_pb2 import LiteralType
+from protos.query_base_pb2 import Filter
 
 CONNECTOR_OPS = [Op.AND, Op.OR, Op.NOT]
 
@@ -113,7 +113,7 @@ class FilterTokenizer:
         self._columns = columns
         self._expression_tokenizer = ExpressionTokenizer(columns)
 
-    def tokenize(self, filter_proto: FilterProto) -> FilterToken:
+    def tokenize(self, filter_proto: Filter) -> FilterToken:
         if filter_proto.ByteSize() == 0:
             return None
         child_filter_tokens = [self.tokenize(f) for f in filter_proto.filters]
@@ -147,7 +147,7 @@ class FilterTokenValidator:
             if isinstance(lhs_token, ColumnToken) and isinstance(rhs_token, LiteralToken):
                 is_filter_token_valid, err = validate_query(
                     lhs_token.column.type, op_token.op,
-                    rhs_token.literal.literal_type
+                    rhs_token.literal.type
                 )
 
                 if not is_filter_token_valid:

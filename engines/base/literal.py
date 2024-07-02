@@ -24,36 +24,36 @@ def is_scalar(lt: LiteralType):
     return lt in _SCALAR_LITERALS
 
 
-def is_groupable(literal_type: LiteralType) -> bool:
-    return literal_type in _GROUPABLE_LITERALS
+def is_groupable(type: LiteralType) -> bool:
+    return type in _GROUPABLE_LITERALS
 
 
 def literal_to_obj(lt: Literal):
-    if lt.literal_type == LiteralType.STRING:
+    if lt.type == LiteralType.STRING:
         return lt.string.value
-    elif lt.literal_type == LiteralType.LONG:
+    elif lt.type == LiteralType.LONG:
         return lt.long.value
-    elif lt.literal_type == LiteralType.DOUBLE:
+    elif lt.type == LiteralType.DOUBLE:
         return lt.double.value
-    elif lt.literal_type == LiteralType.BOOLEAN:
+    elif lt.type == LiteralType.BOOLEAN:
         return lt.boolean.value
-    elif lt.literal_type == LiteralType.TIMESTAMP:
+    elif lt.type == LiteralType.TIMESTAMP:
         return datetime.utcfromtimestamp(lt.timestamp)
-    elif lt.literal_type == LiteralType.ID:
+    elif lt.type == LiteralType.ID:
         id_literal = lt.id
         if id_literal.type == IdLiteral.Type.LONG:
             return id_literal.long.value
         elif id_literal.type == IdLiteral.Type.STRING:
             return id_literal.string.value
-    elif lt.literal_type == LiteralType.STRING_ARRAY:
+    elif lt.type == LiteralType.STRING_ARRAY:
         return list(lt.string_array)
-    elif lt.literal_type == LiteralType.LONG_ARRAY:
+    elif lt.type == LiteralType.LONG_ARRAY:
         return list(lt.long_array)
-    elif lt.literal_type == LiteralType.DOUBLE_ARRAY:
+    elif lt.type == LiteralType.DOUBLE_ARRAY:
         return list(lt.double_array)
-    elif lt.literal_type == LiteralType.BOOLEAN_ARRAY:
+    elif lt.type == LiteralType.BOOLEAN_ARRAY:
         return list(lt.boolean_array)
-    elif lt.literal_type == LiteralType.ID_ARRAY:
+    elif lt.type == LiteralType.ID_ARRAY:
         ids = []
         for id_literal in lt.id_array:
             if id_literal.type == IdLiteral.Type.LONG:
@@ -61,39 +61,39 @@ def literal_to_obj(lt: Literal):
             elif id_literal.type == IdLiteral.Type.STRING:
                 ids.append(id_literal.string.value)
         return ids
-    elif lt.literal_type == LiteralType.NULL_STRING:
+    elif lt.type == LiteralType.NULL_STRING:
         return ''
-    elif lt.literal_type == LiteralType.NULL_NUMBER:
+    elif lt.type == LiteralType.NULL_NUMBER:
         return 0
     return None
 
 
 def display_literal(lt: Literal):
-    if lt.literal_type == LiteralType.STRING:
+    if lt.type == LiteralType.STRING:
         return f'"{lt.string.value}"'
-    elif lt.literal_type == LiteralType.LONG:
+    elif lt.type == LiteralType.LONG:
         return lt.long.value
-    elif lt.literal_type == LiteralType.DOUBLE:
+    elif lt.type == LiteralType.DOUBLE:
         return lt.double.value
-    elif lt.literal_type == LiteralType.BOOLEAN:
+    elif lt.type == LiteralType.BOOLEAN:
         return lt.boolean.value
-    elif lt.literal_type == LiteralType.TIMESTAMP:
+    elif lt.type == LiteralType.TIMESTAMP:
         return datetime.utcfromtimestamp(lt.timestamp)
-    elif lt.literal_type == LiteralType.ID:
+    elif lt.type == LiteralType.ID:
         id_literal = lt.id
         if id_literal.type == IdLiteral.Type.LONG:
             return id_literal.long.value
         elif id_literal.type == IdLiteral.Type.STRING:
             return f'"{id_literal.string.value}"'
-    elif lt.literal_type == LiteralType.STRING_ARRAY:
+    elif lt.type == LiteralType.STRING_ARRAY:
         return [f'"{string}"' for string in lt.string_array]
-    elif lt.literal_type == LiteralType.LONG_ARRAY:
+    elif lt.type == LiteralType.LONG_ARRAY:
         return list(lt.long_array)
-    elif lt.literal_type == LiteralType.DOUBLE_ARRAY:
+    elif lt.type == LiteralType.DOUBLE_ARRAY:
         return list(lt.double_array)
-    elif lt.literal_type == LiteralType.BOOLEAN_ARRAY:
+    elif lt.type == LiteralType.BOOLEAN_ARRAY:
         return list(lt.boolean_array)
-    elif lt.literal_type == LiteralType.ID_ARRAY:
+    elif lt.type == LiteralType.ID_ARRAY:
         ids = []
         for id_literal in lt.id_array:
             if id_literal.type == IdLiteral.Type.LONG:
@@ -101,9 +101,9 @@ def display_literal(lt: Literal):
             elif id_literal.type == IdLiteral.Type.STRING:
                 ids.append(f'"{id_literal.string.value}"')
         return ids
-    elif lt.literal_type == LiteralType.NULL_STRING:
+    elif lt.type == LiteralType.NULL_STRING:
         return '""'
-    elif lt.literal_type == LiteralType.NULL_NUMBER:
+    elif lt.type == LiteralType.NULL_NUMBER:
         return 0
     return None
 

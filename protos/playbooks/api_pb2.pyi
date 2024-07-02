@@ -15,6 +15,7 @@ import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_commons_pb2
 import protos.playbooks.playbook_pb2
 import protos.playbooks.workflow_pb2
+import protos.query_base_pb2
 import sys
 
 if sys.version_info >= (3, 8):
@@ -483,6 +484,48 @@ class GetPlaybooksResponseV2(google.protobuf.message.Message):
 global___GetPlaybooksResponseV2 = GetPlaybooksResponseV2
 
 @typing_extensions.final
+class SearchPlaybooksRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    QUERY_REQUEST_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def query_request(self) -> protos.query_base_pb2.QueryRequest: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        query_request: protos.query_base_pb2.QueryRequest | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> None: ...
+
+global___SearchPlaybooksRequest = SearchPlaybooksRequest
+
+@typing_extensions.final
+class SearchPlaybooksResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    PLAYBOOKS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def playbooks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_pb2.Playbook]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        playbooks: collections.abc.Iterable[protos.playbooks.playbook_pb2.Playbook] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbooks", b"playbooks"]) -> None: ...
+
+global___SearchPlaybooksResponse = SearchPlaybooksResponse
+
+@typing_extensions.final
 class CreatePlaybookRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -809,6 +852,52 @@ class ExecutionPlaybookGetResponseV2(google.protobuf.message.Message):
 global___ExecutionPlaybookGetResponseV2 = ExecutionPlaybookGetResponseV2
 
 @typing_extensions.final
+class ExecutionPlaybookSearchRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    QUERY_REQUEST_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def query_request(self) -> protos.query_base_pb2.QueryRequest: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        query_request: protos.query_base_pb2.QueryRequest | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> None: ...
+
+global___ExecutionPlaybookSearchRequest = ExecutionPlaybookSearchRequest
+
+@typing_extensions.final
+class ExecutionPlaybookSearchResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    PLAYBOOK_EXECUTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def playbook_executions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_pb2.PlaybookExecution]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        playbook_executions: collections.abc.Iterable[protos.playbooks.playbook_pb2.PlaybookExecution] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbook_executions", b"playbook_executions", "success", b"success"]) -> None: ...
+
+global___ExecutionPlaybookSearchResponse = ExecutionPlaybookSearchResponse
+
+@typing_extensions.final
 class ExecutionPlaybookAPIGetResponse(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1098,6 +1187,48 @@ class GetWorkflowsResponse(google.protobuf.message.Message):
 global___GetWorkflowsResponse = GetWorkflowsResponse
 
 @typing_extensions.final
+class SearchWorkflowsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    QUERY_REQUEST_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def query_request(self) -> protos.query_base_pb2.QueryRequest: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        query_request: protos.query_base_pb2.QueryRequest | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> None: ...
+
+global___SearchWorkflowsRequest = SearchWorkflowsRequest
+
+@typing_extensions.final
+class SearchWorkflowsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    WORKFLOWS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def workflows(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.Workflow]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        workflows: collections.abc.Iterable[protos.playbooks.workflow_pb2.Workflow] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "workflows", b"workflows"]) -> None: ...
+
+global___SearchWorkflowsResponse = SearchWorkflowsResponse
+
+@typing_extensions.final
 class CreateWorkflowRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -1291,6 +1422,52 @@ class ExecutionWorkflowGetResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success", "workflow_execution", b"workflow_execution"]) -> None: ...
 
 global___ExecutionWorkflowGetResponse = ExecutionWorkflowGetResponse
+
+@typing_extensions.final
+class ExecutionWorkflowSearchRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    QUERY_REQUEST_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def query_request(self) -> protos.query_base_pb2.QueryRequest: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        query_request: protos.query_base_pb2.QueryRequest | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "query_request", b"query_request"]) -> None: ...
+
+global___ExecutionWorkflowSearchRequest = ExecutionWorkflowSearchRequest
+
+@typing_extensions.final
+class ExecutionWorkflowSearchResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    WORKFLOW_EXECUTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def workflow_executions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.workflow_pb2.WorkflowExecution]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        workflow_executions: collections.abc.Iterable[protos.playbooks.workflow_pb2.WorkflowExecution] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "success", b"success", "workflow_executions", b"workflow_executions"]) -> None: ...
+
+global___ExecutionWorkflowSearchResponse = ExecutionWorkflowSearchResponse
 
 @typing_extensions.final
 class ExecutionsWorkflowsListRequest(google.protobuf.message.Message):

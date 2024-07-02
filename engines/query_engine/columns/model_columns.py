@@ -4,6 +4,8 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from engines.query_engine.columns.column import Column, AnnotatedColumn
 from protos.literal_pb2 import LiteralType
 
+
+
 playbook_columns = {
     'name': Column(
         name='name',
@@ -22,7 +24,7 @@ playbook_columns = {
 }
 
 playbook_execution_columns = {
-    'playbook': AnnotatedColumn(
+    'playbook_name': AnnotatedColumn(
         name='playbook_name',
         display_name='PlayBook Name',
         type=LiteralType.STRING,
@@ -61,12 +63,13 @@ workflow_columns = {
         is_filterable=True,
         is_groupable=True
     ),
-    'playbooks': Column(
-        name='playbooks',
+    'playbook_names': AnnotatedColumn(
+        name='playbook_names',
         display_name='Playbooks',
         type=LiteralType.STRING_ARRAY,
         is_filterable=True,
         is_groupable=True,
+        annotation_relation=ArrayAgg('playbooks__name'),
     ),
     'created_by': Column(
         name='created_by',
@@ -93,8 +96,8 @@ workflow_execution_columns = {
         is_filterable=True,
         is_groupable=False,
     ),
-    'playbooks': AnnotatedColumn(
-        name='playbooks',
+    'playbook_names': AnnotatedColumn(
+        name='playbook_names',
         display_name='Playbooks',
         type=LiteralType.STRING_ARRAY,
         is_filterable=True,

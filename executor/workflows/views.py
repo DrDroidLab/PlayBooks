@@ -8,11 +8,12 @@ import traceback
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
+from engines.query_engine.query_engine import workflow_search_engine, workflow_execution_search_engine
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
@@ -28,7 +29,8 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
-    ExecutionsWorkflowsGetAllResponse
+    ExecutionsWorkflowsGetAllResponse, SearchWorkflowsRequest, SearchWorkflowsResponse, ExecutionWorkflowSearchRequest, \
+    ExecutionWorkflowSearchResponse
 from protos.playbooks.workflow_pb2 import Workflow, WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -60,6 +62,26 @@ def workflows_get(request_message: GetWorkflowsRequest) -> Union[GetWorkflowsRes
         workflow_list = list(wf.proto_partial for wf in qs)
 
     return GetWorkflowsResponse(meta=get_meta(page=page, total_count=total_count), workflows=workflow_list)
+
+
+@web_api(SearchWorkflowsRequest)
+def workflows_search(request_message: SearchWorkflowsRequest) -> Union[SearchWorkflowsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    page = request_message.meta.page
+    query_request = request_message.query_request
+    qs: QuerySet = account.workflow_set.all()
+
+    if qs is None or not qs.exists():
+        return JsonResponse({'error': 'No workflows found for the account'}, status=404)
+
+    qs = qs.filter(account_id=account.id)
+    qs = workflow_search_engine.process_query(qs, query_request)
+
+    total_count = qs.count()
+    qs = filter_page(qs, page)
+    workflows_protos = [w.proto for w in qs]
+
+    return SearchWorkflowsResponse(meta=get_meta(page=page, total_count=total_count), workflows=workflows_protos)
 
 
 @web_api(CreateWorkflowRequest)
@@ -239,6 +261,26 @@ def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
     workflow_execution = workflow_execution.first()
     workflow_execution_protos = workflow_execution.proto
     return ExecutionWorkflowGetResponse(success=BoolValue(value=True), workflow_execution=workflow_execution_protos)
+
+
+@web_api(ExecutionWorkflowSearchRequest)
+def workflows_execution_search(request_message: ExecutionWorkflowSearchRequest) -> Union[ExecutionWorkflowSearchResponse, HttpResponse]:
+    account: Account = get_request_account()
+    page = request_message.meta.page
+    query_request = request_message.query_request
+    qs: QuerySet = account.workflowexecution_set.all()
+
+    if qs is None or not qs.exists():
+        return JsonResponse({'error': 'No workflow executions found for the account'}, status=404)
+
+    qs = qs.filter(account_id=account.id)
+    qs = workflow_execution_search_engine.process_query(qs, query_request)
+
+    total_count = qs.count()
+    qs = filter_page(qs, page)
+    workflow_exec_protos = [w.proto for w in qs]
+
+    return ExecutionWorkflowSearchResponse(meta=get_meta(page=page, total_count=total_count), workflow_executions=workflow_exec_protos)
 
 
 @account_post_api(ExecuteWorkflowRequest)

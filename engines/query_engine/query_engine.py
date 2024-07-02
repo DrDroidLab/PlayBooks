@@ -4,8 +4,8 @@ from engines.query_engine.context import ContextResolver, get_context_resolver
 from executor.models import PlayBook, PlayBookExecution
 from executor.workflows.models import Workflow, WorkflowExecution
 from protos.base_pb2 import Context
-from protos.engines.query_base_pb2 import QueryRequest
 from protos.literal_pb2 import IdLiteral
+from protos.query_base_pb2 import QueryRequest
 
 
 class QueryEngineException(ValueError):
