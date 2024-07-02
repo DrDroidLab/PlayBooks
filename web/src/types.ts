@@ -9,6 +9,7 @@ export interface Step {
   isPrefetched?: boolean;
   notes?: string;
   source: string;
+  size?: string;
   modelTypes?: ModelTypeMap[];
   modelType?: string;
   selectedSource?: string;
@@ -85,6 +86,7 @@ export interface Step {
   children?: any;
   taskIds?: string[];
   isEditing: boolean;
+  index?: any;
   relationLogs?: any;
 }
 

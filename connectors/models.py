@@ -318,6 +318,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.ELASTIC_SEARCH_PORT: 'Port',
     SourceKeyType.ELASTIC_SEARCH_API_KEY_ID: 'API Key ID',
     SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key',
+    SourceKeyType.ELASTIC_SEARCH_PROTOCOL: 'Protocol',
     SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
     SourceKeyType.GRAFANA_LOKI_API_KEY: 'API Key',
 }
