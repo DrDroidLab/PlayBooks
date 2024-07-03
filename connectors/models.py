@@ -245,16 +245,15 @@ integrations_connector_type_connector_keys_map = {
     ],
     Source.GRAFANA_LOKI: [
         [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
             SourceKeyType.GRAFANA_LOKI_HOST,
-            SourceKeyType.GRAFANA_LOKI_API_KEY,
-            SourceKeyType.SSL_VERIFY,
+            SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.SSL_VERIFY
         ],
         [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
             SourceKeyType.GRAFANA_LOKI_HOST,
-            SourceKeyType.GRAFANA_LOKI_API_KEY
-        ],
-        [
-            SourceKeyType.GRAFANA_LOKI_HOST
+            SourceKeyType.GRAFANA_LOKI_PORT,
         ]
     ],
 }
@@ -320,7 +319,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key',
     SourceKeyType.ELASTIC_SEARCH_PROTOCOL: 'Protocol',
     SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
-    SourceKeyType.GRAFANA_LOKI_API_KEY: 'API Key',
+    SourceKeyType.GRAFANA_LOKI_PORT: 'Port',
+    SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol'
 }
 
 

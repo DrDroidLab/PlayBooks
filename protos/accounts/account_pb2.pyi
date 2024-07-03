@@ -4,17 +4,34 @@ isort:skip_file
 """
 import builtins
 import google.protobuf.descriptor
+import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.timestamp_pb2
 import google.protobuf.wrappers_pb2
 import sys
+import typing
 
-if sys.version_info >= (3, 8):
+if sys.version_info >= (3, 10):
     import typing as typing_extensions
 else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+
+class _SSOProvider:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SSOProviderEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SSOProvider.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN: _SSOProvider.ValueType  # 0
+    OKTA: _SSOProvider.ValueType  # 1
+
+class SSOProvider(_SSOProvider, metaclass=_SSOProviderEnumTypeWrapper): ...
+
+UNKNOWN: SSOProvider.ValueType  # 0
+OKTA: SSOProvider.ValueType  # 1
+global___SSOProvider = SSOProvider
 
 @typing_extensions.final
 class AccountApiToken(google.protobuf.message.Message):
