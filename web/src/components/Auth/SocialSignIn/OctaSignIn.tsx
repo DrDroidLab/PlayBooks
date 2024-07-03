@@ -6,7 +6,7 @@ import Loading from "../../common/Loading/index.tsx";
 import { useRedirectUriMutation } from "../../../store/features/auth/api/redirectUriApi.ts";
 
 function OctaSignIn() {
-  const [triggerLoginWithOkta, { isLoading }] = useRedirectUriMutation();
+  const [getRedirectUri, { isLoading }] = useRedirectUriMutation();
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState("success");
@@ -24,7 +24,7 @@ function OctaSignIn() {
   const handleOcta = async (e) => {
     e.preventDefault();
     try {
-      const data = await triggerLoginWithOkta().unwrap();
+      const data = await getRedirectUri("okta").unwrap();
       window.open(data.redirect_uri, "_self");
     } catch (err) {
       console.error(err);
