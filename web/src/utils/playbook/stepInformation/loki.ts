@@ -1,11 +1,6 @@
 import { InfoTypes } from "./InfoTypes.ts";
 
-export const elasticSearch = [
-  {
-    label: "Index",
-    key: "index",
-    type: InfoTypes.TEXT,
-  },
+export const loki = [
   {
     label: "Query",
     key: "query",
