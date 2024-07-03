@@ -6,6 +6,8 @@ import { CircularProgress } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 import { useDeleteConnectorMutation } from "../../../store/features/integrations/api/index.ts";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import AffectedPlaybooks from "../../AffectedPlaybooks/index.tsx";
 
 const ConnectorDeleteOverlay = ({
   isOpen,
@@ -45,18 +47,10 @@ const ConnectorDeleteOverlay = ({
               />
             </div>
             <p className="text-gray-500 text-sm">This action is permanent.</p>
+            <AffectedPlaybooks id={connector.id} />
             <div className={styles.actions}>
-              <button
-                className={styles["submitButton"]}
-                sx={{ marginRight: "10px" }}
-                onClick={handleSuccess}>
-                Yes
-              </button>
-              <button
-                className={styles["submitButtonRight"]}
-                onClick={toggleOverlay}>
-                No
-              </button>
+              <CustomButton onClick={handleSuccess}>Yes</CustomButton>
+              <CustomButton onClick={toggleOverlay}>No</CustomButton>
               {isLoading && (
                 <CircularProgress
                   style={{

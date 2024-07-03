@@ -14,9 +14,11 @@ import {
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
 import Loading from "./components/common/Loading/index.tsx";
+import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
+const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage"),
 );
@@ -79,7 +81,6 @@ const App = () => {
 
   return (
     <Routes>
-
         <Route path="/playbooks/create" element={<CreatePlaybook />} />
         <Route path="/playbooks/:playbook_id" element={<CreatePlaybook />} />
         <Route

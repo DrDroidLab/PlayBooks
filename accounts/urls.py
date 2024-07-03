@@ -19,6 +19,10 @@ accounturlpatterns = [
     path('current_users', views.get_current_users, name='current_users'),
     path('invite_users', views.invite_users, name='invite_users'),
 
+    path('get/login/providers/', views.get_login_providers),
+    path('get/redirect/uri/okta/', views.get_redirect_uri_okta, name='redirect-uri-okta'),
+    path('login/okta/', views.login_okta, name='login-okta'),
+
     re_path(
         r'^confirm-email-link/(?P<key>[-:\w]+)/$', views.confirm_email_link,
         name='account_confirm_email',

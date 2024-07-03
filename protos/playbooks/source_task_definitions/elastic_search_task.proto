@@ -1,0 +1,27 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message ElasticSearch {
+
+  message QueryLogs {
+    google.protobuf.StringValue index = 1;
+    google.protobuf.StringValue lucene_query = 2;
+    google.protobuf.UInt64Value limit = 3;
+    google.protobuf.UInt64Value offset = 4;
+    google.protobuf.StringValue sort_desc = 5;
+    google.protobuf.StringValue timestamp_field = 6;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    QUERY_LOGS = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    QueryLogs query_logs = 2;
+  }
+}

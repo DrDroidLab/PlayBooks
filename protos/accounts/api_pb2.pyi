@@ -285,3 +285,63 @@ class ResetPasswordConfirmResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "success", b"success"]) -> None: ...
 
 global___ResetPasswordConfirmResponse = ResetPasswordConfirmResponse
+
+@typing_extensions.final
+class OktaAuthData(google.protobuf.message.Message):
+    """///// Okta Auth APIs //////"""
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    PK_FIELD_NUMBER: builtins.int
+    EMAIL_FIELD_NUMBER: builtins.int
+    FIRST_NAME_FIELD_NUMBER: builtins.int
+    LAST_NAME_FIELD_NUMBER: builtins.int
+    IS_NEW_USER_FIELD_NUMBER: builtins.int
+    @property
+    def pk(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def email(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def first_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def last_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def is_new_user(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    def __init__(
+        self,
+        *,
+        pk: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        email: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        first_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        last_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        is_new_user: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["email", b"email", "first_name", b"first_name", "is_new_user", b"is_new_user", "last_name", b"last_name", "pk", b"pk"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["email", b"email", "first_name", b"first_name", "is_new_user", b"is_new_user", "last_name", b"last_name", "pk", b"pk"]) -> None: ...
+
+global___OktaAuthData = OktaAuthData
+
+@typing_extensions.final
+class OktaAuthResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ACCESS_TOKEN_FIELD_NUMBER: builtins.int
+    REFRESH_TOKEN_FIELD_NUMBER: builtins.int
+    USER_FIELD_NUMBER: builtins.int
+    @property
+    def access_token(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def refresh_token(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def user(self) -> global___OktaAuthData: ...
+    def __init__(
+        self,
+        *,
+        access_token: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        refresh_token: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        user: global___OktaAuthData | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["access_token", b"access_token", "refresh_token", b"refresh_token", "user", b"user"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["access_token", b"access_token", "refresh_token", b"refresh_token", "user", b"user"]) -> None: ...
+
+global___OktaAuthResponse = OktaAuthResponse

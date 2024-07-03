@@ -1,0 +1,25 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/playbooks/source_task_definitions/promql_task.proto";
+
+
+message GrafanaLoki {
+  message QueryLogs {
+    google.protobuf.StringValue query = 1;
+    google.protobuf.UInt64Value start_time = 2;
+    google.protobuf.UInt64Value end_time = 3;
+    google.protobuf.UInt64Value limit = 4;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    QUERY_LOGS = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    QueryLogs query_logs = 101;
+  }
+}

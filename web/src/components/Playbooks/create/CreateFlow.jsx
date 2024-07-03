@@ -85,8 +85,10 @@ const CreateFlow = () => {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         minZoom={-Infinity}
+        maxZoom={1}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
         fitView
-        maxZoom={0.75}
         fitViewOptions={fitViewOptions}
         onConnect={onConnect}
         className="bg-gray-50">

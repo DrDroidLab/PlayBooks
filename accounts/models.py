@@ -1,6 +1,8 @@
 import os
 
 import binascii
+from datetime import datetime, timezone, timedelta
+
 from allauth.account.utils import has_verified_email
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
@@ -13,6 +15,7 @@ from google.protobuf.wrappers_pb2 import BoolValue
 from protos.accounts.account_pb2 import AccountApiToken as AccountApiTokenProto, User as UserProto, UserFlags
 from playbooks.threadlocal import get_current_request, get_current_request_account, set_current_request_account, \
     get_current_request_user, set_current_request_user
+from utils.cryptography_utils import generate_uuid_with_timestamp
 
 
 class Account(models.Model):
@@ -281,3 +284,20 @@ class AccountApiTokenUser:
 
     def check_password(self, raw_password):
         raise NotImplementedError("Token users have no DB representation")
+
+
+class AccountUserOauth2SessionCodeStore(models.Model):
+    session_id = models.TextField(db_index=True)
+    code_verifier = models.TextField(db_index=True)
+    code_challenge = models.TextField(db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    valid_until = models.DateTimeField(db_index=True)
+
+    class Meta:
+        unique_together = [['session_id', 'code_verifier', 'code_challenge'], ]
+
+    def save(self, **kwargs):
+        self.session_id = generate_uuid_with_timestamp()
+        self.created_at = datetime.now(timezone.utc)
+        self.valid_until = self.created_at + timedelta(minutes=15)
+        super().save(**kwargs)

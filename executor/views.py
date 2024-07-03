@@ -6,9 +6,8 @@ from typing import Union
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
 from google.protobuf.struct_pb2 import Struct
@@ -37,7 +36,7 @@ from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Source as ConnectorType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookExecutionStatusType
-from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, PlaybookStepExecutionLog, \
+from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, \
     PlaybookExecution, Playbook
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
