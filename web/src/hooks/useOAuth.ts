@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { showSnackbar } from "../store/features/snackbar/snackbarSlice.ts";
 import { useEffect } from "react";
+import useOkta from "./oauth/useOkta.ts";
 
 const OAuthTypes = {
   OKTA: "okta",
@@ -11,11 +12,13 @@ function useOAuth() {
   const { oauthId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const triggerOktaOAuth = useOkta();
 
   const handleOAuth = () => {
     switch (oauthId) {
       case OAuthTypes.OKTA:
-        return;
+        triggerOktaOAuth();
+        break;
 
       default:
         navigate("/signup", {

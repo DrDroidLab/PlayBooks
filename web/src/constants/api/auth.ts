@@ -12,3 +12,4 @@ export const GET_USER = "/accounts/user/";
 
 // Social
 export const OKTA_LOGIN = "/accounts/login/okta";
+export const OKTA_OAUTH = "/accounts/oauth/callback/okta";
