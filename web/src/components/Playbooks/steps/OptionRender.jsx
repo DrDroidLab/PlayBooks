@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
@@ -11,6 +11,13 @@ import IframeRender from "../options/IframeRender.tsx";
 export default function OptionRender({ data, removeErrors, id }) {
   const [step, currentStepId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
+
+  useEffect(() => {
+    if (data.default) {
+      console.log("woho", data.default);
+      updateCardById(data.key, data.default, currentStepId);
+    }
+  }, [data.default, currentStepId, data.key]);
 
   const handleChange = (...args) => {
     if (data.handleChange) {
