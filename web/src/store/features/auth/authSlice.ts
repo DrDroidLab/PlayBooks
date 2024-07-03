@@ -4,12 +4,14 @@ type InitialStateType = {
   accessToken: string | null;
   refreshToken?: string | null;
   email?: string | null;
+  user?: any;
 };
 
 const initialState: InitialStateType = {
   accessToken: localStorage.getItem("access_token"),
   refreshToken: localStorage.getItem("access_token"),
   email: localStorage.getItem("email"),
+  user: undefined,
 };
 
 const authSlice = createSlice({
@@ -22,6 +24,9 @@ const authSlice = createSlice({
       state.refreshToken = refreshToken ?? state.refreshToken;
       state.email = email ?? state.email;
     },
+    setUser: (state, { payload }) => {
+      state.user = payload;
+    },
     logOut: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
@@ -30,7 +35,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logOut } = authSlice.actions;
+export const { setCredentials, logOut, setUser } = authSlice.actions;
 
 export default authSlice.reducer;
 

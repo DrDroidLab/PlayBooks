@@ -16,6 +16,7 @@ import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
 import Loading from "./components/common/Loading/index.tsx";
 import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
+const Settings = React.lazy(() => import("./pages/Settings.tsx"));
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
 const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
@@ -112,6 +113,7 @@ const App = () => {
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Playbooks />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/playbooks" element={<Playbooks />} />
           <Route
             path="/playbooks/executions/list"
