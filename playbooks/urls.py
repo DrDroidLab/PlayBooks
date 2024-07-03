@@ -26,6 +26,7 @@ urlpatterns = [
     path('connectors/handlers/', include('connectors.handlers.urls')),
     path('executor/', include('executor.urls')),
     path('executor/workflows/', include('executor.workflows.urls')),
+    path('executor/engine/', include('executor.engine_manager.urls')),
     path('pb/', include('executor.urls')),
     path('media/', include('media.urls')),
     path('', include('django_prometheus.urls')),
