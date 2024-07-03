@@ -1,7 +1,10 @@
 import { CircularProgress } from "@mui/material";
 import React from "react";
+import useOAuth from "../hooks/useOAuth.ts";
 
 function OAuthCallback() {
+  useOAuth();
+
   return (
     <main className="flex items-center justify-center w-screen h-screen">
       <div className="shadow-md rounded p-4 flex items-center flex-col gap-4">

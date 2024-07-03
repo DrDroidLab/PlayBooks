@@ -14,7 +14,7 @@ import {
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
 import Loading from "./components/common/Loading/index.tsx";
-import { unauthenticatedRoutes } from "./utils/auth/unauthenticatedRoutes.ts";
+import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
@@ -69,7 +69,6 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    const isUnAuth = unauthenticatedRoutes.includes(location.pathname);
     if (!data && isError && !isUnAuth) {
       navigate("/signup", {
         replace: true,
@@ -92,7 +91,7 @@ const App = () => {
   return (
     <Routes>
       <Route element={<BaseLayout />}>
-        <Route path="/oauth/callback" element={<OAuthCallback />} />
+        <Route path="/oauth/callback/:oauthId" element={<OAuthCallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Route>

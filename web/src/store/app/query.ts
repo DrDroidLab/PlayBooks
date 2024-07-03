@@ -5,7 +5,7 @@ import { showSnackbar } from "../features/snackbar/snackbarSlice.ts";
 import { CustomError, ErrorType } from "../../utils/Error.ts";
 import { refreshToken } from "./refreshTokenService.ts";
 import { logOut } from "../features/auth/authSlice.ts";
-import { unauthenticatedRoutes } from "../../utils/auth/unauthenticatedRoutes.ts";
+import { isUnAuth } from "../../utils/auth/unauthenticatedRoutes.ts";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
@@ -41,8 +41,6 @@ const modifyRequestBody = (originalArgs, api) => {
 export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
   const modifiedArgs = modifyRequestBody(args, api);
   let result: any = await baseQuery(modifiedArgs, api, extraOptions);
-
-  const isUnAuth = unauthenticatedRoutes.includes(window.location.pathname);
 
   if (result.error?.status === 401 && !isUnAuth) {
     try {
