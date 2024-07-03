@@ -18,7 +18,7 @@ import { unauthenticatedRoutes } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
-const SigningIn = React.lazy(() => import("./pages/SigningIn.tsx"));
+const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage"),
 );
@@ -92,7 +92,7 @@ const App = () => {
   return (
     <Routes>
       <Route element={<BaseLayout />}>
-        <Route path="/signing-in" element={<SigningIn />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Route>

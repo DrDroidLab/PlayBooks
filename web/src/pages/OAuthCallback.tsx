@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import React from "react";
 
-function SigningIn() {
+function OAuthCallback() {
   return (
     <main className="flex items-center justify-center w-screen h-screen">
       <div className="shadow-md rounded p-4 flex items-center flex-col gap-4">
@@ -19,4 +19,4 @@ function SigningIn() {
   );
 }
 
-export default SigningIn;
+export default OAuthCallback;
