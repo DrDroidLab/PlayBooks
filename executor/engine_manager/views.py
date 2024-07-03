@@ -33,18 +33,22 @@ def search(request_message: SearchQueryRequest) -> Union[SearchQueryResponse, Ht
     if context == Context.PLAYBOOK:
         protos = [pb.proto_partial for pb in qs]
         return SearchQueryResponse(meta=get_meta(page=page, total_count=total_count),
+                                   context=context,
                                    playbook=SearchPlaybooksResponse(results=protos))
     elif context == Context.PLAYBOOK_EXECUTION:
         protos = [pbe.proto_partial for pbe in qs]
         return SearchQueryResponse(meta=get_meta(page=page, total_count=total_count),
+                                   context=context,
                                    playbook_execution=SearchPlaybookExecutionResponse(results=protos))
     elif context == Context.WORKFLOW:
         protos = [wf.proto_partial for wf in qs]
         return SearchQueryResponse(meta=get_meta(page=page, total_count=total_count),
+                                   context=context,
                                    workflow=SearchWorkflowsResponse(results=protos))
     elif context == Context.WORKFLOW_EXECUTION:
         protos = [wfe.proto_partial for wfe in qs]
         return SearchQueryResponse(meta=get_meta(page=page, total_count=total_count),
+                                   context=context,
                                    workflow_execution=SearchWorkflowExecutionResponse(results=protos))
 
     return SearchQueryResponse(success=BoolValue(value=False), message=Message(title='Error in query engine',
