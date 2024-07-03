@@ -44,6 +44,8 @@ const initialState: Playbook = {
   executionId: undefined,
   currentStepId: undefined,
   isOnPlaybookPage: false,
+  executionStack: [],
+  zoomLevel: 0.75,
 };
 
 const playbookSlice = createSlice({
@@ -390,6 +392,7 @@ const playbookSlice = createSlice({
       state.currentVisibleStep = undefined;
       state.executionId = undefined;
       state.isOnPlaybookPage = false;
+      state.zoomLevel = 0.75;
     },
     resetExecutions(state) {
       state.executionId = undefined;
@@ -431,6 +434,18 @@ const playbookSlice = createSlice({
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
     },
+    pushToExecutionStack(state, { payload }) {
+      const nextPossibleStepLogs = payload;
+      nextPossibleStepLogs.forEach((log) => {
+        const stepId = log.relation.child.id;
+        if (!state.executionStack.includes(stepId)) {
+          state.executionStack.push(stepId);
+        }
+      });
+    },
+    popFromExecutionStack(state) {
+      if (state.executionStack.length > 0) state.executionStack.pop();
+    },
   },
 });
 
@@ -466,6 +481,8 @@ export const {
   setPlaybookKey,
   addParentId,
   resetExecutions,
+  pushToExecutionStack,
+  popFromExecutionStack,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

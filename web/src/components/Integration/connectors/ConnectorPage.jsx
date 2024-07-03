@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   connectorSelector,
+  resetIntegrationState,
   setCurrentConnector,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,6 +40,12 @@ function ConnectorPageBeta() {
       triggerGetKeys(id);
     }
   }, [id]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetIntegrationState());
+    };
+  }, [dispatch]);
 
   const handleTabChange = (_, newValue) => {
     setSelectedTab(newValue);
@@ -103,11 +110,7 @@ function ConnectorPageBeta() {
         value={selectedTab}
         index={0}
         className={styles["config-section"]}>
-        <Config
-          id={id}
-          connector={connector}
-          connectorActive={id !== undefined && id !== null}
-        />
+        <Config connector={connector} />
       </TabPanel>
 
       {isActive && containsAssets && (

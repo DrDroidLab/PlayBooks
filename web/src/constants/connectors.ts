@@ -20,4 +20,5 @@ export const connectors = {
   REMOTE_SERVER: "REMOTE_SERVER",
   AZURE: "AZURE",
   MS_TEAMS: "MS_TEAMS",
+  ELASTIC_SEARCH: "ELASTIC_SEARCH",
 };

@@ -1,0 +1,28 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+message ElasticSearchIndexAssetModel {
+  google.protobuf.StringValue index = 1;
+}
+
+message ElasticSearchIndexAssetOptions {
+  repeated string indexes = 1;
+}
+
+message ElasticSearchAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    ElasticSearchIndexAssetModel elastic_search_index = 5;
+  }
+}
+
+message ElasticSearchAssets {
+  repeated ElasticSearchAssetModel assets = 1;
+}
