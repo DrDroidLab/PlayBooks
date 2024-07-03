@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Overlay from "../../Overlay";
 import { CloseRounded } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import posthog from "posthog-js";
 
 const RecieveUpdatesModal = ({ isOpen, close }) => {
   const handleYes = () => {
+    posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_INTERACTED", {
+      subscription_requested: true,
+    });
     close();
   };
 
   const handleNo = () => {
+    posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_INTERACTED", {
+      subscription_requested: false,
+    });
     close();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_SHOWN");
+    }
+  }, [isOpen]);
 
   return (
     <div className="z-50">

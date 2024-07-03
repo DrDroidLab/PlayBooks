@@ -38,14 +38,12 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
-    'engines.apps.EnginesConfig',
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
     'management.apps.ManagementConfig',
     'executor.apps.ExecutorConfig',
     'executor.workflows.apps.WorkflowsConfig',
-    'executor.engine_manager.apps.EngineManagerConfig',
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
     'connectors.handlers.apps.HandlersConfig',
