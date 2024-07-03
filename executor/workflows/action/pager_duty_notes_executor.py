@@ -38,7 +38,7 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
             raise ValueError('Pagerduty incident id is not configured in the notification config')
         logger.info(f"Sending note to incident {incident_id}")
         for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.SUMMARY:
+            if i == 0 and interpretation.type == InterpretationProto.Type.TEXT:
                 title = f'Hello team, here is snapshot of playbook: {interpretation.title.value}, link: {interpretation.description.value} ' \
                         f'that is configured for this incident'
             else:

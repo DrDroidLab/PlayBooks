@@ -17,10 +17,20 @@ message Interpretation {
   enum Type {
     UNKNOWN = 0;
     IMAGE = 1;
-    SUMMARY = 2;
+    TEXT = 2;
     CSV_FILE = 3;
+    JSON = 4;
   }
-  Type type = 1;
+
+  enum ModelType {
+    UNKNOWN = 0;
+    PLAYBOOK_TASK = 1;
+    PLAYBOOK_STEP = 2;
+    PLAYBOOK_STEP_RELATION = 3;
+    WORKFLOW_EXECUTION = 4;
+  }
+
+  Type type = 1;  
   InterpreterType interpreter_type = 2;
   google.protobuf.StringValue title = 3;
   google.protobuf.StringValue description = 4;
@@ -28,4 +38,5 @@ message Interpretation {
   google.protobuf.StringValue image_url = 6;
   google.protobuf.StringValue file_path = 7;
   google.protobuf.StringValue object_url = 8;
+  ModelType model_type = 9;
 }

@@ -25,10 +25,12 @@ from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto
+    WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, WorkflowExecution as WorkflowExecutionProto
 from protos.base_pb2 import Source
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
+from utils.uri_utils import build_absolute_uri
+
 
 logger = logging.getLogger(__name__)
 
@@ -183,9 +185,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
+        we_proto: WorkflowExecutionProto = workflow_execution.proto
 
-        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
-                                                                                           step_execution_logs)
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
+        workflow_interpreter = workflow_definition_interpreter(we_proto, pe_proto)
+        execution_output.insert(0, workflow_interpreter)
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
@@ -280,3 +284,75 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
+
+
+def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, playbook_execution: PlaybookExecution) -> InterpretationProto:
+    trigger_type = workflow_execution.workflow.entry_points
+    trigger_type_mapping = {0: "UNKNOWN", 1: "API", 2: "SLACK_CHANNEL_ALERT", 3: "PAGERDUTY_INCIDENT"}
+    if(trigger_type.len() == 1):
+        if trigger_type in trigger_type_mapping.keys():
+            trigger_type = trigger_type_mapping[trigger_type[0].type.value]
+        else:
+            trigger_type = "UNKNOWN"
+    else:
+        print("Multiple entry points found for same workflow")
+    schedule = workflow_execution.workflow.schedule.type.value    
+    scheduled_time = workflow_execution.scheduled_at
+    created_at = workflow_execution.created_at
+    destination = workflow_execution.workflow.actions
+    destination_mapping = {0: "UNKNOWN", 1: "API", 2: "SLACK_MESSAGE", 3: "SLACK_THREAD_REPLY", 4: "MS_TEAMS_MESSAGE_WEBHOOK", 5: "PAGERDUTY_NOTES"}
+    if(destination.len() == 1):
+        if destination in destination_mapping.keys():
+            destination = destination_mapping[destination[0].type.value]
+        else:
+            destination = "UNKNOWN"
+    else:
+        print("Multiple destinations configured for same workflow")
+
+    playbook_name = playbook_execution.playbook.name.value
+
+    playbook_execution_url = build_absolute_uri(None, settings.PLATFORM_PLAYBOOKS_EXECUTION_PAGE_LOCATION.format(playbook_execution.playbook.id.value, playbook_execution.playbook_run_id.value),
+                                                 settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
+
+    workflow_name = workflow_execution.workflow.name.value
+
+    workflow_id = workflow_execution.workflow.id.value
+    
+    workflow_link = build_absolute_uri(None, settings.PLATFORM_WORKFLOWS_PAGE_LOCATION.format(workflow_id),
+                                        settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
+    workflow_execution_url = build_absolute_uri(None, settings.PLATFORM_WORKFLOWS_EXECUTION_PAGE_LOCATION.format(workflow_execution.id.value),
+                                        settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
+    ## Check if the execution is the first run of the scheduled workflow
+    is_first_run = schedule in (2,3) and (scheduled_time - created_at < 15)
+    time = scheduled_time
+
+    if trigger_type=='UNKNOWN' or destination=='UNKNOWN':
+        print("Invalid trigger or destination type.")
+        return InterpretationProto()
+    if trigger_type=='API' and destination=='slack_thread_reply':
+        print("Incorrect Format Type. API output cannot be in a Slack Thread")
+        return InterpretationProto()
+
+# time in minutes difference between now and scheduled time
+    time_since_triggered = (current_epoch_timestamp()-created_at).total_seconds()/60
+
+    if schedule == 1:
+        workflow_text = f"""Investigation PlayBook link: {playbook_name}{[playbook_execution_url]}
+                        Execution time: {time}
+                        Triggered by: {trigger_type}, {time_since_triggered} minutes ago.
+                        Configuration: ({workflow_name})[{workflow_link}]"""
+    elif schedule == 2 or schedule == 3:
+        if is_first_run:
+            workflow_text = f"""Investigation PlayBook link: {playbook_name}{[playbook_execution_url]}
+                            Execution time: {time}
+                            Triggered by: {trigger_type} at {created_at}
+                            Configuration: ({workflow_name})[{workflow_link}]"""
+        else:
+            workflow_text = f"""Investigation PlayBook link: {playbook_name}{[playbook_execution_url]}
+                            Execution time: {time}
+                            Triggered by: {trigger_type}
+                            See Workflow History: {workflow_name})[{workflow_execution_url}]"""
+    
+    workflow_interpretation: InterpretationProto = InterpretationProto(type=InterpretationProto.Type.TEXT,
+                        description=workflow_text, model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION)
+    return workflow_interpretation

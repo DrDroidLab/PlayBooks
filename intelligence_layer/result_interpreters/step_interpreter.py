@@ -102,10 +102,11 @@ def llm_chat_gpt_step_summariser(step: PlaybookStep,
         summary = f'`Anomaly Detected`: {inference["anomaly_detected"]}'
 
         step_summary = InterpretationProto(
-            type=InterpretationProto.Type.SUMMARY,
+            type=InterpretationProto.Type.TEXT,
             title=StringValue(value=title),
             description=StringValue(value=description),
             summary=StringValue(value=summary),
+            model_type=InterpretationProto.ModelType.PLAYBOOK_STEP
         )
         return step_summary
     except Exception as e:

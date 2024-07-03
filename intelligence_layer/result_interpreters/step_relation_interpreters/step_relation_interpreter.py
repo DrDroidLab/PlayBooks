@@ -28,4 +28,4 @@ def step_relation_interpret(relation: PlaybookStepRelation) -> Interpretation:
         else:
             relation_interpretation_string += f'{operator} {rule_interpretation}'
 
-    return Interpretation(type=Interpretation.Type.SUMMARY, summary=StringValue(value=relation_interpretation_string))
+    return Interpretation(type=Interpretation.Type.TEXT, summary=StringValue(value=relation_interpretation_string), model_type=Interpretation.ModelType.PLAYBOOK_STEP_RELATION)

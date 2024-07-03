@@ -42,7 +42,7 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
         playbook_name = ""
         playbook_url = ""
         for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.SUMMARY:
+            if i == 0 and interpretation.type == InterpretationProto.Type.TEXT:
                 playbook_url = interpretation.description.value
                 playbook_name = interpretation.title.value
                 body_block = [{

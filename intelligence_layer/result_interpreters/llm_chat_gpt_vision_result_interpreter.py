@@ -137,6 +137,7 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
                     description=StringValue(value=description),
                     summary=StringValue(value=summary),
                     image_url=StringValue(value=object_url),
+                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error writing image: {e}')

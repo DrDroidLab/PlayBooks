@@ -13,7 +13,6 @@ from intelligence_layer.result_interpreters.step_interpreter import basic_step_s
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType, Interpretation as InterpretationProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
 from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookStep, PlaybookStepExecutionLog, Playbook
-from utils.uri_utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -40,16 +39,15 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStep,
         return InterpretationProto()
 
 
-def playbook_step_execution_result_interpret(playbook: Playbook,
-                                             step_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
-    location = settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(playbook.id.value)
-    protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
-    enabled = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
-    object_url = build_absolute_uri(None, location, protocol, enabled)
-    interpretations: [InterpretationProto] = [
-        InterpretationProto(type=InterpretationProto.Type.SUMMARY, title=StringValue(value=playbook.name.value),
-                            description=StringValue(value=object_url))
-    ]
+def playbook_step_execution_result_interpret(step_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+    interpretations: [InterpretationProto] = []
+    step_relation_logs = []
+    for step_log in step_logs:
+        step_relation_log = step_log.relation_execution_logs
+        step_relation_logs.extend(step_relation_log)
+    playbook_graph_view = get_playbook_steps_graph_view(step_relation_logs)
+    for i, step_log in enumerate(step_logs):
+        hash_map[i]=False
     for i, step_log in enumerate(step_logs):
         try:
             task_interpretations = []
@@ -65,10 +63,21 @@ def playbook_step_execution_result_interpret(playbook: Playbook,
             #     title = StringValue(value=f'Step {i + 1}')
 
             base_step_interpretation = InterpretationProto(
-                type=InterpretationProto.Type.SUMMARY,
+                type=InterpretationProto.Type.TEXT,
                 title=title,
+                model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
             )
             interpretations.append(base_step_interpretation)
+            for relation_execution_log in step_log.relation_execution_logs:
+                if relation_execution_log.interpretation and relation_execution_log.interpretation.type != InterpretationProto.Type.UNKNOWN:
+                    interpretations.append(relation_execution_log.interpretation)
+                    if relation_execution_log.evaluation_result:
+                        print('append next step explainer')
+                    else:
+                        interpretations.append(InterpretationProto(
+                            type=InterpretationProto.Type.TEXT,
+                            title=StringValue(value=''),
+                        ))
             if step_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
                 interpretations.append(step_log.step_interpretation)
             interpretations.extend(task_interpretations)

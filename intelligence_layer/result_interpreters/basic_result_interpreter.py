@@ -44,7 +44,8 @@ class BasicResultInterpreter(ResultInterpreter):
                     type=Interpretation.Type.IMAGE,
                     interpreter_type=self.type,
                     title=StringValue(value=title),
-                    image_url=StringValue(value=object_url)
+                    image_url=StringValue(value=object_url),
+                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error writing image: {e}')
@@ -65,7 +66,8 @@ class BasicResultInterpreter(ResultInterpreter):
                     interpreter_type=self.type,
                     title=StringValue(value=title),
                     file_path=StringValue(value=csv_file_path),
-                    object_url=StringValue(value=object_url)
+                    object_url=StringValue(value=object_url),
+                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error interpreting data fetch task result: {e}')
