@@ -9,3 +9,7 @@ export const CONFIRM_EMAIL = "/accounts/confirm-email-link/";
 export const GET_ACCOUNT_USERS = "/accounts/current_users";
 export const INVITE_USERS = "/accounts/invite_users";
 export const GET_USER = "/accounts/user/";
+
+// Social
+export const REDIRECT_URI = "/accounts/get/redirect/uri";
+export const OKTA_OAUTH = "/accounts/login/okta";
