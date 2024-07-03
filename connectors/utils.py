@@ -244,6 +244,8 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['port'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GRAFANA_LOKI_PROTOCOL:
                 credentials_dict['protocol'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.X_SCOPE_ORG_ID:
+                credentials_dict['x_scope_org_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
                 credentials_dict['ssl_verify'] = 'true'
                 if conn_key.key.value.lower() == 'false':
