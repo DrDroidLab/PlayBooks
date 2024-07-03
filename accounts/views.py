@@ -18,7 +18,7 @@ from accounts.tasks import send_reset_password_email, send_user_invite_email
 from accounts.cache import GLOBAL_ACCOUNT_FORGOT_PASSWORD_TOKEN_CACHE
 from accounts.utils import create_random_password
 
-from protos.accounts.account_pb2 import User as UserProto
+from protos.accounts.account_pb2 import User as UserProto, SSOProvider
 
 from protos.base_pb2 import Message
 from protos.accounts.api_pb2 import GetAccountApiTokensRequest, GetAccountApiTokensResponse, \
@@ -157,6 +157,15 @@ def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersRespon
         send_user_invite_email(user.full_name, em, signup_domain)
 
     return InviteUsersResponse(message=Message(title='Invitation sent successfully.'))
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_login_providers(request_message: HttpRequest) -> JsonResponse:
+    active_providers = []
+    if settings.OKTA_CLIENT_ID and settings.OKTA_DOMAIN:
+        active_providers.append(SSOProvider.Name(SSOProvider.OKTA))
+    return JsonResponse({'active_providers': active_providers}, status=200)
 
 
 @csrf_exempt
