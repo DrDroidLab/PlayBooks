@@ -40,16 +40,21 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
 
             tr_end_time = time_range.time_lt
             tr_start_time = time_range.time_geq
+            task = grafana_loki_task.query_logs
+
             current_datetime = datetime.utcfromtimestamp(tr_end_time)
+            current_datetime = datetime.utcfromtimestamp(
+                task.end_time.value) if task.end_time.value else current_datetime
+
             evaluation_time = datetime.utcfromtimestamp(tr_start_time)
+            evaluation_time = datetime.utcfromtimestamp(
+                task.start_time.value) if task.start_time.value else evaluation_time
 
             start_time = evaluation_time.isoformat() + "Z"
             end_time = current_datetime.isoformat() + "Z"
 
-            task = grafana_loki_task.query_logs
             query = task.query.value
-            start = task.start_time.value if task.start_time.value else start_time
-            end = task.end_time.value if task.end_time.value else end_time
+
             limit = task.limit.value if task.limit.value else 2000
 
             if global_variable_set:
@@ -63,23 +68,23 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                 "-> {}, End_Time -> {}".format("Grafana", grafana_loki_connector.account_id.value, query, start_time,
                                                end_time), flush=True)
 
-            response = grafana_loki_api_processor.query(query, start, end, limit)
+            response = grafana_loki_api_processor.query(query, start_time, end_time, limit)
             if not response:
                 raise Exception("No data returned from Grafana Loki")
 
             result = response.get('data', {}).get('result', [])
             table_rows: [TableResult.TableRow] = []
             for r in result:
-                table_columns = []
+                table_meta_columns = []
+                data_rows = []
                 for key, value in r.items():
-                    metadata = {}
                     if key == 'stream' or key == 'metric':
                         for k, v in value.items():
-                            metadata[k] = v
-                            table_columns.append(TableResult.TableColumn(name=StringValue(value=str(k)),
-                                                                         value=StringValue(value=str(v))))
+                            table_meta_columns.append(TableResult.TableColumn(name=StringValue(value=str(k)),
+                                                                              value=StringValue(value=str(v))))
                     elif key == 'values':
                         for v in value:
+                            table_columns = []
                             for i, val in enumerate(v):
                                 if i == 0:
                                     key = 'timestamp'
@@ -87,8 +92,11 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                                     key = 'log'
                                 table_columns.append(TableResult.TableColumn(name=StringValue(value=key),
                                                                              value=StringValue(value=str(val))))
-                table_row = TableResult.TableRow(columns=table_columns)
-                table_rows.append(table_row)
+                            data_rows.append(table_columns)
+                for dc in data_rows:
+                    update_columns = table_meta_columns + dc
+                    table_row = TableResult.TableRow(columns=update_columns)
+                    table_rows.append(table_row)
             table = TableResult(raw_query=StringValue(value=query), total_count=UInt64Value(value=len(result)),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
