@@ -39,49 +39,76 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStep,
         return InterpretationProto()
 
 
-def playbook_step_execution_result_interpret(step_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
-    interpretations: [InterpretationProto] = []
-    step_relation_logs = []
-    for step_log in step_logs:
-        step_relation_log = step_log.relation_execution_logs
-        step_relation_logs.extend(step_relation_log)
-    playbook_graph_view = get_playbook_steps_graph_view(step_relation_logs)
-    for i, step_log in enumerate(step_logs):
-        hash_map[i]=False
-    for i, step_log in enumerate(step_logs):
-        try:
-            task_interpretations = []
-            for task_execution_log in step_log.task_execution_logs:
-                if task_execution_log.interpretation and task_execution_log.interpretation.type != InterpretationProto.Type.UNKNOWN:
-                    task_interpretations.append(task_execution_log.interpretation)
-            if step_log.step_interpretation.type == InterpretationProto.Type.UNKNOWN and len(task_interpretations) == 0:
-                continue
-            step_name = step_log.step.name.value
-            # if step_name and not re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', step_name):
-            title = StringValue(value=f'Step {i + 1}: {step_name}')
-            # else:
-            #     title = StringValue(value=f'Step {i + 1}')
 
-            base_step_interpretation = InterpretationProto(
-                type=InterpretationProto.Type.TEXT,
-                title=title,
-                model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
-            )
-            interpretations.append(base_step_interpretation)
-            for relation_execution_log in step_log.relation_execution_logs:
-                if relation_execution_log.interpretation and relation_execution_log.interpretation.type != InterpretationProto.Type.UNKNOWN:
-                    interpretations.append(relation_execution_log.interpretation)
+def step_execution_notification_copy(current_step, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+    try:
+        for i in step_execution_logs:
+            if i.step.id.value == current_step:
+                current_step_execution_log = i
+        if current_step_execution_log is None:
+            print("Execution Not found for step", current_step)
+        interpretations: [InterpretationProto] = []
+        task_interpretations = []
+        for task_execution_log in current_step_execution_log.task_execution_logs:
+            if task_execution_log.interpretation and task_execution_log.interpretation.type != InterpretationProto.Type.UNKNOWN:
+                task_interpretations.append(task_execution_log.interpretation)
+        if current_step_execution_log.step_interpretation.type == InterpretationProto.Type.UNKNOWN and len(task_interpretations) == 0:
+            return interpretations
+        step_name = current_step_execution_log.step.name.value
+        title = StringValue(value=f'Step {i + 1}: {step_name}')
+        base_step_interpretation = InterpretationProto(
+            type=InterpretationProto.Type.TEXT,
+            title=title,
+            model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
+        )
+        interpretations.append(base_step_interpretation)
+        if current_step_execution_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
+            interpretations.append(current_step_execution_log.step_interpretation)
+        interpretations.extend(task_interpretations)
+    except Exception as e:
+        logger.error(f"Failed to interpret playbook execution log with error: {e}")
+        return interpretations
+    return interpretations
+
+
+def step_with_children_execution_notification_copy(current_step_id, printed_steps, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+    try:
+        interpretations: [InterpretationProto] = []
+        if current_step_id not in printed_steps:
+            printed_steps.append(current_step_id)
+            current_step_interpretation = step_execution_notification_copy(current_step_id, step_execution_logs)
+            current_step_relation_execution_logs = step_execution_logs[current_step_id].relation_execution_logs
+            for relation_execution_log in current_step_relation_execution_logs:
+                child_node = relation_execution_log.relation.child.id.value
+                child_step_interpretation: [InterpretationProto] = []
+                child_step_interpretation, printed_steps = step_with_children_execution_notification_copy(child_node, printed_steps, step_execution_logs)
+                if relation_execution_log.condition:
+                    relation_interpretation = relation_execution_log.interpretation
                     if relation_execution_log.evaluation_result:
-                        print('append next step explainer')
+                        append_string = "is True."
                     else:
-                        interpretations.append(InterpretationProto(
-                            type=InterpretationProto.Type.TEXT,
-                            title=StringValue(value=''),
-                        ))
-            if step_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
-                interpretations.append(step_log.step_interpretation)
-            interpretations.extend(task_interpretations)
-        except Exception as e:
-            logger.error(f"Failed to interpret playbook execution log with error: {e}")
-            continue
+                        append_string = "is False."
+                    for step in child_step_interpretation:
+                        if step.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                            step.summary.value = relation_interpretation+append_string + step.summary.value
+                current_step_interpretation.extend(child_step_interpretation)
+            interpretations.extend(current_step_interpretation)
+        else:
+            return interpretations, printed_steps
+    except Exception as e:
+        logger.error(f"Failed to interpret playbook execution log with error: {e}")
+        return interpretations, printed_steps
+    return interpretations, printed_steps
+
+
+def playbook_step_execution_result_interpret(step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+    interpretations: [InterpretationProto] = []
+    all_steps = []
+    for step_execution_log in step_execution_logs:
+        all_steps.append(step_execution_log.step.id)
+    printed_steps = []
+    for current_step in step_execution_logs:
+        current_step_id = current_step.step.id
+        current_interpretation, printed_steps = step_with_children_execution_notification_copy(current_step_id, printed_steps, step_execution_logs)
+        interpretations.extend(current_interpretation)
     return interpretations
