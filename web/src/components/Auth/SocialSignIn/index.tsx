@@ -5,7 +5,7 @@ import { oAuthProviders } from "./oauthProvidersButtons.tsx";
 function SocialSignIn() {
   const { data } = useGetLoginProvidersQuery();
 
-  if (data?.length === 0) return;
+  if (!data || data?.length === 0) return;
 
   return (
     <div className="my-2 flex flex-col gap-2">
