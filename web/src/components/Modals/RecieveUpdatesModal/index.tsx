@@ -35,7 +35,7 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
             <CloseRounded />
           </div>
           <p className="font-semibold text-sm">
-            Would you like to receive updates about new features & releases at
+            Would you like to receive updates about new features & releases in
             Playbooks?
           </p>
 
