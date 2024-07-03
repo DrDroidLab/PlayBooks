@@ -8,8 +8,8 @@ import "protos/playbooks/source_task_definitions/promql_task.proto";
 message GrafanaLoki {
   message QueryLogs {
     google.protobuf.StringValue query = 1;
-    google.protobuf.StringValue start_time = 2;
-    google.protobuf.StringValue end_time = 3;
+    google.protobuf.UInt64Value start_time = 2;
+    google.protobuf.UInt64Value end_time = 3;
     google.protobuf.UInt64Value limit = 4;
   }
 
