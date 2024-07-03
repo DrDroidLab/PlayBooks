@@ -90,6 +90,66 @@ OR_LO: LogicalOperator.ValueType  # 2
 NOT_LO: LogicalOperator.ValueType  # 3
 global___LogicalOperator = LogicalOperator
 
+class _Op:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _OpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Op.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_OP: _Op.ValueType  # 0
+    EQ: _Op.ValueType  # 1
+    NEQ: _Op.ValueType  # 2
+    GT: _Op.ValueType  # 3
+    LT: _Op.ValueType  # 4
+    GTE: _Op.ValueType  # 5
+    LTE: _Op.ValueType  # 6
+    IN: _Op.ValueType  # 7
+    NOT_IN: _Op.ValueType  # 8
+    IS_NULL: _Op.ValueType  # 9
+    EXISTS: _Op.ValueType  # 10
+    AND: _Op.ValueType  # 20
+    OR: _Op.ValueType  # 21
+    NOT: _Op.ValueType  # 22
+
+class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
+
+UNKNOWN_OP: Op.ValueType  # 0
+EQ: Op.ValueType  # 1
+NEQ: Op.ValueType  # 2
+GT: Op.ValueType  # 3
+LT: Op.ValueType  # 4
+GTE: Op.ValueType  # 5
+LTE: Op.ValueType  # 6
+IN: Op.ValueType  # 7
+NOT_IN: Op.ValueType  # 8
+IS_NULL: Op.ValueType  # 9
+EXISTS: Op.ValueType  # 10
+AND: Op.ValueType  # 20
+OR: Op.ValueType  # 21
+NOT: Op.ValueType  # 22
+global___Op = Op
+
+class _Context:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _ContextEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Context.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_C: _Context.ValueType  # 0
+    PLAYBOOK: _Context.ValueType  # 1
+    PLAYBOOK_EXECUTION: _Context.ValueType  # 2
+    WORKFLOW: _Context.ValueType  # 3
+    WORKFLOW_EXECUTION: _Context.ValueType  # 4
+
+class Context(_Context, metaclass=_ContextEnumTypeWrapper): ...
+
+UNKNOWN_C: Context.ValueType  # 0
+PLAYBOOK: Context.ValueType  # 1
+PLAYBOOK_EXECUTION: Context.ValueType  # 2
+WORKFLOW: Context.ValueType  # 3
+WORKFLOW_EXECUTION: Context.ValueType  # 4
+global___Context = Context
+
 class _Source:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
@@ -578,6 +638,30 @@ class ErrorMessage(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "message", b"message"]) -> None: ...
 
 global___ErrorMessage = ErrorMessage
+
+@typing_extensions.final
+class OpDescription(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    OP_FIELD_NUMBER: builtins.int
+    LABEL_FIELD_NUMBER: builtins.int
+    IS_UNARY_FIELD_NUMBER: builtins.int
+    IS_LOGICAL_FIELD_NUMBER: builtins.int
+    op: global___Op.ValueType
+    label: builtins.str
+    is_unary: builtins.bool
+    is_logical: builtins.bool
+    def __init__(
+        self,
+        *,
+        op: global___Op.ValueType = ...,
+        label: builtins.str = ...,
+        is_unary: builtins.bool = ...,
+        is_logical: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["is_logical", b"is_logical", "is_unary", b"is_unary", "label", b"label", "op", b"op"]) -> None: ...
+
+global___OpDescription = OpDescription
 
 @typing_extensions.final
 class TaskCronSchedule(google.protobuf.message.Message):

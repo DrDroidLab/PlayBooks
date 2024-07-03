@@ -5,6 +5,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
 import "protos/base.proto";
+import "protos/query_base.proto";
 import "protos/playbooks/deprecated_playbook.proto";
 import "protos/playbooks/playbook.proto";
 import "protos/playbooks/workflow.proto";
@@ -264,6 +265,25 @@ message PlaybookExecutionStepExecuteResponse {
   PlaybookStepExecutionLog step_execution_log = 5;
 }
 
+///////////////////// Playbook Builder APIs /////////////////////
+
+message PlaybooksBuilderOptionsRequest {
+  Meta meta = 1;
+}
+
+message PlaybooksBuilderOptionsResponse {
+  message InterpreterTypeOption {
+    InterpreterType type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated InterpreterTypeOption interpreter_types = 4;
+  repeated PlaybookSourceOptions source_options = 5;
+}
+
 ///////////////////// Workflows APIs /////////////////////
 message GetWorkflowsRequest {
   Meta meta = 1;
@@ -346,19 +366,40 @@ message ExecutionsWorkflowsGetAllResponse {
   repeated WorkflowExecution workflow_executions = 4;
 }
 
-message PlaybooksBuilderOptionsRequest {
+
+///////////////////// Search APIs /////////////////////
+message SearchQueryRequest {
   Meta meta = 1;
+  Context context = 2;
+  QueryRequest query = 3;
 }
 
-message PlaybooksBuilderOptionsResponse {
-  message InterpreterTypeOption {
-    InterpreterType type = 1;
-    google.protobuf.StringValue display_name = 2;
-  }
+message SearchPlaybooksResponse {
+  repeated Playbook results = 1;
+}
 
+message SearchPlaybookExecutionResponse {
+  repeated PlaybookExecution results = 1;
+}
+
+message SearchWorkflowsResponse {
+  Meta meta = 1;
+  repeated Workflow results = 2;
+}
+
+message SearchWorkflowExecutionResponse {
+  repeated WorkflowExecution results = 3;
+}
+
+message SearchQueryResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated InterpreterTypeOption interpreter_types = 4;
-  repeated PlaybookSourceOptions source_options = 5;
+  Context context = 4;
+  oneof query_response {
+    SearchPlaybooksResponse playbook = 101;
+    SearchPlaybookExecutionResponse playbook_execution = 102;
+    SearchWorkflowsResponse workflow = 103;
+    SearchWorkflowExecutionResponse workflow_execution = 104;
+  }
 }
