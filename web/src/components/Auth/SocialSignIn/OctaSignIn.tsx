@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Tooltip } from "@mui/material";
 import { useOktaLoginMutation } from "../../../store/features/auth/api/oktaLoginApi.ts";
-import { useLocation, useNavigate } from "react-router-dom";
 import Toast from "../../Toast.js";
 import Loading from "../../common/Loading/index.tsx";
 
 function OctaSignIn() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
   const [triggerLoginWithOkta, { isLoading }] = useOktaLoginMutation();
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -28,8 +24,8 @@ function OctaSignIn() {
   const handleOcta = async (e) => {
     e.preventDefault();
     try {
-      await triggerLoginWithOkta().unwrap();
-      navigate(from, { replace: true });
+      const data = await triggerLoginWithOkta().unwrap();
+      window.open(data.redirect_uri);
     } catch (err) {
       console.error(err);
       if (!err?.response) {
