@@ -248,12 +248,14 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.GRAFANA_LOKI_PROTOCOL,
             SourceKeyType.GRAFANA_LOKI_HOST,
             SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID,
             SourceKeyType.SSL_VERIFY
         ],
         [
             SourceKeyType.GRAFANA_LOKI_PROTOCOL,
             SourceKeyType.GRAFANA_LOKI_HOST,
             SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
 }
