@@ -32,6 +32,15 @@ export const renderTimestamp = (timestamp) => {
 
 export const isDate = (date) => {
   if (date.length < 10) return false;
+
+  // Regular expression to match date formats like YYYY-MM-DD, YYYY/MM/DD, etc.
+  const datePattern = /^\d{4}[-/]\d{2}[-/]\d{2}([ T]\d{2}:\d{2}:\d{2}(\.\d{1,6})?)?$/;
+  
+  // Check if the string matches the date pattern
+  if (!datePattern.test(date)) {
+    return false;
+  }
+
   const d = new Date(date);
   return d instanceof Date && !isNaN(d.valueOf());
 };
