@@ -5,14 +5,14 @@ type InitialStateType = {
   accessToken: string | null;
   refreshToken?: string | null;
   email?: string | null;
-  lastLogin?: string;
+  lastLogin?: string | null;
 };
 
 const initialState: InitialStateType = {
   accessToken: localStorage.getItem("access_token"),
   refreshToken: localStorage.getItem("access_token"),
   email: localStorage.getItem("email"),
-  lastLogin: undefined,
+  lastLogin: localStorage.getItem("lastLogin"),
 };
 
 const authSlice = createSlice({

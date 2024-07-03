@@ -88,7 +88,9 @@ const App = () => {
 
   useEffect(() => {
     if (data?.user) {
-      dispatch(setLastLogin(data.user.last_login));
+      const d = new Date().toString();
+      dispatch(setLastLogin(d));
+      localStorage.setItem("lastLogin", d);
     }
   }, [data]);
 
