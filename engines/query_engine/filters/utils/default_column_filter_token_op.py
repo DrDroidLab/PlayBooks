@@ -1,12 +1,12 @@
 from django.db.models import Q, Value
 
-from engines.query_engine.filters.filter_token_op import ColumnTokenFilterOp
+from engines.query_engine.filters.token_filter_operator import ColumnTokenFilterOperator
 from engines.base.literal import is_scalar
 from engines.base.token import LiteralToken
 from protos.base_pb2 import Op
 
 
-class IDColumnTokenFilterOp(ColumnTokenFilterOp):
+class IDColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.IN]
 
     def q(self, lhs, op, rhs):
@@ -16,7 +16,7 @@ class IDColumnTokenFilterOp(ColumnTokenFilterOp):
             return Q(**{f'{lhs}__in': rhs})
 
 
-class TimestampColumnTokenFilterOp(ColumnTokenFilterOp):
+class TimestampColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.GTE, Op.GT, Op.LTE, Op.LT]
 
     def q(self, lhs, op, rhs) -> Q:
@@ -32,7 +32,7 @@ class TimestampColumnTokenFilterOp(ColumnTokenFilterOp):
             return Q(**{f'{lhs}__lt': rhs})
 
 
-class StringColumnTokenFilterOp(ColumnTokenFilterOp):
+class StringColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.NEQ, Op.IN, Op.NOT_IN, Op.IS_NULL, Op.EXISTS]
 
     def q(self, lhs, op, rhs) -> Q:
@@ -50,7 +50,7 @@ class StringColumnTokenFilterOp(ColumnTokenFilterOp):
             return Q(**{f'{lhs}__isnull': False})
 
 
-class BooleanColumnTokenFilterOp(ColumnTokenFilterOp):
+class BooleanColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.NEQ, Op.EXISTS, Op.IS_NULL]
 
     def q(self, lhs, op, rhs) -> Q:
@@ -64,7 +64,7 @@ class BooleanColumnTokenFilterOp(ColumnTokenFilterOp):
             return Q(**{f'{lhs}__isnull': False})
 
 
-class NumericColumnTokenFilterOp(ColumnTokenFilterOp):
+class NumericColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.NEQ, Op.GT, Op.GTE, Op.LT, Op.LTE, Op.IN, Op.NOT_IN, Op.IS_NULL, Op.EXISTS]
 
     def q(self, lhs, op, rhs) -> Q:
@@ -90,7 +90,7 @@ class NumericColumnTokenFilterOp(ColumnTokenFilterOp):
             return Q(**{f'{lhs}__isnull': False})
 
 
-class LiteralArrayColumnTokenFilterOp(ColumnTokenFilterOp):
+class ArrayColumnTokenFilterOp(ColumnTokenFilterOperator):
     supported_ops = [Op.EQ, Op.NEQ, Op.IN, Op.NOT_IN, Op.EXISTS, Op.IS_NULL]
 
     def rhs(self, rhs_token):

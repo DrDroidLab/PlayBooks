@@ -2,7 +2,7 @@ import abc
 from abc import abstractmethod
 from typing import Dict
 
-from engines.query_engine.columns.column import Column
+from engines.base.column import Column
 from engines.base.literal import literal_to_obj, display_literal
 from protos.literal_pb2 import Literal, LiteralType
 from protos.base_pb2 import Op

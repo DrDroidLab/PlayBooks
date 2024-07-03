@@ -124,16 +124,6 @@ message GetPlaybooksResponseV2 {
   repeated Playbook playbooks = 2;
 }
 
-message SearchPlaybooksRequest {
-  Meta meta = 1;
-  QueryRequest query_request = 2;
-}
-
-message SearchPlaybooksResponse {
-  Meta meta = 1;
-  repeated Playbook playbooks = 2;
-}
-
 message CreatePlaybookRequest {
   string name = 1;
   DeprecatedPlaybook playbook = 2;
@@ -215,17 +205,6 @@ message ExecutionPlaybookGetResponseV2 {
   PlaybookExecution playbook_execution = 4;
 }
 
-message ExecutionPlaybookSearchRequest {
-  Meta meta = 1;
-  QueryRequest query_request = 2;
-}
-
-message ExecutionPlaybookSearchResponse {
-  Meta meta = 1;
-  google.protobuf.BoolValue success = 2;
-  repeated PlaybookExecution playbook_executions = 3;
-}
-
 message ExecutionPlaybookAPIGetResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
@@ -286,6 +265,25 @@ message PlaybookExecutionStepExecuteResponse {
   PlaybookStepExecutionLog step_execution_log = 5;
 }
 
+///////////////////// Playbook Builder APIs /////////////////////
+
+message PlaybooksBuilderOptionsRequest {
+  Meta meta = 1;
+}
+
+message PlaybooksBuilderOptionsResponse {
+  message InterpreterTypeOption {
+    InterpreterType type = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated InterpreterTypeOption interpreter_types = 4;
+  repeated PlaybookSourceOptions source_options = 5;
+}
+
 ///////////////////// Workflows APIs /////////////////////
 message GetWorkflowsRequest {
   Meta meta = 1;
@@ -293,16 +291,6 @@ message GetWorkflowsRequest {
 }
 
 message GetWorkflowsResponse {
-  Meta meta = 1;
-  repeated Workflow workflows = 2;
-}
-
-message SearchWorkflowsRequest {
-  Meta meta = 1;
-  QueryRequest query_request = 2;
-}
-
-message SearchWorkflowsResponse {
   Meta meta = 1;
   repeated Workflow workflows = 2;
 }
@@ -354,17 +342,6 @@ message ExecutionWorkflowGetResponse {
   WorkflowExecution workflow_execution = 4;
 }
 
-message ExecutionWorkflowSearchRequest {
-  Meta meta = 1;
-  QueryRequest query_request = 2;
-}
-
-message ExecutionWorkflowSearchResponse {
-  Meta meta = 1;
-  google.protobuf.BoolValue success = 2;
-  repeated WorkflowExecution workflow_executions = 3;
-}
-
 message ExecutionsWorkflowsListRequest {
   Meta meta = 1;
   repeated string workflow_ids = 2;
@@ -389,19 +366,40 @@ message ExecutionsWorkflowsGetAllResponse {
   repeated WorkflowExecution workflow_executions = 4;
 }
 
-message PlaybooksBuilderOptionsRequest {
+
+///////////////////// Search APIs /////////////////////
+message SearchQueryRequest {
   Meta meta = 1;
+  Context context = 2;
+  QueryRequest query = 3;
 }
 
-message PlaybooksBuilderOptionsResponse {
-  message InterpreterTypeOption {
-    InterpreterType type = 1;
-    google.protobuf.StringValue display_name = 2;
-  }
+message SearchPlaybooksResponse {
+  repeated Playbook results = 1;
+}
 
+message SearchPlaybookExecutionResponse {
+  repeated PlaybookExecution results = 1;
+}
+
+message SearchWorkflowsResponse {
+  Meta meta = 1;
+  repeated Workflow results = 2;
+}
+
+message SearchWorkflowExecutionResponse {
+  repeated WorkflowExecution results = 3;
+}
+
+message SearchQueryResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
-  repeated InterpreterTypeOption interpreter_types = 4;
-  repeated PlaybookSourceOptions source_options = 5;
+  Context context = 4;
+  oneof query_response {
+    SearchPlaybooksResponse playbook = 101;
+    SearchPlaybookExecutionResponse playbook_execution = 102;
+    SearchWorkflowsResponse workflow = 103;
+    SearchWorkflowExecutionResponse workflow_execution = 104;
+  }
 }

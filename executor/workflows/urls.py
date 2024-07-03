@@ -9,14 +9,12 @@ urlpatterns = [
     path('get', workflow_views.workflows_get),
     path('create', workflow_views.workflows_create),
     path('update', workflow_views.workflows_update),
-    path('search', workflow_views.workflows_search),
 
     # Execution APIs
     path('execute', workflow_views.workflows_execute),
     path('executions/list', workflow_views.workflows_execution_list),
     path('executions/get/all', workflow_views.workflows_execution_get_all),
     path('executions/get', workflow_views.workflows_execution_get),
-    path('executions/search', workflow_views.workflows_execution_search),
 
     # API based executions
     path(settings.WORKFLOW_EXECUTE_API_PATH, workflow_views.workflows_api_execute),

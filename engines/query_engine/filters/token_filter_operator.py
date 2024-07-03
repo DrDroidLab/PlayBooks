@@ -6,28 +6,13 @@ from django.db.models import F
 from engines.base.token import ColumnToken, OpToken, Filterable, LiteralToken
 
 
-class TokenFilterOp(abc.ABC):
+class TokenFilterOperator(abc.ABC):
     def process(self, lhs, op, rhs):
         pass
 
 
-class ColumnTokenFilterOp(TokenFilterOp):
+class ColumnTokenFilterOperator(TokenFilterOperator):
     supported_ops = None
-
-    def process(self, lhs_token: ColumnToken, op_token: OpToken, rhs_token: Union[Filterable, LiteralToken]):
-        lhs = lhs_token.filter_key()
-        op = op_token.op
-
-        rhs = self.rhs(rhs_token)
-
-        if lhs_token.column.supported_ops:
-            if op not in lhs_token.column.supported_ops:
-                raise ValueError(f'Query {op} not supported for {lhs_token}')
-        else:
-            if self.supported_ops and op not in self.supported_ops:
-                raise ValueError(f'Query {op} not supported for {lhs_token}')
-
-        return self.q(lhs, op, rhs)
 
     def rhs(self, rhs_token):
         if isinstance(rhs_token, Filterable):
@@ -39,3 +24,17 @@ class ColumnTokenFilterOp(TokenFilterOp):
 
     def q(self, lhs, op, rhs):
         pass
+
+    def process(self, lhs_token: ColumnToken, op_token: OpToken, rhs_token: Union[Filterable, LiteralToken]):
+        lhs = lhs_token.filter_key()
+        op = op_token.op
+        rhs = self.rhs(rhs_token)
+
+        if lhs_token.column.supported_ops:
+            if op not in lhs_token.column.supported_ops:
+                raise ValueError(f'Query {op} not supported for {lhs_token}')
+        else:
+            if self.supported_ops and op not in self.supported_ops:
+                raise ValueError(f'Query {op} not supported for {lhs_token}')
+
+        return self.q(lhs, op, rhs)

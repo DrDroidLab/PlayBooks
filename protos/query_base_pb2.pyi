@@ -127,15 +127,18 @@ global___Filter = Filter
 class QueryRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    CONTEXT_FIELD_NUMBER: builtins.int
     FILTER_FIELD_NUMBER: builtins.int
+    context: protos.base_pb2.Context.ValueType
     @property
     def filter(self) -> global___Filter: ...
     def __init__(
         self,
         *,
+        context: protos.base_pb2.Context.ValueType = ...,
         filter: global___Filter | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["filter", b"filter"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["filter", b"filter"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["context", b"context", "filter", b"filter"]) -> None: ...
 
 global___QueryRequest = QueryRequest

@@ -27,10 +27,12 @@ message IdLiteral {
     LONG = 1;
     STRING = 2;
   }
+
   Type type = 1;
+  google.protobuf.StringValue id_column = 2;
   oneof id {
-    google.protobuf.UInt64Value long = 2;
-    google.protobuf.StringValue string = 3;
+    google.protobuf.UInt64Value long = 101;
+    google.protobuf.StringValue string = 102;
   }
 }
 

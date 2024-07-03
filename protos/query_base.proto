@@ -36,5 +36,6 @@ message Filter {
 }
 
 message QueryRequest {
-  Filter filter = 1;
+  Context context = 1;
+  Filter filter = 2;
 }

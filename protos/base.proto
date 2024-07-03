@@ -3,6 +3,35 @@ import "google/protobuf/wrappers.proto";
 
 package protos;
 
+message TimeRange {
+  uint64 time_geq = 1;
+  uint64 time_lt = 2;
+}
+
+message Page {
+  google.protobuf.UInt32Value limit = 1;
+  google.protobuf.UInt32Value offset = 2;
+}
+
+
+message Meta {
+  TimeRange time_range = 1;
+  Page page = 2;
+  google.protobuf.UInt32Value total_count = 3;
+  google.protobuf.BoolValue show_inactive = 4;
+}
+
+message Message {
+  string title = 1;
+  string description = 2;
+  string traceback = 3;
+}
+
+message ErrorMessage {
+  google.protobuf.BoolValue error = 1;
+  Message message = 2;
+}
+
 enum Function {
   UNKNOWN_F = 0;
   AVG_F = 1;
@@ -50,14 +79,6 @@ enum Op {
   NOT = 22;
 }
 
-message OpDescription {
-  Op op = 1;
-  string label = 2;
-  bool is_unary = 3;
-  bool is_logical = 4;
-}
-
-
 enum Context {
   UNKNOWN_C = 0;
   PLAYBOOK = 1;
@@ -66,33 +87,11 @@ enum Context {
   WORKFLOW_EXECUTION = 4;
 }
 
-message TimeRange {
-  uint64 time_geq = 1;
-  uint64 time_lt = 2;
-}
-
-message Page {
-  google.protobuf.UInt32Value limit = 1;
-  google.protobuf.UInt32Value offset = 2;
-}
-
-
-message Meta {
-  TimeRange time_range = 1;
-  Page page = 2;
-  google.protobuf.UInt32Value total_count = 3;
-  google.protobuf.BoolValue show_inactive = 4;
-}
-
-message Message {
-  string title = 1;
-  string description = 2;
-  string traceback = 3;
-}
-
-message ErrorMessage {
-  google.protobuf.BoolValue error = 1;
-  Message message = 2;
+message OpDescription {
+  Op op = 1;
+  string label = 2;
+  bool is_unary = 3;
+  bool is_logical = 4;
 }
 
 message TaskCronSchedule {

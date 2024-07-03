@@ -2,11 +2,11 @@ from typing import List, Dict
 
 from django.db.models import Q
 
-from engines.query_engine.filters.filter_token_op import TokenFilterOp
+from engines.query_engine.filters.token_filter_operator import TokenFilterOperator
 from engines.query_engine.filters.utils.default_column_filter_token_op import NumericColumnTokenFilterOp, \
     StringColumnTokenFilterOp, BooleanColumnTokenFilterOp, TimestampColumnTokenFilterOp, IDColumnTokenFilterOp, \
-    LiteralArrayColumnTokenFilterOp
-from engines.base.literal import is_scalar
+    ArrayColumnTokenFilterOp
+from engines.base.literal import is_scalar, is_array
 from engines.base.op import validate_query
 from engines.base.token import Token, OpToken, Filterable, ColumnToken, Annotable, ExpressionTokenizer, LiteralToken
 from protos.base_pb2 import Op
@@ -35,6 +35,27 @@ class FilterToken(Token):
             return f'({self.lhs.display()} {self.op.display()} {self.rhs.display()})'
 
 
+class FilterTokenizer:
+    def __init__(self, columns):
+        self._columns = columns
+        self._expression_tokenizer = ExpressionTokenizer(columns)
+
+    def tokenize(self, filter_proto: Filter) -> FilterToken:
+        if filter_proto.ByteSize() == 0:
+            return None
+        child_filter_tokens = [self.tokenize(f) for f in filter_proto.filters]
+        lhs_token = self._expression_tokenizer.tokenize(filter_proto.lhs)
+        rhs_token = self._expression_tokenizer.tokenize(filter_proto.rhs)
+        op_token = OpToken(op=filter_proto.op)
+
+        return FilterToken(
+            lhs=lhs_token,
+            op=op_token,
+            rhs=rhs_token,
+            child_filters=child_filter_tokens
+        )
+
+
 class FilterTokenProcessor:
     def __init__(self):
         self._default_scalar_column_literal_filter_op_dict = {
@@ -46,16 +67,18 @@ class FilterTokenProcessor:
             LiteralType.ID: IDColumnTokenFilterOp(),
         }
 
-        self._default_array_column_literal_filter_op = LiteralArrayColumnTokenFilterOp()
+        self._default_array_column_literal_filter_op = ArrayColumnTokenFilterOp()
 
-    def _get_lhs_token_filter_op(self, lhs: Filterable) -> TokenFilterOp:
+    def _get_lhs_token_filter_operator(self, lhs: Filterable) -> TokenFilterOperator:
         if isinstance(lhs, ColumnToken):
-            if lhs.column.token_filter_op and isinstance(lhs.column.token_filter_op, TokenFilterOp):
+            if lhs.column.token_filter_op and isinstance(lhs.column.token_filter_op, TokenFilterOperator):
                 return lhs.column.token_filter_op
-            if is_scalar(lhs.column.type):
-                return self._default_scalar_column_literal_filter_op_dict[lhs.column.type]
-            else:
+            elif is_scalar(lhs.column.type):
+                return self._default_scalar_column_literal_filter_op_dict.get(lhs.column.type)
+            elif is_array(lhs.column.type):
                 return self._default_array_column_literal_filter_op
+            else:
+                raise ValueError(f'Unsupported LHS {lhs}')
         else:
             raise ValueError(f'Unsupported LHS {lhs}')
 
@@ -86,8 +109,8 @@ class FilterTokenProcessor:
     def _base_filter_processor(self, f: FilterToken) -> Q:
         if not isinstance(f.lhs, Filterable):
             raise ValueError(f'lhs {f.lhs} is not Filterable')
-        token_filter_op = self._get_lhs_token_filter_op(f.lhs)
-        return token_filter_op.process(f.lhs, f.op, f.rhs)
+        token_filter_operator = self._get_lhs_token_filter_operator(f.lhs)
+        return token_filter_operator.process(f.lhs, f.op, f.rhs)
 
 
 class FilterTokenAnnotator:
@@ -106,27 +129,6 @@ class FilterTokenAnnotator:
             annotations.update(f.rhs.annotations())
 
         return annotations
-
-
-class FilterTokenizer:
-    def __init__(self, columns):
-        self._columns = columns
-        self._expression_tokenizer = ExpressionTokenizer(columns)
-
-    def tokenize(self, filter_proto: Filter) -> FilterToken:
-        if filter_proto.ByteSize() == 0:
-            return None
-        child_filter_tokens = [self.tokenize(f) for f in filter_proto.filters]
-        lhs_token = self._expression_tokenizer.tokenize(filter_proto.lhs)
-        rhs_token = self._expression_tokenizer.tokenize(filter_proto.rhs)
-        op_token = OpToken(op=filter_proto.op)
-
-        return FilterToken(
-            lhs=lhs_token,
-            op=op_token,
-            rhs=rhs_token,
-            child_filters=child_filter_tokens
-        )
 
 
 class FilterTokenValidator:

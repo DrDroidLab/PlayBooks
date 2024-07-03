@@ -530,30 +530,6 @@ ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
-class OpDescription(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    OP_FIELD_NUMBER: builtins.int
-    LABEL_FIELD_NUMBER: builtins.int
-    IS_UNARY_FIELD_NUMBER: builtins.int
-    IS_LOGICAL_FIELD_NUMBER: builtins.int
-    op: global___Op.ValueType
-    label: builtins.str
-    is_unary: builtins.bool
-    is_logical: builtins.bool
-    def __init__(
-        self,
-        *,
-        op: global___Op.ValueType = ...,
-        label: builtins.str = ...,
-        is_unary: builtins.bool = ...,
-        is_logical: builtins.bool = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["is_logical", b"is_logical", "is_unary", b"is_unary", "label", b"label", "op", b"op"]) -> None: ...
-
-global___OpDescription = OpDescription
-
-@typing_extensions.final
 class TimeRange(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -662,6 +638,30 @@ class ErrorMessage(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "message", b"message"]) -> None: ...
 
 global___ErrorMessage = ErrorMessage
+
+@typing_extensions.final
+class OpDescription(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    OP_FIELD_NUMBER: builtins.int
+    LABEL_FIELD_NUMBER: builtins.int
+    IS_UNARY_FIELD_NUMBER: builtins.int
+    IS_LOGICAL_FIELD_NUMBER: builtins.int
+    op: global___Op.ValueType
+    label: builtins.str
+    is_unary: builtins.bool
+    is_logical: builtins.bool
+    def __init__(
+        self,
+        *,
+        op: global___Op.ValueType = ...,
+        label: builtins.str = ...,
+        is_unary: builtins.bool = ...,
+        is_logical: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["is_logical", b"is_logical", "is_unary", b"is_unary", "label", b"label", "op", b"op"]) -> None: ...
+
+global___OpDescription = OpDescription
 
 @typing_extensions.final
 class TaskCronSchedule(google.protobuf.message.Message):

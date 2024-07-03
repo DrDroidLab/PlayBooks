@@ -1,11 +1,8 @@
 from django.db.models import QuerySet
 
-from engines.query_engine.context import ContextResolver, get_context_resolver
-from executor.models import PlayBook, PlayBookExecution
-from executor.workflows.models import Workflow, WorkflowExecution
-from protos.base_pb2 import Context
 from protos.literal_pb2 import IdLiteral
 from protos.query_base_pb2 import QueryRequest
+from engines.base.context import ContextResolver
 
 
 class QueryEngineException(ValueError):
@@ -20,6 +17,9 @@ class QueryEngine:
     def __init__(self, model, context_resolver: ContextResolver):
         self._model = model
         self._context_resolver = context_resolver
+
+    def get_qs(self, account):
+        return self._context_resolver.qs(account)
 
     def process_query(self, qs: QuerySet, query_request: QueryRequest) -> QuerySet:
         if qs.model is not self._model:
@@ -36,24 +36,3 @@ class QueryEngine:
 
     def get_default_query(self, account, obj=None):
         return self._context_resolver.get_default_query(account, obj)
-
-
-playbook_search_engine = QueryEngine(
-    PlayBook,
-    get_context_resolver(Context.PLAYBOOK),
-)
-
-playbook_execution_search_engine = QueryEngine(
-    PlayBookExecution,
-    get_context_resolver(Context.PLAYBOOK_EXECUTION),
-)
-
-workflow_search_engine = QueryEngine(
-    Workflow,
-    get_context_resolver(Context.WORKFLOW),
-)
-
-workflow_execution_search_engine = QueryEngine(
-    WorkflowExecution,
-    get_context_resolver(Context.WORKFLOW_EXECUTION),
-)

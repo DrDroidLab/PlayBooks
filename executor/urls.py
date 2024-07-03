@@ -18,7 +18,6 @@ urlpatterns = [
     # Playbooks CRUD
     path('get', executor_views.playbooks_get),  # Deprecated
     path('get/v2', executor_views.playbooks_get_v2),
-    path('search', executor_views.playbooks_search),
 
     path('create', executor_views.playbooks_create),  # Deprecated
     path('create/v2', executor_views.playbooks_create_v2),
@@ -33,7 +32,6 @@ urlpatterns = [
     path('executions/list', executor_views.playbooks_executions_list),
     path('execution/create', executor_views.playbooks_execution_create),
     path('execution/step/execute', executor_views.playbooks_execution_step_execute),
-    path('execution/search', executor_views.playbooks_execution_search),
 
     # Playbooks API based executions
     path('api/execute', executor_views.playbooks_api_execute),

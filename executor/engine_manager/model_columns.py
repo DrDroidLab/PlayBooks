@@ -1,10 +1,8 @@
 from django.db.models import F
 from django.contrib.postgres.aggregates import ArrayAgg
 
-from engines.query_engine.columns.column import Column, AnnotatedColumn
+from engines.base.column import Column, AnnotatedColumn
 from protos.literal_pb2 import LiteralType
-
-
 
 playbook_columns = {
     'name': Column(

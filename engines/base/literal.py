@@ -4,7 +4,7 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, DoubleValue, 
 
 from protos.literal_pb2 import Literal, LiteralType, IdLiteral
 
-_SCALAR_LITERALS = {
+_SCALAR_LITERALS_TYPES = {
     LiteralType.STRING,
     LiteralType.LONG,
     LiteralType.DOUBLE,
@@ -13,19 +13,31 @@ _SCALAR_LITERALS = {
     LiteralType.ID
 }
 
-_GROUPABLE_LITERALS = {
+_GROUPABLE_LITERALS_TYPES = {
     LiteralType.STRING,
     LiteralType.LONG,
     LiteralType.BOOLEAN
 }
 
+_ARRAY_LITERALS_TYPES = {
+    LiteralType.STRING_ARRAY,
+    LiteralType.LONG_ARRAY,
+    LiteralType.DOUBLE_ARRAY,
+    LiteralType.BOOLEAN_ARRAY,
+    LiteralType.ID_ARRAY
+}
 
-def is_scalar(lt: LiteralType):
-    return lt in _SCALAR_LITERALS
+
+def is_scalar(lt_type: LiteralType) -> bool:
+    return lt_type in _SCALAR_LITERALS_TYPES
 
 
-def is_groupable(type: LiteralType) -> bool:
-    return type in _GROUPABLE_LITERALS
+def is_array(lt_type: LiteralType) -> bool:
+    return lt_type in _ARRAY_LITERALS_TYPES
+
+
+def is_groupable(lt_type: LiteralType) -> bool:
+    return lt_type in _GROUPABLE_LITERALS_TYPES
 
 
 def literal_to_obj(lt: Literal):
