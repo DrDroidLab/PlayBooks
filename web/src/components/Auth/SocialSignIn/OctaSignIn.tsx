@@ -25,7 +25,7 @@ function OctaSignIn() {
     e.preventDefault();
     try {
       const data = await triggerLoginWithOkta().unwrap();
-      window.open(data.redirect_uri);
+      window.open(data.redirect_uri, "_self");
     } catch (err) {
       console.error(err);
       if (!err?.response) {
