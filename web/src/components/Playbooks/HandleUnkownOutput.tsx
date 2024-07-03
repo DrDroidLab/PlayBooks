@@ -7,9 +7,9 @@ import HandleDocumentationOutputs from "./outputs/HandleDocumentationOutputs.tsx
 function HandleUnkownOutput({ stepId, error, showHeading }) {
   const [step] = useCurrentStep(stepId);
 
-  if (showHeading) {
-    return <p className="text-sm font-semibold">No output available</p>;
-  }
+  // if (showHeading) {
+  //   return <p className="text-sm font-semibold">No output available</p>;
+  // }
 
   switch (step.source) {
     case SOURCES.TEXT:

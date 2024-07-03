@@ -20,6 +20,7 @@ import {
   useSignupMutation,
   useLazySaveSiteUrlQuery,
 } from "../store/features/auth/api/index.ts";
+import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -243,6 +244,8 @@ function SignUp() {
                       "Sign up"
                     )}
                   </Button>
+
+                  <SocialSignIn />
 
                   <Box
                     sx={{
