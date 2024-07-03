@@ -14,3 +14,4 @@ export * from "./api.ts";
 export * from "./sql.ts";
 export * from "./mimir.ts";
 export * from "./datadogCustom.ts";
+export * from "./elasticSearch.ts";

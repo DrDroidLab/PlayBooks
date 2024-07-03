@@ -1,41 +1,21 @@
-import React, { useEffect, useState } from "react";
 import Heading from "../components/Heading";
 import SuspenseLoader from "../components/Skeleton/SuspenseLoader";
 import TableSkeleton from "../components/Skeleton/TableLoader";
 import { useGetConnectorListQuery } from "../store/features/integrations/api/index.ts";
-import { Add, SearchRounded } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import ConnectorCard from "../components/Integration/ConnectorCard.tsx";
 import { Link } from "react-router-dom";
-import useDebounce from "../hooks/useDebounce.ts";
+import BasicSearch from "../components/common/BasicSearch/index.tsx";
+import useBasicSearch from "../hooks/useBasicSearch.ts";
+import React from "react";
 
 function DataSources() {
   const { data: integrations, isFetching } = useGetConnectorListQuery();
-  const connectorList = integrations?.connectedConnectors;
-  const [query, setQuery] = useState("");
-  const [filteredIntegrations, setFilteredIntegrations] =
-    useState(connectorList);
-  const debouncedQuery = useDebounce(query, 0);
-  const isEmpty = connectorList?.length === 0;
-  const notFound = filteredIntegrations?.length === 0;
-
-  const searchIntegrations = () => {
-    if (debouncedQuery) {
-      return connectorList?.filter(
-        (connector) =>
-          connector.title
-            .toLowerCase()
-            .includes(debouncedQuery.toLowerCase()) ||
-          connector.enum.toLowerCase().includes(debouncedQuery.toLowerCase()),
-      );
-    } else {
-      return connectorList;
-    }
-  };
-
-  useEffect(() => {
-    setFilteredIntegrations(searchIntegrations());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, connectorList]);
+  const connectorList = integrations?.connectedConnectors ?? [];
+  const { query, setValue, isEmpty, notFound, filteredList } = useBasicSearch(
+    connectorList,
+    ["title", "enum"],
+  );
 
   return (
     <>
@@ -48,22 +28,14 @@ function DataSources() {
       />
       <main className="p-2">
         <div className="flex items-stretch gap-2">
-          <div className="flex items-center bg-white w-full p-2 gap-2 border rounded">
-            <SearchRounded />
-            <input
-              className="w-full h-full text-base outline-none"
-              placeholder="Search by name or type..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+          <BasicSearch query={query} setValue={setValue} />
           {!isEmpty && <AddNewDataSource />}
         </div>
         <div className="mt-4 flex flex-col gap-1 bg-white p-2 rounded">
           <SuspenseLoader
             loading={isFetching}
             loader={<TableSkeleton noOfLines={7} />}>
-            {filteredIntegrations?.map((connector, i) => (
+            {filteredList?.map((connector, i) => (
               <ConnectorCard connector={connector} />
             ))}
 

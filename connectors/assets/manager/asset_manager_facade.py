@@ -7,6 +7,7 @@ from connectors.assets.manager.clickhouse_assets_manager import ClickhouseAssetM
 from connectors.assets.manager.cloudwatch_asset_manager import CloudwatchAssetManager
 from connectors.assets.manager.dd_asset_manager import DatadogAssetManager
 from connectors.assets.manager.eks_assets_manager import EKSAssetManager
+from connectors.assets.manager.es_asset_manager import ElasticSearchAssetManager
 from connectors.assets.manager.gke_asset_manager import GkeAssetManager
 from connectors.assets.manager.grafana_asset_manager import GrafanaAssetManager
 from connectors.assets.manager.mimir_assets_manager import MimirAssetManager
@@ -64,3 +65,4 @@ asset_manager_facade.register(Source.REMOTE_SERVER, RemoteServetAssetManager())
 asset_manager_facade.register(Source.GRAFANA_MIMIR, MimirAssetManager())
 asset_manager_facade.register(Source.AZURE, AzureAssetManager())
 asset_manager_facade.register(Source.GKE, GkeAssetManager())
+asset_manager_facade.register(Source.ELASTIC_SEARCH, ElasticSearchAssetManager())
