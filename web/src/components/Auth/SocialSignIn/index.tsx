@@ -1,7 +1,12 @@
 import React from "react";
-import OctaSignIn from "./OctaSignIn.tsx";
+import { useGetLoginProvidersQuery } from "../../../store/features/auth/api/getLoginProvidersApi.ts";
+import { oAuthProviders } from "./oauthProvidersButtons.tsx";
 
 function SocialSignIn() {
+  const { data } = useGetLoginProvidersQuery();
+
+  if (data?.length === 0) return;
+
   return (
     <div className="my-2 flex flex-col gap-2">
       <div className="flex items-center gap-2">
@@ -11,7 +16,7 @@ function SocialSignIn() {
       </div>
 
       <div className="flex items-center justify-center">
-        <OctaSignIn />
+        {data?.map((e: string) => oAuthProviders[e])}
       </div>
     </div>
   );
