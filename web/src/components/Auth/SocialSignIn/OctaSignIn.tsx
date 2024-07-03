@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Tooltip } from "@mui/material";
-import { useOktaLoginMutation } from "../../../store/features/auth/api/oktaLoginApi.ts";
 import Toast from "../../Toast.js";
 import Loading from "../../common/Loading/index.tsx";
+import { useRedirectUriMutation } from "../../../store/features/auth/api/redirectUriApi.ts";
 
 function OctaSignIn() {
-  const [triggerLoginWithOkta, { isLoading }] = useOktaLoginMutation();
+  const [triggerLoginWithOkta, { isLoading }] = useRedirectUriMutation();
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState("success");

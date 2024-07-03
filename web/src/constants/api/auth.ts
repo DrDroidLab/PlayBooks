@@ -11,5 +11,5 @@ export const INVITE_USERS = "/accounts/invite_users";
 export const GET_USER = "/accounts/user/";
 
 // Social
-export const OKTA_LOGIN = "/accounts/login/okta";
-export const OKTA_OAUTH = "/accounts/oauth/callback/okta";
+export const REDIRECT_URI = "/accounts/get/redirect/uri/okta/";
+export const OKTA_OAUTH = "/accounts/login/okta/";

@@ -6,7 +6,7 @@ function SocialSignIn() {
     <div className="my-2 flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <hr className="flex-1 rounded" />
-        <span className="font-semibold">OR</span>
+        <span className="font-semibold text-xs">OR SIGN IN WITH</span>
         <hr className="flex-1 rounded" />
       </div>
 
