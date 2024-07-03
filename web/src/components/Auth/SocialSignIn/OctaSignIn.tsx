@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import { Tooltip } from "@mui/material";
 import Toast from "../../Toast.js";
 import Loading from "../../common/Loading/index.tsx";
 import { useRedirectUriMutation } from "../../../store/features/auth/api/redirectUriApi.ts";
@@ -48,15 +47,9 @@ function OctaSignIn() {
     <>
       <CustomButton
         onClick={handleOcta}
-        className="rounded-full w-fit !border-gray-200 hover:!bg-gray-200">
-        <Tooltip title="Sign in with Okta">
-          <img
-            src="/logo/okta-logo.svg"
-            alt="Okta Logo"
-            width={25}
-            height={25}
-          />
-        </Tooltip>
+        className="rounded-full w-fit !border-gray-200 hover:!bg-gray-200 !text-black uppercase gap-2">
+        <img src="/logo/okta-logo.svg" alt="Okta Logo" width={25} height={25} />
+        <span>Sign in with Okta</span>
       </CustomButton>
 
       <Toast
