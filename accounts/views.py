@@ -161,7 +161,7 @@ def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersRespon
 
 @csrf_exempt
 @api_view(['GET'])
-def login_okta(request_message: HttpRequest) -> JsonResponse:
+def get_redirect_uri_okta(request_message: HttpRequest) -> JsonResponse:
     client_id = settings.OKTA_CLIENT_ID
     domain = settings.OKTA_DOMAIN
     if not domain.startswith('http') or not domain.startswith('https'):
@@ -190,13 +190,15 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
                             status=500)
 
     session_id = oauth_session.session_id
-    return redirect(
-        f'{domain}/oauth2/default/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256')
+    return JsonResponse({
+        'success': True,
+        'redirect_uri': f'{domain}/oauth2/default/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256'},
+        status=200)
 
 
 @csrf_exempt
 @api_view(['GET'])
-def outh_callback_okta(request_message: HttpRequest) -> JsonResponse:
+def login_okta(request_message: HttpRequest) -> JsonResponse:
     code = request_message.GET.get('code')
     session_id = request_message.GET.get('state')
     client_id = settings.OKTA_CLIENT_ID
