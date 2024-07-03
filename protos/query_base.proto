@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package protos;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/literal.proto";
+
+message GlobalQueryOptions {
+  repeated OpDescription op_descriptions = 1;
+  repeated OpMapping op_mapping = 2;
+  repeated LiteralTypeDescription literal_type_description = 3;
+}
+
+message OpRhs {
+  Op op = 1;
+  LiteralType rhs = 2;
+}
+
+message OpMapping {
+  LiteralType lhs = 1;
+  repeated OpRhs op_rhs = 2;
+}
+
+message ColumnIdentifier {
+  string name = 1;
+  LiteralType type = 2;
+}
+
+message Expression {
+  oneof value {
+    ColumnIdentifier column_identifier = 1;
+    Literal literal = 2;
+  }
+}
+
+message Filter {
+  Expression lhs = 1;
+  Op op = 2;
+  Expression rhs = 3;
+  repeated Filter filters = 4;
+}
+
+message QueryRequest {
+  Context context = 1;
+  Filter filter = 2;
+}
+
+message ColumnOption {
+  google.protobuf.StringValue name = 1;
+  google.protobuf.StringValue alias = 2;
+  LiteralType type = 3;
+  repeated Literal options = 4;
+}
+
+message QueryOptions {
+  repeated ColumnOption column_options = 1;
+}
