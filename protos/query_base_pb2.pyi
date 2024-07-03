@@ -7,6 +7,7 @@ import collections.abc
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
+import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.literal_pb2
 import sys
@@ -17,6 +18,30 @@ else:
     import typing_extensions
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+
+@typing_extensions.final
+class GlobalQueryOptions(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    OP_DESCRIPTIONS_FIELD_NUMBER: builtins.int
+    OP_MAPPING_FIELD_NUMBER: builtins.int
+    LITERAL_TYPE_DESCRIPTION_FIELD_NUMBER: builtins.int
+    @property
+    def op_descriptions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.base_pb2.OpDescription]: ...
+    @property
+    def op_mapping(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___OpMapping]: ...
+    @property
+    def literal_type_description(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.literal_pb2.LiteralTypeDescription]: ...
+    def __init__(
+        self,
+        *,
+        op_descriptions: collections.abc.Iterable[protos.base_pb2.OpDescription] | None = ...,
+        op_mapping: collections.abc.Iterable[global___OpMapping] | None = ...,
+        literal_type_description: collections.abc.Iterable[protos.literal_pb2.LiteralTypeDescription] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["literal_type_description", b"literal_type_description", "op_descriptions", b"op_descriptions", "op_mapping", b"op_mapping"]) -> None: ...
+
+global___GlobalQueryOptions = GlobalQueryOptions
 
 @typing_extensions.final
 class OpRhs(google.protobuf.message.Message):
@@ -142,3 +167,47 @@ class QueryRequest(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["context", b"context", "filter", b"filter"]) -> None: ...
 
 global___QueryRequest = QueryRequest
+
+@typing_extensions.final
+class ColumnOption(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    NAME_FIELD_NUMBER: builtins.int
+    ALIAS_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
+    OPTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def alias(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    type: protos.literal_pb2.LiteralType.ValueType
+    @property
+    def options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.literal_pb2.Literal]: ...
+    def __init__(
+        self,
+        *,
+        name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        alias: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        type: protos.literal_pb2.LiteralType.ValueType = ...,
+        options: collections.abc.Iterable[protos.literal_pb2.Literal] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alias", b"alias", "name", b"name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alias", b"alias", "name", b"name", "options", b"options", "type", b"type"]) -> None: ...
+
+global___ColumnOption = ColumnOption
+
+@typing_extensions.final
+class QueryOptions(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    COLUMN_OPTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def column_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ColumnOption]: ...
+    def __init__(
+        self,
+        *,
+        column_options: collections.abc.Iterable[global___ColumnOption] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["column_options", b"column_options"]) -> None: ...
+
+global___QueryOptions = QueryOptions

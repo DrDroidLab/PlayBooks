@@ -403,3 +403,16 @@ message SearchQueryResponse {
     SearchWorkflowExecutionResponse workflow_execution = 104;
   }
 }
+
+message SearchQueryOptionsRequest {
+  Meta meta = 1;
+  Context context = 2;
+}
+
+message SearchQueryOptionsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  Context context = 4;
+  repeated ColumnOption column_options = 5;
+}

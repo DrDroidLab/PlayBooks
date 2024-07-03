@@ -2,6 +2,7 @@ import logging
 from abc import abstractmethod
 
 from accounts.models import Account
+from engines.base.column import ColumnOptions
 from engines.query_engine.filters.filter_engine import FilterEngine
 from protos.base_pb2 import Op
 from protos.literal_pb2 import IdLiteral, Literal, LiteralType
@@ -18,6 +19,7 @@ class ContextResolver:
 
     def __init__(self):
         self._filter_engine = FilterEngine(self.columns)
+        self._column_options = ColumnOptions(self.columns)
 
     @abstractmethod
     def qs(self, account):
@@ -53,6 +55,10 @@ class ContextResolver:
                 )
             )
         )
+
+    def get_filter_options(self, account, *args, **kwargs):
+        column_options = self._column_options.get_filter_options(account, *args, **kwargs)
+        return column_options
 
     def get_default_query(self, account, obj=None):
         if type(account) is not Account:
