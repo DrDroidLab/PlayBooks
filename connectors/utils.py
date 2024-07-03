@@ -240,8 +240,10 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.GRAFANA_LOKI_HOST:
                 credentials_dict['host'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.GRAFANA_LOKI_API_KEY:
-                credentials_dict['api_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GRAFANA_LOKI_PORT:
+                credentials_dict['port'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GRAFANA_LOKI_PROTOCOL:
+                credentials_dict['protocol'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SSL_VERIFY:
                 credentials_dict['ssl_verify'] = 'true'
                 if conn_key.key.value.lower() == 'false':

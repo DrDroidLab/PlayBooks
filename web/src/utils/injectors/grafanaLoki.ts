@@ -1,16 +1,14 @@
 import { PlaybookTask, Step } from "../../types.ts";
 
-export const injectElasticSearchTasks = (
+export const injectGrafanaLokiTasks = (
   step: Step,
   baseTask: PlaybookTask,
 ): PlaybookTask[] => {
   let task = {
-    index: step.index!,
-    lucene_query: step.query!,
-    "limit": step.limit ?? 50,
-    "offset": 0,
-    "sort_desc": "@timestamp",
-    "timestamp_field": "@timestamp"
+    query: step.query!,
+    start_time: step.start_time!,
+    end_time: step.end_time!,
+    limit: step.limit!,
   };
 
   return [
