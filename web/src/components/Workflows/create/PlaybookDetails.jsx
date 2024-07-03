@@ -1,25 +1,10 @@
-import React, { useState } from "react";
 import SelectComponent from "../../SelectComponent";
 import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
-import { handleInput, handleSelect } from "../utils/handleInputs.ts";
+import { handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
-import RadioGroup from "../../common/RadioGroupComponent/index.tsx";
-
-const radioOptions = [
-  {
-    label: "Generate a link to execute this playbook",
-    value: "default",
-    isSmall: true,
-  },
-  {
-    label: "Execute this playbook and publish its summary",
-    value: "summary",
-    isSmall: true,
-  },
-];
 
 function PlaybookDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -28,18 +13,6 @@ function PlaybookDetails() {
     isFetching: playbooksLoading,
     refetch,
   } = useGetPlaybooksQuery({});
-  const [selectedValue, setSelectedValue] = useState(
-    currentWorkflow.generateSummary ? "summary" : "default",
-  );
-
-  const handleRadioChange = (value) => {
-    setSelectedValue(value);
-    if (value === "summary") {
-      handleInput("generateSummary", true);
-    } else {
-      handleInput("generateSummary", false);
-    }
-  };
 
   return (
     <div className="space-y-2">
@@ -78,15 +51,6 @@ function PlaybookDetails() {
             className={`text-gray-400 hover:text-gray-600 transition-all`}
           />
         </button>
-      </div>
-
-      <div className="mt-2">
-        <RadioGroup
-          options={radioOptions}
-          onChange={handleRadioChange}
-          orientation="vertical"
-          checked={selectedValue}
-        />
       </div>
 
       {/* <WorkflowGlobalVariables /> */}

@@ -5,7 +5,7 @@ export const extractGrafanaTasks = (step: any) => {
   const taskType = tasks[0][stepSource.toLowerCase()]?.type;
   const grafanaTask =
     tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
-  const connectorType = tasks[0]?.task_connector_sources[0]?.id;
+  const connectorType = (tasks[0]?.task_connector_sources ?? [])[0]?.id;
 
   switch (taskType) {
     case "PROMQL_METRIC_EXECUTION":

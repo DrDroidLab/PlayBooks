@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package protos;
+
+import "google/protobuf/wrappers.proto";
+
+enum LiteralType {
+  UNKNOWN_LT = 0;
+  STRING = 1;
+  LONG = 2;
+  DOUBLE = 3;
+  BOOLEAN = 4;
+  TIMESTAMP = 5;
+  ID = 6;
+  STRING_ARRAY = 7;
+  LONG_ARRAY = 8;
+  DOUBLE_ARRAY = 9;
+  BOOLEAN_ARRAY = 10;
+  ID_ARRAY = 12;
+  NULL_STRING = 13;
+  NULL_NUMBER = 14;
+}
+
+message IdLiteral {
+  enum Type {
+    UNKNOWN = 0;
+    LONG = 1;
+    STRING = 2;
+  }
+
+  Type type = 1;
+  google.protobuf.StringValue id_column = 2;
+  google.protobuf.StringValue alias = 3;
+  oneof id {
+    google.protobuf.UInt64Value long = 101;
+    google.protobuf.StringValue string = 102;
+  }
+}
+
+message Literal {
+  // Referenced from: https://github.com/hypertrace/entity-service/blob/main/entity-service-api/src/main/proto/org/hypertrace/entity/query/service/v1/value.proto
+  LiteralType type = 1;
+
+  google.protobuf.StringValue string = 2;
+  google.protobuf.Int64Value long = 3;
+  google.protobuf.DoubleValue double = 4;
+  google.protobuf.BoolValue boolean = 5;
+  sfixed64 timestamp = 6;
+  IdLiteral id = 7;
+  repeated string string_array = 8;
+  repeated int64 long_array = 9;
+  repeated double double_array = 10;
+  repeated bytes bytes_array = 11;
+  repeated bool boolean_array = 12;
+  repeated IdLiteral id_array = 13;
+}
+
+message LiteralTypeDescription {
+  LiteralType literal_type = 1;
+  string label = 2;
+}

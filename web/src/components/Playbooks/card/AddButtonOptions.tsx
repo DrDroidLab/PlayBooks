@@ -13,6 +13,7 @@ import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useZoom from "../../../hooks/useZoom.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 
@@ -26,6 +27,7 @@ function AddButtonOptions({ stepId }) {
   const { executionId } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
+  const { toolbarStyle } = useZoom();
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -54,7 +56,7 @@ function AddButtonOptions({ stepId }) {
   };
 
   return (
-    <>
+    <div style={toolbarStyle}>
       <CustomButton
         onClick={handleNoAction}
         className="rounded-full w-8 h-8 flex items-center justify-center p-0 text-xl add-button hover:rotate-45">
@@ -73,7 +75,7 @@ function AddButtonOptions({ stepId }) {
           </CustomButton>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

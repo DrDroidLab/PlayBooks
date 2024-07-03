@@ -56,6 +56,10 @@ export default function handleStepInformation(
       return StepInformation.sql;
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
       return StepInformation.mimir;
+    case taskTypes.GRAFANA_LOKI_QUERY_LOGS:
+      return StepInformation.loki;
+    case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
+      return StepInformation.elasticSearch;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
 

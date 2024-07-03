@@ -20,6 +20,7 @@ import { useLazyTestWorkflowNotificationQuery } from "../../../store/features/wo
 import { stateToWorkflow } from "../../../utils/parser/workflow/stateToWorkflow.ts";
 import { validate } from "./utils/validation.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import { testRunAvailableNotificationTypes } from "../../../utils/workflow/testRunAvailableNotificationTypes.ts";
 
 function CreateTrigger() {
   const { id: workflowId } = useParams();
@@ -95,7 +96,13 @@ function CreateTrigger() {
           <CustomButton onClick={handleSave}>
             {workflowId ? "Update" : "Save"}
           </CustomButton>
-          <CustomButton onClick={handleTestNotification}>Test Run</CustomButton>
+          {testRunAvailableNotificationTypes.includes(
+            currentWorkflow.notification,
+          ) && (
+            <CustomButton onClick={handleTestNotification}>
+              Test Run
+            </CustomButton>
+          )}
           {(isLoading || updateLoading) && <CircularProgress size={20} />}
         </div>
       </div>
