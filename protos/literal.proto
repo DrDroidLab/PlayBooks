@@ -30,6 +30,7 @@ message IdLiteral {
 
   Type type = 1;
   google.protobuf.StringValue id_column = 2;
+  google.protobuf.StringValue alias = 3;
   oneof id {
     google.protobuf.UInt64Value long = 101;
     google.protobuf.StringValue string = 102;

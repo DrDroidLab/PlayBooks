@@ -1602,3 +1602,55 @@ class SearchQueryResponse(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["query_response", b"query_response"]) -> typing_extensions.Literal["playbook", "playbook_execution", "workflow", "workflow_execution"] | None: ...
 
 global___SearchQueryResponse = SearchQueryResponse
+
+@typing_extensions.final
+class SearchQueryOptionsRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    CONTEXT_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    context: protos.base_pb2.Context.ValueType
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        context: protos.base_pb2.Context.ValueType = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["context", b"context", "meta", b"meta"]) -> None: ...
+
+global___SearchQueryOptionsRequest = SearchQueryOptionsRequest
+
+@typing_extensions.final
+class SearchQueryOptionsResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    CONTEXT_FIELD_NUMBER: builtins.int
+    COLUMN_OPTIONS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    context: protos.base_pb2.Context.ValueType
+    @property
+    def column_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.query_base_pb2.ColumnOption]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        context: protos.base_pb2.Context.ValueType = ...,
+        column_options: collections.abc.Iterable[protos.query_base_pb2.ColumnOption] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["column_options", b"column_options", "context", b"context", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
+
+global___SearchQueryOptionsResponse = SearchQueryOptionsResponse

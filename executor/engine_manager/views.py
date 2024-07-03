@@ -10,7 +10,21 @@ from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from protos.base_pb2 import Context, Message
 from protos.playbooks.api_pb2 import SearchQueryRequest, SearchQueryResponse, SearchPlaybooksResponse, \
-    SearchWorkflowsResponse, SearchPlaybookExecutionResponse, SearchWorkflowExecutionResponse
+    SearchWorkflowsResponse, SearchPlaybookExecutionResponse, SearchWorkflowExecutionResponse, \
+    SearchQueryOptionsResponse, SearchQueryOptionsRequest
+
+
+@web_api(SearchQueryOptionsRequest)
+def search_options(request_message: SearchQueryOptionsRequest) -> Union[SearchQueryOptionsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    page = request_message.meta.page
+    context: Context = request_message.context
+    query_engine = get_query_engine(context)
+    if not query_engine:
+        return SearchQueryResponse(success=BoolValue(value=False), message=Message(title='Error in query engine',
+                                                                                   description='No query engine found for context'))
+    column_options = query_engine.get_filter_options(account)
+    return SearchQueryOptionsResponse(meta=get_meta(page=page), context=context, column_options=column_options)
 
 
 @web_api(SearchQueryRequest)

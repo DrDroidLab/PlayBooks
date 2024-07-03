@@ -79,11 +79,14 @@ class IdLiteral(google.protobuf.message.Message):
 
     TYPE_FIELD_NUMBER: builtins.int
     ID_COLUMN_FIELD_NUMBER: builtins.int
+    ALIAS_FIELD_NUMBER: builtins.int
     LONG_FIELD_NUMBER: builtins.int
     STRING_FIELD_NUMBER: builtins.int
     type: global___IdLiteral.Type.ValueType
     @property
     def id_column(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def alias(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def long(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -93,11 +96,12 @@ class IdLiteral(google.protobuf.message.Message):
         *,
         type: global___IdLiteral.Type.ValueType = ...,
         id_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        alias: google.protobuf.wrappers_pb2.StringValue | None = ...,
         long: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         string: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["id", b"id", "id_column", b"id_column", "long", b"long", "string", b"string"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["id", b"id", "id_column", b"id_column", "long", b"long", "string", b"string", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alias", b"alias", "id", b"id", "id_column", b"id_column", "long", b"long", "string", b"string"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alias", b"alias", "id", b"id", "id_column", b"id_column", "long", b"long", "string", b"string", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["id", b"id"]) -> typing_extensions.Literal["long", "string"] | None: ...
 
 global___IdLiteral = IdLiteral
