@@ -14,10 +14,18 @@ export default function OptionRender({ data, removeErrors, id }) {
 
   useEffect(() => {
     if (data.default) {
-      console.log("woho", data.default);
       updateCardById(data.key, data.default, currentStepId);
     }
   }, [data.default, currentStepId, data.key]);
+
+  useEffect(() => {
+    if (step.errors?.[data.key]) {
+      if (step?.[data.key]) {
+        removeErrors(data.key);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step.errors]);
 
   const handleChange = (...args) => {
     if (data.handleChange) {
