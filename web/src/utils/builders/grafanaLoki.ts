@@ -13,6 +13,14 @@ export const grafanaLokiBuilder = () => {
       ],
       [
         {
+          key: "limit",
+          label: "Limit",
+          type: OptionType.TEXT,
+          default: 10
+        },
+      ],
+      [
+        {
           key: "start_time",
           label: "Start time",
           type: OptionType.TEXT,

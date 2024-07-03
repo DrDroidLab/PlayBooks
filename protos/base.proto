@@ -226,7 +226,6 @@ enum SourceKeyType {
   GRAFANA_LOKI_PROTOCOL = 69;
   GRAFANA_LOKI_HOST = 70;
   GRAFANA_LOKI_PORT = 71;
-  GRAFANA_LOKI_API_KEY = 72;
 }
 
 enum SourceModelType {

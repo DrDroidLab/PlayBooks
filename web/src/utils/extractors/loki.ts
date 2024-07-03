@@ -15,6 +15,7 @@ export const extractLokiTasks = (step: any) => {
     taskType,
     modelType,
     connectorType,
+    limit: lokiStep?.limit,
     query: lokiStep?.query,
     start_time: lokiStep?.start_time,
     end_time: lokiStep?.end_time,

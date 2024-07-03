@@ -272,7 +272,6 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GRAFANA_LOKI_PROTOCOL: _SourceKeyType.ValueType  # 69
     GRAFANA_LOKI_HOST: _SourceKeyType.ValueType  # 70
     GRAFANA_LOKI_PORT: _SourceKeyType.ValueType  # 71
-    GRAFANA_LOKI_API_KEY: _SourceKeyType.ValueType  # 72
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -347,7 +346,6 @@ ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 68
 GRAFANA_LOKI_PROTOCOL: SourceKeyType.ValueType  # 69
 GRAFANA_LOKI_HOST: SourceKeyType.ValueType  # 70
 GRAFANA_LOKI_PORT: SourceKeyType.ValueType  # 71
-GRAFANA_LOKI_API_KEY: SourceKeyType.ValueType  # 72
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:

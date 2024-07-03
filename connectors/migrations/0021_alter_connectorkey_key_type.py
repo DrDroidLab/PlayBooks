@@ -86,7 +86,6 @@ class Migration(migrations.Migration):
                     (69, "GRAFANA_LOKI_PROTOCOL"),
                     (70, "GRAFANA_LOKI_HOST"),
                     (71, "GRAFANA_LOKI_PORT"),
-                    (72, "GRAFANA_LOKI_API_KEY"),
                 ],
                 default=0,
                 null=True,

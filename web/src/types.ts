@@ -9,7 +9,7 @@ export interface Step {
   isPrefetched?: boolean;
   notes?: string;
   source: string;
-  size?: string;
+  limit?: string;
   modelTypes?: ModelTypeMap[];
   modelType?: string;
   selectedSource?: string;

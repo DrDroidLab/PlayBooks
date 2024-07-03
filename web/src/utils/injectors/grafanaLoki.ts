@@ -8,6 +8,7 @@ export const injectGrafanaLokiTasks = (
     query: step.query!,
     start_time: step.start_time!,
     end_time: step.end_time!,
+    limit: step.limit!,
   };
 
   return [
