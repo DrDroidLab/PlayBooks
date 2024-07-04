@@ -1,6 +1,11 @@
 import { TaskType } from "../index.ts";
 
+type SQLQuery = {
+  database: string;
+  query: string;
+};
+
 export interface Postgres {
   type: TaskType.Postgres;
-  // Add specific fields for Postgres task
+  sql_query: SQLQuery;
 }

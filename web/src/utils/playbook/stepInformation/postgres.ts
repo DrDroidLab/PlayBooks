@@ -3,7 +3,7 @@ import { InfoTypes } from "./InfoTypes.ts";
 export const postgres = [
   {
     label: "Query",
-    key: "dbQuery",
+    key: "query",
     type: InfoTypes.TEXT,
   },
 ];

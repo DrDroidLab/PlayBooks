@@ -12,7 +12,7 @@ export const postgresBuilder = () => {
       ],
       [
         {
-          key: "dbQuery",
+          key: "query",
           label: "Query",
           type: OptionType.MULTILINE,
         },
