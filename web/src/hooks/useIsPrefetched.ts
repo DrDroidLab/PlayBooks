@@ -1,12 +1,7 @@
-import { useSelector } from "react-redux";
-import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
+import { useSearchParams } from "react-router-dom";
 
 export default function useIsPrefetched() {
-  const playbook = useSelector(playbookSelector);
+  const [searchParams] = useSearchParams("executionId");
 
-  return (
-    !playbook?.currentPlaybook?.isCopied &&
-    !playbook?.isEditing &&
-    Object.keys(playbook?.currentPlaybook ?? {}).length > 0
-  );
+  return searchParams.get("executionId");
 }

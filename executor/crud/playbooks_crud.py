@@ -4,23 +4,15 @@ from hashlib import md5
 from django.db.utils import IntegrityError
 
 from accounts.models import Account
-from executor.models import PlayBook, PlayBookTaskDefinition, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
-    PlayBookStepMapping
+from executor.models import PlayBook, PlayBookTask, PlayBookStep, PlayBookStepTaskDefinitionMapping, \
+    PlayBookStepMapping, PlayBookStepTaskConnectorMapping, PlayBookStepRelation
 from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType
-from protos.playbooks.playbook_pb2 import PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
-    Playbook as PlaybookProto, PlaybookStepDefinition
+from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, PlaybookStep as PlaybookStepProto, \
+    Playbook as PlaybookProto, PlaybookStepRelation as PlaybookStepRelationProto
 from utils.proto_utils import proto_to_dict
+from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
-
-task_type_display_map = {
-    PlaybookTaskDefinitionProto.Type.UNKNOWN: "Unknown",
-    PlaybookTaskDefinitionProto.Type.METRIC: "Metric",
-    PlaybookTaskDefinitionProto.Type.DECISION: "Decision",
-    PlaybookTaskDefinitionProto.Type.DATA_FETCH: "Data Fetch",
-    PlaybookTaskDefinitionProto.Type.DOCUMENTATION: "Documentation",
-    PlaybookTaskDefinitionProto.Type.ACTION: "Action",
-}
 
 
 def validate_playbook_request(playbook: PlaybookProto):
@@ -52,34 +44,8 @@ def get_db_playbooks(account: Account, playbook_id=None, playbook_name=None, is_
         return None
 
 
-def get_db_playbook_step(account: Account, playbook_id: str, playbook_step_name=None, is_active=None):
-    filters = {'playbook_id': playbook_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if playbook_step_name:
-        filters['name'] = playbook_step_name
-    try:
-        return account.playbookstep_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook steps for account_id {account.id} with error {e}")
-    return None
-
-
-def get_db_playbook_task_definitions(account: Account, playbook_id: str, playbook_step_id, is_active=None):
-    filters = {'playbook_id': playbook_id, 'playbook_step_id': playbook_step_id}
-    if is_active is not None:
-        filters['is_active'] = is_active
-    if is_active is not None:
-        filters['is_active'] = is_active
-    try:
-        return account.playbooktaskdefinition_set.filter(**filters)
-    except Exception as e:
-        logger.error(f"Failed to get playbook task definitions for account_id {account.id} with error {e}")
-    return None
-
-
-def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto, update_mode: bool = False) -> \
-        (PlayBook, bool, str):
+def update_or_create_db_playbook(account: Account, created_by, playbook: PlaybookProto,
+                                 update_mode: bool = False) -> (PlayBook, str):
     is_valid_playbook, err = validate_playbook_request(playbook)
     if not is_valid_playbook:
         return None, f"Invalid Playbook Request: {err}"
@@ -87,15 +53,30 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     playbook_name = playbook.name.value
     db_playbook = get_db_playbooks(account, playbook_name=playbook_name, created_by=created_by, is_active=True)
     if db_playbook.exists() and not update_mode:
-        return None, f"Playbook with name {playbook_name} already exists"
-
+        db_playbook = db_playbook.first()
+        if db_playbook.is_active:
+            return None, f"Playbook with name {playbook_name} already exists"
+        else:
+            current_millis = current_milli_time()
+            db_playbook.name = f'{playbook_name}###(inactive)###{current_millis}'
+            db_playbook.save(update_fields=['name'])
+    all_task_ref_id_db_id_map = {}
     try:
-        playbook_steps: [PlaybookStepDefinition] = playbook.steps
+        playbook_steps: [PlaybookStepProto] = playbook.steps
         db_steps = []
+        step_task_connector_map = {}
+        step_ref_id_db_id_map = {}
         for step in playbook_steps:
-            db_step, err = create_db_step(account, created_by, step)
-            if not db_step or err:
+            if not step.reference_id.value:
+                return None, f"Reference ID is missing for step {step.name.value}"
+            if step.reference_id.value in step_ref_id_db_id_map:
+                return None, f"Duplicate reference ID found for step {step.name.value}"
+            db_step, task_connectors_map, task_ref_id_db_id_map, err = create_db_step(account, created_by, step)
+            all_task_ref_id_db_id_map.update(task_ref_id_db_id_map)
+            step_ref_id_db_id_map[step.reference_id.value] = db_step.id
+            if not db_step or not task_connectors_map or err:
                 return None, f"Failed to create playbook step with error: {err}"
+            step_task_connector_map[db_step.id] = task_connectors_map
             db_steps.append(db_step)
     except Exception as e:
         return None, f"Failed to create playbook steps with error: {e}"
@@ -125,86 +106,129 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                                                is_active=True)
         except Exception as e:
             logger.error(f"Failed to add step {db_step.name} to playbook {db_playbook.name} with error {e}")
+    for step_id, tc_map in step_task_connector_map.items():
+        for task_id, connector_ids in tc_map.items():
+            for connector_id in connector_ids:
+                try:
+                    PlayBookStepTaskConnectorMapping.objects.get_or_create(account=account,
+                                                                           playbook=db_playbook,
+                                                                           playbook_step_id=step_id,
+                                                                           playbook_task_id=task_id,
+                                                                           connector_id=connector_id,
+                                                                           defaults={'is_active': True})
+                except Exception as e:
+                    logger.error(
+                        f"Failed to add task connector mapping for task {task_id} with connector {connector_id} "
+                        f"to playbook {db_playbook.name} with error {e}")
+    try:
+        step_relations: [PlaybookStepRelationProto] = playbook.step_relations
+        for step_relation in step_relations:
+            try:
+                parent_step_id = step_ref_id_db_id_map[step_relation.parent.reference_id.value]
+                child_step_id = step_ref_id_db_id_map[step_relation.child.reference_id.value]
+                if not parent_step_id or not child_step_id:
+                    return None, f"Invalid step relation found for playbook {playbook_name}"
+                condition = None
+                if step_relation.condition:
+                    condition = proto_to_dict(step_relation.condition)
+                    for r in condition.get('rules', []):
+                        task = r.get('task')
+                        condition_task = {
+                            'id': all_task_ref_id_db_id_map[task['reference_id']],
+                            'name': task.get('name', ''),
+                        }
+                        r['task'] = condition_task
+
+                condition_md5 = md5(str(condition).encode('utf-8')).hexdigest()
+                PlayBookStepRelation.objects.get_or_create(account=account,
+                                                           playbook=db_playbook,
+                                                           parent_id=parent_step_id,
+                                                           child_id=child_step_id,
+                                                           condition_md5=condition_md5,
+                                                           defaults={'condition': condition, 'is_active': True})
+            except Exception as e:
+                logger.error(f"Failed to create step relations for playbook {db_playbook.name} with error {e}")
+                return None, f"Failed to create step relations for playbook {db_playbook.name} with error {e}"
+    except Exception as e:
+        logger.error(f"Failed to create step relations for playbook {db_playbook.name} with error {e}")
+        return None, f"Failed to create step relations for playbook {db_playbook.name} with error {e}"
     return db_playbook, None
 
 
-def create_db_step(account: Account, created_by, playbook_step: PlaybookStepDefinition) -> (PlayBookStep, str):
+def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, dict, str):
     try:
-        tasks: [PlaybookTaskDefinitionProto] = playbook_step.tasks
+        tasks: [PlayBookTask] = step.tasks
         db_tasks = []
+        task_connectors_map = {}
+        task_ref_id_db_id_map = {}
         for task in tasks:
-            task_type_display = task_type_display_map.get(task.type, f"{task.type}: Unknown")
             db_task, err = get_or_create_db_task(account, created_by, task)
+            task_ref_id_db_id_map[task.reference_id.value] = db_task.id
             if not db_task or err:
-                return None, f"Failed to create task: {task_type_display} for " \
-                             f"playbook step {playbook_step.name.value} with error {err}"
+                return None, None, None, f"Failed to create task: {task.name.value} for " \
+                                         f"playbook step {step.name.value} with error {err}"
             db_tasks.append(db_task)
+            connector_ids = []
+            for tc in task.task_connector_sources:
+                connector_ids.append(tc.id.value)
+            task_connectors_map[db_task.id] = connector_ids
 
         metadata = {}
-        external_links = playbook_step.external_links
+        external_links = step.external_links
         if external_links:
             el_list = []
             for el in external_links:
                 el_list.append({'name': el.name.value, 'url': el.url.value})
             metadata['external_links'] = el_list
-
         try:
             db_step = PlayBookStep.objects.create(account=account,
-                                                  name=playbook_step.name.value,
-                                                  description=playbook_step.description.value,
-                                                  notes=playbook_step.notes.value,
+                                                  name=step.name.value,
+                                                  description=step.description.value,
+                                                  notes=step.notes.value,
                                                   metadata=metadata,
-                                                  interpreter_type=playbook_step.interpreter_type if playbook_step.interpreter_type else InterpreterType.BASIC_I,
+                                                  interpreter_type=step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I,
                                                   created_by=created_by)
         except Exception as e:
-            return None, f"Failed to create playbook step with error: {e}"
+            return None, None, None, f"Failed to create playbook step with error: {e}"
         for db_task in db_tasks:
             try:
                 PlayBookStepTaskDefinitionMapping.objects.get_or_create(account=account,
                                                                         playbook_step=db_step,
                                                                         playbook_task_definition=db_task)
             except Exception as e:
-                task_type_display = task_type_display_map.get(db_task.type, f"{db_task.type}: Unknown")
-                logger.error(f"Failed to create playbook step task definition mapping for task {task_type_display} "
+                logger.error(f"Failed to create playbook step task definition mapping for task {db_task.name} "
                              f"with error {e}")
-                return None, f"Failed to create playbook step task definition mapping for task {task_type_display}"
-        return db_step, None
+                return None, None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
+        return db_step, task_connectors_map, task_ref_id_db_id_map, None
     except Exception as e:
-        return None, f"Failed to create playbook step with error: {e}"
+        return None, None, None, f"Failed to create playbook step with error: {e}"
 
 
-def get_or_create_db_task(account: Account, created_by, task_proto: PlaybookTaskDefinitionProto) -> \
-        (PlayBookTaskDefinition, str):
-    task_type = task_proto.type
-    task_type_display = task_type_display_map.get(task_type, f"{task_type}: Unknown")
-    if task_type == PlaybookTaskDefinitionProto.Type.METRIC:
-        task = task_proto.metric_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DECISION:
-        task = task_proto.decision_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DATA_FETCH:
-        task = task_proto.data_fetch_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.DOCUMENTATION:
-        task = task_proto.documentation_task
-    elif task_type == PlaybookTaskDefinitionProto.Type.ACTION:
-        task = task_proto.action_task
-    else:
-        return None, f"Invalid Task Type Received: {task_type_display}"
+def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto) -> (PlaybookTaskProto, str):
     task_dict = proto_to_dict(task)
+    task_dict.pop('id', None)
+    task_dict.pop('name', None)
+    task_dict.pop('description', None)
+    task_dict.pop('notes', None)
+    task_dict.pop('created_by', None)
+    task_dict.pop('global_variable_set', None)
+    task_dict.pop('interpreter_type', None)
+    task_dict.pop('task_connector_sources', None)
+    task_dict.pop('reference_id', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
-        db_task, _ = PlayBookTaskDefinition.objects.get_or_create(account=account,
-                                                                  name=task_proto.name.value,
-                                                                  description=task_proto.description.value,
-                                                                  notes=task_proto.notes.value,
-                                                                  type=task_type,
-                                                                  task_md5=task_md5,
-                                                                  created_by=created_by,
-                                                                  defaults={'task': task_dict})
+        db_task, _ = PlayBookTask.objects.get_or_create(account=account,
+                                                        name=task.name.value,
+                                                        task_md5=task_md5,
+                                                        created_by=created_by,
+                                                        defaults={'task': task_dict,
+                                                                  'description': task.description.value,
+                                                                  'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
-        db_task = PlayBookTaskDefinition.objects.get(account=account, name=task_proto.name.value, task_md5=task_md5,
-                                                     created_by=created_by)
+        db_task = PlayBookTask.objects.get(account=account, name=task.name.value, task_md5=task_md5,
+                                           created_by=created_by)
         return db_task, None
     except Exception as e:
-        logger.error(f"Failed to create playbook task definition for task type {task_type_display} with error {e}")
-    return None, f"Failed to create playbook task definition for task type: {task_type_display}"
+        logger.error(f"Failed to create playbook task definition for task name {task.name.value} with error {e}")
+        return None, f"Failed to create playbook task definition for task name {task.name.value} with error {e}"

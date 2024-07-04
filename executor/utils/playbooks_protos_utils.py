@@ -3,13 +3,13 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from protos.base_pb2 import Source
 from protos.playbooks.playbook_pb2 import PlaybookMetricTaskDefinition, PlaybookCloudwatchTask, PlaybookGrafanaTask, \
     PlaybookNewRelicTask, PlaybookDatadogTask, PlaybookDataFetchTaskDefinition, PlaybookClickhouseDataFetchTask, \
-    PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask, PlaybookPromQLTask, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
+    PlaybookPostgresDataFetchTask, PlaybookEksDataFetchTask, PlaybookTaskDefinition as PlaybookTaskDefinitionProto, \
     ElseEvaluationTask, PlaybookDecisionTaskDefinition as PlaybookDecisionTaskDefinitionProto, \
     PlaybookMetricTaskExecutionResult as PlaybookMetricTaskExecutionResultProto, \
     TimeseriesEvaluationTask as TimeseriesEvaluationTaskProto, \
     PlaybookDocumentationTaskDefinition as PlaybookDocumentationTaskDefinitionProto, \
     PlaybookSqlDatabaseConnectionDataFetchTask, PlaybookActionTaskDefinition, PlaybookApiCallTask, \
-    PlaybookBashCommandTask
+    PlaybookBashCommandTask, PlaybookAzureTask
 from utils.proto_utils import dict_to_proto
 
 
@@ -45,21 +45,6 @@ def get_grafana_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     else:
         raise Exception(f"Task type {grafana_task.get('type', None)} not supported")
     return PlaybookMetricTaskDefinition(source=Source.GRAFANA, grafana_task=grafana_task_proto)
-
-
-def get_grafana_mimir_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
-    mimir_task = task.get('mimir_task', {})
-    if mimir_task.get('type', None) == 'PROMQL_METRIC_EXECUTION':
-        promql_metric_execution_task_proto = dict_to_proto(
-            mimir_task.get('promql_metric_execution_task', {}),
-            PlaybookPromQLTask.PromQlMetricExecutionTask)
-        mimir_task_proto = PlaybookPromQLTask(type=PlaybookPromQLTask.TaskType.PROMQL_METRIC_EXECUTION,
-                                                 promql_metric_execution_task=promql_metric_execution_task_proto)
-    else:
-        raise Exception(f"Task type {mimir_task.get('type', None)} not supported")
-    return PlaybookMetricTaskDefinition(
-        source=Source.GRAFANA_MIMIR,
-        mimir_task=mimir_task_proto)
 
 
 def get_new_relic_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
@@ -109,6 +94,19 @@ def get_datadog_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
     else:
         raise Exception(f"Task type {dd_task.get('type', None)} not supported")
     return PlaybookMetricTaskDefinition(source=Source.DATADOG, datadog_task=dd_task_proto)
+
+
+def get_azure_task_execution_proto(task) -> PlaybookMetricTaskDefinition:
+    az_task = task.get('azure_task', {})
+    if az_task.get('type', None) == 'FILTER_LOG_EVENTS':
+        filter_log_events_task_proto = dict_to_proto(az_task.get('filter_log_events_task', {}),
+                                                     PlaybookAzureTask.AzureLogAnalyticsFilterLogEventsTask)
+        az_task_proto = PlaybookAzureTask(
+            type=PlaybookAzureTask.TaskType.FILTER_LOG_EVENTS,
+            filter_log_events_task=filter_log_events_task_proto)
+    else:
+        raise Exception(f"Task type {az_task.get('type', None)} not supported")
+    return PlaybookMetricTaskDefinition(source=Source.AZURE, azure_task=az_task_proto)
 
 
 def get_clickhouse_task_execution_proto(task) -> PlaybookDataFetchTaskDefinition:
@@ -208,8 +206,8 @@ def get_playbook_task_definition_proto(db_task_definition):
             metric_task_proto = get_new_relic_task_execution_proto(task)
         elif source == 'DATADOG':
             metric_task_proto = get_datadog_task_execution_proto(task)
-        elif source == 'GRAFANA_MIMIR':
-            metric_task_proto = get_grafana_mimir_task_execution_proto(task)
+        elif source == 'AZURE':
+            metric_task_proto = get_azure_task_execution_proto(task)
         else:
             raise ValueError(f"Invalid source: {source}")
         return PlaybookTaskDefinitionProto(

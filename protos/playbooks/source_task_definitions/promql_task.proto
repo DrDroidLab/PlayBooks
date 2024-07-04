@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message PromQl {
+  message PromQlMetricExecution {
+    google.protobuf.StringValue datasource_uid = 1;
+    google.protobuf.StringValue promql_expression = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    PROMQL_METRIC_EXECUTION = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    PromQlMetricExecution promql_metric_execution = 3;
+  }
+}

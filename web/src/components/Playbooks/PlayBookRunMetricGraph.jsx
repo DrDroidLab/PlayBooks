@@ -1,5 +1,5 @@
 import ReactECharts from "echarts-for-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./index.module.css";
 
 import { getTSLabel } from "./utils";
@@ -15,6 +15,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const [showGraph, setShowGraph] = useState(false);
   const [selectedLegends, setSelectedLegends] = useState({});
   const keyPressed = useKeyPressed();
+  const chart = useRef(null);
 
   let tsData = useMemo(() => {
     return result?.timeseries?.labeled_metric_timeseries;
@@ -23,6 +24,8 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   let unit = result?.timeseries?.labeled_metric_timeseries
     ? result?.timeseries?.labeled_metric_timeseries[0]?.unit
     : null;
+
+  chart.current?.resize();
 
   const handleLegendClick = (params) => {
     let newSelectedLegends = selectedLegends;
@@ -78,8 +81,10 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
         });
       }
 
-      let tsLabels = sortedTSData.map((x) =>
-        getTSLabel(x?.metric_label_values ?? []),
+      let tsLabels = sortedTSData.map(
+        (x) =>
+          result?.timeseries?.metric_name ??
+          getTSLabel(x?.metric_label_values ?? []),
       );
 
       let data = [];
@@ -143,6 +148,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       setChartOptions({});
       setShowGraph(false);
     }
+    chart.current?.resize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tsData]);
 
@@ -152,26 +158,25 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
 
   return (
     <div className={styles["graph-box"]}>
-      <p className={styles["graph-title"]}>
+      <div className={styles["graph-title"]}>
         <SeeMoreText text={title} />
-      </p>
+      </div>
       {!showGraph && (
-        <p className={styles["graph-error"]}>
+        <div className={styles["graph-error"]}>
           {error ? (
             <SeeMoreText truncSize={150} text={error} />
           ) : (
             "No data available"
           )}
-        </p>
+        </div>
       )}
       {showGraph && (
         <ReactECharts
           onEvents={onEvents}
-          style={{
-            overflow: "scroll",
-          }}
+          className="flex flex-1"
           option={chartOptions}
           notMerge={true}
+          ref={chart}
         />
       )}
 

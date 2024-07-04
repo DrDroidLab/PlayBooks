@@ -4,21 +4,28 @@ import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
 import { Check, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import { updateCardById } from "../../utils/execution/updateCardById.ts";
+import RunButton from "../Buttons/RunButton/index.tsx";
+import useCurrentStep from "../../hooks/useCurrentStep.ts";
 
-function PlaybookTitle({ step, index, updateCardByIndex }) {
+function PlaybookTitle({ id }) {
   const isPrefetched = useIsPrefetched();
-  const editCardTitle = (e, index) => {
+  const [step] = useCurrentStep(id);
+
+  const editCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex(index, "editTitle", true);
+    updateCardById("editTitle", true, id);
   };
 
-  const cancelEditCardTitle = (e, index) => {
+  const cancelEditCardTitle = (e) => {
     e.stopPropagation();
-    updateCardByIndex(index, "editTitle", false);
+    updateCardById("editTitle", false, id);
   };
+
+  if (!step) return;
 
   return (
-    <>
+    <div className="flex items-center justify-between gap-2 w-full mr-2">
       <div
         style={{
           fontSize: "16px",
@@ -29,22 +36,25 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
         {(step.outputLoading || step.inprogress) && (
           <CircularProgress size={20} />
         )}
-        {(step.outputError || step.showError) && (
+        {(step.outputError || Object.keys(step?.errors ?? {}).length > 0) && (
           <ErrorOutline color="error" size={20} />
         )}
         {!step.outputError &&
           !step.outputLoading &&
           step.showOutput &&
           step.outputs?.data?.length > 0 &&
-          !step.showError && <CheckCircleOutline color="success" size={20} />}
+          Object.keys(step?.errors ?? {}).length === 0 && (
+            <CheckCircleOutline color="success" size={20} />
+          )}
 
         {!step.editTitle && (
-          <div onClick={(e) => editCardTitle(e, index)}>
+          <div>
             <b>
-              {index + 1}: {step.description || `Step - ${index + 1}`}
+              {step.stepIndex + 1}:{" "}
+              {step.description || `Step - ${step.stepIndex + 1}`}
             </b>
             {!isPrefetched && (
-              <button>
+              <button onClick={editCardTitle}>
                 <EditIcon
                   sx={{ zIndex: "10" }}
                   fontSize={"small"}
@@ -61,18 +71,20 @@ function PlaybookTitle({ step, index, updateCardByIndex }) {
             placeHolder={`Enter Title`}
             valueType={"STRING"}
             onValueChange={(val) => {
-              updateCardByIndex(index, "description", val);
+              updateCardById("description", val, id);
+              if (val.trim())
+                updateCardById("userEnteredDescription", true, id);
             }}
             value={step.description}
             length={200}
           />
-          <Check
-            onClick={(e) => cancelEditCardTitle(e, index)}
-            style={{ marginLeft: "8px" }}
-          />
+          <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+            <Check onClick={cancelEditCardTitle} fontSize="inherit" />
+          </button>
         </div>
       )}
-    </>
+      <RunButton id={id} />
+    </div>
   );
 }
 

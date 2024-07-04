@@ -47,3 +47,77 @@ img {
 .wmde-markdown ul {
   list-style: circle !important;
 }
+
+.MuiTableCell-root {
+  padding: 14px !important;
+  font-size: 15px;
+  border-color: #eee !important;
+}
+
+.MuiTableCell-root a {
+  text-decoration: none !important;
+  color: #9553fe !important;
+}
+
+.MuiTableCell-root a:hover {
+  text-decoration: underline !important;
+}
+
+.MuiTableRow-root:hover {
+  background-color: #eee !important;
+  transition: all 0.2s !important;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  border-bottom: 2px solid #ededed !important;
+  font-size: 14px !important;
+  padding: 8px !important;
+}
+
+td {
+  width: fit-content !important;
+  max-width: max-content !important;
+  min-width: max-content !important;
+}
+
+.add-step-buttons {
+  opacity: 0;
+  display: none;
+}
+
+.add-button:hover + .add-step-buttons {
+  display: block !important;
+  opacity: 1;
+}
+
+.add-step-buttons:hover {
+  display: block !important;
+  opacity: 1;
+}
+
+/* .echarts-for-react canvas {
+  width: 100% !important;
+  min-height: 100% !important;
+} */
+/* 
+.echarts-for-react {
+  width: 100% !important;
+  min-height: 100% !important;
+} */
+
+.echarts-for-react > div:first-child {
+  display: flex;
+  flex: 1;
+}
+
+/* Add this to your CSS file (e.g., styles.css) */
+.animated-dotted-line {
+  stroke-dasharray: 5;
+  animation: dash-animation 1s linear infinite;
+}
+
+@keyframes dash-animation {
+  to {
+    stroke-dashoffset: -20;
+  }
+}

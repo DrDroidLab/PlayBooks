@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import capitalizeFirstLetter from "../../../utils/capitalize";
+import { RootState } from "../..";
 
 type InitialStateType = {
   allIntegrations: any;
@@ -7,6 +8,7 @@ type InitialStateType = {
   keyOptions: any;
   vpcConnectors: any;
   agentProxy: any;
+  testData: any;
 };
 
 const initialState: InitialStateType = {
@@ -15,6 +17,7 @@ const initialState: InitialStateType = {
   keyOptions: [],
   vpcConnectors: [],
   agentProxy: {},
+  testData: {},
 };
 
 const integrationsSlice = createSlice({
@@ -44,9 +47,12 @@ const integrationsSlice = createSlice({
         };
       }
     },
+    setConnector(state, { payload }) {
+      state.currentConnector = payload;
+    },
     setKeysOptions: (state, { payload }) => {
       state.keyOptions = payload;
-      payload.forEach((el) => {
+      payload?.forEach((el) => {
         state.currentConnector[el.key_type] = "";
       });
     },
@@ -62,6 +68,16 @@ const integrationsSlice = createSlice({
     setAgentProxyKey(state, { payload }) {
       state.agentProxy[payload.key] = payload.value;
     },
+    setTestConnectorData(state, { payload }) {
+      state.testData = payload;
+    },
+    resetIntegrationState(state) {
+      state.testData = {};
+      state.currentConnector = {};
+      state.agentProxy = {};
+      state.keyOptions = {};
+      state.vpcConnectors = {};
+    },
   },
 });
 
@@ -70,16 +86,24 @@ export const {
   setVpcConnectors,
   setAgentProxy,
   setCurrentConnector,
+  setConnector,
   setKeysOptions,
   setAgentKeyOptions,
   setKey,
   setAgentProxyKey,
+  setTestConnectorData,
+  resetIntegrationState,
 } = integrationsSlice.actions;
 
 export default integrationsSlice.reducer;
 
-export const integrationsSelector = (state) =>
+export const integrationsSelector = (state: RootState) =>
   state.integrations.allIntegrations;
-export const connectorSelector = (state) => state.integrations.currentConnector;
-export const keyOptionsSelector = (state) => state.integrations.keyOptions;
-export const agentProxySelector = (state) => state.integrations.agentProxy;
+export const connectorSelector = (state: RootState) =>
+  state.integrations.currentConnector;
+export const keyOptionsSelector = (state: RootState) =>
+  state.integrations.keyOptions;
+export const agentProxySelector = (state: RootState) =>
+  state.integrations.agentProxy;
+export const testDataSelector = (state: RootState) =>
+  state.integrations.testData;

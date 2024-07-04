@@ -6,12 +6,20 @@ import stateToGlobalVariable from "./stateToGlobalVariable.ts";
 
 export const handleStepSourceInjector = (step): PlaybookTask[] => {
   let baseTask: PlaybookTask = {
-    name: step.name ?? uuidv4(),
-    id: step.id ?? "0",
-    type: "METRIC",
+    name: uuidv4(),
+    reference_id: uuidv4(),
+    id: "0",
+    source: step.source,
     description: step.description ?? "",
     interpreter_type: step.interpreter?.type,
     global_variable_set: stateToGlobalVariable(step.globalVariables),
+    task_connector_sources: step.connectorType
+      ? [
+          {
+            id: step.connectorType || 0,
+          },
+        ]
+      : [],
   };
 
   let tasks: PlaybookTask[] = [];
@@ -36,6 +44,9 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.EKS:
       tasks = Injector.injectEksTasks(step, baseTask);
       break;
+    case SOURCES.GKE:
+      tasks = Injector.injectGkeTasks(step, baseTask);
+      break;
     case SOURCES.NEW_RELIC:
       tasks = Injector.injectNewRelicTasks(step, baseTask);
       break;
@@ -46,6 +57,7 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
       tasks = Injector.injectApiTasks(step, baseTask);
       break;
     case SOURCES.TEXT:
+      // Handling iframe also
       tasks = Injector.injectTextTasks(step, baseTask);
       break;
     case SOURCES.BASH:
@@ -54,9 +66,23 @@ export const handleStepSourceInjector = (step): PlaybookTask[] => {
     case SOURCES.SQL_DATABASE_CONNECTION:
       tasks = Injector.injectSqlRawQueryTasks(step, baseTask);
       break;
+    case SOURCES.AZURE:
+      tasks = Injector.injectAzureLogTasks(step, baseTask);
+      break;
+    case SOURCES.GRAFANA_LOKI:
+      tasks = Injector.injectGrafanaLokiTasks(step, baseTask);
+      break;
+    case SOURCES.ELASTIC_SEARCH:
+      tasks = Injector.injectElasticSearchTasks(step, baseTask);
+      break;
     default:
       break;
   }
 
-  return tasks;
+  const taskWithIds = tasks.map((task, i) => ({
+    ...task,
+    id: step.taskIds?.length > 0 ? step.taskIds[i] ?? step.id ?? "0" : "0",
+  }));
+
+  return taskWithIds;
 };

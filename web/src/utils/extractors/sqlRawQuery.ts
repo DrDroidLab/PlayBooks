@@ -1,16 +1,19 @@
 export const extractSqlRawQueryTasks = (step: any) => {
   let stepSource = "SQL_DATABASE_CONNECTION";
   let modelType = "SQL_DATABASE_CONNECTION_RAW_QUERY";
-  let selected = "SQL_DATABASE_CONNECTION Query";
   const tasks = step.tasks;
-  const sqlTask =
-    tasks[0].data_fetch_task?.sql_database_connection_data_fetch_task;
+  const taskType = tasks[0][stepSource.toLowerCase()]?.type;
+  const sqlTask = tasks[0][stepSource.toLowerCase()][taskType.toLowerCase()];
+  const connectorType =
+    tasks[0]?.task_connector_sources?.length > 0
+      ? tasks[0]?.task_connector_sources[0]?.id
+      : "";
 
   const stepData = {
     source: stepSource,
-    selectedSource: selected,
     connector_type: stepSource,
-    model_type: modelType,
+    connectorType,
+    taskType,
     modelType,
     query: sqlTask.query,
   };

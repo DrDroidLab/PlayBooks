@@ -1,38 +1,65 @@
 import { store } from "../../store/index.ts";
-import { executePlaybookStep } from "../../store/features/playbook/api/index.ts";
+import {
+  executePlaybookStep,
+  executionStepExecute,
+} from "../../store/features/playbook/api/index.ts";
 import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
-import { updateCardByIndex } from "./updateCardByIndex.ts";
+import { updateCardById } from "./updateCardById.ts";
+import {
+  playbookSelector,
+  popFromExecutionStack,
+} from "../../store/features/playbook/playbookSlice.ts";
 
-export async function executeStep(step: Step) {
+export async function executeStep(step: Step, id?: string) {
+  const { executionId } = playbookSelector(store.getState());
+  const dispatch = store.dispatch;
   if (Object.keys(step.errors ?? {}).length > 0) {
+    updateCardById("showError", true, id);
     return;
   }
 
   const stepData = stateToStep(step);
-  updateCardByIndex("outputLoading", true);
-  updateCardByIndex("showOutput", false);
+  updateCardById("outputLoading", true, id);
+  updateCardById("showOutput", false, id);
+  updateCardById("outputError", undefined, id);
+
+  dispatch(popFromExecutionStack());
 
   try {
-    const res = await store
-      .dispatch(executePlaybookStep.initiate(stepData))
-      .unwrap();
+    const res =
+      executionId && !step.isEditing
+        ? await store.dispatch(executionStepExecute.initiate(stepData)).unwrap()
+        : await store.dispatch(executePlaybookStep.initiate(stepData)).unwrap();
     const outputList: any = [];
     const output = res?.step_execution_log;
-    for (let outputData of output.logs) {
+    for (let outputData of output?.task_execution_logs ?? []) {
       outputList.push(outputData);
     }
-    updateCardByIndex("showOutput", true);
-    updateCardByIndex("outputs", {
-      data: outputList,
-      stepInterpretation: output.step_interpretation,
-    });
+    const outputErrors = outputList?.filter(
+      (output: any) => output?.result?.error,
+    );
+    const error = outputErrors.length > 0 ? outputErrors[0] : undefined;
+
+    updateCardById("showOutput", true, id);
+    updateCardById(
+      "outputs",
+      {
+        data: outputList,
+        stepInterpretation: output.step_interpretation,
+      },
+      id,
+    );
+    if (error) {
+      updateCardById("showError", true, id);
+      updateCardById("outputError", error.result?.error, id);
+    }
   } catch (e) {
-    updateCardByIndex("showError", true);
-    updateCardByIndex("outputError", e.message);
+    updateCardById("showError", true, id);
+    updateCardById("outputError", e.message, id);
     console.error(e);
   } finally {
-    updateCardByIndex("showOutput", true);
-    updateCardByIndex("outputLoading", false);
+    updateCardById("showOutput", true, id);
+    updateCardById("outputLoading", false, id);
   }
 }

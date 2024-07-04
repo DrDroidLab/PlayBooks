@@ -38,12 +38,14 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
+    'engines.apps.EnginesConfig',
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
     'management.apps.ManagementConfig',
     'executor.apps.ExecutorConfig',
     'executor.workflows.apps.WorkflowsConfig',
+    'executor.engine_manager.apps.EngineManagerConfig',
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
     'connectors.handlers.apps.HandlersConfig',
@@ -326,6 +328,10 @@ GLOBAL_ACCOUNT_PASSWORD_CONTEXT_CACHE = {
 WORKFLOW_SCHEDULER_INTERVAL = env.int("WORKFLOW_SCHEDULER_INTERVAL", default=10)
 
 SITE_DEFAULT_HTTP_PROTOCOL = env.str("SITE_DEFAULT_HTTP_PROTOCOL", default='http')
+PAGERDUTY_WEBHOOK_LOCATION = env.str("PAGERDUTY_WEBHOOK_LOCATION", default='/connectors/handlers/pagerduty'
+                                                                           '/handle_incidents')
+PAGERDUTY_WEBHOOK_HTTP_PROTOCOL = env.str("PAGERDUTY_WEBHOOK_HTTP_PROTOCOL", default='https')
+PAGERDUTY_WEBHOOK_USE_SITE = env.bool("PAGERDUTY_WEBHOOK_USE_SITE", default=True)
 
 RESET_PASSWORD_LOCATION = env.str("RESET_PASSWORD_PAGE_URL", default='/reset-password-confirm/?reset_token={}&email={}')
 RESET_PASSWORD_SITE_HTTP_PROTOCOL = env.str("RESET_PASSWORD_SITE_HTTP_PROTOCOL", default='http')
@@ -333,6 +339,7 @@ RESET_PASSWORD_USE_SITE = env.bool("RESET_PASSWORD_USE_SITE", default=True)
 
 MEDIA_ASSETS_ROOT = os.path.join(BASE_DIR, 'media/assets')
 MEDIA_STORAGE_LOCATION = env.str("MEDIA_STORAGE_LOCATION", default='/media/images')
+CSV_FILE_MEDIA_STORAGE_LOCATION = env.str("CSV_FILE_MEDIA_STORAGE_LOCATION", default='/media/csv_files')
 MEDIA_STORAGE_SITE_HTTP_PROTOCOL = env.str("MEDIA_STORAGE_SITE_HTTP_PROTOCOL", default='https')
 MEDIA_STORAGE_USE_SITE = env.bool("MEDIA_STORAGE_USE_SITE", default=True)
 
@@ -346,3 +353,11 @@ WORKFLOW_EXECUTE_API_PATH = env.str("WORKFLOW_EXECUTE_API_PATH", default='api/ex
 WORKFLOW_EXECUTIONS_GET_API_PATH = env.str("WORKFLOW_EXECUTIONS_GET_API_PATH", default='api/executions/get')
 WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL = env.str("WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL", default='https')
 WORKFLOW_EXECUTE_API_USE_SITE = env.bool("WORKFLOW_EXECUTE_API_USE_SITE", default=True)
+
+PLATFORM_PLAYBOOKS_EXECUTION_LOCATION = env.str("PLATFORM_PLAYBOOKS_EXECUTION_LOCATION", default='/playbooks/logs/{}')
+
+OKTA_DOMAIN = env.str("OKTA_DOMAIN", default='')
+OKTA_CLIENT_ID = env.str("OKTA_CLIENT_ID", default='')
+OKTA_CLIENT_USE_SITE = env.bool("OKTA_CLIENT_USE_SITE", default=True)
+OKTA_CLIENT_SITE_HTTP_PROTOCOL = env.str("OKTA_CLIENT_SITE_HTTP_PROTOCOL", default='https')
+OKTA_CLIENT_REDIRECT_LOCATION = env.str("OKTA_CLIENT_REDIRECT_LOCATION", default='/oauth/callback/okta')

@@ -1,0 +1,30 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+
+message Eks {
+  message Command {
+    google.protobuf.StringValue description = 2;
+    google.protobuf.StringValue region = 3;
+    google.protobuf.StringValue cluster = 4;
+    google.protobuf.StringValue namespace = 5;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    GET_PODS = 1;
+    GET_DEPLOYMENTS = 2;
+    GET_EVENTS = 3;
+    GET_SERVICES = 4;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    Command get_pods = 2;
+    Command get_deployments = 3;
+    Command get_events = 4;
+    Command get_services = 5;
+  }
+}

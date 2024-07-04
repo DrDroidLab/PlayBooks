@@ -5,11 +5,12 @@ from django.db import models
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
+from connectors.models import Connector
 from executor.models import PlayBook, PlayBookExecution
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
-    WorkflowExecutionLog as WorkflowExecutionLogProto
+    WorkflowExecutionLog as WorkflowExecutionLogProto, WorkflowConfiguration as WorkflowConfigurationProto
 from utils.model_utils import generate_choices
 from utils.proto_utils import dict_to_proto
 
@@ -26,28 +27,11 @@ class WorkflowEntryPoint(models.Model):
     class Meta:
         unique_together = [['account', 'type', 'entry_point_md5', 'created_by']]
 
-    def save(self, **kwargs):
-        if self.entry_point:
-            self.entry_point_md5 = md5(str(self.entry_point).encode('utf-8')).hexdigest()
-        super().save(**kwargs)
-
     @property
     def proto(self) -> WorkflowEntryPointProto:
         ep_proto = dict_to_proto(self.entry_point, WorkflowEntryPointProto)
-        if ep_proto.type == WorkflowEntryPointProto.Type.API:
-            return WorkflowEntryPointProto(
-                id=UInt64Value(value=self.id),
-                type=ep_proto.type,
-                api_config=ep_proto.api_config
-            )
-        elif ep_proto.type == WorkflowEntryPointProto.Type.ALERT:
-            return WorkflowEntryPointProto(
-                id=UInt64Value(value=self.id),
-                type=ep_proto.type,
-                alert_config=ep_proto.alert_config
-            )
-        else:
-            raise ValueError(f"Invalid entry point type: {ep_proto.type}")
+        ep_proto.id.value = self.id
+        return ep_proto
 
 
 class WorkflowAction(models.Model):
@@ -69,15 +53,7 @@ class WorkflowAction(models.Model):
 
     @property
     def proto(self) -> WorkflowActionProto:
-        wf_action_proto = dict_to_proto(self.action, WorkflowActionProto)
-        if wf_action_proto.type == WorkflowActionProto.Type.NOTIFY:
-            return WorkflowActionProto(
-                id=UInt64Value(value=self.id),
-                type=wf_action_proto.type,
-                notification_config=wf_action_proto.notification_config
-            )
-        else:
-            raise ValueError(f"Invalid action type: {wf_action_proto.type}")
+        return dict_to_proto(self.action, WorkflowActionProto)
 
 
 class Workflow(models.Model):
@@ -91,6 +67,7 @@ class Workflow(models.Model):
 
     schedule_type = models.IntegerField(choices=generate_choices(WorkflowScheduleProto.Type), db_index=True)
     schedule = models.JSONField()
+    configuration = models.JSONField(null=True, blank=True)
 
     playbooks = models.ManyToManyField(
         PlayBook,
@@ -134,6 +111,9 @@ class Workflow(models.Model):
         if latest_workflow_executions:
             latest_workflow_execution = latest_workflow_executions.first()
 
+        configuration = WorkflowConfigurationProto()
+        if self.configuration:
+            configuration = dict_to_proto(self.configuration, WorkflowConfigurationProto)
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -147,7 +127,9 @@ class Workflow(models.Model):
             actions=all_action_protos,
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
-            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
+            configuration=configuration
+
         )
 
     @property
@@ -160,6 +142,9 @@ class Workflow(models.Model):
         if latest_workflow_executions:
             latest_workflow_execution = latest_workflow_executions.first()
 
+        configuration = WorkflowConfigurationProto()
+        if self.configuration:
+            configuration = dict_to_proto(self.configuration, WorkflowConfigurationProto)
         return WorkflowProto(
             id=UInt64Value(value=self.id),
             name=StringValue(value=self.name),
@@ -171,7 +156,8 @@ class Workflow(models.Model):
             schedule=dict_to_proto(self.schedule, WorkflowScheduleProto),
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
-            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS
+            last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
+            configuration=configuration
         )
 
 
@@ -208,24 +194,36 @@ class WorkflowActionMapping(models.Model):
         unique_together = [['account', 'workflow', 'action']]
 
 
+#
+# class WorkflowActionConnectorMapping(models.Model):
+#     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
+#     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, db_index=True)
+#     workflow_action = models.ForeignKey(WorkflowAction, on_delete=models.CASCADE, db_index=True)
+#     connector = models.ForeignKey(Connector, on_delete=models.CASCADE, db_index=True)
+#     is_active = models.BooleanField(default=True)
+#     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
+#
+#     class Meta:
+#         unique_together = [['account', 'workflow', 'workflow_action', 'connector']]
+
+
 class WorkflowExecution(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, db_index=True)
     workflow_run_id = models.CharField(max_length=256, db_index=True)
     status = models.IntegerField(choices=generate_choices(WorkflowExecutionStatusType),
                                  default=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, db_index=True)
+
     metadata = models.JSONField(null=True, blank=True)
 
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    interval = models.IntegerField(null=True, blank=True, db_index=True)
-    total_executions = models.IntegerField(default=0)
-
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    time_range = models.JSONField(null=True, blank=True)
 
+    time_range = models.JSONField(null=True, blank=True)
+    workflow_execution_configuration = models.JSONField(null=True, blank=True)
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -242,8 +240,6 @@ class WorkflowExecution(models.Model):
             status=self.status,
             scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
             expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval),
-            total_executions=UInt64Value(value=self.total_executions),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
@@ -260,8 +256,6 @@ class WorkflowExecution(models.Model):
             status=self.status,
             scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
             expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
-            interval=UInt64Value(value=self.interval) if self.interval else None,
-            total_executions=UInt64Value(value=self.total_executions),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,

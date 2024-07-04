@@ -3,24 +3,34 @@ import { useEffect } from "react";
 import Overlay from "../../Overlay/index.jsx";
 import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
-import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 import { CloseRounded } from "@mui/icons-material";
 import { useDeleteConnectorMutation } from "../../../store/features/integrations/api/index.ts";
+import { useNavigate } from "react-router-dom";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import AffectedPlaybooks from "../../AffectedPlaybooks/index.tsx";
 
-const ConnectorDeleteOverlay = ({ isOpen, successCb, toggleOverlay }) => {
-  const [deleteConnector, { isLoading, isSuccess, data }] =
+const ConnectorDeleteOverlay = ({
+  isOpen,
+  successCb,
+  toggleOverlay,
+  connector,
+}) => {
+  const navigate = useNavigate();
+  const [deleteConnector, { isLoading, isSuccess }] =
     useDeleteConnectorMutation();
-  const currentConnector = useSelector(connectorSelector);
-  const handleSuccess = () => {
-    deleteConnector(currentConnector.id);
+
+  const handleSuccess = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deleteConnector(connector.id);
+    navigate("/data-sources", { replace: true });
   };
 
   useEffect(() => {
     if (isSuccess) {
       successCb();
     }
-  }, [data]);
+  }, [isSuccess]);
 
   return (
     <>
@@ -29,7 +39,7 @@ const ConnectorDeleteOverlay = ({ isOpen, successCb, toggleOverlay }) => {
           <div className={styles["actionOverlay"]}>
             <div className="flex justify-between items-center">
               <header className="text-gray-500">
-                Delete {currentConnector.displayTitle} keys?
+                Delete {connector?.display_name ?? connector?.title} keys?
               </header>
               <CloseRounded
                 onClick={toggleOverlay}
@@ -37,18 +47,10 @@ const ConnectorDeleteOverlay = ({ isOpen, successCb, toggleOverlay }) => {
               />
             </div>
             <p className="text-gray-500 text-sm">This action is permanent.</p>
+            <AffectedPlaybooks id={connector.id} />
             <div className={styles.actions}>
-              <button
-                className={styles["submitButton"]}
-                sx={{ marginRight: "10px" }}
-                onClick={handleSuccess}>
-                Yes
-              </button>
-              <button
-                className={styles["submitButtonRight"]}
-                onClick={toggleOverlay}>
-                No
-              </button>
+              <CustomButton onClick={handleSuccess}>Yes</CustomButton>
+              <CustomButton onClick={toggleOverlay}>No</CustomButton>
               {isLoading && (
                 <CircularProgress
                   style={{

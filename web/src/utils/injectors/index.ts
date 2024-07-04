@@ -10,3 +10,7 @@ export * from "./text.ts";
 export * from "./mimir.ts";
 export * from "./bash.ts";
 export * from "./sqlRawQuery.ts";
+export * from "./azureLogs.ts";
+export * from "./gke.ts";
+export * from "./grafanaLoki.ts";
+export * from "./elasticSearch.ts";

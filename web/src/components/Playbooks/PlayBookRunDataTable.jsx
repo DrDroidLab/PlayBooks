@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import styles from './index.module.css';
+import { useState, useEffect } from "react";
+import styles from "./index.module.css";
 
 import {
   Table,
@@ -9,26 +9,29 @@ import {
   TableRow,
   Button,
   Dialog,
-  DialogActions
-} from '@mui/material';
+  DialogActions,
+} from "@mui/material";
 
-import SeeMoreText from './SeeMoreText';
+import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
+import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 
-const PlayBookRunDataTable = ({ title, result, timestamp }) => {
+const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
   const [open, setOpen] = useState(false);
+  const [tableLoading, setTableLoading] = useState(true);
 
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     if (
       result &&
-      result.table_result &&
-      result.table_result.rows &&
-      result.table_result.rows.length > 0
+      result.table &&
+      result.table.rows &&
+      result.table.rows.length > 0
     ) {
-      setTableData(result.table_result.rows);
       setShowTable(true);
+      setTableData(result.table.rows);
+      setTableLoading(false);
     }
   }, [result]);
 
@@ -36,18 +39,43 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
     setOpen(false);
   };
 
+  const columnLength = tableData[0]?.columns?.length;
+  const shouldNoWrap = columnLength < 5;
+
+  if (tableLoading)
+    return (
+      <div>
+        <p className="text-xs font-semibold">Loading...</p>
+      </div>
+    );
+
   return (
-    <div className={styles['graph-box']}>
-      <p className={styles['graph-title']}>{title}</p>
-      {!showTable && <p className={styles['graph-error']}>No data available</p>}
+    <div
+      className={`${
+        showHeading ? "h-full" : "h-auto"
+      } border p-2 rounded mb-1 overflow-auto`}>
+      <p className={styles["graph-title"]}>{title}</p>
+      {!showTable && <p className={styles["graph-error"]}>No data available</p>}
       {showTable && (
-        <Table stickyHeader className={styles['tableData']}>
+        <Table
+          stickyHeader
+          className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2 h-full`}>
           <TableHead>
             <TableRow>
               {tableData[0]?.columns
-                ?.filter(x => x.name !== '@ptr')
+                ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
-                  return <TableCell className={styles['tableLogDataTitle']}>{col.name}</TableCell>;
+                  return (
+                    <TableCell
+                      key={index}
+                      className="!w-fit !min-w-[50px] !max-w-[200px] !border">
+                      <SeeMoreTextWithoutModal
+                        text={col.name}
+                        maxLength={50}
+                        className={"font-bold text-xs"}
+                      />
+                    </TableCell>
+                  );
                 })}
             </TableRow>
           </TableHead>
@@ -56,16 +84,27 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
               return (
                 <TableRow key={rowIndex}>
                   {row?.columns
-                    ?.filter(x => x.name !== '@ptr')
+                    ?.filter((x) => x.name !== "@ptr")
                     .map((col, colIndex) => {
                       return (
                         <TableCell
                           key={colIndex}
-                          className={
-                            col.name === '@message' ? styles['tableDataMsg'] : styles['tableData']
-                          }
-                        >
-                          <SeeMoreText title={col.name} text={col.value} truncSize={200} />
+                          className={`${
+                            col.name === "@message"
+                              ? "min-w-[100px]"
+                              : "min-w-[50px]"
+                          } !text-xs !border`}>
+                          <SeeMoreTextWithoutModal
+                            shouldNoWrap={shouldNoWrap}
+                            text={
+                              isDate(col.value)
+                                ? renderTimestamp(
+                                    new Date(col.value).getTime() / 1000,
+                                  )
+                                : col.value
+                            }
+                            maxLength={200}
+                          />
                         </TableCell>
                       );
                     })}
@@ -76,12 +115,12 @@ const PlayBookRunDataTable = ({ title, result, timestamp }) => {
         </Table>
       )}
       {!showTable && timestamp && (
-        <p className={styles['graph-ts-error']}>
+        <p className={styles["graph-ts-error"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}
       {showTable && timestamp && (
-        <p className={styles['graph-ts']}>
+        <p className={styles["graph-ts"]}>
           <i>Updated at: {timestamp}</i>
         </p>
       )}

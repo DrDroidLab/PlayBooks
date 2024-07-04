@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
-import RadioGroupComponent from "../RadioGroupComponent";
 import SelectComponent from "../SelectComponent";
 import CheckboxGroupComponent from "../CheckboxGroupComponent";
 import CheckboxComponent from "../CheckboxComponent";
 import MultiSelectComponent from "../MultiSelectComponent";
+import RadioGroup from "../common/RadioGroupComponent/index.tsx";
 
 const InputValueType = {
   LONG: "LONG",
@@ -162,6 +162,7 @@ const ValueComponent = ({
             className={
               styles["input__valueContainer"] + " " + styles[inputLengthClass]
             }
+            autoFocus
             onChange={handleChange}
             value={typeof value === "object" ? value.join(",") : value}
             type={hideText ? "password" : "text"}
@@ -208,7 +209,7 @@ const ValueComponent = ({
       )}
       {valueType === "BOOLEAN" && (
         <div className={styles["boolean__valueContainer"]}>
-          <RadioGroupComponent
+          <RadioGroup
             onChange={handleRadiobuttonChange}
             options={boolOptions}
             checked={value}

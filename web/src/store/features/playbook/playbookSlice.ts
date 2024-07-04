@@ -1,7 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Playbook } from "../../../types.ts";
 import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
+import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
+import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
+import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
+import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 
 const emptyStep = {
   modelType: "",
@@ -12,6 +16,8 @@ const emptyStep = {
   showError: false,
   stepType: null,
   action: {},
+  requireCondition: false,
+  isEditing: true,
 };
 
 const initialState: Playbook = {
@@ -30,8 +36,16 @@ const initialState: Playbook = {
   },
   isEditing: false,
   lastUpdatedAt: null,
-  currentStepIndex: null,
   view: "builder",
+  shouldScroll: undefined,
+  currentVisibleStep: undefined,
+  playbookEdges: [],
+  permanentView: undefined,
+  executionId: undefined,
+  currentStepId: undefined,
+  isOnPlaybookPage: false,
+  executionStack: [],
+  zoomLevel: 0.75,
 };
 
 const playbookSlice = createSlice({
@@ -49,7 +63,7 @@ const playbookSlice = createSlice({
       state.view = payload;
     },
     setCurrentPlaybook(state, { payload }) {
-      state.currentPlaybook = { ...payload, isPrefetched: true };
+      state.currentPlaybook = { isPrefetched: true, ...payload };
     },
     setPlaybookData(state, { payload }) {
       state.currentPlaybook.name = payload.name;
@@ -90,11 +104,21 @@ const playbookSlice = createSlice({
           value: val[1] as string,
         };
       });
-      state.steps = playbookToSteps(payload, true);
+      state.steps = playbookToSteps(payload, false);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = true;
     },
     copyPlaybook(state, { payload }) {
-      state.name = payload.name;
+      const useState = payload.useState;
+
+      if (useState) {
+        state.name = "Copy of " + state.name;
+        state.currentPlaybook.isCopied = true;
+        state.isEditing = false;
+        return;
+      }
+
+      state.name = "Copy of " + payload.name;
       state.description = payload.description;
       state.currentPlaybook.globalVariables = Object.entries(
         payload.global_variable_set ?? {},
@@ -114,37 +138,17 @@ const playbookSlice = createSlice({
       });
       state.currentPlaybook.isCopied = true;
       state.steps = playbookToSteps(payload, true);
+      state.playbookEdges = playbookToEdges(payload, state.steps);
       state.isEditing = false;
     },
     setErrors(state, { payload }) {
-      state.steps[payload.index].errors = payload.errors;
-    },
-    setPlaybookEditing(state, { payload }) {
-      state.currentPlaybook.name = payload.name;
-      state.currentPlaybook.id = payload.id;
-      state.id = payload.id;
-      state.name = payload.name;
-      state.currentPlaybook.globalVariables = Object.entries(
-        payload.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.globalVariables = Object.entries(
-        payload.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.isEditing = true;
-      state.steps = playbookToSteps(payload, true);
-    },
-    setName(state, { payload }) {
-      state.name = payload;
+      const { id, errors } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) {
+          step.errors = errors;
+        }
+      }
     },
     addGlobalVariable(state, { payload }) {
       const list = state.globalVariables ?? [];
@@ -179,22 +183,36 @@ const playbookSlice = createSlice({
     setMeta(state, { payload }) {
       state.meta = payload;
     },
-    setCurrentStepIndex(state, { payload }) {
-      if (payload !== null) state.currentStepIndex = payload.toString();
-      else state.currentStepIndex = null;
+    setCurrentStepId(state, { payload }) {
+      state.currentStepId = payload;
+    },
+    showStepConfig(state, { payload }) {
+      state.currentStepId = payload.toString();
+      state.steps.forEach((step) => (step.isOpen = false));
+      const step = state.steps.find(
+        (e) => e.id?.toString() === state.currentStepId,
+      );
+      if (step) step.isOpen = true;
     },
     createStepWithSource(state, { payload }) {
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
       const index = state.steps.length;
+      const parentId = payload.parentId;
+      const parentExists = parentId !== null && parentId !== undefined;
+      const id = generateUUIDWithoutHyphens();
       state.steps.push({
         ...{
+          id,
           source: payload.source,
+          stepIndex: index,
+          taskType: payload.taskType,
           modelType: payload.modelType,
           selectedSource: payload.key,
           description:
             state?.steps[index]?.description ??
+            payload.description ??
             integrationSentenceMap[payload.modelType],
           notes: state?.steps[index]?.notes,
           assets: [],
@@ -204,190 +222,161 @@ const playbookSlice = createSlice({
           showError: false,
           stepType: "data",
           action: {},
+          position: {
+            x: 0,
+            y: 0,
+          },
+          requireCondition: payload.requireCondition ?? false,
+          currentConditionParentId: payload.currentConditionParentId,
+          resultType: payload.resultType,
         },
         globalVariables: state.globalVariables ?? [],
+        isEditing: true,
       });
 
-      // state.currentStepIndex = index.toString();
+      if (parentExists) {
+        state.playbookEdges.push({
+          id: `edge-${parentId}-${id}`,
+          source: `node-${parentId}`,
+          target: `node-${id}`,
+          type: "custom",
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${id}`,
+          source: `playbook`,
+          target: `node-${id}`,
+          type: "custom",
+        });
+      }
+
+      state.currentStepId = id.toString();
     },
-    addStep: (state) => {
+    addParentId: (state, { payload }) => {
+      const { id, parentId } = payload;
+      const parentExists = parentId !== undefined && parentId !== null;
+      const edgeId = parentExists ? `edge-${parentId}-${id}` : `edge-${id}`;
+      state.playbookEdges.filter((e) => e.id !== id);
+      state.playbookEdges.push({
+        id: edgeId,
+        source: parentExists ? `node-${parentId}` : `playbook`,
+        target: `node-${id}`,
+        type: "custom",
+      });
+    },
+    addStep: (state, { payload }) => {
+      const { parentId, addConditions, id } = payload;
       state.steps.forEach((step) => {
         step.isOpen = false;
       });
-      state.steps.push({
+      const index = state.steps.length;
+      const currentStep = {
         ...emptyStep,
+        id: id ?? generateUUIDWithoutHyphens(),
+        description: `Step-${index + 1}`,
+        stepIndex: index,
         globalVariables: state.globalVariables ?? [],
-      });
+        position: {
+          x: 0,
+          y: 0,
+        },
+      };
+      state.steps.push(currentStep);
+      if (parentId !== undefined) {
+        state.playbookEdges.push({
+          id: `edge-${parentId}-${currentStep.id}`,
+          source: `node-${parentId}`,
+          target: `node-${currentStep.id}`,
+          type: "custom",
+          conditions: addConditions
+            ? [
+                {
+                  function: "",
+                  operation: "",
+                  value: "",
+                },
+              ]
+            : [],
+          globalRule: addConditions ? ruleOptions[0].id : undefined,
+        });
+      } else {
+        state.playbookEdges.push({
+          id: `edge-${currentStep.id}`,
+          source: `playbook`,
+          target: `node-${currentStep.id}`,
+        });
+      }
+
+      state.currentStepId = currentStep.id.toString();
+      state.permanentView = addConditions
+        ? PermanentDrawerTypes.STEP_DETAILS
+        : PermanentDrawerTypes.CONDITION;
     },
     toggleStep: (state, { payload }) => {
-      state.steps[payload.index].isOpen = !state.steps[payload.index].isOpen;
-      state.currentStepIndex = payload.index.toString();
+      const id = payload;
+      const step = state.steps.find((step) => step.id === id);
+      if (step) step.isOpen = !step.isOpen;
     },
     deleteStep: (state, { payload }) => {
-      state.steps.splice(payload, 1);
-      state.currentStepIndex = null;
+      const id = payload;
+      if (id) {
+        const index = state.steps.findIndex((step) => step.id === id);
+        if (index !== undefined && index !== null) state.steps.splice(index, 1);
+        state.currentStepId = undefined;
+        state.playbookEdges = state.playbookEdges.filter(
+          (e) => e.source !== `node-${id}` && e.target !== `node-${id}`,
+        );
+        state.permanentView = PermanentDrawerTypes.DEFAULT;
+      }
     },
     updateStep: (state, { payload }) => {
-      state.steps[payload.index][payload.key] = payload.value;
-    },
-    updateTitle: (state, { payload }) => {
-      state.steps[payload.index].description = payload.description;
-    },
-    changeProgress: (state, { payload }) => {
-      if (state.steps[payload.index])
-        state.steps[payload.index].executioninprogress = payload.progress;
-    },
-    selectSourceAndModel: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        index: number;
-        source: string;
-        modelType: string;
-        key: string;
-      }>,
-    ) => {
-      const currentStep = state.steps[payload.index];
-      if (
-        currentStep.source === payload.source &&
-        currentStep.modelType === payload.modelType
-      )
-        return;
-      state.steps[payload.index] = {
-        source: payload.source,
-        description: state?.steps[payload.index]?.description,
-        notes: state?.steps[payload.index]?.notes,
-        assets: [],
-        isOpen: true,
-        isPlayground: false,
-        globalVariables: state.globalVariables ?? [],
-        showError: false,
-        stepType: "data",
-        action: {},
-      };
-      state.steps[payload.index].source = payload.source;
-      state.steps[payload.index].modelType = payload.modelType;
-      state.steps[payload.index].selectedSource = payload.key;
-    },
-    selectNamespace: (state, { payload }) => {
-      state.steps[payload.index].namespaceName = payload.namespace;
-      state.steps[payload.index].region = undefined;
-      state.steps[payload.index].dimensionIndex = undefined;
-      state.steps[payload.index].dimensionName = undefined;
-      state.steps[payload.index].dimensionValue = undefined;
-      state.steps[payload.index].metric = undefined;
-    },
-    setModelTypeOptions: (state, { payload }) => {
-      state.steps[payload.index].modelTypeOptions = payload.options;
+      const id = payload.id;
+      const step = state.steps?.find((step) => step.id === id);
+      if (step) {
+        step[payload.key] = payload.value;
+        step.isEditing = true;
+      }
     },
     setAssets(state, { payload }) {
-      state.steps[payload.index].assets = payload?.assets;
-    },
-    setRegion(state, { payload }) {
-      state.steps[payload.index].region = payload.region;
-      state.steps[payload.index].logGroup = null;
-      state.steps[payload.index].dimensionIndex = undefined;
-      state.steps[payload.index].dimensionName = undefined;
-      state.steps[payload.index].dimensionValue = undefined;
-      state.steps[payload.index].metric = undefined;
-    },
-    setLogGroup(state, { payload }) {
-      state.steps[payload.index].logGroup = payload.logGroup;
-    },
-    setLogQuery(state, { payload }) {
-      state.steps[payload.index].cw_log_query = payload.logQuery;
-    },
-    setDashboard(state, { payload }) {
-      state.steps[payload.index].dashboard = payload.dashboard;
-
-      state.steps[payload.index].panel = null;
-      state.steps[payload.index].page = null;
-      state.steps[payload.index].widget = null;
-    },
-    setApplicationName(state, { payload }) {
-      state.steps[payload.index].application_name = payload.application_name;
-
-      state.steps[payload.index].golden_metric = undefined;
-    },
-    setGoldenMetric(state, { payload }) {
-      state.steps[payload.index].golden_metric = payload.metric;
-    },
-    setGoldenMetrics(state, { payload }) {
-      state.steps[payload.index].golden_metrics = payload.metric;
-    },
-    setPanel(state, { payload }) {
-      state.steps[payload.index].panel = payload.panel;
-      state.steps[payload.index].grafanaQuery = null;
-      state.steps[payload.index].options = null;
-      state.steps[payload.index].selectedOptions = null;
-    },
-    setGrafanaQuery(state, { payload }) {
-      state.steps[payload.index].grafanaQuery = payload.query;
-      state.steps[payload.index].options = null;
-      state.steps[payload.index].selectedOptions = null;
-    },
-    setGrafanaExpression(state, { payload }) {
-      state.steps[payload.index].grafanaQuery.expression = payload.expression;
-    },
-    setGrafanaOptions(state, { payload }) {
-      if (payload.options && payload.index)
-        state.steps[payload.index].options = payload.options;
-    },
-    setSelectedGrafanaOptions(state, { payload }) {
-      state.steps[payload.index].selectedOptions = {
-        ...state.steps[payload.index].selectedOptions,
-        [payload.option.option.variable]: payload.option.id,
-      };
-    },
-    setDimensionIndex(state, { payload }) {
-      state.steps[payload.index].dimensionIndex = payload.dimensionIndex;
-      state.steps[payload.index].dimension = payload.dimension;
-      state.steps[payload.index].dimensionName =
-        payload.dimension.split(": ")[0];
-      state.steps[payload.index].dimensionValue =
-        payload.dimension.split(": ")[1];
-      state.steps[payload.index].metric = undefined;
-    },
-    setMetric(state, { payload }) {
-      state.steps[payload.index].metric = payload.metric;
-    },
-    setDatabase(state, { payload }) {
-      state.steps[payload.index].database = payload.database;
-    },
-    setCluster(state, { payload }) {
-      state.steps[payload.index].cluster = payload.cluster;
-    },
-    setDbQuery(state, { payload }) {
-      state.steps[payload.index].dbQuery = payload.query;
-    },
-    setQuery1(state, { payload }) {
-      state.steps[payload.index].query1 = payload.query;
-    },
-    setQuery2(state, { payload }) {
-      state.steps[payload.index].query2 = payload.query;
-    },
-    setFormula(state, { payload }) {
-      state.steps[payload.index].formula = payload.formula;
-    },
-    setRequiresFormula(state, { payload }) {
-      state.steps[payload.index].requiresFormula = payload.requiresFormula;
-    },
-    setCommand(state, { payload }) {
-      state.steps[payload.index].command = payload.command;
-    },
-    setTextNotes(state, { payload }) {
-      state.steps[payload.index].textNotes = payload.text;
+      const { id } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) step.assets = payload.assets;
+      }
     },
     addNotes(state, { payload }) {
-      state.steps[payload.index].notes = payload.notes;
+      const { id, notes } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) {
+          step.notes = notes;
+          step.isEditing = true;
+        }
+      }
     },
     addExternalLinks(state, { payload }) {
-      state.steps[payload.index].externalLinks = payload.externalLinks;
+      const { id, links } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) {
+          step.externalLinks = links;
+          step.isEditing = true;
+        }
+      }
     },
     toggleExternalLinkVisibility(state, { payload }) {
-      state.steps[payload.index].showExternalLinks =
-        !state.steps[payload.index].showExternalLinks;
+      const { id } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) step.showExternalLinks = !step.showExternalLinks;
+      }
+    },
+    toggleNotesVisibility(state, { payload }) {
+      const { id } = payload;
+      if (id) {
+        const step = state.steps?.find((step) => step.id === id);
+        if (step) step.showNotes = !step.showNotes;
+      }
     },
     resetState(state) {
       state.steps = [];
@@ -396,77 +385,72 @@ const playbookSlice = createSlice({
       state.globalVariables = [];
       state.currentPlaybook = {};
       state.isEditing = false;
-      state.lastUpdatedAt = null;
-      state.currentStepIndex = null;
+      state.lastUpdatedAt = undefined;
+      state.currentStepId = undefined;
       state.view = initialState.view;
+      state.playbookEdges = [];
+      state.currentVisibleStep = undefined;
+      state.executionId = undefined;
+      state.isOnPlaybookPage = false;
+      state.zoomLevel = 0.75;
+    },
+    resetExecutions(state) {
+      state.executionId = undefined;
+      state.steps = state.steps.map((step) => ({
+        ...step,
+        showOutput: false,
+        outputError: "",
+        showError: false,
+        outputLoading: false,
+        outputs: [],
+        relationLogs: [],
+      }));
     },
     setSteps(state, { payload }) {
       state.steps = payload;
     },
-    setPage(state, { payload }) {
-      state.steps[payload.index].page = payload.page;
-      state.steps[payload.index].widget = null;
-    },
-    setWidget(state, { payload }) {
-      state.steps[payload.index].widget = payload.widget;
-    },
     setNRQLData(state, { payload }) {
-      state.steps[payload.index].nrqlData = {
-        ...state.steps[payload.index].nrqlData,
-        [payload.key]: payload.value,
-      };
-    },
-    setDatadogService(state, { payload }) {
-      state.steps[payload.index].datadogService = payload.service;
-      state.steps[payload.index].datadogMetricFamily = undefined;
-      state.steps[payload.index].datadogEnvironment = undefined;
-      state.steps[payload.index].datadogMetric = undefined;
-    },
-    setDatadogMetricFamily(state, { payload }) {
-      state.steps[payload.index].datadogMetricFamily = payload.metric;
-      state.steps[payload.index].datadogEnvironment = undefined;
-      state.steps[payload.index].datadogMetric = undefined;
-    },
-    setDataDogEnvironment(state, { payload }) {
-      state.steps[payload.index].datadogEnvironment = payload.environment;
-      state.steps[payload.index].datadogMetric = undefined;
-    },
-    setDatadogMetric(state, { payload }) {
-      state.steps[payload.index].datadogMetric = payload.metric;
+      const { id, key, value } = payload;
+      const step = state.steps?.find((step) => step.id === id);
+      if (step) {
+        step.nrqlData = {
+          ...step?.nrqlData,
+          [key]: value,
+        };
+        step.isEditing = true;
+      }
     },
     setLastUpdatedAt(state) {
       state.lastUpdatedAt = new Date();
     },
-    selectEksRegion(state, { payload }) {
-      state.steps[payload.index].eksRegion = payload.region;
-      state.steps[payload.index].eksNamespace = undefined;
-      state.steps[payload.index].cluster = undefined;
-      state.steps[payload.index].command = undefined;
-    },
-    selectCluster(state, { payload }) {
-      state.steps[payload.index].cluster = payload.cluster;
-      state.steps[payload.index].eksNamespace = undefined;
-      state.steps[payload.index].command = undefined;
-    },
-    selectEksNamespace(state, { payload }) {
-      state.steps[payload.index].eksNamespace = payload.namespace;
-      state.steps[payload.index].command = undefined;
-    },
-    setStepType(state, { payload }) {
-      state.steps[payload.index].stepType = payload.stepType;
-    },
     setActionKey(state, { payload }) {
-      state.steps[payload.index].action[payload.key] = payload.value;
+      const { id, key, value } = payload;
+      const step = state.steps?.find((step) => step.id === id);
+      if (step) {
+        step.action[key] = value;
+        step.isEditing = true;
+      }
     },
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
+    },
+    pushToExecutionStack(state, { payload }) {
+      const nextPossibleStepLogs = payload;
+      nextPossibleStepLogs.forEach((log) => {
+        const stepId = log.relation.child.id;
+        if (!state.executionStack.includes(stepId)) {
+          state.executionStack.push(stepId);
+        }
+      });
+    },
+    popFromExecutionStack(state) {
+      if (state.executionStack.length > 0) state.executionStack.pop();
     },
   },
 });
 
 export const {
   setPlaybooks,
-  setPlaybookEditing,
   setPlaybookData,
   setCurrentPlaybook,
   setPlaybookDataBeta,
@@ -474,64 +458,31 @@ export const {
   addGlobalVariable,
   deleteVariable,
   updateGlobalVariable,
-  setName,
   setMeta,
-  setCurrentStepIndex,
+  showStepConfig,
   createStepWithSource,
   addStep,
   toggleStep,
   deleteStep,
   updateStep,
-  updateTitle,
-  changeProgress,
-  selectSourceAndModel,
-  setModelTypeOptions,
-  selectNamespace,
-  setTextNotes,
+  setCurrentStepId,
   setAssets,
-  setRegion,
-  setLogGroup,
-  setLogQuery,
-  setDashboard,
-  setPanel,
-  setGrafanaQuery,
-  setGrafanaExpression,
-  setGrafanaOptions,
-  setSelectedGrafanaOptions,
-  setDimensionIndex,
-  setMetric,
-  setDatabase,
-  setDbQuery,
   addNotes,
   addExternalLinks,
   resetState,
   setSteps,
-  setPage,
-  setWidget,
-  setApplicationName,
-  setGoldenMetric,
-  setGoldenMetrics,
   setNRQLData,
-  setDatadogService,
-  setDatadogMetricFamily,
-  setDataDogEnvironment,
-  setDatadogMetric,
   setLastUpdatedAt,
-  setCluster,
-  setCommand,
   setErrors,
-  selectEksNamespace,
-  selectEksRegion,
-  selectCluster,
-  setRequiresFormula,
-  setQuery1,
-  setQuery2,
-  setFormula,
   setView,
   toggleExternalLinkVisibility,
-  setStepType,
+  toggleNotesVisibility,
   setActionKey,
   setPlaybookKey,
+  addParentId,
+  resetExecutions,
+  pushToExecutionStack,
+  popFromExecutionStack,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

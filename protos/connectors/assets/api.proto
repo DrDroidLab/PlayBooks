@@ -9,7 +9,8 @@ import "protos/connectors/assets/asset.proto";
 message GetConnectorsAssetsModelsOptionsRequest {
   Meta meta = 1;
   Source connector_type = 2;
-  ConnectorMetadataModelType model_type = 3;
+  google.protobuf.UInt64Value connector_id = 3;
+  SourceModelType model_type = 4;
 }
 
 message GetConnectorsAssetsModelsOptionsResponse {
@@ -21,12 +22,27 @@ message GetConnectorsAssetsModelsOptionsResponse {
 
 message GetConnectorsAssetsModelsRequest {
   Meta meta = 1;
-  Source connector_type = 2;
-  ConnectorMetadataModelType type = 3;
-  AccountConnectorAssetsModelFilters filters = 4;
+  google.protobuf.UInt64Value connector_id = 2;
+  Source connector_type = 3;
+  SourceModelType type = 4;
+  AccountConnectorAssetsModelFilters filters = 5;
 }
 
 message GetConnectorsAssetsModelsResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated AccountConnectorAssets assets = 4;
+}
+
+message GetConnectorsAssetsModelsV2Request {
+  Meta meta = 1;
+  Connector connector = 2;
+  SourceModelType type = 3;
+  AccountConnectorAssetsModelFilters filters = 4;
+}
+
+message GetConnectorsAssetsModelsV2Response {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;

@@ -4,7 +4,7 @@ import { setCurrentWorkflowTriggerKey } from "../../workflow/workflowSlice.ts";
 
 export const getTriggerOptionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getTriggerOptions: builder.query<any, any>({
+    getTriggerOptions: builder.query<any, void>({
       query: () => ({
         url: GET_TRIGGER_OPTIONS,
         method: "POST",

@@ -53,7 +53,7 @@ div.ruleBox {
   padding-bottom: 12px;
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 5px;
 }
 
 .container .subHeading {

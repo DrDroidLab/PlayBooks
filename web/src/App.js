@@ -6,15 +6,20 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
 import NotFound from "./pages/NotFound";
 import posthog from "posthog-js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAccessToken,
   selectEmail,
+  setLastLogin,
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
+import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
+import Loading from "./components/common/Loading/index.tsx";
+import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
+const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage"),
 );
@@ -43,24 +48,21 @@ const Playground = React.lazy(() => import("./components/Playgrounds"));
 const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
 const Support = React.lazy(() => import("./components/Support"));
 const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys"));
-// const EditPlaybook = React.lazy(() =>
-//   import("./components/Playbooks/EditPlaybook.jsx"),
-// );
-// const CreatePlaybook = React.lazy(() =>
-//   import("./components/Playbooks/CreatePlaybook"),
-// );
-const CreatePlaybookBeta = React.lazy(() =>
+const CreatePlaybook = React.lazy(() =>
   import("./components/Playbooks/create/index.jsx"),
 );
 const PlaybookLog = React.lazy(() =>
   import("./components/Playbooks/logs/index.jsx"),
 );
+const DataSources = React.lazy(() => import("./pages/DataSources.tsx"));
 
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = useSelector(selectEmail);
   const accessToken = useSelector(selectAccessToken);
+  const { isLoading, data, isError } = useGetUserQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (email) {
@@ -69,13 +71,13 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    if (!accessToken) {
+    if (!data && isError && !isUnAuth) {
       navigate("/signup", {
         replace: true,
         state: { from: location.pathname },
       });
     }
-  }, [accessToken]);
+  }, [data, isError, accessToken]);
 
   useEffect(() => {
     const loader = document.querySelector(".loader-container");
@@ -84,26 +86,36 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (data?.user) {
+      const d = new Date().toString();
+      dispatch(setLastLogin(d));
+      localStorage.setItem("lastLogin", d);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <Routes>
       <Route element={<BaseLayout />}>
+        <Route path="/oauth/callback/:oauthId" element={<OAuthCallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Route>
 
       <Route element={<RequireAuth />}>
-        <Route path="/playbooks/create" element={<CreatePlaybookBeta />} />
-        <Route
-          path="/playbooks/:playbook_id"
-          element={<CreatePlaybookBeta />}
-        />
+        <Route path="/playbooks/create" element={<CreatePlaybook />} />
+        <Route path="/playbooks/:playbook_id" element={<CreatePlaybook />} />
         <Route
           path="/playbooks/logs/:playbook_run_id"
           element={<PlaybookLog />}
         />
         <Route
           path="/playbooks/edit/:playbook_id"
-          element={<CreatePlaybookBeta />}
+          element={<CreatePlaybook />}
         />
       </Route>
 
@@ -115,12 +127,6 @@ const App = () => {
             path="/playbooks/executions/list"
             element={<PlaybookExecutionsList />}
           />
-          {/* <Route path="/playbooks/create" element={<CreatePlaybook />} /> */}
-          {/* <Route path="/playbooks/:playbook_id" element={<EditPlaybook />} /> */}
-          {/* <Route
-            path="/playbooks/edit/:playbook_id"
-            element={<EditPlaybook />}
-          /> */}
           <Route
             path="/playbooks/executions/:id"
             element={<PlaybookExecutions />}
@@ -142,8 +148,16 @@ const App = () => {
             element={<WorkflowExecutionLogs />}
           />
           <Route path="/playgrounds" element={<Playground />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/integrations/:id" element={<ConnectorPage />} />
+          <Route path="/data-sources/add" element={<Integrations />} />
+          <Route path="/data-sources" element={<DataSources />} />
+          <Route
+            path="/data-sources/:connectorEnum"
+            element={<ConnectorPage />}
+          />
+          <Route
+            path="/data-sources/:connectorEnum/:id"
+            element={<ConnectorPage />}
+          />
           <Route path="/api-keys" element={<ApiTokens />} />
           <Route path="/invite-team" element={<InviteTeam />} />
           <Route path="/support" element={<Support />} />

@@ -5,16 +5,19 @@ import {
   currentWorkflowSelector,
   setCurrentWorkflowKey,
 } from "../../../store/features/workflow/workflowSlice.ts";
-import { handleInput, handleSelect } from "../utils/handleInputs.ts";
-import SelectComponent from "../../SelectComponent/index.jsx";
+import { handleSelect } from "../utils/handleInputs.ts";
 import { useGetTriggerOptionsQuery } from "../../../store/features/triggers/api/getTriggerOptionsApi.ts";
-import { CircularProgress } from "@mui/material";
-// import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
+import handleNotificationOptions from "../../../utils/workflow/handleNotificationOptions.ts";
+import HandleNotificationOption from "./HandleNotificationOption.jsx";
 
 function NotificationDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
-  const { data: options, isFetching } = useGetTriggerOptionsQuery();
+  const { data: options } = useGetTriggerOptionsQuery();
   const dispatch = useDispatch();
+
+  const notificationOptionsList = notificationOptions[0].options.filter((e) =>
+    handleNotificationOptions().includes(e.id)
+  );
 
   return (
     <div>
@@ -22,65 +25,35 @@ function NotificationDetails() {
         Notifications
       </label>
 
-      {/* {notificationOptions.map((option) => (
-        <HandleInputRender key={option.id} option={option} />
-      ))} */}
-      {notificationOptions[0].options.map((option) =>
-        currentWorkflow.workflowType !== "slack" &&
-        option.id === "reply-to-alert" ? (
-          <div key={option.id}></div>
-        ) : (
-          <button
-            key={option.id}
-            data-type="notification"
-            onClick={(e) => {
-              if (currentWorkflow.notification === option.id) {
-                dispatch(
-                  setCurrentWorkflowKey({
-                    key: "notification",
-                    value: undefined,
-                  }),
-                );
-              } else {
-                handleSelect(e, option);
-              }
-            }}
-            className={`${
-              currentWorkflow.notification === option.id
-                ? "!bg-white !text-violet-500 border-violet-500"
-                : "text-gray-500 bg-gray-50 border-gray-200"
-            } p-2 text-sm hover:bg-gray-100 cursor-pointer transition-all rounded border`}>
-            {option.label}
-          </button>
-        ),
-      )}
-
-      {currentWorkflow.notification === "slack-message" && (
-        <div className="flex items-center gap-2 mt-2">
-          <p className="text-xs font-bold text-gray-500">Select Channel</p>
-          {isFetching && <CircularProgress size={20} />}
-          <SelectComponent
-            data={options?.active_channels?.map((e) => {
-              return {
-                id: e.channel_id,
-                label: e.channel_name,
-                channel: e,
-              };
-            })}
-            placeholder="Select Channel"
-            onSelectionChange={(_, val) => {
-              handleInput("channel", val.channel);
-            }}
-            selected={
-              currentWorkflow?.channel?.channel_id ||
-              currentWorkflow?.trigger?.channel?.channel_id ||
-              ""
+      {notificationOptionsList.map((option, index) => (
+        <button
+          key={option.id}
+          data-type="notification"
+          onClick={(e) => {
+            if (currentWorkflow.notification === option.id) {
+              dispatch(
+                setCurrentWorkflowKey({
+                  key: "notification",
+                  value: undefined,
+                })
+              );
+            } else {
+              handleSelect(e, option);
             }
-            error={currentWorkflow?.errors?.channel ?? false}
-            searchable={true}
-          />
-        </div>
-      )}
+          }}
+          className={`${
+            currentWorkflow.notification === option.id
+              ? "!bg-white !text-violet-500 border-violet-500"
+              : "text-gray-500 bg-gray-50 border-gray-200"
+          } ${index === options?.length - 1 ? "rounded-r" : ""} ${
+            index === 0 ? "rounded-l" : ""
+          } p-1 text-xs hover:bg-gray-100 cursor-pointer transition-all border`}
+        >
+          {option.label}
+        </button>
+      ))}
+
+      <HandleNotificationOption />
     </div>
   );
 }

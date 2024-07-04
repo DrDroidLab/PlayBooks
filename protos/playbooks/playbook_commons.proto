@@ -1,0 +1,120 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+enum PlaybookExecutionStatusType {
+  UNKNOWN_STATUS = 0;
+  CREATED = 1;
+  RUNNING = 2;
+  FINISHED = 3;
+  FAILED = 4;
+}
+
+enum PlaybookTaskResultType {
+  UNKNOWN = 0;
+  TIMESERIES = 1;
+  TABLE = 2;
+  API_RESPONSE = 3;
+  BASH_COMMAND_OUTPUT = 4;
+}
+
+message ExternalLink {
+  google.protobuf.StringValue name = 1;
+  google.protobuf.StringValue url = 2;
+}
+
+message LabelValuePair {
+  google.protobuf.StringValue name = 1;
+  google.protobuf.StringValue value = 2;
+}
+
+message TimeseriesResult {
+  message LabeledMetricTimeseries {
+    message Datapoint {
+      sfixed64 timestamp = 1;
+      google.protobuf.DoubleValue value = 2;
+    }
+    repeated LabelValuePair metric_label_values = 1;
+    google.protobuf.StringValue unit = 2;
+    repeated Datapoint datapoints = 3;
+  }
+  google.protobuf.StringValue metric_name = 1;
+  google.protobuf.StringValue metric_expression = 2;
+  repeated LabeledMetricTimeseries labeled_metric_timeseries = 3;
+}
+
+message TableResult {
+  message TableColumn {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue type = 2;
+    google.protobuf.StringValue value = 3;
+  }
+
+  message TableRow {
+    repeated TableColumn columns = 1;
+  }
+
+  google.protobuf.StringValue raw_query = 1;
+  google.protobuf.UInt64Value total_count = 2;
+  google.protobuf.UInt64Value limit = 3;
+  google.protobuf.UInt64Value offset = 4;
+  repeated TableRow rows = 5;
+}
+
+message ApiResponseResult {
+  google.protobuf.StringValue request_method = 1;
+  google.protobuf.StringValue request_url = 2;
+  google.protobuf.UInt64Value response_status = 3;
+  google.protobuf.Struct response_headers = 4;
+  google.protobuf.Struct response_body = 5;
+  google.protobuf.Struct error = 6;
+  google.protobuf.Struct metadata = 7;
+}
+
+message BashCommandOutputResult {
+  message CommandOutput {
+    google.protobuf.StringValue command = 1;
+    google.protobuf.StringValue output = 2;
+  }
+  repeated CommandOutput command_outputs = 1;
+}
+
+message PlaybookTaskResult {
+  google.protobuf.StringValue error = 1;
+  PlaybookTaskResultType type = 2;
+  Source source = 3;
+  oneof result {
+    TimeseriesResult timeseries = 101;
+    TableResult table = 102;
+    ApiResponseResult api_response = 103;
+    BashCommandOutputResult bash_command_output = 104;
+  }
+}
+
+message PlaybookSourceOptions {
+  message ConnectorOption {
+    google.protobuf.UInt64Value connector_id = 1;
+    google.protobuf.StringValue display_name = 2;
+  }
+
+  message TaskTypeOption {
+    message SourceModelTypeMap {
+      SourceModelType model_type = 1;
+      google.protobuf.StringValue display_name = 2;
+    }
+
+    google.protobuf.StringValue display_name = 1;
+    google.protobuf.StringValue task_type = 2;
+    google.protobuf.StringValue category = 3;
+    repeated SourceModelTypeMap supported_model_types = 4;
+    PlaybookTaskResultType result_type = 5;
+  }
+
+  Source source = 1;
+  google.protobuf.StringValue display_name = 2;
+  repeated TaskTypeOption supported_task_type_options = 3;
+  repeated ConnectorOption connector_options = 4;
+}

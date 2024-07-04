@@ -17,6 +17,139 @@ else:
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
+class _Function:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _FunctionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Function.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_F: _Function.ValueType  # 0
+    AVG_F: _Function.ValueType  # 1
+    SUM_F: _Function.ValueType  # 2
+    MIN_F: _Function.ValueType  # 3
+    MAX_F: _Function.ValueType  # 4
+    LAST_F: _Function.ValueType  # 5
+
+class Function(_Function, metaclass=_FunctionEnumTypeWrapper): ...
+
+UNKNOWN_F: Function.ValueType  # 0
+AVG_F: Function.ValueType  # 1
+SUM_F: Function.ValueType  # 2
+MIN_F: Function.ValueType  # 3
+MAX_F: Function.ValueType  # 4
+LAST_F: Function.ValueType  # 5
+global___Function = Function
+
+class _Operator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _OperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Operator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_O: _Operator.ValueType  # 0
+    GREATER_THAN_O: _Operator.ValueType  # 1
+    GREATER_THAN_EQUAL_O: _Operator.ValueType  # 2
+    LESS_THAN_O: _Operator.ValueType  # 3
+    LESS_THAN_EQUAL_O: _Operator.ValueType  # 4
+    EQUAL_O: _Operator.ValueType  # 5
+    NOT_EQUAL_O: _Operator.ValueType  # 6
+    LIKE_O: _Operator.ValueType  # 7
+    EXISTS_O: _Operator.ValueType  # 8
+    CONTAINS_O: _Operator.ValueType  # 9
+
+class Operator(_Operator, metaclass=_OperatorEnumTypeWrapper): ...
+
+UNKNOWN_O: Operator.ValueType  # 0
+GREATER_THAN_O: Operator.ValueType  # 1
+GREATER_THAN_EQUAL_O: Operator.ValueType  # 2
+LESS_THAN_O: Operator.ValueType  # 3
+LESS_THAN_EQUAL_O: Operator.ValueType  # 4
+EQUAL_O: Operator.ValueType  # 5
+NOT_EQUAL_O: Operator.ValueType  # 6
+LIKE_O: Operator.ValueType  # 7
+EXISTS_O: Operator.ValueType  # 8
+CONTAINS_O: Operator.ValueType  # 9
+global___Operator = Operator
+
+class _LogicalOperator:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _LogicalOperatorEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_LogicalOperator.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_LO: _LogicalOperator.ValueType  # 0
+    AND_LO: _LogicalOperator.ValueType  # 1
+    OR_LO: _LogicalOperator.ValueType  # 2
+    NOT_LO: _LogicalOperator.ValueType  # 3
+
+class LogicalOperator(_LogicalOperator, metaclass=_LogicalOperatorEnumTypeWrapper): ...
+
+UNKNOWN_LO: LogicalOperator.ValueType  # 0
+AND_LO: LogicalOperator.ValueType  # 1
+OR_LO: LogicalOperator.ValueType  # 2
+NOT_LO: LogicalOperator.ValueType  # 3
+global___LogicalOperator = LogicalOperator
+
+class _Op:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _OpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Op.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_OP: _Op.ValueType  # 0
+    EQ: _Op.ValueType  # 1
+    NEQ: _Op.ValueType  # 2
+    GT: _Op.ValueType  # 3
+    LT: _Op.ValueType  # 4
+    GTE: _Op.ValueType  # 5
+    LTE: _Op.ValueType  # 6
+    IN: _Op.ValueType  # 7
+    NOT_IN: _Op.ValueType  # 8
+    IS_NULL: _Op.ValueType  # 9
+    EXISTS: _Op.ValueType  # 10
+    AND: _Op.ValueType  # 20
+    OR: _Op.ValueType  # 21
+    NOT: _Op.ValueType  # 22
+
+class Op(_Op, metaclass=_OpEnumTypeWrapper): ...
+
+UNKNOWN_OP: Op.ValueType  # 0
+EQ: Op.ValueType  # 1
+NEQ: Op.ValueType  # 2
+GT: Op.ValueType  # 3
+LT: Op.ValueType  # 4
+GTE: Op.ValueType  # 5
+LTE: Op.ValueType  # 6
+IN: Op.ValueType  # 7
+NOT_IN: Op.ValueType  # 8
+IS_NULL: Op.ValueType  # 9
+EXISTS: Op.ValueType  # 10
+AND: Op.ValueType  # 20
+OR: Op.ValueType  # 21
+NOT: Op.ValueType  # 22
+global___Op = Op
+
+class _Context:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _ContextEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Context.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_C: _Context.ValueType  # 0
+    PLAYBOOK: _Context.ValueType  # 1
+    PLAYBOOK_EXECUTION: _Context.ValueType  # 2
+    WORKFLOW: _Context.ValueType  # 3
+    WORKFLOW_EXECUTION: _Context.ValueType  # 4
+
+class Context(_Context, metaclass=_ContextEnumTypeWrapper): ...
+
+UNKNOWN_C: Context.ValueType  # 0
+PLAYBOOK: Context.ValueType  # 1
+PLAYBOOK_EXECUTION: Context.ValueType  # 2
+WORKFLOW: Context.ValueType  # 3
+WORKFLOW_EXECUTION: Context.ValueType  # 4
+global___Context = Context
+
 class _Source:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
@@ -65,7 +198,11 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     REMOTE_SERVER: _Source.ValueType  # 39
     API: _Source.ValueType  # 40
     BASH: _Source.ValueType  # 41
+    AZURE: _Source.ValueType  # 42
     GRAFANA_MIMIR: _Source.ValueType  # 43
+    GKE: _Source.ValueType  # 44
+    MS_TEAMS: _Source.ValueType  # 45
+    GRAFANA_LOKI: _Source.ValueType  # 46
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -111,7 +248,11 @@ OPEN_AI: Source.ValueType  # 38
 REMOTE_SERVER: Source.ValueType  # 39
 API: Source.ValueType  # 40
 BASH: Source.ValueType  # 41
+AZURE: Source.ValueType  # 42
 GRAFANA_MIMIR: Source.ValueType  # 43
+GKE: Source.ValueType  # 44
+MS_TEAMS: Source.ValueType  # 45
+GRAFANA_LOKI: Source.ValueType  # 46
 global___Source = Source
 
 class _SourceKeyType:
@@ -132,7 +273,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     NEWRELIC_QUERY_KEY: _SourceKeyType.ValueType  # 7
     NEWRELIC_API_DOMAIN: _SourceKeyType.ValueType  # 19
     SLACK_BOT_AUTH_TOKEN: _SourceKeyType.ValueType  # 8
-    SLACK_CHANNEL: _SourceKeyType.ValueType  # 9
+    SLACK_CHANNEL_ID: _SourceKeyType.ValueType  # 9
+    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     HONEYBADGER_USERNAME: _SourceKeyType.ValueType  # 10
     HONEYBADGER_PASSWORD: _SourceKeyType.ValueType  # 11
     HONEYBADGER_PROJECT_ID: _SourceKeyType.ValueType  # 12
@@ -162,11 +304,11 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     POSTGRES_OPTIONS: _SourceKeyType.ValueType  # 38
     SQL_DATABASE_CONNECTION_STRING_URI: _SourceKeyType.ValueType  # 39
     PAGER_DUTY_API_KEY: _SourceKeyType.ValueType  # 41
+    PAGER_DUTY_CONFIGURED_EMAIL: _SourceKeyType.ValueType  # 63
     OPS_GENIE_API_KEY: _SourceKeyType.ValueType  # 42
     AGENT_PROXY_HOST: _SourceKeyType.ValueType  # 43
     AGENT_PROXY_API_KEY: _SourceKeyType.ValueType  # 44
     GITHUB_ACTIONS_TOKEN: _SourceKeyType.ValueType  # 45
-    SLACK_APP_ID: _SourceKeyType.ValueType  # 46
     OPEN_AI_API_KEY: _SourceKeyType.ValueType  # 47
     REMOTE_SERVER_PEM: _SourceKeyType.ValueType  # 49
     REMOTE_SERVER_USER: _SourceKeyType.ValueType  # 50
@@ -174,6 +316,22 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     REMOTE_SERVER_PASSWORD: _SourceKeyType.ValueType  # 52
     MIMIR_HOST: _SourceKeyType.ValueType  # 53
     X_SCOPE_ORG_ID: _SourceKeyType.ValueType  # 54
+    SSL_VERIFY: _SourceKeyType.ValueType  # 55
+    AZURE_SUBSCRIPTION_ID: _SourceKeyType.ValueType  # 56
+    AZURE_TENANT_ID: _SourceKeyType.ValueType  # 57
+    AZURE_CLIENT_ID: _SourceKeyType.ValueType  # 58
+    AZURE_CLIENT_SECRET: _SourceKeyType.ValueType  # 59
+    GKE_PROJECT_ID: _SourceKeyType.ValueType  # 60
+    GKE_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 61
+    MS_TEAMS_CONNECTOR_WEBHOOK_URL: _SourceKeyType.ValueType  # 62
+    ELASTIC_SEARCH_PROTOCOL: _SourceKeyType.ValueType  # 64
+    ELASTIC_SEARCH_HOST: _SourceKeyType.ValueType  # 65
+    ELASTIC_SEARCH_PORT: _SourceKeyType.ValueType  # 66
+    ELASTIC_SEARCH_API_KEY_ID: _SourceKeyType.ValueType  # 67
+    ELASTIC_SEARCH_API_KEY: _SourceKeyType.ValueType  # 68
+    GRAFANA_LOKI_PROTOCOL: _SourceKeyType.ValueType  # 69
+    GRAFANA_LOKI_HOST: _SourceKeyType.ValueType  # 70
+    GRAFANA_LOKI_PORT: _SourceKeyType.ValueType  # 71
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -189,7 +347,8 @@ NEWRELIC_APP_ID: SourceKeyType.ValueType  # 5
 NEWRELIC_QUERY_KEY: SourceKeyType.ValueType  # 7
 NEWRELIC_API_DOMAIN: SourceKeyType.ValueType  # 19
 SLACK_BOT_AUTH_TOKEN: SourceKeyType.ValueType  # 8
-SLACK_CHANNEL: SourceKeyType.ValueType  # 9
+SLACK_CHANNEL_ID: SourceKeyType.ValueType  # 9
+SLACK_APP_ID: SourceKeyType.ValueType  # 46
 HONEYBADGER_USERNAME: SourceKeyType.ValueType  # 10
 HONEYBADGER_PASSWORD: SourceKeyType.ValueType  # 11
 HONEYBADGER_PROJECT_ID: SourceKeyType.ValueType  # 12
@@ -219,11 +378,11 @@ POSTGRES_DATABASE: SourceKeyType.ValueType  # 37
 POSTGRES_OPTIONS: SourceKeyType.ValueType  # 38
 SQL_DATABASE_CONNECTION_STRING_URI: SourceKeyType.ValueType  # 39
 PAGER_DUTY_API_KEY: SourceKeyType.ValueType  # 41
+PAGER_DUTY_CONFIGURED_EMAIL: SourceKeyType.ValueType  # 63
 OPS_GENIE_API_KEY: SourceKeyType.ValueType  # 42
 AGENT_PROXY_HOST: SourceKeyType.ValueType  # 43
 AGENT_PROXY_API_KEY: SourceKeyType.ValueType  # 44
 GITHUB_ACTIONS_TOKEN: SourceKeyType.ValueType  # 45
-SLACK_APP_ID: SourceKeyType.ValueType  # 46
 OPEN_AI_API_KEY: SourceKeyType.ValueType  # 47
 REMOTE_SERVER_PEM: SourceKeyType.ValueType  # 49
 REMOTE_SERVER_USER: SourceKeyType.ValueType  # 50
@@ -231,7 +390,146 @@ REMOTE_SERVER_HOST: SourceKeyType.ValueType  # 51
 REMOTE_SERVER_PASSWORD: SourceKeyType.ValueType  # 52
 MIMIR_HOST: SourceKeyType.ValueType  # 53
 X_SCOPE_ORG_ID: SourceKeyType.ValueType  # 54
+SSL_VERIFY: SourceKeyType.ValueType  # 55
+AZURE_SUBSCRIPTION_ID: SourceKeyType.ValueType  # 56
+AZURE_TENANT_ID: SourceKeyType.ValueType  # 57
+AZURE_CLIENT_ID: SourceKeyType.ValueType  # 58
+AZURE_CLIENT_SECRET: SourceKeyType.ValueType  # 59
+GKE_PROJECT_ID: SourceKeyType.ValueType  # 60
+GKE_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 61
+MS_TEAMS_CONNECTOR_WEBHOOK_URL: SourceKeyType.ValueType  # 62
+ELASTIC_SEARCH_PROTOCOL: SourceKeyType.ValueType  # 64
+ELASTIC_SEARCH_HOST: SourceKeyType.ValueType  # 65
+ELASTIC_SEARCH_PORT: SourceKeyType.ValueType  # 66
+ELASTIC_SEARCH_API_KEY_ID: SourceKeyType.ValueType  # 67
+ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 68
+GRAFANA_LOKI_PROTOCOL: SourceKeyType.ValueType  # 69
+GRAFANA_LOKI_HOST: SourceKeyType.ValueType  # 70
+GRAFANA_LOKI_PORT: SourceKeyType.ValueType  # 71
 global___SourceKeyType = SourceKeyType
+
+class _SourceModelType:
+    ValueType = typing.NewType("ValueType", builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+
+class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SourceModelType.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    UNKNOWN_MT: _SourceModelType.ValueType  # 0
+    NEW_RELIC_POLICY: _SourceModelType.ValueType  # 1
+    """New Relic Models"""
+    NEW_RELIC_CONDITION: _SourceModelType.ValueType  # 2
+    NEW_RELIC_ENTITY: _SourceModelType.ValueType  # 3
+    NEW_RELIC_ENTITY_DASHBOARD: _SourceModelType.ValueType  # 4
+    NEW_RELIC_ENTITY_APPLICATION: _SourceModelType.ValueType  # 5
+    NEW_RELIC_NRQL: _SourceModelType.ValueType  # 6
+    DATADOG_MONITOR: _SourceModelType.ValueType  # 101
+    """Datadog Models"""
+    DATADOG_DASHBOARD: _SourceModelType.ValueType  # 102
+    DATADOG_LIVE_INTEGRATION_AWS: _SourceModelType.ValueType  # 103
+    DATADOG_LIVE_INTEGRATION_AWS_LOG: _SourceModelType.ValueType  # 104
+    DATADOG_LIVE_INTEGRATION_AZURE: _SourceModelType.ValueType  # 105
+    DATADOG_LIVE_INTEGRATION_CLOUDFLARE: _SourceModelType.ValueType  # 106
+    DATADOG_LIVE_INTEGRATION_FASTLY: _SourceModelType.ValueType  # 107
+    DATADOG_LIVE_INTEGRATION_GCP: _SourceModelType.ValueType  # 108
+    DATADOG_LIVE_INTEGRATION_CONFLUENT: _SourceModelType.ValueType  # 109
+    DATADOG_SERVICE: _SourceModelType.ValueType  # 110
+    DATADOG_METRIC: _SourceModelType.ValueType  # 111
+    DATADOG_QUERY: _SourceModelType.ValueType  # 112
+    CLOUDWATCH_METRIC: _SourceModelType.ValueType  # 201
+    """Cloudwatch Models"""
+    CLOUDWATCH_LOG_GROUP: _SourceModelType.ValueType  # 202
+    GRAFANA_DATASOURCE: _SourceModelType.ValueType  # 301
+    """Grafana Models"""
+    GRAFANA_DASHBOARD: _SourceModelType.ValueType  # 302
+    GRAFANA_TARGET_METRIC_PROMQL: _SourceModelType.ValueType  # 303
+    GRAFANA_PROMETHEUS_DATASOURCE: _SourceModelType.ValueType  # 304
+    CLICKHOUSE_DATABASE: _SourceModelType.ValueType  # 401
+    """Clickhouse Models"""
+    SLACK_CHANNEL: _SourceModelType.ValueType  # 501
+    """Slack Models"""
+    MARKDOWN: _SourceModelType.ValueType  # 601
+    """Documentation Models"""
+    IFRAME: _SourceModelType.ValueType  # 602
+    POSTGRES_QUERY: _SourceModelType.ValueType  # 701
+    """Postgres Models"""
+    EKS_CLUSTER: _SourceModelType.ValueType  # 801
+    """EKS Models"""
+    SQL_DATABASE_CONNECTION_RAW_QUERY: _SourceModelType.ValueType  # 901
+    """Sql Database Connection Models"""
+    AZURE_WORKSPACE: _SourceModelType.ValueType  # 1001
+    """Azure Models"""
+    SSH_SERVER: _SourceModelType.ValueType  # 1100
+    """Remote Server Models"""
+    GRAFANA_MIMIR_PROMQL: _SourceModelType.ValueType  # 1201
+    """Mimir Server Models"""
+    GKE_CLUSTER: _SourceModelType.ValueType  # 1301
+    """GKE Models"""
+    MS_TEAMS_CHANNEL: _SourceModelType.ValueType  # 1401
+    """MS TEAMS Models"""
+    PAGERDUTY_INCIDENT: _SourceModelType.ValueType  # 1501
+    """Pagerduty Models"""
+    ELASTIC_SEARCH_INDEX: _SourceModelType.ValueType  # 1601
+    """Elastic Search Models"""
+
+class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
+
+UNKNOWN_MT: SourceModelType.ValueType  # 0
+NEW_RELIC_POLICY: SourceModelType.ValueType  # 1
+"""New Relic Models"""
+NEW_RELIC_CONDITION: SourceModelType.ValueType  # 2
+NEW_RELIC_ENTITY: SourceModelType.ValueType  # 3
+NEW_RELIC_ENTITY_DASHBOARD: SourceModelType.ValueType  # 4
+NEW_RELIC_ENTITY_APPLICATION: SourceModelType.ValueType  # 5
+NEW_RELIC_NRQL: SourceModelType.ValueType  # 6
+DATADOG_MONITOR: SourceModelType.ValueType  # 101
+"""Datadog Models"""
+DATADOG_DASHBOARD: SourceModelType.ValueType  # 102
+DATADOG_LIVE_INTEGRATION_AWS: SourceModelType.ValueType  # 103
+DATADOG_LIVE_INTEGRATION_AWS_LOG: SourceModelType.ValueType  # 104
+DATADOG_LIVE_INTEGRATION_AZURE: SourceModelType.ValueType  # 105
+DATADOG_LIVE_INTEGRATION_CLOUDFLARE: SourceModelType.ValueType  # 106
+DATADOG_LIVE_INTEGRATION_FASTLY: SourceModelType.ValueType  # 107
+DATADOG_LIVE_INTEGRATION_GCP: SourceModelType.ValueType  # 108
+DATADOG_LIVE_INTEGRATION_CONFLUENT: SourceModelType.ValueType  # 109
+DATADOG_SERVICE: SourceModelType.ValueType  # 110
+DATADOG_METRIC: SourceModelType.ValueType  # 111
+DATADOG_QUERY: SourceModelType.ValueType  # 112
+CLOUDWATCH_METRIC: SourceModelType.ValueType  # 201
+"""Cloudwatch Models"""
+CLOUDWATCH_LOG_GROUP: SourceModelType.ValueType  # 202
+GRAFANA_DATASOURCE: SourceModelType.ValueType  # 301
+"""Grafana Models"""
+GRAFANA_DASHBOARD: SourceModelType.ValueType  # 302
+GRAFANA_TARGET_METRIC_PROMQL: SourceModelType.ValueType  # 303
+GRAFANA_PROMETHEUS_DATASOURCE: SourceModelType.ValueType  # 304
+CLICKHOUSE_DATABASE: SourceModelType.ValueType  # 401
+"""Clickhouse Models"""
+SLACK_CHANNEL: SourceModelType.ValueType  # 501
+"""Slack Models"""
+MARKDOWN: SourceModelType.ValueType  # 601
+"""Documentation Models"""
+IFRAME: SourceModelType.ValueType  # 602
+POSTGRES_QUERY: SourceModelType.ValueType  # 701
+"""Postgres Models"""
+EKS_CLUSTER: SourceModelType.ValueType  # 801
+"""EKS Models"""
+SQL_DATABASE_CONNECTION_RAW_QUERY: SourceModelType.ValueType  # 901
+"""Sql Database Connection Models"""
+AZURE_WORKSPACE: SourceModelType.ValueType  # 1001
+"""Azure Models"""
+SSH_SERVER: SourceModelType.ValueType  # 1100
+"""Remote Server Models"""
+GRAFANA_MIMIR_PROMQL: SourceModelType.ValueType  # 1201
+"""Mimir Server Models"""
+GKE_CLUSTER: SourceModelType.ValueType  # 1301
+"""GKE Models"""
+MS_TEAMS_CHANNEL: SourceModelType.ValueType  # 1401
+"""MS TEAMS Models"""
+PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
+"""Pagerduty Models"""
+ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
+"""Elastic Search Models"""
+global___SourceModelType = SourceModelType
 
 @typing_extensions.final
 class TimeRange(google.protobuf.message.Message):
@@ -342,6 +640,30 @@ class ErrorMessage(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["error", b"error", "message", b"message"]) -> None: ...
 
 global___ErrorMessage = ErrorMessage
+
+@typing_extensions.final
+class OpDescription(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    OP_FIELD_NUMBER: builtins.int
+    LABEL_FIELD_NUMBER: builtins.int
+    IS_UNARY_FIELD_NUMBER: builtins.int
+    IS_LOGICAL_FIELD_NUMBER: builtins.int
+    op: global___Op.ValueType
+    label: builtins.str
+    is_unary: builtins.bool
+    is_logical: builtins.bool
+    def __init__(
+        self,
+        *,
+        op: global___Op.ValueType = ...,
+        label: builtins.str = ...,
+        is_unary: builtins.bool = ...,
+        is_logical: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["is_logical", b"is_logical", "is_unary", b"is_unary", "label", b"label", "op", b"op"]) -> None: ...
+
+global___OpDescription = OpDescription
 
 @typing_extensions.final
 class TaskCronSchedule(google.protobuf.message.Message):

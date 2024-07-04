@@ -1,10 +1,14 @@
 export const triggerOptions = [
   {
-    id: "slack",
+    id: "slack_channel_alert",
     label: "Slack",
   },
   {
-    id: "api-trigger",
+    id: "api",
     label: "API Trigger",
+  },
+  {
+    id: "pagerduty_incident",
+    label: "PagerDuty",
   },
 ];

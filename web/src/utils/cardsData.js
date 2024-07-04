@@ -18,6 +18,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/new_relic",
+    docs: "https://docs.drdroid.io/docs/new-relic-access",
   },
   {
     id: 30,
@@ -28,6 +29,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/eks",
+    docs: "https://docs.drdroid.io/docs/amazon-eks",
   },
   {
     id: 29,
@@ -42,6 +44,7 @@ export const cardsData = [
     //   "email",
     // )}`,
     activeButtonTitle: "Connected. Run @DoctorDroid in your alert channels.",
+    docs: "https://docs.drdroid.io/docs/slack-alerts",
   },
   {
     id: 30,
@@ -57,7 +60,7 @@ export const cardsData = [
   },
   {
     id: 4,
-    url: "/integrations/PagerDuty-logo.svg",
+    url: "/integrations/pagerduty_logo.png",
     title: "PAGERDUTY",
     enum: "PAGER_DUTY",
     desc: "Authorise Doctor Droid to read incidents from PagerDuty",
@@ -137,8 +140,8 @@ export const cardsData = [
     title: "ELASTIC SEARCH",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
-    buttonTitle: "Request Access",
     buttonType: "available",
+    docs: "https://docs.drdroid.io/docs/elk"
   },
   {
     id: 11,
@@ -176,6 +179,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/cloudwatch",
+    docs: "https://docs.drdroid.io/docs/aws-cloudwatch-access",
   },
   {
     id: 14,
@@ -186,6 +190,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/datadog",
+    docs: "https://docs.drdroid.io/docs/datadog-access",
   },
   {
     id: 15,
@@ -275,7 +280,6 @@ export const cardsData = [
     title: "ELASTIC APM",
     enum: "ELASTIC_APM",
     desc: "Share metrics of your service from Elastic APM",
-    buttonTitle: "Request Access",
     buttonType: "available",
   },
   {
@@ -292,10 +296,11 @@ export const cardsData = [
     url: "/integrations/grafana_logo.png",
     title: "GRAFANA",
     enum: "GRAFANA",
-    desc: "Share Dashboards & Metrics from Grafana",
+    desc: "Share Data Sources, Dashboards & Metrics from Grafana",
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/grafana",
+    docs: "https://docs.drdroid.io/docs/custom-promql-query",
   },
   {
     id: 36,
@@ -306,6 +311,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/clickhouse",
+    docs: "https://docs.drdroid.io/docs/clickhouse-database",
   },
   {
     id: 37,
@@ -316,6 +322,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/postgres",
+    docs: "https://docs.drdroid.io/docs/postgresql-database",
   },
   {
     id: 38,
@@ -347,6 +354,7 @@ export const cardsData = [
     buttonTitle: "Connect",
     buttonType: "link",
     buttonLink: "/integrations/sql_database_connection",
+    docs: "https://docs.drdroid.io/docs/sql-databases",
   },
   {
     id: 40,
@@ -360,6 +368,7 @@ export const cardsData = [
     enum: "OPEN_AI",
     desc: "Save OpenAI API key",
     buttonTitle: "Save key",
+    docs: "https://docs.drdroid.io/docs/openai",
   },
   {
     id: 42,
@@ -373,6 +382,7 @@ export const cardsData = [
     enum: "REMOTE_SERVER",
     desc: "Connect Remote Server",
     buttonTitle: "Connect",
+    docs: "https://docs.drdroid.io/docs/bash-commands",
   },
   {
     id: 44,
@@ -386,5 +396,49 @@ export const cardsData = [
     enum: "GRAFANA_MIMIR",
     desc: "Connect Metrics from Grafana Mimir",
     buttonTitle: "Connect",
-  }
+    docs: "https://docs.drdroid.io/docs/mimir",
+  },
+  {
+    id: 46,
+    url: "/integrations/azure_logo.png",
+    title: "MICROSOFT AZURE",
+    enum: "AZURE",
+    desc: "Connect Logs from Microsoft Azure Log Analytics",
+    buttonTitle: "Connect",
+    docs: "https://docs.drdroid.io/docs/azure-cloud-log-analytics",
+  },
+  {
+    id: 47,
+    url: "/integrations/iframe_logo.png",
+    enum: "IFRAME",
+  },
+  {
+    id: 47,
+    url: "/integrations/gke_logo.svg",
+    title: "GKE",
+    enum: "GKE",
+    desc: "Connect GKE",
+    buttonTitle: "Connect",
+    buttonType: "link",
+    buttonLink: "/integrations/gke",
+    docs: "https://docs.drdroid.io/docs/google-cloud-gke",
+  },
+  {
+    id: 47,
+    url: "/integrations/ms_teams_logo.png",
+    title: "MS Teams",
+    enum: "MS_TEAMS",
+    desc: "Connect to MS Teams using Webhook",
+    buttonTitle: "Connect",
+    buttonType: "link",
+    buttonLink: "/integrations/ms_teams",
+    docs: "https://docs.drdroid.io/docs/ms-teams",
+  },
+  {
+    id: 48,
+    url: "/integrations/grafana_loki_logo.svg",
+    enum: "GRAFANA_LOKI",
+    desc: "Connect to Grafana Loki",
+    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
+  },
 ];

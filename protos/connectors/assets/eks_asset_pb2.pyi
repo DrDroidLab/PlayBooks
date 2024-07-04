@@ -9,7 +9,6 @@ import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
-import protos.connectors.connector_pb2
 import sys
 
 if sys.version_info >= (3, 8):
@@ -156,7 +155,7 @@ class EksAssetModel(google.protobuf.message.Message):
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     connector_type: protos.base_pb2.Source.ValueType
-    type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    type: protos.base_pb2.SourceModelType.ValueType
     last_updated: builtins.int
     @property
     def eks_cluster(self) -> global___EksClusterAssetModel: ...
@@ -165,7 +164,7 @@ class EksAssetModel(google.protobuf.message.Message):
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         connector_type: protos.base_pb2.Source.ValueType = ...,
-        type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        type: protos.base_pb2.SourceModelType.ValueType = ...,
         last_updated: builtins.int = ...,
         eks_cluster: global___EksClusterAssetModel | None = ...,
     ) -> None: ...

@@ -21,6 +21,8 @@ import { ContentCopy } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
+import Loading from "../common/Loading/index.tsx";
+import { COPY_LOADING_DELAY } from "../../constants/index.ts";
 
 const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
   const [selectedPlaybook, setSelectedPlaybook] = useState({});
   const [triggerGetPlaybook] = useLazyGetPlaybookQuery();
   const dispatch = useDispatch();
+  const [copyLoading, setCopyLoading] = useState(false);
 
   const handleDeletePlaybook = (playbook) => {
     setSelectedPlaybook(playbook);
@@ -35,14 +38,21 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
   };
 
   const handleCopyPlaybook = async (id) => {
+    setCopyLoading(true);
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     dispatch(copyPlaybook(res));
-    navigate("/playbooks/create");
+    setTimeout(() => {
+      navigate("/playbooks/create");
+    }, COPY_LOADING_DELAY);
   };
 
   // const handleExecutionHistory = (id) => {
   //   navigate(`/playbooks/executions/${id}`);
   // };
+
+  if (copyLoading) {
+    return <Loading title="Copying your playbook..." />;
+  }
 
   return (
     <>
@@ -65,9 +75,7 @@ const PlaybookTableRender = ({ data, refreshTable, showDelete = true }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                <Link to={`/playbooks/${item.id}`} className={styles["link"]}>
-                  {item.name}
-                </Link>
+                <Link to={`/playbooks/${item.id}`}>{item.name}</Link>
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.created_at)}

@@ -1,28 +1,17 @@
-import { Grid, Tooltip } from "@mui/material";
+import { Grid } from "@mui/material";
 import React, { useState } from "react";
 import TimeRangePicker from "./TimeRangePicker";
 import Refresh from "../Refresh";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import styles from "./index.module.css";
-import {
-  Check,
-  ChevronLeftRounded,
-  ContentCopy,
-  Edit,
-} from "@mui/icons-material";
+import { Check, Edit, HomeRounded } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  setName,
-  setPlaybookKey,
-} from "../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
-import useHasPreviousPage from "../hooks/useHasPreviousPage.ts";
-import StepActions from "./Playbooks/create/StepActions.jsx";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import handleGlobalExecute from "../utils/execution/handleGlobalExecute.ts";
+import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
+import PlaybookDescription from "./PlaybookDescription/index.tsx";
+import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -31,42 +20,38 @@ const renderChildren = (children) => {
 };
 
 const Heading = ({
-  subHeading,
+  subHeading = "",
   heading,
-  subHeadingLink,
-  onTimeRangeChangeCb,
-  onRefreshCb,
+  subHeadingLink = undefined,
+  onTimeRangeChangeCb = true,
+  onRefreshCb = true,
   children,
-  defaultTimeRange,
-  defaultCustomTimeRange,
-  defaultCustomTillNowTimeRange,
-  showRunAll = false,
-  showEditTitle = false,
+  defaultTimeRange = undefined,
+  defaultCustomTimeRange = undefined,
+  defaultCustomTillNowTimeRange = undefined,
   customTimeRange = false,
-  copyPlaybook,
-  showCopy,
   isPlayground = false,
-  showSave = true,
 }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const hasPreviousPage = useHasPreviousPage();
+  // const location = useLocation();
+  // const hasPreviousPage = useHasPreviousPage();
   const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
+  const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
+  const [name, setName] = usePlaybookKey("name");
+  const [executionId] = usePlaybookKey("executionId");
 
   const handleRefreshButtonDisable = (isDisabled) => {
     setIsRefreshBtnDisabled(isDisabled);
   };
-
   const goBack = () => {
-    navigate(-1);
-  };
-
-  const handleDescription = (e) => {
-    const value = e.target.value;
-    dispatch(setPlaybookKey({ key: "description", value: value }));
+    // if (location.key !== "default") {
+    //   navigate(-1);
+    // } else {
+    navigate("/");
+    // }
   };
 
   return (
@@ -75,65 +60,58 @@ const Heading = ({
         style={{ zIndex: "90" }}
         className="w-full h-[80px] top-0 py-3 flex justify-between bg-white border-b border-gray-300 px-4 items-center sticky">
         <div className="flex gap-2 items-center">
-          {hasPreviousPage && (
-            <div className="cursor-pointer text-xl font-bold" onClick={goBack}>
-              <ChevronLeftRounded />
+          {isOnPlaybookPage && (
+            <div
+              className="cursor-pointer text-xl font-bold hover:text-violet-500 transition-all"
+              onClick={goBack}>
+              <HomeRounded />
             </div>
           )}
           <div className="flex-col justify-items-center">
-            {!!subHeading && !subHeadingLink ? (
-              <div className="text-xs text-gray-400">{subHeading}</div>
-            ) : null}
             <div>
               <div className="text-xs sm:text-lg font-semibold text-gray-800">
                 <div className="flex gap-2 items-center">
                   {showEdit ? (
-                    <>
+                    <form onSubmit={() => setShowEdit(!showEdit)}>
                       <ValueComponent
                         valueType={"STRING"}
-                        onValueChange={(val) => dispatch(setName(val))}
-                        value={playbook.name}
+                        onValueChange={setName}
+                        value={name}
                         placeHolder={"Enter Playbook name"}
                         length={300}
                       />
-                    </>
+                    </form>
                   ) : (
                     <div
-                      style={!showEditTitle ? {} : { cursor: "pointer" }}
+                      className={`${
+                        !isOnPlaybookPage ? "" : "cursor-pointer text-sm"
+                      }`}
                       onClick={
-                        showEditTitle ? () => setShowEdit(!showEdit) : () => {}
-                      }
-                      className="add_title">
-                      {playbook.isEditing ? "Editing - " : ""}{" "}
+                        isOnPlaybookPage
+                          ? () => setShowEdit(!showEdit)
+                          : () => {}
+                      }>
+                      {playbook.isEditing && !isPrefetched ? "Editing - " : ""}{" "}
                       {playbook.name || heading}
+                      {isPrefetched && <> - {executionId}</>}
                     </div>
                   )}
-                  {showEditTitle && !isPrefetched && (
-                    <div
-                      className="icon"
-                      onClick={() => setShowEdit(!showEdit)}>
-                      {showEdit ? <Check /> : <Edit />}
-                    </div>
-                  )}
-                  {(showCopy || playbook.isEditing) && (
-                    <button
-                      className={styles["pb-button"]}
-                      onClick={copyPlaybook}>
-                      <Tooltip title="Copy this Playbook">
-                        <ContentCopy />
-                      </Tooltip>
+                  {isOnPlaybookPage && !isPrefetched && (
+                    <button className="ml-2 text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded">
+                      <div
+                        className="icon"
+                        onClick={() => setShowEdit(!showEdit)}>
+                        {showEdit ? <Check /> : <Edit />}
+                      </div>
                     </button>
                   )}
                 </div>
-                {(Object.keys(playbook.currentPlaybook).length > 0 ||
-                  showEditTitle) && (
-                  <input
-                    className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
-                    placeholder="+ Add Description..."
-                    value={playbook.description}
-                    onChange={handleDescription}
-                  />
-                )}
+                {!!subHeading && !subHeadingLink ? (
+                  <div className="text-xs font-normal text-gray-400">
+                    {subHeading}
+                  </div>
+                ) : null}
+                <PlaybookDescription />
                 {!!subHeadingLink && !!subHeading ? (
                   <a
                     style={{ color: "blue", fontSize: "15px" }}
@@ -148,18 +126,15 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {showRunAll && playbook.steps?.length > 0 && (
+          {/* {showRunAll && playbook.steps?.length > 0 && (
             <button
               className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
               onClick={handleGlobalExecute}>
               <PlayArrowIcon style={{ fontSize: "medium" }} />
               <span style={{ marginLeft: "2px" }}>Run All</span>
             </button>
-          )}
-          {playbook.view === "builder" &&
-            playbook.steps.length > 0 &&
-            showSave &&
-            !isPrefetched && <StepActions />}
+          )} */}
+          <HeadingPlaybookButtons />
           {renderChildren(children)}
           {customTimeRange && (
             <CustomTimeRangePicker

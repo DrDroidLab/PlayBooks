@@ -1,10 +1,9 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from integrations_api_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
+from protos.base_pb2 import Source, SourceModelType
 
 
-class CloudwatchConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class CloudwatchSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, regions, aws_access_key=None, aws_secret_key=None, account_id=None, connector_id=None):
         self.__regions = regions
@@ -12,10 +11,10 @@ class CloudwatchConnectorMetadataExtractor(ConnectorMetadataExtractor):
         self.__aws_secret_key = aws_secret_key
         self.__aws_session_token = None
 
-        super().__init__(account_id, connector_id, ConnectorType.CLOUDWATCH)
+        super().__init__(account_id, connector_id, Source.CLOUDWATCH)
 
     def extract_metric(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.CLOUDWATCH_METRIC
+        model_type = SourceModelType.CLOUDWATCH_METRIC
         model_data = {}
         for region in self.__regions:
             cloudwatch_boto3_processor = AWSBoto3ApiProcessor('cloudwatch', region, self.__aws_access_key,
@@ -48,7 +47,7 @@ class CloudwatchConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_log_groups(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.CLOUDWATCH_LOG_GROUP
+        model_type = SourceModelType.CLOUDWATCH_LOG_GROUP
         model_data = {}
         for region in self.__regions:
             cloudwatch_boto3_processor = AWSBoto3ApiProcessor('logs', region, self.__aws_access_key,

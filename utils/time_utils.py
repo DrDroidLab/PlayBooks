@@ -26,6 +26,21 @@ def current_datetime(timezone=pytz.utc):
     return datetime.now(timezone)
 
 
+def calculate_interval_times(interval_in_seconds, start_time=None, end_time=None):
+    if start_time is None:
+        start_time = current_datetime()
+
+    if end_time is None:
+        end_time = start_time + timedelta(days=1)
+
+    interval_times = []
+    current_time = start_time
+    while current_time <= end_time:
+        interval_times.append(current_time)
+        current_time = current_time + timedelta(seconds=interval_in_seconds)
+    return interval_times
+
+
 def calculate_cron_times(rule, start_time=None, end_time=None):
     if start_time is None:
         start_time = current_datetime()

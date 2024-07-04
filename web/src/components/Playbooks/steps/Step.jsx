@@ -1,117 +1,75 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
 import { Tooltip } from "@mui/material";
-import styles from "../playbooks.module.css";
-import Notes from "./Notes.jsx";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useDispatch } from "react-redux";
-import {
-  addExternalLinks,
-  deleteStep,
-  toggleExternalLinkVisibility,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import ExternalLinks from "./ExternalLinks.jsx";
+import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
 import Query from "./Query.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
-import { executeStep } from "../../../utils/execution/executeStep.ts";
-import Interpretation from "./Interpretation.jsx";
-import { useGetBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
+import SelectInterpretation from "./Interpretation.jsx";
+import { Delete } from "@mui/icons-material";
+import HandleNotesRender from "./HandleNotesRender.jsx";
+import HandleExternalLinksRender from "./HandleExternalLinksRender.jsx";
+import RunButton from "../../Buttons/RunButton/index.tsx";
+import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-function Step({ step, index }) {
+function Step({ id: stepId }) {
+  const [step] = useCurrentStep(stepId);
+  const { closeDrawer } = usePermanentDrawerState();
   const isPrefetched = useIsPrefetched();
   const [addQuery, setAddQuery] = useState(
     step?.isPrefetched ?? step.source ?? false,
   );
   const dispatch = useDispatch();
-  const { data } = useGetBuilderOptionsQuery();
+  const id = step?.id;
 
-  function handleDeleteClick(index) {
-    dispatch(deleteStep(index));
+  function handleDeleteClick() {
+    dispatch(deleteStep(id));
+    closeDrawer();
   }
 
-  const toggleExternalLinks = () => {
-    dispatch(toggleExternalLinkVisibility({ index }));
-  };
-
-  const setLinks = (links) => {
-    dispatch(addExternalLinks({ index, externalLinks: links }));
-  };
-
   return (
-    <div className={styles["step-card"]}>
-      <div
-        className={styles["step-card-content"]}
-        style={{ paddingBottom: "0px" }}>
-        <div className={styles["step-name"]}>
-          {step.isPrefetched && step.description && (
-            <div className={styles.head}>
-              <ExternalLinksList />
+    <div className="rounded my-2">
+      <div className="flex flex-col">
+        <div className="flex text-sm">
+          {isPrefetched && step.description && (
+            <div className="flex gap-5">
+              <ExternalLinksList id={id} />
             </div>
           )}
         </div>
-        <div className={styles["step-section"]}>
-          <div className={styles["step-info"]}>
-            <div>
-              <div
-                className={styles["addConditionStyle"]}
-                onClick={() => setAddQuery(true)}>
-                <b className="add_data">{!addQuery ? "+ Add Data" : "Data"}</b>
-              </div>
-
-              {addQuery && <Query step={step} index={index} />}
-            </div>
+        <div>
+          <div
+            className="mt-2 text-sm cursor-pointer text-violet-500"
+            onClick={() => setAddQuery(true)}>
+            <b>{!addQuery ? "+ Add Data" : "Data"}</b>
           </div>
-          <Notes step={step} index={index} />
-          {data?.length > 0 && !unsupportedRunners.includes(step.source) && (
-            <Interpretation />
-          )}
-          {!isPrefetched && (
-            <div className={styles["step-buttons"]}>
-              {step.source && !unsupportedRunners.includes(step.source) && (
-                <button
-                  className={styles["pb-button"]}
-                  onClick={() => executeStep(step)}>
-                  <Tooltip title="Run this Step">
-                    <>
-                      Run <PlayArrowIcon />
-                    </>
-                  </Tooltip>
-                </button>
-              )}
-              <button
-                className={styles["pb-button"]}
-                onClick={() => handleDeleteClick(index)}>
-                <Tooltip title="Remove this Step">
-                  <DeleteIcon />
-                </Tooltip>
-              </button>
-            </div>
-          )}
-          {!step.isPrefetched && (
-            <div>
-              <div>
-                <div
-                  className={styles["addConditionStyle"]}
-                  onClick={toggleExternalLinks}>
-                  <b className="ext_links">
-                    {step.showExternalLinks ? "-" : "+"}
-                  </b>{" "}
-                  Add External Links
-                </div>
 
-                {step.showExternalLinks && (
-                  <ExternalLinks
-                    links={step.externalLinks}
-                    setLinks={setLinks}
-                  />
-                )}
-              </div>
-            </div>
-          )}
+          {addQuery && <Query id={id} />}
         </div>
+        <HandleNotesRender id={id} />
+        <SelectInterpretation id={id} />
+        <HandleExternalLinksRender id={id} />
+
+        {!isPrefetched && (
+          <div className="flex gap-2 mt-2">
+            <RunButton id={id} />
+            <button
+              className="text-xs bg-white hover:text-white hover:bg-violet-500 text-violet-500 hover:color-white-500 p-1 border border-violet-500 transition-all rounded"
+              onClick={handleDeleteClick}>
+              <Tooltip title="Remove this Step">
+                <Delete />
+              </Tooltip>
+            </button>
+          </div>
+        )}
+        {!isPrefetched && (
+          <div className="flex mt-2">
+            <SavePlaybookButton shouldNavigate={false} />
+          </div>
+        )}
       </div>
     </div>
   );

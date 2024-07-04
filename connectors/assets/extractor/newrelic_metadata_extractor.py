@@ -1,18 +1,17 @@
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from integrations_api_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
+from protos.base_pb2 import Source, SourceModelType
 
 
-class NewrelicConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class NewrelicSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, nr_api_key, nr_app_id, nr_api_domain='api.newrelic.com', account_id=None, connector_id=None):
         self.__gql_processor = NewRelicGraphQlConnector(nr_api_key, nr_app_id, nr_api_domain)
 
-        super().__init__(account_id, connector_id, ConnectorType.NEW_RELIC)
+        super().__init__(account_id, connector_id, Source.NEW_RELIC)
 
     def extract_policy(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_POLICY
+        model_type = SourceModelType.NEW_RELIC_POLICY
         cursor = 'null'
         policies = []
         policies_search = self.__gql_processor.get_all_policies(cursor)
@@ -42,7 +41,7 @@ class NewrelicConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_entity(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY
+        model_type = SourceModelType.NEW_RELIC_ENTITY
         cursor = 'null'
         types = ['HOST', 'MONITOR', 'WORKLOAD']
         entity_search = self.__gql_processor.get_all_entities(cursor, types)
@@ -75,7 +74,7 @@ class NewrelicConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_condition(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_CONDITION
+        model_type = SourceModelType.NEW_RELIC_CONDITION
         cursor = 'null'
         conditions = []
         conditions_search = self.__gql_processor.get_all_conditions(cursor)
@@ -105,7 +104,7 @@ class NewrelicConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboard_entity(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_DASHBOARD
+        model_type = SourceModelType.NEW_RELIC_ENTITY_DASHBOARD
         cursor = 'null'
         types = ['DASHBOARD']
         entity_search = self.__gql_processor.get_all_entities(cursor, types)
@@ -143,7 +142,7 @@ class NewrelicConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_application_entity(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.NEW_RELIC_ENTITY_APPLICATION
+        model_type = SourceModelType.NEW_RELIC_ENTITY_APPLICATION
         cursor = 'null'
         types = ['APPLICATION']
         entity_search = self.__gql_processor.get_all_entities(cursor, types)

@@ -2,9 +2,7 @@
 import React, { useEffect } from "react";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import SelectComponent from "../../SelectComponent/index.jsx";
-import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
-import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentWorkflowSelector,
@@ -14,16 +12,16 @@ import { triggerOptions } from "../../../utils/workflow/triggerOptions.ts";
 import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import HandleWorkflowType from "./utils/HandleWorkflowType.tsx";
 import { useGenerateCurlMutation } from "../../../store/features/workflow/api/generateCurlApi.ts";
+import PlaybookDetails from "./PlaybookDetails.jsx";
+import { useGenerateWebhookMutation } from "../../../store/features/workflow/api/generateWebHookApi.ts";
+import SummaryOptions from "./SummaryOptions.tsx";
 
 function BasicDetails() {
-  const {
-    data,
-    isFetching: playbooksLoading,
-    refetch,
-  } = useGetPlaybooksQuery({});
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const [triggerGenerateCurl, { isLoading: generateCurlLoading }] =
     useGenerateCurlMutation();
+  const [triggerGenerateWebhook, { isLoading: generateWebhookLoading }] =
+    useGenerateWebhookMutation();
   const dispatch = useDispatch();
 
   const handleGenerateCurl = async () => {
@@ -38,10 +36,25 @@ function BasicDetails() {
     await triggerGenerateCurl(currentWorkflow.name);
   };
 
-  useEffect(() => {
-    if (currentWorkflow?.workflowType === "api-trigger") {
-      handleGenerateCurl();
+  const handleGenerateWebhook = async () => {
+    await triggerGenerateWebhook();
+  };
+
+  const handleWorkflowType = () => {
+    switch (currentWorkflow?.workflowType) {
+      case "api":
+        handleGenerateCurl();
+        return;
+      case "pagerduty_incident":
+        handleGenerateWebhook();
+        return;
+      default:
+        return;
     }
+  };
+
+  useEffect(() => {
+    handleWorkflowType();
   }, [currentWorkflow.name, currentWorkflow?.workflowType]);
 
   return (
@@ -64,13 +77,28 @@ function BasicDetails() {
           />
         </div>
       </div>
+      <hr />
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
-          <label
-            className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            Trigger Type
-          </label>
+          <div className="flex">
+            <label
+              className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              htmlFor="playbook">
+              Trigger Type
+            </label>
+            &nbsp;
+            <p className="flex gap-1 items-center text-sm font-small leading-none decoration-underline peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              (Read more about triggers{" "}
+              <a
+                rel="noreferrer"
+                style={{ color: "#9553fe" }}
+                href="https://docs.drdroid.io/docs/workflows#triggers"
+                target="_blank">
+                here
+              </a>
+              )
+            </p>
+          </div>
           <div className="flex gap-2 items-center">
             <SelectComponent
               data={triggerOptions?.map((e) => {
@@ -87,7 +115,7 @@ function BasicDetails() {
               searchable={true}
               error={currentWorkflow?.errors?.workflowType ?? false}
             />
-            {currentWorkflow?.workflowType === "api-trigger" &&
+            {currentWorkflow?.workflowType === "api" &&
               !currentWorkflow?.name && (
                 // <button
                 //   className="border p-1 rounded transition-all text-xs text-violet-500 border-violet-500 hover:bg-violet-500 hover:text-white cursor-pointer disabled:bg-gray-100 disabled:text-gray-300 disabled:border-gray-300 disabled:cursor-not-allowed"
@@ -97,48 +125,15 @@ function BasicDetails() {
                 // </button>
                 <p className="text-sm">(Enter workflow name to see the curl)</p>
               )}
-            {generateCurlLoading && <CircularProgress size={20} />}
+            {(generateCurlLoading || generateWebhookLoading) && (
+              <CircularProgress size={20} />
+            )}
           </div>
         </div>
         <HandleWorkflowType />
-        <div className="space-y-2">
-          <label
-            className="flex gap-2 items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            Select Playbook
-            <a
-              href="/playbooks/create"
-              rel="noreferrer"
-              target="_blank"
-              className="border border-violet-500 p-1 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs">
-              + Create New
-            </a>
-          </label>
-          <div className="flex gap-2 items-center">
-            <SelectComponent
-              data={data?.playbooks?.map((e) => {
-                return {
-                  id: e.id,
-                  label: e.name,
-                  playbook: e,
-                };
-              })}
-              placeholder={`Select Playbook`}
-              onSelectionChange={(_, val) => {
-                handleSelect("playbookId", val);
-              }}
-              selected={currentWorkflow?.playbookId}
-              searchable={true}
-              error={currentWorkflow?.errors?.playbookId ?? false}
-            />
-            {playbooksLoading && <CircularProgress size={20} />}
-            <button onClick={refetch}>
-              <RefreshRounded
-                className={`text-gray-400 hover:text-gray-600 transition-all`}
-              />
-            </button>
-          </div>
-        </div>
+        <hr />
+        <PlaybookDetails />
+        <SummaryOptions />
       </div>
     </>
   );

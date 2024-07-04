@@ -1,49 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/index.ts";
-import {
-  integrationSentenceMap,
-  integrations,
-} from "../../../utils/integrationOptions/index.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import IntegrationOption from "./IntegrationOption.jsx";
 
-function IntegrationsList({ setIsOpen }) {
-  const { data: connectorData, isFetching: connectorLoading } =
-    useGetConnectorTypesQuery();
+function IntegrationsList() {
+  const { data, isLoading } = usePlaybookBuilderOptionsQuery();
+  const supportedTaskTypes = data?.supportedTaskTypes;
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState(connectorData || []);
+  const [items, setItems] = useState(supportedTaskTypes || []);
 
-  const search = (e) => {
+  const search = () => {
     if (!query) {
       setItems([]);
     }
-    const filteredItems = connectorData?.filter(
+    const filteredItems = supportedTaskTypes?.filter(
       (item) =>
-        item?.connector_type?.toLowerCase().includes(query) ||
-        item?.display_name?.toLowerCase().includes(query) ||
-        integrationSentenceMap[item.model_type]?.toLowerCase().includes(query),
+        item?.source?.toLowerCase().includes(query) ||
+        item?.display_name?.toLowerCase().includes(query),
     );
     setItems(filteredItems || []);
   };
 
-  const integrationGroups = integrations.map((group) => ({
-    ...group,
-    options: group.options
-      .map((modelType) => {
-        const item = connectorData?.find(
-          (item) => item.model_type === modelType,
-        );
-        return item
-          ? {
-              ...item,
-              label: integrationSentenceMap[modelType],
-              model_type: modelType,
-            }
-          : { label: integrationSentenceMap[modelType], model_type: modelType };
-      })
-      .filter((option) => option !== null),
-  }));
+  const integrationGroups = supportedTaskTypes?.reduce((groups, item) => {
+    const category = item.category ?? "Others";
+    const group = groups[category];
+    if (group) {
+      group.options.push(item);
+    } else {
+      groups[category] = {
+        category: category,
+        options: [item],
+      };
+    }
+    return groups;
+  }, {});
 
   useEffect(() => {
     if (query) {
@@ -52,7 +43,7 @@ function IntegrationsList({ setIsOpen }) {
   }, [query]);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <div className="sticky top-0 bg-white z-10">
         <h2 className="mt-4 font-bold text-sm">Add Data</h2>
         <input
@@ -63,39 +54,31 @@ function IntegrationsList({ setIsOpen }) {
           value={query}
         />
       </div>
-      {connectorLoading && (
+      {isLoading && (
         <div className="flex items-center gap-4 text-sm">
           <CircularProgress color="primary" size={20} />
           Looking for integrations...
         </div>
       )}
-      <div className="flex flex-col gap-4 h-screen">
+      <div className="flex flex-col gap-4 flex-1 pb-40">
         {query ? (
           items.length === 0 ? (
             <p className="text-sm">No integrations found.</p>
           ) : (
-            items.map((option, index) => (
-              <IntegrationOption
-                key={index}
-                option={option}
-                setIsOpen={setIsOpen}
-              />
-            ))
+            items.map((option, index) => {
+              return <IntegrationOption key={index} option={option} />;
+            })
           )
         ) : (
-          integrationGroups.map((group) => (
-            <div key={group.id}>
-              <p className="font-bold text-sm mb-1">{group.label}</p>
+          Object.keys(integrationGroups ?? {})?.map((group) => (
+            <div key={group}>
+              <p className="font-bold text-sm mb-1">{group}</p>
               <div className="flex flex-col gap-2">
-                {group.options.length === 0 && (
+                {integrationGroups[group].options.length === 0 && (
                   <p className="text-xs">No integrations yet.</p>
                 )}
-                {group.options.map((option, index) => (
-                  <IntegrationOption
-                    key={index}
-                    option={option}
-                    setIsOpen={setIsOpen}
-                  />
+                {integrationGroups[group].options.map((option, index) => (
+                  <IntegrationOption key={index} option={option} />
                 ))}
               </div>
             </div>

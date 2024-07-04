@@ -9,7 +9,6 @@ import google.protobuf.internal.containers
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
-import protos.connectors.connector_pb2
 import sys
 
 if sys.version_info >= (3, 8):
@@ -141,6 +140,67 @@ class GrafanaTargetMetricPromQlAssetModel(google.protobuf.message.Message):
 global___GrafanaTargetMetricPromQlAssetModel = GrafanaTargetMetricPromQlAssetModel
 
 @typing_extensions.final
+class GrafanaDatasourceAssetModel(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    DATASOURCE_ID_FIELD_NUMBER: builtins.int
+    DATASOURCE_UID_FIELD_NUMBER: builtins.int
+    DATASOURCE_URL_FIELD_NUMBER: builtins.int
+    DATASOURCE_NAME_FIELD_NUMBER: builtins.int
+    DATASOURCE_TYPE_FIELD_NUMBER: builtins.int
+    DATASOURCE_ORGID_FIELD_NUMBER: builtins.int
+    DATASOURCE_ACCESS_FIELD_NUMBER: builtins.int
+    DATASOURCE_DATABASE_FIELD_NUMBER: builtins.int
+    DATASOURCE_READONLY_FIELD_NUMBER: builtins.int
+    DATASOURCE_TYPENAME_FIELD_NUMBER: builtins.int
+    DATASOURCE_BASICAUTH_FIELD_NUMBER: builtins.int
+    DATASOURCE_ISDEFAULT_FIELD_NUMBER: builtins.int
+    @property
+    def datasource_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_orgId(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    @property
+    def datasource_access(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_readonly(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def datasource_typeName(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def datasource_basicAuth(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def datasource_isDefault(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    def __init__(
+        self,
+        *,
+        datasource_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_orgId: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        datasource_access: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_database: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_readonly: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        datasource_typeName: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        datasource_basicAuth: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        datasource_isDefault: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["datasource_access", b"datasource_access", "datasource_basicAuth", b"datasource_basicAuth", "datasource_database", b"datasource_database", "datasource_id", b"datasource_id", "datasource_isDefault", b"datasource_isDefault", "datasource_name", b"datasource_name", "datasource_orgId", b"datasource_orgId", "datasource_readonly", b"datasource_readonly", "datasource_type", b"datasource_type", "datasource_typeName", b"datasource_typeName", "datasource_uid", b"datasource_uid", "datasource_url", b"datasource_url"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["datasource_access", b"datasource_access", "datasource_basicAuth", b"datasource_basicAuth", "datasource_database", b"datasource_database", "datasource_id", b"datasource_id", "datasource_isDefault", b"datasource_isDefault", "datasource_name", b"datasource_name", "datasource_orgId", b"datasource_orgId", "datasource_readonly", b"datasource_readonly", "datasource_type", b"datasource_type", "datasource_typeName", b"datasource_typeName", "datasource_uid", b"datasource_uid", "datasource_url", b"datasource_url"]) -> None: ...
+
+global___GrafanaDatasourceAssetModel = GrafanaDatasourceAssetModel
+
+@typing_extensions.final
 class GrafanaTargetMetricPromQlAssetOptions(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -203,6 +263,45 @@ class GrafanaTargetMetricPromQlAssetOptions(google.protobuf.message.Message):
 global___GrafanaTargetMetricPromQlAssetOptions = GrafanaTargetMetricPromQlAssetOptions
 
 @typing_extensions.final
+class GrafanaDatasourceAssetOptions(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class GrafanaDatasourceOptions(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        DATASOURCE_ID_FIELD_NUMBER: builtins.int
+        DATASOURCE_UID_FIELD_NUMBER: builtins.int
+        DATASOURCE_NAME_FIELD_NUMBER: builtins.int
+        @property
+        def datasource_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def datasource_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            datasource_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            datasource_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["datasource_id", b"datasource_id", "datasource_name", b"datasource_name", "datasource_uid", b"datasource_uid"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["datasource_id", b"datasource_id", "datasource_name", b"datasource_name", "datasource_uid", b"datasource_uid"]) -> None: ...
+
+    PROMETHEUS_DATASOURCES_FIELD_NUMBER: builtins.int
+    @property
+    def prometheus_datasources(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___GrafanaDatasourceAssetOptions.GrafanaDatasourceOptions]: ...
+    def __init__(
+        self,
+        *,
+        prometheus_datasources: collections.abc.Iterable[global___GrafanaDatasourceAssetOptions.GrafanaDatasourceOptions] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["prometheus_datasources", b"prometheus_datasources"]) -> None: ...
+
+global___GrafanaDatasourceAssetOptions = GrafanaDatasourceAssetOptions
+
+@typing_extensions.final
 class GrafanaAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -211,25 +310,29 @@ class GrafanaAssetModel(google.protobuf.message.Message):
     TYPE_FIELD_NUMBER: builtins.int
     LAST_UPDATED_FIELD_NUMBER: builtins.int
     GRAFANA_TARGET_METRIC_PROMQL_FIELD_NUMBER: builtins.int
+    GRAFANA_PROMETHEUS_DATASOURCE_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     connector_type: protos.base_pb2.Source.ValueType
-    type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType
+    type: protos.base_pb2.SourceModelType.ValueType
     last_updated: builtins.int
     @property
     def grafana_target_metric_promql(self) -> global___GrafanaTargetMetricPromQlAssetModel: ...
+    @property
+    def grafana_prometheus_datasource(self) -> global___GrafanaDatasourceAssetModel: ...
     def __init__(
         self,
         *,
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         connector_type: protos.base_pb2.Source.ValueType = ...,
-        type: protos.connectors.connector_pb2.ConnectorMetadataModelType.ValueType = ...,
+        type: protos.base_pb2.SourceModelType.ValueType = ...,
         last_updated: builtins.int = ...,
         grafana_target_metric_promql: global___GrafanaTargetMetricPromQlAssetModel | None = ...,
+        grafana_prometheus_datasource: global___GrafanaDatasourceAssetModel | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["asset", b"asset", "grafana_target_metric_promql", b"grafana_target_metric_promql", "id", b"id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["asset", b"asset", "connector_type", b"connector_type", "grafana_target_metric_promql", b"grafana_target_metric_promql", "id", b"id", "last_updated", b"last_updated", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["asset", b"asset"]) -> typing_extensions.Literal["grafana_target_metric_promql"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["asset", b"asset", "grafana_prometheus_datasource", b"grafana_prometheus_datasource", "grafana_target_metric_promql", b"grafana_target_metric_promql", "id", b"id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["asset", b"asset", "connector_type", b"connector_type", "grafana_prometheus_datasource", b"grafana_prometheus_datasource", "grafana_target_metric_promql", b"grafana_target_metric_promql", "id", b"id", "last_updated", b"last_updated", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["asset", b"asset"]) -> typing_extensions.Literal["grafana_target_metric_promql", "grafana_prometheus_datasource"] | None: ...
 
 global___GrafanaAssetModel = GrafanaAssetModel
 

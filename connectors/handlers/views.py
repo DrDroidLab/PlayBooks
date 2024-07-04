@@ -4,26 +4,27 @@ import logging
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
+from django.conf import settings
 
-from accounts.models import get_request_account, Account
+from accounts.authentication import AccountApiTokenAuthentication
+from accounts.models import get_request_account, Account, User, get_request_user, AccountApiToken
+from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
-from playbooks.utils.decorators import web_api
+from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
 from utils.time_utils import current_epoch_timestamp
-from protos.base_pb2 import Message
-from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest
+from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
+    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse
+from utils.uri_utils import build_absolute_uri, construct_curl
 
 logger = logging.getLogger(__name__)
+
 
 @web_api(GetSlackAppManifestRequest)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
-    host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
 
     # read sample_manifest file string
     sample_manifest = """
@@ -51,30 +52,28 @@ oauth_config:
         - groups:read
         - mpim:read
         - im:read
+        - groups:history
 settings:
     event_subscriptions:
         request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
         bot_events:
         - message.channels
+        - member_joined_channel
+        - message.groups
     org_deploy_enabled: false
     socket_mode_enabled: false
     token_rotation_enabled: false
     """
 
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
+    host_name = Site.objects.filter(is_active=True).first()
 
-    site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
-    active_sites = Site.objects.filter(is_active=True)
-    http_protocol = 'https' if host_name.value.startswith('https://') else 'http'
+    if not host_name:
+        return GetSlackAppManifestResponse(success=BoolValue(value=False),
+                                           app_manifest=StringValue(
+                                               value="Host name not found for generating Manifest"))
 
-    if active_sites:
-        site = active_sites.first()
-        site.domain = site_domain
-        site.name = 'MyDroid'
-        site.protocol = http_protocol
-        site.save()
-    else:
-        Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
+    manifest_hostname = host_name.protocol + '://' + host_name.domain
+    app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
@@ -118,3 +117,40 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
         else:
             return JsonResponse({'success': False, 'message': f"Received invalid data type: {d_type}"}, status=400)
     return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=400)
+
+
+@web_api(GetPagerDutyWebhookRequest)
+def pagerduty_generate_webhook(request_message: GetPagerDutyWebhookRequest) -> HttpResponse:
+    account: Account = get_request_account()
+    user: User = get_request_user()
+
+    qs = account.account_api_token.filter(created_by=user)
+    if qs:
+        account_api_token = qs.first()
+    else:
+        api_token = AccountApiToken(account=account, created_by=user)
+        api_token.save()
+        account_api_token = api_token
+
+    headers = {'Authorization': f'Bearer {account_api_token.key}'}
+    location = settings.PAGERDUTY_WEBHOOK_LOCATION
+    protocol = settings.PAGERDUTY_WEBHOOK_HTTP_PROTOCOL
+    enabled = settings.PAGERDUTY_WEBHOOK_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    curl = construct_curl('POST', uri, headers=headers, payload=None)
+    return HttpResponse(curl, content_type="text/plain", status=200)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([AccountApiTokenAuthentication])
+@api_auth_check
+def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
+    try:
+        data = request_message.data
+        handle_pd_incident(data)
+        return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+    except Exception as e:
+        logger.error(f'Error handling pagerduty incident: {str(e)}')
+        return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)

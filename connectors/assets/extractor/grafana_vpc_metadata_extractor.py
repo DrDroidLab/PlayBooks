@@ -1,10 +1,9 @@
 import re
 import time
 
-from connectors.assets.extractor.metadata_extractor import ConnectorMetadataExtractor
-from integrations_api_processors.vpc_api_processor import VpcApiProcessor
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
+from executor.source_processors.vpc_api_processor import VpcApiProcessor
+from protos.base_pb2 import Source, SourceModelType
 
 
 def promql_get_metric_name(promql):
@@ -30,14 +29,14 @@ def promql_get_metric_optional_label_variable_pairs(promql):
     return label_value_pairs
 
 
-class GrafanaVpcConnectorMetadataExtractor(ConnectorMetadataExtractor):
+class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
 
     def __init__(self, agent_proxy_host, agent_proxy_api_key, account_id=None, connector_id=None):
         self.__grafana_api_processor = VpcApiProcessor(agent_proxy_host, agent_proxy_api_key)
-        super().__init__(account_id, connector_id, ConnectorType.GRAFANA_VPC)
+        super().__init__(account_id, connector_id, Source.GRAFANA_VPC)
 
     def extract_data_source(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DATASOURCE
+        model_type = SourceModelType.GRAFANA_DATASOURCE
         try:
             path = 'api/datasources'
             data_sources = self.__grafana_api_processor.v1_api_grafana(path=path)
@@ -55,7 +54,7 @@ class GrafanaVpcConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboards(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_DASHBOARD
+        model_type = SourceModelType.GRAFANA_DASHBOARD
         path = 'api/search'
         try:
             all_dashboards = self.__grafana_api_processor.v1_api_grafana(path=path)
@@ -85,7 +84,7 @@ class GrafanaVpcConnectorMetadataExtractor(ConnectorMetadataExtractor):
         return model_data
 
     def extract_dashboard_target_metric_promql(self, save_to_db=False):
-        model_type = ConnectorMetadataModelTypeProto.GRAFANA_TARGET_METRIC_PROMQL
+        model_type = SourceModelType.GRAFANA_TARGET_METRIC_PROMQL
         try:
             path = 'api/datasources'
             all_data_sources = self.__grafana_api_processor.v1_api_grafana(path=path)

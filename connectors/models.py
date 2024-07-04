@@ -2,7 +2,7 @@ from datetime import timezone
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
-from protos.base_pb2 import Source, SourceKeyType
+from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 from utils.model_utils import generate_choices
 
 from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
@@ -10,7 +10,7 @@ from google.protobuf.wrappers_pb2 import StringValue, BoolValue, UInt64Value
 from accounts.models import Account
 
 from protos.connectors.connector_pb2 import Connector as ConnectorProto, ConnectorKey as ConnectorKeyProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto, PeriodicRunStatus
+    PeriodicRunStatus
 
 integrations_connector_type_display_name_map = {
     Source.SLACK: 'SLACK',
@@ -36,35 +36,51 @@ integrations_connector_type_display_name_map = {
     Source.OPEN_AI: 'OPEN AI',
     Source.REMOTE_SERVER: 'REMOTE SERVER',
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
+    Source.AZURE: 'AZURE',
+    Source.GKE: 'GKE KUBERNETES',
+    Source.MS_TEAMS: 'MS TEAMS',
+    Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
+    Source.GRAFANA_LOKI: 'GRAFANA LOKI',
 }
 
 integrations_connector_type_category_map = {
     Source.SLACK: 'Alert Channels',
     Source.GOOGLE_CHAT: 'Alert Channels',
+    Source.PAGER_DUTY: 'Alert Channels',
+    Source.OPS_GENIE: 'Alert Channels',
+    Source.MS_TEAMS: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
     Source.DATADOG: 'APM Tools',
     Source.DATADOG_OAUTH: 'APM Tools',
     Source.GRAFANA: 'APM Tools',
     Source.GRAFANA_VPC: 'APM Tools',
-    Source.GITHUB_ACTIONS: 'CI/CD',
     Source.ELASTIC_APM: 'APM Tools',
     Source.VICTORIA_METRICS: 'APM Tools',
     Source.PROMETHEUS: 'APM Tools',
+    Source.GRAFANA_MIMIR: 'APM Tools',
+    Source.ELASTIC_SEARCH: 'APM Tools',
+    Source.GRAFANA_LOKI: 'APM Tools',
+    Source.GITHUB_ACTIONS: 'CI/CD',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
+    Source.EKS: 'Cloud',
+    Source.AZURE: 'Cloud',
+    Source.GKE: 'Cloud',
     Source.CLICKHOUSE: 'Database',
     Source.POSTGRES: 'Database',
-    Source.PAGER_DUTY: 'Alert Channels',
-    Source.OPS_GENIE: 'Alert Channels',
-    Source.EKS: 'Cloud',
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
-    Source.GRAFANA_MIMIR: 'Grafana Mimir',
 }
 
 integrations_connector_type_connector_keys_map = {
+    Source.PAGER_DUTY: [
+        [
+            SourceKeyType.PAGER_DUTY_API_KEY,
+            SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL
+        ]
+    ],
     Source.SLACK: [
         [
             SourceKeyType.SLACK_BOT_AUTH_TOKEN,
@@ -93,6 +109,11 @@ integrations_connector_type_connector_keys_map = {
         ]
     ],
     Source.GRAFANA: [
+        [
+            SourceKeyType.GRAFANA_HOST,
+            SourceKeyType.GRAFANA_API_KEY,
+            SourceKeyType.SSL_VERIFY,
+        ],
         [
             SourceKeyType.GRAFANA_HOST,
             SourceKeyType.GRAFANA_API_KEY
@@ -157,30 +178,86 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.MIMIR_HOST,
             SourceKeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.MIMIR_HOST,
+            SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
     Source.REMOTE_SERVER: [
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
+            SourceKeyType.REMOTE_SERVER_PEM,
             SourceKeyType.REMOTE_SERVER_PASSWORD,
-            SourceKeyType.REMOTE_SERVER_PEM
         ],
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
         ],
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PEM
         ],
         [
-            SourceKeyType.REMOTE_SERVER_USER,
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PASSWORD
+        ],
+        [
         ]
-    ]
+    ],
+    Source.AZURE: [
+        [
+            SourceKeyType.AZURE_CLIENT_ID,
+            SourceKeyType.AZURE_CLIENT_SECRET,
+            SourceKeyType.AZURE_TENANT_ID,
+            SourceKeyType.AZURE_SUBSCRIPTION_ID,
+        ]
+    ],
+    Source.GKE: [
+        [
+            SourceKeyType.GKE_PROJECT_ID,
+            SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
+        ]
+    ],
+    Source.MS_TEAMS: [
+        [
+            SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL,
+        ]
+    ],
+    Source.ELASTIC_SEARCH: [
+        [
+            SourceKeyType.ELASTIC_SEARCH_PROTOCOL,
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+            SourceKeyType.ELASTIC_SEARCH_PORT,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.ELASTIC_SEARCH_PROTOCOL,
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY,
+        ],
+        [
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+        ]
+    ],
+    Source.GRAFANA_LOKI: [
+        [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.SSL_VERIFY
+        ],
+        [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID
+        ]
+    ],
 }
 
 integrations_connector_key_display_name_map = {
@@ -218,6 +295,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.POSTGRES_PORT: 'Port',
     SourceKeyType.POSTGRES_DATABASE: 'Database',
     SourceKeyType.PAGER_DUTY_API_KEY: 'API Key',
+    SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL: 'Configured Email',
     SourceKeyType.OPS_GENIE_API_KEY: 'API Key',
     SourceKeyType.EKS_ROLE_ARN: 'EKS Role ARN',
     SourceKeyType.SLACK_APP_ID: 'App ID',
@@ -229,6 +307,22 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.REMOTE_SERVER_PASSWORD: 'Password',
     SourceKeyType.MIMIR_HOST: 'Host',
     SourceKeyType.X_SCOPE_ORG_ID: 'X-Scope-OrgId',
+    SourceKeyType.SSL_VERIFY: "Enable TLS certificate validation",
+    SourceKeyType.AZURE_CLIENT_ID: 'Client ID',
+    SourceKeyType.AZURE_CLIENT_SECRET: 'Client Secret',
+    SourceKeyType.AZURE_TENANT_ID: 'Tenant ID',
+    SourceKeyType.AZURE_SUBSCRIPTION_ID: 'Subscription ID',
+    SourceKeyType.GKE_PROJECT_ID: 'Project ID',
+    SourceKeyType.GKE_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
+    SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL: 'Webhook URL',
+    SourceKeyType.ELASTIC_SEARCH_HOST: 'Host',
+    SourceKeyType.ELASTIC_SEARCH_PORT: 'Port',
+    SourceKeyType.ELASTIC_SEARCH_API_KEY_ID: 'API Key ID',
+    SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key',
+    SourceKeyType.ELASTIC_SEARCH_PROTOCOL: 'Protocol',
+    SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
+    SourceKeyType.GRAFANA_LOKI_PORT: 'Port',
+    SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol'
 }
 
 
@@ -251,15 +345,21 @@ class Connector(models.Model):
 
     @property
     def proto_partial(self) -> ConnectorProto:
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
         )
 
@@ -267,15 +367,21 @@ class Connector(models.Model):
     def proto(self) -> ConnectorProto:
         keys = self.connectorkey_set.filter(is_active=True)
         keys_proto = [key.proto for key in keys]
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
             keys=keys_proto
         )
@@ -284,15 +390,21 @@ class Connector(models.Model):
     def unmasked_proto(self) -> ConnectorProto:
         keys = self.connectorkey_set.filter(is_active=True)
         keys_proto = [key.unmasked_proto for key in keys]
+        connector_type_name = integrations_connector_type_display_name_map.get(self.connector_type,
+                                                                               Source.Name(self.connector_type))
+        display_name = f'{connector_type_name}'
+        if self.name:
+            display_name = f'{connector_type_name} - {self.name}'
         return ConnectorProto(
             id=UInt64Value(value=self.id),
+            account_id=UInt64Value(value=self.account_id),
             type=self.connector_type,
             is_active=BoolValue(value=self.is_active),
             name=StringValue(value=self.name),
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by),
-            display_name=StringValue(value=integrations_connector_type_display_name_map.get(self.connector_type, '')),
+            display_name=StringValue(value=display_name),
             category=StringValue(value=integrations_connector_type_category_map.get(self.connector_type, '')),
             keys=keys_proto
         )
@@ -326,6 +438,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GOOGLE_CHAT_BOT_OAUTH_TOKEN,
                              SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.AGENT_PROXY_API_KEY,
+                             SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.GITHUB_ACTIONS_TOKEN,
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,
@@ -333,11 +446,14 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
-                             SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.OPS_GENIE_API_KEY,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
-                             SourceKeyType.REMOTE_SERVER_PEM]:
+                             SourceKeyType.REMOTE_SERVER_PEM,
+                             SourceKeyType.AZURE_CLIENT_SECRET,
+                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
+                             SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+                             SourceKeyType.ELASTIC_SEARCH_API_KEY, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
@@ -365,8 +481,8 @@ class ConnectorMetadataModelStore(models.Model):
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE, null=True, blank=True, db_index=True)
     connector_type = models.IntegerField(choices=generate_choices(Source), default=Source.UNKNOWN,
                                          db_index=True)
-    model_type = models.IntegerField(choices=generate_choices(ConnectorMetadataModelTypeProto),
-                                     default=ConnectorMetadataModelTypeProto.UNKNOWN_MT, db_index=True)
+    model_type = models.IntegerField(choices=generate_choices(SourceModelType), default=SourceModelType.UNKNOWN_MT,
+                                     db_index=True)
 
     model_uid = models.TextField(db_index=True)
 

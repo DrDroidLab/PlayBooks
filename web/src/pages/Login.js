@@ -17,6 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import { CircularProgress, CardContent } from "@mui/material";
 import Toast from "../components/Toast";
 import { useLoginMutation } from "../store/features/auth/api/loginApi.ts";
+import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -119,7 +120,11 @@ function Login() {
                     justifyContent: "center",
                     margin: "30px",
                   }}>
-                  <img src={"/logo/drdroid-logo-full.png"} alt="DrDroid Logo" />
+                  <img
+                    src={"/logo/drdroid-logo-full.png"}
+                    width={200}
+                    alt="DrDroid Logo"
+                  />
                 </Box>
 
                 {prevState === "signup_filled" ? (
@@ -205,6 +210,8 @@ function Login() {
                       "Login"
                     )}
                   </Button>
+
+                  <SocialSignIn />
 
                   <Box
                     sx={{

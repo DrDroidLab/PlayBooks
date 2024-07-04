@@ -1,0 +1,49 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message GkeCommand {
+  google.protobuf.StringValue type = 1;
+  google.protobuf.StringValue description = 2;
+}
+
+message GkeNamespace {
+  google.protobuf.StringValue name = 1;
+  repeated string pods = 2;
+}
+
+message GkeCluster {
+  google.protobuf.StringValue name = 1;
+  repeated GkeNamespace namespaces = 2;
+}
+
+message ZoneCluster {
+  google.protobuf.StringValue zone = 1;
+  repeated GkeCluster clusters = 2;
+}
+
+message GkeClusterAssetModel {
+  google.protobuf.StringValue zone = 1;
+  repeated GkeCluster clusters = 2;
+  repeated GkeCommand commands = 3;
+}
+
+message GkeClusterAssetOptions {
+  repeated ZoneCluster zones = 1;
+}
+
+message GkeAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    GkeClusterAssetModel gke_cluster = 5;
+  }
+}
+
+message GkeAssets {
+  repeated GkeAssetModel assets = 1;
+}

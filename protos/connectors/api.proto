@@ -17,7 +17,18 @@ message CreateConnectorResponse {
   Message message = 2;
 }
 
+message GetConnectorRequest {
+  google.protobuf.UInt64Value connector_id = 1;
+}
+
+message GetConnectorResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  Connector connector = 3;
+}
+
 message GetConnectorsListRequest {
+  Source connector_type = 1;
 }
 
 message GetConnectorsListResponse {
@@ -45,7 +56,8 @@ message GetConnectorKeysOptionsRequest {
 message GetConnectorKeysOptionsResponse {
   google.protobuf.BoolValue success = 1;
   Message message = 2;
-  repeated ConnectorKey connector_key_options = 3;
+  Connector connector = 3;
+  repeated ConnectorKey connector_key_options = 4;
 }
 
 message GetConnectorKeysRequest {
@@ -109,3 +121,24 @@ message GetSlackAppManifestResponse {
   Message message = 2;
   google.protobuf.StringValue app_manifest = 3;
 }
+
+message GetConnectedPlaybooksRequest {
+  Meta meta = 1;
+  google.protobuf.UInt64Value connector_id = 2;
+}
+
+message GetConnectedPlaybooksResponse {
+  message Playbook {
+    google.protobuf.UInt64Value playbook_id = 1;
+    google.protobuf.StringValue playbook_name = 2;
+  }
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated Playbook connected_playbooks = 4;
+}
+
+
+message GetPagerDutyWebhookRequest {}
+
+message GetPagerDutyWebhookResponse {}

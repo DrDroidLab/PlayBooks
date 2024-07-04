@@ -32,6 +32,68 @@ message ErrorMessage {
   Message message = 2;
 }
 
+enum Function {
+  UNKNOWN_F = 0;
+  AVG_F = 1;
+  SUM_F = 2;
+  MIN_F = 3;
+  MAX_F = 4;
+  LAST_F = 5;
+}
+
+enum Operator {
+  UNKNOWN_O = 0;
+  GREATER_THAN_O = 1;
+  GREATER_THAN_EQUAL_O = 2;
+  LESS_THAN_O = 3;
+  LESS_THAN_EQUAL_O = 4;
+  EQUAL_O = 5;
+  NOT_EQUAL_O = 6;
+  LIKE_O = 7;
+  EXISTS_O = 8;
+  CONTAINS_O = 9;
+}
+
+enum LogicalOperator {
+  UNKNOWN_LO = 0;
+  AND_LO = 1;
+  OR_LO = 2;
+  NOT_LO = 3;
+}
+
+enum Op {
+  UNKNOWN_OP = 0;
+  EQ = 1;
+  NEQ = 2;
+  GT = 3;
+  LT = 4;
+  GTE = 5;
+  LTE = 6;
+  IN = 7;
+  NOT_IN = 8;
+  IS_NULL = 9;
+  EXISTS = 10;
+
+  AND = 20;
+  OR = 21;
+  NOT = 22;
+}
+
+enum Context {
+  UNKNOWN_C = 0;
+  PLAYBOOK = 1;
+  PLAYBOOK_EXECUTION = 2;
+  WORKFLOW = 3;
+  WORKFLOW_EXECUTION = 4;
+}
+
+message OpDescription {
+  Op op = 1;
+  string label = 2;
+  bool is_unary = 3;
+  bool is_logical = 4;
+}
+
 message TaskCronSchedule {
   google.protobuf.StringValue minutes = 1;
   google.protobuf.StringValue hours = 2;
@@ -93,8 +155,11 @@ enum Source {
   REMOTE_SERVER = 39;
   API = 40;
   BASH = 41;
-
+  AZURE = 42;
   GRAFANA_MIMIR = 43;
+  GKE = 44;
+  MS_TEAMS = 45;
+  GRAFANA_LOKI = 46;
 }
 
 enum SourceKeyType {
@@ -114,7 +179,8 @@ enum SourceKeyType {
   NEWRELIC_API_DOMAIN = 19;
 
   SLACK_BOT_AUTH_TOKEN = 8;
-  SLACK_CHANNEL = 9;
+  SLACK_CHANNEL_ID = 9;
+  SLACK_APP_ID = 46;
 
   HONEYBADGER_USERNAME = 10;
   HONEYBADGER_PASSWORD = 11;
@@ -153,14 +219,14 @@ enum SourceKeyType {
   SQL_DATABASE_CONNECTION_STRING_URI = 39;
 
   PAGER_DUTY_API_KEY = 41;
+  PAGER_DUTY_CONFIGURED_EMAIL = 63;
+
   OPS_GENIE_API_KEY = 42;
 
   AGENT_PROXY_HOST = 43;
   AGENT_PROXY_API_KEY = 44;
 
   GITHUB_ACTIONS_TOKEN = 45;
-
-  SLACK_APP_ID = 46;
 
   OPEN_AI_API_KEY = 47;
 
@@ -171,4 +237,103 @@ enum SourceKeyType {
 
   MIMIR_HOST = 53;
   X_SCOPE_ORG_ID = 54;
+
+  SSL_VERIFY = 55;
+
+  AZURE_SUBSCRIPTION_ID = 56;
+  AZURE_TENANT_ID = 57;
+  AZURE_CLIENT_ID = 58;
+  AZURE_CLIENT_SECRET = 59;
+
+  GKE_PROJECT_ID = 60;
+  GKE_SERVICE_ACCOUNT_JSON = 61;
+
+  MS_TEAMS_CONNECTOR_WEBHOOK_URL = 62;
+
+  ELASTIC_SEARCH_PROTOCOL = 64;
+  ELASTIC_SEARCH_HOST = 65;
+  ELASTIC_SEARCH_PORT = 66;
+  ELASTIC_SEARCH_API_KEY_ID = 67;
+  ELASTIC_SEARCH_API_KEY = 68;
+
+  GRAFANA_LOKI_PROTOCOL = 69;
+  GRAFANA_LOKI_HOST = 70;
+  GRAFANA_LOKI_PORT = 71;
+}
+
+enum SourceModelType {
+  UNKNOWN_MT = 0;
+  // New Relic Models
+  NEW_RELIC_POLICY = 1;
+  NEW_RELIC_CONDITION = 2;
+  NEW_RELIC_ENTITY = 3;
+  NEW_RELIC_ENTITY_DASHBOARD = 4;
+  NEW_RELIC_ENTITY_APPLICATION = 5;
+  NEW_RELIC_NRQL = 6;
+
+  //Datadog Models
+  DATADOG_MONITOR = 101;
+  DATADOG_DASHBOARD = 102;
+  DATADOG_LIVE_INTEGRATION_AWS = 103;
+  DATADOG_LIVE_INTEGRATION_AWS_LOG = 104;
+  DATADOG_LIVE_INTEGRATION_AZURE = 105;
+  DATADOG_LIVE_INTEGRATION_CLOUDFLARE = 106;
+  DATADOG_LIVE_INTEGRATION_FASTLY = 107;
+  DATADOG_LIVE_INTEGRATION_GCP = 108;
+  DATADOG_LIVE_INTEGRATION_CONFLUENT = 109;
+  DATADOG_SERVICE = 110;
+  DATADOG_METRIC = 111;
+  DATADOG_QUERY = 112;
+
+
+  //Cloudwatch Models
+  CLOUDWATCH_METRIC = 201;
+  CLOUDWATCH_LOG_GROUP = 202;
+
+
+  //Grafana Models
+  GRAFANA_DATASOURCE = 301;
+  GRAFANA_DASHBOARD = 302;
+  GRAFANA_TARGET_METRIC_PROMQL = 303;
+  GRAFANA_PROMETHEUS_DATASOURCE = 304;
+
+  //Clickhouse Models
+  CLICKHOUSE_DATABASE = 401;
+
+  //Slack Models
+  SLACK_CHANNEL = 501;
+
+  //Documentation Models
+  MARKDOWN = 601;
+  IFRAME = 602;
+
+  //Postgres Models
+  POSTGRES_QUERY = 701;
+
+  //EKS Models
+  EKS_CLUSTER = 801;
+
+  //Sql Database Connection Models
+  SQL_DATABASE_CONNECTION_RAW_QUERY = 901;
+
+  //Azure Models
+  AZURE_WORKSPACE = 1001;
+
+  //Remote Server Models
+  SSH_SERVER = 1100;
+
+  // Mimir Server Models
+  GRAFANA_MIMIR_PROMQL = 1201;
+
+  // GKE Models
+  GKE_CLUSTER = 1301;
+
+  // MS TEAMS Models
+  MS_TEAMS_CHANNEL = 1401;
+
+  // Pagerduty Models
+  PAGERDUTY_INCIDENT = 1501;
+
+  // Elastic Search Models
+  ELASTIC_SEARCH_INDEX = 1601;
 }

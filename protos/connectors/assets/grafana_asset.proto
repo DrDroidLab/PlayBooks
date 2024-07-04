@@ -34,6 +34,21 @@ message GrafanaTargetMetricPromQlAssetModel {
   repeated PanelPromqlMap panel_promql_map = 4;
 }
 
+message GrafanaDatasourceAssetModel {
+  google.protobuf.UInt64Value datasource_id = 1;
+  google.protobuf.StringValue datasource_uid = 2;
+  google.protobuf.StringValue datasource_url = 3;
+  google.protobuf.StringValue datasource_name = 5;
+  google.protobuf.StringValue datasource_type = 6;
+  google.protobuf.UInt64Value datasource_orgId = 7;
+  google.protobuf.StringValue datasource_access = 8;
+  google.protobuf.StringValue datasource_database = 9;
+  google.protobuf.BoolValue datasource_readonly = 10;
+  google.protobuf.StringValue datasource_typeName = 11;
+  google.protobuf.BoolValue datasource_basicAuth = 12;
+  google.protobuf.BoolValue datasource_isDefault = 13;
+}
+
 message GrafanaTargetMetricPromQlAssetOptions {
   message GrafanaDashboardOptions {
     message GrafanaPanelOptions {
@@ -48,13 +63,23 @@ message GrafanaTargetMetricPromQlAssetOptions {
   repeated GrafanaDashboardOptions dashboards = 1;
 }
 
+message GrafanaDatasourceAssetOptions {
+  message GrafanaDatasourceOptions {
+    google.protobuf.UInt64Value datasource_id = 1;
+    google.protobuf.StringValue datasource_uid = 2;
+    google.protobuf.StringValue datasource_name = 3;
+  }
+  repeated GrafanaDatasourceOptions prometheus_datasources = 1;
+}
+
 message GrafanaAssetModel {
   google.protobuf.UInt64Value id = 1;
   Source connector_type = 2;
-  ConnectorMetadataModelType type = 3;
+  SourceModelType type = 3;
   sfixed64 last_updated = 4;
   oneof asset {
     GrafanaTargetMetricPromQlAssetModel grafana_target_metric_promql = 5;
+    GrafanaDatasourceAssetModel grafana_prometheus_datasource = 6;
   }
 }
 

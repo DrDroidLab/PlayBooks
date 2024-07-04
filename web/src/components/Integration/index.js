@@ -1,41 +1,41 @@
-import TabContent from '../TabsComponent/TabContent';
-import styles from './index.module.css';
-import Heading from '../Heading';
-import SuspenseLoader from '../Skeleton/SuspenseLoader';
-import TableSkeleton from '../Skeleton/TableLoader';
-import { useGetConnectorListQuery } from '../../store/features/integrations/api/index.ts';
+import Heading from "../Heading";
+import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
+import BasicSearch from "../common/BasicSearch/index.tsx";
+import useBasicSearch from "../../hooks/useBasicSearch.ts";
+import IntegrationCard from "../common/IntegrationCard/index.jsx";
+import GroupedIntegrations from "./GroupedIntegrations.tsx";
 
 function Integrations() {
-  const { data: integrations, isFetching } = useGetConnectorListQuery();
+  const { data: integrations } = useGetConnectorListQuery();
+  const { query, setValue, filteredList, notFound } = useBasicSearch(
+    integrations?.integrations?.allAvailableConnectors,
+    ["title", "desc"],
+  );
 
   return (
     <>
-      <Heading heading={'Integrations'} onTimeRangeChangeCb={false} onRefreshCb={false} />
-      <SuspenseLoader loading={isFetching} loader={<TableSkeleton noOfLines={7} />}>
-        {Object.entries(integrations?.integrations ?? {})?.map(
-          (integration, i) =>
-            integration[0] !== 'allAvailableConnectors' && (
-              <TabContent
-                key={i}
-                id={integration[0]}
-                title={integration[0] ?? ''}
-                cards={integration[1]}
-              />
-            )
-        )}
-        <h1 className={styles['intercom-text']}>
-          Looking for any other integration? Chat with us or{' '}
-          <a
-            className={styles['meeting-link']}
-            href="https://calendly.com/dipesh-droid/integrations"
-            target="_blank"
-            rel="noreferrer"
-          >
-            setup a meeting
-          </a>{' '}
-          with our team or email us at <b className={styles['meeting-link']}>dipesh@drdroid.io</b>
-        </h1>
-      </SuspenseLoader>
+      <Heading
+        heading={"Add a Data Source"}
+        onTimeRangeChangeCb={false}
+        onRefreshCb={false}
+      />
+      <div className="m-4">
+        <BasicSearch query={query} setValue={setValue} />
+      </div>
+      {query ? (
+        <div className="flex flex-wrap">
+          {notFound && (
+            <p className="mx-4 text-sm">
+              No Integrations found. Try changing the search query.
+            </p>
+          )}
+          {filteredList.map((e, index) => (
+            <IntegrationCard key={index} data={e} />
+          ))}
+        </div>
+      ) : (
+        <GroupedIntegrations />
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 export interface Step {
   name?: string;
-  id?: string;
+  id: string;
   query?: string;
   dimension?: string;
   namespace?: string;
@@ -9,6 +9,7 @@ export interface Step {
   isPrefetched?: boolean;
   notes?: string;
   source: string;
+  limit?: string;
   modelTypes?: ModelTypeMap[];
   modelType?: string;
   selectedSource?: string;
@@ -31,8 +32,10 @@ export interface Step {
   textNotes?: string;
   logGroup?: any;
   cw_log_query?: any;
+  filter_query?: any;
   tasks?: PlaybookTask[];
   dashboard?: any;
+  datasource?: any;
   panel?: any;
   grafanaQuery?: any;
   options?: any;
@@ -40,6 +43,8 @@ export interface Step {
   dbQuery?: string;
   page?: any;
   widget?: any;
+  workspaceId?: string;
+  timespan?: string;
   application_name?: string;
   golden_metric?: GoldenMetric;
   golden_metrics?: any[];
@@ -63,6 +68,7 @@ export interface Step {
   formula?: string;
   requiresFormula?: boolean;
   showExternalLinks?: boolean;
+  showNotes?: boolean;
   stepType: string | null;
   action: any;
   connector_type?: any;
@@ -70,6 +76,25 @@ export interface Step {
   interpreter?: any;
   promql_expression?: string;
   remote_server?: string;
+  taskType?: string;
+  iframe_url?: string;
+  zone?: any;
+  position?: StepPosition;
+  stepIndex: number;
+  requireCondition: boolean;
+  resultType?: string;
+  children?: any;
+  taskIds?: string[];
+  isEditing: boolean;
+  start_time?: string;
+  end_time?: string;
+  index?: any;
+  relationLogs?: any;
+}
+
+export interface StepPosition {
+  x: number;
+  y: number;
 }
 
 export interface GoldenMetric {
@@ -127,6 +152,12 @@ export interface FilterLogEventsTask {
   filter_query: string;
 }
 
+export interface AzureFilterLogEventsTask {
+  workspace_id: string;
+  timespan: string;
+  filter_query: string;
+}
+
 export interface CloudWatchTask {
   type: string;
   metric_execution_task?: MetricExecutionTask;
@@ -135,8 +166,9 @@ export interface CloudWatchTask {
 
 export interface GrafanaTask {
   type: string;
-  datasource_uid: string;
-  promql_metric_execution_task: PromqlMetricExecutionTask;
+  datasource_uid?: string;
+  promql_metric_execution_task?: PromqlMetricExecutionTask;
+  prometheus_datasource_metric_execution_task?: any;
 }
 
 export interface NewRelicTask {
@@ -154,7 +186,8 @@ export interface DataFetchTask {
 
 export interface DocumentationTask {
   type: string;
-  documentation: any;
+  documentation?: any;
+  iframe_url?: any;
 }
 
 export interface ApiCallTask {
@@ -225,14 +258,24 @@ export interface NrApplicationEntityTask {
 export interface PlaybookTask {
   name?: string;
   id?: string;
-  type: string;
+  source: string;
   description: string;
-  metric_task?: MetricTask;
-  data_fetch_task?: DataFetchTask;
+  api_call_task?: ApiCallTask;
+  bash_command_task?: BashCommandTask;
+  clickhouse_data_fetch_task?: ClickhouseDataFetchTask;
+  cloudwatch_task?: CloudWatchTask;
+  datadog_task?: DatadogTask;
+  eks_data_fetch_task?: KubernetesDataFetchTask;
+  grafana_task?: GrafanaTask;
+  mimir_task?: any;
+  new_relic_task?: NewRelicTask;
+  postgres_data_fetch_task?: PostgresDataFetchTask;
+  sql_database_connection_data_fetch_task?: any;
   documentation_task?: DocumentationTask;
-  action_task?: ActionTask;
   global_variable_set?: any;
   interpreter_type?: string;
+  task_connector_sources: any;
+  reference_id: string;
 }
 
 export interface GlobalVariable {
@@ -245,7 +288,6 @@ export interface Playbook {
   name?: string;
   description?: string;
   currentPlaybook?: any;
-  currentStepIndex?: string | null;
   steps: Step[];
   playbooks: any;
   meta: any;
@@ -254,6 +296,16 @@ export interface Playbook {
   lastUpdatedAt?: Date | null;
   view: string;
   interpreterTypes: any[];
+  shouldScroll?: string;
+  currentVisibleStep?: number;
+  playbookEdges: any[];
+  permanentView?: string;
+  connectorOptions?: any;
+  executionId?: any;
+  currentStepId?: any;
+  isOnPlaybookPage: boolean;
+  executionStack: any[];
+  zoomLevel: number;
 }
 
 export interface Playground {
@@ -273,6 +325,8 @@ export interface PlaybookContractStep {
   description: string;
   external_links: ExternalLink[];
   tasks: PlaybookTask[];
+  reference_id: string;
+  children: any;
 }
 
 export interface PlaybookContract {
@@ -281,6 +335,7 @@ export interface PlaybookContract {
   description?: string;
   global_variable_set: any;
   steps: PlaybookContractStep[];
+  step_relations: any;
 }
 
 // Response types for the first API
@@ -322,6 +377,7 @@ export interface ModelTypesOption {
   model_type: string;
   cloudwatch_metric_model_options?: CloudwatchMetricModelOptions;
   cloudwatch_log_group_model_options?: CloudwatchLogGroupModelOptions;
+  azure_workspace_model_options?: AzureWorkspaceModelOptions;
 }
 
 export interface CloudwatchMetricModelOptions {
@@ -330,6 +386,10 @@ export interface CloudwatchMetricModelOptions {
 
 export interface CloudwatchLogGroupModelOptions {
   regions: string[];
+}
+
+export interface AzureWorkspaceModelOptions {
+  workspaces: string[];
 }
 
 // Request types for the second API

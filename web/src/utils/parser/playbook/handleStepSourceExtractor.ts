@@ -3,17 +3,16 @@ import * as Extractor from "../../extractors/index.ts";
 
 export const handleStepSourceExtractor = (step) => {
   let data: any = {};
-  let stepSource = step.tasks
-    ? step?.tasks[0].metric_task
-      ? step.tasks[0].metric_task.source
-      : step.tasks[0].data_fetch_task
-      ? step.tasks[0].data_fetch_task.source
-      : step.tasks[0].action_task?.source ?? step?.tasks[0].type
-    : "";
+  let stepSource = step.tasks ? step.tasks[0].source : "";
+
+  const taskIds = step.tasks ? step.tasks?.map((task) => task.id) : [];
 
   switch (stepSource) {
     case SOURCES.CLOUDWATCH:
       data = Extractor.extractCloudwatchTasks(step);
+      break;
+    case SOURCES.AZURE:
+      data = Extractor.extractAzureTasks(step);
       break;
     case SOURCES.GRAFANA_VPC:
     case SOURCES.GRAFANA:
@@ -28,6 +27,9 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.EKS:
       data = Extractor.extractEksTasks(step);
       break;
+    case SOURCES.GKE:
+      data = Extractor.extractGkeTasks(step);
+      break;
     case SOURCES.NEW_RELIC:
       data = Extractor.extractNewRelicTasks(step);
       break;
@@ -39,6 +41,7 @@ export const handleStepSourceExtractor = (step) => {
       break;
     case SOURCES.TEXT:
       data = Extractor.extractTextTasks(step);
+      break;
     case SOURCES.GRAFANA_MIMIR:
       data = Extractor.extractMimirTasks(step);
       break;
@@ -48,9 +51,15 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.SQL_DATABASE_CONNECTION:
       data = Extractor.extractSqlRawQueryTasks(step);
       break;
+    case SOURCES.GRAFANA_LOKI:
+      data = Extractor.extractLokiTasks(step);
+      break;
+    case SOURCES.ELASTIC_SEARCH:
+      data = Extractor.extractElasticSearchTasks(step);
+      break;
     default:
       break;
   }
 
-  return data;
+  return { ...data, taskIds, showNotes: step?.notes ?? false };
 };

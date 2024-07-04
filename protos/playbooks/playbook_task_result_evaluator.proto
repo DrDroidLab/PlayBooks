@@ -1,0 +1,38 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+import "protos/playbooks/playbook_commons.proto";
+
+message TimeseriesResultRule {
+  enum Type {
+    UNKNOWN_TEC = 0;
+    ROLLING = 1;
+    CUMULATIVE = 2;
+  }
+
+  Type type = 1;
+  Function function = 2;
+  Operator operator = 3;
+  google.protobuf.DoubleValue window = 4;
+  google.protobuf.DoubleValue threshold = 5;
+  repeated LabelValuePair label_value_filters = 6;
+}
+
+
+message TableResultRule {
+  enum Type {
+    UNKNOWN_TEC = 0;
+    ROW_COUNT = 1;
+    COLUMN_VALUE = 2;
+  }
+  Type type = 1;
+  Operator operator = 2;
+  google.protobuf.StringValue column_name = 3;
+  oneof threshold {
+    google.protobuf.DoubleValue numeric_value_threshold = 101;
+    google.protobuf.StringValue string_value_threshold = 102;
+  }
+}

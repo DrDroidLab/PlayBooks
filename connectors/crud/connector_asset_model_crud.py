@@ -2,8 +2,7 @@ import logging
 
 from accounts.models import Account
 from connectors.models import ConnectorMetadataModelStore
-from protos.base_pb2 import Source as ConnectorTypeProto
-from protos.connectors.connector_pb2 import ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
 
 logger = logging.getLogger(__name__)
 
@@ -12,9 +11,12 @@ class ConnectorAssetModelCrudException(ValueError):
     pass
 
 
-def get_db_account_connector_metadata_models(account: Account, model_uid: str = None,
-                                             connector_type: ConnectorTypeProto = None,
-                                             model_type: ConnectorMetadataModelTypeProto = None, model_types=None,
+def get_db_account_connector_metadata_models(account: Account,
+                                             model_uid: str = None,
+                                             connector_type: Source = None,
+                                             connector_id=None,
+                                             model_type: SourceModelType = None,
+                                             model_types: [SourceModelType] = None,
                                              is_active=True):
     filters = {}
     if connector_type:
@@ -27,6 +29,8 @@ def get_db_account_connector_metadata_models(account: Account, model_uid: str = 
         filters['is_active'] = is_active
     if model_uid:
         filters['model_uid'] = model_uid
+    if connector_id:
+        filters['connector_id'] = connector_id
     try:
         return account.connectormetadatamodelstore_set.filter(**filters)
     except Exception as e:
@@ -34,8 +38,37 @@ def get_db_account_connector_metadata_models(account: Account, model_uid: str = 
     return None
 
 
-def get_db_connector_metadata_models(account_id=None, connector_id=None, connector_type: ConnectorTypeProto = None,
-                                     model_type: ConnectorMetadataModelTypeProto = None, model_uid: str = None,
+def get_db_connector_metadata_models(account_id: int = None,
+                                     connector_id: int = None,
+                                     model_uid: str = None,
+                                     connector_type: Source = None,
+                                     model_type: SourceModelType = None,
+                                     model_types: [SourceModelType] = None,
+                                     is_active=True):
+    filters = {}
+    if account_id:
+        filters['account_id'] = account_id
+    if connector_type:
+        filters['connector_type'] = connector_type
+    if model_type:
+        filters['model_type'] = model_type
+    if model_types:
+        filters['model_type__in'] = model_types
+    if is_active is not None:
+        filters['is_active'] = is_active
+    if model_uid:
+        filters['model_uid'] = model_uid
+    if connector_id:
+        filters['connector_id'] = connector_id
+    try:
+        return ConnectorMetadataModelStore.objects.filter(**filters)
+    except Exception as e:
+        logger.error(f"Error fetching Connector Models: {str(e)}")
+    return None
+
+
+def get_db_connector_metadata_models(account_id=None, connector_id=None, connector_type: Source = None,
+                                     model_type: SourceModelType = None, model_uid: str = None,
                                      model_types=None, is_active=True):
     filters = {}
     if account_id:
@@ -59,8 +92,8 @@ def get_db_connector_metadata_models(account_id=None, connector_id=None, connect
     return None
 
 
-def create_or_update_model_metadata(account_id, connector_id, connector_type: ConnectorTypeProto,
-                                    model_type: ConnectorMetadataModelTypeProto, model_uid: str, is_active=True,
+def create_or_update_model_metadata(account_id, connector_id, connector_type: Source,
+                                    model_type: SourceModelType, model_uid: str, is_active=True,
                                     metadata=None):
     try:
         model, is_created = ConnectorMetadataModelStore.objects.update_or_create(account_id=account_id,

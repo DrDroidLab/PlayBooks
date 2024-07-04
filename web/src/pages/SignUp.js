@@ -16,7 +16,11 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CardContent, CircularProgress } from "@mui/material";
 import Toast from "../components/Toast";
-import { useSignupMutation } from "../store/features/auth/api/index.ts";
+import {
+  useSignupMutation,
+  useLazySaveSiteUrlQuery,
+} from "../store/features/auth/api/index.ts";
+import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 
 const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
   "& .content-center": {
@@ -50,6 +54,7 @@ function SignUp() {
   const [error, setError] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [triggerSignup] = useSignupMutation();
+  const [triggerSiteUrlSave] = useLazySaveSiteUrlQuery();
 
   const handleCloseToast = () => {
     setError("");
@@ -74,7 +79,7 @@ function SignUp() {
   }
 
   const getError = (err) => {
-    const errObj = err?.response?.data;
+    const errObj = err?.data;
     if (errObj && Object.keys(errObj).length !== 0) {
       if (errObj.email) return errObj.email[0];
       if (!errObj.email && errObj.password) return errObj.password[0];
@@ -97,6 +102,7 @@ function SignUp() {
         password: password,
       };
       await triggerSignup(data).unwrap();
+      await triggerSiteUrlSave({ siteUrl: window.location.origin }).unwrap();
 
       setEmail("");
       setPassword("");
@@ -134,7 +140,11 @@ function SignUp() {
                     justifyContent: "center",
                     margin: "25px",
                   }}>
-                  <img src={"/logo/drdroid-logo-full.png"} alt="Your logo" />
+                  <img
+                    src={"/logo/drdroid-logo-full.png"}
+                    width="200px"
+                    alt="Your logo"
+                  />
                 </Box>
 
                 <Box
@@ -234,6 +244,8 @@ function SignUp() {
                       "Sign up"
                     )}
                   </Button>
+
+                  <SocialSignIn />
 
                   <Box
                     sx={{

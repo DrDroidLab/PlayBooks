@@ -25,8 +25,15 @@ function GlobalVariables() {
     dispatch(deleteVariable({ index }));
   };
 
+  if (isPrefetched && playbook?.globalVariables?.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="text-sm">
+    <div
+      className={`${
+        playbook.view === "builder" ? "w-[300px] my-0" : ""
+      } text-sm p-1 my-2 border rounded min-h-[100px] bg-white`}>
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
           <button
@@ -48,21 +55,23 @@ function GlobalVariables() {
               key={index}
               className={`${styles.variable} flex flex-wrap p-2 border-b`}>
               <div className={styles.name}>{variable.name}</div>
-              <ValueComponent
-                valueType={"STRING"}
-                value={variable.value}
-                placeHolder={"Enter variable value"}
-                length={200}
-                onValueChange={(val) => {
-                  dispatch(updateGlobalVariable({ index, value: val }));
-                }}
-              />
-              {!isPrefetched && (
-                <Close
-                  onClick={() => handleDelete(index)}
-                  className={styles.close}
+              <div className="flex gap-2 items-center">
+                <ValueComponent
+                  valueType={"STRING"}
+                  value={variable.value}
+                  placeHolder={"Enter variable value"}
+                  length={200}
+                  onValueChange={(val) => {
+                    dispatch(updateGlobalVariable({ index, value: val }));
+                  }}
                 />
-              )}
+                {!isPrefetched && (
+                  <Close
+                    onClick={() => handleDelete(index)}
+                    className={styles.close}
+                  />
+                )}
+              </div>
             </div>
           ))
         ) : (

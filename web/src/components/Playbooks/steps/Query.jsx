@@ -1,99 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import SelectComponent from "../../SelectComponent";
 import PlaybookStep from "./PlaybookStep";
-import styles from "../playbooks.module.css";
-import { useGetConnectorTypesQuery } from "../../../store/features/playbook/api/index.ts";
-import { selectSourceAndModel } from "../../../store/features/playbook/playbookSlice.ts";
-import { useDispatch } from "react-redux";
-import { CircularProgress } from "@mui/material";
-import { RefreshRounded } from "@mui/icons-material";
-import CustomDrawer from "../../common/CustomDrawer/index.jsx";
-import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
+import AddSource from "./AddSource.jsx";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
 
-function Query({ step, index }) {
-  const {
-    data: connectorData,
-    isFetching: connectorLoading,
-    refetch,
-  } = useGetConnectorTypesQuery();
-  const dispatch = useDispatch();
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-  function handleSourceChange(key, val) {
-    dispatch(
-      selectSourceAndModel({
-        index,
-        source: val.connector_type,
-        modelType: val.model_type,
-        key,
-      }),
-    );
-
-    fetchData({ ...val, index });
-  }
-
-  useEffect(() => {
-    if (step.isPrefetched) {
-      fetchData({ index });
-    }
-  }, [step.isPrefetched]);
-
-  const toggleDrawer = () => {
-    setDrawerOpen(!isDrawerOpen);
-  };
+function Query({ id }) {
+  const [step] = useCurrentStep(id);
 
   return (
-    <div className={styles["step-fields"]}>
-      <div
-        style={{
-          display: "flex",
-          marginTop: "5px",
-          position: "relative",
-        }}>
-        <div className="flex items-center gap-2">
-          {connectorLoading && (
-            <CircularProgress
-              style={{
-                marginRight: "12px",
-              }}
-              size={20}
-            />
-          )}
-          <SelectComponent
-            data={connectorData}
-            placeholder="Select Data Source"
-            onSelectionChange={(key, value) => handleSourceChange(key, value)}
-            selected={step.selectedSource}
-            searchable={true}
-            disabled={step.isPrefetched && !step.isCopied && step.source}
-          />
-          <button onClick={refetch}>
-            <RefreshRounded
-              className={`text-gray-400 hover:text-gray-600 transition-all`}
-            />
-          </button>
-          {(!connectorData || connectorData?.length === 0) && (
-            <button
-              href="/playbooks/create"
-              rel="noreferrer"
-              target="_blank"
-              onClick={toggleDrawer}
-              className="border border-violet-500 p-1 rounded text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs">
-              + Add New Source
-            </button>
-          )}
-        </div>
+    <div>
+      <div className="flex items-center gap-2">
+        <AddSource id={id} />
       </div>
 
-      {step.source && (
-        <PlaybookStep card={step} index={index} assetsList={step.assets} />
-      )}
-      <CustomDrawer
-        isOpen={isDrawerOpen}
-        setIsOpen={setDrawerOpen}
-        src={"/integrations"}
-      />
+      {step?.source && <PlaybookStep id={id} />}
+      <AddDataSourcesDrawer />
     </div>
   );
 }

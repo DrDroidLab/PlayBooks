@@ -65,12 +65,59 @@ class CreateConnectorResponse(google.protobuf.message.Message):
 global___CreateConnectorResponse = CreateConnectorResponse
 
 @typing_extensions.final
+class GetConnectorRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    CONNECTOR_ID_FIELD_NUMBER: builtins.int
+    @property
+    def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def __init__(
+        self,
+        *,
+        connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id"]) -> None: ...
+
+global___GetConnectorRequest = GetConnectorRequest
+
+@typing_extensions.final
+class GetConnectorResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    CONNECTOR_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def connector(self) -> protos.connectors.connector_pb2.Connector: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        connector: protos.connectors.connector_pb2.Connector | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector", b"connector", "message", b"message", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector", b"connector", "message", b"message", "success", b"success"]) -> None: ...
+
+global___GetConnectorResponse = GetConnectorResponse
+
+@typing_extensions.final
 class GetConnectorsListRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
+    connector_type: protos.base_pb2.Source.ValueType
     def __init__(
         self,
+        *,
+        connector_type: protos.base_pb2.Source.ValueType = ...,
     ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_type", b"connector_type"]) -> None: ...
 
 global___GetConnectorsListRequest = GetConnectorsListRequest
 
@@ -170,11 +217,14 @@ class GetConnectorKeysOptionsResponse(google.protobuf.message.Message):
 
     SUCCESS_FIELD_NUMBER: builtins.int
     MESSAGE_FIELD_NUMBER: builtins.int
+    CONNECTOR_FIELD_NUMBER: builtins.int
     CONNECTOR_KEY_OPTIONS_FIELD_NUMBER: builtins.int
     @property
     def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
     @property
     def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def connector(self) -> protos.connectors.connector_pb2.Connector: ...
     @property
     def connector_key_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.connectors.connector_pb2.ConnectorKey]: ...
     def __init__(
@@ -182,10 +232,11 @@ class GetConnectorKeysOptionsResponse(google.protobuf.message.Message):
         *,
         success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         message: protos.base_pb2.Message | None = ...,
+        connector: protos.connectors.connector_pb2.Connector | None = ...,
         connector_key_options: collections.abc.Iterable[protos.connectors.connector_pb2.ConnectorKey] | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "success", b"success"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["connector_key_options", b"connector_key_options", "message", b"message", "success", b"success"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector", b"connector", "message", b"message", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector", b"connector", "connector_key_options", b"connector_key_options", "message", b"message", "success", b"success"]) -> None: ...
 
 global___GetConnectorKeysOptionsResponse = GetConnectorKeysOptionsResponse
 
@@ -446,3 +497,92 @@ class GetSlackAppManifestResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["app_manifest", b"app_manifest", "message", b"message", "success", b"success"]) -> None: ...
 
 global___GetSlackAppManifestResponse = GetSlackAppManifestResponse
+
+@typing_extensions.final
+class GetConnectedPlaybooksRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    CONNECTOR_ID_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def connector_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        connector_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connector_id", b"connector_id", "meta", b"meta"]) -> None: ...
+
+global___GetConnectedPlaybooksRequest = GetConnectedPlaybooksRequest
+
+@typing_extensions.final
+class GetConnectedPlaybooksResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing_extensions.final
+    class Playbook(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PLAYBOOK_ID_FIELD_NUMBER: builtins.int
+        PLAYBOOK_NAME_FIELD_NUMBER: builtins.int
+        @property
+        def playbook_id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def playbook_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            playbook_id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            playbook_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["playbook_id", b"playbook_id", "playbook_name", b"playbook_name"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["playbook_id", b"playbook_id", "playbook_name", b"playbook_name"]) -> None: ...
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    CONNECTED_PLAYBOOKS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def connected_playbooks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___GetConnectedPlaybooksResponse.Playbook]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        connected_playbooks: collections.abc.Iterable[global___GetConnectedPlaybooksResponse.Playbook] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["connected_playbooks", b"connected_playbooks", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
+
+global___GetConnectedPlaybooksResponse = GetConnectedPlaybooksResponse
+
+@typing_extensions.final
+class GetPagerDutyWebhookRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetPagerDutyWebhookRequest = GetPagerDutyWebhookRequest
+
+@typing_extensions.final
+class GetPagerDutyWebhookResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetPagerDutyWebhookResponse = GetPagerDutyWebhookResponse

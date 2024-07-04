@@ -1,35 +1,39 @@
+import logging
 from typing import Union
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from django.http import HttpResponse
 
-from connectors.models import Site
+from connectors.models import Site, ConnectorMetadataModelStore
 
 from accounts.models import get_request_account, Account, User, get_request_user
-from connectors.assets.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
+from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
 from connectors.crud.connectors_crud import get_db_account_connectors, update_or_create_connector, \
-    get_all_available_connectors, \
-    get_all_request_connectors, get_connector_keys_options, get_db_account_connector_keys, test_connection_connector
+    get_db_account_connector_connected_playbooks
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
+from connectors.utils import test_connection_connector, get_all_available_connectors, get_all_request_connectors, \
+    get_connector_keys_options
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
 from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
-from protos.base_pb2 import Message, Meta, Page, TimeRange
+from protos.base_pb2 import Message, Meta, Page, TimeRange, SourceKeyType
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
     GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
     UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
-    GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse
+    GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse, GetConnectedPlaybooksRequest, \
+    GetConnectedPlaybooksResponse, GetConnectorRequest, GetConnectorResponse
 
 from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto, CommChannel as CommChannelProto, \
     CommAlertType as CommAlertTypeProto, AlertOpsOptions, CommAlertOpsOptions, \
     SlackAlert as SlackAlertProto
-from protos.base_pb2 import Source as ConnectorType
-from protos.connectors.connector_pb2 import Connector as ConnectorProto, \
-    ConnectorMetadataModelType as ConnectorMetadataModelTypeProto
+from protos.base_pb2 import Source, SourceModelType
+from protos.connectors.connector_pb2 import Connector as ConnectorProto
+
+logger = logging.getLogger(__name__)
 
 
 @web_api(CreateConnectorRequest)
@@ -41,28 +45,73 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
     connector_keys = request_message.connector_keys
 
     created_by = user.email
-    if connector.type in [ConnectorType.GRAFANA_VPC]:
-        db_agent_proxy_connector = get_db_account_connectors(account=account, connector_type=ConnectorType.AGENT_PROXY,
+    if connector.type in [Source.GRAFANA_VPC]:
+        db_agent_proxy_connector = get_db_account_connectors(account=account, connector_type=Source.AGENT_PROXY,
                                                              is_active=True)
         if not db_agent_proxy_connector or not db_agent_proxy_connector.exists():
-            agent_proxy_vpc_connector_proto = ConnectorProto(type=ConnectorType.AGENT_PROXY)
+            agent_proxy_vpc_connector_proto = ConnectorProto(type=Source.AGENT_PROXY)
             db_agent_proxy_connector, err = update_or_create_connector(account, created_by,
                                                                        agent_proxy_vpc_connector_proto,
                                                                        connector_keys)
             if db_agent_proxy_connector is None and err:
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
+
+    connector_metadata_models = []
+    if connector.type == Source.REMOTE_SERVER:
+        for key in connector_keys:
+            if key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
+                ssh_servers = key.key.value
+                ssh_servers = ssh_servers.replace(' ', '')
+                ssh_servers = ssh_servers.split(',')
+                ssh_servers = list(filter(None, ssh_servers))
+                for ssh_server in ssh_servers:
+                    if '@' not in ssh_server:
+                        return CreateConnectorResponse(success=BoolValue(value=False), message=Message(
+                            title='Invalid Remote Server Host. Please provide in the format user@host'))
+                    connector_metadata_models.append(
+                        {'model_type': SourceModelType.SSH_SERVER, 'model_uid': ssh_server, 'is_active': True,
+                         'connector_type': Source.REMOTE_SERVER})
+                break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
+    for c in connector_metadata_models:
+        try:
+            ConnectorMetadataModelStore.objects.update_or_create(account=db_connector.account,
+                                                                 connector=db_connector,
+                                                                 connector_type=c['connector_type'],
+                                                                 model_type=c['model_type'],
+                                                                 model_uid=c['model_uid'],
+                                                                 defaults={'is_active': True, 'metadata': None})
+        except Exception as e:
+            logger.error(f"Failed to create connector metadata model: {str(e)}")
+            continue
     if err:
         return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     return CreateConnectorResponse(success=BoolValue(value=True))
 
 
+@web_api(GetConnectorRequest)
+def connectors_get(request_message: GetConnectorRequest) -> Union[GetConnectorResponse, HttpResponse]:
+    account: Account = get_request_account()
+    connector_id = request_message.connector_id
+    if not connector_id or not connector_id.value:
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector ID not found'))
+
+    db_connector = get_db_account_connectors(account=account, connector_id=connector_id.value, is_active=True)
+    if not db_connector or not db_connector.exists():
+        return GetConnectorResponse(success=BoolValue(value=False), message=Message(title='Connector not found'))
+    return GetConnectorResponse(success=BoolValue(value=True), connector=db_connector.first().proto)
+
+
 @web_api(GetConnectorsListRequest)
 def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConnectorsListResponse, HttpResponse]:
     account: Account = get_request_account()
-    all_active_connectors = get_db_account_connectors(account, is_active=True)
-    all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
-    all_available_connectors = get_all_available_connectors(all_active_connectors)
+    if request_message.connector_type:
+        all_active_connectors = get_db_account_connectors(account, is_active=True, connector_type=request_message.connector_type)
+        all_active_connector_protos = list(x.proto for x in all_active_connectors)
+    else:
+        all_active_connectors = get_db_account_connectors(account, is_active=True)
+        all_active_connector_protos = list(x.proto_partial for x in all_active_connectors)
+    all_available_connectors = get_all_available_connectors()
     all_request_connectors = get_all_request_connectors()
     return GetConnectorsListResponse(success=BoolValue(value=True),
                                      request_connectors=all_request_connectors,
@@ -104,8 +153,9 @@ def connector_keys_options(request_message: GetConnectorKeysOptionsRequest) -> \
         return GetConnectorKeysOptionsResponse(success=BoolValue(value=False),
                                                message=Message(title='Connector Type not found'))
 
-    connector_key_options = get_connector_keys_options(connector_type)
-    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector_key_options=connector_key_options)
+    connector, connector_key_options = get_connector_keys_options(connector_type)
+    return GetConnectorKeysOptionsResponse(success=BoolValue(value=True), connector=connector,
+                                           connector_key_options=connector_key_options)
 
 
 @web_api(GetConnectorKeysRequest)
@@ -182,8 +232,8 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
         for connector in active_connectors:
             active_channels = []
             active_comm_channels = account.connectormetadatamodelstore_set.filter(connector=connector, is_active=True,
-                                                                                  connector_type=ConnectorType.SLACK,
-                                                                                  model_type=ConnectorMetadataModelTypeProto.SLACK_CHANNEL)
+                                                                                  connector_type=Source.SLACK,
+                                                                                  model_type=SourceModelType.SLACK_CHANNEL)
             active_comm_channels_id = []
             for channel in active_comm_channels:
                 channel_name = None
@@ -212,7 +262,6 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
 
     return GetSlackAlertTriggerOptionsResponse(
         alert_ops_options=AlertOpsOptions(comm_options=CommAlertOpsOptions(workspaces=comm_workspaces)))
-
 
 @web_api(GetSlackAlertsRequest)
 def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
@@ -257,51 +306,10 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
 
 
 @web_api(GetSlackAppManifestRequest)
-def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
+def save_site_url(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
     host_name = request_message.host_name
-
-    if not host_name or not host_name.value:
-        return GetSlackAppManifestResponse(success=BoolValue(value=False), message=Message(title='Host name not found'))
-
-    # read sample_manifest file string
-    sample_manifest = """
-display_information:
-    name: MyDroid
-    description: App for Automating Investigation & Actions
-    background_color: "#1f2126"
-features:
-    bot_user:
-        display_name: MyDroid
-        always_online: true
-oauth_config:
-    scopes:
-        bot:
-        - channels:history
-        - chat:write
-        - files:write
-        - conversations.connect:manage
-        - conversations.connect:write
-        - groups:write
-        - mpim:write
-        - im:write
-        - channels:manage
-        - channels:read
-        - groups:read
-        - mpim:read
-        - im:read
-settings:
-    event_subscriptions:
-        request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
-        bot_events:
-        - message.channels
-    org_deploy_enabled: false
-    socket_mode_enabled: false
-    token_rotation_enabled: false
-    """
-
-    app_manifest = sample_manifest.replace("HOST_NAME", host_name.value)
 
     site_domain = host_name.value.replace('https://', '').replace('http://', '').split("/")[0]
     active_sites = Site.objects.filter(is_active=True)
@@ -315,5 +323,22 @@ settings:
         site.save()
     else:
         Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
+    return GetSlackAppManifestResponse(success=BoolValue(value=True))
 
-    return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
+
+@web_api(GetConnectedPlaybooksRequest)
+def connected_playbooks_get(request_message: GetConnectedPlaybooksRequest) -> \
+        Union[GetConnectedPlaybooksResponse, HttpResponse]:
+    account: Account = get_request_account()
+    if not request_message.connector_id or not request_message.connector_id.value:
+        return GetConnectedPlaybooksResponse(success=BoolValue(value=False),
+                                             message=Message(title='Connector ID not found'))
+    connector_id = request_message.connector_id.value
+    connected_playbooks = get_db_account_connector_connected_playbooks(account, connector_id)
+
+    connected_playbooks_proto: [GetConnectedPlaybooksResponse.Playbook] = []
+    for cp in connected_playbooks:
+        connected_playbooks_proto.append(
+            GetConnectedPlaybooksResponse.Playbook(playbook_id=UInt64Value(value=cp['playbook_id']),
+                                                   playbook_name=StringValue(value=cp['playbook__name'])))
+    return GetConnectedPlaybooksResponse(success=BoolValue(value=True), connected_playbooks=connected_playbooks_proto)

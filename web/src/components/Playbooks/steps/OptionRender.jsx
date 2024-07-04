@@ -1,20 +1,37 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { updateStep } from "../../../store/features/playbook/playbookSlice.ts";
+import React, { useEffect } from "react";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
-import MultiSelectDropdown from "../../common/MultiSelectDropdown/index.tsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import TypingDropdown from "../../common/TypingDropdown/index.tsx";
+import TypingDropdownMultiple from "../../common/TypingDropdownMultiple/index.tsx";
+import { updateCardById } from "../../../utils/execution/updateCardById.ts";
+import IframeRender from "../options/IframeRender.tsx";
 
-export default function OptionRender({ data, removeErrors, task, stepIndex }) {
-  const dispatch = useDispatch();
+export default function OptionRender({ data, removeErrors, id }) {
+  const [step, currentStepId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
+
+  useEffect(() => {
+    if (data.default) {
+      updateCardById(data.key, data.default, currentStepId);
+    }
+  }, [data.default, currentStepId, data.key]);
+
+  useEffect(() => {
+    if (step.errors?.[data.key]) {
+      if (step?.[data.key]) {
+        removeErrors(data.key);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step.errors]);
 
   const handleChange = (...args) => {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: args[0] }));
+      updateCardById(data.key, args[0], currentStepId);
     }
 
     removeErrors(data.key);
@@ -25,7 +42,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     if (data.handleChange) {
       data.handleChange(e);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: val }));
+      updateCardById(data.key, val, currentStepId);
     }
 
     removeErrors(data.key);
@@ -35,21 +52,31 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
     if (data.handleChange) {
       data.handleChange(...args);
     } else {
-      dispatch(updateStep({ index: stepIndex, key: data.key, value: args[0] }));
+      updateCardById(data.key, args[0], currentStepId);
+    }
+
+    removeErrors(data.key);
+  };
+
+  const handleTypingDropdownChange = (value, option) => {
+    if (data.handleChange && option) {
+      data.handleChange(value, option);
+    } else {
+      updateCardById(data.key, value, currentStepId);
     }
 
     removeErrors(data.key);
   };
 
   const error = data.key
-    ? task.showError && !data.selected && !task[`${data.key}`]
+    ? step.showError && !data.selected && !step[`${data.key}`]
     : false;
 
   switch (data.type) {
     case "options":
       // if (!(data.options?.length > 0)) return;
       return (
-        <div className={`flex flex-col`}>
+        <div key={data.key} className={`flex flex-col`}>
           <p
             style={{
               fontSize: "13px",
@@ -62,7 +89,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             data={data.options ?? []}
             placeholder={`Select ${data.label}`}
             onSelectionChange={handleChange}
-            selected={data.selected ?? task[`${data.key}`]}
+            selected={data.selected ?? step[`${data.key}`]}
             searchable={true}
             disabled={isPrefetched || data.disabled}
             error={error}
@@ -93,7 +120,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
             placeHolder={`Enter ${data?.label}`}
             valueType={"STRING"}
             onValueChange={handleChange}
-            value={data.selected || task[`${data.key}`]}
+            value={data.selected || step[`${data.key}`]}
             error={error}
             disabled={isPrefetched}
             {...data.additionalProps}
@@ -111,7 +138,7 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
               "w-full border border-gray-300 p-1 rounded mt-1 text-sm resize-none text-[#676666] h-32"
             }
             rows={4}
-            value={data.value ?? data.selected ?? task[`${data.key}`]}
+            value={data.value ?? data.selected ?? step[`${data.key}`]}
             onChange={handleTextAreaChange}
             disabled={isPrefetched || data.disabled}
             style={error ? { borderColor: "red" } : {}}
@@ -128,22 +155,58 @@ export default function OptionRender({ data, removeErrors, task, stepIndex }) {
         </button>
       );
 
+    case "iframe-render":
+      return <IframeRender url={data.value} />;
+
     case "multi-select":
       // if (!(data.options?.length > 0)) return;
       return (
-        <div key={data.id}>
-          <MultiSelectDropdown
-            label={data.label}
-            options={data.options}
-            error={data.error}
+        <div key={data.key} className={`flex flex-col`}>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#676666",
+            }}>
+            <b>{data.label}</b>
+          </p>
+          <TypingDropdownMultiple
+            data={data.options ?? []}
+            selected={data.selected ?? step[`${data.key}`]}
+            placeholder={data.placeholder ?? `Select ${data.label}`}
+            handleChange={multiSelectChange}
             disabled={isPrefetched || data.disabled}
-            additionalProps={data.additionalProps}
-            placeholder={data.placeholder}
+            error={error}
             selectedDisplayKey={data.selectedDisplayKey}
-            multiSelectChange={multiSelectChange}
             selectedValuesKey={data.selectedValuesKey ?? data.key}
-            task={task}
+            {...data.additionalProps}
           />
+        </div>
+      );
+
+    case "typing-dropdown":
+      return (
+        <div key={data.key} className={`flex flex-col`}>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#676666",
+            }}>
+            <b>{data.label}</b>
+          </p>
+          <div className="flex gap-1 items-center">
+            <TypingDropdown
+              data={data.options ?? []}
+              selected={data.selected ?? step[`${data.key}`]}
+              placeholder={data.placeholder ?? `Select ${data.label}`}
+              handleChange={handleTypingDropdownChange}
+              disabled={isPrefetched || data.disabled}
+              error={error}
+              {...data.additionalProps}
+            />
+            <p className="text-xs shrink-0 text-gray-500 font-semibold">
+              {data.helperText}
+            </p>
+          </div>
         </div>
       );
     default:

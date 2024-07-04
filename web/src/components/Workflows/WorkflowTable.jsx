@@ -13,6 +13,8 @@ import { Delete, Edit, History } from "@mui/icons-material";
 import WorkflowActionOverlay from "./WorkflowActionOverlay.jsx";
 import { useState } from "react";
 import useToggle from "../../hooks/useToggle.js";
+import { renderTimestamp } from "../../utils/DateUtils.js";
+import { handleStatus } from "../../utils/handleStatus.tsx";
 
 const WorkflowTableRender = ({ data, refreshTable }) => {
   const navigate = useNavigate();
@@ -32,6 +34,10 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
     navigate(`/workflows/executions/${id}`);
   };
 
+  // const navigateToPlaybook = (id) => {
+  //   navigate(`/playbooks/${id}`);
+  // };
+
   return (
     <>
       <Table stickyHeader>
@@ -40,12 +46,8 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
             <TableCell className="!font-bold">Name</TableCell>
             <TableCell className="!font-bold">Playbooks</TableCell>
             <TableCell className="!font-bold">Schedule</TableCell>
-            <TableCell className="!font-bold !text-center">
-              Last Execution Time
-            </TableCell>
-            <TableCell className="!font-bold !text-center">
-              Last Execution Status
-            </TableCell>
+            <TableCell className="!font-bold">Last Execution Time</TableCell>
+            <TableCell className="!font-bold">Last Execution Status</TableCell>
             <TableCell className="!font-bold">Created by</TableCell>
             <TableCell className="!font-bold">Actions</TableCell>
           </TableRow>
@@ -68,9 +70,9 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                 {item.playbooks?.length > 0
                   ? item.playbooks.map((e) => (
                       <div
-                        className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all hover:bg-violet-500 hover:text-white"
+                        className="p-1 text-xs border rounded bg-gray-50 cursor-pointer w-fit transition-all"
                         key={e.id}>
-                        <Link to={`/playbooks/${e.id}`}>{e.name}</Link>
+                        <p>{e.name}</p>
                       </div>
                     ))
                   : "--"}
@@ -92,11 +94,15 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
                   )}
                 </div>
               </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+              <TableCell component="td" scope="row">
+                {item.last_execution_time
+                  ? renderTimestamp(item?.last_execution_time)
+                  : "--"}
               </TableCell>
-              <TableCell component="td" scope="row" className="!text-center">
-                --
+              <TableCell component="td" scope="row">
+                {item.last_execution_status
+                  ? handleStatus(item.last_execution_status)
+                  : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.created_by}
