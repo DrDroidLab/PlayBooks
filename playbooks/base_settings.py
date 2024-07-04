@@ -38,12 +38,14 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
+    'engines.apps.EnginesConfig',
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
     'management.apps.ManagementConfig',
     'executor.apps.ExecutorConfig',
     'executor.workflows.apps.WorkflowsConfig',
+    'executor.engine_manager.apps.EngineManagerConfig',
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
     'connectors.handlers.apps.HandlersConfig',
@@ -353,3 +355,9 @@ WORKFLOW_EXECUTE_API_SITE_HTTP_PROTOCOL = env.str("WORKFLOW_EXECUTE_API_SITE_HTT
 WORKFLOW_EXECUTE_API_USE_SITE = env.bool("WORKFLOW_EXECUTE_API_USE_SITE", default=True)
 
 PLATFORM_PLAYBOOKS_EXECUTION_LOCATION = env.str("PLATFORM_PLAYBOOKS_EXECUTION_LOCATION", default='/playbooks/logs/{}')
+
+OKTA_DOMAIN = env.str("OKTA_DOMAIN", default='')
+OKTA_CLIENT_ID = env.str("OKTA_CLIENT_ID", default='')
+OKTA_CLIENT_USE_SITE = env.bool("OKTA_CLIENT_USE_SITE", default=True)
+OKTA_CLIENT_SITE_HTTP_PROTOCOL = env.str("OKTA_CLIENT_SITE_HTTP_PROTOCOL", default='https')
+OKTA_CLIENT_REDIRECT_LOCATION = env.str("OKTA_CLIENT_REDIRECT_LOCATION", default='/oauth/callback/okta')

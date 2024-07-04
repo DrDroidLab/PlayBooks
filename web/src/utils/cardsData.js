@@ -140,8 +140,8 @@ export const cardsData = [
     title: "ELASTIC SEARCH",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
-    buttonTitle: "Request Access",
     buttonType: "available",
+    docs: "https://docs.drdroid.io/docs/elk"
   },
   {
     id: 11,
@@ -280,7 +280,6 @@ export const cardsData = [
     title: "ELASTIC APM",
     enum: "ELASTIC_APM",
     desc: "Share metrics of your service from Elastic APM",
-    buttonTitle: "Request Access",
     buttonType: "available",
   },
   {
@@ -434,5 +433,12 @@ export const cardsData = [
     buttonType: "link",
     buttonLink: "/integrations/ms_teams",
     docs: "https://docs.drdroid.io/docs/ms-teams",
+  },
+  {
+    id: 48,
+    url: "/integrations/grafana_loki_logo.svg",
+    enum: "GRAFANA_LOKI",
+    desc: "Connect to Grafana Loki",
+    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
   },
 ];

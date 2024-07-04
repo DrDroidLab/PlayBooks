@@ -56,6 +56,8 @@ django-timezone-field==6.1.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 docutils==0.16
+elastic-transport==8.13.1
+elasticsearch==8.14.0
 environs==11.0.0
 exceptiongroup==1.2.0
 fdb==2.0.2
@@ -178,5 +180,3 @@ wsproto==1.2.0
 yarl==1.9.4
 zipp==3.18.1
 zstandard==0.22.0
-
-pdpyras~=5.2.0

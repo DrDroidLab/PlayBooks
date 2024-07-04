@@ -51,6 +51,12 @@ export const handleStepSourceExtractor = (step) => {
     case SOURCES.SQL_DATABASE_CONNECTION:
       data = Extractor.extractSqlRawQueryTasks(step);
       break;
+    case SOURCES.GRAFANA_LOKI:
+      data = Extractor.extractLokiTasks(step);
+      break;
+    case SOURCES.ELASTIC_SEARCH:
+      data = Extractor.extractElasticSearchTasks(step);
+      break;
     default:
       break;
   }

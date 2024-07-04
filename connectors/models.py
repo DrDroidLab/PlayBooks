@@ -39,6 +39,8 @@ integrations_connector_type_display_name_map = {
     Source.AZURE: 'AZURE',
     Source.GKE: 'GKE KUBERNETES',
     Source.MS_TEAMS: 'MS TEAMS',
+    Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
+    Source.GRAFANA_LOKI: 'GRAFANA LOKI',
 }
 
 integrations_connector_type_category_map = {
@@ -57,6 +59,8 @@ integrations_connector_type_category_map = {
     Source.VICTORIA_METRICS: 'APM Tools',
     Source.PROMETHEUS: 'APM Tools',
     Source.GRAFANA_MIMIR: 'APM Tools',
+    Source.ELASTIC_SEARCH: 'APM Tools',
+    Source.GRAFANA_LOKI: 'APM Tools',
     Source.GITHUB_ACTIONS: 'CI/CD',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
@@ -219,7 +223,41 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL,
         ]
-    ]
+    ],
+    Source.ELASTIC_SEARCH: [
+        [
+            SourceKeyType.ELASTIC_SEARCH_PROTOCOL,
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+            SourceKeyType.ELASTIC_SEARCH_PORT,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY,
+            SourceKeyType.SSL_VERIFY,
+        ],
+        [
+            SourceKeyType.ELASTIC_SEARCH_PROTOCOL,
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+            SourceKeyType.ELASTIC_SEARCH_API_KEY,
+        ],
+        [
+            SourceKeyType.ELASTIC_SEARCH_HOST,
+        ]
+    ],
+    Source.GRAFANA_LOKI: [
+        [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID,
+            SourceKeyType.SSL_VERIFY
+        ],
+        [
+            SourceKeyType.GRAFANA_LOKI_PROTOCOL,
+            SourceKeyType.GRAFANA_LOKI_HOST,
+            SourceKeyType.GRAFANA_LOKI_PORT,
+            SourceKeyType.X_SCOPE_ORG_ID
+        ]
+    ],
 }
 
 integrations_connector_key_display_name_map = {
@@ -277,6 +315,14 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.GKE_PROJECT_ID: 'Project ID',
     SourceKeyType.GKE_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
     SourceKeyType.MS_TEAMS_CONNECTOR_WEBHOOK_URL: 'Webhook URL',
+    SourceKeyType.ELASTIC_SEARCH_HOST: 'Host',
+    SourceKeyType.ELASTIC_SEARCH_PORT: 'Port',
+    SourceKeyType.ELASTIC_SEARCH_API_KEY_ID: 'API Key ID',
+    SourceKeyType.ELASTIC_SEARCH_API_KEY: 'API Key',
+    SourceKeyType.ELASTIC_SEARCH_PROTOCOL: 'Protocol',
+    SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
+    SourceKeyType.GRAFANA_LOKI_PORT: 'Port',
+    SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol'
 }
 
 
@@ -405,7 +451,9 @@ class ConnectorKey(models.Model):
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
                              SourceKeyType.AZURE_CLIENT_SECRET,
-                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON, ]:
+                             SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
+                             SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
+                             SourceKeyType.ELASTIC_SEARCH_API_KEY, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

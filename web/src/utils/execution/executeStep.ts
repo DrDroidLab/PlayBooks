@@ -6,10 +6,14 @@ import {
 import { Step } from "../../types.ts";
 import { stateToStep } from "../parser/playbook/stateToStep.ts";
 import { updateCardById } from "./updateCardById.ts";
-import { playbookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import {
+  playbookSelector,
+  popFromExecutionStack,
+} from "../../store/features/playbook/playbookSlice.ts";
 
 export async function executeStep(step: Step, id?: string) {
   const { executionId } = playbookSelector(store.getState());
+  const dispatch = store.dispatch;
   if (Object.keys(step.errors ?? {}).length > 0) {
     updateCardById("showError", true, id);
     return;
@@ -18,6 +22,9 @@ export async function executeStep(step: Step, id?: string) {
   const stepData = stateToStep(step);
   updateCardById("outputLoading", true, id);
   updateCardById("showOutput", false, id);
+  updateCardById("outputError", undefined, id);
+
+  dispatch(popFromExecutionStack());
 
   try {
     const res =
@@ -29,6 +36,11 @@ export async function executeStep(step: Step, id?: string) {
     for (let outputData of output?.task_execution_logs ?? []) {
       outputList.push(outputData);
     }
+    const outputErrors = outputList?.filter(
+      (output: any) => output?.result?.error,
+    );
+    const error = outputErrors.length > 0 ? outputErrors[0] : undefined;
+
     updateCardById("showOutput", true, id);
     updateCardById(
       "outputs",
@@ -38,6 +50,10 @@ export async function executeStep(step: Step, id?: string) {
       },
       id,
     );
+    if (error) {
+      updateCardById("showError", true, id);
+      updateCardById("outputError", error.result?.error, id);
+    }
   } catch (e) {
     updateCardById("showError", true, id);
     updateCardById("outputError", e.message, id);
