@@ -3,9 +3,11 @@ import SettingsTitle from "./SettingsTitle.tsx";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { useUpdateSiteUrlMutation } from "../../store/features/integrations/api/index.ts";
 import { CircularProgress } from "@mui/material";
+import { useGetSiteUrlQuery } from "../../store/features/integrations/api/getSiteUrlApi.ts";
 
 function SiteSection() {
-  const [value, setValue] = useState("https://example.com");
+  const { data, isFetching } = useGetSiteUrlQuery();
+  const [value, setValue] = useState(data?.url);
   const [error, setError] = useState("");
   const [triggerSaveSite, { isLoading }] = useUpdateSiteUrlMutation();
 
@@ -34,9 +36,17 @@ function SiteSection() {
   };
 
   useEffect(() => {
-    removeError();
+    if (value) {
+      removeError();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
+
+  useEffect(() => {
+    if (data?.url) {
+      setValue(data.url);
+    }
+  }, [data]);
 
   return (
     <section className="border-b pb-4 mb-4">
@@ -56,7 +66,7 @@ function SiteSection() {
         </div>
         <div className="flex items-center gap-2">
           <CustomButton onClick={handleUpdate}>Update</CustomButton>
-          {isLoading && <CircularProgress size={20} />}
+          {(isLoading || isFetching) && <CircularProgress size={20} />}
         </div>
       </div>
     </section>
