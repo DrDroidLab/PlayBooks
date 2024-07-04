@@ -5,12 +5,10 @@ import { List, ListItemButton, ListItemIcon } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
 import "../src/Layout.css";
 import {
-  Key,
   Layers,
   Settings,
   SlowMotionVideo,
@@ -128,14 +126,6 @@ function Sidebar() {
             </ListItemIcon>
             <p style={{ fontSize: "14px" }}>Data Sources</p>
           </NavLink>
-          <hr></hr>
-
-          <NavLink className={activeStyle} to="/api-keys">
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <Key />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>API keys</p>
-          </NavLink>
         </List>
       </div>
 
@@ -161,23 +151,6 @@ function Sidebar() {
             Join Slack Community
           </p>
         </ListItemButton>
-
-        <NavLink to="/invite-team">
-          <ListItemButton
-            selected={selectedIndex === 3}
-            onClick={(event) => handleListItemClick(event, 3)}
-            sx={{
-              padding: 0,
-              ":hover": {
-                backgroundColor: "transparent",
-              },
-            }}>
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <GroupAddIcon />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px", width: "100%" }}>Team</p>
-          </ListItemButton>
-        </NavLink>
 
         <NavLink className={activeStyle} to="/settings">
           <ListItemIcon sx={{ minWidth: "44px" }}>
