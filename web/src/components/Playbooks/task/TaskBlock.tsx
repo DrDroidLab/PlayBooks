@@ -3,7 +3,7 @@ import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import Details from "./Details.tsx";
-import HandleOutput from "../steps/HandleOutput.jsx";
+import HandleOutput from "./HandleOutput.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 const TaskBlock = ({ id }) => {
