@@ -40,7 +40,9 @@ function SiteSection() {
       <div className="mt-2 flex items-baseline gap-2">
         <div className="flex flex-col">
           <input
-            className="border p-1 text-sm outline-none rounded w-64"
+            className={`${
+              error ? "border-red-500" : ""
+            } border p-1 text-sm outline-none rounded w-64`}
             value={value}
             type="url"
             placeholder="Your Site URL"
