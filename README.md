@@ -1,82 +1,71 @@
 
 
 <p align="center">
-  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png" alt="Doctor Droid Logo" width="50%" height="50%">
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png" alt="Doctor Droid Logo" width="30%" height="50%">
 
 </p>
-<center>
-
-[Docs](https://docs.drdroid.io) | [Sandbox](https://sandbox.drdroid.io) | [Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
-
-</center>
 
 <br>
 
-tl;dr Enrich your Slack alerts with contextual observability data, helping on-call engineer investigate faster.
+tl;dr Automate investigation of production issues.
 
-## About PlayBooks
-PlayBooks are executable notebooks designed to *Automate Preliminary Investigations in Production* for engineers.
-Watch [demo video](https://www.youtube.com/watch?v=-a-AqwuvI8g).
-### **Automating Playbook Executions**
-1. Define a playbook with your enrichment logic
-2. Configure the playbook to auto-trigger basis a Slack alert received in a channel
-3. Receive automated investigation summary in the Slack thread for the same alert
+## Watch Demo
+<p align="center">
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/automate-investigations-thumbnail-github.png" alt="Doctor Droid Demo" width="60%" height="50%">
+
+</p>
+
+<br>
+
+## How does Doctor Droid automate investigations?
+
+Doctor Droid is a bot that can automatically go to 15+ types of observability tools & servers, run commands and fetch data for you whenever you receive an alert.
+
+This helps reduce the time taken to investigate an issue and can potentially completely automate it.
+
+
+<p align="center">
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/doctor-droid-automation.png" alt="How Doctor Droid works" width="75%" height="50%">
+</p>
+
+<br>
+
+## How to configure Investigations in Doctor Droid?
+
+You can **create PlayBooks** to configure investigations. **PlayBooks are intelligent documents that are connected to every part of your stack** where you might need to look for monitoring -- you can fetch logs, metrics, query databases, run commands on remote servers, fetch container data and even define custom API calls.
+
+<p align="center">
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/sample-investigation-playbook.png" alt="How Doctor Droid works" width="75%" height="50%">
+</p>
+
 
 ### Playground:
-* Explore the [sandbox](https://sandbox.drdroid.io/) to get a sense of how the playbooks work.
+* The [sandbox](https://sandbox.drdroid.io/) has a few sample playbooks created.
 * You can also check out the [#demo-alerts channel](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ) in community Slack workspace to see how automated replies are received for alerts.
 
-## Capabilities
-- **Enrichment library**: The tool currently supports fetching 50+ types of enrichment data from metric sources (Datadog, New Relic, Grafana+Prometheus, Cloudwatch Metrics), Logs & Events (Cloudwatch Logs, EKS) and Databases (PostgreSQL DB, Clickhouse DB)
+## Getting Started
 
-- **Past Executions**: See the historical runs of a playbook and go back to an investigation from a specific point in time.
+#### 1. [Documentation](https://docs.drdroid.io)
 
-- **Continuous monitoring**: Setup continuous monitoring cron for specific use-cases (e.g. post deployment, peak hours, post bug-fix). Read [docs](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) for list of allowed configurations.
+#### 2. Installation
 
-- **Interpretation Layer**: Configure ML modules which can analyse & interpret data from your investigation playbooks.
-
-### Coming Soon:
-- **Templates**: Common investigation & troubleshooting logics which can be used out of the box.
-- **Conditionals**: Create decision trees in your playbooks basis evaluation of a playbook step.
-- **More integrations**: Find something missing? Request [here](https://github.com/DrDroidLab/PlayBooks/issues/new).
-
-
-## Getting Started with alert enrichment
-
-### Use latest stable version
-#### via Docker Compose 
+Use this command to get started using Docker:
 ```
 docker-compose -f deploy.docker-compose.yaml up -d
 ```
-Access the portal at [localhost](http://localhost:80) (on port 80)
+Looking for Helm chart or custom branch deployment? Read our installation doc [here](https://docs.drdroid.io/docs/installation).
 
-#### via Helm (on a kubernetes cluster)
-```
-cd helm
-helm install playbooks .
-```
-Run the following command to get the portal endpoint
-```
-kubectl get svc web -o custom-columns="EXTERNAL-IP:.status.loadBalancer.ingress[*].hostname"
-```
-OR
-### Build from Source
+#### 3. Learn more: Watch tutorials on our [YouTube](https://www.youtube.com/@DrDroidDev) channel
 
-```
-git clone git@github.com:DrDroidLab/PlayBooks.git
+## Connect with us:
+* Want to contribute? Read our [contribution guidelines](/CONTRIBUTION.md).
 
-docker-compose -f playbooks.docker-compose.yaml up -d
-```
+* For Feedback or Feature Requests: Share with us in Slack or Github issues.
 
-**Step 2:** Follow this [Step-by-Step guide](https://docs.drdroid.io/docs/setting-up-slack-alert-enrichment-on-self-hosted-playbooks) to do your first alert enrichment.
+* Bug Report? Create a [jam](https://jam.dev/) and share it with us on Github or Slack!
 
-#### [Cloud Signup](https://playbooks.drdroid.io/signup)
+<center>
 
-## Have feedback or queries?
-Asks questions in the [Slack Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ) or write to us at founders [at] drdroid [dot] io
-
-## Want to contribute?
-Read our [contribution guidelines](/CONTRIBUTION.md)
-
-## Roadmap
-Read our roadmap [here](/ROADMAP.md)
+[Slack Community](https://join.slack.com/t/doctor-droid-demo/shared_invite/zt-2h6eap61w-Bmz76OEU6IykmDy673R1qQ)
+| [Roadmap](/ROADMAP.md) | [Docs](https://docs.drdroid.io)
+</center>
