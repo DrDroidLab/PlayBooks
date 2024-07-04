@@ -6,6 +6,8 @@ import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
 import { useGetWorkflowsQuery } from "../../store/features/workflow/api/getWorkflowsApi.ts";
 import WorkflowTable from "./WorkflowTable.jsx";
+import CustomButton from "../common/CustomButton/index.tsx";
+import { Add } from "@mui/icons-material";
 
 const Workflows = () => {
   const navigate = useNavigate();
@@ -37,12 +39,9 @@ const Workflows = () => {
       />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center justify-between">
-          <button
-            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg create_playbook"
-            onClick={handleCreateWorkflow}
-            style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
-            + Create Workflow
-          </button>
+          <CustomButton onClick={handleCreateWorkflow}>
+            <Add fontSize="small" /> Create Workflow
+          </CustomButton>
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <WorkflowTable
