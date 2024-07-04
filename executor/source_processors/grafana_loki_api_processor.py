@@ -10,18 +10,17 @@ logger = logging.getLogger(__name__)
 class GrafanaLokiApiProcessor(Processor):
     client = None
 
-    def __init__(self, host, api_key, ssl_verify='true'):
+    def __init__(self, host, port, protocol, x_scope_org_id='anonymous', ssl_verify='true'):
+        self.__protocol = protocol
         self.__host = host
-        self.__api_key = api_key
+        self.__port = port
         self.__ssl_verify = False if ssl_verify and ssl_verify.lower() == 'false' else True
-        self.headers = {
-            'Authorization': f'Bearer {self.__api_key}'
-        }
+        self.__headers = {'X-Scope-OrgID': x_scope_org_id}
 
     def test_connection(self):
         try:
-            url = '{}/ready'.format(self.__host)
-            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify)
+            url = '{}/ready'.format(f"{self.__protocol}://{self.__host}:{self.__port}")
+            response = requests.get(url, headers=self.__headers, verify=self.__ssl_verify)
             if response and response.status_code == 200:
                 return True
             else:
@@ -34,14 +33,14 @@ class GrafanaLokiApiProcessor(Processor):
 
     def query(self, query, start, end, limit=1000):
         try:
-            url = '{}/loki/api/v1/query_range'.format(self.__host)
+            url = '{}/loki/api/v1/query_range'.format(f"{self.__protocol}://{self.__host}:{self.__port}")
             params = {
                 'query': query,
                 'start': start,
                 'end': end,
                 'limit': limit
             }
-            response = requests.get(url, headers=self.headers, verify=self.__ssl_verify, params=params)
+            response = requests.get(url, headers=self.__headers, verify=self.__ssl_verify, params=params)
             if response and response.status_code == 200:
                 return response.json()
         except Exception as e:

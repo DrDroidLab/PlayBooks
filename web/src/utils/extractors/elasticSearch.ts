@@ -18,7 +18,7 @@ export const extractElasticSearchTasks = (step: any) => {
     modelType,
     index: elasticSearchTask?.index,
     query: elasticSearchTask?.lucene_query,
-    size: elasticSearchTask?.limit,
+    limit: elasticSearchTask?.limit,
   };
 
   return stepData;

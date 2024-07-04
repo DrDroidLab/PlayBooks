@@ -6,17 +6,20 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
 import NotFound from "./pages/NotFound";
 import posthog from "posthog-js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAccessToken,
   selectEmail,
+  setLastLogin,
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
 import Loading from "./components/common/Loading/index.tsx";
+import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
+const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage"),
 );
@@ -59,6 +62,7 @@ const App = () => {
   const email = useSelector(selectEmail);
   const accessToken = useSelector(selectAccessToken);
   const { isLoading, data, isError } = useGetUserQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (email) {
@@ -67,7 +71,7 @@ const App = () => {
   }, [email]);
 
   useEffect(() => {
-    if (!data && isError) {
+    if (!data && isError && !isUnAuth) {
       navigate("/signup", {
         replace: true,
         state: { from: location.pathname },
@@ -82,6 +86,14 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (data?.user) {
+      const d = new Date().toString();
+      dispatch(setLastLogin(d));
+      localStorage.setItem("lastLogin", d);
+    }
+  }, [data]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -89,6 +101,7 @@ const App = () => {
   return (
     <Routes>
       <Route element={<BaseLayout />}>
+        <Route path="/oauth/callback/:oauthId" element={<OAuthCallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Route>

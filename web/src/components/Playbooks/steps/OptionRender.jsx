@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
@@ -11,6 +11,21 @@ import IframeRender from "../options/IframeRender.tsx";
 export default function OptionRender({ data, removeErrors, id }) {
   const [step, currentStepId] = useCurrentStep(id);
   const isPrefetched = useIsPrefetched();
+
+  useEffect(() => {
+    if (data.default) {
+      updateCardById(data.key, data.default, currentStepId);
+    }
+  }, [data.default, currentStepId, data.key]);
+
+  useEffect(() => {
+    if (step.errors?.[data.key]) {
+      if (step?.[data.key]) {
+        removeErrors(data.key);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step.errors]);
 
   const handleChange = (...args) => {
     if (data.handleChange) {

@@ -22,6 +22,7 @@ export async function executeStep(step: Step, id?: string) {
   const stepData = stateToStep(step);
   updateCardById("outputLoading", true, id);
   updateCardById("showOutput", false, id);
+  updateCardById("outputError", undefined, id);
 
   dispatch(popFromExecutionStack());
 
