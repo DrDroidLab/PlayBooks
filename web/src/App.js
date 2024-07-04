@@ -6,10 +6,11 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
 import NotFound from "./pages/NotFound";
 import posthog from "posthog-js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAccessToken,
   selectEmail,
+  setLastLogin,
 } from "./store/features/auth/authSlice.ts";
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
@@ -62,6 +63,7 @@ const App = () => {
   const email = useSelector(selectEmail);
   const accessToken = useSelector(selectAccessToken);
   const { isLoading, data, isError } = useGetUserQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (email) {
@@ -84,6 +86,14 @@ const App = () => {
       loader.style.display = "none";
     }
   }, []);
+
+  useEffect(() => {
+    if (data?.user) {
+      const d = new Date().toString();
+      dispatch(setLastLogin(d));
+      localStorage.setItem("lastLogin", d);
+    }
+  }, [data]);
 
   if (isLoading) {
     return <Loading />;
