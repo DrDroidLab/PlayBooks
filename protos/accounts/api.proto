@@ -47,6 +47,7 @@ message GetVersionInfoResponse {
   string current_version = 1;
   string latest_version = 2;
   bool should_upgrade = 3;
+  string upgrade_message = 4;
 }
 
 message InviteUsersRequest {
