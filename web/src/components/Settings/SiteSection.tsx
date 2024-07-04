@@ -9,7 +9,8 @@ function SiteSection() {
   const { data, isFetching, error: siteUrlError } = useGetSiteUrlQuery();
   const [value, setValue] = useState(data?.url);
   const [error, setError] = useState("");
-  const [triggerSaveSite, { isLoading }] = useUpdateSiteUrlMutation();
+  const [triggerSaveSite, { isLoading, error: saveUrlError }] =
+    useUpdateSiteUrlMutation();
 
   const validate = () => {
     let errorString = "";
@@ -49,10 +50,10 @@ function SiteSection() {
   }, [data]);
 
   useEffect(() => {
-    if (siteUrlError) {
-      setError(siteUrlError);
+    if (siteUrlError || saveUrlError) {
+      setError(saveUrlError ?? siteUrlError);
     }
-  }, [siteUrlError]);
+  }, [siteUrlError, saveUrlError]);
 
   return (
     <section className="border-b pb-4 mb-4">
