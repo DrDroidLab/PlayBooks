@@ -1,16 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// import { useNavigate } from "react-router-dom";
 import Heading from "../../Heading.js";
 import { useEffect, useState } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";
-import { useGetWorkflowExecutionsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
+import Search from "../../common/Search/index.tsx";
+import { useSearchQuery } from "../../../store/features/search/api/searchApi.ts";
+
+const context = "WORKFLOW_EXECUTION";
 
 const WorkflowExecutionList = () => {
-  // const navigate = useNavigate();
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetWorkflowExecutionsQuery({
+  const { data, isFetching, refetch } = useSearchQuery({
+    context,
     ...pageMeta,
   });
   const workflowsList = data?.workflow_executions;
@@ -24,12 +26,6 @@ const WorkflowExecutionList = () => {
     setPageMeta(page);
   };
 
-  // const handleCreateWorkflow = () => {
-  //   navigate({
-  //     pathname: "/workflows/create",
-  //   });
-  // };
-
   return (
     <div>
       <Heading
@@ -37,22 +33,12 @@ const WorkflowExecutionList = () => {
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
       />
-      {/* <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          padding: "1.5rem",
-          justifyContent: "space-between",
-        }}>
-        <button
-          className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg create_playbook"
-          onClick={handleCreateWorkflow}
-          style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
-          + Create Workflow
-        </button>
-      </div> */}
       <main className="flex flex-col gap-4 p-2 pt-4">
+        <Search
+          context={context}
+          limit={pageMeta.limit}
+          offset={pageMeta.offset}
+        />
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <ExecutionsTable
             workflowsList={workflowsList}
