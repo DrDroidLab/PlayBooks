@@ -4,8 +4,15 @@ import { useDispatch } from "react-redux";
 import { addSelected } from "../../../store/features/search/searchSlice.ts";
 import { highlightMatch } from "../../../utils/search/highlightMatch.tsx";
 
-function SearchDropdown() {
-  const { value, filteredOptions, highlightedIndex, resetState } = useSearch();
+type SearchProps = {
+  context: string;
+  limit: number;
+  offset: number;
+};
+
+function SearchDropdown(props: SearchProps) {
+  const { value, filteredOptions, highlightedIndex, resetState } =
+    useSearch(props);
   const dispatch = useDispatch();
 
   return (

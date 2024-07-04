@@ -5,23 +5,18 @@ import SearchForm from "./SearchForm.tsx";
 import SearchDropdown from "./SearchDropdown.tsx";
 import SearchChip from "./SearchChip.tsx";
 import CustomButton from "../CustomButton/index.tsx";
-import { useSearchOptionsQuery } from "../../../store/features/search/api/searchOptionsApi.ts";
+import { useSearchOptionsQuery } from "../../../store/features/search/api/index.ts";
 
 type SearchProps = {
-  options: any;
   context: string;
+  limit: number;
+  offset: number;
 };
 
-const Search = ({ options, context }: SearchProps) => {
+const Search = (props: SearchProps) => {
+  const { context } = props;
+  const { isOpen, selected, dropdownRef, clear } = useSearch(props);
   useSearchOptionsQuery(context);
-  const { isOpen, selected, dropdownRef, clear } = useSearch();
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(setOptions(options));
-  // }, [dispatch, options]);
-
-  console.log("select", selected);
 
   return (
     <div ref={dropdownRef} className="relative w-full inline-block text-left">
@@ -31,7 +26,7 @@ const Search = ({ options, context }: SearchProps) => {
           {selected?.map((item) => (
             <SearchChip item={item?.label} />
           ))}
-          <SearchForm />
+          <SearchForm {...props} />
         </div>
         <CustomButton
           onClick={clear}
@@ -40,7 +35,7 @@ const Search = ({ options, context }: SearchProps) => {
         </CustomButton>
       </div>
 
-      {isOpen && <SearchDropdown />}
+      {isOpen && <SearchDropdown {...props} />}
     </div>
   );
 };

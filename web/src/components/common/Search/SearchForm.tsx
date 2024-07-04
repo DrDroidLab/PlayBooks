@@ -4,8 +4,14 @@ import { useDispatch } from "react-redux";
 import { handleKeyDown } from "../../../utils/search/handleKeyDown.ts";
 import { setIsOpen } from "../../../store/features/search/searchSlice.ts";
 
-function SearchForm() {
-  const { value, isOpen, handleSubmit, handleChange } = useSearch();
+type SearchProps = {
+  context: string;
+  limit: number;
+  offset: number;
+};
+
+function SearchForm(props: SearchProps) {
+  const { value, isOpen, handleSubmit, handleChange } = useSearch(props);
   const dispatch = useDispatch();
 
   return (

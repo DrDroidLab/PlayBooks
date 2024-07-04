@@ -10,12 +10,21 @@ import {
 } from "../store/features/search/searchSlice.ts";
 import { useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useSearchQuery } from "../store/features/search/api/searchApi.ts";
 
 interface Option {
   label: string;
 }
 
-const useSearch = () => {
+type SearchArgType = {
+  context: string;
+  limit: number;
+  offset: number;
+};
+
+const useSearch = (args: SearchArgType) => {
+  const { context } = args;
+  const { refetch } = useSearchQuery(args);
   const dispatch = useDispatch();
   const {
     value,
@@ -109,6 +118,10 @@ const useSearch = () => {
     }
     setSearchParams(searchParams);
   }, [selected, setSearchParams, searchParams]);
+
+  useEffect(() => {
+    if (context) refetch();
+  }, [selected, refetch, context]);
 
   return {
     value,

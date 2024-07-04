@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";
-import { useGetPlaybookExecutionsQuery } from "../../../store/features/playbook/api/getPlaybookExecutionsApi.ts";
 import Search from "../../common/Search/index.tsx";
+import { useSearchQuery } from "../../../store/features/search/api/searchApi.ts";
+
+const context = "PLAYBOOK_EXECUTION";
 
 const PlaybookExecutionsList = () => {
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetPlaybookExecutionsQuery({
+  const { data, isFetching, refetch } = useSearchQuery({
+    context,
     ...pageMeta,
   });
-  const playbooksList = data?.playbook_executions;
+
+  const playbooksList = data?.[context.toLowerCase()] ?? [];
   const total = data?.meta?.total_count;
 
   useEffect(() => {
@@ -23,11 +27,6 @@ const PlaybookExecutionsList = () => {
     setPageMeta(page);
   };
 
-  const searchOptions = playbooksList?.map((e) => ({
-    id: e.id,
-    label: e.playbook_run_id,
-  }));
-
   return (
     <div>
       <Heading
@@ -37,7 +36,11 @@ const PlaybookExecutionsList = () => {
       />
 
       <main className="flex flex-col gap-4 p-2 pt-4">
-        <Search options={searchOptions} context="PLAYBOOK_EXECUTION" />
+        <Search
+          context={context}
+          limit={pageMeta.limit}
+          offset={pageMeta.offset}
+        />
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <ExecutionsTable
             playbooksList={playbooksList}
