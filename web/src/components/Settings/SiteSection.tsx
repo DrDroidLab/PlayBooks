@@ -6,7 +6,7 @@ import { CircularProgress } from "@mui/material";
 import { useGetSiteUrlQuery } from "../../store/features/integrations/api/getSiteUrlApi.ts";
 
 function SiteSection() {
-  const { data, isFetching } = useGetSiteUrlQuery();
+  const { data, isFetching, error: siteUrlError } = useGetSiteUrlQuery();
   const [value, setValue] = useState(data?.url);
   const [error, setError] = useState("");
   const [triggerSaveSite, { isLoading }] = useUpdateSiteUrlMutation();
@@ -47,6 +47,12 @@ function SiteSection() {
       setValue(data.url);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (siteUrlError) {
+      setError(siteUrlError);
+    }
+  }, [siteUrlError]);
 
   return (
     <section className="border-b pb-4 mb-4">
