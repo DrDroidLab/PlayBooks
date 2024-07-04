@@ -19,7 +19,7 @@ from accounts.tasks import send_reset_password_email, send_user_invite_email
 from accounts.cache import GLOBAL_ACCOUNT_FORGOT_PASSWORD_TOKEN_CACHE
 from accounts.utils import create_random_password
 
-from protos.accounts.account_pb2 import User as UserProto
+from protos.accounts.account_pb2 import User as UserProto, SSOProvider
 
 from protos.base_pb2 import Message
 from protos.accounts.api_pb2 import GetAccountApiTokensRequest, GetAccountApiTokensResponse, \
@@ -172,7 +172,16 @@ def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersRespon
 
 @csrf_exempt
 @api_view(['GET'])
-def login_okta(request_message: HttpRequest) -> JsonResponse:
+def get_login_providers(request_message: HttpRequest) -> JsonResponse:
+    active_providers = []
+    if settings.OKTA_CLIENT_ID and settings.OKTA_DOMAIN:
+        active_providers.append(SSOProvider.Name(SSOProvider.OKTA))
+    return JsonResponse({'active_providers': active_providers}, status=200)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_redirect_uri_okta(request_message: HttpRequest) -> JsonResponse:
     client_id = settings.OKTA_CLIENT_ID
     domain = settings.OKTA_DOMAIN
     if not domain.startswith('http') or not domain.startswith('https'):
@@ -201,13 +210,15 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
                             status=500)
 
     session_id = oauth_session.session_id
-    return redirect(
-        f'{domain}/oauth2/default/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256')
+    return JsonResponse({
+        'success': True,
+        'redirect_uri': f'{domain}/oauth2/default/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256'},
+        status=200)
 
 
 @csrf_exempt
 @api_view(['GET'])
-def outh_callback_okta(request_message: HttpRequest) -> JsonResponse:
+def login_okta(request_message: HttpRequest) -> JsonResponse:
     code = request_message.GET.get('code')
     session_id = request_message.GET.get('state')
     client_id = settings.OKTA_CLIENT_ID

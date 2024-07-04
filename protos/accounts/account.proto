@@ -5,6 +5,11 @@ import "google/protobuf/wrappers.proto";
 
 package protos.accounts;
 
+enum SSOProvider {
+  UNKNOWN = 0;
+  OKTA = 1;
+}
+
 message AccountApiToken {
   string key = 1;
   string created_by = 2;
