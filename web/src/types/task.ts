@@ -16,7 +16,7 @@ type TaskUIRequirement = {
   outputError?: boolean;
   errors?: any;
   showOutput?: boolean;
-  outputs?: any;
+  output?: any;
   userEnteredDescription?: boolean;
   assetsLoading?: boolean;
   model_type?: string;

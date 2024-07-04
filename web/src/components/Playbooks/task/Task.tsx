@@ -8,7 +8,6 @@ import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import SelectInterpretation from "../steps/Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
 import HandleNotesRender from "../steps/HandleNotesRender.tsx";
-import HandleExternalLinksRender from "../steps/HandleExternalLinksRender.tsx";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
@@ -49,7 +48,6 @@ function Task({ id }) {
         </div>
         <HandleNotesRender id={currentTaskId} />
         <SelectInterpretation id={currentTaskId} />
-        {/* <HandleExternalLinksRender id={currentTaskId} /> */}
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">

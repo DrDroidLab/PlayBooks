@@ -38,7 +38,7 @@ const TaskBlock = ({ id }) => {
   return (
     <div className="flex flex-col gap-2 mt-2">
       {showOutput && (
-        <CustomButton onClick={toggleConfig}>
+        <CustomButton className="w-fit" onClick={toggleConfig}>
           {showConfig ? "Hide" : "Show"} Config
         </CustomButton>
       )}
