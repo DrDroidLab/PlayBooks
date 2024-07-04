@@ -6,7 +6,11 @@ export const handleActionsExtractor = (
 ) => {
   switch (type) {
     case Types.WorkflowActionOptions.SLACK_MESSAGE:
-      return {};
+      return {
+        channel: {
+          channel_id: workflowAction.slack_channel_id,
+        },
+      };
     case Types.WorkflowActionOptions.SLACK_THREAD_REPLY:
       return {
         channel: {
