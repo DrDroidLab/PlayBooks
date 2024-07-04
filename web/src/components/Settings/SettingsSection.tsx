@@ -17,8 +17,8 @@ function SettingsSection({ title, sections }: SettingsSectionPropTypes) {
     <section className="border-b pb-4 mb-4">
       <SettingsTitle title={title} />
       <div className="mt-2 flex flex-col gap-2">
-        {sections?.map(({ label, value }) => (
-          <Info label={label} value={value} />
+        {sections?.map(({ label, value }, index) => (
+          <Info key={index} label={label} value={value} />
         ))}
       </div>
     </section>

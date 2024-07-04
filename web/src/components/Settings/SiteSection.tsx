@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import SettingsTitle from "./SettingsTitle.tsx";
 import CustomButton from "../common/CustomButton/index.tsx";
+import { useUpdateSiteUrlMutation } from "../../store/features/integrations/api/index.ts";
+import { CircularProgress } from "@mui/material";
 
 function SiteSection() {
   const [value, setValue] = useState("https://example.com");
   const [error, setError] = useState("");
+  const [triggerSaveSite, { isLoading }] = useUpdateSiteUrlMutation();
 
   const validate = () => {
     let errorString = "";
@@ -25,8 +28,9 @@ function SiteSection() {
     setError("");
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!validate()) return;
+    triggerSaveSite(value);
   };
 
   useEffect(() => {
@@ -50,7 +54,10 @@ function SiteSection() {
           />
           {error && <p className="text-red-500 text-xs">{error}</p>}
         </div>
-        <CustomButton onClick={handleUpdate}>Update</CustomButton>
+        <div className="flex items-center gap-2">
+          <CustomButton onClick={handleUpdate}>Update</CustomButton>
+          {isLoading && <CircularProgress size={20} />}
+        </div>
       </div>
     </section>
   );
