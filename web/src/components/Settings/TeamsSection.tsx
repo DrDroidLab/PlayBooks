@@ -13,9 +13,11 @@ function TeamsSection() {
   return (
     <section className="border-b pb-4 mb-4">
       <SettingsTitle title="Team" />
-      <CustomButton onClick={handleNavigateToTeamSection}>
-        <OpenInNewRounded /> Manage Team
-      </CustomButton>
+      <div className="mt-2">
+        <CustomButton onClick={handleNavigateToTeamSection}>
+          <OpenInNewRounded /> Manage Team
+        </CustomButton>
+      </div>
     </section>
   );
 }

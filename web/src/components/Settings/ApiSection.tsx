@@ -13,10 +13,12 @@ function ApiSection() {
   return (
     <section className="border-b pb-4 mb-4">
       <SettingsTitle title="API Tokens" />
-      <CustomButton onClick={handleNavigateToApiSection}>
-        <OpenInNewRounded />
-        Manage API Tokens
-      </CustomButton>
+      <div className="mt-2">
+        <CustomButton onClick={handleNavigateToApiSection}>
+          <OpenInNewRounded />
+          Manage API Tokens
+        </CustomButton>
+      </div>
     </section>
   );
 }
