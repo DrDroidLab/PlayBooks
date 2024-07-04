@@ -111,17 +111,18 @@ const useSearch = (args: SearchArgType) => {
   }, [dispatch, searchParams, options]);
 
   useEffect(() => {
+    if (options?.length === 0) return;
     if (selected.length > 0) {
       searchParams.set("selected", selected.map((e) => e.label).join(","));
     } else {
       searchParams.delete("selected");
     }
     setSearchParams(searchParams);
-  }, [selected, setSearchParams, searchParams]);
+  }, [selected, setSearchParams, searchParams, options]);
 
   useEffect(() => {
     if (context) refetch();
-  }, [selected, refetch, context]);
+  }, [selected, refetch, context, options]);
 
   return {
     value,
