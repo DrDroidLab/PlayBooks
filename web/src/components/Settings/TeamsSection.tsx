@@ -7,7 +7,7 @@ import { OpenInNewRounded } from "@mui/icons-material";
 function TeamsSection() {
   const navigate = useNavigate();
   const handleNavigateToTeamSection = () => {
-    navigate("/invite-team");
+    navigate("/settings/invite-team");
   };
 
   return (

@@ -7,7 +7,7 @@ import { OpenInNewRounded } from "@mui/icons-material";
 function ApiSection() {
   const navigate = useNavigate();
   const handleNavigateToApiSection = () => {
-    navigate("/api-keys");
+    navigate("/settings/api-keys");
   };
 
   return (

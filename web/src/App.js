@@ -150,8 +150,8 @@ const App = () => {
             path="/data-sources/:connectorEnum/:id"
             element={<ConnectorPage />}
           />
-          <Route path="/api-keys" element={<ApiTokens />} />
-          <Route path="/invite-team" element={<InviteTeam />} />
+          <Route path="/settings/api-keys" element={<ApiTokens />} />
+          <Route path="/settings/invite-team" element={<InviteTeam />} />
           <Route path="/support" element={<Support />} />
         </Route>
       </Route>
