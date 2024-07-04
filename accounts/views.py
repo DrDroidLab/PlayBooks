@@ -101,17 +101,6 @@ def get_user(request_message: GetUserRequest) -> Union[GetUserResponse, HttpResp
     user = request.user
     return GetUserResponse(user=user.proto)
 
-
-@web_api(GetUserRequest)
-def version_info(request_message: GetUserRequest) -> Union[GetVersionInfoResponse, HttpResponse]:
-    client = docker.from_env()
-    container_id = open('/proc/self/cgroup').read().split('/')[-1].strip()
-    container = client.containers.get(container_id)
-    image_name = container.attrs['Config']['Image']
-
-    return GetVersionInfoResponse(current_version=image_name, latest_version="latest", should_upgrade=False)
-                                          
-
 @auth_web_api(ResetPasswordRequest)
 def reset_password(request_message: ResetPasswordRequest) -> Union[ResetPasswordResponse, HttpResponse]:
     email = request_message.email

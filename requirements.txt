@@ -55,7 +55,6 @@ django-redis==5.2.0
 django-timezone-field==6.1.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
-docker==7.1.0
 docutils==0.16
 elastic-transport==8.13.1
 elasticsearch==8.14.0

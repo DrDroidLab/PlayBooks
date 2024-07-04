@@ -23,8 +23,6 @@ accounturlpatterns = [
     path('get/redirect/uri/okta/', views.get_redirect_uri_okta, name='redirect-uri-okta'),
     path('login/okta/', views.login_okta, name='login-okta'),
 
-    path('version-info', views.version_info, name='version-info'),
-
     re_path(
         r'^confirm-email-link/(?P<key>[-:\w]+)/$', views.confirm_email_link,
         name='account_confirm_email',

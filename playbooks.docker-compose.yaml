@@ -25,6 +25,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./setup_db.sh
     environment:
@@ -47,6 +49,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-server.sh
     ports:
@@ -70,6 +74,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-celery-worker.sh
     environment:
@@ -91,6 +97,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-celery-worker.sh
     environment:
@@ -113,6 +121,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-celery-worker.sh
     environment:
@@ -135,6 +145,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-celery-worker.sh
     environment:
@@ -157,6 +169,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_TIMESTAMP: ${BUILD_TIMESTAMP}
     image: playbooks
     command: ./start-celery-beat.sh
     environment:
