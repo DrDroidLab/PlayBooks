@@ -9,7 +9,7 @@ function SearchDropdown() {
   const dispatch = useDispatch();
 
   return (
-    <div className="origin-top-right absolute left-0 mt-2 w-full max-h-36 overflow-scroll rounded-md shadow-lg bg-white z-10">
+    <div className="origin-top-right absolute left-0 mt-2 w-full max-h-36 overflow-scroll rounded-md shadow-lg bg-white z-10 max-h-[350px]">
       <div
         className="py-1"
         role="menu"
@@ -27,7 +27,7 @@ function SearchDropdown() {
             role="menuitem"
             onClick={(e) => {
               e.preventDefault();
-              dispatch(addSelected(option.label));
+              dispatch(addSelected(option));
               resetState();
             }}>
             {highlightMatch(option.label, value)}

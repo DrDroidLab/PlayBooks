@@ -18,7 +18,7 @@ export const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
   switch (e.key) {
     case "Backspace":
       if (value.trim().length === 0 && selected.length > 0) {
-        dispatch(removeSelected(selected[selected.length - 1]));
+        dispatch(removeSelected(selected[selected.length - 1].label));
       }
       break;
     case "ArrowDown":
@@ -40,7 +40,7 @@ export const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
       break;
     case "Enter":
       if (filteredOptions.length > 0) {
-        dispatch(addSelected(filteredOptions[highlightedIndex].label));
+        dispatch(addSelected(filteredOptions[highlightedIndex]));
         dispatch(setValue(""));
         dispatch(setIsOpen(false));
       }

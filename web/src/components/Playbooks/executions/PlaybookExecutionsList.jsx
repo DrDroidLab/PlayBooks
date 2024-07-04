@@ -5,6 +5,7 @@ import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";
 import { useGetPlaybookExecutionsQuery } from "../../../store/features/playbook/api/getPlaybookExecutionsApi.ts";
+import Search from "../../common/Search/index.tsx";
 
 const PlaybookExecutionsList = () => {
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
@@ -22,6 +23,11 @@ const PlaybookExecutionsList = () => {
     setPageMeta(page);
   };
 
+  const searchOptions = playbooksList?.map((e) => ({
+    id: e.id,
+    label: e.playbook_run_id,
+  }));
+
   return (
     <div>
       <Heading
@@ -31,6 +37,7 @@ const PlaybookExecutionsList = () => {
       />
 
       <main className="flex flex-col gap-4 p-2 pt-4">
+        <Search options={searchOptions} context="PLAYBOOK_EXECUTION" />
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <ExecutionsTable
             playbooksList={playbooksList}

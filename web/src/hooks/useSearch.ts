@@ -41,7 +41,7 @@ const useSearch = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (filteredOptions.length > 0 && isOpen) {
-      dispatch(addSelected(filteredOptions[highlightedIndex].label));
+      dispatch(addSelected(filteredOptions[highlightedIndex]));
     }
     resetState();
   };
@@ -55,7 +55,10 @@ const useSearch = () => {
     if (!value) {
       dispatch(
         setFilteredOptions(
-          options?.filter((option: Option) => !selected.includes(option.label)),
+          options?.filter(
+            (option: Option) =>
+              selected.findIndex((e) => e.label === option.label) === -1,
+          ),
         ),
       );
       return;
@@ -63,7 +66,7 @@ const useSearch = () => {
     const filtered = options?.filter(
       (option: Option) =>
         option.label.toLowerCase().includes(value.toLowerCase()) &&
-        !selected.includes(option.label),
+        selected.findIndex((e) => e.label === option.label) === -1,
     );
     dispatch(setFilteredOptions(filtered));
   }, [value, options, selected, dispatch]);
@@ -88,13 +91,19 @@ const useSearch = () => {
     const selectedParams = searchParams.get("selected");
     if (selectedParams) {
       const selectedArray = selectedParams.split(",");
-      dispatch(setSelected(selectedArray));
+      dispatch(
+        setSelected(
+          selectedArray
+            .map((selected) => options.find((e) => e.label === selected))
+            .filter((e) => e),
+        ),
+      );
     }
-  }, [dispatch, searchParams]);
+  }, [dispatch, searchParams, options]);
 
   useEffect(() => {
     if (selected.length > 0) {
-      searchParams.set("selected", selected.join(","));
+      searchParams.set("selected", selected.map((e) => e.label).join(","));
     } else {
       searchParams.delete("selected");
     }

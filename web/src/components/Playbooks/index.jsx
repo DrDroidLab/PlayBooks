@@ -10,7 +10,6 @@ import PlaybookTable from "./PlayBookTable";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import Search from "../common/Search/index.tsx";
 
 const Playbooks = () => {
   const navigate = useNavigate();
@@ -33,11 +32,6 @@ const Playbooks = () => {
     });
   };
 
-  const searchOptions = playbookList?.map((e) => ({
-    id: e.id,
-    label: e.name,
-  }));
-
   return (
     <div>
       <Heading
@@ -50,7 +44,6 @@ const Playbooks = () => {
           <CustomButton onClick={handleCreatePlaybook}>
             <Add fontSize="small" /> Create Playbook
           </CustomButton>
-          <Search options={searchOptions} />
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <PlaybookTable

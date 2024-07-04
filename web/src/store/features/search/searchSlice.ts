@@ -5,7 +5,7 @@ interface SearchState {
   value: string;
   isOpen: boolean;
   filteredOptions: any[];
-  selected: string[];
+  selected: any[];
   highlightedIndex: number;
   options: any[];
 }
@@ -36,20 +36,20 @@ const searchSlice = createSlice({
     setSelected: (state, action: PayloadAction<string[]>) => {
       state.selected = action.payload;
     },
-    addSelected: (state, { payload }: PayloadAction<string>) => {
-      if (!state.selected.includes(payload)) {
+    addSelected: (state, { payload }: PayloadAction<any>) => {
+      if (state.selected.findIndex((e) => e.label === payload.label) === -1) {
         state.selected.push(payload);
       }
     },
     removeSelected: (state, action: PayloadAction<string>) => {
       state.selected = state.selected?.filter(
-        (item) => item !== action.payload,
+        (item) => item.label !== action.payload,
       );
     },
     setHighlightedIndex: (state, action: PayloadAction<number>) => {
       state.highlightedIndex = action.payload;
     },
-    setOptions: (state, action: PayloadAction<string[]>) => {
+    setOptions: (state, action: PayloadAction<any[]>) => {
       state.options = action.payload;
     },
     clear: (state) => {
