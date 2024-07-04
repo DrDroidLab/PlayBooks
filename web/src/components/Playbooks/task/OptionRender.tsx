@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SelectComponent from "../../SelectComponent";
 import ValueComponent from "../../ValueComponent";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
@@ -14,6 +14,21 @@ export default function OptionRender({ data, removeErrors, id }) {
   const taskType = task?.[source?.toLowerCase()]?.type ?? "";
   const key = `${source.toLowerCase()}.${taskType.toLowerCase()}.${data.key}`;
   const value = getNestedValue(task, key, undefined);
+
+  useEffect(() => {
+    if (data.default) {
+      updateCardById(data.key, data.default, currentTaskId);
+    }
+  }, [data.default, currentTaskId, data.key]);
+
+  useEffect(() => {
+    if (task?.ui_requirement.errors?.[data.key]) {
+      if (getNestedValue(task, data.key)) {
+        removeErrors(data.key);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task?.ui_requirement.errors]);
 
   const handleChange = (...args) => {
     if (data.handleChange) {

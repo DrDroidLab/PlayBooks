@@ -118,11 +118,11 @@ const playbookSlice = createSlice({
     setErrors(state, { payload }) {
       const { id, errors } = payload;
       if (id) {
-        const step = state.currentPlaybook!.steps?.find(
+        const task = state.currentPlaybook!.ui_requirement.tasks?.find(
           (step) => step.id === id,
         );
-        if (step) {
-          step.ui_requirement.errors = errors;
+        if (task) {
+          task.ui_requirement.errors = errors;
         }
       }
     },

@@ -7,6 +7,7 @@ import { deepEqual } from "../../../utils/deepEqual.ts";
 import React from "react";
 import OptionRender from "./OptionRender.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import getNestedValue from "../../../utils/getNestedValue.ts";
 
 function Details({ id }) {
   const data: any = constructBuilder(id);
@@ -22,7 +23,7 @@ function Details({ id }) {
         if (!value.key || value.selected) {
           break;
         }
-        if (!task?.[value.key]) {
+        if (!getNestedValue(task, value.key)) {
           errors[value.key] = {
             message: `Invalid value for ${value.label}`,
           };
