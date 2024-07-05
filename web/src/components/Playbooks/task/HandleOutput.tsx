@@ -29,7 +29,7 @@ function HandleOutput({ id, showHeading = true }) {
               <TaskOutput showHeading={showHeading} id={task.id} />
             </div>
             {Object.keys(output?.interpretation ?? {}).length > 0 &&
-              unsupportedInterpreterTypes.includes(
+              !unsupportedInterpreterTypes.includes(
                 output?.interpretation?.interpreter_type,
               ) && (
                 <div className="lg:w-2/5 w-full h-full">
