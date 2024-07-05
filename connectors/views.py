@@ -329,13 +329,7 @@ def save_site_url(request_message: GetSlackAppManifestRequest) -> \
 
 @web_api(GetSlackAppManifestRequest)
 def get_site_url(request_message) -> JsonResponse:
-    active_sites = Site.objects.filter(is_active=True)
-
-    url = ""
-
-    if active_sites:
-        site = active_sites.first()
-        url = build_absolute_uri(None, site.domain, site.protocol, True)
+    url = build_absolute_uri(None, "", "", True)
    
     return JsonResponse({"url": url}, status=200)
 
