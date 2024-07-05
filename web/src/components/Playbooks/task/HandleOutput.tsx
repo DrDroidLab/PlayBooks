@@ -1,8 +1,8 @@
 import React from "react";
 import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import SelectInterpretation from "../steps/Interpretation.jsx";
 import TaskOutput from "./TaskOutput.tsx";
+import Interpretation from "../../common/Interpretation/index.tsx";
 
 function HandleOutput({ id, showHeading = true }) {
   const [task] = useCurrentTask(id);
@@ -33,7 +33,7 @@ function HandleOutput({ id, showHeading = true }) {
                 output?.interpretation?.interpreter_type,
               ) && (
                 <div className="lg:w-2/5 w-full h-full">
-                  <SelectInterpretation id={task.id} />
+                  <Interpretation {...output.interpretation} />
                 </div>
               )}
           </div>

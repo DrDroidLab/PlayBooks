@@ -28,12 +28,14 @@ export async function executeTask(id?: string) {
     const output = res?.playbook_task_execution_log;
     const outputError = output?.result?.error;
 
+    console.log("log", output, res);
+
     updateCardById("ui_requirement.showOutput", true, id);
     updateCardById(
       "ui_requirement.output",
       {
-        data: output?.data?.result,
-        interpretation: output?.data?.interpretation,
+        data: output?.result,
+        interpretation: output?.interpretation,
       },
       id,
     );
