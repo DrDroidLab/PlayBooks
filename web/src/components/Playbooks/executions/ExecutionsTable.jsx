@@ -6,14 +6,12 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import PaginatedTable from "../../PaginatedTable.js";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
-// import { handleStatus } from "../../../utils/handleStatus.tsx";
 import handleToolLogos from "../../../utils/handleToolLogos.ts";
 
-const ExecutionsTableRender = ({ data }) => {
+const ExecutionsTable = ({ data }) => {
   return (
     <>
       <Table stickyHeader>
@@ -74,39 +72,12 @@ const ExecutionsTableRender = ({ data }) => {
               <TableCell component="td" scope="row">
                 {item.created_by}
               </TableCell>
-              {/* <TableCell component="td" scope="row">
-                <Link
-                  to={`/playbooks/${item.playbook.id}?executionId=${item.playbook_run_id}`}>
-                  <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
-                    View Playbook Execution
-                  </div>
-                </Link>
-              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {!data?.length ? <NoExistingPlaybook /> : null}
     </>
-  );
-};
-
-const ExecutionsTable = ({
-  playbooksList,
-  total,
-  pageSize,
-  pageUpdateCb,
-  tableContainerStyles,
-}) => {
-  return (
-    <PaginatedTable
-      renderTable={ExecutionsTableRender}
-      data={playbooksList ?? []}
-      total={total}
-      pageSize={pageSize}
-      pageUpdateCb={pageUpdateCb}
-      tableContainerStyles={tableContainerStyles ? tableContainerStyles : {}}
-    />
   );
 };
 

@@ -9,13 +9,10 @@ import { useSearchOptionsQuery } from "../../../store/features/search/api/index.
 
 type SearchProps = {
   context: string;
-  limit: number;
-  offset: number;
 };
 
-const Search = (props: SearchProps) => {
-  const { context } = props;
-  const { isOpen, selected, dropdownRef, clear } = useSearch(props);
+const Search = ({ context }: SearchProps) => {
+  const { isOpen, selected, dropdownRef, clear } = useSearch(context);
   useSearchOptionsQuery(context);
 
   return (
@@ -26,7 +23,7 @@ const Search = (props: SearchProps) => {
           {selected?.map((item) => (
             <SearchChip key={item.label} item={item?.label} />
           ))}
-          <SearchForm {...props} />
+          <SearchForm context={context} />
         </div>
         <CustomButton
           onClick={clear}
@@ -35,7 +32,7 @@ const Search = (props: SearchProps) => {
         </CustomButton>
       </div>
 
-      {isOpen && <SearchDropdown {...props} />}
+      {isOpen && <SearchDropdown context={context} />}
     </div>
   );
 };

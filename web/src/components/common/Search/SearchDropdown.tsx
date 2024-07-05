@@ -6,13 +6,11 @@ import { highlightMatch } from "../../../utils/search/highlightMatch.tsx";
 
 type SearchProps = {
   context: string;
-  limit: number;
-  offset: number;
 };
 
-function SearchDropdown(props: SearchProps) {
+function SearchDropdown({ context }: SearchProps) {
   const { value, filteredOptions, highlightedIndex, resetState } =
-    useSearch(props);
+    useSearch(context);
   const dispatch = useDispatch();
 
   return (

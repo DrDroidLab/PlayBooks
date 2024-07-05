@@ -2,14 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
 import { useEffect, useState } from "react";
-
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
-
-import PlaybookTable from "./PlayBookTable";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
+import PaginatedTable from "../PaginatedTable.tsx";
+import PlaybookTable from "./PlayBookTable.jsx";
 
 const Playbooks = () => {
   const navigate = useNavigate();
@@ -46,17 +45,18 @@ const Playbooks = () => {
           </CustomButton>
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-          <PlaybookTable
-            playbookList={playbookList}
+          <PaginatedTable
+            renderTable={PlaybookTable}
+            data={playbookList ?? []}
             total={total}
-            pageSize={pageMeta ? pageMeta?.limit : 10}
             pageUpdateCb={pageUpdateCb}
             tableContainerStyles={
               playbookList?.length
                 ? {}
                 : { maxHeight: "35vh", minHeight: "35vh" }
             }
-            refreshTable={refetch}></PlaybookTable>
+            refreshTable={refetch}
+          />
         </SuspenseLoader>
       </main>
     </div>

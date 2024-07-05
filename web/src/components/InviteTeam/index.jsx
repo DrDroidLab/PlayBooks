@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Heading from "../Heading";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useToggle from "../../hooks/useToggle";
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
 import InviteUserOverlay from "./InviteUserOverlay";
 import UserTable from "./UserTable";
 import { useGetAccountUsersQuery } from "../../store/features/auth/api/index.ts";
+import usePagination from "../../hooks/usePagination.ts";
+import PaginatedTable from "../PaginatedTable.tsx";
 
 const InviteTeam = () => {
   const { isOpen: isActionOpen, toggle } = useToggle();
-  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
+  const { reset } = usePagination();
   const { data, isLoading, isFetching, refetch } = useGetAccountUsersQuery();
-  const usersList = data?.users;
   const total = data?.meta?.total_count;
 
   const handleInviteUsers = () => {
@@ -20,12 +21,12 @@ const InviteTeam = () => {
   };
 
   useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
+    if (!isFetching) refetch();
 
-  const pageUpdateCb = (page) => {
-    setPageMeta(page);
-  };
+    return () => {
+      reset();
+    };
+  }, []);
 
   return (
     <div>
@@ -60,14 +61,14 @@ const InviteTeam = () => {
           }}>
           Active Users
         </h1>
-        <UserTable
-          userList={usersList}
-          total={total ?? usersList?.length}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
+        <PaginatedTable
+          renderTable={UserTable}
+          data={data?.users}
+          total={total}
           tableContainerStyles={
             data?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
           }
-          pageUpdateCb={pageUpdateCb}></UserTable>
+        />
       </SuspenseLoader>
       <InviteUserOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </div>

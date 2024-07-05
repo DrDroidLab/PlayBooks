@@ -16,13 +16,7 @@ interface Option {
   label: string;
 }
 
-type SearchArgType = {
-  context: string;
-  limit: number;
-  offset: number;
-};
-
-const useSearch = (args: SearchArgType) => {
+const useSearch = (context: string) => {
   const dispatch = useDispatch();
   const {
     value,
@@ -32,7 +26,7 @@ const useSearch = (args: SearchArgType) => {
     highlightedIndex,
     options,
   } = useSelector(searchSelector);
-  const { data, refetch, isFetching } = useSearchQuery({ ...args, selected });
+  const { data, refetch, isFetching } = useSearchQuery({ context, selected });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -122,7 +116,7 @@ const useSearch = (args: SearchArgType) => {
   useEffect(() => {
     if (!isFetching) refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [args.limit, args.offset, args.context, selected]);
+  }, [context, selected]);
 
   return {
     value,

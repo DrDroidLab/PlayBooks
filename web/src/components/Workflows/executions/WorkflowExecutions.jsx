@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
 import Heading from "../../Heading";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader";
 import TableSkeleton from "../../Skeleton/TableLoader";
 import ExecutionsTable from "./ExecutionsTable.jsx";
@@ -11,13 +11,12 @@ import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { useGetWorkflowExecutionsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
+import PaginatedTable from "../../PaginatedTable.tsx";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
   const navigate = useNavigate();
-  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetWorkflowExecutionsQuery({
-    ...pageMeta,
+  const { data, isFetching } = useGetWorkflowExecutionsQuery({
     workflowId,
   });
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
@@ -25,14 +24,6 @@ const WorkflowExecutions = () => {
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const workflowsList = data?.workflow_executions;
   const total = data?.meta?.total_count;
-
-  useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
-
-  const pageUpdateCb = (page) => {
-    setPageMeta(page);
-  };
 
   useEffect(() => {
     if (workflowId != null) {
@@ -57,17 +48,16 @@ const WorkflowExecutions = () => {
         <ChevronLeft /> All Workflows
       </button>
       <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <ExecutionsTable
-          workflowsList={workflowsList}
+        <PaginatedTable
+          renderTable={ExecutionsTable}
+          data={workflowsList ?? []}
           total={total}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          pageUpdateCb={pageUpdateCb}
           tableContainerStyles={
             workflowsList?.length
               ? {}
               : { maxHeight: "35vh", minHeight: "35vh" }
           }
-          refreshTable={refetch}></ExecutionsTable>
+        />
       </SuspenseLoader>
     </div>
   );

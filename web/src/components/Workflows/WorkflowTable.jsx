@@ -6,7 +6,7 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import PaginatedTable from "../PaginatedTable.js";
+import PaginatedTable from "../PaginatedTable.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingWorkflow.jsx";
 import { Delete, Edit, History } from "@mui/icons-material";

@@ -4,11 +4,8 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const searchApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    search: builder.query<
-      any,
-      { limit: number; offset: number; context: string; selected: any[] }
-    >({
-      query: ({ limit, offset, context, selected }) => {
+    search: builder.query<any, { context: string; selected: any[] }>({
+      query: ({ context, selected }) => {
         return {
           url: SEARCH,
           method: "POST",
@@ -29,12 +26,6 @@ export const searchApi = apiSlice.injectEndpoints({
                     literal: handleOptionType(el.option),
                   },
                 })),
-              },
-            },
-            meta: {
-              page: {
-                limit,
-                offset,
               },
             },
           },

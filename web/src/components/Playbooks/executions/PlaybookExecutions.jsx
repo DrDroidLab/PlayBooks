@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
 import Heading from "../../Heading.js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";
@@ -11,13 +11,12 @@ import { ChevronLeft } from "@mui/icons-material";
 import { useGetPlaybookExecutionsQuery } from "../../../store/features/playbook/api/getPlaybookExecutionsApi.ts";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
+import PaginatedTable from "../../PaginatedTable.tsx";
 
 const PlaybookExecutions = () => {
   const { id: playbookId } = useParams();
   const navigate = useNavigate();
-  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetPlaybookExecutionsQuery({
-    ...pageMeta,
+  const { data, isFetching } = useGetPlaybookExecutionsQuery({
     playbookId,
   });
   const [triggerGetPlaybook, { isLoading: workflowLoading }] =
@@ -25,14 +24,6 @@ const PlaybookExecutions = () => {
   const { currentPlaybook } = useSelector(playbookSelector);
   const playbooksList = data?.playbook_executions;
   const total = data?.meta?.total_count;
-
-  useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
-
-  const pageUpdateCb = (page) => {
-    setPageMeta(page);
-  };
 
   useEffect(() => {
     if (playbookId != null) {
@@ -57,17 +48,16 @@ const PlaybookExecutions = () => {
         <ChevronLeft /> All Playbooks
       </button>
       <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <ExecutionsTable
-          playbooksList={playbooksList}
+        <PaginatedTable
+          renderTable={ExecutionsTable}
+          data={playbooksList ?? []}
           total={total}
-          pageSize={pageMeta ? pageMeta?.limit : 10}
-          pageUpdateCb={pageUpdateCb}
           tableContainerStyles={
             playbooksList?.length
               ? {}
               : { maxHeight: "35vh", minHeight: "35vh" }
           }
-          refreshTable={refetch}></ExecutionsTable>
+        />
       </SuspenseLoader>
     </div>
   );

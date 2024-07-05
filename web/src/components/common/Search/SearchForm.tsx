@@ -6,12 +6,10 @@ import { setIsOpen } from "../../../store/features/search/searchSlice.ts";
 
 type SearchProps = {
   context: string;
-  limit: number;
-  offset: number;
 };
 
-function SearchForm(props: SearchProps) {
-  const { value, isOpen, handleSubmit, handleChange } = useSearch(props);
+function SearchForm({ context }: SearchProps) {
+  const { value, isOpen, handleSubmit, handleChange } = useSearch(context);
   const dispatch = useDispatch();
 
   return (
