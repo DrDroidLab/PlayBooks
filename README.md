@@ -1,18 +1,15 @@
-
-
-
 <p align="center">
-  [![Doctor Droid Logo](https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png)](https://www.google.com)
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png" alt="Doctor Droid Logo" width="30%" height="50%">
+
 </p>
 
 
-<br>
 
-tl;dr Automate investigation of production issues.
+tl;dr Automate investigation of production issues with Doctor Droid Bot.
 
-## Watch Demo of our v1.3.3 release
+## Watch [Demo](https://www.youtube.com/watch?v=Uu3k-qQ3Pvw) of our v1.3.3 release
 <p align="center">
-  <a href="https://youtu.be/Uu3k-qQ3Pvw">
+  <a href="https://www.youtube.com/watch?v=Uu3k-qQ3Pvw">
     <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/automate-investigations-thumbnail-github.png" alt="Doctor Droid Demo" width="60%" height="50%">
   </a>
 </p>
@@ -37,7 +34,7 @@ This helps reduce the time taken to investigate an issue and can potentially com
 You can **create PlayBooks** to configure investigations. **PlayBooks are intelligent documents that are connected to every part of your stack** where you might need to look for monitoring -- you can fetch logs, metrics, query databases, run commands on remote servers, fetch container data and even define custom API calls.
 
 <p align="center">
-  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/sample-investigation-playbook.png" alt="How Doctor Droid works" width="75%" height="50%">
+  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/sample-investigation-playbook.png" alt="A Sample Playbook in Doctor Droid" width="75%" height="50%">
 </p>
 
 
