@@ -53,14 +53,14 @@ class TimeseriesConditionalRuleInterpreter(ConditionalRuleInterpreter):
 
     def interpret(self, rule: PlaybookTaskResultRule):
         timeseries_rule: TimeseriesResultRule = rule.timeseries
-
+        
         rule_type = rule_type_to_str(timeseries_rule)
         function = function_enum_to_str(timeseries_rule.function)
         operator = operator_enum_to_str(timeseries_rule.operator)
         threshold = str(timeseries_rule.threshold.value)
         window = str(timeseries_rule.window.value) if timeseries_rule.window.value else None
 
-        interpretation_string = f'timeseries result {rule_type} {function} was {operator} {threshold}'
+        interpretation_string = f'timeseries result {rule_type} {function} is {operator} {threshold}'
         if window is not None:
             interpretation_string += f'in a window of {window} seconds.'
         return interpretation_string

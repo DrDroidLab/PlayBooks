@@ -27,6 +27,7 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation a
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, WorkflowExecution as WorkflowExecutionProto
 from protos.base_pb2 import Source
+from google.protobuf.wrappers_pb2 import StringValue
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
 from utils.uri_utils import build_absolute_uri
@@ -278,9 +279,14 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         step_execution_logs = pe_proto.step_execution_logs
-        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(p_proto,
-                                                                                           step_execution_logs)
-
+        execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
+        workflow_test_message = InterpretationProto(
+                                    type=InterpretationProto.Type.TEXT,
+                                    title = StringValue(value="Test Message"),
+                                    description=StringValue(value="This is a test message for workflow execution"),
+                                    model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
+                                    )
+        execution_output.insert(0, workflow_test_message)
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
@@ -354,5 +360,6 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
                             See Workflow History: {workflow_name})[{workflow_execution_url}]"""
     
     workflow_interpretation: InterpretationProto = InterpretationProto(type=InterpretationProto.Type.TEXT,
-                        description=workflow_text, model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION)
+                                                                       description=StringValue(value=workflow_text), 
+                                                                       model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION)
     return workflow_interpretation

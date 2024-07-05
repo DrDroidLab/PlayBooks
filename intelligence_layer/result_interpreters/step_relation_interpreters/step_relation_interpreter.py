@@ -16,7 +16,7 @@ def logical_operator_enum_to_string(logical_operator: LogicalOperator):
         return ''
 
 
-def step_relation_interpret(relation: PlaybookStepRelation) -> Interpretation:
+def step_relation_interpret(relation: PlaybookStepRelation):
     condition: PlaybookStepResultCondition = relation.condition
     rules = condition.rules
     operator = logical_operator_enum_to_string(condition.logical_operator)
@@ -28,4 +28,4 @@ def step_relation_interpret(relation: PlaybookStepRelation) -> Interpretation:
         else:
             relation_interpretation_string += f'{operator} {rule_interpretation}'
 
-    return Interpretation(type=Interpretation.Type.TEXT, summary=StringValue(value=relation_interpretation_string), model_type=Interpretation.ModelType.PLAYBOOK_STEP_RELATION)
+    return relation_interpretation_string

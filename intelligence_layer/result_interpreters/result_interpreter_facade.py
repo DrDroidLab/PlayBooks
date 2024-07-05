@@ -40,7 +40,7 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStep,
 
 
 
-def step_execution_notification_copy(current_step, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+def step_execution_result_interpret(current_step, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
     try:
         for i in step_execution_logs:
             if i.step.id.value == current_step:
@@ -71,26 +71,22 @@ def step_execution_notification_copy(current_step, step_execution_logs: [Playboo
     return interpretations
 
 
-def step_with_children_execution_notification_copy(current_step_id, printed_steps, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+def step_with_children_execution_result_interpret(current_step_id, printed_steps, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
     try:
         interpretations: [InterpretationProto] = []
         if current_step_id not in printed_steps:
             printed_steps.append(current_step_id)
-            current_step_interpretation = step_execution_notification_copy(current_step_id, step_execution_logs)
+            current_step_interpretation = step_execution_result_interpret(current_step_id, step_execution_logs)
             current_step_relation_execution_logs = step_execution_logs[current_step_id].relation_execution_logs
             for relation_execution_log in current_step_relation_execution_logs:
                 child_node = relation_execution_log.relation.child.id.value
                 child_step_interpretation: [InterpretationProto] = []
-                child_step_interpretation, printed_steps = step_with_children_execution_notification_copy(child_node, printed_steps, step_execution_logs)
-                if relation_execution_log.condition:
-                    relation_interpretation = relation_execution_log.interpretation
-                    if relation_execution_log.evaluation_result:
-                        append_string = "is True."
-                    else:
-                        append_string = "is False."
+                child_step_interpretation, printed_steps = step_with_children_execution_result_interpret(child_node, printed_steps, step_execution_logs)
+                if len(relation_execution_log.relation.condition)>0:
+                    relation_interpretation = relation_execution_log.interpretation.summary.value
                     for step in child_step_interpretation:
                         if step.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
-                            step.summary.value = relation_interpretation+append_string + step.summary.value
+                            step.description.value = relation_interpretation + ", "+ step.description.value
                 current_step_interpretation.extend(child_step_interpretation)
             interpretations.extend(current_step_interpretation)
         else:
@@ -109,6 +105,6 @@ def playbook_step_execution_result_interpret(step_execution_logs: [PlaybookStepE
     printed_steps = []
     for current_step in step_execution_logs:
         current_step_id = current_step.step.id
-        current_interpretation, printed_steps = step_with_children_execution_notification_copy(current_step_id, printed_steps, step_execution_logs)
+        current_interpretation, printed_steps = step_with_children_execution_result_interpret(current_step_id, printed_steps, step_execution_logs)
         interpretations.extend(current_interpretation)
     return interpretations

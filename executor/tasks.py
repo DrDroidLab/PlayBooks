@@ -101,9 +101,16 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 condition_evaluation_result = False
                 condition_evaluation_output = {'error': str(exc) if exc else 'Unknown Error'}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
-            step_relation_interpretation = InterpretationProto()
+            step_relation_interpretation_string = step_relation_interpret(relation_proto)
             if condition_evaluation_result:
-                step_relation_interpretation = step_relation_interpret(relation_proto)
+                summary = f"The condition {step_relation_interpretation_string} is True"
+            else:
+                summary = f"The condition {step_relation_interpretation_string} is False"
+            step_relation_interpretation: InterpretationProto = InterpretationProto(
+                                                                    type=InterpretationProto.Type.TEXT, 
+                                                                    summary=StringValue(value=summary),
+                                                                    model_type=InterpretationProto.ModelType.PLAYBOOK_STEP_RELATION
+                                                                    )
             relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
                                                                       evaluation_result=BoolValue(
                                                                           value=condition_evaluation_result),

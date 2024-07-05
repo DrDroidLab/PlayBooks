@@ -13,13 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 def basic_step_summariser(step: PlaybookStep, task_interpretations: [InterpretationProto]) -> InterpretationProto:
-    return InterpretationProto()
+    return InterpretationProto(
+        type=InterpretationProto.Type.TEXT, 
+        model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
+        title = step.name,
+        description=step.description)
 
 
 def llm_chat_gpt_step_summariser(step: PlaybookStep,
                                  task_interpretations: [InterpretationProto]) -> InterpretationProto:
-    if len(task_interpretations) <= 1:
+    if len(task_interpretations) == 0:
         return InterpretationProto()
+    elif len(task_interpretations) == 1:
+        return InterpretationProto(type=InterpretationProto.Type.TEXT, 
+        model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
+        title = step.title,
+        description = step.description)
     open_ai_integration = get_db_connectors(connector_type=ConnectorType.OPEN_AI, is_active=True)
     if not open_ai_integration:
         logger.error('Aborting LLM step summariser. OpenAI integration is not set.')
@@ -65,22 +74,24 @@ def llm_chat_gpt_step_summariser(step: PlaybookStep,
                         "text": f"This image describes {prompt}"
                     }
                 )
-                gpt_prompt.append({
-                    "type": "image_url",
-                    "image_url": {
-                        "url": image_url,
-                    },
-                })
+                
+                gpt_prompt.append(
+                    {
+                        "type": "image_url",
+                        "image_url": 
+                        {
+                            "url": image_url,
+                        },
+                    })
 
         if not gpt_prompt:
             return InterpretationProto()
 
-        gpt_prompt.append({
-            "type": "text",
-            "text": "These are all the images and context of the image. Only send "
-                    "the keys that are requested. Do not send more keys or keys with empty or N/A values. Strictly "
-                    "do not respond with empty strings or N/A or 'No Data' as key values."
-        })
+        gpt_prompt.append(
+            {
+                "type": "text",
+                "text": """These are all the images and context of the image. Only send the keys that are requested. Do not send more keys or keys with empty or N/A values. Strictly do not respond with empty strings or N/A or 'No Data' as key values."""
+            })
 
         open_ai_client = OpenAiApiProcessor(open_ai_api_key=open_ai_api_key)
         gpt_response = open_ai_client.chat_completions_create(
@@ -96,19 +107,18 @@ def llm_chat_gpt_step_summariser(step: PlaybookStep,
         gpt_response = gpt_response.choices[0].message.content
         gpt_response = json.loads(gpt_response)
         inference = {'anomaly_detected': gpt_response['anomaly_detected'], 'description': gpt_response['description']}
-
-        title = f'`Step Summary`'
-        description = f'`Description`: {inference["description"]}'
-        summary = f'`Anomaly Detected`: {inference["anomaly_detected"]}'
-
+        if inference['anomaly_detected']:
+            summary = f'`Anomaly Detected`: {inference.get("description","")}'
+        else:
+            summary = f'`No Anomaly Detected`: {inference.get("description","")}'
         step_summary = InterpretationProto(
-            type=InterpretationProto.Type.TEXT,
-            title=StringValue(value=title),
-            description=StringValue(value=description),
-            summary=StringValue(value=summary),
-            model_type=InterpretationProto.ModelType.PLAYBOOK_STEP
-        )
+                                        type=InterpretationProto.Type.TEXT,
+                                        title=step.name,
+                                        description=step.description,
+                                        summary=StringValue(value=summary),
+                                        model_type=InterpretationProto.ModelType.PLAYBOOK_STEP)
         return step_summary
     except Exception as e:
         logger.error(f'Error summarising step: {e}')
         return InterpretationProto()
+    

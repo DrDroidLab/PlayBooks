@@ -41,63 +41,94 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
         blocks = []
         playbook_name = ""
         playbook_url = ""
-        for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.TEXT:
-                playbook_url = interpretation.description.value
-                playbook_name = interpretation.title.value
-                body_block = [{
-                    "type": "TextBlock",
-                    "text": f"Hello team, here's the executed version of [{playbook_name}]({playbook_url}) that's configured in the Workflow triggered.",
-                    "size": "large",
-                    "wrap": True,
-                    "style": "heading"
-                }]
-            else:
-                step_execution = interpretation.title.value
-                interpretation_explainer = interpretation.description.value
-                interpretation_result = interpretation.summary.value
-                if interpretation.type == InterpretationProto.Type.IMAGE:
-                    body_block = [
-                        {
-                            "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                            "size": "medium",
-                            "wrap": True,
-                            "weight": "lighter"
-                        },
-                        {
-                            "type": "Image",
-                            "url": interpretation.image_url.value,
-                            "altText": step_execution
-                        }
-                    ]
-                elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                    body_block = [
-                        {
-                            "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                            "size": "medium",
-                            "wrap": True,
-                            "weight": "lighter"
-                        },
-                        {
-                            "type": "TextBlock",
-                            "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
-                            "size": "medium",
-                            "wrap": True,
-                            "weight": "lighter"
-                        }
-                    ]
-                else:
-                    body_block = [
-                        {
-                            "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                            "size": "medium",
-                            "wrap": True,
-                            "weight": "lighter"
-                        }
-                    ]
+        for i, interpretation in enumerate(execution_output):            
+            title = interpretation.title.value
+            description = interpretation.description.value
+            summary = interpretation.summary.value
+            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": f"{title}",
+                        "size": "large",
+                        "wrap": True,
+                        "style": "heading"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": f"{description} \n {summary}",
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    }]
+            elif interpretation.type == InterpretationProto.Type.TEXT and (interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP):
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": f"{title}",
+                        "size": "large",
+                        "wrap": True,
+                        "style": "heading"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": f"{description} \n {summary}",
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    }]
+            elif interpretation.type == InterpretationProto.Type.TEXT:
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": f"{title} \n {description} \n {summary}",
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    }]
+            elif interpretation.type == InterpretationProto.Type.IMAGE:
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": title + "\n" + description,
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    },
+                    {
+                        "type": "Image",
+                        "url": interpretation.image_url.value,
+                        "altText": description
+                    }
+                ]
+            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": title + "\n" + description,
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
+                        "size": "medium",
+                        "wrap": True,
+                        "weight": "lighter"
+                    }
+                ]
+            elif interpretation.type == InterpretationProto.Type.JSON:
+                body_block = [
+                    {
+                        "type": "TextBlock",
+                        "text": f"```\n{summary}\n```",
+                        "size": "Medium",
+                        "wrap": True,
+                        "fontType": "Monospace"
+                    }
+                    
+                ]
             blocks.extend(body_block)
         payload = {"type": "message", "attachments": [{"contentType": "application/vnd.microsoft.card.adaptive",
                                                        "content": {"type": "AdaptiveCard", "version": "1.2",

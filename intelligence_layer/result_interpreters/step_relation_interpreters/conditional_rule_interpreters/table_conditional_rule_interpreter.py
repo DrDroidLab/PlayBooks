@@ -65,9 +65,9 @@ class TableConditionalRuleInterpreter(ConditionalRuleInterpreter):
             threshold = table_rule.string_value_threshold.value
 
         if rule.type == TableResultRule.Type.ROW_COUNT:
-            interpretation_string = f'table result {rule_type} was {operator} {threshold}'
+            interpretation_string = f'table {rule_type} is {operator} {threshold}'
         elif rule.type == TableResultRule.Type.COLUMN_VALUE:
-            interpretation_string = f'table column {column_name} value was {operator} {threshold}'
+            interpretation_string = f'table column {column_name} {rule_type} is {operator} {threshold}'
         else:
             interpretation_string = ''
         return interpretation_string

@@ -41,34 +41,93 @@ class SlackMessageExecutor(WorkflowActionExecutor):
         blocks = []
         file_uploads = []
         for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.TEXT:
-                title = f'Hello team, here is snapshot of playbook <{interpretation.description.value}|{interpretation.title.value}> ' \
-                        f'that is configured for this alert'
-            else:
-                title = f'{interpretation.title.value}'
+            title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
-            block_text = title
-            if description:
-                block_text += f'\n{description}'
-            if summary:
-                block_text += f'\n{summary}'
-            blocks.append({
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": block_text
-                }
-            })
-            if interpretation.type == InterpretationProto.Type.IMAGE:
-                blocks.append({
-                    "type": "image",
-                    "image_url": interpretation.image_url.value,
-                    "alt_text": 'metric evaluation'
-                })
+            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+                blocks.append(
+                    {
+                        "type": "header",
+                        "text": 
+                        {
+                            "type": "plain_text",
+                            "text": title
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f"{description} \n{summary}"
+                        }
+                    })
+                continue
+            elif interpretation.type == InterpretationProto.Type.TEXT and (interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP):
+                blocks.append(
+                    {
+                        "type": "header",
+                        "text": 
+                        {
+                            "type": "plain_text",
+                            "text": title
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f'{description} \n {summary}'
+                        }
+                    })
+            elif interpretation.type == InterpretationProto.Type.TEXT:
+                blocks.append(
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f'{title} \n {description} \n {summary}'
+                        }                
+                    })
+            elif interpretation.type == InterpretationProto.Type.IMAGE:
+                blocks.append(
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f'{title} \n {description}'
+                        }                
+                    },
+                    {
+                        "type": "image",
+                        "image_url": interpretation.image_url.value,
+                        "alt_text": f'{description}'
+                    })
             elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                blocks.append(
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f'{title} \n {description}'
+                        }                
+                    })
                 file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
                                      'initial_comment': interpretation.title.value})
+            elif interpretation.type == InterpretationProto.Type.JSON:
+                blocks.append(
+                    {
+                        "type": "section",
+                        "text": 
+                        {
+                            "type": "mrkdwn",
+                            "text": f"```{summary}```"
+                        }
+                    })
         message_params = {'blocks': blocks, 'channel_id': channel_id}
         try:
             slack_api_processor = self.get_action_connector_processor(connector)

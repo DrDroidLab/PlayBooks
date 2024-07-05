@@ -126,14 +126,15 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
                 inference = vision_api_evaluation_function(open_ai_api_key, data_type, object_url)
                 if not inference or inference is None:
                     raise ValueError('No inference returned from chat gpt')
-                title = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
-                description = f'`Description`: {inference["description"]}'
-                summary = f'`Anomaly Detected`: {inference["anomaly_detected"]}'
+                description = f'Fetched `{metric_expression}` for `{metric_name}` from `{metric_source}`'
+                if inference['anomaly_detected']:
+                    summary = f'`Anomaly Detected`: {inference["description"]}'
+                else:
+                    summary = f'`No Anomaly Detected`: {inference["description"]}'
 
                 return InterpretationProto(
                     type=InterpretationProto.Type.IMAGE,
                     interpreter_type=self.type,
-                    title=StringValue(value=title),
                     description=StringValue(value=description),
                     summary=StringValue(value=summary),
                     image_url=StringValue(value=object_url),
