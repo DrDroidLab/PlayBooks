@@ -1,18 +1,20 @@
 
 
-<p align="center">
-  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png" alt="Doctor Droid Logo" width="30%" height="50%">
 
+<p align="center">
+  [![Doctor Droid Logo](https://drdroid-public-content.s3.us-west-2.amazonaws.com/github-cover-image.png)](https://www.google.com)
 </p>
+
 
 <br>
 
 tl;dr Automate investigation of production issues.
 
-## Watch Demo
+## Watch Demo of our v1.3.3 release
 <p align="center">
-  <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/automate-investigations-thumbnail-github.png" alt="Doctor Droid Demo" width="60%" height="50%">
-
+  <a href="https://youtu.be/Uu3k-qQ3Pvw">
+    <img src="https://drdroid-public-content.s3.us-west-2.amazonaws.com/automate-investigations-thumbnail-github.png" alt="Doctor Droid Demo" width="60%" height="50%">
+  </a>
 </p>
 
 <br>
