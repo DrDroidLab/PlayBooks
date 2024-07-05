@@ -83,6 +83,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.mimirBuilder();
     case taskTypes.DOCUMENTATION_IFRAME:
       return Builders.iframeBuilder(task);
+    case taskTypes.GRAFANA_LOKI_QUERY_LOGS:
+      return Builders.grafanaLokiBuilder();
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return Builders.elasticSearchBuilder(ops?.indexes);
     default:

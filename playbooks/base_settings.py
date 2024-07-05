@@ -38,12 +38,14 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
+    'engines.apps.EnginesConfig',
     'playbooks.apps.PlaybooksConfig',
     'connectors.apps.ConnectorsConfig',
     'connectors.assets.apps.AssetsManagerConfig',
     'management.apps.ManagementConfig',
     'executor.apps.ExecutorConfig',
     'executor.workflows.apps.WorkflowsConfig',
+    'executor.engine_manager.apps.EngineManagerConfig',
     'media.apps.MediaConfig',
     'intelligence_layer.apps.IntelligenceLayerConfig',
     'connectors.handlers.apps.HandlersConfig',
@@ -365,4 +367,4 @@ OKTA_DOMAIN = env.str("OKTA_DOMAIN", default='')
 OKTA_CLIENT_ID = env.str("OKTA_CLIENT_ID", default='')
 OKTA_CLIENT_USE_SITE = env.bool("OKTA_CLIENT_USE_SITE", default=True)
 OKTA_CLIENT_SITE_HTTP_PROTOCOL = env.str("OKTA_CLIENT_SITE_HTTP_PROTOCOL", default='https')
-OKTA_CLIENT_REDIRECT_LOCATION = env.str("OKTA_CLIENT_REDIRECT_LOCATION", default='/accounts/oauth/callback/okta')
+OKTA_CLIENT_REDIRECT_LOCATION = env.str("OKTA_CLIENT_REDIRECT_LOCATION", default='/oauth/callback/okta')

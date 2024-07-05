@@ -7,7 +7,7 @@ export const injectElasticSearchTasks = (
   let task = {
     index: step.index!,
     lucene_query: step.query!,
-    "limit": step.size ?? 50,
+    "limit": step.limit ?? 50,
     "offset": 0,
     "sort_desc": "@timestamp",
     "timestamp_field": "@timestamp"

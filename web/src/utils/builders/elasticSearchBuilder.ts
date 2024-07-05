@@ -23,8 +23,8 @@ export const elasticSearchBuilder = (options: any) => {
       ],
       [
         {
-          key: "size",
-          label: "Size",
+          key: "limit",
+          label: "Limit",
           type: OptionType.TEXT,
         },
       ],
