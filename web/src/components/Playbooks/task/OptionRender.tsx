@@ -3,8 +3,7 @@ import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import HandleInputRender from "../../Inputs/HandleInputRender.tsx";
-import { InputTypes } from "../../../types/inputs/inputTypes.ts";
-import { InputType } from "zlib";
+import { InputType, InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
