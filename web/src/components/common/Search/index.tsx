@@ -24,7 +24,7 @@ const Search = (props: SearchProps) => {
         <div
           className={`flex flex-wrap items-center gap-1 w-full p-2 rounded-l border border-lightgray bg-white text-sm focus:outline-none`}>
           {selected?.map((item) => (
-            <SearchChip item={item?.label} />
+            <SearchChip key={item.label} item={item?.label} />
           ))}
           <SearchForm {...props} />
         </div>
