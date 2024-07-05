@@ -52,7 +52,7 @@ const ExecutionsTableRender = ({ data }) => {
               <TableCell component="th" scope="row">
                 <div className="flex gap-1 items-center">
                   {handleToolLogos(item.playbook).map((tool) => (
-                    <Tooltip title={tool.name}>
+                    <Tooltip key={tool.name} title={tool.name}>
                       <img
                         src={tool.image}
                         alt={tool.name}
