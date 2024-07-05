@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Paper, TableContainer, TablePagination } from "@mui/material";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import usePagination from "../hooks/usePagination.ts";
 
@@ -13,7 +13,6 @@ interface PaginatedTableProps {
   tableContainerStyles?: object;
   params?: any;
   onSortChange?: (params: any) => void;
-  refetch: () => void;
 }
 
 const PaginatedTable: React.FC<PaginatedTableProps> = ({
@@ -23,10 +22,9 @@ const PaginatedTable: React.FC<PaginatedTableProps> = ({
   tableContainerStyles = {},
   params = {},
   onSortChange,
-  refetch,
 }) => {
   const { page, limit, handleChangePage, handleChangeRowsPerPage } =
-    usePagination(refetch);
+    usePagination();
 
   const [rows, setRows] = useState(data);
   const [totalRows, setTotalRows] = useState(total);
@@ -36,16 +34,6 @@ const PaginatedTable: React.FC<PaginatedTableProps> = ({
     setTotalRows(total);
   }, [data, total]);
 
-  const sliceRows = useCallback(
-    (rowList) => {
-      if (limit) {
-        return rowList?.slice(page * limit, page * limit + limit);
-      }
-      return rowList;
-    },
-    [page, limit, rows],
-  );
-
   return (
     <>
       <TableContainer
@@ -53,7 +41,7 @@ const PaginatedTable: React.FC<PaginatedTableProps> = ({
         className="!shadow-none !border"
         sx={tableContainerStyles}>
         <RenderTableComponent
-          data={sliceRows(rows)}
+          data={rows}
           onSortChange={onSortChange}
           params={params}
         />

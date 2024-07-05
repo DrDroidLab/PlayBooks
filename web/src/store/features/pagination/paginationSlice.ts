@@ -4,7 +4,6 @@ import { RootState } from "../../index.ts";
 export const PaginationKeys = {
   PAGE: "page",
   LIMIT: "limit",
-  OFFSET: "offset",
 } as const;
 
 type PaginationKeyType = (typeof PaginationKeys)[keyof typeof PaginationKeys];
@@ -12,13 +11,11 @@ type PaginationKeyType = (typeof PaginationKeys)[keyof typeof PaginationKeys];
 type PaginationType = {
   [PaginationKeys.PAGE]: number;
   [PaginationKeys.LIMIT]: number;
-  [PaginationKeys.OFFSET]: number;
 };
 
 const initialState: PaginationType = {
   [PaginationKeys.PAGE]: 0,
   [PaginationKeys.LIMIT]: 10,
-  [PaginationKeys.OFFSET]: 0,
 };
 
 type PaginationKeyAction = {

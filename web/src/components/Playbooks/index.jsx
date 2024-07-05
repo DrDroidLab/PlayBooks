@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
-import { useEffect, useState } from "react";
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
@@ -9,21 +8,14 @@ import CustomButton from "../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import PaginatedTable from "../PaginatedTable.tsx";
 import PlaybookTable from "./PlayBookTable.jsx";
+import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const Playbooks = () => {
   const navigate = useNavigate();
-  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetPlaybooksQuery(pageMeta);
+  const { data, isFetching, refetch } = useGetPlaybooksQuery();
   const playbookList = data?.playbooks;
   const total = data?.meta?.total_count;
-
-  useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
-
-  const pageUpdateCb = (page) => {
-    setPageMeta(page);
-  };
+  usePaginationComponent(refetch);
 
   const handleCreatePlaybook = () => {
     navigate({
@@ -49,13 +41,11 @@ const Playbooks = () => {
             renderTable={PlaybookTable}
             data={playbookList ?? []}
             total={total}
-            pageUpdateCb={pageUpdateCb}
             tableContainerStyles={
               playbookList?.length
                 ? {}
                 : { maxHeight: "35vh", minHeight: "35vh" }
             }
-            refreshTable={refetch}
           />
         </SuspenseLoader>
       </main>

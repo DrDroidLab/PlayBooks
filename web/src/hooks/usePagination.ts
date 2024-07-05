@@ -1,9 +1,8 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   PaginationKeys,
   paginationSelector,
-  resetPagination,
   setPaginationKey,
 } from "../store/features/pagination/paginationSlice.ts";
 
@@ -14,14 +13,13 @@ interface UsePaginationResult {
   handleChangeRowsPerPage: (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => void;
-  reset: () => void;
 }
 
-const usePagination = (handleRefetch: () => void): UsePaginationResult => {
+const usePagination = (): UsePaginationResult => {
   const dispatch = useDispatch();
   const pagination = useSelector(paginationSelector);
 
-  const { page, limit, offset } = pagination;
+  const { page, limit } = pagination;
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -41,20 +39,11 @@ const usePagination = (handleRefetch: () => void): UsePaginationResult => {
     [dispatch],
   );
 
-  const reset = () => {
-    dispatch(resetPagination());
-  };
-
-  useEffect(() => {
-    if (handleRefetch) handleRefetch();
-  }, [page, limit, offset, handleRefetch]);
-
   return {
     page,
     limit,
     handleChangePage,
     handleChangeRowsPerPage,
-    reset,
   };
 };
 

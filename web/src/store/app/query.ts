@@ -37,7 +37,8 @@ const modifyRequestBody = (originalArgs, api) => {
         time_range: timeRange,
         page: {
           limit: pagination[PaginationKeys.LIMIT],
-          offset: pagination[PaginationKeys.OFFSET],
+          offset:
+            pagination[PaginationKeys.LIMIT] * pagination[PaginationKeys.PAGE],
         },
         ...originalArgs.body.meta,
       },
