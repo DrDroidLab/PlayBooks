@@ -67,18 +67,17 @@ def version_info(request_message: GetUserRequest) -> Union[GetVersionInfoRespons
     print(f"BUILD_TIMESTAMP: {BUILD_TIMESTAMP}")
     print(f"IMAGE_VERSION: {IMAGE_VERSION}")
 
-    if BUILD_TIMESTAMP is not None:
-        LATEST_TIMESTAMP = get_last_commit_timestamp()
-        if LATEST_TIMESTAMP > BUILD_TIMESTAMP:
-            should_upgrade = True
-            upgrade_message = 'New version available!'
-
     if IMAGE_VERSION is not None:
         LATEST_TAG, LATEST_TAG_TIMESTAMP = get_latest_tag()
         if LATEST_TAG_TIMESTAMP > BUILD_TIMESTAMP:
             should_upgrade = True
             latest_version = LATEST_TAG
             upgrade_message = f'New Release Available - {LATEST_TAG}'
+    elif BUILD_TIMESTAMP is not None:
+        LATEST_TIMESTAMP = get_last_commit_timestamp()
+        if LATEST_TIMESTAMP > BUILD_TIMESTAMP:
+            should_upgrade = True
+            upgrade_message = 'New version available!'
 
     return GetVersionInfoResponse(current_version=IMAGE_VERSION, latest_version=latest_version, 
                                   should_upgrade=should_upgrade, upgrade_message=upgrade_message)
