@@ -4,6 +4,8 @@ import CustomButton from "../common/CustomButton/index.tsx";
 import { useUpdateSiteUrlMutation } from "../../store/features/integrations/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import { useGetSiteUrlQuery } from "../../store/features/integrations/api/getSiteUrlApi.ts";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 
 function SiteSection() {
   const { data, isFetching, error: siteUrlError } = useGetSiteUrlQuery();
@@ -11,6 +13,7 @@ function SiteSection() {
   const [error, setError] = useState("");
   const [triggerSaveSite, { isLoading, error: saveUrlError }] =
     useUpdateSiteUrlMutation();
+  const dispatch = useDispatch();
 
   const validate = () => {
     let errorString = "";
@@ -33,7 +36,14 @@ function SiteSection() {
 
   const handleUpdate = async () => {
     if (!validate()) return;
-    triggerSaveSite(value);
+    try {
+      await triggerSaveSite(value);
+      dispatch(
+        showSnackbar({ message: "Site URL has been updated", type: "success" }),
+      );
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   useEffect(() => {
