@@ -246,6 +246,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['ssl_verify'] = 'true'
                 if conn_key.key.value.lower() == 'false':
                     credentials_dict['ssl_verify'] = 'false'
+    elif connector_type == Source.GCM:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.GCM_PROJECT_ID:
+                credentials_dict['project_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GCM_SERVICE_ACCOUNT_JSON:
+                credentials_dict['service_account_json'] = conn_key.key.value
     else:
         return None
     return credentials_dict

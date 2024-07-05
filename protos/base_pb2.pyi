@@ -293,7 +293,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     CLICKHOUSE_USER: _SourceKeyType.ValueType  # 27
     CLICKHOUSE_PASSWORD: _SourceKeyType.ValueType  # 28
     GCM_PROJECT_ID: _SourceKeyType.ValueType  # 29
-    GCM_PRIVATE_KEY: _SourceKeyType.ValueType  # 30
+    GCM_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 30
     GCM_CLIENT_EMAIL: _SourceKeyType.ValueType  # 31
     GCM_TOKEN_URI: _SourceKeyType.ValueType  # 32
     POSTGRES_HOST: _SourceKeyType.ValueType  # 33
@@ -366,7 +366,7 @@ CLICKHOUSE_PORT: SourceKeyType.ValueType  # 26
 CLICKHOUSE_USER: SourceKeyType.ValueType  # 27
 CLICKHOUSE_PASSWORD: SourceKeyType.ValueType  # 28
 GCM_PROJECT_ID: SourceKeyType.ValueType  # 29
-GCM_PRIVATE_KEY: SourceKeyType.ValueType  # 30
+GCM_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 30
 GCM_CLIENT_EMAIL: SourceKeyType.ValueType  # 31
 GCM_TOKEN_URI: SourceKeyType.ValueType  # 32
 POSTGRES_HOST: SourceKeyType.ValueType  # 33
@@ -468,6 +468,9 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Pagerduty Models"""
     ELASTIC_SEARCH_INDEX: _SourceModelType.ValueType  # 1601
     """Elastic Search Models"""
+    GCM_METRIC: _SourceModelType.ValueType  # 1701
+    """GCM Models"""
+    GCM_LOGS: _SourceModelType.ValueType  # 1702
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -527,6 +530,9 @@ PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
 """Pagerduty Models"""
 ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
+GCM_METRIC: SourceModelType.ValueType  # 1701
+"""GCM Models"""
+GCM_LOGS: SourceModelType.ValueType  # 1702
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
