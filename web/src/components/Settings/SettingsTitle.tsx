@@ -6,9 +6,7 @@ type SettingsTitlePropTypes = {
 
 function SettingsTitle({ title }: SettingsTitlePropTypes) {
   return (
-    <p className="text-black font-medium text-md border-b pb-2 w-fit">
-      {title}
-    </p>
+    <p className="text-black font-medium text-md border-b w-fit">{title}</p>
   );
 }
 
