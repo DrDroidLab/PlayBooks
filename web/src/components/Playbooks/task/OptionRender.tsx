@@ -14,6 +14,7 @@ export default function OptionRender({ data, removeErrors, id }) {
   const taskType = task?.[source?.toLowerCase()]?.type ?? "";
   const key = `${source.toLowerCase()}.${taskType.toLowerCase()}.${data.key}`;
   const value = getNestedValue(task, key, undefined);
+  const taskData = task?.[source?.toLowerCase()]?.[taskType?.toLowerCase()];
 
   useEffect(() => {
     if (data.default) {
@@ -23,7 +24,7 @@ export default function OptionRender({ data, removeErrors, id }) {
 
   useEffect(() => {
     if (task?.ui_requirement.errors?.[data.key]) {
-      if (getNestedValue(task, data.key)) {
+      if (getNestedValue(taskData, data.key)) {
         removeErrors(data.key);
       }
     }
