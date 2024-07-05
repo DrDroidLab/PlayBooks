@@ -12,13 +12,15 @@ import { currentWorkflowSelector } from "../../../store/features/workflow/workfl
 import { useGetWorkflowExecutionsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
 import PaginatedTable from "../../PaginatedTable.tsx";
+import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
   const navigate = useNavigate();
-  const { data, isFetching } = useGetWorkflowExecutionsQuery({
+  const { data, isFetching, refetch } = useGetWorkflowExecutionsQuery({
     workflowId,
   });
+  usePaginationComponent(refetch);
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
     useLazyGetWorkflowQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);

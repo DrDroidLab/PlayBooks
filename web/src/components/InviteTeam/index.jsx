@@ -1,30 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Heading from "../Heading";
-import { useEffect } from "react";
 import useToggle from "../../hooks/useToggle";
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
 import InviteUserOverlay from "./InviteUserOverlay";
 import UserTable from "./UserTable";
 import { useGetAccountUsersQuery } from "../../store/features/auth/api/index.ts";
-import usePagination from "../../hooks/usePagination.ts";
-import PaginatedTable from "../PaginatedTable.tsx";
+import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const InviteTeam = () => {
   const { isOpen: isActionOpen, toggle } = useToggle();
   const { data, isLoading, refetch } = useGetAccountUsersQuery();
-  const { reset } = usePagination(refetch);
+  usePaginationComponent(refetch);
   const total = data?.meta?.total_count;
 
   const handleInviteUsers = () => {
     toggle();
   };
-
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, []);
 
   return (
     <div>
@@ -59,7 +51,7 @@ const InviteTeam = () => {
           }}>
           Active Users
         </h1>
-        <PaginatedTable
+        <UserTable
           renderTable={UserTable}
           data={data?.users ?? []}
           total={total ?? data?.users?.length}

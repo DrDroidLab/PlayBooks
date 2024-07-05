@@ -13,7 +13,7 @@ const UserTable = ({ data, loading }) => {
   return (
     <>
       {loading ? <LinearProgress /> : null}
-      <Table stickyHeader>
+      <Table stickyHeader className="bg-white">
         <TableHead>
           <TableRow>
             <TableCell className={styles["tableTitle"]}>Name</TableCell>

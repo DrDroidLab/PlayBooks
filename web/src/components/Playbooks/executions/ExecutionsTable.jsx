@@ -13,7 +13,7 @@ import handleToolLogos from "../../../utils/handleToolLogos.ts";
 
 const ExecutionsTable = ({ data }) => {
   return (
-    <>
+    <div className="bg-white">
       <Table stickyHeader>
         <TableHead>
           <TableRow>
@@ -77,7 +77,7 @@ const ExecutionsTable = ({ data }) => {
         </TableBody>
       </Table>
       {!data?.length ? <NoExistingPlaybook /> : null}
-    </>
+    </div>
   );
 };
 

@@ -12,11 +12,12 @@ import { useGetPlaybookExecutionsQuery } from "../../../store/features/playbook/
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import PaginatedTable from "../../PaginatedTable.tsx";
+import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
 
 const PlaybookExecutions = () => {
   const { id: playbookId } = useParams();
   const navigate = useNavigate();
-  const { data, isFetching } = useGetPlaybookExecutionsQuery({
+  const { data, isFetching, refetch } = useGetPlaybookExecutionsQuery({
     playbookId,
   });
   const [triggerGetPlaybook, { isLoading: workflowLoading }] =
@@ -24,6 +25,7 @@ const PlaybookExecutions = () => {
   const { currentPlaybook } = useSelector(playbookSelector);
   const playbooksList = data?.playbook_executions;
   const total = data?.meta?.total_count;
+  usePaginationComponent(refetch);
 
   useEffect(() => {
     if (playbookId != null) {

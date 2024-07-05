@@ -6,12 +6,14 @@ import ExecutionsTable from "./ExecutionsTable.jsx";
 import Search from "../../common/Search/index.tsx";
 import useSearch from "../../../hooks/useSearch.ts";
 import PaginatedTable from "../../PaginatedTable.tsx";
+import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
 
 const context = "WORKFLOW_EXECUTION";
 
 const WorkflowExecutionList = () => {
-  const { data, isFetching } = useSearch(context);
-  const workflowsList = data?.workflow_executions;
+  const { data, isFetching, refetch } = useSearch(context);
+  usePaginationComponent(refetch);
+  const workflowsList = data?.[context.toLowerCase()];
   const total = data?.meta?.total_count;
 
   return (

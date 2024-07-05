@@ -6,7 +6,6 @@ import TableSkeleton from "../../Skeleton/TableLoader.js";
 import { ChevronLeft } from "@mui/icons-material";
 import { useGetWorkflowExecutionLogsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
 import ExecutionsTable from "../../Playbooks/executions/ExecutionsTable.jsx";
-import PaginatedTable from "../../PaginatedTable.tsx";
 
 const WorkflowExecutionLogs = () => {
   const { workflow_run_id: workflowRunId } = useParams();
@@ -17,13 +16,15 @@ const WorkflowExecutionLogs = () => {
 
   const playbooksList =
     data?.workflow_executions?.length > 0
-      ? data?.workflow_executions[0].workflow_logs
+      ? data?.workflow_executions?.[0].workflow_logs
       : [];
 
   const execution =
-    data?.workflow_executions?.length > 0 ? data?.workflow_executions[0] : null;
+    data?.workflow_executions?.length > 0
+      ? data?.workflow_executions?.[0]
+      : null;
 
-  const total = data?.meta?.total_count;
+  const total = data?.meta?.total_count ?? 0;
 
   return (
     <div>
@@ -41,8 +42,7 @@ const WorkflowExecutionLogs = () => {
           </button>
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-          <PaginatedTable
-            renderTable={ExecutionsTable}
+          <ExecutionsTable
             data={
               playbooksList?.map((e) => ({
                 ...e.playbook_execution,
