@@ -23,8 +23,6 @@ type SearchArgType = {
 };
 
 const useSearch = (args: SearchArgType) => {
-  const { context } = args;
-  const { refetch } = useSearchQuery(args);
   const dispatch = useDispatch();
   const {
     value,
@@ -34,6 +32,7 @@ const useSearch = (args: SearchArgType) => {
     highlightedIndex,
     options,
   } = useSelector(searchSelector);
+  const { data, refetch, isFetching } = useSearchQuery({ ...args, selected });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -121,8 +120,9 @@ const useSearch = (args: SearchArgType) => {
   }, [selected, setSearchParams, searchParams, options]);
 
   useEffect(() => {
-    if (context) refetch();
-  }, [selected, refetch, context, options]);
+    if (!isFetching) refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [args.limit, args.offset, args.context, selected]);
 
   return {
     value,
@@ -135,6 +135,9 @@ const useSearch = (args: SearchArgType) => {
     dropdownRef,
     resetState,
     clear: clearFunction,
+    data,
+    isFetching,
+    refetch,
   };
 };
 

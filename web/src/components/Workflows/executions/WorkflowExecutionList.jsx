@@ -1,26 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Heading from "../../Heading.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";
 import Search from "../../common/Search/index.tsx";
-import { useSearchQuery } from "../../../store/features/search/api/searchApi.ts";
+import useSearch from "../../../hooks/useSearch.ts";
 
 const context = "WORKFLOW_EXECUTION";
 
 const WorkflowExecutionList = () => {
   const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useSearchQuery({
+  const options = {
     context,
     ...pageMeta,
-  });
+  };
+  const { data, isFetching, refetch } = useSearch(options);
   const workflowsList = data?.workflow_executions;
   const total = data?.meta?.total_count;
-
-  useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
 
   const pageUpdateCb = (page) => {
     setPageMeta(page);
