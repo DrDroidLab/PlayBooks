@@ -19,7 +19,8 @@ urlpatterns = [
     path('slack_alert_trigger/options/get', connector_views.slack_alert_trigger_options_get),
     path('slack/alerts/search', connector_views.slack_alerts_search),
 
-    # Save Site URL
+    # Site URL
     path('save_site_url', connector_views.save_site_url),
+    path('get_site_url', connector_views.get_site_url),
 
 ]
