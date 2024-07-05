@@ -39,9 +39,6 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
     setOpen(false);
   };
 
-  const columnLength = tableData[0]?.columns?.length;
-  const shouldNoWrap = columnLength < 5;
-
   if (tableLoading)
     return (
       <div>
@@ -73,6 +70,7 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
                         text={col.name}
                         maxLength={50}
                         className={"font-bold text-xs"}
+                        shouldNoWrap={true}
                       />
                     </TableCell>
                   );
@@ -93,9 +91,9 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
                             col.name === "@message"
                               ? "min-w-[100px]"
                               : "min-w-[50px]"
-                          } !text-xs !border`}>
+                          } !text-xs !border !min-w-[max-content]`}>
                           <SeeMoreTextWithoutModal
-                            shouldNoWrap={shouldNoWrap}
+                            shouldNoWrap={true}
                             text={
                               isDate(col.value)
                                 ? renderTimestamp(
