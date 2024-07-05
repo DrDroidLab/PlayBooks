@@ -1,0 +1,26 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message Gcm {
+  message Command {
+    google.protobuf.StringValue description = 1;
+    google.protobuf.StringValue metricType = 2;
+    google.protobuf.StringValue startTime = 3;
+    google.protobuf.StringValue endTime = 4;
+    google.protobuf.StringValue filter = 5;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    GET_METRICS = 1;
+    GET_LOGS = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    Command get_metrics = 2;
+    Command get_logs = 3;
+  }
+}
