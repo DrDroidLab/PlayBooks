@@ -16,7 +16,7 @@ const OutputTypes = {
 const TaskOutput = ({ id, showHeading }) => {
   const [task] = useCurrentTask(id);
   const output = task?.ui_requirement.output?.data;
-  const error = task?.ui_requirement?.output?.error;
+  const error = task?.ui_requirement?.outputError;
 
   switch (output?.type) {
     case OutputTypes.API_RESPONSE:
