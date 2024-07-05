@@ -6,7 +6,6 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import PaginatedTable from "../PaginatedTable.js";
 import { Link, useNavigate } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingWorkflow.jsx";
 import { Delete, Edit, History } from "@mui/icons-material";
@@ -16,7 +15,7 @@ import useToggle from "../../hooks/useToggle.js";
 import { renderTimestamp } from "../../utils/DateUtils.js";
 import { handleStatus } from "../../utils/handleStatus.tsx";
 
-const WorkflowTableRender = ({ data, refreshTable }) => {
+const WorkflowTable = ({ data, refreshTable }) => {
   const navigate = useNavigate();
   const { isOpen: isActionOpen, toggle } = useToggle();
   const [selectedWorkflow, setSelectedWorkflow] = useState({});
@@ -144,27 +143,6 @@ const WorkflowTableRender = ({ data, refreshTable }) => {
         refreshTable={refreshTable}
       />
     </>
-  );
-};
-
-const WorkflowTable = ({
-  workflowsList,
-  total,
-  pageSize,
-  pageUpdateCb,
-  tableContainerStyles,
-  refreshTable,
-}) => {
-  return (
-    <PaginatedTable
-      renderTable={WorkflowTableRender}
-      data={workflowsList ?? []}
-      total={total}
-      pageSize={pageSize}
-      pageUpdateCb={pageUpdateCb}
-      tableContainerStyles={tableContainerStyles ? tableContainerStyles : {}}
-      refreshTable={refreshTable}
-    />
   );
 };
 

@@ -1,28 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
-import { useEffect, useState } from "react";
-
 import SuspenseLoader from "../Skeleton/SuspenseLoader";
 import TableSkeleton from "../Skeleton/TableLoader";
-
-import PlaybookTable from "./PlayBookTable";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
+import CustomButton from "../common/CustomButton/index.tsx";
+import { Add } from "@mui/icons-material";
+import PaginatedTable from "../PaginatedTable.tsx";
+import PlaybookTable from "./PlayBookTable.jsx";
+import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const Playbooks = () => {
   const navigate = useNavigate();
-  const [pageMeta, setPageMeta] = useState({ limit: 10, offset: 0 });
-  const { data, isFetching, refetch } = useGetPlaybooksQuery(pageMeta);
+  const { data, isFetching, refetch } = useGetPlaybooksQuery();
   const playbookList = data?.playbooks;
   const total = data?.meta?.total_count;
-
-  useEffect(() => {
-    if (!isFetching) refetch(pageMeta);
-  }, [pageMeta]);
-
-  const pageUpdateCb = (page) => {
-    setPageMeta(page);
-  };
+  usePaginationComponent(refetch);
 
   const handleCreatePlaybook = () => {
     navigate({
@@ -38,26 +31,22 @@ const Playbooks = () => {
         onRefreshCb={false}
       />
       <main className="flex flex-col gap-4 p-2 pt-4">
-        <div className="flex items-center justify-between">
-          <button
-            className="text-sm bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-lg !text-white"
-            onClick={handleCreatePlaybook}
-            style={{ color: "white", marginTop: "0px", marginRight: "10px" }}>
-            + Create Playbook
-          </button>
+        <div className="flex items-center gap-2">
+          <CustomButton onClick={handleCreatePlaybook}>
+            <Add fontSize="small" /> Create Playbook
+          </CustomButton>
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-          <PlaybookTable
-            playbookList={playbookList}
+          <PaginatedTable
+            renderTable={PlaybookTable}
+            data={playbookList ?? []}
             total={total}
-            pageSize={pageMeta ? pageMeta?.limit : 10}
-            pageUpdateCb={pageUpdateCb}
             tableContainerStyles={
               playbookList?.length
                 ? {}
                 : { maxHeight: "35vh", minHeight: "35vh" }
             }
-            refreshTable={refetch}></PlaybookTable>
+          />
         </SuspenseLoader>
       </main>
     </div>
