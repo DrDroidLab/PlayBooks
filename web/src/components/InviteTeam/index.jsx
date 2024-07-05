@@ -12,8 +12,8 @@ import PaginatedTable from "../PaginatedTable.tsx";
 
 const InviteTeam = () => {
   const { isOpen: isActionOpen, toggle } = useToggle();
-  const { reset } = usePagination();
-  const { data, isLoading, isFetching, refetch } = useGetAccountUsersQuery();
+  const { data, isLoading, refetch } = useGetAccountUsersQuery();
+  const { reset } = usePagination(refetch);
   const total = data?.meta?.total_count;
 
   const handleInviteUsers = () => {
@@ -21,8 +21,6 @@ const InviteTeam = () => {
   };
 
   useEffect(() => {
-    if (!isFetching) refetch();
-
     return () => {
       reset();
     };
@@ -63,8 +61,8 @@ const InviteTeam = () => {
         </h1>
         <PaginatedTable
           renderTable={UserTable}
-          data={data?.users}
-          total={total}
+          data={data?.users ?? []}
+          total={total ?? data?.users?.length}
           tableContainerStyles={
             data?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
           }

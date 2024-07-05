@@ -13,8 +13,7 @@ interface PaginatedTableProps {
   tableContainerStyles?: object;
   params?: any;
   onSortChange?: (params: any) => void;
-  orderData?: any;
-  showDelete?: boolean;
+  refetch: () => void;
 }
 
 const PaginatedTable: React.FC<PaginatedTableProps> = ({
@@ -24,29 +23,18 @@ const PaginatedTable: React.FC<PaginatedTableProps> = ({
   tableContainerStyles = {},
   params = {},
   onSortChange,
-  orderData,
-  showDelete = false,
+  refetch,
 }) => {
   const { page, limit, handleChangePage, handleChangeRowsPerPage } =
-    usePagination();
+    usePagination(refetch);
 
   const [rows, setRows] = useState(data);
   const [totalRows, setTotalRows] = useState(total);
-  const [isFetchingData, setIsFetchingData] = useState(false);
 
   useEffect(() => {
     setRows(data);
     setTotalRows(total);
   }, [data, total]);
-
-  const handleRefreshTable = () => {
-    setIsFetchingData(true);
-    // Implement data fetching logic here if needed
-    // Simulate a data fetch
-    setTimeout(() => {
-      setIsFetchingData(false);
-    }, 1000);
-  };
 
   const sliceRows = useCallback(
     (rowList) => {
@@ -66,12 +54,8 @@ const PaginatedTable: React.FC<PaginatedTableProps> = ({
         sx={tableContainerStyles}>
         <RenderTableComponent
           data={sliceRows(rows)}
-          loading={isFetchingData}
-          refreshTable={handleRefreshTable}
           onSortChange={onSortChange}
           params={params}
-          orderData={orderData}
-          showDelete={showDelete}
         />
       </TableContainer>
       {limit ? (
