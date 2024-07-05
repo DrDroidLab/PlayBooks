@@ -4,6 +4,7 @@ from connectors.assets.extractor.cloudwatch_metadata_extractor import Cloudwatch
 from connectors.assets.extractor.datadog_metadata_extractor import DatadogSourceMetadataExtractor
 from connectors.assets.extractor.eks_metadata_extractor import EksSourceMetadataExtractor
 from connectors.assets.extractor.elastic_search_metadata_extractor import ElasticSearchSourceMetadataExtractor
+from connectors.assets.extractor.gcm_metadata_extractor import GcmSourceMetadataExtractor
 from connectors.assets.extractor.gke_metadata_extractor import GkeSourceMetadataExtractor
 from connectors.assets.extractor.grafana_metadata_extractor import GrafanaSourceMetadataExtractor
 from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVpcSourceMetadataExtractor
@@ -40,3 +41,4 @@ source_metadata_extractor_facade.register(Source.GRAFANA_MIMIR, MimirSourceMetad
 source_metadata_extractor_facade.register(Source.AZURE, AzureConnectorMetadataExtractor)
 source_metadata_extractor_facade.register(Source.GKE, GkeSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.GCM, GcmSourceMetadataExtractor)

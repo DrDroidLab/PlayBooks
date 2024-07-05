@@ -56,6 +56,16 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching metrics: {e}")
             raise e
 
+    def fetch_metrics_list(self):
+        try:
+            service = build('monitoring', 'v3', credentials=self.__credentials)
+            request = service.projects().metricDescriptors().list(name=f"projects/{self.__project_id}")
+            response = request.execute()
+            return response.get('metricDescriptors', [])
+        except Exception as e:
+            logger.error(f"Exception occurred while fetching metric descriptors: {e}")
+            raise e
+
     def fetch_logs(self, filter_str, start_time=None, end_time=None):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
