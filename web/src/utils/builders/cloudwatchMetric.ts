@@ -1,5 +1,5 @@
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { Task } from "../../types/task.ts";
-import { OptionType } from "../playbooksData.ts";
 
 const getTaskData = (task: Task) => {
   const source = task.source;
@@ -78,7 +78,7 @@ export const cloudwatchMetricBuilder = (options, task) => {
         {
           key: "namespace",
           label: "Namespace",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((namespace) => {
             return {
               id: namespace,
@@ -89,7 +89,7 @@ export const cloudwatchMetricBuilder = (options, task) => {
         {
           key: "region",
           label: "Region",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: getCurrentAsset(task)?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
@@ -97,20 +97,20 @@ export const cloudwatchMetricBuilder = (options, task) => {
         {
           key: `dimensions.0.name`,
           label: "Dimension Name",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: getDimensionNames(task),
         },
         {
           key: `dimensions.0.value`,
           label: "Dimension Value",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: getDimensionValues(task),
         },
         {
           key: "metric_name",
           label: "Metric",
           placeholder: "Add Metric",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: getMetrics(task),
         },
       ],
