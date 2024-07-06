@@ -24,9 +24,11 @@ function Step({ id }: StepProps) {
       <StepDetailsButtons id={currentStepId} />
 
       <div className="flex flex-col gap-1 mt-4">
-        <p className={"text-sm my-1 text-violet-500"}>
-          <b>Output</b>
-        </p>
+        {step.ui_requirement.showOutput && (
+          <p className={"text-sm my-1 text-violet-500"}>
+            <b>Output</b>
+          </p>
+        )}
         {step.tasks?.map((task: Task | string) => (
           <HandleOutput
             id={typeof task === "string" ? task : task.id}
