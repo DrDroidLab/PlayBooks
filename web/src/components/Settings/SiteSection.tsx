@@ -73,7 +73,7 @@ function SiteSection() {
           <input
             className={`${
               error ? "border-red-500" : ""
-            } border p-1 text-sm outline-none rounded w-[400px]`}
+            } border p-1 text-sm outline-none rounded w-[500px]`}
             value={value}
             type="url"
             placeholder="Your Site URL"
