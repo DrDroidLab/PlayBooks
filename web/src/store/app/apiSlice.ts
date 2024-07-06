@@ -11,5 +11,6 @@ export const apiSlice = createApi({
     "API_Tokens",
     "Workflows",
     "Templates",
+    "SiteURL",
   ],
 });
