@@ -9,9 +9,11 @@ type SearchProps = {
 };
 
 function SearchDropdown({ context }: SearchProps) {
-  const { value, filteredOptions, highlightedIndex, resetState } =
+  const { isOpen, value, filteredOptions, highlightedIndex, resetState } =
     useSearch(context);
   const dispatch = useDispatch();
+
+  if (!isOpen) return;
 
   return (
     <div className="origin-top-right absolute left-0 mt-2 w-full max-h-36 overflow-scroll rounded-md shadow-lg bg-white z-10 max-h-[350px]">
