@@ -10,6 +10,17 @@ import { Task } from "../../../types/task.ts";
 import setNestedValue from "../../../utils/setNestedValue.ts";
 import { v4 as uuidv4 } from "uuid";
 
+const firstStepId = generateUUIDWithoutHyphens();
+const firstStep: Step = {
+  id: firstStepId,
+  description: `Step-${firstStepId}`,
+  tasks: [],
+  ui_requirement: {
+    isOpen: true,
+    showError: false,
+  },
+};
+
 const emptyStep: Step = {
   id: "",
   tasks: [],
@@ -24,7 +35,7 @@ const initialState: PlaybookUIState = {
   currentPlaybook: {
     id: undefined,
     global_variable_set: {},
-    steps: [],
+    steps: [firstStep],
     step_relations: [],
     ui_requirement: {
       tasks: [],
@@ -151,7 +162,7 @@ const playbookSlice = createSlice({
     },
     createTaskWithSource(state, { payload }) {
       const { parentId, stepId: existingStepId } = payload;
-      const parentExists = parentId !== null && parentId !== undefined;
+      const parent = parentId ?? state.currentPlaybook?.steps[0].id;
       const stepId = existingStepId ?? generateUUIDWithoutHyphens();
       const taskId = generateUUIDWithoutHyphens();
 
@@ -204,16 +215,14 @@ const playbookSlice = createSlice({
       state.currentPlaybook?.ui_requirement.tasks.push(task);
 
       const parentStep = state.currentPlaybook?.steps.find(
-        (step) => step.id === parentId,
+        (step) => step.id === parent,
       );
 
-      if (parentExists) {
-        state.currentPlaybook?.step_relations.push({
-          id: `edge-${parentId}-${stepId}`,
-          parent: parentStep!,
-          child: newStep,
-        });
-      }
+      state.currentPlaybook?.step_relations.push({
+        id: `edge-${parent}-${stepId}`,
+        parent: parentStep!,
+        child: newStep,
+      });
 
       state.currentVisibleTask = taskId;
     },
