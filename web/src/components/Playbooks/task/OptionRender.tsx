@@ -3,7 +3,7 @@ import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import HandleInputRender from "../../Inputs/HandleInputRender.tsx";
-import { InputType, InputTypes } from "../../../types/inputs/inputTypes.ts";
+import handleChangeInput from "./utils/handleChange.ts";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
@@ -28,41 +28,6 @@ export default function OptionRender({ data, removeErrors, id }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task?.ui_requirement.errors]);
 
-  const handleChange = (val: string, ...args: any) => {
-    if (data.handleChange) {
-      data.handleChange(val);
-    } else {
-      updateCardById(key, val, currentTaskId);
-    }
-
-    removeErrors(key);
-  };
-
-  const handleTypingDropdownChange = (value, option) => {
-    if (data.handleChange && option) {
-      data.handleChange(value, option);
-    } else if (data.handleKeyChange) {
-      data.handleKeyChange(value);
-    } else {
-      updateCardById(key, value, currentTaskId);
-    }
-
-    removeErrors(key);
-  };
-
-  function handleChangeValue(type: InputType) {
-    switch (type) {
-      case InputTypes.TEXT:
-      case InputTypes.TEXT_ROW:
-      case InputTypes.MULTILINE:
-        return handleChange;
-      case InputTypes.TYPING_DROPDOWN:
-        return handleTypingDropdownChange;
-      default:
-        return () => null;
-    }
-  }
-
   const error = data.key
     ? task?.ui_requirement?.showError &&
       !data.selected &&
@@ -73,7 +38,14 @@ export default function OptionRender({ data, removeErrors, id }) {
     <HandleInputRender
       {...data}
       error={error}
-      handleChange={() => handleChangeValue(data.type)}
+      handleChange={handleChangeInput(
+        data.type,
+        key,
+        currentTaskId!,
+        removeErrors,
+        data.handleChange,
+        data.handleKeyChange,
+      )}
       value={value}
     />
   );
