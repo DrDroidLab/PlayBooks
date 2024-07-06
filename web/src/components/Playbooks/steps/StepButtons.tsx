@@ -37,9 +37,11 @@ function StepButtons({ step }: StepButtonsProps) {
         <p>Add Task</p>
       </CustomButton>
 
-      <CustomButton onClick={handleDeleteStep}>
-        <Delete />
-      </CustomButton>
+      {step.ui_requirement.stepIndex !== 0 && (
+        <CustomButton onClick={handleDeleteStep}>
+          <Delete />
+        </CustomButton>
+      )}
     </div>
   );
 }

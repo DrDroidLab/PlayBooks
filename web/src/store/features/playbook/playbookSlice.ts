@@ -18,6 +18,7 @@ const firstStep: Step = {
   ui_requirement: {
     isOpen: true,
     showError: false,
+    stepIndex: 0,
   },
 };
 
