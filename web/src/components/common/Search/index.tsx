@@ -12,7 +12,7 @@ type SearchProps = {
 };
 
 const Search = ({ context }: SearchProps) => {
-  const { isOpen, selected, dropdownRef, clear } = useSearch(context);
+  const { selected, dropdownRef, clear } = useSearch(context);
   useSearchOptionsQuery(context);
 
   return (
@@ -32,7 +32,7 @@ const Search = ({ context }: SearchProps) => {
         </CustomButton>
       </div>
 
-      {isOpen && <SearchDropdown context={context} />}
+      <SearchDropdown context={context} />
     </div>
   );
 };
