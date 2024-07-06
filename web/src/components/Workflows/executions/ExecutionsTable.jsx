@@ -5,19 +5,12 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import PaginatedTable from "../../PaginatedTable.js";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
 import { handleStatus } from "../../../utils/handleStatus.tsx";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
 
-const ExecutionsTableRender = ({ data }) => {
-  // const navigate = useNavigate();
-
-  // const navigateToPlaybook = (id) => {
-  //   navigate(`/playbooks/${id}`);
-  // };
-
+const ExecutionsTable = ({ data }) => {
   return (
     <>
       <Table stickyHeader>
@@ -84,25 +77,6 @@ const ExecutionsTableRender = ({ data }) => {
       </Table>
       {!data?.length ? <NoExistingPlaybook /> : null}
     </>
-  );
-};
-
-const ExecutionsTable = ({
-  workflowsList,
-  total,
-  pageSize,
-  pageUpdateCb,
-  tableContainerStyles,
-}) => {
-  return (
-    <PaginatedTable
-      renderTable={ExecutionsTableRender}
-      data={workflowsList ?? []}
-      total={total}
-      pageSize={pageSize}
-      pageUpdateCb={pageUpdateCb}
-      tableContainerStyles={tableContainerStyles ? tableContainerStyles : {}}
-    />
   );
 };
 

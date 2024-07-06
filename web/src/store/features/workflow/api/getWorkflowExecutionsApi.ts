@@ -4,21 +4,12 @@ import { setWorkflowKey } from "../workflowSlice.ts";
 
 export const getWorkflowExecutionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getWorkflowExecutions: builder.query<
-      any,
-      { limit: number; offset: number; workflowId: string }
-    >({
-      query: ({ limit, offset, workflowId }) => ({
+    getWorkflowExecutions: builder.query<any, { workflowId: string }>({
+      query: ({ workflowId }) => ({
         url: GET_WORKFLOW_EXECUTIONS,
         method: "POST",
         body: {
           workflow_ids: workflowId ? [workflowId] : [],
-          meta: {
-            page: {
-              limit,
-              offset,
-            },
-          },
         },
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
