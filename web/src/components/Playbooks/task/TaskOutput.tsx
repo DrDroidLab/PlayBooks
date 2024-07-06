@@ -47,7 +47,7 @@ const TaskOutput = ({ id, showHeading }) => {
         />
       );
     default:
-      return <HandleUnkownOutput error={error} stepId={id} />;
+      return <HandleUnkownOutput error={error} taskId={id} />;
   }
 };
 

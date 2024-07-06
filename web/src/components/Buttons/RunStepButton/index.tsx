@@ -45,6 +45,8 @@ function RunStepButton({ id, showText = true }: RunStepButtonProps) {
     // }
   };
 
+  if (step?.tasks.length === 0) return;
+
   return (
     <Tooltip title="Run this Step">
       <>
