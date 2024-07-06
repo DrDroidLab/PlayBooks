@@ -5,11 +5,15 @@ import { List, ListItemButton, ListItemIcon } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
 import "../src/Layout.css";
-import { Key, Layers, SlowMotionVideo, Terminal } from "@mui/icons-material";
+import {
+  Layers,
+  Settings,
+  SlowMotionVideo,
+  Terminal,
+} from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 function Sidebar() {

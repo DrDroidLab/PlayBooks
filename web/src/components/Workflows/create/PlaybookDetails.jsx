@@ -12,7 +12,7 @@ function PlaybookDetails() {
     data,
     isFetching: playbooksLoading,
     refetch,
-  } = useGetPlaybooksQuery({});
+  } = useGetPlaybooksQuery();
 
   return (
     <div className="space-y-2">

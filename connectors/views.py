@@ -2,7 +2,8 @@ import logging
 from typing import Union
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from utils.uri_utils import build_absolute_uri
 
 from connectors.models import Site, ConnectorMetadataModelStore
 
@@ -328,6 +329,13 @@ def save_site_url(request_message: GetSlackAppManifestRequest) -> \
     else:
         Site.objects.create(domain=site_domain, name='MyDroid', protocol=http_protocol, is_active=True)
     return GetSlackAppManifestResponse(success=BoolValue(value=True))
+
+
+@web_api(GetSlackAppManifestRequest)
+def get_site_url(request_message) -> JsonResponse:
+    url = build_absolute_uri(None, "", "", True)
+   
+    return JsonResponse({"url": url}, status=200)
 
 
 @web_api(GetConnectedPlaybooksRequest)
