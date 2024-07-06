@@ -20,26 +20,23 @@ function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
   const {
     playbookEdges,
-    conditions,
-    globalRule,
-    handleCondition,
-    addNewCondition,
+    rules,
+    condition,
+    handleRule,
+    addNewRule,
     deleteCondition,
     handleGlobalRule,
   } = useEdgeConditions(id);
   const sourceId = extractSource(source);
-  console.log("source", sourceId, source);
   const [parentStep] = useCurrentStep(sourceId);
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
-  console.log("ResultTypeTypes.OTHERS", taskTypeOptions);
-
   useEffect(() => {
-    if (conditions?.length === 0) {
-      handleCondition("", "", 0);
+    if (rules?.length === 0) {
+      handleRule("", "", 0);
     }
-  }, [conditions, handleCondition, playbookEdges]);
+  }, [rules, handleRule, playbookEdges]);
 
   return (
     <div className="p-2">
@@ -67,13 +64,13 @@ function AddCondition() {
         </p>
         <SelectComponent
           data={ruleOptions}
-          selected={globalRule}
+          selected={condition?.logical_opertaor}
           placeholder={`Select Global Rule`}
           onSelectionChange={handleGlobalRule}
         />
       </div>
 
-      {conditions?.map((condition, i) => (
+      {rules?.map((condition, i) => (
         <div className="mt-2 border p-1 rounded-md">
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
@@ -90,18 +87,20 @@ function AddCondition() {
               />
             </div>
 
-            <div className="flex gap-2 flex-wrap">
-              <CustomButton
-                className="!text-sm !w-fit"
-                onClick={() => deleteCondition(i)}>
-                <Delete fontSize="inherit" />
-              </CustomButton>
-            </div>
+            {i !== 0 && (
+              <div className="flex gap-2 flex-wrap">
+                <CustomButton
+                  className="!text-sm !w-fit"
+                  onClick={() => deleteCondition(i)}>
+                  <Delete fontSize="inherit" />
+                </CustomButton>
+              </div>
+            )}
           </div>
         </div>
       ))}
 
-      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewCondition}>
+      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewRule}>
         <Add fontSize="inherit" /> Add
       </CustomButton>
 

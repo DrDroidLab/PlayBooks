@@ -1,6 +1,6 @@
 import { Step } from "./step.ts";
 
-enum LogicalOperator {
+export enum LogicalOperator {
   AND_LO = "AND_LO",
   OR_LO = "OR_LO",
   NOT_LO = "NOT_LO",
@@ -11,16 +11,16 @@ enum RuleType {
   TABLE = "table",
 }
 
-type ConditionRule = {
+export type ConditionRule = {
   type: string;
   task: any;
   rule: {
-    [key in RuleType]: any;
+    [key in RuleType]?: any;
   };
 };
 
 type StepCondition = {
-  rules: ConditionRule;
+  rules: ConditionRule[];
   logical_opertaor: LogicalOperator;
 };
 

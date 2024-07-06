@@ -21,7 +21,7 @@ const CustomEdge = ({
   markerEndId,
   source,
 }) => {
-  const { conditions } = useEdgeConditions(id);
+  const { rules } = useEdgeConditions(id);
   const { toggle, addAdditionalData, additionalData } =
     usePermanentDrawerState();
 
@@ -64,7 +64,7 @@ const CustomEdge = ({
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
         <div className={`flex items-center justify-center w-full h-full`}>
-          {conditions.length > 0 && (
+          {rules?.length > 0 && (
             <CustomButton
               className={`${
                 additionalData.id === id ? "shadow-md shadow-violet-500 " : ""

@@ -45,7 +45,7 @@ function AddButtonOptions({ stepId }) {
     const parentId = stepId;
 
     const id = generateUUIDWithoutHyphens();
-    dispatch(addStep({ parentId, id }));
+    dispatch(addStep({ parentId, id, addCondition: true }));
     addAdditionalData({
       source,
       id: `edge-${parentId}-${id}`,

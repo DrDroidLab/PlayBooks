@@ -9,6 +9,7 @@ import { RootState } from "../../index.ts";
 import { Task } from "../../../types/task.ts";
 import setNestedValue from "../../../utils/setNestedValue.ts";
 import { v4 as uuidv4 } from "uuid";
+import { LogicalOperator } from "../../../types/stepRelations.ts";
 
 const firstStepId = generateUUIDWithoutHyphens();
 const firstStep: Step = {
@@ -207,7 +208,7 @@ const playbookSlice = createSlice({
       state.currentVisibleTask = taskId;
     },
     addStep: (state, { payload }) => {
-      const { parentId, id } = payload;
+      const { parentId, id, addCondition } = payload;
       const stepId = id ?? generateUUIDWithoutHyphens();
       const newStep: Step = {
         ...emptyStep,
@@ -231,6 +232,12 @@ const playbookSlice = createSlice({
         id: `edge-${parentId}-${stepId}`,
         parent: parentStep!,
         child: newStep,
+        condition: addCondition
+          ? {
+              logical_opertaor: LogicalOperator.OR_LO,
+              rules: [],
+            }
+          : undefined,
       });
     },
     // addParentId: (state, { payload }) => {
@@ -442,6 +449,18 @@ const playbookSlice = createSlice({
     popFromExecutionStack(state) {
       if (state.executionStack.length > 0) state.executionStack.pop();
     },
+    addRule: (state, { payload }) => {
+      const { id } = payload;
+      const relation = state.currentPlaybook?.step_relations.find(
+        (e) => e.id === id,
+      );
+      if (!relation) return;
+      relation.condition?.rules.push({
+        type: "",
+        task: "",
+        rule: {},
+      });
+    },
   },
 });
 
@@ -479,6 +498,7 @@ export const {
   updateStep,
   setCurrentVisibleStep,
   addStep,
+  addRule,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

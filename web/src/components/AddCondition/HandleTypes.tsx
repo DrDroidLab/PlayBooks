@@ -32,6 +32,7 @@ function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
             valueOptions={[]}
             placeHolder={"Enter window size"}
             length={200}
+            error={undefined}
           />
         </div>
       );
@@ -50,6 +51,7 @@ function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
               valueOptions={[]}
               placeHolder={"Enter column name"}
               length={200}
+              error={undefined}
             />
             <Checkbox
               id="isNumeric"

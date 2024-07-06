@@ -1,32 +1,27 @@
 import usePlaybookKey from "./usePlaybookKey.ts";
 import { addConditionToEdgeByIndex } from "../utils/conditionals/addConditionToEdgeByIndex.ts";
 import { ruleOptions } from "../utils/conditionals/ruleOptions.ts";
-import { useSelector } from "react-redux";
-import { currentPlaybookSelector } from "../store/features/playbook/playbookSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addRule,
+  currentPlaybookSelector,
+} from "../store/features/playbook/playbookSlice.ts";
 
 function useEdgeConditions(id: string) {
   const [playbookEdges, setPlaybookEdges] = usePlaybookKey("playbookEdges");
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const relations = currentPlaybook?.step_relations ?? [];
-  console.log("relations", relations);
+  const relation = relations.find((r) => r.id === id);
   const edgeIndex = playbookEdges?.findIndex((e) => e.id === id);
   const edge = playbookEdges?.length > 0 ? playbookEdges[edgeIndex] : undefined;
   const conditions = edge?.conditions ?? [];
+  const condition = relation?.condition;
+  const rules = condition?.rules ?? [];
   const globalRule = edge?.globalRule ?? ruleOptions[0].id;
+  const dispatch = useDispatch();
 
-  const addNewCondition = () => {
-    const newCondition = {
-      function: "",
-      operation: "",
-      value: "",
-      task: "",
-    };
-    const temp = structuredClone(playbookEdges ?? []);
-    const tempEdge = temp[edgeIndex];
-    if (!tempEdge) return;
-    tempEdge.conditions = [...(tempEdge.conditions ?? []), newCondition];
-
-    setPlaybookEdges(temp);
+  const addNewRule = () => {
+    dispatch(addRule({ id: relation?.id }));
   };
 
   const handleUpdateCondition = (
@@ -52,9 +47,16 @@ function useEdgeConditions(id: string) {
     conditionIndex: number,
   ) => {
     if (conditions.length === 0) {
-      addNewCondition();
     } else {
       handleUpdateCondition(key, value, conditionIndex);
+    }
+  };
+
+  const handleRule = (key: string, value: string, ruleIndex: number) => {
+    if (rules.length === 0) {
+      addNewRule();
+    } else {
+      handleUpdateCondition(key, value, ruleIndex);
     }
   };
 
@@ -71,8 +73,11 @@ function useEdgeConditions(id: string) {
     edgeIndex,
     conditions,
     globalRule,
+    condition,
+    rules,
     handleCondition,
-    addNewCondition,
+    handleRule,
+    addNewRule,
     deleteCondition,
     handleGlobalRule,
   };

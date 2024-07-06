@@ -14,10 +14,11 @@ export const getEdges = () => {
     source: isStep(relation.parent)
       ? `node-${relation.parent?.id}`
       : relation.parent,
-    target: `node-${relation.child.id}`,
+    target: `node-${(relation.child as Step).id}`,
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
+    type: "custom",
   }));
 
   return stepEdges;
