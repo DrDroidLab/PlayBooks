@@ -16,7 +16,7 @@ function HandleOutput({ id, showHeading = true }) {
       {showOutput && (
         <>
           {showHeading && (
-            <p className={"text-sm mt-2 text-violet-500"}>
+            <p className={"text-sm my-2 text-violet-500"}>
               <b>Output</b>
             </p>
           )}
@@ -24,7 +24,7 @@ function HandleOutput({ id, showHeading = true }) {
           <div
             className={`${
               !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
-            } h-full bg-gray-50 p-1 flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
+            } h-full bg-gray-50  flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
             <div className="w-full">
               <TaskOutput showHeading={showHeading} id={task.id} />
             </div>
