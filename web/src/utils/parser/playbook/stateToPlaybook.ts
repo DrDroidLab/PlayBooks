@@ -2,6 +2,7 @@ import { store } from "../../../store/index.ts";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import removeKeyFromObject from "../../removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
+import checkId from "../../checkId.ts";
 
 function stateToPlaybook() {
   const currentPlaybook = currentPlaybookSelector(store.getState());
@@ -16,18 +17,19 @@ function stateToPlaybook() {
 
   playbook.steps = playbook.steps.map((step: Step) => ({
     ...step,
-    id: "0",
+    id: checkId(step.id),
     tasks: step.tasks.map((taskId: Task | string) => ({
       ...tasks.find(
         (task) => task.id === (typeof taskId === "string" ? taskId : task.id),
       ),
-      id: "0",
-      interpreter_type: undefined,
+      id: checkId(
+        (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
+      ),
     })),
   }));
 
   playbook.step_relations = playbook.step_relations.map((relation) => ({
-    id: "0",
+    id: checkId(relation.id),
     parent: {
       reference_id:
         typeof relation.parent !== "string"

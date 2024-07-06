@@ -3,6 +3,7 @@ import { updateCardById } from "./updateCardById.ts";
 import { popFromExecutionStack } from "../../store/features/playbook/playbookSlice.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { executionTaskExecute } from "../../store/features/playbook/api/executions/executionTaskExecuteApi.ts";
+import checkId from "../checkId.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
@@ -22,7 +23,11 @@ export async function executeTask(id?: string) {
   try {
     const res = await store
       .dispatch(
-        executionTaskExecute.initiate({ ...task, ui_requirement: undefined }),
+        executionTaskExecute.initiate({
+          ...task,
+          id: checkId(task.id!),
+          ui_requirement: undefined,
+        }),
       )
       .unwrap();
     const output = res?.playbook_task_execution_log;

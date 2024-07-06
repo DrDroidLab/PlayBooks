@@ -159,7 +159,7 @@ const playbookSlice = createSlice({
         id: taskId,
         reference_id: uuidv4(),
         source: payload.source,
-        interpreter_type: "",
+        interpreter_type: "BASIC_I",
         task_connector_sources: [],
         ui_requirement: {
           isOpen: true,
