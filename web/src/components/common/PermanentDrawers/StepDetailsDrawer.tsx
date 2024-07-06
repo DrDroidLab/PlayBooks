@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import React from "react";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import updateStepById from "../../../utils/playbook/step/updateStepById.ts";
+import Step from "../../Playbooks/steps/Step.tsx";
 
 function StepDetailsDrawer() {
   const [step, currentStepId] = useCurrentStep();
@@ -35,6 +36,8 @@ function StepDetailsDrawer() {
           />
         </div>
       </div>
+
+      {currentStepId && <Step id={currentStepId} />}
     </div>
   );
 }

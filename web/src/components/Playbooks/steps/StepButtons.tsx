@@ -1,60 +1,16 @@
 import React from "react";
-import CustomButton from "../../common/CustomButton/index.tsx";
-import { Add, Delete } from "@mui/icons-material";
-import { Step } from "../../../types/index.ts";
-import { useDispatch } from "react-redux";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
-import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
-
-const addDataId = DrawerTypes.ADD_DATA;
+import AddTaskButton from "../../Buttons/AddTaskButton/index.tsx";
+import DeleteStepButton from "../../Buttons/DeleteStepButton/index.tsx";
 
 type StepButtonsProps = {
-  step: Step;
+  id: string;
 };
 
-function StepButtons({ step }: StepButtonsProps) {
-  const dispatch = useDispatch();
-  const { toggle: toggleAddData, addAdditionalData } =
-    useDrawerState(addDataId);
-  const { closeDrawer } = usePermanentDrawerState();
-
-  const handleNoAction = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleAddTask = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    handleNoAction(e);
-    toggleAddData();
-    addAdditionalData({ stepId: step?.id });
-  };
-
-  const handleDeleteStep = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    handleNoAction(e);
-    dispatch(deleteStep(step.id));
-    closeDrawer();
-  };
-
+function StepButtons({ id }: StepButtonsProps) {
   return (
     <div className="flex justify-between mt-2">
-      <CustomButton onClick={handleAddTask}>
-        <Add fontSize="small" />
-        <p>Add Task</p>
-      </CustomButton>
-
-      {step.ui_requirement.stepIndex !== 0 && (
-        <CustomButton onClick={handleDeleteStep}>
-          <Delete />
-        </CustomButton>
-      )}
+      <AddTaskButton id={id} />
+      <DeleteStepButton id={id} />
     </div>
   );
 }

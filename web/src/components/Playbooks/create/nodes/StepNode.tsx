@@ -58,7 +58,7 @@ function StepNode({ data }) {
           return <TaskNode key={stepTask?.id ?? stepTask} taskId={task?.id} />;
         })}
       </div>
-      <StepButtons step={step} />
+      <StepButtons id={step.id} />
 
       <Handle
         type="target"

@@ -70,44 +70,11 @@ const playbookSlice = createSlice({
         state.playbooks = [...payload];
       }
     },
-    setCurrentPlaybook(state, { payload }) {
-      state.currentPlaybook = payload;
-    },
     setPlaybookData(state, { payload }) {
       state.currentPlaybook = payload;
     },
     setPlaybookDataBeta(state, { payload }) {
-      const tasks: Task[] = [];
-
-      state.currentPlaybook = { ...payload, ui_requirement: { tasks: [] } };
-
-      payload?.steps.forEach((step) => {
-        const stepTasks: any[] = (step.tasks as Task[]).map((e) => ({
-          ...e,
-          ui_requirement: {
-            stepId: step.id,
-          },
-        }));
-        tasks.push(...stepTasks);
-      });
-
-      state.currentPlaybook = { ...payload, ui_requirement: { tasks } };
-
-      const relations = structuredClone(
-        state.currentPlaybook?.step_relations ?? [],
-      );
-
-      relations.forEach((relation) => {
-        const sourceId =
-          typeof relation.parent !== "string"
-            ? (relation.parent as Step).id
-            : "";
-        const targetId = (relation.child as Step).id;
-        relation.id = `edge-${sourceId}-${targetId}`;
-      });
-
-      if (state.currentPlaybook)
-        state.currentPlaybook.step_relations = relations;
+      state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
       const useState = payload.useState;
@@ -417,12 +384,12 @@ const playbookSlice = createSlice({
     toggleExternalLinkVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
+        const step = state.currentPlaybook?.steps?.find(
           (step) => step.id === id,
         );
-        if (task)
-          task.ui_requirement.showExternalLinks =
-            !task.ui_requirement.showExternalLinks;
+        if (step)
+          step.ui_requirement.showExternalLinks =
+            !step.ui_requirement.showExternalLinks;
       }
     },
     toggleNotesVisibility(state, { payload }) {
@@ -504,7 +471,6 @@ const playbookSlice = createSlice({
 export const {
   setPlaybooks,
   setPlaybookData,
-  setCurrentPlaybook,
   setPlaybookDataBeta,
   copyPlaybook,
   createTaskWithSource,

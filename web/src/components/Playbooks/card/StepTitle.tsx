@@ -21,7 +21,7 @@ function StepTitle({ stepId, handleClick }) {
           {step.description}
         </p>
       </div>
-      <StepButtons stepId={step.id} handleClick={handleClick} />
+      <StepButtons id={id} handleClick={handleClick} />
     </div>
   );
 }
