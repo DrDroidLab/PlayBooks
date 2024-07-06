@@ -12,13 +12,6 @@ function handleTaskState(taskId: string, log?: any) {
     };
   }
 
-  if (!task.ui_requirement.showError) {
-    return {
-      state: StepStates.DEFAULT,
-      errorMessage: undefined,
-    };
-  }
-
   const isLoading = task.ui_requirement.outputLoading;
   const hasError =
     !isLoading &&
