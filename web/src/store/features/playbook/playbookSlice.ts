@@ -206,6 +206,33 @@ const playbookSlice = createSlice({
 
       state.currentVisibleTask = taskId;
     },
+    addStep: (state, { payload }) => {
+      const { parentId, id } = payload;
+      const stepId = id ?? generateUUIDWithoutHyphens();
+      const newStep: Step = {
+        ...emptyStep,
+        id: stepId,
+        reference_id: uuidv4(),
+        description: `Step-${stepId}`,
+        tasks: [],
+      };
+      state.currentPlaybook?.steps.push(newStep);
+      const parentStep = state.currentPlaybook?.steps.find(
+        (step) => step.id === parentId,
+      );
+      if (
+        state.currentPlaybook &&
+        (!state.currentPlaybook?.step_relations ||
+          state.currentPlaybook?.step_relations?.length === 0)
+      ) {
+        state.currentPlaybook.step_relations = [];
+      }
+      state.currentPlaybook?.step_relations?.push({
+        id: `edge-${parentId}-${stepId}`,
+        parent: parentStep!,
+        child: newStep,
+      });
+    },
     // addParentId: (state, { payload }) => {
     //   const { id, parentId } = payload;
     //   const parentExists = parentId !== undefined && parentId !== null;
@@ -217,54 +244,6 @@ const playbookSlice = createSlice({
     //     target: `node-${id}`,
     //     type: "custom",
     //   });
-    // },
-    // addStep: (state, { payload }) => {
-    //   const { parentId, addConditions, id } = payload;
-    //   state.steps.forEach((step) => {
-    //     step.isOpen = false;
-    //   });
-    //   const index = state.steps.length;
-    //   const currentStep = {
-    //     ...emptyStep,
-    //     id: id ?? generateUUIDWithoutHyphens(),
-    //     description: `Step-${index + 1}`,
-    //     stepIndex: index,
-    //     globalVariables: state.globalVariables ?? [],
-    //     position: {
-    //       x: 0,
-    //       y: 0,
-    //     },
-    //   };
-    //   state.steps.push(currentStep);
-    //   if (parentId !== undefined) {
-    //     state.playbookEdges.push({
-    //       id: `edge-${parentId}-${currentStep.id}`,
-    //       source: `node-${parentId}`,
-    //       target: `node-${currentStep.id}`,
-    //       type: "custom",
-    //       conditions: addConditions
-    //         ? [
-    //             {
-    //               function: "",
-    //               operation: "",
-    //               value: "",
-    //             },
-    //           ]
-    //         : [],
-    //       globalRule: addConditions ? ruleOptions[0].id : undefined,
-    //     });
-    //   } else {
-    //     state.playbookEdges.push({
-    //       id: `edge-${currentStep.id}`,
-    //       source: `playbook`,
-    //       target: `node-${currentStep.id}`,
-    //     });
-    //   }
-
-    //   state.currentStepId = currentStep.id.toString();
-    //   state.permanentView = addConditions
-    //     ? PermanentDrawerTypes.STEP_DETAILS
-    //     : PermanentDrawerTypes.CONDITION;
     // },
     deleteStep: (state, { payload }) => {
       const id = payload;
@@ -424,15 +403,6 @@ const playbookSlice = createSlice({
     },
     resetExecutions(state) {
       state.executionId = undefined;
-      // state.steps = state.steps.map((step) => ({
-      //   ...step,
-      //   showOutput: false,
-      //   outputError: "",
-      //   showError: false,
-      //   outputLoading: false,
-      //   outputs: [],
-      //   relationLogs: [],
-      // }));
     },
     setSteps(state, { payload }) {
       state.currentPlaybook!.steps = payload;
@@ -508,6 +478,7 @@ export const {
   updateTaskType,
   updateStep,
   setCurrentVisibleStep,
+  addStep,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

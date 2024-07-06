@@ -9,7 +9,10 @@ import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
-import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
+import {
+  ResultTypeType,
+  ResultTypeTypes,
+} from "../../utils/conditionals/resultTypeOptions.ts";
 import { extractSource } from "../../utils/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
 
@@ -25,9 +28,12 @@ function AddCondition() {
     handleGlobalRule,
   } = useEdgeConditions(id);
   const sourceId = extractSource(source);
+  console.log("source", sourceId, source);
   const [parentStep] = useCurrentStep(sourceId);
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
+
+  console.log("ResultTypeTypes.OTHERS", taskTypeOptions);
 
   useEffect(() => {
     if (conditions?.length === 0) {
@@ -42,8 +48,7 @@ function AddCondition() {
       </h1>
       <hr />
 
-      {(Object.keys(parentStep?.errors ?? {}).length > 0 ||
-        taskTypeOptions.length === 0) && (
+      {taskTypeOptions.length === 0 && (
         <div className="bg-red-50 p-2 flex items-center gap-1 my-1 rounded flex-wrap">
           <ErrorOutlineRounded
             color="error"
@@ -76,7 +81,10 @@ function AddCondition() {
           <div className="flex flex-col gap-2 flex-wrap">
             <div className="flex flex-wrap gap-2">
               <HandleResultTypeForm
-                resultType={parentStep.resultType as ResultTypeType}
+                resultType={
+                  (parentStep?.ui_requirement.resultType ??
+                    ResultTypeTypes.OTHERS) as ResultTypeType
+                }
                 condition={condition}
                 conditionIndex={i}
               />
