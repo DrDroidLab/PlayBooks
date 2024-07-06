@@ -191,7 +191,14 @@ const playbookSlice = createSlice({
         (step) => step.id === parent,
       );
 
-      state.currentPlaybook?.step_relations.push({
+      if (
+        state.currentPlaybook &&
+        (!state.currentPlaybook?.step_relations ||
+          state.currentPlaybook?.step_relations?.length === 0)
+      ) {
+        state.currentPlaybook.step_relations = [];
+      }
+      state.currentPlaybook?.step_relations?.push({
         id: `edge-${parent}-${stepId}`,
         parent: parentStep!,
         child: newStep,
