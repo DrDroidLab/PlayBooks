@@ -1,32 +1,53 @@
 import React from "react";
 import { Step } from "../../../../types/index.ts";
 import TaskNode from "./TaskNode.tsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
   playbookSelector,
+  setCurrentVisibleStep,
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import { Handle, NodeToolbar, Position } from "reactflow";
 import AddButtonOptions from "../../card/AddButtonOptions.tsx";
-// import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import StepTitle from "../../steps/StepTitle.tsx";
 import StepButtons from "../../steps/StepButtons.tsx";
 import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
+import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
+import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
+
+const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
-  const { executionId } = useSelector(playbookSelector);
+  const { executionId, currentVisibleStep } = useSelector(playbookSelector);
   const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
+  const dispatch = useDispatch();
   // const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
+  const { toggle, openDrawer, permanentView, addAdditionalData } =
+    usePermanentDrawerState();
+
+  const showStepDetails = () => {
+    if (
+      permanentView === stepDetailsId &&
+      currentVisibleStep === stepDetailsId
+    ) {
+      toggle(stepDetailsId);
+      return;
+    }
+    addAdditionalData({});
+    dispatch(setCurrentVisibleStep(step.id));
+    openDrawer(stepDetailsId);
+  };
 
   return (
     <div
       ref={stepRef}
+      onClick={showStepDetails}
       className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">

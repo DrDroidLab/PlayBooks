@@ -25,6 +25,7 @@ export type PlaybookUIState = {
   isCopied: boolean;
   isEditing: boolean;
   currentVisibleTask?: string;
+  currentVisibleStep?: string;
   permanentView?: string;
   shouldScroll?: boolean;
   executionId?: string;

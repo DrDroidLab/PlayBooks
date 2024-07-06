@@ -20,12 +20,25 @@ function StepButtons({ step }: StepButtonsProps) {
     useDrawerState(addDataId);
   const { closeDrawer } = usePermanentDrawerState();
 
-  const handleAddTask = () => {
+  const handleNoAction = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleAddTask = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    handleNoAction(e);
     toggleAddData();
     addAdditionalData({ stepId: step?.id });
   };
 
-  const handleDeleteStep = () => {
+  const handleDeleteStep = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    handleNoAction(e);
     dispatch(deleteStep(step.id));
     closeDrawer();
   };

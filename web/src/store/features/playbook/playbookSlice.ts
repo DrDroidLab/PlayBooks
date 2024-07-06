@@ -152,7 +152,12 @@ const playbookSlice = createSlice({
       state.meta = payload;
     },
     setCurrentVisibleTask(state, { payload }) {
+      state.currentVisibleStep = undefined;
       state.currentVisibleTask = payload;
+    },
+    setCurrentVisibleStep(state, { payload }) {
+      state.currentVisibleTask = undefined;
+      state.currentVisibleStep = payload;
     },
     showTaskConfig(state, { payload }) {
       state.currentVisibleTask = payload.toString();
@@ -529,6 +534,7 @@ export const {
   updateSource,
   updateTaskType,
   updateStep,
+  setCurrentVisibleStep,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
