@@ -44,6 +44,13 @@ export const Key = {
   GOLDEN_METRIC_NRQL_EXPRESSION: "golden_metric_nrql_expression",
   GOLDEN_METRIC_UNIT: "golden_metric_unit",
   APPLICATION_NAME: "application_name",
+  DASHBOARD_GUID: "dashboard_guid",
+  DASHBOARD_NAME: "dashboard_name",
+  PAGE_GUID: "page_guid",
+  PAGE_NAME: "page_name",
+  WIDGET_ID: "widget_id",
+  WIDGET_TITLE: "widget_title",
+  WIDGET_NRQL_EXPRESSION: "widget_nrql_expression",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
