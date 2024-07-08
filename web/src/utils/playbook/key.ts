@@ -16,6 +16,7 @@ export const Key = {
   REMOTE_SERVER: "remote_server",
   DATABASE: "database",
   QUERY: "query",
+  LOG_GROUP_NAME: "log_group_name",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
