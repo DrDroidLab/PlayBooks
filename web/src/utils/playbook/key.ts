@@ -37,6 +37,7 @@ export const Key = {
   PROMQL_EXPRESSION: "promql_expression",
   START_TIME: "start_time",
   END_TIME: "end_time",
+  IFRAME_URL: "iframe_url",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
