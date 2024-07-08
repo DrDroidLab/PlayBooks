@@ -1,5 +1,5 @@
 function checkId(id: string) {
-  if (isNaN(parseInt(id, 10))) {
+  if (!/^\d+$/.test(id)) {
     return "0";
   } else {
     return id;

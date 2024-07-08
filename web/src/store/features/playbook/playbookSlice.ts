@@ -15,6 +15,7 @@ const firstStepId = generateUUIDWithoutHyphens();
 const firstStep: Step = {
   id: firstStepId,
   description: `Step-${firstStepId}`,
+  reference_id: uuidv4(),
   tasks: [],
   ui_requirement: {
     isOpen: true,
