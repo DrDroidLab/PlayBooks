@@ -135,7 +135,7 @@ const playbookSlice = createSlice({
       if (task) task.ui_requirement.isOpen = true;
     },
     createTaskWithSource(state, { payload }) {
-      const { parentId, stepId: existingStepId } = payload;
+      const { parentId, stepId: existingStepId, resultType } = payload;
       const parent = parentId ?? state.currentPlaybook?.steps[0].id;
       const stepId = existingStepId ?? generateUUIDWithoutHyphens();
       const taskId = generateUUIDWithoutHyphens();
@@ -155,6 +155,7 @@ const playbookSlice = createSlice({
           taskType: payload.taskType,
           stepId: stepId,
           model_type: payload.modelType,
+          resultType,
         },
         [payload.source.toLowerCase() as TaskType]: {
           type: payload.taskType,
@@ -437,6 +438,10 @@ const playbookSlice = createSlice({
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
     },
+    setCurrentPlaybookKey(state, { payload }) {
+      if (state.currentPlaybook)
+        state.currentPlaybook[payload.key] = payload.value;
+    },
     pushToExecutionStack(state, { payload }) {
       const nextPossibleStepLogs = payload;
       nextPossibleStepLogs.forEach((log) => {
@@ -489,6 +494,7 @@ export const {
   toggleNotesVisibility,
   setActionKey,
   setPlaybookKey,
+  setCurrentPlaybookKey,
   resetExecutions,
   pushToExecutionStack,
   popFromExecutionStack,

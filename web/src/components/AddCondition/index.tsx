@@ -15,9 +15,12 @@ import {
 } from "../../utils/conditionals/resultTypeOptions.ts";
 import { extractSource } from "../../utils/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const {
     playbookEdges,
     rules,
@@ -37,6 +40,8 @@ function AddCondition() {
       handleRule("", "", 0);
     }
   }, [rules, handleRule, playbookEdges]);
+
+  const task = tasks?.find((e) => e.id === rules?.[0]?.task);
 
   return (
     <div className="p-2">
@@ -76,10 +81,22 @@ function AddCondition() {
             Condition-{i + 1}
           </p>
           <div className="flex flex-col gap-2 flex-wrap">
+            <div className="flex items-center gap-1">
+              <SelectComponent
+                data={taskTypeOptions.map((task) => ({
+                  id: task?.id,
+                  label: task?.description,
+                }))}
+                selected={condition.task}
+                placeholder={`Select Task`}
+                onSelectionChange={(id: string) => handleRule("task", id, i)}
+              />
+            </div>
             <div className="flex flex-wrap gap-2">
               <HandleResultTypeForm
                 resultType={
-                  (parentStep?.ui_requirement.resultType ??
+                  (tasks?.find((task) => task.id === condition.task)
+                    ?.ui_requirement.resultType ??
                     ResultTypeTypes.OTHERS) as ResultTypeType
                 }
                 condition={condition}

@@ -14,9 +14,9 @@ import { extractSource } from "../../utils/extractData.ts";
 function Table({ condition, conditionIndex }) {
   const { source, id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
-  const sourceId = extractSource(source);
-  const [parentStep] = useCurrentStep(sourceId);
-  const taskTypeOptions = handleTaskTypeOptions(parentStep);
+  // const sourceId = extractSource(source);
+  // const [parentStep] = useCurrentStep(sourceId);
+  // const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -24,14 +24,14 @@ function Table({ condition, conditionIndex }) {
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      {/* <div className="flex items-center gap-1">
         <SelectComponent
           data={taskTypeOptions}
           selected={condition.task}
           placeholder={`Select Task`}
           onSelectionChange={(id: string) => handleChange(id, "task")}
         />
-      </div>
+      </div> */}
 
       <div className="flex items-center gap-1">
         <SelectComponent
@@ -60,6 +60,7 @@ function Table({ condition, conditionIndex }) {
 
       <div className="flex flex-col gap-1">
         <ValueComponent
+          error={undefined}
           valueType={"STRING"}
           onValueChange={(val: string) => handleChange(val, "value")}
           value={condition.value}

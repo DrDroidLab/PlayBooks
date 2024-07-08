@@ -24,6 +24,7 @@ type TaskUIRequirement = {
   showError?: boolean;
   showNotes?: boolean;
   showExternalLinks?: boolean;
+  resultType?: string;
 };
 
 export type Task = {
