@@ -48,7 +48,7 @@ def handle_slack_event_callback(data: Dict):
         slack_connector_proto = sc.unmasked_proto
         c_keys = slack_connector_proto.keys
         for c_key in c_keys:
-            if c_key.key_type == SourceKeyType.SLACK_APP_ID and c_key.value.value == api_app_id:
+            if c_key.key_type == SourceKeyType.SLACK_APP_ID and c_key.key.value == api_app_id:
                 slack_connector = sc
                 break
 
