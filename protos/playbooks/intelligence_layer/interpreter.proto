@@ -23,7 +23,7 @@ message Interpretation {
   }
 
   enum ModelType {
-    UNKNOWN = 0;
+    UNKNOWN_M = 0;
     PLAYBOOK_TASK = 1;
     PLAYBOOK_STEP = 2;
     PLAYBOOK_STEP_RELATION = 3;
