@@ -14,6 +14,8 @@ export const Key = {
   TIMESPAN: "timespan",
   COMMAND: "command",
   REMOTE_SERVER: "remote_server",
+  DATABASE: "database",
+  QUERY: "query",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];

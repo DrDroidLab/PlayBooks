@@ -21,7 +21,7 @@ export const constructBuilder = (id?: string) => {
 
   switch (`${task?.source} ${task?.[task.source?.toLowerCase()].type}`) {
     case taskTypes.CLICKHOUSE_SQL_QUERY:
-      return Builders.clickhouseBuilder(ops?.databases, task);
+      return Builders.clickhouseBuilder(ops?.databases);
     case taskTypes.CLOUDWATCH_LOG_GROUP:
       return Builders.cloudwatchLogGroupBuilder(ops?.regions, task);
     case taskTypes.CLOUDWATCH_METRIC:
