@@ -1,8 +1,5 @@
 import json
 import logging
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
 from protos.base_pb2 import Source, SourceModelType
@@ -15,7 +12,6 @@ class GcmSourceMetadataExtractor(SourceMetadataExtractor):
     def __init__(self, project_id, service_account_json, account_id=None, connector_id=None):
         self.__project_id = project_id
         self.__service_account_json = service_account_json
-        self.__credentials = self.__get_gcm_credentials(service_account_json)
         super().__init__(account_id, connector_id, Source.GCM)
 
     def extract_metric_descriptors(self, save_to_db=False):

@@ -22,6 +22,7 @@ def get_gcm_credentials(service_account_json_str):
 
     return credentials
 
+
 class GcmApiProcessor(Processor):
     def __init__(self, project_id, service_account_json):
         self.__service_account_json = service_account_json
