@@ -110,7 +110,7 @@ export const cloudwatchMetricBuilder = (options, task) => {
           key: "metric_name",
           label: "Metric",
           placeholder: "Add Metric",
-          type: InputTypes.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: getMetrics(task),
         },
       ],

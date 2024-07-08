@@ -5,6 +5,7 @@ export const InputTypes = {
   BUTTON: "BUTTON",
   IFRAME_RENDER: "IFRAME_RENDER",
   TYPING_DROPDOWN: "TYPING_DROPDOWN",
+  TYPING_DROPDOWN_MULTIPLE: "TYPING_DROPDOWN_MULTIPLE",
 } as const;
 
 export type InputType = (typeof InputTypes)[keyof typeof InputTypes];

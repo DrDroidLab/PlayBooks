@@ -5,6 +5,7 @@ import Multiline from "./InputTypes/Multiline.tsx";
 import CustomButton from "../common/CustomButton/index.tsx";
 import IframeRender from "../Playbooks/options/IframeRender.tsx";
 import TypingDropdownInput from "./InputTypes/TypingDropdownInput.tsx";
+import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInput.tsx";
 
 type HandleInputRenderType = {
   type: InputType;
@@ -12,6 +13,7 @@ type HandleInputRenderType = {
   value: string;
   handleChange?: (val: string) => void;
   handleClick?: React.MouseEventHandler<HTMLButtonElement>;
+  handleAddClick?: () => void;
   error?: string;
   disabled?: boolean;
   helpText?: string;
@@ -44,6 +46,16 @@ function HandleInputRender({ type, ...props }: HandleInputRenderType) {
           {...props}
           handleChange={props.handleChange!}
           options={props.options ?? []}
+        />
+      );
+
+    case InputTypes.TYPING_DROPDOWN_MULTIPLE:
+      return (
+        <TypingDropdownMultipleInput
+          {...props}
+          handleChange={props.handleChange!}
+          options={props.options ?? []}
+          handleAddClick={props.handleAddClick!}
         />
       );
     default:

@@ -4,6 +4,8 @@ import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import HandleInputRender from "../../Inputs/HandleInputRender.tsx";
 import handleChangeInput from "./utils/handleChange.ts";
+import { useDispatch } from "react-redux";
+import { duplicateTask } from "../../../store/features/playbook/playbookSlice.ts";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
@@ -12,6 +14,11 @@ export default function OptionRender({ data, removeErrors, id }) {
   const key = `${source.toLowerCase()}.${taskType.toLowerCase()}.${data.key}`;
   const value = getNestedValue(task, key, undefined);
   const taskData = task?.[source?.toLowerCase()]?.[taskType?.toLowerCase()];
+  const dispatch = useDispatch();
+
+  const handleAddClick = () => {
+    dispatch(duplicateTask({ id }));
+  };
 
   useEffect(() => {
     if (data.default) {
@@ -46,6 +53,7 @@ export default function OptionRender({ data, removeErrors, id }) {
         data.handleChange,
         data.handleKeyChange,
       )}
+      handleAddClick={handleAddClick}
       value={value}
     />
   );

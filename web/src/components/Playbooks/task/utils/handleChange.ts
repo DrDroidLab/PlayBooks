@@ -31,6 +31,18 @@ function handleChangeInput(
     removeErrors(key);
   };
 
+  const handleTypingDropdownMultipleChange = (value, option) => {
+    if (handleChange && option) {
+      handleChange(value, option);
+    } else if (handleKeyChange) {
+      handleKeyChange(value);
+    } else {
+      updateCardById(key, value, currentTaskId);
+    }
+
+    removeErrors(key);
+  };
+
   switch (type) {
     case InputTypes.TEXT:
     case InputTypes.TEXT_ROW:
@@ -38,6 +50,8 @@ function handleChangeInput(
       return handleChangeFunction;
     case InputTypes.TYPING_DROPDOWN:
       return handleTypingDropdownChange;
+    case InputTypes.TYPING_DROPDOWN_MULTIPLE:
+      return handleTypingDropdownMultipleChange;
     default:
       return () => null;
   }
