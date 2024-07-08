@@ -9,6 +9,9 @@ export const Key = {
   DIMENSION_NAME: "dimensions.0.name",
   DIMENSION_VALUE: "dimensions.0.value",
   METRIC_NAME: "metric_name",
+  WORKSPACE_ID: "workspace_id",
+  FILTER_QUERY: "filter_query",
+  TIMESPAN: "timespan",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];

@@ -37,7 +37,7 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
       return Builders.newRelicNRQLBuilder(task, currentStepId);
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
-      return Builders.azureLogsBuilder(ops?.workspaces, task, currentStepId!);
+      return Builders.azureLogsBuilder(ops?.workspaces, task);
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
       return Builders.newRelicEntityApplicationBuilder(
         ops?.application_names,
