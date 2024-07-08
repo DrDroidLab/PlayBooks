@@ -6,6 +6,7 @@ import CustomButton from "../common/CustomButton/index.tsx";
 import IframeRender from "../Playbooks/options/IframeRender.tsx";
 import TypingDropdownInput from "./InputTypes/TypingDropdownInput.tsx";
 import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInput.tsx";
+import DropdownInput from "./InputTypes/DropdownInput.tsx";
 
 type HandleInputRenderType = {
   type: InputType;
@@ -39,6 +40,15 @@ function HandleInputRender({ type, ...props }: HandleInputRenderType) {
 
     case InputTypes.IFRAME_RENDER:
       return <IframeRender url={props.value} />;
+
+    case InputTypes.DROPDOWN:
+      return (
+        <DropdownInput
+          {...props}
+          handleChange={props.handleChange!}
+          options={props.options ?? []}
+        />
+      );
 
     case InputTypes.TYPING_DROPDOWN:
       return (

@@ -22,7 +22,7 @@ const SelectComponent = ({
   disabled = false,
   searchable = false,
   containerClassName = {},
-  error = null,
+  error,
 }) => {
   const selectRef = useRef(null);
   const [searchVal, setSearchVal] = useState("");
