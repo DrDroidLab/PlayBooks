@@ -51,6 +51,8 @@ export const Key = {
   WIDGET_ID: "widget_id",
   WIDGET_TITLE: "widget_title",
   WIDGET_NRQL_EXPRESSION: "widget_nrql_expression",
+  UNIT: "unit",
+  NRQL_EXPRESSION: "nrql_expression",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
