@@ -12,6 +12,8 @@ export const Key = {
   WORKSPACE_ID: "workspace_id",
   FILTER_QUERY: "filter_query",
   TIMESPAN: "timespan",
+  COMMAND: "command",
+  REMOTE_SERVER: "remote_server",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
