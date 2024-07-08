@@ -1,38 +1,47 @@
 import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
+import { Task } from "../../types/index.ts";
+import { Key } from "../playbook/key.ts";
 
-const getCurrentAsset = (index) => {
-  const [task] = getCurrentTask(index);
-  const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
+const getTaskData = (task: Task) => {
+  const source = task.source;
+  const taskType = task[source?.toLowerCase()]?.type;
+
+  return task[source?.toLowerCase()][taskType?.toLowerCase()];
+};
+
+const getCurrentAsset = (task: Task) => {
+  const currentAsset = task?.ui_requirement.assets?.find(
+    (e) => e.region === getTaskData(task)?.eksRegion,
+  );
 
   return currentAsset;
 };
 
-export const gkeBuilder = (options: any, task, index) => {
+export const gkeBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
         {
-          key: "zone",
+          key: Key.ZONE,
           label: "Zone",
           type: OptionType.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x.zone, label: x.zone })) ?? [],
         },
         {
-          key: "cluster",
+          key: Key.CLUSTER,
           label: "Cluster",
           type: OptionType.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.zone === task.zone)
+            ?.find((e) => e.zone === getTaskData(task)?.zone)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
         },
         {
-          key: "namespace",
+          key: Key.NAMESPACE,
           label: "Namespace",
           type: OptionType.TYPING_DROPDOWN,
           options:
-            getCurrentAsset(index)?.clusters?.length > 0
-              ? getCurrentAsset(index)?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset(task)?.clusters?.length > 0
+              ? getCurrentAsset(task)?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],

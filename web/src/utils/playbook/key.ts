@@ -32,6 +32,7 @@ export const Key = {
   OFFSET: "offset",
   SORT_DESC: "sort_desc",
   TIMESTAMP_FIELD: "timestamp_field",
+  ZONE: "zone",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
