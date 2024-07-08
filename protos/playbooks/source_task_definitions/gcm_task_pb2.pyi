@@ -3,7 +3,9 @@
 isort:skip_file
 """
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
@@ -28,62 +30,104 @@ class Gcm(google.protobuf.message.Message):
     class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Gcm._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: Gcm._TaskType.ValueType  # 0
-        GET_METRICS: Gcm._TaskType.ValueType  # 1
-        GET_LOGS: Gcm._TaskType.ValueType  # 2
+        METRIC_EXECUTION: Gcm._TaskType.ValueType  # 1
+        FILTER_LOG_ENTRIES: Gcm._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: Gcm.TaskType.ValueType  # 0
-    GET_METRICS: Gcm.TaskType.ValueType  # 1
-    GET_LOGS: Gcm.TaskType.ValueType  # 2
+    METRIC_EXECUTION: Gcm.TaskType.ValueType  # 1
+    FILTER_LOG_ENTRIES: Gcm.TaskType.ValueType  # 2
 
     @typing_extensions.final
-    class Command(google.protobuf.message.Message):
+    class MetricExecution(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        DESCRIPTION_FIELD_NUMBER: builtins.int
-        METRICTYPE_FIELD_NUMBER: builtins.int
-        STARTTIME_FIELD_NUMBER: builtins.int
-        ENDTIME_FIELD_NUMBER: builtins.int
-        FILTER_FIELD_NUMBER: builtins.int
+        @typing_extensions.final
+        class Label(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            KEY_FIELD_NUMBER: builtins.int
+            VALUE_FIELD_NUMBER: builtins.int
+            @property
+            def key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            @property
+            def value(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+            def __init__(
+                self,
+                *,
+                key: google.protobuf.wrappers_pb2.StringValue | None = ...,
+                value: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            ) -> None: ...
+            def HasField(self, field_name: typing_extensions.Literal["key", b"key", "value", b"value"]) -> builtins.bool: ...
+            def ClearField(self, field_name: typing_extensions.Literal["key", b"key", "value", b"value"]) -> None: ...
+
+        PROJECT_ID_FIELD_NUMBER: builtins.int
+        METRIC_TYPE_FIELD_NUMBER: builtins.int
+        LABELS_FIELD_NUMBER: builtins.int
+        AGGREGATION_FIELD_NUMBER: builtins.int
+        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
         @property
-        def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def metricType(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def metric_type(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def startTime(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def labels(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Gcm.MetricExecution.Label]: ...
         @property
-        def endTime(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def aggregation(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def filter(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
-            description: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            metricType: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            startTime: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            endTime: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            filter: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            metric_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            labels: collections.abc.Iterable[global___Gcm.MetricExecution.Label] | None = ...,
+            aggregation: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["description", b"description", "endTime", b"endTime", "filter", b"filter", "metricType", b"metricType", "startTime", b"startTime"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "endTime", b"endTime", "filter", b"filter", "metricType", b"metricType", "startTime", b"startTime"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["aggregation", b"aggregation", "metric_type", b"metric_type", "process_function", b"process_function", "project_id", b"project_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["aggregation", b"aggregation", "labels", b"labels", "metric_type", b"metric_type", "process_function", b"process_function", "project_id", b"project_id"]) -> None: ...
+
+    @typing_extensions.final
+    class FilterLogEntries(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PROJECT_ID_FIELD_NUMBER: builtins.int
+        LOG_NAME_FIELD_NUMBER: builtins.int
+        FILTER_QUERY_FIELD_NUMBER: builtins.int
+        @property
+        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def log_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            log_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "project_id", b"project_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "project_id", b"project_id"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
-    GET_METRICS_FIELD_NUMBER: builtins.int
-    GET_LOGS_FIELD_NUMBER: builtins.int
+    METRIC_EXECUTION_FIELD_NUMBER: builtins.int
+    FILTER_LOG_ENTRIES_FIELD_NUMBER: builtins.int
     type: global___Gcm.TaskType.ValueType
     @property
-    def get_metrics(self) -> global___Gcm.Command: ...
+    def metric_execution(self) -> global___Gcm.MetricExecution: ...
     @property
-    def get_logs(self) -> global___Gcm.Command: ...
+    def filter_log_entries(self) -> global___Gcm.FilterLogEntries: ...
     def __init__(
         self,
         *,
         type: global___Gcm.TaskType.ValueType = ...,
-        get_metrics: global___Gcm.Command | None = ...,
-        get_logs: global___Gcm.Command | None = ...,
+        metric_execution: global___Gcm.MetricExecution | None = ...,
+        filter_log_entries: global___Gcm.FilterLogEntries | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["get_logs", b"get_logs", "get_metrics", b"get_metrics", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["get_logs", b"get_logs", "get_metrics", b"get_metrics", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["get_metrics", "get_logs"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "metric_execution", b"metric_execution", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "metric_execution", b"metric_execution", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["metric_execution", "filter_log_entries"] | None: ...
 
 global___Gcm = Gcm
