@@ -28,9 +28,6 @@ export const constructBuilder = (id?: string) => {
       return Builders.cloudwatchMetricBuilder(ops?.namespaces, task);
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       return Builders.datadogBuilder(ops?.services, task, currentStepId!);
-    // case taskTypes.GRAFANA_VPC_PROMQL_METRIC_EXECUTION:
-    // case taskTypes.GRAFANA_PROMQL_METRIC_EXECUTION:
-    //   return Builders.grafanaBuilder(ops?.dashboards, task);
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
       return Builders.grafanaDataSourceBuilder(
         ops?.prometheus_datasources,
@@ -76,7 +73,7 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
       return Builders.datadogRawQueryBuilder(task, currentStepId!);
     case taskTypes.API_HTTP_REQUEST:
-      return Builders.apiBuilder(task, currentStepId);
+      return Builders.apiBuilder();
     case taskTypes.SQL_DATABASE_CONNECTION_SQL_QUERY:
       return Builders.sqlRawQueryBuilder();
     case taskTypes.GRAFANA_MIMIR_PROMQL_METRIC_EXECUTION:
