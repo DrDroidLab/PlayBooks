@@ -17,6 +17,8 @@ export enum OptionType {
 export const constructBuilder = (id?: string) => {
   const [task, currentStepId] = getCurrentTask(id);
 
+  if (!task) return {};
+
   let ops: any = task?.ui_requirement.modelOptions ?? [];
 
   switch (`${task?.source} ${task?.[task.source?.toLowerCase()].type}`) {
@@ -27,7 +29,7 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.CLOUDWATCH_METRIC:
       return Builders.cloudwatchMetricBuilder(ops?.namespaces, task);
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
-      return Builders.datadogBuilder(ops?.services, task, currentStepId!);
+      return Builders.datadogBuilder(ops?.services, task);
     case taskTypes.GRAFANA_PROMETHEUS_DATASOURCE:
       return Builders.grafanaDataSourceBuilder(
         ops?.prometheus_datasources,
@@ -53,13 +55,13 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.POSTGRES_SQL_QUERY:
       return Builders.postgresBuilder();
     case taskTypes.EKS_GET_DEPLOYMENTS:
-      return Builders.eksBuilder(ops?.regions, task, currentStepId);
+      return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.EKS_GET_EVENTS:
-      return Builders.eksBuilder(ops?.regions, task, currentStepId);
+      return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.EKS_GET_PODS:
-      return Builders.eksBuilder(ops?.regions, task, currentStepId);
+      return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.EKS_GET_SERVICES:
-      return Builders.eksBuilder(ops?.regions, task, currentStepId);
+      return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.GKE_GET_DEPLOYMENTS:
       return Builders.gkeBuilder(ops?.zones, task, currentStepId);
     case taskTypes.GKE_GET_EVENTS:

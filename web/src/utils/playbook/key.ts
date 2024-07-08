@@ -25,6 +25,7 @@ export const Key = {
   QUERY1: "queries.0",
   QUERY2: "queries.1",
   FORMULA: "formula",
+  CLUSTER: "cluster",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
