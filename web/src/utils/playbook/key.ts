@@ -33,6 +33,8 @@ export const Key = {
   SORT_DESC: "sort_desc",
   TIMESTAMP_FIELD: "timestamp_field",
   ZONE: "zone",
+  DATASOURCE_UID: "datasource_uid",
+  PROMQL_EXPRESSION: "promql_expression",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
