@@ -22,6 +22,9 @@ export const Key = {
   METRIC_FAMILY: "metric_family",
   METRIC: "metric",
   PROCESS_FUNCTION: "process_function",
+  QUERY1: "queries.0",
+  QUERY2: "queries.1",
+  FORMULA: "formula",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
