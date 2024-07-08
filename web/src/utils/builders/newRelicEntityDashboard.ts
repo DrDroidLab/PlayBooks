@@ -1,25 +1,19 @@
 import { Task } from "../../types/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { updateCardById } from "../execution/updateCardById.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 import { getTaskData } from "../playbook/getTaskData.ts";
 import { Key } from "../playbook/key.ts";
 
-const getCurrentAsset = (task) => {
-  const currentAsset = task?.assets?.find(
-    (e) => e.dashboard_guid === task?.dashboard?.id,
-  );
-
-  return currentAsset;
-};
-
-export const newRelicEntityDashboardBuilder = (
-  options: any,
-  task: Task,
-  id: string,
-) => {
+export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
   const widgetOptions =
-    getCurrentAsset(task)?.pages?.length > 0
-      ? getCurrentAsset(task)?.pages[0].widgets?.map((e) => {
+    getCurrentAsset(task, Key.DASHBOARD_GUID, "dashboard_guid")?.pages?.length >
+    0
+      ? getCurrentAsset(
+          task,
+          Key.DASHBOARD_GUID,
+          "dashboard_guid",
+        )?.pages[0].widgets?.map((e) => {
           return {
             id: e.widget_id,
             label: e.widget_title || e.widget_nrql_expression,
@@ -75,10 +69,28 @@ export const newRelicEntityDashboardBuilder = (
           helperText: getTaskData(task)?.[Key.PAGE_NAME],
         },
         {
-          key: Key.WIDGET_TITLE,
+          key: Key.WIDGET_NRQL_EXPRESSION,
           label: "Widget",
           type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: widgetOptions,
+          handleChange: (id: string) => {
+            const widget = widgetOptions?.find((op) => op.id === id)?.widget;
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_ID}`,
+              widget.widget_id,
+              task.id,
+            );
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_TITLE}`,
+              widget.widget_title,
+              task.id,
+            );
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_NRQL_EXPRESSION}`,
+              widget.widget_nrql_expression,
+              task.id,
+            );
+          },
         },
       ],
       [
