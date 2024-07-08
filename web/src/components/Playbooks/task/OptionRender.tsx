@@ -17,7 +17,7 @@ export default function OptionRender({ data, removeErrors, id }) {
   const dispatch = useDispatch();
 
   const handleAddClick = () => {
-    dispatch(duplicateTask({ id }));
+    dispatch(duplicateTask({ id, keyToBeRemoved: data.key }));
   };
 
   useEffect(() => {

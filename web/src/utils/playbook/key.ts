@@ -17,6 +17,11 @@ export const Key = {
   DATABASE: "database",
   QUERY: "query",
   LOG_GROUP_NAME: "log_group_name",
+  SERVICE_NAME: "service_name",
+  ENVIRONMENT_NAME: "environment_name",
+  METRIC_FAMILY: "metric_family",
+  METRIC: "metric",
+  PROCESS_FUNCTION: "process_function",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];

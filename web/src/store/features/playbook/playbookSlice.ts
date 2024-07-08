@@ -467,7 +467,7 @@ const playbookSlice = createSlice({
       });
     },
     duplicateTask: (state, { payload }) => {
-      const { id } = payload;
+      const { id, keyToBeRemoved } = payload;
       const playbook = state.currentPlaybook;
       const tasks = playbook?.ui_requirement.tasks ?? [];
       const steps = playbook?.steps ?? [];
@@ -482,7 +482,7 @@ const playbookSlice = createSlice({
       const source = newTask.source;
       const type = newTask[source.toLowerCase()].type;
       const data = newTask[source.toLowerCase()][type.toLowerCase()];
-      data.metric_name = "";
+      if (keyToBeRemoved) data[keyToBeRemoved] = "";
       const stepId = task.ui_requirement.stepId;
       const step = steps.find((step) => step.id === stepId);
       tasks.push(newTask);
