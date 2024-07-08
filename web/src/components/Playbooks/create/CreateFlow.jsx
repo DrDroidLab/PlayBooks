@@ -10,7 +10,6 @@ import "reactflow/dist/style.css";
 import { useDispatch } from "react-redux";
 // import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
 import { useCallback, useEffect } from "react";
-import CustomNode from "./CustomNode.jsx";
 import { useReactFlow } from "reactflow";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
@@ -23,7 +22,6 @@ const fitViewOptions = {
 };
 
 const nodeTypes = {
-  custom: CustomNode,
   step: StepNode,
 };
 

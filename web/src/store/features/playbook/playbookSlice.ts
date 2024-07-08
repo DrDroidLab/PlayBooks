@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
-import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
 import { RootState } from "../../index.ts";
@@ -92,8 +90,8 @@ const playbookSlice = createSlice({
       state.currentPlaybook!.name = "Copy of " + payload.name;
       state.currentPlaybook!.description = payload.description;
       state.isCopied = true;
-      state.currentPlaybook!.steps = playbookToSteps(payload, true) as any;
-      state.currentPlaybook!.step_relations = playbookToEdges(payload, []);
+      // state.currentPlaybook!.steps = playbookToSteps(payload, true) as any;
+      // state.currentPlaybook!.step_relations = playbookToEdges(payload, []);
       state.isEditing = false;
     },
     setErrors(state, { payload }) {

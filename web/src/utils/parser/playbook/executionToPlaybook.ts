@@ -1,5 +1,5 @@
 import { GlobalVariable, Step } from "../../../types.ts";
-import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
+// import { handleStepSourceExtractor } from "./handleStepSourceExtractor.ts";
 
 export const executionToPlaybook = (playbook_execution) => {
   // TODO: Make it better, also extract logs from here
@@ -12,7 +12,8 @@ export const executionToPlaybook = (playbook_execution) => {
     step.tasks = (stepExecutionLog as any)?.task_execution_logs?.map(
       (log) => log.task,
     );
-    let data: any = handleStepSourceExtractor(step);
+    let data: any = {};
+    //  handleStepSourceExtractor(step);
 
     const outputList: any = [];
     for (let outputData of (stepExecutionLog as any)?.task_execution_logs) {

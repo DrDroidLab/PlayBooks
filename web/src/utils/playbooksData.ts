@@ -2,18 +2,6 @@ import { taskTypes } from "../constants/index.ts";
 import * as Builders from "./builders/index.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 
-export enum OptionType {
-  OPTIONS = "options",
-  TEXT = "text",
-  TEXT_ROW = "text-row",
-  MULTILINE = "multiline",
-  BUTTON = "button",
-  MULTI_OPTIONS = "multi-options",
-  MULTI_SELECT = "multi-select",
-  TYPING_DROPDOWN = "typing-dropdown",
-  IFRAME_RENDER = "iframe-render",
-}
-
 export const constructBuilder = (id?: string) => {
   const [task, currentStepId] = getCurrentTask(id);
 
@@ -34,24 +22,18 @@ export const constructBuilder = (id?: string) => {
       return Builders.grafanaDataSourceBuilder(
         ops?.prometheus_datasources,
         task,
-        currentStepId!,
       );
     case taskTypes.NEW_RELIC_NRQL_METRIC_EXECUTION:
-      return Builders.newRelicNRQLBuilder(task, currentStepId);
+      return Builders.newRelicNRQLBuilder();
     case taskTypes.AZURE_FILTER_LOG_EVENTS:
       return Builders.azureLogsBuilder(ops?.workspaces, task);
     case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
       return Builders.newRelicEntityApplicationBuilder(
         ops?.application_names,
         task,
-        currentStepId,
       );
     case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
-      return Builders.newRelicEntityDashboardBuilder(
-        ops?.dashboards,
-        task,
-        currentStepId!,
-      );
+      return Builders.newRelicEntityDashboardBuilder(ops?.dashboards, task);
     case taskTypes.POSTGRES_SQL_QUERY:
       return Builders.postgresBuilder();
     case taskTypes.EKS_GET_DEPLOYMENTS:
@@ -63,13 +45,13 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.EKS_GET_SERVICES:
       return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.GKE_GET_DEPLOYMENTS:
-      return Builders.gkeBuilder(ops?.zones, task, currentStepId);
+      return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_EVENTS:
-      return Builders.gkeBuilder(ops?.zones, task, currentStepId);
+      return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_PODS:
-      return Builders.gkeBuilder(ops?.zones, task, currentStepId);
+      return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_SERVICES:
-      return Builders.gkeBuilder(ops?.zones, task, currentStepId);
+      return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
