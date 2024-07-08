@@ -1,126 +1,85 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import useTimeRange from "../hooks/useTimeRange";
 
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import useTimeRange from '../hooks/useTimeRange';
+import Toast from "../components/Toast";
+import useToggle from "../hooks/useToggle";
 
-import Toast from '../components/Toast';
-import useToggle from '../hooks/useToggle';
+import styles from "./timepicker.module.css";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
-import styles from './timepicker.module.css';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   updateCustomTillNowTimeRange as updateCustomTillNowTimeRangeSlice,
   updateCustomTimeRange as updateCustomTimeRangeSlice,
-  updateTimeRange as updateTimeRangeSlice
-} from '../store/features/timeRange/timeRangeSlice.ts';
+  updateTimeRange as updateTimeRangeSlice,
+} from "../store/features/timeRange/timeRangeSlice.ts";
 
-const renderTimeRangeMenuItems = timeRangeOptions => {
+const renderTimeRangeMenuItems = (timeRangeOptions) => {
   if (timeRangeOptions === undefined) {
     return;
   }
 
-  return Object.keys(timeRangeOptions).map(key => (
+  return Object.keys(timeRangeOptions).map((key) => (
     <MenuItem key={key} value={key}>
       {timeRangeOptions[key].displayLabel}
     </MenuItem>
   ));
 };
 
-const convertEpochToDateTime = epochTime => {
+const convertEpochToDateTime = (epochTime) => {
   let date = new Date(epochTime * 1000);
 
   let year = date.getFullYear();
-  let month = ('0' + (date.getMonth() + 1)).slice(-2);
-  let day = ('0' + date.getDate()).slice(-2);
-  let hours = ('0' + date.getHours()).slice(-2);
-  let minutes = ('0' + date.getMinutes()).slice(-2);
+  let month = ("0" + (date.getMonth() + 1)).slice(-2);
+  let day = ("0" + date.getDate()).slice(-2);
+  let hours = ("0" + date.getHours()).slice(-2);
+  let minutes = ("0" + date.getMinutes()).slice(-2);
 
-  let formattedDateTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+  let formattedDateTime =
+    year + "-" + month + "-" + day + "T" + hours + ":" + minutes;
   return formattedDateTime;
 };
 
-const convertDateTimeToEpoch = dateTime => {
+const convertDateTimeToEpoch = (dateTime) => {
   return Date.parse(dateTime) / 1000;
 };
 
-const TimeRangePicker = ({
-  onTimeRangeChangeCb,
-  defaultTimeRange,
-  defaultCustomTimeRange,
-  defaultCustomTillNowTimeRange,
-  onRefreshButtonDisable
-}) => {
+const TimeRangePicker = () => {
   const {
     timeRange,
     updateTimeRange,
     updateCustomTimeRange,
     updateCustomTillNowTimeRange,
     getTimeRangeOptions,
-    getTimeRange
+    getTimeRange,
   } = useTimeRange();
   const dispatch = useDispatch();
 
   const previousTimeRange = getTimeRange();
   const [timeRangeChanged, setTimeRangeChanged] = useState();
   const [isCustomTimeRangeSelected, setIsCustomTimeRangeSelected] = useState(
-    defaultTimeRange ? false : timeRange === 'Custom'
+    timeRange === "Custom",
   );
-  const [isCustomTillNowTimeRangeSelected, setIsCustomTillNowTimeRangeSelected] = useState(
-    defaultTimeRange ? false : timeRange === 'CustomTillNow'
+  const [
+    isCustomTillNowTimeRangeSelected,
+    setIsCustomTillNowTimeRangeSelected,
+  ] = useState(timeRange === "CustomTillNow");
+  const [startTime, setStartTime] = useState(
+    convertEpochToDateTime(previousTimeRange.time_geq),
   );
-  const [startTime, setStartTime] = useState(convertEpochToDateTime(previousTimeRange.time_geq));
-  const [endTime, setEndTime] = useState(convertEpochToDateTime(previousTimeRange.time_lt));
+  const [endTime, setEndTime] = useState(
+    convertEpochToDateTime(previousTimeRange.time_lt),
+  );
   const { isOpen: IsError, toggle: toggleError } = useToggle();
   const [submitError, setSubmitError] = useState();
 
   if (timeRangeChanged) {
-    if (onTimeRangeChangeCb) {
-      onTimeRangeChangeCb();
-    }
     setTimeRangeChanged(false);
   }
 
-  useEffect(() => {
-    if (defaultTimeRange) {
-      updateTimeRange(defaultTimeRange);
-      dispatch(updateTimeRangeSlice(defaultTimeRange));
-    }
-  }, [defaultTimeRange]);
-
-  useEffect(() => {
-    if (defaultCustomTimeRange?.start && defaultCustomTimeRange?.end) {
-      setIsCustomTimeRangeSelected(true);
-      setStartTime(convertEpochToDateTime(parseInt(defaultCustomTimeRange.start)));
-      setEndTime(convertEpochToDateTime(parseInt(defaultCustomTimeRange.end)));
-      updateCustomTimeRange(
-        parseInt(defaultCustomTimeRange.start),
-        parseInt(defaultCustomTimeRange.end)
-      );
-      dispatch(
-        updateCustomTimeRangeSlice({
-          startTime: parseInt(defaultCustomTimeRange.start),
-          endTime: parseInt(defaultCustomTimeRange.end)
-        })
-      );
-    }
-  }, [defaultCustomTimeRange?.start, defaultCustomTimeRange?.end]);
-
-  useEffect(() => {
-    if (defaultCustomTillNowTimeRange?.start) {
-      setIsCustomTillNowTimeRangeSelected(true);
-      setIsCustomTimeRangeSelected(false);
-      setStartTime(convertEpochToDateTime(parseInt(defaultCustomTillNowTimeRange.start)));
-      updateCustomTillNowTimeRange(parseInt(defaultCustomTillNowTimeRange.start));
-      dispatch(updateCustomTillNowTimeRangeSlice(parseInt(defaultCustomTillNowTimeRange.start)));
-    }
-  }, [defaultCustomTillNowTimeRange?.start]);
-
-  const onTimeRangeChange = event => {
-    if (event.target.value === 'Custom') {
+  const onTimeRangeChange = (event) => {
+    if (event.target.value === "Custom") {
       const previousTimeRange = getTimeRange();
       let startTimeValue = convertEpochToDateTime(previousTimeRange.time_geq);
       let endTimeValue = convertEpochToDateTime(previousTimeRange.time_lt);
@@ -128,14 +87,17 @@ const TimeRangePicker = ({
       setEndTime(endTimeValue);
       setIsCustomTillNowTimeRangeSelected(false);
       setIsCustomTimeRangeSelected(true);
-      updateCustomTimeRange(previousTimeRange.time_geq, previousTimeRange.time_lt);
+      updateCustomTimeRange(
+        previousTimeRange.time_geq,
+        previousTimeRange.time_lt,
+      );
       dispatch(
         updateCustomTimeRangeSlice({
           startTime: previousTimeRange.time_geq,
-          endTime: previousTimeRange.time_lt
-        })
+          endTime: previousTimeRange.time_lt,
+        }),
       );
-    } else if (event.target.value === 'CustomTillNow') {
+    } else if (event.target.value === "CustomTillNow") {
       const previousTimeRange = getTimeRange();
       let startTimeValue = convertEpochToDateTime(previousTimeRange.time_geq);
       setStartTime(startTimeValue);
@@ -155,22 +117,22 @@ const TimeRangePicker = ({
 
   const handleTimeSelectorChange = () => {
     if (isCustomTimeRangeSelected) {
-      onRefreshButtonDisable(false);
       let startTimeValue = convertDateTimeToEpoch(
-        document.getElementById('startTimeSelector').value
+        document.getElementById("startTimeSelector").value,
       );
-      let endTimeValue = convertDateTimeToEpoch(document.getElementById('endTimeSelector').value);
+      let endTimeValue = convertDateTimeToEpoch(
+        document.getElementById("endTimeSelector").value,
+      );
 
       if (!startTimeValue || !endTimeValue) {
         toggleError();
-        setSubmitError('Please select start and end time');
+        setSubmitError("Please select start and end time");
         return;
       }
 
       if (startTimeValue > endTimeValue) {
         toggleError();
-        setSubmitError('Choose end time later than the start time');
-        onRefreshButtonDisable(true);
+        setSubmitError("Choose end time later than the start time");
         return;
       }
 
@@ -178,27 +140,24 @@ const TimeRangePicker = ({
       dispatch(
         updateCustomTillNowTimeRangeSlice({
           startTime: startTimeValue,
-          endTime: endTimeValue
-        })
+          endTime: endTimeValue,
+        }),
       );
     }
   };
 
-  const handleCustomTillNowChange = e => {
-    onRefreshButtonDisable(false);
+  const handleCustomTillNowChange = (e) => {
     const startTimeValue = convertDateTimeToEpoch(e?.target?.value);
     setStartTime(e?.target?.value);
     const currentTimeStamp = Math.floor(Date.now() / 1000);
     if (!startTimeValue) {
       toggleError();
-      setSubmitError('Please select start time');
-      onRefreshButtonDisable(true);
+      setSubmitError("Please select start time");
       return;
     }
     if (startTimeValue > currentTimeStamp) {
       toggleError();
-      setSubmitError('Choose end time later than the start time');
-      onRefreshButtonDisable(true);
+      setSubmitError("Choose end time later than the start time");
       return;
     }
     updateCustomTillNowTimeRange(startTimeValue);
@@ -206,31 +165,31 @@ const TimeRangePicker = ({
   };
   return (
     <>
-      <div className={styles['timeRangePicker']}>
+      <div className={styles["timeRangePicker"]}>
         {isCustomTimeRangeSelected && !isCustomTillNowTimeRangeSelected && (
-          <div className={styles['timeSelectorGroup']}>
+          <div className={styles["timeSelectorGroup"]}>
             <input
               type="datetime-local"
-              className={styles['timeSelector']}
+              className={styles["timeSelector"]}
               id="startTimeSelector"
               defaultValue={startTime}
-              onChange={e => handleTimeSelectorChange()}
+              onChange={(e) => handleTimeSelectorChange()}
             />
             <ArrowRightAltIcon />
             <input
               type="datetime-local"
-              className={styles['timeSelector']}
+              className={styles["timeSelector"]}
               id="endTimeSelector"
               defaultValue={endTime}
-              onChange={e => handleTimeSelectorChange()}
+              onChange={(e) => handleTimeSelectorChange()}
             />
           </div>
         )}
         {isCustomTillNowTimeRangeSelected && !isCustomTimeRangeSelected && (
-          <div className={styles['timeSelectorGroup']}>
+          <div className={styles["timeSelectorGroup"]}>
             <input
               type="datetime-local"
-              className={styles['timeSelector']}
+              className={styles["timeSelector"]}
               id="startTimeSelector"
               value={startTime}
               onChange={handleCustomTillNowChange}
@@ -242,7 +201,7 @@ const TimeRangePicker = ({
             <span>Now</span>
           </div>
         )}
-        <div className={styles['timeRangeSelector']}>
+        <div className={styles["timeRangeSelector"]}>
           <FormControl>
             <InputLabel id="time-range-select-label">Time Range</InputLabel>
             <Select
@@ -251,8 +210,7 @@ const TimeRangePicker = ({
               id="time-range-select"
               onChange={onTimeRangeChange}
               labelId="time-range-select-label"
-              size="small"
-            >
+              size="small">
               {renderTimeRangeMenuItems(getTimeRangeOptions())}
             </Select>
           </FormControl>
@@ -264,7 +222,7 @@ const TimeRangePicker = ({
         severity="error"
         message={submitError}
         handleClose={() => toggleError()}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         autoHideDuration={60000}
       />
     </>
