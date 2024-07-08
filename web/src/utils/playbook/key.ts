@@ -38,6 +38,12 @@ export const Key = {
   START_TIME: "start_time",
   END_TIME: "end_time",
   IFRAME_URL: "iframe_url",
+  APPLICATION_ENTITY_GUID: "application_entity_guid",
+  APPLICATION_ENTITY_NAME: "application_entity_name",
+  GOLDEN_METRIC_NAME: "golden_metric_name",
+  GOLDEN_METRIC_NRQL_EXPRESSION: "golden_metric_nrql_expression",
+  GOLDEN_METRIC_UNIT: "golden_metric_unit",
+  APPLICATION_NAME: "application_name",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
