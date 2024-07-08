@@ -5,6 +5,7 @@ import { Task } from "./task.ts";
 
 type PlaybookUIRequirement = {
   tasks: Task[];
+  isExisting: boolean;
 };
 
 export type Playbook = {

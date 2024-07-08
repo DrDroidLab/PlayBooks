@@ -26,7 +26,7 @@ export interface Step {
   notes?: string;
   external_links?: ExternalLink[];
   interpreter_type?: string;
-  tasks: Task[] | string[];
+  tasks: (Task | string)[];
   children?: [];
   ui_requirement: StepUIRequirements;
 }

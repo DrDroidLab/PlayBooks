@@ -40,6 +40,7 @@ const initialState: PlaybookUIState = {
     step_relations: [],
     ui_requirement: {
       tasks: [],
+      isExisting: false,
     },
   },
   meta: {
@@ -77,22 +78,18 @@ const playbookSlice = createSlice({
       state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
-      const useState = payload.useState;
-
-      if (useState) {
-        state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
-        state.isCopied = true;
-        state.isEditing = false;
-        return;
-      }
-
-      state.currentPlaybook = payload;
-      state.currentPlaybook!.name = "Copy of " + payload.name;
-      state.currentPlaybook!.description = payload.description;
-      state.isCopied = true;
-      // state.currentPlaybook!.steps = playbookToSteps(payload, true) as any;
-      // state.currentPlaybook!.step_relations = playbookToEdges(payload, []);
-      state.isEditing = false;
+      // const useState = payload.useState;
+      // if (useState) {
+      //   state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
+      //   state.isCopied = true;
+      //   state.isEditing = false;
+      //   return;
+      // }
+      // state.currentPlaybook = payload;
+      // state.currentPlaybook!.name = "Copy of " + payload.name;
+      // state.currentPlaybook!.description = payload.description;
+      // state.isCopied = true;
+      // state.isEditing = false;
     },
     setErrors(state, { payload }) {
       const { id, errors } = payload;
@@ -262,7 +259,9 @@ const playbookSlice = createSlice({
           (step) => step.id === id,
         );
         if (step) {
-          const taskIds = step.tasks.map((task) => task.id);
+          const taskIds = step.tasks.map((task) =>
+            typeof task === "string" ? task : task.id,
+          );
           state.currentPlaybook!.steps.splice(stepIndex, 1);
           taskIds.forEach((taskId) => {
             const tasks = state.currentPlaybook!.ui_requirement.tasks;

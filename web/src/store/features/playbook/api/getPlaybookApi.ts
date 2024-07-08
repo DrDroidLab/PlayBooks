@@ -56,6 +56,7 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
           steps,
           ui_requirement: {
             tasks,
+            isExisting: true,
           },
         };
       },

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
-  setPlaybookDataBeta,
   setPlaybookKey,
   resetExecutions,
 } from "../../../store/features/playbook/playbookSlice.ts";
@@ -57,7 +56,6 @@ function CreatePlaybook() {
   const fetchPlaybook = async () => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     playbookDataRef.current = res;
-    dispatch(setPlaybookDataBeta(res));
     if (executionId) handleTimeline();
   };
 
