@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, MouseEvent } from "react";
+import { Link, Notes } from "@mui/icons-material";
 import { renderTimestamp } from "../../../utils/DateUtils";
 import HandleOutput from "../steps/HandleOutput";
 import useVisibility from "../../../hooks/useVisibility.ts";
@@ -12,6 +13,10 @@ function StepConfig({ step, index, handleShowConfig }) {
   const scrollRef = useScrollIntoView(index);
   const isVisible = useVisibility(scrollRef, 0.5);
   const [, setShouldScroll] = usePlaybookKey("shouldScroll");
+
+  const handleNoAction = (e: MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+  };
 
   useEffect(() => {
     if (additionalData.showStepId === step?.id?.toString()) {
@@ -60,6 +65,31 @@ function StepConfig({ step, index, handleShowConfig }) {
         </div>
       </div>
       <HandleOutput id={step.id} stepData={step} showHeading={false} />
+
+      {step.notes && (
+        <div className="flex flex-wrap flex-col mt-1">
+          <h2 className="text-violet-500 text-sm font-bold">Notes</h2>
+          <p className="line-clamp-2 text-xs">{step.notes}</p>
+        </div>
+      )}
+
+      {step?.externalLinks?.length > 0 && (
+        <div className="flex gap-1 flex-wrap flex-col mt-1">
+          <h2 className="text-violet-500 text-sm font-bold">External Links</h2>
+          <div className="flex gap-1 flex-wrap flex-row">
+            {step.externalLinks?.map((link) => (
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="line-clamp-1 text-xs text-violet-500 underline"
+                onClick={handleNoAction}>
+                {link.name || link.url}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
