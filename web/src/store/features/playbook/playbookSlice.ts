@@ -463,7 +463,6 @@ const playbookSlice = createSlice({
       relation.condition?.rules.push({
         type: "",
         task: "",
-        rule: {},
       });
     },
   },

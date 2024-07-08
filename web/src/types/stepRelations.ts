@@ -14,9 +14,8 @@ enum RuleType {
 export type ConditionRule = {
   type: string;
   task: any;
-  rule: {
-    [key in RuleType]?: any;
-  };
+} & {
+  [key in RuleType]?: any;
 };
 
 type StepCondition = {

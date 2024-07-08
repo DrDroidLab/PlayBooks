@@ -17,7 +17,7 @@ function HandleResultTypeForm({
   condition,
   conditionIndex,
 }: HandleResultTypePropTypes) {
-  const rule = condition[condition.type?.toLowerCase()];
+  const rule = condition?.[resultType?.toLowerCase()] ?? {};
   switch (resultType) {
     case ResultTypeTypes.TABLE:
       return (
@@ -33,6 +33,7 @@ function HandleResultTypeForm({
           condition={condition}
           conditionIndex={conditionIndex}
           rule={rule}
+          resultType={resultType}
         />
       );
     default:

@@ -29,7 +29,7 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
             ...e,
             ui_requirement: {
               stepId: step.id,
-              resultType: supportedTaskTypes.find(
+              resultType: supportedTaskTypes?.find(
                 (t: any) =>
                   t.source === e.source &&
                   t.task_type === e[e.source.toLowerCase()]?.type,

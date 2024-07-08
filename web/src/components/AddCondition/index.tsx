@@ -35,6 +35,16 @@ function AddCondition() {
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
+  const handleTaskChange = (id: string, i: number) => {
+    handleRule("task", id, i);
+    handleRule(
+      "type",
+      (tasks?.find((task) => task.id === id)?.ui_requirement.resultType ??
+        ResultTypeTypes.OTHERS) as ResultTypeType,
+      i,
+    );
+  };
+
   useEffect(() => {
     if (rules?.length === 0) {
       handleRule("", "", 0);
@@ -87,7 +97,7 @@ function AddCondition() {
                 }))}
                 selected={condition.task}
                 placeholder={`Select Task`}
-                onSelectionChange={(id: string) => handleRule("task", id, i)}
+                onSelectionChange={(id: string) => handleTaskChange(id, i)}
               />
             </div>
             <div className="flex flex-wrap gap-2">

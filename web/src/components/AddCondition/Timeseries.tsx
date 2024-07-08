@@ -14,7 +14,7 @@ import {
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions.ts";
 
-function Timeseries({ condition, conditionIndex, rule }) {
+function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const { id } = useSelector(additionalStateSelector);
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
@@ -42,7 +42,7 @@ function Timeseries({ condition, conditionIndex, rule }) {
           selected={rule.type}
           placeholder={`Select Type`}
           onSelectionChange={(id: string) =>
-            handleChange(id, `${condition.type?.toLowerCase()}.type`)
+            handleChange(id, `${resultType?.toLowerCase()}.type`)
           }
         />
       </div>
@@ -58,7 +58,7 @@ function Timeseries({ condition, conditionIndex, rule }) {
           selected={rule.function}
           placeholder={`Select Function`}
           onSelectionChange={(id: string) =>
-            handleChange(id, `${condition.type?.toLowerCase()}.function`)
+            handleChange(id, `${resultType?.toLowerCase()}.function`)
           }
         />
       </div>
@@ -70,7 +70,7 @@ function Timeseries({ condition, conditionIndex, rule }) {
           selected={rule.operator}
           placeholder={`Select Operator`}
           onSelectionChange={(id: string) =>
-            handleChange(id, `${condition.type?.toLowerCase()}.operator`)
+            handleChange(id, `${resultType?.toLowerCase()}.operator`)
           }
         />
       </div>
@@ -81,7 +81,7 @@ function Timeseries({ condition, conditionIndex, rule }) {
           error={undefined}
           valueType={"STRING"}
           onValueChange={(val: string) =>
-            handleChange(val, `${condition.type?.toLowerCase()}.threshold`)
+            handleChange(val, `${resultType?.toLowerCase()}.threshold`)
           }
           value={rule.threshold}
           valueOptions={[]}
