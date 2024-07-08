@@ -26,6 +26,12 @@ export const Key = {
   QUERY2: "queries.1",
   FORMULA: "formula",
   CLUSTER: "cluster",
+  INDEX: "index",
+  LUCENE_QUERY: "lucene_query",
+  LIMIT: "limit",
+  OFFSET: "offset",
+  SORT_DESC: "sort_desc",
+  TIMESTAMP_FIELD: "timestamp_field",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
