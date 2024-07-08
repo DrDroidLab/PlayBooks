@@ -41,8 +41,6 @@ function AddCondition() {
     }
   }, [rules, handleRule, playbookEdges]);
 
-  const task = tasks?.find((e) => e.id === rules?.[0]?.task);
-
   return (
     <div className="p-2">
       <h1 className="text-violet-500 font-semibold text-lg flex justify-between my-2">

@@ -5,27 +5,21 @@ import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
 import ValueComponent from "../ValueComponent/index.jsx";
-import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
-import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
 import HandleTypes from "./HandleTypes.tsx";
-import { extractSource } from "../../utils/extractData.ts";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 import {
   ResultTypeType,
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions.ts";
 
-function Timeseries({ condition, conditionIndex }) {
-  const { source, id } = useSelector(additionalStateSelector);
+function Timeseries({ condition, conditionIndex, rule }) {
+  const { id } = useSelector(additionalStateSelector);
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const { handleCondition } = useEdgeConditions(id);
-  const sourceId = extractSource(source);
-  const [parentStep] = useCurrentStep(sourceId);
   const task = tasks?.find((e) => e.id === condition.task);
-  const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -45,9 +39,11 @@ function Timeseries({ condition, conditionIndex }) {
       <div className="flex items-center gap-1">
         <SelectComponent
           data={timeseriesOptions}
-          selected={condition.conditionType}
+          selected={rule.type}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) => handleChange(id, "conditionType")}
+          onSelectionChange={(id: string) =>
+            handleChange(id, `${condition.type?.toLowerCase()}.type`)
+          }
         />
       </div>
 
@@ -59,9 +55,11 @@ function Timeseries({ condition, conditionIndex }) {
             (task?.ui_requirement?.resultType as ResultTypeType) ??
               ResultTypeTypes.OTHERS,
           )}
-          selected={condition.function}
+          selected={rule.function}
           placeholder={`Select Function`}
-          onSelectionChange={(id: string) => handleChange(id, "function")}
+          onSelectionChange={(id: string) =>
+            handleChange(id, `${condition.type?.toLowerCase()}.function`)
+          }
         />
       </div>
 
@@ -69,9 +67,11 @@ function Timeseries({ condition, conditionIndex }) {
         {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
         <SelectComponent
           data={operationOptions}
-          selected={condition.operation}
+          selected={rule.operator}
           placeholder={`Select Operator`}
-          onSelectionChange={(id: string) => handleChange(id, "operation")}
+          onSelectionChange={(id: string) =>
+            handleChange(id, `${condition.type?.toLowerCase()}.operator`)
+          }
         />
       </div>
 
@@ -80,8 +80,10 @@ function Timeseries({ condition, conditionIndex }) {
         <ValueComponent
           error={undefined}
           valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, "value")}
-          value={condition.value}
+          onValueChange={(val: string) =>
+            handleChange(val, `${condition.type?.toLowerCase()}.threshold`)
+          }
+          value={rule.threshold}
           valueOptions={[]}
           placeHolder={"Enter Value of condition"}
           length={200}

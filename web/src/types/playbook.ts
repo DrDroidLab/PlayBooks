@@ -32,4 +32,5 @@ export type PlaybookUIState = {
   executionStack?: any;
   zoomLevel?: any;
   connectorOptions?: any;
+  supportedTaskTypes?: any;
 };

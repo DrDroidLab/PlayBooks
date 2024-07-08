@@ -1,7 +1,8 @@
 import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
 import { Playbook, Step, Task } from "../../../../types/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setPlaybookDataBeta } from "../playbookSlice.ts";
+import { store } from "../../../index.ts";
+import { playbookSelector, setPlaybookDataBeta } from "../playbookSlice.ts";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,6 +15,7 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
         method: "POST",
       }),
       transformResponse: (response) => {
+        const { supportedTaskTypes } = playbookSelector(store.getState());
         const playbook = response?.playbooks?.[0] ?? {};
         const tasks: Task[] = [];
         const steps = playbook?.steps?.map((e: Step, i: number) => ({
@@ -22,11 +24,16 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
             stepIndex: i === 0 ? 0 : undefined,
           },
         }));
-        steps.forEach((step) => {
+        steps.forEach((step: Step) => {
           const stepTasks: any[] = (step.tasks as Task[]).map((e) => ({
             ...e,
             ui_requirement: {
               stepId: step.id,
+              resultType: supportedTaskTypes.find(
+                (t: any) =>
+                  t.source === e.source &&
+                  t.task_type === e[e.source.toLowerCase()]?.type,
+              )?.result_type,
             },
           }));
           tasks.push(...stepTasks);
@@ -38,6 +45,11 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
               : "";
           const targetId = (relation.child as Step).id;
           relation.id = `edge-${sourceId}-${targetId}`;
+          const rules = relation.condition?.rules ?? [];
+          relation.condition.rules = rules.map((rule) => ({
+            ...rule,
+            task: rule?.task?.id,
+          }));
         });
         return {
           ...playbook,
