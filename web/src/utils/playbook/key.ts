@@ -35,6 +35,8 @@ export const Key = {
   ZONE: "zone",
   DATASOURCE_UID: "datasource_uid",
   PROMQL_EXPRESSION: "promql_expression",
+  START_TIME: "start_time",
+  END_TIME: "end_time",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
