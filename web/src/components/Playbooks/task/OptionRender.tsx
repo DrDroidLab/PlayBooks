@@ -54,7 +54,7 @@ export default function OptionRender({ data, removeErrors, id }) {
         data.handleKeyChange,
       )}
       handleAddClick={handleAddClick}
-      value={value}
+      value={value ?? data.value}
     />
   );
 }
