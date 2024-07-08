@@ -6,6 +6,7 @@ import { Task } from "./task.ts";
 type PlaybookUIRequirement = {
   tasks: Task[];
   isExisting: boolean;
+  isCopied: boolean;
 };
 
 export type Playbook = {
@@ -23,8 +24,6 @@ export type PlaybookUIState = {
   playbooks: Playbook[];
   meta: any;
   isOnPlaybookPage: boolean;
-  isCopied: boolean;
-  isEditing: boolean;
   currentVisibleTask?: string;
   currentVisibleStep?: string;
   permanentView?: string;

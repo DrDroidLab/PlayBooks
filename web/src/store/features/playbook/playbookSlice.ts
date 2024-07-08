@@ -41,6 +41,7 @@ const initialState: PlaybookUIState = {
     ui_requirement: {
       tasks: [],
       isExisting: false,
+      isCopied: false,
     },
   },
   meta: {
@@ -53,8 +54,6 @@ const initialState: PlaybookUIState = {
   permanentView: undefined,
   executionId: undefined,
   isOnPlaybookPage: false,
-  isCopied: false,
-  isEditing: false,
   executionStack: [],
   zoomLevel: 0.75,
   connectorOptions: [],
@@ -78,18 +77,18 @@ const playbookSlice = createSlice({
       state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
-      // const useState = payload.useState;
-      // if (useState) {
-      //   state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
-      //   state.isCopied = true;
-      //   state.isEditing = false;
-      //   return;
-      // }
-      // state.currentPlaybook = payload;
-      // state.currentPlaybook!.name = "Copy of " + payload.name;
-      // state.currentPlaybook!.description = payload.description;
-      // state.isCopied = true;
-      // state.isEditing = false;
+      const useState = payload.useState;
+      if (useState) {
+        state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
+        state.currentPlaybook!.ui_requirement.isCopied = true;
+        state.currentPlaybook!.ui_requirement.isExisting = false;
+        return;
+      }
+      state.currentPlaybook = payload;
+      state.currentPlaybook!.name = "Copy of " + payload.name;
+      state.currentPlaybook!.description = payload.description;
+      state.currentPlaybook!.ui_requirement.isCopied = true;
+      state.currentPlaybook!.ui_requirement.isExisting = false;
     },
     setErrors(state, { payload }) {
       const { id, errors } = payload;
@@ -237,18 +236,6 @@ const playbookSlice = createSlice({
           : undefined,
       });
     },
-    // addParentId: (state, { payload }) => {
-    //   const { id, parentId } = payload;
-    //   const parentExists = parentId !== undefined && parentId !== null;
-    //   const edgeId = parentExists ? `edge-${parentId}-${id}` : `edge-${id}`;
-    //   state.playbookEdges.filter((e) => e.id !== id);
-    //   state.playbookEdges.push({
-    //     id: edgeId,
-    //     source: parentExists ? `node-${parentId}` : `playbook`,
-    //     target: `node-${id}`,
-    //     type: "custom",
-    //   });
-    // },
     deleteStep: (state, { payload }) => {
       const id = payload;
       if (id) {
@@ -398,8 +385,6 @@ const playbookSlice = createSlice({
       state.currentPlaybook = initialState.currentPlaybook;
       state.currentVisibleTask = undefined;
       state.executionId = undefined;
-      state.isCopied = false;
-      state.isEditing = false;
       state.isOnPlaybookPage = false;
       state.meta = undefined;
       state.permanentView = PermanentDrawerTypes.DEFAULT;
