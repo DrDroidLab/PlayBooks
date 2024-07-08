@@ -9,26 +9,32 @@ import { addConditionToEdgeByIndex } from "../../utils/conditionals/addCondition
 type HandleTypesPropTypes = {
   condition: any;
   conditionIndex: number;
+  rule: any;
 };
 
-function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
+function HandleTypes({
+  condition,
+  conditionIndex,
+  rule,
+}: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
-  const type = condition.conditionType;
+  const type = rule.type;
+
+  const keyValue = condition?.type?.toLowerCase();
 
   const handleChange = (val: string, type: string) => {
-    handleCondition(type, val, conditionIndex);
+    handleCondition(`${keyValue}.${type}`, val, conditionIndex);
   };
 
   switch (type) {
     case "ROLLING":
       return (
         <div className="flex items-center gap-1">
-          {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
           <ValueComponent
             valueType={"STRING"}
             onValueChange={(val: string) => handleChange(val, "window")}
-            value={condition.window}
+            value={rule.window}
             valueOptions={[]}
             placeHolder={"Enter window size"}
             length={200}
@@ -46,8 +52,8 @@ function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
           <div className="flex flex-wrap gap-2 items-center">
             <ValueComponent
               valueType={"STRING"}
-              onValueChange={(val: string) => handleChange(val, "columnName")}
-              value={condition.columnName}
+              onValueChange={(val: string) => handleChange(val, "column_name")}
+              value={rule.column_name}
               valueOptions={[]}
               placeHolder={"Enter column name"}
               length={200}
@@ -55,11 +61,11 @@ function HandleTypes({ condition, conditionIndex }: HandleTypesPropTypes) {
             />
             <Checkbox
               id="isNumeric"
-              isChecked={condition.isNumeric}
+              isChecked={rule.isNumeric}
               onChange={() => {
                 addConditionToEdgeByIndex(
-                  "isNumeric",
-                  !condition.isNumeric,
+                  `${keyValue}.isNumeric`,
+                  !rule.isNumeric,
                   edgeIndex,
                   conditionIndex,
                 );

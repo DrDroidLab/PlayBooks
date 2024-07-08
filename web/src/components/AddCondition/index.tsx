@@ -80,6 +80,7 @@ function AddCondition() {
           selected={condition?.logical_opertaor}
           placeholder={`Select Global Rule`}
           onSelectionChange={handleGlobalRule}
+          error={undefined}
         />
       </div>
 
@@ -91,6 +92,7 @@ function AddCondition() {
           <div className="flex flex-col gap-2 flex-wrap">
             <div className="flex items-center gap-1">
               <SelectComponent
+                error={undefined}
                 data={taskTypeOptions.map((task) => ({
                   id: task?.id,
                   label: task?.description,

@@ -56,8 +56,7 @@ function useEdgeConditions(id: string) {
     value: string,
     conditionIndex: number,
   ) => {
-    if (conditions.length === 0) {
-    } else {
+    if (conditions.length !== 0) {
       addConditionToEdgeByIndex(key, value, edgeIndex, conditionIndex);
     }
   };

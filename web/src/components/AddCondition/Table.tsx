@@ -16,10 +16,17 @@ function Table({ condition, conditionIndex, rule }) {
     handleCondition(type, val, conditionIndex);
   };
 
+  const checkIfNumeric = rule.isNumeric || rule.type === "ROW_COUNT";
+
+  const threshold = checkIfNumeric
+    ? rule.numeric_value_threshold
+    : rule.string_value_threshold;
+
   return (
     <>
       <div className="flex items-center gap-1">
         <SelectComponent
+          error={undefined}
           data={tableOptions}
           selected={rule.type}
           placeholder={`Select Type`}
@@ -29,13 +36,17 @@ function Table({ condition, conditionIndex, rule }) {
         />
       </div>
 
-      <HandleTypes condition={condition} conditionIndex={conditionIndex} />
+      <HandleTypes
+        condition={condition}
+        rule={rule}
+        conditionIndex={conditionIndex}
+      />
 
       <div className="flex items-center gap-1">
-        {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
         <SelectComponent
+          error={undefined}
           data={
-            rule.isNumeric || rule.type === "ROW_COUNT"
+            checkIfNumeric
               ? operationOptions
               : operationOptions.filter((e) => e.id === "EQUAL_O")
           }
@@ -51,10 +62,20 @@ function Table({ condition, conditionIndex, rule }) {
         <ValueComponent
           error={undefined}
           valueType={"STRING"}
-          onValueChange={(val: string) =>
-            handleChange(val, `${condition.type?.toLowerCase()}.threshold`)
-          }
-          value={rule.numeric_value_threshold}
+          onValueChange={(val: string) => {
+            if (checkIfNumeric) {
+              handleChange(
+                val,
+                `${condition.type?.toLowerCase()}.numeric_value_threshold`,
+              );
+            } else {
+              handleChange(
+                val,
+                `${condition.type?.toLowerCase()}.string_value_threshold`,
+              );
+            }
+          }}
+          value={threshold}
           valueOptions={[]}
           placeHolder={"Enter threshold of condition"}
           length={200}

@@ -27,17 +27,9 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
   return (
     <>
-      {/* <div className="flex items-center gap-1">
-        <SelectComponent
-          data={taskTypeOptions}
-          selected={condition.task}
-          placeholder={`Select Task`}
-          onSelectionChange={(id: string) => handleChange(id, "task")}
-        />
-      </div> */}
-
       <div className="flex items-center gap-1">
         <SelectComponent
+          error={undefined}
           data={timeseriesOptions}
           selected={rule.type}
           placeholder={`Select Type`}
@@ -47,10 +39,11 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
         />
       </div>
 
-      <HandleTypes condition={condition} conditionIndex={conditionIndex} />
+      <HandleTypes condition={rule} conditionIndex={conditionIndex} />
 
       <div className="flex items-center gap-1">
         <SelectComponent
+          error={undefined}
           data={functionOptions(
             (task?.ui_requirement?.resultType as ResultTypeType) ??
               ResultTypeTypes.OTHERS,
@@ -64,8 +57,8 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
       </div>
 
       <div className="flex items-center gap-1">
-        {/* <p className="text-xs text-violet-500 font-semibold">Operation</p> */}
         <SelectComponent
+          error={undefined}
           data={operationOptions}
           selected={rule.operator}
           placeholder={`Select Operator`}
@@ -76,7 +69,6 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
       </div>
 
       <div className="flex items-center gap-1">
-        {/* <p className="text-xs text-violet-500 font-semibold">Value</p> */}
         <ValueComponent
           error={undefined}
           valueType={"STRING"}
