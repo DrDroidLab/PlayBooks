@@ -7,10 +7,7 @@ import {
   useUpdatePlaybookMutation,
 } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  currentPlaybookSelector,
-  playbookSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
 import { useNavigate } from "react-router-dom";
 import { setPlaybookKey } from "../../../store/features/playbook/playbookSlice.ts";
@@ -18,6 +15,7 @@ import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSaving
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import stateToPlaybook from "../../../utils/parser/playbook/stateToPlaybook.ts";
+import useIsExisting from "../../../hooks/useIsExisting.ts";
 
 type SavePlaybookButtonPropTypes = {
   shouldNavigate?: boolean;
@@ -29,7 +27,7 @@ function SavePlaybookButton({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { closeDrawer } = usePermanentDrawerState();
-  const { isEditing } = useSelector(playbookSelector);
+  const isExisting = useIsExisting();
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const [isSavePlaybookOverlayOpen, setIsSavePlaybookOverlayOpen] =
     useState(false);
@@ -81,16 +79,14 @@ function SavePlaybookButton({
 
     try {
       const response = await triggerCreatePlaybook(playbookObj).unwrap();
-      // if (shouldNavigate) {
       navigate(`/playbooks/${response.playbook?.id}`, { replace: true });
-      // }
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleSaveCallback = (args: any) => {
-    if (isEditing) {
+    if (isExisting) {
       handlePlaybookUpdate();
     } else {
       handlePlaybookSave(args);
@@ -102,7 +98,7 @@ function SavePlaybookButton({
     <>
       <CustomButton onClick={openOverlay} className="w-fit">
         <SaveRounded />
-        <span>{isEditing ? "Update" : "Save"}</span>
+        <span>{isExisting ? "Update" : "Save"}</span>
         {isLoading && (
           <CircularProgress
             style={{

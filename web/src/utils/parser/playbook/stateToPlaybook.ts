@@ -15,10 +15,10 @@ function stateToPlaybook() {
     "ui_requirement",
   );
 
-  playbook.steps = playbook.steps.map((step: Step) => ({
+  playbook.steps = playbook?.steps?.map((step: Step) => ({
     ...step,
     id: checkId(step.id),
-    tasks: step.tasks.map((taskId: Task | string) => ({
+    tasks: step.tasks?.map((taskId: Task | string) => ({
       ...tasks.find(
         (task) => task.id === (typeof taskId === "string" ? taskId : task.id),
       ),
@@ -28,7 +28,7 @@ function stateToPlaybook() {
     })),
   }));
 
-  playbook.step_relations = playbook.step_relations.map((relation) => ({
+  playbook.step_relations = playbook.step_relations?.map((relation) => ({
     id: checkId(relation.id),
     parent: {
       reference_id:

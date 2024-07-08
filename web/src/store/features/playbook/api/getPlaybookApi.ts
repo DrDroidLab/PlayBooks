@@ -3,6 +3,7 @@ import { Playbook, Step, Task } from "../../../../types/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { store } from "../../../index.ts";
 import { playbookSelector, setPlaybookDataBeta } from "../playbookSlice.ts";
+import { v4 as uuidv4 } from "uuid";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -36,6 +37,7 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
               )?.result_type,
             },
           }));
+          step.reference_id = uuidv4();
           tasks.push(...stepTasks);
         });
         playbook?.step_relations?.forEach((relation) => {
