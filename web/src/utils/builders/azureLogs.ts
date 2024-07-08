@@ -1,15 +1,9 @@
 import { Key } from "../playbook/key.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-import { Task } from "../../types/task.ts";
+import { Task } from "../../types/index.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
-
-export const azureLogsBuilder = (options: any, task) => {
+export const azureLogsBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [

@@ -1,21 +1,8 @@
 import { Task } from "../../types/index.ts";
 import { Key } from "../playbook/key.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
-
-const getCurrentAsset = (task: Task) => {
-  const currentAsset = task?.ui_requirement.assets?.find(
-    (e) => e.region === getTaskData(task)?.eksRegion,
-  );
-
-  return currentAsset;
-};
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 
 export const gkeBuilder = (options: any, task: Task) => {
   return {
@@ -40,8 +27,12 @@ export const gkeBuilder = (options: any, task: Task) => {
           label: "Namespace",
           type: InputTypes.TYPING_DROPDOWN,
           options:
-            getCurrentAsset(task)?.clusters?.length > 0
-              ? getCurrentAsset(task)?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset(task, Key.REGION, "region")?.clusters?.length > 0
+              ? getCurrentAsset(
+                  task,
+                  Key.REGION,
+                  "region",
+                )?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],

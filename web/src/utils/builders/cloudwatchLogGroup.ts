@@ -1,21 +1,7 @@
 import { Task } from "../../types/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 import { Key } from "../playbook/key.ts";
-
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
-
-const getCurrentAsset = (task: Task) => {
-  const currentAsset = task?.ui_requirement.assets?.find(
-    (e) => e.region === getTaskData(task).region,
-  );
-
-  return currentAsset;
-};
 
 export const cloudwatchLogGroupBuilder = (options: any, task: Task) => {
   return {
@@ -36,12 +22,14 @@ export const cloudwatchLogGroupBuilder = (options: any, task: Task) => {
           key: Key.LOG_GROUP_NAME,
           label: "Log Group",
           type: InputTypes.TYPING_DROPDOWN,
-          options: getCurrentAsset(task)?.log_groups?.map((e) => {
-            return {
-              id: e,
-              label: e,
-            };
-          }),
+          options: getCurrentAsset(task, Key.REGION, "region")?.log_groups?.map(
+            (e) => {
+              return {
+                id: e,
+                label: e,
+              };
+            },
+          ),
         },
       ],
       [

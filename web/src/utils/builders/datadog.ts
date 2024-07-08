@@ -1,23 +1,10 @@
 import { Task } from "../../types/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 import { Key } from "../playbook/key.ts";
 
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
-
-const getCurrentAsset = (task: Task) => {
-  const currentAsset = task?.ui_requirement.assets?.find(
-    (e) => e.service_name === getTaskData(task)?.datadogService,
-  );
-
-  return currentAsset;
-};
-
-export const datadogBuilder = (options, task: Task) => {
+export const datadogBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
@@ -43,7 +30,11 @@ export const datadogBuilder = (options, task: Task) => {
           key: Key.ENVIRONMENT_NAME,
           label: "Environment",
           type: InputTypes.TYPING_DROPDOWN,
-          options: getCurrentAsset(task)?.environments?.map((e) => {
+          options: getCurrentAsset(
+            task,
+            Key.SERVICE_NAME,
+            "service_name",
+          )?.environments?.map((e) => {
             return {
               id: e,
               label: e,
@@ -54,7 +45,7 @@ export const datadogBuilder = (options, task: Task) => {
           key: Key.METRIC,
           label: "Metric",
           type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
-          options: getCurrentAsset(task)
+          options: getCurrentAsset(task, Key.SERVICE_NAME, "service_name")
             ?.metrics?.filter(
               (e) => e.metric_family === getTaskData(task).datadogMetricFamily,
             )

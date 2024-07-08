@@ -1,13 +1,7 @@
 import { Task } from "../../types/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 import { Key } from "../playbook/key.ts";
-
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
 
 export const grafanaDataSourceBuilder = (options: any, task: Task) => {
   return {

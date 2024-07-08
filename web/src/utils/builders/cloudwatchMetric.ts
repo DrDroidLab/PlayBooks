@@ -1,26 +1,12 @@
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-import { Task } from "../../types/task.ts";
+import { Task } from "../../types/index.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 import { Key } from "../playbook/key.ts";
-
-const getTaskData = (task: Task) => {
-  const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
-
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
-};
-
-const getCurrentAsset = (task: Task) => {
-  const data = getTaskData(task);
-  const currentAsset = task?.ui_requirement.assets?.find(
-    (e) => e.namespace === data.namespace,
-  );
-
-  return currentAsset;
-};
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 
 const getDimensionNames = (task: Task) => {
   const data = getTaskData(task);
-  const currentAsset = getCurrentAsset(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   const dimensions: any =
     currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
@@ -38,7 +24,7 @@ const getDimensionNames = (task: Task) => {
 
 const getDimensionValues = (task: Task) => {
   const data = getTaskData(task);
-  const currentAsset = getCurrentAsset(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   const dimensions: any =
     currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
@@ -58,7 +44,7 @@ const getDimensionValues = (task: Task) => {
 
 const getMetrics = (task: Task) => {
   const data = getTaskData(task);
-  const currentAsset = getCurrentAsset(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   return (
     currentAsset?.region_dimension_map
       ?.find((el) => el.region === data.region)
@@ -72,7 +58,7 @@ const getMetrics = (task: Task) => {
   );
 };
 
-export const cloudwatchMetricBuilder = (options, task) => {
+export const cloudwatchMetricBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
@@ -91,7 +77,11 @@ export const cloudwatchMetricBuilder = (options, task) => {
           key: Key.REGION,
           label: "Region",
           type: InputTypes.TYPING_DROPDOWN,
-          options: getCurrentAsset(task)?.region_dimension_map?.map((el) => {
+          options: getCurrentAsset(
+            task,
+            Key.NAMESPACE,
+            "namespace",
+          )?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
         },

@@ -1,3 +1,4 @@
+import { Key } from "../playbook/key.ts";
 import { OptionType } from "../playbooksData.ts";
 
 export const mimirBuilder = () => {
@@ -5,7 +6,7 @@ export const mimirBuilder = () => {
     builder: [
       [
         {
-          key: "promql_expression",
+          key: Key.PROMQL_EXPRESSION,
           label: "PromQL",
           type: OptionType.MULTILINE,
         },
