@@ -143,10 +143,6 @@ const playbookSlice = createSlice({
         task_connector_sources: [],
         ui_requirement: {
           isOpen: true,
-          position: {
-            x: 0,
-            y: 0,
-          },
           taskType: payload.taskType,
           stepId: stepId,
           model_type: payload.modelType,

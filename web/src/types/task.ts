@@ -5,10 +5,6 @@ import { TaskDetails } from "./taskDetails.ts";
 type TaskUIRequirement = {
   isOpen: boolean;
   stepId: string;
-  position: {
-    x: number;
-    y: number;
-  };
   assets?: any;
   nrqlData?: any;
   taskType?: string;
