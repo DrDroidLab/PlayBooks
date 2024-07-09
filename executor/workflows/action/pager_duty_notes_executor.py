@@ -42,19 +42,29 @@ class PagerdutyNotesExecutor(WorkflowActionExecutor):
             title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
+            block_message = ""
+            if description:
+                block_message += f"{description}\n"
+            if summary:
+                block_message += f"{summary}\n"
+            text_message = text_message + block_message
             if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
-                note_text =  f"{title} \n {description} \n{summary}"
-            elif interpretation.type == InterpretationProto.Type.TEXT and (interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP):
-                note_text =  f"{title} \n {description} \n{summary}"
-            elif interpretation.type == InterpretationProto.Type.TEXT:
-                note_text =  f"{title} \n {description} \n{summary}"
-            elif interpretation.type == InterpretationProto.Type.IMAGE:
-                note_text =  f"{title} \n {description} \n {interpretation.object_url.value}"
-            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                note_text = f"{title} \n {description} \n {interpretation.file_path.value}"
-            elif interpretation.type == InterpretationProto.Type.JSON:
-                note_text = f"```{summary}```"
-            content = content + note_text
+                if title:
+                    content.append(f"{title}")
+                if block_message:
+                    content.append(f"{block_message}")
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                content.append(f"{step_number}. {title}")
+                step_number += 1
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
+                if interpretation.type == InterpretationProto.Type.TEXT:
+                    content.append(f"{block_message}")
+                elif interpretation.type == InterpretationProto.Type.IMAGE:
+                    content.append(f'{title} \n {block_message} \n {interpretation.object_url.value}')
+                elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                    content.append(f'{title} \n {block_message} \n {interpretation.file_path.value}')
+                elif interpretation.type == InterpretationProto.Type.JSON:
+                    content.append(f"```{summary}```")
             note_params = {'incident_id': incident_id, 'content': content}
             try:
                 pd_api_processor = self.get_action_connector_processor(connector)
