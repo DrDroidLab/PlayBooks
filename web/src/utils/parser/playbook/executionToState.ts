@@ -6,13 +6,20 @@ function executionToState(playbook_execution: any): Playbook {
   const currentPlaybook: Playbook | undefined = currentPlaybookSelector(
     store.getState(),
   );
+  const playbookSteps = structuredClone(currentPlaybook?.steps ?? []);
   const playbook: Playbook = playbook_execution?.playbook;
   const stepExecutionLogs: any = playbook_execution?.step_execution_logs ?? {};
 
   const tasks: Task[] = structuredClone(
     currentPlaybook?.ui_requirement.tasks ?? [],
   );
-  Object.values(stepExecutionLogs ?? {})?.forEach((stepExecutionLog) => {
+  Object.values(stepExecutionLogs ?? {})?.forEach((stepExecutionLog: any) => {
+    const executionStep = stepExecutionLog.step;
+    const step = playbookSteps?.find((step) => step.id === executionStep.id);
+    if (step) {
+      step.ui_requirement.outputLoading = false;
+      step.ui_requirement.showOutput = true;
+    }
     (stepExecutionLog as any)?.task_execution_logs?.forEach((log: any) => {
       const taskInPlaybook: Task | undefined = tasks.find(
         (task) => task.id === log.task?.id,
@@ -49,6 +56,7 @@ function executionToState(playbook_execution: any): Playbook {
 
   return {
     ...(currentPlaybook ?? playbook),
+    steps: playbookSteps,
     ui_requirement: {
       tasks,
       isCopied: false,

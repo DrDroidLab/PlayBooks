@@ -10,7 +10,8 @@ import { Step } from "../types/index.ts";
 function useExecutionStack() {
   const { executionStack, executionId, currentPlaybook } =
     useSelector(playbookSelector);
-  const steps = currentPlaybook?.steps ?? [];
+  const playbookSteps = currentPlaybook?.steps ?? [];
+  const steps = playbookSteps.filter((s) => s.ui_requirement.showOutput);
   const dispatch = useDispatch();
   const { refetch } = useGetPlaybookExecutionQuery();
   const executingStep = (steps ?? []).find(
