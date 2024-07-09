@@ -7,7 +7,7 @@ from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
-from protos.base_pb2 import TimeRange, Source
+from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
@@ -22,14 +22,14 @@ class GcmSourceManager(PlaybookSourceManager):
         self.task_type_callable_map = {
             Gcm.TaskType.METRIC_EXECUTION: {
                 'executor': self.execute_metric_execution,
-                # 'model_types': [SourceModelType.GCM_METRIC],
+                'model_types': [SourceModelType.GCM_METRIC],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Metric from GCM',
                 'category': 'Metrics'
             },
             Gcm.TaskType.FILTER_LOG_ENTRIES: {
                 'executor': self.execute_filter_log_entries,
-                # 'model_types': [SourceModelType.GCM_LOGS],
+                'model_types': [SourceModelType.GCM_LOG_SINK],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from GCM',
                 'category': 'Logs'
