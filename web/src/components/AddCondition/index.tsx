@@ -16,6 +16,7 @@ import {
 import { extractSource } from "../../utils/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -93,9 +94,9 @@ function AddCondition() {
             <div className="flex items-center gap-1">
               <SelectComponent
                 error={undefined}
-                data={taskTypeOptions.map((task) => ({
+                data={taskTypeOptions?.map((task) => ({
                   id: task?.id,
-                  label: task?.description,
+                  label: handleTaskTypeLabels(task),
                 }))}
                 selected={condition.task}
                 placeholder={`Select Task`}
