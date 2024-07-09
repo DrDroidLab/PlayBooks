@@ -10,7 +10,7 @@ function handleTaskBorderColor(taskId: string) {
   // }, []);
 
   if (
-    task?.ui_requirement?.outputs?.data?.length > 0
+    task?.ui_requirement?.output?.data
     // ||
     // (results.length > 0 && results.find((result) => result))
   ) {
