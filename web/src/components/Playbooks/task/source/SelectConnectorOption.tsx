@@ -37,6 +37,7 @@ function SelectConnectorOption({ id: taskId }) {
         {currentConnectorOptions.length > 0 ? (
           <div className="flex gap-2">
             <SelectComponent
+              error={undefined}
               data={currentConnectorOptions.map((option) => ({
                 id: option.connector_id,
                 label: option.display_name,

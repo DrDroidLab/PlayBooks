@@ -21,6 +21,7 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import { resetDrawerState } from "../../../store/features/drawers/drawersSlice.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
 
 function CreatePlaybook() {
   const { openDrawer, permanentView } = usePermanentDrawerState();
@@ -32,6 +33,7 @@ function CreatePlaybook() {
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
+  const { data } = usePlaybookBuilderOptionsQuery();
   const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
 
   useEffect(() => {
@@ -64,11 +66,11 @@ function CreatePlaybook() {
   };
 
   useEffect(() => {
-    if (id || executionId) {
+    if ((id || executionId) && data) {
       fetchPlaybook();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, executionId]);
+  }, [id, executionId, data]);
 
   if (isLoading) {
     return <Loading />;

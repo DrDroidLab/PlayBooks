@@ -39,7 +39,11 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
         />
       </div>
 
-      <HandleTypes condition={rule} conditionIndex={conditionIndex} />
+      <HandleTypes
+        condition={condition}
+        conditionIndex={conditionIndex}
+        rule={rule}
+      />
 
       <div className="flex items-center gap-1">
         <SelectComponent

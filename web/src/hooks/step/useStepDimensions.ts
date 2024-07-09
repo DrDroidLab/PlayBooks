@@ -5,7 +5,7 @@ function useStepDimensions(stepId: string) {
   const stepRef = useRef<HTMLDivElement>(null);
 
   const setDimensions = () => {
-    const height = (stepRef.current?.clientHeight ?? 0) + 200;
+    const height = (stepRef.current?.clientHeight ?? 0) + 300;
     const width = (stepRef.current?.clientWidth ?? 0) + 20;
     updateStepById("ui_requirement.width", width, stepId);
     updateStepById("ui_requirement.height", height, stepId);

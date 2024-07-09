@@ -19,7 +19,7 @@ function HandleTypes({
 }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
-  const type = rule.type;
+  const type = rule?.type;
 
   const keyValue = condition?.type?.toLowerCase();
 
