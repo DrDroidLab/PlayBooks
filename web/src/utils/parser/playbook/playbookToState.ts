@@ -40,11 +40,12 @@ function playbookToState(playbook: Playbook): Playbook {
     const targetId = (relation.child as Step).id;
     relation.id = `edge-${sourceId}-${targetId}`;
     const rules = relation.condition?.rules ?? [];
-    if (relation.condition)
+    if (relation.condition) {
       relation.condition.rules = rules.map((rule) => ({
         ...rule,
         task: { id: rule?.task?.id, reference_id: rule?.task?.reference_id },
       }));
+    }
   });
   return {
     ...playbook,

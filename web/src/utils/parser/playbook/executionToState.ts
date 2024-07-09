@@ -3,7 +3,9 @@ import { store } from "../../../store/index.ts";
 import { Playbook, Task } from "../../../types/index.ts";
 
 function executionToState(playbook_execution: any): Playbook {
-  const currentPlaybook = currentPlaybookSelector(store.getState());
+  const currentPlaybook: Playbook | undefined = currentPlaybookSelector(
+    store.getState(),
+  );
   const playbook: Playbook = playbook_execution?.playbook;
   const stepExecutionLogs: any = playbook_execution?.step_execution_logs ?? {};
 
@@ -46,7 +48,7 @@ function executionToState(playbook_execution: any): Playbook {
   });
 
   return {
-    ...playbook,
+    ...(currentPlaybook ?? playbook),
     ui_requirement: {
       tasks,
       isCopied: false,
