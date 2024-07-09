@@ -70,8 +70,8 @@ function SavePlaybookButton({
     setIsSavePlaybookOverlayOpen(false);
     dispatch(setPlaybookKey({ key: "name", value: pbName }));
 
-    // const error = handlePlaybookSavingValidations();
-    // if (error) return;
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
 
     const playbookObj = {
       playbook: { ...stateToPlaybook(), name: pbName, description },
