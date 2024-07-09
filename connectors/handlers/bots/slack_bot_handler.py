@@ -50,7 +50,7 @@ def handle_slack_event_callback(data: Dict):
             f"Error handling slack event callback api for {team_id}: event type not found in request data: {data}")
         raise Exception("Invalid data received")
 
-    if event_type not in ['message', 'member_joined_channel']:
+    if event_type not in ['message', 'channel_join', 'member_joined_channel', 'channel_left', 'member_left_channel']:
         logger.info(
             f"Ignoring slack event callback. Received invalid event type: {event['type']} for connector {team_id}")
         return True
@@ -66,6 +66,18 @@ def handle_slack_event_callback(data: Dict):
         except Exception as e:
             logger.error(f"Error while handling slack 'message' event with error: {e} for connector: {team_id}")
             raise Exception("Error while handling slack 'message' event")
+
+    if event_type == 'channel_left' or event_type == 'member_left_channel':
+        slack_channel_model = get_db_connector_metadata_models(account_id=slack_connector.account_id,
+                                                               connector_id=slack_connector.id,
+                                                               connector_type=Source.SLACK,
+                                                               model_type=SourceModelType.SLACK_CHANNEL,
+                                                               model_uid=channel_id, is_active=True)
+        if slack_channel_model:
+            slack_channel_model.update(is_active=False)
+            logger.info(
+                f"Deactivated slack channel: {channel_id} for connector: {team_id}")
+            return True
 
     if event_subtype == 'channel_join' or event_type == 'member_joined_channel':
         slack_channel_model = get_db_connector_metadata_models(account_id=slack_connector.account_id,
