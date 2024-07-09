@@ -33,7 +33,8 @@ function CreatePlaybook() {
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
-  const { data } = usePlaybookBuilderOptionsQuery();
+  const { data, isLoading: builderOptionsLoading } =
+    usePlaybookBuilderOptionsQuery();
   const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
 
   useEffect(() => {
@@ -72,7 +73,7 @@ function CreatePlaybook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, executionId, data]);
 
-  if (isLoading) {
+  if (isLoading || builderOptionsLoading || (!id && !executionId)) {
     return <Loading />;
   }
 
