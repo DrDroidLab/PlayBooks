@@ -87,7 +87,7 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
         </div>
       </div>
       {stepTasks.map((task: Task) => (
-        <HandleOutput id={task?.id} showHeading={false} />
+        <HandleOutput key={task.id} id={task?.id} showHeading={false} />
       ))}
 
       {step.notes && (
