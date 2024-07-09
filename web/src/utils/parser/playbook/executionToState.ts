@@ -19,7 +19,7 @@ function executionToState(playbook_execution: any): Playbook {
         taskInPlaybook.ui_requirement = {
           ...taskInPlaybook.ui_requirement,
           output: {
-            data: log.result,
+            data: { ...log.result, timestamp: log.timestamp },
             interpretation: log.interpretation,
           },
           showOutput: true,

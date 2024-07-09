@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import {
   resetState,
   setPlaybookData,
-  setSteps,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
@@ -15,7 +14,6 @@ import {
 import { useParams } from "react-router-dom";
 import Loading from "../../common/Loading/index.tsx";
 import { useLazyGetPlaybookExecutionQuery } from "../../../store/features/playbook/api/logs/getPlaybookExecutionApi.ts";
-import { executionToPlaybook } from "../../../utils/parser/playbook/executionToPlaybook.ts";
 import Builder from "../create/Builder.jsx";
 
 function PlaybookLogs() {
@@ -34,7 +32,6 @@ function PlaybookLogs() {
 
   useEffect(() => {
     if (playbook && Object.keys(playbook).length > 0) {
-      populateData();
       dispatch(setPlaybookData(playbook));
       dispatch(
         updateCustomTimeRange({
@@ -61,11 +58,6 @@ function PlaybookLogs() {
   if (!data) {
     return <></>;
   }
-
-  const populateData = () => {
-    const pbData = executionToPlaybook(data?.playbook_execution);
-    dispatch(setSteps(pbData));
-  };
 
   return (
     <div className="h-screen overflow-hidden">

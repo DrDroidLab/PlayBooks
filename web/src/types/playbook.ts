@@ -26,6 +26,7 @@ export type PlaybookUIState = {
   isOnPlaybookPage: boolean;
   currentVisibleTask?: string;
   currentVisibleStep?: string;
+  currentVisibleStepOnTimeline?: string;
   permanentView?: string;
   shouldScroll?: boolean;
   executionId?: string;

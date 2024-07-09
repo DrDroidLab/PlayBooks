@@ -1,9 +1,6 @@
 import { useGetPlaybookExecutionQuery } from "../../store/features/playbook/api/index.ts";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  showTaskConfig,
-  stepsSelector,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { useDispatch } from "react-redux";
+import { showTaskConfig } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.tsx";
@@ -12,14 +9,13 @@ import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 import useExecutionStack from "../../hooks/useExecutionStack.ts";
 
 function Timeline() {
-  const playbookSteps = useSelector(stepsSelector);
   const { isLoading } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
   const { steps, nextStep, executingStep } = useExecutionStack();
   const showNextStepExecution = Object.keys(nextStep ?? {}).length > 0;
 
   const handleShowConfig = (stepId) => {
-    const index = playbookSteps.findIndex((step) => step.id === stepId);
+    const index = steps.findIndex((step) => step.id === stepId);
     dispatch(showTaskConfig(index));
   };
 

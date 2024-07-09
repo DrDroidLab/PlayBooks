@@ -52,6 +52,7 @@ const initialState: PlaybookUIState = {
   },
   shouldScroll: undefined,
   permanentView: undefined,
+  currentVisibleStepOnTimeline: undefined,
   executionId: undefined,
   isOnPlaybookPage: false,
   executionStack: [],

@@ -5,8 +5,8 @@ import { currentPlaybookSelector } from "../../../store/features/playbook/playbo
 
 function ExecutingStep() {
   const currentPlaybook = useSelector(currentPlaybookSelector);
-  const tasks = currentPlaybook.ui_requirement.tasks;
-  const executingStep = (tasks ?? []).find((step) => step.outputLoading);
+  const steps = currentPlaybook.steps ?? [];
+  const executingStep = steps.find((step) => step.ui_requirement.outputLoading);
 
   if (Object.keys(executingStep ?? {}).length === 0) return <></>;
 

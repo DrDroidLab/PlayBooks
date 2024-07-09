@@ -4,35 +4,31 @@ import {
   popFromExecutionStack,
 } from "../store/features/playbook/playbookSlice.ts";
 import { useGetPlaybookExecutionQuery } from "../store/features/playbook/api/index.ts";
-import { executionToPlaybook } from "../utils/parser/playbook/executionToPlaybook.ts";
-import { Step } from "../types.ts";
 import { useEffect } from "react";
+import { Step } from "../types/index.ts";
 
 function useExecutionStack() {
-  const {
-    executionStack,
-    executionId,
-    steps: playbookSteps,
-  } = useSelector(playbookSelector);
+  const { executionStack, executionId, currentPlaybook } =
+    useSelector(playbookSelector);
+  const steps = currentPlaybook?.steps ?? [];
   const dispatch = useDispatch();
-  const { data, refetch } = useGetPlaybookExecutionQuery();
-  const steps = executionToPlaybook(data?.playbook_execution);
-  const executingStep = (playbookSteps ?? []).find(
-    (step: Step) => step.outputLoading,
+  const { refetch } = useGetPlaybookExecutionQuery();
+  const executingStep = (steps ?? []).find(
+    (step: Step) => step.ui_requirement.outputLoading,
   );
   const nextStep =
     executionStack?.length > 0
-      ? playbookSteps.find(
+      ? steps.find(
           (e: Step) => e.id === executionStack[executionStack.length - 1],
         )
       : {};
 
   useEffect(() => {
-    if (!executingStep?.outputLoading && executionId) {
+    if (!executingStep?.ui_requirement.outputLoading && executionId) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executingStep?.outputLoading]);
+  }, [executingStep?.ui_requirement.outputLoading]);
 
   const pop = () => {
     dispatch(popFromExecutionStack());

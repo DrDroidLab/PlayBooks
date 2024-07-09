@@ -37,7 +37,7 @@ export async function executeTask(id?: string) {
     updateCardById(
       "ui_requirement.output",
       {
-        data: output?.result,
+        data: { ...output?.result, timestamp: output?.timestamp },
         interpretation: output?.interpretation,
       },
       id,
