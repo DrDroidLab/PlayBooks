@@ -10,7 +10,11 @@ function HandleTaskIcon({ taskId }) {
 
   switch (state) {
     case StepStates.LOADING:
-      return <CircularProgress size={20} />;
+      return (
+        <div>
+          <CircularProgress size={20} />
+        </div>
+      );
     case StepStates.SUCCESS:
       return <CheckCircleOutline color="success" fontSize="medium" />;
     case StepStates.ERROR:

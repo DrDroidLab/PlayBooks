@@ -12,7 +12,7 @@ import { LogicalOperator } from "../../../types/stepRelations.ts";
 const firstStepId = generateUUIDWithoutHyphens();
 const firstStep: Step = {
   id: firstStepId,
-  description: `Step-${firstStepId}`,
+  description: `Step`,
   reference_id: uuidv4(),
   tasks: [],
   ui_requirement: {
@@ -177,7 +177,7 @@ const playbookSlice = createSlice({
         ...emptyStep,
         id: stepId,
         reference_id: uuidv4(),
-        description: `Step-${stepId}`,
+        description: `Step`,
         tasks: [task.id!],
       };
 

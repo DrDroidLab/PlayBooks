@@ -48,7 +48,7 @@ function StepNode({ data }) {
     <div
       ref={stepRef}
       onClick={showStepDetails}
-      className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
+      className="p-2 rounded bg-gray-50 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
         {step?.tasks?.map((stepTask) => {

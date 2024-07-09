@@ -2,6 +2,7 @@ import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Tooltip } from "@mui/material";
 import { VisibilityRounded } from "@mui/icons-material";
+import RunButton from "../../Buttons/RunButton/index.tsx";
 
 function TaskButtons({ taskId }) {
   const handleNoAction = (e) => {
@@ -20,7 +21,9 @@ function TaskButtons({ taskId }) {
           <VisibilityRounded fontSize="medium" />
         </Tooltip>
       </CustomButton>
-      <div onClick={handleNoAction}>{/* <RunButton id={task.id} /> */}</div>
+      <div onClick={handleNoAction}>
+        <RunButton id={taskId} />
+      </div>
     </div>
   );
 }

@@ -73,7 +73,7 @@ function CreatePlaybook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, executionId, data]);
 
-  if (isLoading || builderOptionsLoading || (!id && !executionId)) {
+  if (isLoading || builderOptionsLoading) {
     return <Loading />;
   }
 

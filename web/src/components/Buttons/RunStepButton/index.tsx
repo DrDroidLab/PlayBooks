@@ -44,9 +44,9 @@ function RunStepButton({ id, showText = true }: RunStepButtonProps) {
     if (loading) return;
     if (!executionId) {
       const id = await handleStartExecution();
-      dispatch(setPlaybookKey({ key: "executionId", value: id }));
+      if (id) dispatch(setPlaybookKey({ key: "executionId", value: id }));
       if (step) await executeStep(step.id);
-      setSearchParams({ executionId: id });
+      if (id) setSearchParams({ executionId: id });
     } else {
       if (step) executeStep(step.id);
     }
