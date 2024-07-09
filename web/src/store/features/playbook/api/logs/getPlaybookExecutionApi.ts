@@ -25,8 +25,8 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { queryFulfilled, dispatch }) => {
         try {
           const { data } = await queryFulfilled;
-          console.log("data", data);
           dispatch(setPlaybookData(data));
+          // const steps = data.steps;
           // const steps = executionToPlaybook(data?.playbook_execution);
           // addOutputsToSteps(steps);
           // const lastStep = steps[steps.length - 1];

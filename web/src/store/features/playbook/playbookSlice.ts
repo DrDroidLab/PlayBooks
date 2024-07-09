@@ -71,10 +71,10 @@ const playbookSlice = createSlice({
       }
     },
     setPlaybookData(state, { payload }) {
-      state.currentPlaybook = payload;
+      state.currentPlaybook = { ...state.currentPlaybook, ...payload };
     },
     setPlaybookDataBeta(state, { payload }) {
-      state.currentPlaybook = payload;
+      state.currentPlaybook = { ...state.currentPlaybook, ...payload };
     },
     copyPlaybook(state, { payload }) {
       const useState = payload.useState;

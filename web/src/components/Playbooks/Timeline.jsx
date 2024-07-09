@@ -6,7 +6,7 @@ import {
 } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
-import StepConfig from "./timeline/StepConfig.jsx";
+import StepConfig from "./timeline/StepConfig.tsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
 import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 import useExecutionStack from "../../hooks/useExecutionStack.ts";

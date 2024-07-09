@@ -1,7 +1,6 @@
 import React, { useEffect, MouseEvent } from "react";
-import { Link, Notes } from "@mui/icons-material";
-import { renderTimestamp } from "../../../utils/DateUtils";
-import HandleOutput from "../steps/HandleOutput";
+import { renderTimestamp } from "../../../utils/DateUtils.js";
+import HandleOutput from "../steps/HandleOutput.jsx";
 import useVisibility from "../../../hooks/useVisibility.ts";
 import useScrollIntoView from "../../../hooks/useScrollIntoView.ts";
 import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
