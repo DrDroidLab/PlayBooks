@@ -43,10 +43,10 @@ function TaskNode({ taskId }) {
         currentVisibleTask === taskId ? "border-violet-500 border-2" : ""
       } rounded-md overflow-hidden border-2 border-transparent`}
       style={{ borderColor: handleTaskBorderColor(taskId) }}>
-      <div className="add-button">
+      <div className="">
         <TaskTitle taskId={task?.id} />
       </div>
-      <div className="add-step-buttons transition-all">
+      <div className="">
         <TaskInformation taskId={task?.id} />
       </div>
     </div>
