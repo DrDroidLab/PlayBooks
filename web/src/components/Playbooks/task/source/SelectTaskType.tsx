@@ -37,6 +37,7 @@ function SelectTaskType({ id }) {
     <div className="flex flex-col">
       <p className="text-xs text-gray-500 font-bold">Task Type</p>
       <SelectComponent
+        error={undefined}
         data={taskTypes.map((type) => ({
           id: type.task_type,
           label: type.display_name,

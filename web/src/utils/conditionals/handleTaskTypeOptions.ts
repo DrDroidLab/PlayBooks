@@ -11,7 +11,7 @@ function handleTaskTypeOptions(step: Step | undefined): Task[] {
         const taskData: Task | undefined = tasks.find(
           (e) => e.id === (typeof task === "string" ? task : task.id),
         );
-        if (Object.keys(taskData?.ui_requirement.errors).length > 0) {
+        if (Object.keys(taskData?.ui_requirement?.errors ?? {}).length > 0) {
           return undefined;
         }
         return taskData;

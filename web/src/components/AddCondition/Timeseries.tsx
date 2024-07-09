@@ -19,7 +19,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const { handleCondition } = useEdgeConditions(id);
-  const task = tasks?.find((e) => e.id === condition.task);
+  const task = tasks?.find((e) => e.id === condition?.task?.id);
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);

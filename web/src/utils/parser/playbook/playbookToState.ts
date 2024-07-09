@@ -15,17 +15,22 @@ function playbookToState(playbook: Playbook): Playbook {
     },
   }));
   steps.forEach((step: Step) => {
-    const stepTasks: any[] = (step.tasks as Task[]).map((e) => ({
-      ...e,
-      ui_requirement: {
-        stepId: step.id,
-        resultType: supportedTaskTypes?.find(
-          (t: any) =>
-            t.source === e.source &&
-            t.task_type === e[e.source.toLowerCase()]?.type,
-        )?.result_type,
-      },
-    }));
+    const stepTasks: Task[] = (step.tasks as Task[]).map((e) => {
+      const supportedType = supportedTaskTypes?.find(
+        (t: any) =>
+          t.source === e.source &&
+          t.task_type === e[e.source.toLowerCase()]?.type,
+      );
+      return {
+        ...e,
+        ui_requirement: {
+          stepId: step.id,
+          resultType: supportedType?.result_type,
+          isOpen: false,
+          model_type: supportedType.supported_model_types?.[0]?.model_type,
+        },
+      };
+    });
     step.reference_id = uuidv4();
     tasks.push(...stepTasks);
   });
@@ -38,7 +43,7 @@ function playbookToState(playbook: Playbook): Playbook {
     if (relation.condition)
       relation.condition.rules = rules.map((rule) => ({
         ...rule,
-        task: rule?.task?.id,
+        task: { id: rule?.task?.id, reference_id: rule?.task?.reference_id },
       }));
   });
   return {

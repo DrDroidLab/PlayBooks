@@ -72,10 +72,10 @@ const playbookSlice = createSlice({
       }
     },
     setPlaybookData(state, { payload }) {
-      state.currentPlaybook = { ...state.currentPlaybook, ...payload };
+      state.currentPlaybook = payload;
     },
     setPlaybookDataBeta(state, { payload }) {
-      state.currentPlaybook = { ...state.currentPlaybook, ...payload };
+      state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
       const useState = payload.useState;
@@ -442,7 +442,10 @@ const playbookSlice = createSlice({
       if (!relation) return;
       relation.condition?.rules.push({
         type: "",
-        task: "",
+        task: {
+          reference_id: "",
+          id: "",
+        },
       });
     },
     duplicateTask: (state, { payload }) => {

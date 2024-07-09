@@ -37,10 +37,13 @@ function AddCondition() {
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   const handleTaskChange = (id: string, i: number) => {
-    handleRule("task", id, i);
+    const task = tasks?.find((task) => task.id === id);
+    if (!task) return;
+    handleRule("task.id", id, i);
+    handleRule("task.reference_id", task?.reference_id ?? "", i);
     handleRule(
       "type",
-      (tasks?.find((task) => task.id === id)?.ui_requirement.resultType ??
+      (task?.ui_requirement.resultType ??
         ResultTypeTypes.OTHERS) as ResultTypeType,
       i,
     );
@@ -98,7 +101,7 @@ function AddCondition() {
                   id: task?.id,
                   label: handleTaskTypeLabels(task),
                 }))}
-                selected={condition.task}
+                selected={condition?.task?.id}
                 placeholder={`Select Task`}
                 onSelectionChange={(id: string) => handleTaskChange(id, i)}
               />
@@ -106,7 +109,7 @@ function AddCondition() {
             <div className="flex flex-wrap gap-2">
               <HandleResultTypeForm
                 resultType={
-                  (tasks?.find((task) => task.id === condition.task)
+                  (tasks?.find((task) => task.id === condition?.task?.id)
                     ?.ui_requirement.resultType ??
                     ResultTypeTypes.OTHERS) as ResultTypeType
                 }

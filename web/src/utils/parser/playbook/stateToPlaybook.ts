@@ -39,7 +39,19 @@ function stateToPlaybook() {
     child: {
       reference_id: relation.child.reference_id ?? "",
     },
-    condition: relation.condition,
+    condition: relation.condition
+      ? {
+          ...relation.condition,
+          rules:
+            relation.condition?.rules?.map((rule) => ({
+              ...rule,
+              task: {
+                reference_id: rule.task.reference_id ?? "",
+                id: checkId(rule.task.id ?? ""),
+              },
+            })) ?? [],
+        }
+      : undefined,
   }));
 
   return playbook;

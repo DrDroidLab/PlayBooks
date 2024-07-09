@@ -13,7 +13,10 @@ enum RuleType {
 
 export type ConditionRule = {
   type: string;
-  task: any;
+  task: {
+    reference_id?: string;
+    id?: string;
+  };
 } & {
   [key in RuleType]?: any;
 };
