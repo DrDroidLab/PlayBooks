@@ -298,7 +298,13 @@ const playbookSlice = createSlice({
     },
     updateStep: (state, { payload }) => {
       const id = payload.id;
-      let step = state.currentPlaybook!.steps.find((e) => e.id === id);
+      if (!state.currentPlaybook) return;
+      if (
+        !state.currentPlaybook.steps ||
+        state.currentPlaybook.steps?.length === 0
+      )
+        return;
+      let step = state.currentPlaybook.steps.find((e) => e.id === id);
       if (step) {
         step = setNestedValue(step, payload.key, payload.value);
       }

@@ -22,7 +22,7 @@ export const extractParent = (input: string): string => {
   );
   const parent = edge?.parent;
   const sourceId =
-    typeof parent === "string" ? parent?.split("-")[1] : (parent as Step).id;
+    typeof parent === "string" ? parent?.split("-")[1] : (parent as Step)?.id;
   if (sourceId === "playbook") return "";
 
   return sourceId;
