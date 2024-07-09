@@ -21,6 +21,7 @@ import "protos/playbooks/workflow_actions/slack_message.proto";
 import "protos/playbooks/workflow_actions/slack_thread_reply.proto";
 import "protos/playbooks/workflow_actions/pd_notes.proto";
 import "protos/playbooks/workflow_actions/ms_teams_message_webhook.proto";
+import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
 
 enum WorkflowExecutionStatusType {
   UNKNOWN_WORKFLOW_STATUS = 0;
@@ -34,6 +35,7 @@ enum WorkflowExecutionStatusType {
 message WorkflowConfiguration {
   google.protobuf.BoolValue generate_summary = 1;
   google.protobuf.Struct global_variable_set = 2;
+  LambdaFunctionDefinition transformer_lambda_function = 3;
 }
 
 
@@ -174,6 +176,15 @@ message WorkflowExecutionLog {
 }
 
 message WorkflowExecution {
+  message WorkflowExecutionMetadata {
+    enum Type {
+      UNKNOWN = 0;
+      SLACK_MESSAGE = 1;
+      PAGER_DUTY_INCIDENT = 2;
+    }
+    Type type = 1;
+    google.protobuf.Struct event = 2;
+  }
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue workflow_run_id = 2;
   Workflow workflow = 3;
@@ -185,5 +196,6 @@ message WorkflowExecution {
   sfixed64 finished_at = 9;
   google.protobuf.StringValue created_by = 10;
   repeated WorkflowExecutionLog workflow_logs = 11;
-  WorkflowConfiguration execution_configuration = 13;
+  WorkflowConfiguration execution_configuration = 12;
+  WorkflowExecutionMetadata metadata = 13;
 }

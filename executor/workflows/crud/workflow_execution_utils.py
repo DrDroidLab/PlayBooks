@@ -18,7 +18,7 @@ from utils.proto_utils import dict_to_proto, proto_to_dict
 logger = logging.getLogger(__name__)
 
 
-def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread_ts) -> (bool, str):
+def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread_ts, slack_message) -> (bool, str):
     try:
         account = Account.objects.get(id=account_id)
     except Account.DoesNotExist:
@@ -34,10 +34,12 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
         schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
         create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
                                        current_time_utc, workflow_run_uuid, 'SLACK_ALERT',
-                                       metadata={'thread_ts': thread_ts}, workflow_config=workflow_proto.configuration)
+                                       metadata={'type': 'SLACK_MESSAGE', 'event': slack_message},
+                                       workflow_config=workflow_proto.configuration)
 
 
-def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, incident_id) -> (bool, str):
+def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, incident_id, pager_duty_incident) -> \
+        (bool, str):
     try:
         account = Account.objects.get(id=account_id)
     except Account.DoesNotExist:
@@ -53,7 +55,7 @@ def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, in
         schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
         create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
                                        current_time_utc, workflow_run_id, 'PAGERDUTY',
-                                       metadata={'incident_id': incident_id},
+                                       metadata={'type': 'PAGER_DUTY_INCIDENT', 'event': pager_duty_incident},
                                        workflow_config=workflow_proto.configuration)
 
 

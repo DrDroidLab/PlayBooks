@@ -10,6 +10,7 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
+from executor.source_processors.lambda_function_processor import LambdaFunctionProcessor
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
@@ -41,6 +42,17 @@ def workflow_scheduler():
     for wf_execution in all_scheduled_wf_executions:
         workflow_id = wf_execution.workflow_id
         workflow_execution_configuration = wf_execution.workflow_execution_configuration
+        workflow_execution_metadata = wf_execution.metadata
+        event_context = None
+        if workflow_execution_metadata:
+            if workflow_execution_metadata.get('type', '') in ['PAGER_DUTY_INCIDENT', 'SLACK_MESSAGE']:
+                event = workflow_execution_metadata.get('event', {})
+                if event and workflow_execution_configuration.get('transformer_lambda_function', None):
+                    transformer_lambda_function = workflow_execution_configuration.get('transformer_lambda_function',
+                                                                                       None)
+                    lambda_function_processor = LambdaFunctionProcessor(transformer_lambda_function.get('executable'),
+                                                                        transformer_lambda_function.get('requirements'))
+                    event_context = lambda_function_processor.execute(event)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
         account = wf_execution.account
@@ -80,6 +92,8 @@ def workflow_scheduler():
                 execution_global_variable_set = None
                 if workflow_execution_configuration and 'global_variable_set' in workflow_execution_configuration:
                     execution_global_variable_set = workflow_execution_configuration['global_variable_set']
+                    if event_context:
+                        execution_global_variable_set.update(event_context)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by, execution_global_variable_set)
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
