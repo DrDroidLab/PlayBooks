@@ -43,7 +43,7 @@ function useGraphDimensions(
     isOpen,
   ]);
 
-  // instance.fitView(fitViewOptions);
+  instance.fitView(fitViewOptions);
 
   return {
     graphData,
