@@ -8,7 +8,6 @@ import {
   handleTriggerSelect,
 } from "../utils/handleInputs.ts";
 import { CircularProgress } from "@mui/material";
-import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 import { RefreshRounded } from "@mui/icons-material";
 import AlertsDrawer from "../../common/Drawers/AlertsDrawer.jsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
@@ -17,16 +16,9 @@ import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 function SlackTriggerForm() {
   const { data: options, isFetching, refetch } = useGetTriggerOptionsQuery();
   const currentWorkflow = useSelector(currentWorkflowSelector);
-  const [triggerSearchTrigger] = useLazyGetSearchTriggersQuery();
   const { toggle } = useDrawerState(DrawerTypes.ALERTS);
 
   const handleSubmit = () => {
-    triggerSearchTrigger({
-      workspaceId: currentWorkflow?.trigger?.workspaceId,
-      channel_id: currentWorkflow?.trigger?.channel?.channel_id,
-      alert_type: currentWorkflow?.trigger?.source,
-      filter_string: currentWorkflow?.trigger?.filterString,
-    });
     toggle();
   };
   const sources = options?.alert_types?.filter(
