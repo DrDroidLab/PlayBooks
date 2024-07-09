@@ -51,11 +51,11 @@ function StepNode({ data }) {
       className="p-2 rounded bg-gray-100 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
-        {step?.tasks.map((stepTask) => {
+        {step?.tasks?.map((stepTask) => {
           const taskId = typeof stepTask === "string" ? stepTask : stepTask.id;
           const task = tasks?.find((task) => task.id === taskId);
           if (!task) return null;
-          return <TaskNode key={stepTask?.id ?? stepTask} taskId={task?.id} />;
+          return <TaskNode key={taskId} taskId={taskId} />;
         })}
       </div>
       <StepButtons id={step.id} />
