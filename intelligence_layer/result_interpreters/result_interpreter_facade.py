@@ -40,13 +40,8 @@ def step_result_interpret(interpreter_type: InterpreterType, step: PlaybookStep,
 
 
 
-def step_execution_result_interpret(current_step, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
+def step_execution_result_interpret(current_step_execution_log) -> [InterpretationProto]:
     try:
-        for i in step_execution_logs:
-            if i.step.id.value == current_step:
-                current_step_execution_log = i
-        if current_step_execution_log is None:
-            print("Execution Not found for step", current_step)
         interpretations: [InterpretationProto] = []
         task_interpretations = []
         for task_execution_log in current_step_execution_log.task_execution_logs:
@@ -54,14 +49,6 @@ def step_execution_result_interpret(current_step, step_execution_logs: [Playbook
                 task_interpretations.append(task_execution_log.interpretation)
         if current_step_execution_log.step_interpretation.type == InterpretationProto.Type.UNKNOWN and len(task_interpretations) == 0:
             return interpretations
-        step_name = current_step_execution_log.step.name.value
-        title = StringValue(value=f'Step {i + 1}: {step_name}')
-        base_step_interpretation = InterpretationProto(
-            type=InterpretationProto.Type.TEXT,
-            title=title,
-            model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
-        )
-        interpretations.append(base_step_interpretation)
         if current_step_execution_log.step_interpretation.type != InterpretationProto.Type.UNKNOWN:
             interpretations.append(current_step_execution_log.step_interpretation)
         interpretations.extend(task_interpretations)
@@ -74,19 +61,29 @@ def step_execution_result_interpret(current_step, step_execution_logs: [Playbook
 def step_with_children_execution_result_interpret(current_step_id, printed_steps, step_execution_logs: [PlaybookStepExecutionLog]) -> [InterpretationProto]:
     try:
         interpretations: [InterpretationProto] = []
+        current_step: PlaybookStepExecutionLog = None
         if current_step_id not in printed_steps:
             printed_steps.append(current_step_id)
-            current_step_interpretation = step_execution_result_interpret(current_step_id, step_execution_logs)
-            current_step_relation_execution_logs = step_execution_logs[current_step_id].relation_execution_logs
+            for current_step_execution in step_execution_logs:
+                if current_step_execution.step.id.value == current_step_id:
+                    current_step = current_step_execution
+                    break
+            if current_step is None:
+                print("Execution Not found for step", current_step_id)
+            current_step_interpretation = step_execution_result_interpret(current_step)
+            current_step_relation_execution_logs = current_step.relation_execution_logs
             for relation_execution_log in current_step_relation_execution_logs:
                 child_node = relation_execution_log.relation.child.id.value
                 child_step_interpretation: [InterpretationProto] = []
                 child_step_interpretation, printed_steps = step_with_children_execution_result_interpret(child_node, printed_steps, step_execution_logs)
-                if len(relation_execution_log.relation.condition)>0:
-                    relation_interpretation = relation_execution_log.interpretation.summary.value
+                if len(relation_execution_log.relation.condition.rules)>0:
+                    relation_interpretation = relation_execution_log.step_relation_interpretation.summary.value
                     for step in child_step_interpretation:
                         if step.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
-                            step.description.value = relation_interpretation + ", "+ step.description.value
+                            if relation_execution_log.evaluation_result:
+                                step.title.value = "Since the condition (" + relation_interpretation + ") is true, "+ step.title.value
+                            else:
+                                step.title.value = relation_interpretation + ", "+ step.title.value
                 current_step_interpretation.extend(child_step_interpretation)
             interpretations.extend(current_step_interpretation)
         else:
@@ -104,7 +101,7 @@ def playbook_step_execution_result_interpret(step_execution_logs: [PlaybookStepE
         all_steps.append(step_execution_log.step.id)
     printed_steps = []
     for current_step in step_execution_logs:
-        current_step_id = current_step.step.id
+        current_step_id = current_step.step.id.value
         current_interpretation, printed_steps = step_with_children_execution_result_interpret(current_step_id, printed_steps, step_execution_logs)
         interpretations.extend(current_interpretation)
     return interpretations

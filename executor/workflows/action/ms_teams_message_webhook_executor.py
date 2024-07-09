@@ -39,103 +39,102 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
             raise ValueError('MS Teams Webhook is not configured in the notification config')
         logger.info(f"Sending MS Teams message  to webhook {webhook_url}")
         blocks = []
-        playbook_name = ""
-        playbook_url = ""
+        text_message = ""
+        step_number = 1
         for i, interpretation in enumerate(execution_output):            
             title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
+            block_message = ""
+            if description:
+                block_message += f"{description}\n"
+            if summary:
+                block_message += f"{summary}\n"
+            text_message = text_message + block_message
             if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
-                body_block = [
+                if title:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"{title}",
+                            "size": "large",
+                            "wrap": True,
+                            "style": "heading"
+                        }])
+                if block_message:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"{description} \n {summary}",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }])
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                blocks.extend([
                     {
                         "type": "TextBlock",
-                        "text": f"{title}",
+                        "text": f"{step_number}. {title}",
                         "size": "large",
                         "wrap": True,
                         "style": "heading"
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": f"{description} \n {summary}",
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    }]
-            elif interpretation.type == InterpretationProto.Type.TEXT and (interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP):
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": f"{title}",
-                        "size": "large",
-                        "wrap": True,
-                        "style": "heading"
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": f"{description} \n {summary}",
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    }]
-            elif interpretation.type == InterpretationProto.Type.TEXT:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": f"{title} \n {description} \n {summary}",
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    }]
-            elif interpretation.type == InterpretationProto.Type.IMAGE:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": title + "\n" + description,
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    },
-                    {
-                        "type": "Image",
-                        "url": interpretation.image_url.value,
-                        "altText": description
-                    }
-                ]
-            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": title + "\n" + description,
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
-                        "size": "medium",
-                        "wrap": True,
-                        "weight": "lighter"
-                    }
-                ]
-            elif interpretation.type == InterpretationProto.Type.JSON:
-                body_block = [
-                    {
-                        "type": "TextBlock",
-                        "text": f"```\n{summary}\n```",
-                        "size": "Medium",
-                        "wrap": True,
-                        "fontType": "Monospace"
-                    }
-                    
-                ]
-            blocks.extend(body_block)
+                    }])
+                step_number += 1
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
+                if interpretation.type == InterpretationProto.Type.TEXT:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"{block_message}",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }])
+                elif interpretation.type == InterpretationProto.Type.IMAGE:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f'{description}',
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        },
+                        {
+                            "type": "Image",
+                            "url": interpretation.image_url.value,
+                            "altText": f'{description}'
+                        }
+                    ])
+                elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f'{description}',
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": f"Here's the [{'csv file'}]({interpretation.object_url.value}).",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }
+                    ])
+                elif interpretation.type == InterpretationProto.Type.JSON:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"```\n{summary}\n```",
+                            "size": "Medium",
+                            "wrap": True,
+                            "fontType": "Monospace"
+                        }
+                    ])
         payload = {"type": "message", "attachments": [{"contentType": "application/vnd.microsoft.card.adaptive",
                                                        "content": {"type": "AdaptiveCard", "version": "1.2",
-                                                                   "body": blocks, "actions": [
-                                                               {"type": "Action.OpenUrl",
-                                                                "title": f"View Current Execution for {playbook_name}",
-                                                                "url": f"{playbook_url}"}]}}]}
+                                                                   "body": blocks}}]}
         message_params = {'payload': payload}
         try:
             if webhook_url:

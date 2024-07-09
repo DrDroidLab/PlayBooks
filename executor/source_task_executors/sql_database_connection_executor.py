@@ -76,7 +76,7 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                                                            value=StringValue(value=str(value)))
                     table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=sql_query.query,
+            table = TableResult(raw_query=StringValue(value=f'Execute {query} on {database}'),
                                 total_count=UInt64Value(value=int(count_result)),
                                 limit=UInt64Value(value=limit),
                                 offset=UInt64Value(value=offset),

@@ -16,8 +16,7 @@ def basic_step_summariser(step: PlaybookStep, task_interpretations: [Interpretat
     return InterpretationProto(
         type=InterpretationProto.Type.TEXT, 
         model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
-        title = step.name,
-        description=step.description)
+        title = StringValue(value=step.description.value))
 
 
 def llm_chat_gpt_step_summariser(step: PlaybookStep,
@@ -27,8 +26,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStep,
     elif len(task_interpretations) == 1:
         return InterpretationProto(type=InterpretationProto.Type.TEXT, 
         model_type=InterpretationProto.ModelType.PLAYBOOK_STEP,
-        title = step.title,
-        description = step.description)
+        title = StringValue(value=step.description.value))
     open_ai_integration = get_db_connectors(connector_type=ConnectorType.OPEN_AI, is_active=True)
     if not open_ai_integration:
         logger.error('Aborting LLM step summariser. OpenAI integration is not set.')
@@ -113,8 +111,7 @@ def llm_chat_gpt_step_summariser(step: PlaybookStep,
             summary = f'`No Anomaly Detected`: {inference.get("description","")}'
         step_summary = InterpretationProto(
                                         type=InterpretationProto.Type.TEXT,
-                                        title=step.name,
-                                        description=step.description,
+                                        title=StringValue(value=step.description.value),
                                         summary=StringValue(value=summary),
                                         model_type=InterpretationProto.ModelType.PLAYBOOK_STEP)
         return step_summary
