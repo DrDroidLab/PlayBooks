@@ -8,3 +8,4 @@ export * from "./playbooks.ts";
 export * from "./triggers.ts";
 export * from "./workflows.ts";
 export * from "./templates.ts";
+export * from "./management.ts";
