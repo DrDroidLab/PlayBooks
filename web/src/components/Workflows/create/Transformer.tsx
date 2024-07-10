@@ -27,7 +27,7 @@ function Transformer() {
       <Checkbox
         id={key}
         isChecked={currentWorkflow[key]}
-        label="Use Transformer"
+        label="Add a Transformer"
         onChange={handleTransformer}
         isSmall={true}
       />
