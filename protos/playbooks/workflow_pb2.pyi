@@ -552,17 +552,21 @@ class WorkflowExecution(google.protobuf.message.Message):
 
         TYPE_FIELD_NUMBER: builtins.int
         EVENT_FIELD_NUMBER: builtins.int
+        EVENT_CONTEXT_FIELD_NUMBER: builtins.int
         type: global___WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType
         @property
         def event(self) -> google.protobuf.struct_pb2.Struct: ...
+        @property
+        def event_context(self) -> google.protobuf.struct_pb2.Struct: ...
         def __init__(
             self,
             *,
             type: global___WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType = ...,
             event: google.protobuf.struct_pb2.Struct | None = ...,
+            event_context: google.protobuf.struct_pb2.Struct | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["event", b"event"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["event", b"event", "type", b"type"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["event", b"event", "event_context", b"event_context"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["event", b"event", "event_context", b"event_context", "type", b"type"]) -> None: ...
 
     ID_FIELD_NUMBER: builtins.int
     WORKFLOW_RUN_ID_FIELD_NUMBER: builtins.int

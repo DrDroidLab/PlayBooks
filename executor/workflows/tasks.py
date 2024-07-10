@@ -14,7 +14,8 @@ from executor.source_processors.lambda_function_processor import LambdaFunctionP
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log, \
+    update_db_account_workflow_execution_metadata
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
@@ -57,6 +58,10 @@ def workflow_scheduler():
                         transformer_lambda_function_proto.definition.value,
                         transformer_lambda_function_proto.requirements)
                     event_context = lambda_function_processor.execute(event)
+                    if event_context and isinstance(event_context, dict):
+                        workflow_execution_metadata['event_context'] = event_context
+                        update_db_account_workflow_execution_metadata(wf_execution.account, wf_execution.id,
+                                                                      workflow_execution_metadata)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
         account = wf_execution.account
@@ -194,7 +199,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         slack_thread_ts = None
         pd_incident_id = None
         if workflow_execution.metadata:
-            slack_thread_ts = workflow_execution.metadata.get('thread_ts', None)
+            slack_thread_ts = workflow_execution.metadata.get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
 
         playbook_execution = playbook_executions.first()

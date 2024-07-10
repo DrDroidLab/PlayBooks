@@ -184,6 +184,7 @@ message WorkflowExecution {
     }
     Type type = 1;
     google.protobuf.Struct event = 2;
+    google.protobuf.Struct event_context = 3;
   }
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue workflow_run_id = 2;
