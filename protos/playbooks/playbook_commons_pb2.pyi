@@ -53,6 +53,7 @@ class _PlaybookTaskResultTypeEnumTypeWrapper(google.protobuf.internal.enum_type_
     TABLE: _PlaybookTaskResultType.ValueType  # 2
     API_RESPONSE: _PlaybookTaskResultType.ValueType  # 3
     BASH_COMMAND_OUTPUT: _PlaybookTaskResultType.ValueType  # 4
+    TEXT: _PlaybookTaskResultType.ValueType  # 5
 
 class PlaybookTaskResultType(_PlaybookTaskResultType, metaclass=_PlaybookTaskResultTypeEnumTypeWrapper): ...
 
@@ -61,6 +62,7 @@ TIMESERIES: PlaybookTaskResultType.ValueType  # 1
 TABLE: PlaybookTaskResultType.ValueType  # 2
 API_RESPONSE: PlaybookTaskResultType.ValueType  # 3
 BASH_COMMAND_OUTPUT: PlaybookTaskResultType.ValueType  # 4
+TEXT: PlaybookTaskResultType.ValueType  # 5
 global___PlaybookTaskResultType = PlaybookTaskResultType
 
 @typing_extensions.final
@@ -318,6 +320,23 @@ class BashCommandOutputResult(google.protobuf.message.Message):
 global___BashCommandOutputResult = BashCommandOutputResult
 
 @typing_extensions.final
+class TextResult(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    OUTPUT_FIELD_NUMBER: builtins.int
+    @property
+    def output(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        output: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["output", b"output"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["output", b"output"]) -> None: ...
+
+global___TextResult = TextResult
+
+@typing_extensions.final
 class PlaybookTaskResult(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -328,6 +347,7 @@ class PlaybookTaskResult(google.protobuf.message.Message):
     TABLE_FIELD_NUMBER: builtins.int
     API_RESPONSE_FIELD_NUMBER: builtins.int
     BASH_COMMAND_OUTPUT_FIELD_NUMBER: builtins.int
+    TEXT_FIELD_NUMBER: builtins.int
     @property
     def error(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     type: global___PlaybookTaskResultType.ValueType
@@ -340,6 +360,8 @@ class PlaybookTaskResult(google.protobuf.message.Message):
     def api_response(self) -> global___ApiResponseResult: ...
     @property
     def bash_command_output(self) -> global___BashCommandOutputResult: ...
+    @property
+    def text(self) -> global___TextResult: ...
     def __init__(
         self,
         *,
@@ -350,10 +372,11 @@ class PlaybookTaskResult(google.protobuf.message.Message):
         table: global___TableResult | None = ...,
         api_response: global___ApiResponseResult | None = ...,
         bash_command_output: global___BashCommandOutputResult | None = ...,
+        text: global___TextResult | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "result", b"result", "table", b"table", "timeseries", b"timeseries"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "result", b"result", "source", b"source", "table", b"table", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table", "api_response", "bash_command_output"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "result", b"result", "table", b"table", "text", b"text", "timeseries", b"timeseries"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "result", b"result", "source", b"source", "table", b"table", "text", b"text", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table", "api_response", "bash_command_output", "text"] | None: ...
 
 global___PlaybookTaskResult = PlaybookTaskResult
 
