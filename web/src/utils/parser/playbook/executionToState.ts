@@ -54,6 +54,8 @@ function executionToState(playbook_execution: any): Playbook {
     });
   });
 
+  // console.log("tasks", tasks);
+
   return {
     ...(currentPlaybook ?? playbook),
     steps: playbookSteps,
