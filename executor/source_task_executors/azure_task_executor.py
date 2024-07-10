@@ -75,7 +75,7 @@ class AzureSourceManager(PlaybookSourceManager):
                     table_rows.append(table_row)
 
             result = TableResult(
-                raw_query=StringValue(value=query_pattern),
+                raw_query=StringValue(value=f'Execute {query_pattern} on Azure Log Analytics workspace: {workspace_id}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)),
             )

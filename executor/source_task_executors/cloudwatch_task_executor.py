@@ -113,9 +113,11 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                     unit=StringValue(value=metric_unit),
                     datapoints=metric_datapoints
                 )]
-
-                timeseries_result = TimeseriesResult(metric_name=StringValue(value=metric_name),
-                                                     metric_expression=StringValue(value=namespace),
+                metric_metadata = f"{namespace} for region {region} "
+                for i in dimensions:
+                    metric_metadata += f"{i['Name']}:{i['Value']},  "
+                timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric_name),
+                                                     metric_name=StringValue(value=metric_metadata),
                                                      labeled_metric_timeseries=labeled_metric_timeseries)
 
                 task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
@@ -168,7 +170,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                 table_rows.append(table_row)
 
             result = TableResult(
-                raw_query=StringValue(value=query_pattern),
+                raw_query=StringValue(value=f"Execute ```{query_pattern}``` on log group {log_group} in region {region}"),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)),
             )

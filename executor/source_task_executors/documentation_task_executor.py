@@ -1,11 +1,11 @@
 from typing import Dict
 
+from google.protobuf.wrappers_pb2 import StringValue
 from executor.playbook_source_manager import PlaybookSourceManager
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TextResult
 from protos.playbooks.source_task_definitions.documentation_task_pb2 import Documentation
-
 
 class DocumentationSourceManager(PlaybookSourceManager):
 
@@ -16,14 +16,14 @@ class DocumentationSourceManager(PlaybookSourceManager):
             Documentation.TaskType.MARKDOWN: {
                 'executor': self.execute_markdown,
                 'model_types': [],
-                'result_type': PlaybookTaskResultType.UNKNOWN,
+                'result_type': PlaybookTaskResultType.TEXT,
                 'display_name': 'Write Markdown Documentation',
                 'category': 'Documentation'
             },
             Documentation.TaskType.IFRAME: {
                 'executor': self.execute_iframe,
                 'model_types': [],
-                'result_type': PlaybookTaskResultType.UNKNOWN,
+                'result_type': PlaybookTaskResultType.TEXT,
                 'display_name': 'Embed an IFrame',
                 'category': 'Documentation'
             },
@@ -32,13 +32,20 @@ class DocumentationSourceManager(PlaybookSourceManager):
     def execute_markdown(self, time_range: TimeRange, global_variable_set: Dict,
                          doc_task: Documentation, doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
-            return PlaybookTaskResult(source=self.source)
+            content_output = TextResult()
+            if doc_task.type == Documentation.TaskType.MARKDOWN:
+                content_output = TextResult(output = StringValue(value=doc_task.markdown.content.value))
+            return PlaybookTaskResult(type= PlaybookTaskResultType.TEXT, source=self.source, text=content_output)
         except Exception as e:
             raise Exception(f"Error while executing API call task: {e}")
 
     def execute_iframe(self, time_range: TimeRange, global_variable_set: Dict,
                        doc_task: Documentation, doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
-            return PlaybookTaskResult(source=self.source)
+            content_output = TextResult()
+            if doc_task.type == Documentation.TaskType.IFRAME:
+                url = doc_task.iframe.iframe_url.value
+                content_output = TextResult(output = StringValue(value=f"URL: {url}"))
+            return PlaybookTaskResult(type= PlaybookTaskResultType.TEXT, source=self.source, text=content_output)
         except Exception as e:
             raise Exception(f"Error while executing API call task: {e}")

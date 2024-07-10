@@ -48,14 +48,35 @@ class Interpretation(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: Interpretation._Type.ValueType  # 0
         IMAGE: Interpretation._Type.ValueType  # 1
-        SUMMARY: Interpretation._Type.ValueType  # 2
+        TEXT: Interpretation._Type.ValueType  # 2
         CSV_FILE: Interpretation._Type.ValueType  # 3
+        JSON: Interpretation._Type.ValueType  # 4
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: Interpretation.Type.ValueType  # 0
     IMAGE: Interpretation.Type.ValueType  # 1
-    SUMMARY: Interpretation.Type.ValueType  # 2
+    TEXT: Interpretation.Type.ValueType  # 2
     CSV_FILE: Interpretation.Type.ValueType  # 3
+    JSON: Interpretation.Type.ValueType  # 4
+
+    class _ModelType:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _ModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Interpretation._ModelType.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN_M: Interpretation._ModelType.ValueType  # 0
+        PLAYBOOK_TASK: Interpretation._ModelType.ValueType  # 1
+        PLAYBOOK_STEP: Interpretation._ModelType.ValueType  # 2
+        PLAYBOOK_STEP_RELATION: Interpretation._ModelType.ValueType  # 3
+        WORKFLOW_EXECUTION: Interpretation._ModelType.ValueType  # 4
+
+    class ModelType(_ModelType, metaclass=_ModelTypeEnumTypeWrapper): ...
+    UNKNOWN_M: Interpretation.ModelType.ValueType  # 0
+    PLAYBOOK_TASK: Interpretation.ModelType.ValueType  # 1
+    PLAYBOOK_STEP: Interpretation.ModelType.ValueType  # 2
+    PLAYBOOK_STEP_RELATION: Interpretation.ModelType.ValueType  # 3
+    WORKFLOW_EXECUTION: Interpretation.ModelType.ValueType  # 4
 
     TYPE_FIELD_NUMBER: builtins.int
     INTERPRETER_TYPE_FIELD_NUMBER: builtins.int
@@ -65,6 +86,7 @@ class Interpretation(google.protobuf.message.Message):
     IMAGE_URL_FIELD_NUMBER: builtins.int
     FILE_PATH_FIELD_NUMBER: builtins.int
     OBJECT_URL_FIELD_NUMBER: builtins.int
+    MODEL_TYPE_FIELD_NUMBER: builtins.int
     type: global___Interpretation.Type.ValueType
     interpreter_type: global___InterpreterType.ValueType
     @property
@@ -79,6 +101,7 @@ class Interpretation(google.protobuf.message.Message):
     def file_path(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def object_url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    model_type: global___Interpretation.ModelType.ValueType
     def __init__(
         self,
         *,
@@ -90,8 +113,9 @@ class Interpretation(google.protobuf.message.Message):
         image_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
         file_path: google.protobuf.wrappers_pb2.StringValue | None = ...,
         object_url: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        model_type: global___Interpretation.ModelType.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "object_url", b"object_url", "summary", b"summary", "title", b"title"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "interpreter_type", b"interpreter_type", "object_url", b"object_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "file_path", b"file_path", "image_url", b"image_url", "interpreter_type", b"interpreter_type", "model_type", b"model_type", "object_url", b"object_url", "summary", b"summary", "title", b"title", "type", b"type"]) -> None: ...
 
 global___Interpretation = Interpretation

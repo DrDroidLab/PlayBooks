@@ -59,7 +59,9 @@ settings:
         bot_events:
         - message.channels
         - member_joined_channel
+        - member_left_channel
         - message.groups
+        - channel_left
     org_deploy_enabled: false
     socket_mode_enabled: false
     token_rotation_enabled: false
