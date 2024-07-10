@@ -4,12 +4,9 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
-  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { useDispatch } from "react-redux";
-// import { addParentId } from "../../../store/features/playbook/playbookSlice.ts";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useReactFlow } from "reactflow";
 import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
@@ -39,23 +36,6 @@ const CreateFlow = () => {
   );
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphData.edges ?? []);
-  const dispatch = useDispatch();
-
-  const onConnect = useCallback(
-    ({ source, target }) => {
-      return setEdges((eds) =>
-        nodes
-          .filter((node) => node.id === source || node.selected)
-          .reduce((eds, node) => {
-            const stepId = target.split("-")[1];
-            const parentId = node.id.split("-")[1];
-            // dispatch(addParentId({ id: stepId, parentId }));
-            return addEdge({ source: node.id, target }, eds);
-          }, eds),
-      );
-    },
-    [nodes],
-  );
 
   useEffect(() => {
     if (dagreData?.nodes?.length > 0) {
@@ -81,7 +61,7 @@ const CreateFlow = () => {
         zoomOnPinch={true}
         fitView
         fitViewOptions={fitViewOptions}
-        onConnect={onConnect}
+        edgesUpdatable={false}
         className="bg-gray-50">
         <Controls />
         <Background variant="dots" gap={12} size={1} />
