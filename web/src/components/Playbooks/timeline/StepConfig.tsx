@@ -26,7 +26,7 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
   const playbook = useSelector(currentPlaybookSelector);
   const tasks = playbook?.ui_requirement.tasks ?? [];
   const stepTasks: Task[] = step.tasks
-    .map((taskId: string | Task) =>
+    ?.map((taskId: string | Task) =>
       tasks.find(
         (e) => e.id === (typeof taskId === "string" ? taskId : taskId.id),
       ),
@@ -86,7 +86,7 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
           </p>
         </div>
       </div>
-      {stepTasks.map((task: Task) => (
+      {stepTasks?.map((task: Task) => (
         <HandleOutput key={task.id} id={task?.id} showHeading={false} />
       ))}
 

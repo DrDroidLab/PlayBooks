@@ -10,19 +10,19 @@ function handleTaskBorderColor(taskId: string) {
   // }, []);
 
   if (
-    task?.ui_requirement?.output?.data
-    // ||
-    // (results.length > 0 && results.find((result) => result))
-  ) {
-    return "green";
-  }
-
-  if (
     task?.ui_requirement?.outputError
     // ||
     // (results.length > 0 && results.findIndex((result) => result) === -1)
   ) {
     return "red";
+  }
+
+  if (
+    task?.ui_requirement?.output?.data
+    // ||
+    // (results.length > 0 && results.find((result) => result))
+  ) {
+    return "green";
   }
 }
 
