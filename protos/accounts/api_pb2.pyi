@@ -152,6 +152,30 @@ class GetUserResponse(google.protobuf.message.Message):
 global___GetUserResponse = GetUserResponse
 
 @typing_extensions.final
+class GetVersionInfoResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    CURRENT_VERSION_FIELD_NUMBER: builtins.int
+    LATEST_VERSION_FIELD_NUMBER: builtins.int
+    SHOULD_UPGRADE_FIELD_NUMBER: builtins.int
+    UPGRADE_MESSAGE_FIELD_NUMBER: builtins.int
+    current_version: builtins.str
+    latest_version: builtins.str
+    should_upgrade: builtins.bool
+    upgrade_message: builtins.str
+    def __init__(
+        self,
+        *,
+        current_version: builtins.str = ...,
+        latest_version: builtins.str = ...,
+        should_upgrade: builtins.bool = ...,
+        upgrade_message: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["current_version", b"current_version", "latest_version", b"latest_version", "should_upgrade", b"should_upgrade", "upgrade_message", b"upgrade_message"]) -> None: ...
+
+global___GetVersionInfoResponse = GetVersionInfoResponse
+
+@typing_extensions.final
 class InviteUsersRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 

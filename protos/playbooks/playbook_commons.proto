@@ -19,6 +19,7 @@ enum PlaybookTaskResultType {
   TABLE = 2;
   API_RESPONSE = 3;
   BASH_COMMAND_OUTPUT = 4;
+  TEXT = 5;
 }
 
 message ExternalLink {
@@ -82,6 +83,10 @@ message BashCommandOutputResult {
   repeated CommandOutput command_outputs = 1;
 }
 
+message TextResult {
+  google.protobuf.StringValue output = 1;
+}
+
 message PlaybookTaskResult {
   google.protobuf.StringValue error = 1;
   PlaybookTaskResultType type = 2;
@@ -91,6 +96,7 @@ message PlaybookTaskResult {
     TableResult table = 102;
     ApiResponseResult api_response = 103;
     BashCommandOutputResult bash_command_output = 104;
+    TextResult text = 105;
   }
 }
 

@@ -43,7 +43,7 @@ def table_result_to_df(table_result):
     data = []
     for row in table_result.rows:
         columns = row.columns
-        data.append({col.name.value: col.value for col in columns})
+        data.append({col.name.value: col.value.value for col in columns})
 
     return pd.DataFrame(data)
 
