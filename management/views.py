@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 from django.http import HttpResponse
 import os
@@ -12,15 +13,18 @@ REPO_OWNER = "DrDroidLab"
 REPO_NAME = "PlayBooks"
 
 def get_main_last_commit_timestamp():
-    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits/main"
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        commit_data = response.json()
-        commit_date = int(commit_data['commit']['committer']['date'])
-        return commit_date
-    else:
-        raise Exception(f"Failed to fetch commit data: {response.status_code}")
+    try:
+        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits/main"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            commit_data = response.json()
+            commit_date = commit_data['commit']['committer']['date']
+            return commit_date
+        else:
+            return None
+    except:
+        return None
     
 def get_latest_tag_timestamp():
     latest_tag = None
@@ -55,12 +59,14 @@ def version_info(request_message: GetUserRequest) -> Union[GetVersionInfoRespons
         if LATEST_TAG_TIMESTAMP > int(BUILD_TIMESTAMP):
             should_upgrade = True
             latest_version = LATEST_TAG
-            upgrade_message = f'New Release Available - {LATEST_TAG}'
+            upgrade_message = f'Upgrade to {LATEST_TAG}'
     elif BUILD_TIMESTAMP is not None:
         LATEST_TIMESTAMP = get_main_last_commit_timestamp()
-        if LATEST_TIMESTAMP > int(BUILD_TIMESTAMP):
-            should_upgrade = True
-            upgrade_message = 'New version available!'
+        if LATEST_TIMESTAMP:
+            print(datetime.strptime(LATEST_TIMESTAMP, '%Y-%m-%dT%H:%M:%SZ').timestamp(), BUILD_TIMESTAMP)
+            if datetime.strptime(LATEST_TIMESTAMP, '%Y-%m-%dT%H:%M:%SZ').timestamp() > int(BUILD_TIMESTAMP):
+                should_upgrade = True
+                upgrade_message = 'Upgrade to Latest Version'
 
     return GetVersionInfoResponse(current_version=IMAGE_VERSION, latest_version=latest_version, 
                                   should_upgrade=should_upgrade, upgrade_message=upgrade_message)
