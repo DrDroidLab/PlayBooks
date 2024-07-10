@@ -7,6 +7,7 @@ export const handleActionsExtractor = (
   switch (type) {
     case Types.WorkflowActionOptions.SLACK_MESSAGE:
       return {
+        trigger: {},
         channel: {
           channel_id: workflowAction.slack_channel_id,
         },
@@ -25,10 +26,15 @@ export const handleActionsExtractor = (
     case Types.WorkflowActionOptions.MS_TEAMS_MESSAGE_WEBHOOK:
       return {
         ms_webhook: workflowAction.ms_teams_connector_webhook_url,
+        channel: {},
+        trigger: {},
       };
     case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
-      return {};
+      return {
+        channel: {},
+        trigger: {},
+      };
     default:
-      return {};
+      return { channel: {}, trigger: {} };
   }
 };
