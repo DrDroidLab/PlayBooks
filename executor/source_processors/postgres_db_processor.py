@@ -20,11 +20,11 @@ class PostgresDBProcessor(Processor):
             'port': port
         }
 
-    def get_connection(self):
+    def get_connection(self, timeout=None):
         try:
             if 'database' not in self.config:
                 raise Exception("Database name is required to connect to postgres")
-            client = psycopg2.connect(**self.config)
+            client = psycopg2.connect(**self.config, connect_timeout=timeout)
             return client
         except Exception as e:
             logger.error(f"Exception occurred while testing postgres connection with error: {e}")
@@ -96,9 +96,9 @@ class PostgresDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout=None):
         try:
-            client = self.get_connection()
+            client = self.get_connection(timeout=timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
             cursor.execute(query)
             result = cursor.fetchall()
@@ -106,12 +106,12 @@ class PostgresDBProcessor(Processor):
             client.close()
             return result
         except Exception as e:
-            logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
+            logger.error(f"Exception occurred while fetching postgres query result with error: {e}")
             raise e
 
-    def get_query_result_fetch_one(self, query):
+    def get_query_result_fetch_one(self, query, timeout=None):
         try:
-            client = self.get_connection()
+            client = self.get_connection(timeout=timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
             cursor.execute(query)
             result = cursor.fetchone()[0]
@@ -119,5 +119,5 @@ class PostgresDBProcessor(Processor):
             client.close()
             return result
         except Exception as e:
-            logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
+            logger.error(f"Exception occurred while fetching postgres query result with error: {e}")
             raise e

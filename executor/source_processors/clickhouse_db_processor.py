@@ -99,10 +99,10 @@ class ClickhouseDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching clickhouse table details with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout=None):
         try:
             client = self.get_connection()
-            result = client.query(query)
+            result = client.query(query, settings={'max_execution_time': timeout})
             client.close()
             return result
         except Exception as e:

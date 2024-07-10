@@ -32,7 +32,8 @@ class ClickhouseSourceManager(PlaybookSourceManager):
         return ClickhouseDBProcessor(**generated_credentials)
 
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
-                          clickhouse_task: SqlDataFetch, clickhouse_connector: ConnectorProto) -> PlaybookTaskResult:
+                          clickhouse_task: SqlDataFetch, clickhouse_connector: ConnectorProto,
+                          timeout: int = 120) -> PlaybookTaskResult:
         try:
             if not clickhouse_connector:
                 raise Exception("Task execution Failed:: No Clickhouse source found")
@@ -61,12 +62,12 @@ class ClickhouseSourceManager(PlaybookSourceManager):
 
             query_client = self.get_connector_processor(clickhouse_connector, database=database)
 
-            count_result = query_client.get_query_result(count_query)
+            count_result = query_client.get_query_result(count_query, timeout=timeout)
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "Clickhouse", clickhouse_connector.account_id.value, query), flush=True)
 
-            result = query_client.get_query_result(query)
+            result = query_client.get_query_result(query, timeout=timeout)
             columns = result.column_names
             table_rows: [TableResult.TableRow] = []
             for row in result.result_set:

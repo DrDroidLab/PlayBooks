@@ -26,14 +26,14 @@ class PostgresSourceManager(PlaybookSourceManager):
             },
         }
 
-    def get_connector_processor(self, grafana_connector, **kwargs):
-        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+    def get_connector_processor(self, pg_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(pg_connector.type, pg_connector.keys)
         if kwargs and 'database' in kwargs:
             generated_credentials['database'] = kwargs['database']
         return PostgresDBProcessor(**generated_credentials)
 
     def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict, pg_task: SqlDataFetch,
-                          pg_connector: ConnectorProto) -> PlaybookTaskResult:
+                          pg_connector: ConnectorProto, timeout: int = 120) -> PlaybookTaskResult:
         try:
             if not pg_connector:
                 raise Exception("Task execution Failed:: No Postgres source found")
@@ -73,12 +73,12 @@ class PostgresSourceManager(PlaybookSourceManager):
 
             pg_db_processor = self.get_connector_processor(pg_connector, database=database)
 
-            count_result = pg_db_processor.get_query_result_fetch_one(count_query)
+            count_result = pg_db_processor.get_query_result_fetch_one(count_query, timeout=timeout)
 
-            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format("Postgres",
-                                                                                                    pg_connector.account_id.value,
-                                                                                                    query), flush=True)
-            result = pg_db_processor.get_query_result(query)
+            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
+                "Postgres", pg_connector.account_id.value, query), flush=True)
+
+            result = pg_db_processor.get_query_result(query, timeout=timeout)
             table_rows: [TableResult.TableRow] = []
             for row in result:
                 table_columns = []
