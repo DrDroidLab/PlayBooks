@@ -45,14 +45,14 @@ function RunButton({ id, showText = true }: RunButtonProps) {
 
   const handleExecuteTask = async () => {
     if (loading) return;
-    if (isExisting && !executionId && task?.ui_requirement.stepId) {
-      const id = await handleStartExecution();
-      dispatch(setPlaybookKey({ key: "executionId", value: id }));
-      if (task) await executeTask(task.id);
-      setSearchParams({ executionId: id });
-    } else {
-      if (task) executeTask(task.id);
-    }
+    // if (isExisting && !executionId && task?.ui_requirement.stepId) {
+    //   const id = await handleStartExecution();
+    //   dispatch(setPlaybookKey({ key: "executionId", value: id }));
+    //   if (task) await executeTask(task.id);
+    //   setSearchParams({ executionId: id });
+    // } else {
+    if (task) executeTask(task.id);
+    // }
   };
 
   if (!task?.source || unsupportedRunners.includes(task?.source ?? ""))
