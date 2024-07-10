@@ -137,6 +137,7 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 playbook_step_execution_log=playbook_step_execution_log,
                 evaluation_result=step_relation_execution_log['evaluation_result'],
                 evaluation_output=step_relation_execution_log['evaluation_output'],
+                interpretation=step_relation_execution_log['step_relation_interpretation']
             )
             all_db_playbook_step_relation_execution_logs.append(playbook_step_relation_execution_log)
 

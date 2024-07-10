@@ -97,7 +97,7 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                     update_columns = table_meta_columns + dc
                     table_row = TableResult.TableRow(columns=update_columns)
                     table_rows.append(table_row)
-            table = TableResult(raw_query=StringValue(value=query), total_count=UInt64Value(value=len(result)),
+            table = TableResult(raw_query=StringValue(value=f"Execute ```{query}```"), total_count=UInt64Value(value=len(result)),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
         except Exception as e:
