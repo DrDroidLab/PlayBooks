@@ -16,11 +16,21 @@ import {
 } from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
+import {
+  useFetchVersionInfoQuery
+} from "./store/features/management/api/index.ts";
+
 function Sidebar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
+
+  const {
+    data,
+    isFetching: versionLoading,
+    refetch,
+  } = useFetchVersionInfoQuery({});
 
   const signOut = async () => {
     await triggerLogout();
@@ -58,8 +68,8 @@ function Sidebar() {
         paddingBottom: "10px",
       }}>
       <div className="flex flex-col gap-0">
-        <div className="py-2 px-2 border-b border-gray-300 bg-white h-[80px] flex items-center justify-center">
-          <Link to="/">
+        <div className="py-2 px-2 border-b border-gray-300 bg-white h-[80px] flex items-center justify-center flex-col">
+          <Link style={{ padding: "0px", paddingTop: "1rem" }} to="/">
             <div style={{ display: "flex", justifyContent: "center" }}>
               <img
                 src="/logo/drdroid-logo-full.png"
@@ -69,6 +79,14 @@ function Sidebar() {
               />
             </div>
           </Link>
+          <div class="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
+            <p>{data?.current_version ? data?.current_version : ''}</p>
+            {
+              data?.should_upgrade ? (<>
+                <p class="bg-[#9553fe59] px-1 rounded-md"><a style={{ padding: "0px" }} href="https://github.com/DrDroidLab/PlayBooks/releases" target="_blank">{data.upgrade_message}</a></p>
+              </>) : null
+            }
+          </div>
         </div>
 
         <List sx={{ padding: 0 }}>

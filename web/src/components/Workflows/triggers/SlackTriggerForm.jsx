@@ -22,7 +22,7 @@ function SlackTriggerForm() {
     toggle();
   };
   const sources = options?.alert_types?.filter(
-    (e) => e.channel_id === currentWorkflow.trigger.channel?.channel_id,
+    (e) => e.channel_id === currentWorkflow.trigger?.channel?.channel_id,
   );
 
   return (
