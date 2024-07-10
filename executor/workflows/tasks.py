@@ -304,7 +304,7 @@ def test_workflow_transformer(lambda_function: Lambda.Function, event):
     try:
         lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
                                                             lambda_function.requirements)
-        event_context = lambda_function_processor.execute(event['x'])
+        event_context = lambda_function_processor.execute(event)
         return event_context
     except Exception as e:
         logger.error(f"Error occurred while running transformer lambda function: {e}")
