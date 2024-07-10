@@ -384,9 +384,13 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
         execution_time_block = f"\n Execution time: {string_time};"
     else:
         execution_time_block = ""
+    if time_since_triggered == 1:
+        execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minute ago. \n"
+    else:
+        execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minutes ago. \n"
     if destination_text in ['Slack','Slack Thread']:
         if schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
-            workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} Triggered by: {trigger_text}, {time_since_triggered} minutes ago. \n Configuration: <{workflow_link}|{workflow_name}>"""
+            workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} {execution_trigger_time_block} Configuration: <{workflow_link}|{workflow_name}>"""
         elif schedule_type == WorkflowScheduleProto.Type.INTERVAL or schedule_type == WorkflowScheduleProto.Type.CRON:
             if is_first_run:
                 workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} Triggered by: {trigger_text} at {string_created_time}. \n Configuration: <{workflow_link}|{workflow_name}>"""
@@ -394,7 +398,7 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
                 workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} Triggered by: {trigger_text}. \n See workflow history: <{workflow_execution_url}|{workflow_name}>"""
     else:
         if schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
-            workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} Triggered by: {trigger_text}, {time_since_triggered} minutes ago. \n Configuration: [{workflow_name}]({workflow_link})"""
+            workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} {execution_trigger_time_block} Configuration: [{workflow_name}]({workflow_link})"""
         elif schedule_type == WorkflowScheduleProto.Type.INTERVAL or schedule_type == WorkflowScheduleProto.Type.CRON:
             if is_first_run:
                 workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} Triggered by: {trigger_text} at {string_created_time}. \n Configuration: [{workflow_name}]({workflow_link})"""
