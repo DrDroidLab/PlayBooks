@@ -9,6 +9,7 @@ const initialState: any = {
     errors: {},
     generateSummary: false,
     globalVariables: [],
+    useTransformer: false,
   },
 };
 

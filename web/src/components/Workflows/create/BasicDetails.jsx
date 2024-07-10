@@ -15,6 +15,7 @@ import { useGenerateCurlMutation } from "../../../store/features/workflow/api/ge
 import PlaybookDetails from "./PlaybookDetails.jsx";
 import { useGenerateWebhookMutation } from "../../../store/features/workflow/api/generateWebHookApi.ts";
 import SummaryOptions from "./SummaryOptions.tsx";
+import Transformer from "./Transformer.tsx";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -132,6 +133,7 @@ function BasicDetails() {
         </div>
         <HandleWorkflowType />
         <hr />
+        <Transformer />
         <PlaybookDetails />
         <SummaryOptions />
       </div>
