@@ -207,7 +207,7 @@ const playbookSlice = createSlice({
         ...emptyStep,
         id: stepId,
         reference_id: uuidv4(),
-        description: `Step-${stepId}`,
+        description: `Step`,
         tasks: [],
       };
       state.currentPlaybook?.steps.push(newStep);
