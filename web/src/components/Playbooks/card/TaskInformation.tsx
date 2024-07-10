@@ -22,7 +22,7 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
 
   return (
     <div
-      className={`px-4 py-2 bg-white border-2 border-stone-400 w-[300px] h-auto cursor-pointer transition-all hover:shadow-violet-500 flex justify-between`}>
+      className={`px-4 py-2 bg-white border-2 border-stone-400 w-full h-auto cursor-pointer transition-all hover:shadow-violet-500 flex justify-between`}>
       <div className="flex flex-col gap-2 flex-1 text-ellipsis overflow-hidden">
         {handleStepInformation(task.id).map((info, i) => (
           <div className="flex flex-col flex-1 text-ellipsis" key={i}>

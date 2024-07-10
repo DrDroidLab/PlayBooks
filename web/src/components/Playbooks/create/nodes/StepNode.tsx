@@ -49,7 +49,7 @@ function StepNode({ data }) {
       ref={stepRef}
       onClick={showStepDetails}
       style={{ borderColor: handleStepBorderColor(step.id) }}
-      className="p-2 rounded bg-gray-50 border-2 min-w-[250px]">
+      className="p-2 rounded bg-gray-50 border-2 w-[350px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
         {step?.tasks?.map((stepTask) => {

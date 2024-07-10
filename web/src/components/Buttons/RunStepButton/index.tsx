@@ -28,6 +28,13 @@ function RunStepButton({ id, showText = true }: RunStepButtonProps) {
     useStartExecutionMutation();
   const loading = step?.ui_requirement?.outputLoading || executionLoading;
 
+  const handleNoAction = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   const handleStartExecution = async () => {
     if (executionId) return;
     if (!currentPlaybook?.id) return;
@@ -40,7 +47,10 @@ function RunStepButton({ id, showText = true }: RunStepButtonProps) {
     }
   };
 
-  const handleExecuteStep = async () => {
+  const handleExecuteStep = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    handleNoAction(e);
     if (loading) return;
     if (!executionId) {
       const id = await handleStartExecution();
