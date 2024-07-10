@@ -34,6 +34,10 @@ export const workflowToState = (workflow) => {
     workflowType: entryPointType,
     schedule: scheduleType,
     generateSummary: workflow?.configuration?.generate_summary,
+    useTransform:
+      workflow?.configuration?.transformer_lambda_function?.definition,
+    transformerCode:
+      workflow?.configuration?.transformer_lambda_function?.definition,
     globalVariables: globalVariableToState(
       workflow?.configuration?.global_variable_set ?? {},
     ),
