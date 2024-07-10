@@ -5,6 +5,7 @@ import { Notes } from "@mui/icons-material";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 type TaskInformationPropTypes = {
   taskId: string | undefined;
@@ -12,11 +13,7 @@ type TaskInformationPropTypes = {
 
 function TaskInformation({ taskId }: TaskInformationPropTypes) {
   const [task, , taskType] = useCurrentTask(taskId);
-  // const step = useCurrentStep(task?.ui_requirement.stepId);
-
-  // const handleNoAction = (e: MouseEvent<HTMLElement>) => {
-  //   e.stopPropagation();
-  // };
+  const isPrefetched = useIsPrefetched();
 
   if (!task?.id) return;
 
@@ -44,26 +41,12 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
             <p className="line-clamp-2 text-xs">{task.notes}</p>
           </div>
         )}
-
-        {/* {(step?.external_links?.length ?? 0) > 0 && (
-          <div className="flex gap-2 items-center flex-wrap">
-            <Link fontSize="small" />
-            {step?.external_links?.map((link) => (
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="line-clamp-2 text-xs text-violet-500 underline"
-                onClick={handleNoAction}>
-                {link.name || link.url}
-              </a>
-            ))}
-          </div>
-        )} */}
       </div>
-      <div className="flex-[0.1] self-end">
-        <DeleteTaskButton taskId={task.id} />
-      </div>
+      {!isPrefetched && (
+        <div className="flex-[0.1] self-end">
+          <DeleteTaskButton taskId={task.id} />
+        </div>
+      )}
     </div>
   );
 }

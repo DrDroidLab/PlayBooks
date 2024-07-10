@@ -6,6 +6,7 @@ import HandleInputRender from "../../Inputs/HandleInputRender.tsx";
 import handleChangeInput from "./utils/handleChange.ts";
 import { useDispatch } from "react-redux";
 import { duplicateTask } from "../../../store/features/playbook/playbookSlice.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
@@ -15,6 +16,7 @@ export default function OptionRender({ data, removeErrors, id }) {
   const value = getNestedValue(task, key, undefined);
   const taskData = task?.[source?.toLowerCase()]?.[taskType?.toLowerCase()];
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
 
   const handleAddClick = () => {
     dispatch(duplicateTask({ id, keyToBeRemoved: data.key }));
@@ -55,6 +57,7 @@ export default function OptionRender({ data, removeErrors, id }) {
       )}
       handleAddClick={handleAddClick}
       value={value ?? data.value}
+      disabled={isPrefetched}
     />
   );
 }

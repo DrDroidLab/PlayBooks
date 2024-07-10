@@ -7,6 +7,7 @@ import {
 import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import SelectComponent from "../../../SelectComponent";
+import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 
 function SelectTaskType({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -16,6 +17,7 @@ function SelectTaskType({ id }) {
   )?.connector;
   const taskType = task?.[task?.source?.toLowerCase()]?.type;
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
 
   const taskTypes = currentConnector?.supported_task_type_options ?? [];
 
@@ -43,6 +45,7 @@ function SelectTaskType({ id }) {
           label: type.display_name,
           type: type,
         }))}
+        disabled={!!isPrefetched}
         placeholder="Select Task Type"
         onSelectionChange={handleTaskTypeChange}
         selected={taskType}

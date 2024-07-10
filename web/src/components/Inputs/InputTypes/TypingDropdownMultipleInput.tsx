@@ -49,9 +49,11 @@ function TypingDropdownMultipleInput({
         <p className="text-xs shrink-0 text-gray-500 font-semibold">
           {helpText}
         </p>
-        <CustomButton onClick={handleAddClick}>
-          <Add fontSize="small" />
-        </CustomButton>
+        {!disabled && (
+          <CustomButton onClick={handleAddClick}>
+            <Add fontSize="small" />
+          </CustomButton>
+        )}
       </div>
     </div>
   );

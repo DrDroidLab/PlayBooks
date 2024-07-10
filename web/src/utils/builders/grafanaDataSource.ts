@@ -17,7 +17,7 @@ export const grafanaDataSourceBuilder = (options: any, task: Task) => {
               label: e.datasource_name,
             };
           }),
-          helperText: options.find(
+          helperText: options?.find(
             (op) =>
               op.datasource_uid === getTaskData(task)?.[Key.DATASOURCE_UID],
           )?.datasource_name,

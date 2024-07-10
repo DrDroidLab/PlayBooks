@@ -20,11 +20,10 @@ const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
-  const { executionId, currentVisibleStep } = useSelector(playbookSelector);
+  const { currentVisibleStep } = useSelector(playbookSelector);
   const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
-  const isEditing = !isPrefetched && !executionId;
   const dispatch = useDispatch();
   // const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
@@ -58,7 +57,7 @@ function StepNode({ data }) {
           return <TaskNode key={taskId} taskId={taskId} />;
         })}
       </div>
-      <StepButtons id={step.id} />
+      {!isPrefetched && <StepButtons id={step.id} />}
 
       <Handle
         type="target"
@@ -74,7 +73,7 @@ function StepNode({ data }) {
       />
       {/* )} */}
 
-      {isEditing && (
+      {!isPrefetched && (
         <NodeToolbar isVisible={true} position={Position.Bottom}>
           <AddButtonOptions stepId={step.id} />
         </NodeToolbar>

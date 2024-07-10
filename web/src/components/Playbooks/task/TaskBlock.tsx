@@ -5,11 +5,13 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import Details from "./Details.tsx";
 import HandleOutput from "./HandleOutput.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 const TaskBlock = ({ id }) => {
   const [task, currentStepId] = useCurrentTask(id);
   const showOutput = task?.ui_requirement?.showOutput;
   const [showConfig, setShowConfig] = useState(!showOutput);
+  const isPrefetched = useIsPrefetched();
 
   const toggleConfig = () => {
     setShowConfig(!showConfig);
@@ -24,7 +26,8 @@ const TaskBlock = ({ id }) => {
       currentStepId !== null &&
       task?.source &&
       task.ui_requirement?.model_type &&
-      task?.task_connector_sources?.length > 0
+      task?.task_connector_sources?.length > 0 &&
+      !isPrefetched
     ) {
       fetchData({ index: currentStepId });
     }
@@ -33,6 +36,7 @@ const TaskBlock = ({ id }) => {
     task?.source,
     task?.ui_requirement.model_type,
     task?.task_connector_sources,
+    isPrefetched,
   ]);
 
   return (

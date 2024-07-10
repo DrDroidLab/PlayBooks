@@ -12,6 +12,7 @@ import React from "react";
 import SelectComponent from "../../../SelectComponent/index.jsx";
 import CustomButton from "../../../common/CustomButton/index.tsx";
 import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.jsx";
+import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 
@@ -20,10 +21,11 @@ function SelectConnectorOption({ id: taskId }) {
   const [task, currentTaskId] = useCurrentTask(taskId);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
   const { toggle } = useDrawerState(id);
+  const isPrefetched = useIsPrefetched();
 
   function handleConnectorOptionChange(id) {
     updateCardById("task_connector_sources.0.id", id, currentTaskId);
-    fetchData({ id: currentTaskId });
+    if (!isPrefetched) fetchData({ id: currentTaskId });
   }
 
   const currentConnectorOptions =
@@ -47,6 +49,7 @@ function SelectConnectorOption({ id: taskId }) {
               onSelectionChange={handleConnectorOptionChange}
               selected={task?.task_connector_sources?.[0]?.id}
               searchable={true}
+              disabled={!!isPrefetched}
             />
           </div>
         ) : (

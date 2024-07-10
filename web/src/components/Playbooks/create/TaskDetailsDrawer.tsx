@@ -4,10 +4,12 @@ import { useEffect, useRef } from "react";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import Task from "../task/Task.tsx";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function TaskDetailsDrawer() {
   const [task, currentTaskId] = useCurrentTask();
   const taskRef = useRef<HTMLDivElement>(null);
+  const isPrefetched = useIsPrefetched();
 
   const handleUpdateStepName = (e) => {
     const val = e.target.value;
@@ -35,6 +37,7 @@ function TaskDetailsDrawer() {
             className="border-gray-300 border rounded w-full p-1 text-sm font-bold text-gray-500"
             value={task?.description}
             onChange={handleUpdateStepName}
+            disabled={!!isPrefetched}
           />
         </div>
       </div>
