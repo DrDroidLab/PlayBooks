@@ -9,6 +9,7 @@ import {
   setCurrentWorkflowKey,
 } from "../../../store/features/workflow/workflowSlice.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import { useTestTransformerMutation } from "../../../store/features/workflow/api/testTransformerApi.ts";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
@@ -20,8 +21,11 @@ function HandleTransformer() {
   const code = currentWorkflow[key];
   const exampleInput = currentWorkflow[exampleInputKey];
   const dispatch = useDispatch();
+  const [triggerTestTransformer, { isLoading }] = useTestTransformerMutation();
 
-  const testCode = () => {};
+  const testCode = () => {
+    if (!isLoading) triggerTestTransformer();
+  };
 
   const setCode = (value: string) => {
     dispatch(setCurrentWorkflowKey({ key, value }));
@@ -69,7 +73,7 @@ function HandleTransformer() {
       </div>
 
       <CustomButton className="w-fit" onClick={testCode}>
-        Test Code
+        {isLoading ? "Loading..." : "Test Code"}
       </CustomButton>
     </div>
   );
