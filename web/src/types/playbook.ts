@@ -7,6 +7,7 @@ type PlaybookUIRequirement = {
   tasks: Task[];
   isExisting: boolean;
   isCopied: boolean;
+  executedSteps?: Step[];
 };
 
 export type Playbook = {

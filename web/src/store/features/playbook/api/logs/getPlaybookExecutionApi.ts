@@ -1,9 +1,14 @@
 import { GET_PLAYBOOK_EXECUTION } from "../../../../../constants/index.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
-import { playbookSelector, setPlaybookData } from "../../playbookSlice.ts";
+import {
+  playbookSelector,
+  pushToExecutionStack,
+  setPlaybookData,
+} from "../../playbookSlice.ts";
 import { store } from "../../../../index.ts";
 import { Playbook } from "../../../../../types/playbook.ts";
 import executionToState from "../../../../../utils/parser/playbook/executionToState.ts";
+import { Step } from "../../../../../types/step.ts";
 
 export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,15 +31,18 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setPlaybookData(data));
-          const steps = data.steps;
-          // const lastStep = steps[steps.length - 1];
-          // const relationLogs = lastStep?.relationLogs ?? [];
-          // const nextPossibleStepLogs = relationLogs?.filter(
-          //   (log: any) => log.evaluation_result,
-          // );
-          // dispatch(
-          //   pushToExecutionStack((nextPossibleStepLogs ?? []).reverse()),
-          // );
+          const steps = data.ui_requirement.executedSteps ?? [];
+          const lastStep = steps[steps.length - 1];
+          const relations = data?.step_relations?.filter(
+            (relation) => (relation.parent as Step)?.id === lastStep?.id,
+          );
+          const nextPossibleStepLogs = relations?.filter(
+            (relation) =>
+              relation.ui_requirement?.evaluation?.evaluation_result,
+          );
+          dispatch(
+            pushToExecutionStack((nextPossibleStepLogs ?? []).reverse()),
+          );
         } catch (error) {
           // Handle any errors
           console.log(error);

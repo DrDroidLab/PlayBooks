@@ -5,6 +5,7 @@ function extractExecutionTasks(
   tasks: Task[],
   step: Step,
   stepIndex: number,
+  executionStep: Step,
 ) {
   taskLogs?.forEach((log: any) => {
     const taskInPlaybook: Task | undefined = tasks.find(
@@ -22,8 +23,9 @@ function extractExecutionTasks(
         outputError: log?.result?.error,
         outputLoading: false,
       };
+      if (taskInPlaybook.id) executionStep.tasks.push(taskInPlaybook.id);
     } else {
-      tasks.push({
+      const newTask = {
         ...log.task,
         ui_requirement: {
           output: {
@@ -35,7 +37,10 @@ function extractExecutionTasks(
           outputError: log?.result?.error,
           outputLoading: false,
         },
-      });
+      };
+      tasks.push(newTask);
+      if (newTask.id && !executionStep.tasks.includes(newTask.id))
+        executionStep.tasks.push(newTask.id);
       if (stepIndex === -1) {
         step.tasks.push(log.task.id);
       }

@@ -14,12 +14,13 @@ function executionToState(playbook_execution: any): Playbook {
   );
   const playbook: Playbook = playbook_execution?.playbook;
   const stepExecutionLogs: any = playbook_execution?.step_execution_logs ?? {};
+  const executedSteps: Step[] = [];
 
   const tasks: Task[] = structuredClone(
     currentPlaybook?.ui_requirement.tasks ?? [],
   );
   Object.values(stepExecutionLogs)?.forEach((stepExecutionLog: any) => {
-    const executionStep: Step = stepExecutionLog.step;
+    let executionStep: Step = stepExecutionLog.step;
     const stepIndex = playbookSteps.findIndex(
       (step) => step.id === executionStep.id,
     );
@@ -35,11 +36,23 @@ function executionToState(playbook_execution: any): Playbook {
       step.tasks = [];
     }
 
+    executionStep = {
+      ...executionStep,
+      tasks: [],
+      ui_requirement: {
+        showOutput: true,
+        outputLoading: false,
+        isOpen: false,
+        showError: false,
+      },
+    };
+
     extractExecutionTasks(
       stepExecutionLog?.task_execution_logs,
       tasks,
       step,
       stepIndex,
+      executionStep,
     );
 
     extractExecutionRelations(
@@ -52,6 +65,7 @@ function executionToState(playbook_execution: any): Playbook {
     } else {
       playbookSteps[stepIndex] = step;
     }
+    executedSteps.push(executionStep);
   });
 
   return {
@@ -62,6 +76,7 @@ function executionToState(playbook_execution: any): Playbook {
       tasks,
       isCopied: false,
       isExisting: true,
+      executedSteps,
     },
   };
 }
