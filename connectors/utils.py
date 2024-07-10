@@ -250,6 +250,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['ssl_verify'] = 'true'
                 if conn_key.key.value.lower() == 'false':
                     credentials_dict['ssl_verify'] = 'false'
+    elif connector_type == Source.SMTP:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.SMTP_HOST:
+                credentials_dict['host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_PORT:
+                credentials_dict['port'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_USER:
+                credentials_dict['user'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_PASSWORD:
+                credentials_dict['password'] = conn_key.key.value
     else:
         return None
     return credentials_dict

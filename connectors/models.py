@@ -41,6 +41,7 @@ integrations_connector_type_display_name_map = {
     Source.MS_TEAMS: 'MS TEAMS',
     Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
+    Source.SMTP: 'SMTP EMAIL',
 }
 
 integrations_connector_type_category_map = {
@@ -72,6 +73,7 @@ integrations_connector_type_category_map = {
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
+    Source.SMTP: 'Alert Channels',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -258,6 +260,14 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
+    Source.SMTP: [
+        [
+            SourceKeyType.SMTP_HOST,
+            SourceKeyType.SMTP_PORT,
+            SourceKeyType.SMTP_USER,
+            SourceKeyType.SMTP_PASSWORD,
+        ]
+    ]
 }
 
 integrations_connector_key_display_name_map = {
@@ -322,7 +332,11 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.ELASTIC_SEARCH_PROTOCOL: 'Protocol',
     SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
     SourceKeyType.GRAFANA_LOKI_PORT: 'Port',
-    SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol'
+    SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol',
+    SourceKeyType.SMTP_HOST: 'Host',
+    SourceKeyType.SMTP_PORT: 'Port',
+    SourceKeyType.SMTP_USER: 'User',
+    SourceKeyType.SMTP_PASSWORD: 'Password'
 }
 
 
@@ -424,6 +438,10 @@ class ConnectorKey(models.Model):
     class Meta:
         unique_together = [['account', 'connector', 'key_type', 'key']]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.connector_id = None
+
     @property
     def proto(self):
         key_value = self.key
@@ -447,6 +465,8 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
+                             SourceKeyType.SMTP_HOST, SourceKeyType.SMTP_USER, SourceKeyType.SMTP_PASSWORD,
+                             SourceKeyType.SMTP_PORT,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,

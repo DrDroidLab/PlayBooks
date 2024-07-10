@@ -160,6 +160,7 @@ enum Source {
   GKE = 44;
   MS_TEAMS = 45;
   GRAFANA_LOKI = 46;
+  SMTP = 47;
 }
 
 enum SourceKeyType {
@@ -259,6 +260,11 @@ enum SourceKeyType {
   GRAFANA_LOKI_PROTOCOL = 69;
   GRAFANA_LOKI_HOST = 70;
   GRAFANA_LOKI_PORT = 71;
+
+  SMTP_HOST = 72;
+  SMTP_PORT = 73;
+  SMTP_USER = 74;
+  SMTP_PASSWORD = 75;
 }
 
 enum SourceModelType {
@@ -336,4 +342,7 @@ enum SourceModelType {
 
   // Elastic Search Models
   ELASTIC_SEARCH_INDEX = 1601;
+
+  // SMTP Models
+  SMTP_EMAIL = 1701;
 }
