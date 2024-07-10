@@ -1,5 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const defaultCode = `import json
+
+def transform(context):
+  # TODO implement
+  out = "{
+    'key1': 'value1',
+    'key2': 'value2'
+  }"
+  return json.loads(out)`;
+
 const initialState: any = {
   currentWorkflow: {
     name: "",
@@ -10,6 +20,7 @@ const initialState: any = {
     generateSummary: false,
     globalVariables: [],
     useTransformer: false,
+    transformerCode: defaultCode,
   },
 };
 

@@ -5,6 +5,9 @@ import {
   currentWorkflowSelector,
   setCurrentWorkflowKey,
 } from "../../../store/features/workflow/workflowSlice.ts";
+import HandleTransformer from "./HandleTransformer.tsx";
+
+const key = "useTransformer";
 
 function Transformer() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -22,12 +25,13 @@ function Transformer() {
   return (
     <div>
       <Checkbox
-        id="useTransformer"
-        isChecked={currentWorkflow.useTransformer}
+        id={key}
+        isChecked={currentWorkflow[key]}
         label="Use Transformer"
         onChange={handleTransformer}
         isSmall={true}
       />
+      {currentWorkflow[key] && <HandleTransformer />}
     </div>
   );
 }
