@@ -15,6 +15,7 @@ import StepButtons from "../../steps/StepButtons.tsx";
 import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
+import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
 
 const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
@@ -47,6 +48,7 @@ function StepNode({ data }) {
     <div
       ref={stepRef}
       onClick={showStepDetails}
+      style={{ borderColor: handleStepBorderColor(step.id) }}
       className="p-2 rounded bg-gray-50 border-2 min-w-[250px]">
       <StepTitle step={step} />
       <div className="flex flex-col gap-1 mt-2">
