@@ -96,7 +96,7 @@ def workflow_scheduler():
                 execution_global_variable_set = None
                 if workflow_execution_configuration and 'global_variable_set' in workflow_execution_configuration:
                     execution_global_variable_set = workflow_execution_configuration['global_variable_set']
-                    if event_context:
+                    if event_context and isinstance(event_context, dict):
                         execution_global_variable_set.update(event_context)
                 playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
                                                                wf_execution.created_by, execution_global_variable_set)
