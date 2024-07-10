@@ -260,8 +260,8 @@ integrations_connector_type_connector_keys_map = {
     Source.GCM: [
         [
             SourceKeyType.GCM_PROJECT_ID,
-            SourceKeyType.GCM_SERVICE_ACCOUNT_JSON
-        ],
+            SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
+        ]
     ]
 }
 
