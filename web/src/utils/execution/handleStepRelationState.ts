@@ -12,11 +12,17 @@ function handleStepRelationState(
   const evaluationResult =
     relation.ui_requirement?.evaluation?.evaluation_result;
 
-  if (evaluationResult) {
-    state = RelationStates.SUCCESS;
-  } else {
+  switch(evaluationResult) {
+    case true:
+      state = RelationStates.SUCCESS;
+      break;
+    case false:
     state = RelationStates.ERROR;
+    break;
+    default: 
+    state = RelationStates.DEFAULT;
   }
+
 
   return state;
 }
