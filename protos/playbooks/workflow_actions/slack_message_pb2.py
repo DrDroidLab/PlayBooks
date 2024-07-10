@@ -15,13 +15,13 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from protos import base_pb2 as protos_dot_base__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n5protos/playbooks/workflow_actions/slack_message.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"T\n\x1aSlackMessageWorkflowAction\x12\x36\n\x10slack_channel_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n5protos/playbooks/workflow_actions/slack_message.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"\x85\x01\n\x1aSlackMessageWorkflowAction\x12\x36\n\x10slack_channel_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tthread_ts\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.workflow_actions.slack_message_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _SLACKMESSAGEWORKFLOWACTION._serialized_start=126
-  _SLACKMESSAGEWORKFLOWACTION._serialized_end=210
+  _SLACKMESSAGEWORKFLOWACTION._serialized_start=127
+  _SLACKMESSAGEWORKFLOWACTION._serialized_end=260
 # @@protoc_insertion_point(module_scope)

@@ -39,36 +39,100 @@ class SlackThreadReplyExecutor(WorkflowActionExecutor):
         logger.info(f"Sending slack message to channel {channel_id}")
         blocks = []
         file_uploads = []
+        text_message = ""
+        step_number = 1
         for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.SUMMARY:
-                title = f'Hello team, here is snapshot of playbook <{interpretation.description.value}|{interpretation.title.value}> ' \
-                        f'that is configured for this alert'
-            else:
-                title = f'{interpretation.title.value}'
+            title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
-            block_text = title
+            block_message = ""
             if description:
-                block_text += f'\n{description}'
+                block_message += f"{description}\n"
             if summary:
-                block_text += f'\n{summary}'
-            blocks.append({
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": block_text
-                }
-            })
-            if interpretation.type == InterpretationProto.Type.IMAGE:
-                blocks.append({
-                    "type": "image",
-                    "image_url": interpretation.image_url.value,
-                    "alt_text": 'metric evaluation'
-                })
-            elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
-                                     'initial_comment': interpretation.title.value})
-        message_params = {'blocks': blocks, 'channel_id': channel_id}
+                block_message += f"{summary}\n"
+            text_message = text_message + block_message
+            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+                if title:
+                    blocks.extend([
+                        {
+                            "type": "header",
+                            "text": 
+                            {
+                                "type": "plain_text",
+                                "text": f'{title}'
+                            }
+                        }])
+                if block_message:
+                    blocks.extend([
+                        {
+                            "type": "section",
+                            "text": 
+                            {
+                                "type": "mrkdwn",
+                                "text": f'{block_message}'
+                            }
+                        }])
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                blocks.extend(
+                    [{
+                        "type": "header",
+                        "text": 
+                        {
+                            "type": "plain_text",
+                            "text": f"{step_number}. {title}"
+                        }
+                    }])
+                step_number += 1
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
+                if interpretation.type == InterpretationProto.Type.TEXT:
+                    blocks.extend(
+                        [{
+                            "type": "section",
+                            "text": 
+                            {
+                                "type": "mrkdwn",
+                                "text": f'{block_message}'
+                            }                
+                        }])
+                    text_message = text_message + f"{title} {description} \n{summary}"
+                elif interpretation.type == InterpretationProto.Type.IMAGE:
+                    blocks.extend([
+                        {
+                            "type": "section",
+                            "text": 
+                            {
+                                "type": "mrkdwn",
+                                "text": f'{description}'
+                            }                
+                        },
+                        {
+                            "type": "image",
+                            "image_url": interpretation.image_url.value,
+                            "alt_text": f'{description}'
+                        }])
+                elif interpretation.type == InterpretationProto.Type.CSV_FILE:
+                    blocks.extend(
+                        [{
+                            "type": "section",
+                            "text": 
+                            {
+                                "type": "mrkdwn",
+                                "text": f'{description} \n (File attached separately)'
+                            }                
+                        }])
+                    file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
+                                        'title': title,'initial_comment': f'Data for {step_number}.{description}'})
+                elif interpretation.type == InterpretationProto.Type.JSON:
+                    blocks.extend(
+                        [{
+                            "type": "section",
+                            "text": 
+                            {
+                                "type": "mrkdwn",
+                                "text": f"```{summary}```"
+                            }
+                        }])
+        message_params = {'blocks': blocks, 'channel_id': channel_id, 'text_message': text_message}
         if slack_config.thread_ts.value:
             message_params['reply_to'] = slack_config.thread_ts.value
         for file_upload in file_uploads:

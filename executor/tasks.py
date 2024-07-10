@@ -14,6 +14,8 @@ from executor.task_result_conditional_evaluators.step_condition_evaluator import
 from executor.utils.playbook_step_utils import get_playbook_steps_graph_view, get_playbook_steps_id_def_map
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
+from intelligence_layer.result_interpreters.step_relation_interpreters.step_relation_interpreter import \
+    step_relation_interpret
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.base_pb2 import TimeRange
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType
@@ -45,7 +47,8 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                 all_step_relation_executions.append({
                     'relation_id': srel.relation.id.value,
                     'evaluation_result': srel.evaluation_result.value,
-                    'evaluation_output': proto_to_dict(srel.evaluation_output) if srel.evaluation_output else None
+                    'evaluation_output': proto_to_dict(srel.evaluation_output) if srel.evaluation_output else None,
+                    'step_relation_interpretation': proto_to_dict(srel.step_relation_interpretation) if srel.step_relation_interpretation else None
                 })
             all_step_executions[sel.step.id.value] = {
                 'all_task_executions': all_task_executions,
@@ -86,7 +89,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                                        result=PlaybookTaskResult(
                                                                            error=StringValue(value=str(exc))))
             pte_logs.append(playbook_task_execution_log)
-        step_interpretation = step_result_interpret(interpreter_type, step, task_interpretations)
+        step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
 
         relation_execution_logs = []
         for relation_proto in children:
@@ -99,10 +102,27 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 condition_evaluation_result = False
                 condition_evaluation_output = {'error': str(exc) if exc else 'Unknown Error'}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
-            relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
-                                                                      evaluation_result=BoolValue(
-                                                                          value=condition_evaluation_result),
-                                                                      evaluation_output=condition_evaluation_output_proto)
+            if condition_evaluation_output=={}:
+                relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
+                                                                        evaluation_result=BoolValue(
+                                                                            value=condition_evaluation_result),
+                                                                        evaluation_output=condition_evaluation_output_proto)
+            else:
+                step_relation_interpretation_string = step_relation_interpret(relation_proto)
+                # if condition_evaluation_result:
+                #     summary = f"The condition {step_relation_interpretation_string} is True"
+                # else:
+                #     summary = f"The condition {step_relation_interpretation_string} is False"
+                step_relation_interpretation: InterpretationProto = InterpretationProto(
+                                                                        type=InterpretationProto.Type.TEXT, 
+                                                                        summary=StringValue(value=step_relation_interpretation_string),
+                                                                        model_type=InterpretationProto.ModelType.PLAYBOOK_STEP_RELATION
+                                                                        )
+                relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
+                                                                        evaluation_result=BoolValue(
+                                                                            value=condition_evaluation_result),
+                                                                        evaluation_output=condition_evaluation_output_proto,
+                                                                        step_relation_interpretation=step_relation_interpretation)
             relation_execution_logs.append(relation_execution_log)
         step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
                                                       step_interpretation=step_interpretation,

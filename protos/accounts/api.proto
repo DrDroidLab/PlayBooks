@@ -43,6 +43,13 @@ message GetUserResponse {
   User user = 1;
 }
 
+message GetVersionInfoResponse {
+  string current_version = 1;
+  string latest_version = 2;
+  bool should_upgrade = 3;
+  string upgrade_message = 4;
+}
+
 message InviteUsersRequest {
   repeated string emails = 1;
   string signup_domain = 2;

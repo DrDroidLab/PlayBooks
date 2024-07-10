@@ -1,6 +1,7 @@
 import uuid
 from typing import Union
 
+import docker
 import requests
 from allauth.account.models import EmailConfirmationHMAC, EmailConfirmation, EmailAddress
 from django.conf import settings
@@ -23,7 +24,7 @@ from protos.accounts.account_pb2 import User as UserProto, SSOProvider
 from protos.base_pb2 import Message
 from protos.accounts.api_pb2 import GetAccountApiTokensRequest, GetAccountApiTokensResponse, \
     CreateAccountApiTokenRequest, CreateAccountApiTokenResponse, DeleteAccountApiTokenRequest, \
-    DeleteAccountApiTokenResponse, GetUserRequest, GetUserResponse, \
+    DeleteAccountApiTokenResponse, GetUserRequest, GetUserResponse, GetVersionInfoResponse, \
     ResetPasswordRequest, ResetPasswordResponse, ResetPasswordConfirmRequest, ResetPasswordConfirmResponse, \
     GetCurrentAccountUsersResponse, InviteUsersResponse, InviteUsersRequest, OktaAuthResponse, \
     OktaAuthData
@@ -103,7 +104,6 @@ def get_user(request_message: GetUserRequest) -> Union[GetUserResponse, HttpResp
     request = get_current_request()
     user = request.user
     return GetUserResponse(user=user.proto)
-
 
 @auth_web_api(ResetPasswordRequest)
 def reset_password(request_message: ResetPasswordRequest) -> Union[ResetPasswordResponse, HttpResponse]:
