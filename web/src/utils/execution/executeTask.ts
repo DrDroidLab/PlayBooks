@@ -10,7 +10,7 @@ export async function executeTask(id?: string) {
   if (!task) return;
   const dispatch = store.dispatch;
   if (Object.keys(task?.ui_requirement.errors ?? {}).length > 0) {
-    updateCardById("showError", true, id);
+    updateCardById("ui_requirement.showError", true, id);
     return;
   }
 

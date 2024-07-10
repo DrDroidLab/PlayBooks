@@ -40,7 +40,10 @@ export default function OptionRender({ data, removeErrors, id }) {
   const error = data.key
     ? task?.ui_requirement?.showError &&
       !data.selected &&
-      !task?.[source?.toLowerCase()][taskType?.toLowerCase()][`${data.key}`]
+      !getNestedValue(
+        task?.[source?.toLowerCase()][taskType?.toLowerCase()],
+        data.key,
+      )
     : false;
 
   return (

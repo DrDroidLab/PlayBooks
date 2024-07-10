@@ -15,6 +15,7 @@ function handleTaskState(taskId: string, log?: any) {
   const isLoading = task.ui_requirement.outputLoading;
   const hasError =
     !isLoading &&
+    task.ui_requirement.showError &&
     (task.ui_requirement.outputError ||
       Object.keys(task.ui_requirement?.errors ?? {}).length > 0);
 
