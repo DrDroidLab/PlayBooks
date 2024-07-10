@@ -37,12 +37,20 @@ def handle_slack_event_callback(data: Dict):
         raise Exception("Invalid data received")
     team_id = data['team_id']
     event = data['event']
+    api_app_id = data.get('api_app_id', None)
     active_account_slack_connectors = get_db_connectors(connector_type=Source.SLACK, is_active=True)
     if not active_account_slack_connectors:
         logger.error(f"Error handling slack event callback api for {team_id}: active slack connector not found")
         raise Exception("No active slack connector found")
 
     slack_connector = active_account_slack_connectors.first()
+    for sc in active_account_slack_connectors:
+        slack_connector_proto = sc.unmasked_proto
+        c_keys = slack_connector_proto.keys
+        for c_key in c_keys:
+            if c_key.key_type == SourceKeyType.SLACK_APP_ID and c_key.key.value == api_app_id:
+                slack_connector = sc
+                break
 
     event_type = event.get('type', '')
     if not event_type:

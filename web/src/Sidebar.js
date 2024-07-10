@@ -5,11 +5,15 @@ import { List, ListItemButton, ListItemIcon } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import SlackConnectOverlay from "./SlackConnectOverlay";
 import useToggle from "./hooks/useToggle";
 import "../src/Layout.css";
-import { Key, Layers, SlowMotionVideo, Terminal } from "@mui/icons-material";
+import {
+  Layers,
+  Settings,
+  SlowMotionVideo,
+  Terminal,
+} from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
 import {
@@ -140,14 +144,6 @@ function Sidebar() {
             </ListItemIcon>
             <p style={{ fontSize: "14px" }}>Data Sources</p>
           </NavLink>
-          <hr></hr>
-
-          <NavLink className={activeStyle} to="/api-keys">
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <Key />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>API keys</p>
-          </NavLink>
         </List>
       </div>
 
@@ -174,21 +170,13 @@ function Sidebar() {
           </p>
         </ListItemButton>
 
-        <NavLink to="/invite-team">
-          <ListItemButton
-            selected={selectedIndex === 3}
-            onClick={(event) => handleListItemClick(event, 3)}
-            sx={{
-              padding: 0,
-              ":hover": {
-                backgroundColor: "transparent",
-              },
-            }}>
-            <ListItemIcon sx={{ minWidth: "44px" }}>
-              <GroupAddIcon />
-            </ListItemIcon>
-            <p style={{ fontSize: "14px", width: "100%" }}>Team</p>
-          </ListItemButton>
+        <NavLink className={activeStyle} to="/settings">
+          <ListItemIcon sx={{ minWidth: "44px" }}>
+            <Settings />
+          </ListItemIcon>
+          <p style={{ fontSize: "14px" }} className="sample_playbooks">
+            Settings
+          </p>
         </NavLink>
 
         <NavLink>
