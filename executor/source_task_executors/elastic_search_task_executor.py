@@ -128,7 +128,7 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
                                                                value=StringValue(value=str(value)))
                         table_columns.append(table_column)
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value=lucene_query),
+            table = TableResult(raw_query=StringValue(value=f"Execute ```{lucene_query}``` on index {index}"),
                                 total_count=UInt64Value(value=count_result),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)

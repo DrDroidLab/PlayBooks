@@ -230,6 +230,24 @@ class WorkflowExecution(models.Model):
         unique_together = [['account', 'workflow_run_id', 'scheduled_at']]
 
     @property
+    def proto_max(self) -> WorkflowExecutionProto:
+        workflow_execution_logs = self.workflowexecutionlog_set.all()
+        wf_logs = [wel.proto for wel in workflow_execution_logs]
+        return WorkflowExecutionProto(
+            id=UInt64Value(value=self.id),
+            workflow_run_id=StringValue(value=self.workflow_run_id),
+            workflow=self.workflow.proto,
+            status=self.status,
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()),
+            expiry_at=int(self.expiry_at.replace(tzinfo=timezone.utc).timestamp()) if self.expiry_at else 0,
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
+            finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
+            created_by=StringValue(value=self.created_by) if self.created_by else None,
+            workflow_logs=wf_logs
+        )
+
+    @property
     def proto(self) -> WorkflowExecutionProto:
         workflow_execution_logs = self.workflowexecutionlog_set.all()
         wf_logs = [wel.proto for wel in workflow_execution_logs]
