@@ -26,8 +26,18 @@ class LambdaFunctionProcessor(Processor):
 
     def clean_and_get_function_executable(self):
         try:
+            """
+            Cleans and executes a stringified function definition, including imports.
+    
+            Parameters:
+            func_str (str): The stringified function definition.
+    
+            Returns:
+            function: The executed function.
+            """
             # Step 1: Remove leading/trailing whitespace
-            func_str = self.__function_definition.strip()
+            func_str = self.__function_definition
+            func_str = func_str.strip()
 
             # Step 2: Unescape special characters (if necessary)
             # Uncomment the following line if you have escaped characters
@@ -36,19 +46,22 @@ class LambdaFunctionProcessor(Processor):
             # Step 3: Fix indentation
             func_str = textwrap.dedent(func_str)
 
-            # Step 4: Verify that it's a valid function definition
+            # Step 4: Verify that it's a valid code block containing function definition
             try:
                 parsed_func = ast.parse(func_str)
-                if not any(isinstance(node, ast.FunctionDef) for node in parsed_func.body):
-                    raise ValueError("The provided string is not a valid function definition.")
+                if not any(
+                        isinstance(node, (ast.FunctionDef, ast.Import, ast.ImportFrom)) for node in parsed_func.body):
+                    raise ValueError(
+                        "The provided string does not contain a valid function definition or import statements.")
             except SyntaxError as e:
                 raise SyntaxError(f"Syntax error in the provided function definition: {e}")
-            # Step 5: Execute the function definition
+
+            # Step 5: Execute the function definition in local scope
             local_scope = {}
             exec(func_str, {}, local_scope)
 
-            # Assuming the function name is the first function defined in the string
-            func_name = parsed_func.body[0].name
+            # Find the function name (assuming it's the first function defined in the string)
+            func_name = next(node.name for node in parsed_func.body if isinstance(node, ast.FunctionDef))
 
             return local_scope[func_name]
         except Exception as e:

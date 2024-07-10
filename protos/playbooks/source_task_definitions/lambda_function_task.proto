@@ -4,15 +4,11 @@ package protos.playbooks;
 import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 
-message LambdaFunctionDefinition {
-  google.protobuf.StringValue executable = 1;
-  repeated string requirements = 2;
-}
-
 message Lambda {
   message Function {
-    LambdaFunctionDefinition definition = 1;
-    google.protobuf.Struct inputs = 2;
+    google.protobuf.StringValue definition = 1;
+    repeated string requirements = 2;
+    google.protobuf.Struct inputs = 3;
   }
 
   enum TaskType {

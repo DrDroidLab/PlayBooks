@@ -22,6 +22,7 @@ from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.playbooks.playbook_pb2 import PlaybookExecution
+from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from utils.time_utils import current_datetime, current_epoch_timestamp
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
@@ -50,8 +51,11 @@ def workflow_scheduler():
                 if event and workflow_execution_configuration.get('transformer_lambda_function', None):
                     transformer_lambda_function = workflow_execution_configuration.get('transformer_lambda_function',
                                                                                        None)
-                    lambda_function_processor = LambdaFunctionProcessor(transformer_lambda_function.get('executable'),
-                                                                        transformer_lambda_function.get('requirements'))
+                    transformer_lambda_function_proto: Lambda.Function = dict_to_proto(transformer_lambda_function,
+                                                                                       Lambda.Function)
+                    lambda_function_processor = LambdaFunctionProcessor(
+                        transformer_lambda_function_proto.definition.value,
+                        transformer_lambda_function_proto.requirements)
                     event_context = lambda_function_processor.execute(event)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
@@ -294,3 +298,14 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
+
+
+def test_workflow_transformer(lambda_function: Lambda.Function, event):
+    try:
+        lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
+                                                            lambda_function.requirements)
+        event_context = lambda_function_processor.execute(event['x'])
+        return event_context
+    except Exception as e:
+        logger.error(f"Error occurred while running transformer lambda function: {e}")
+        raise e

@@ -35,7 +35,7 @@ enum WorkflowExecutionStatusType {
 message WorkflowConfiguration {
   google.protobuf.BoolValue generate_summary = 1;
   google.protobuf.Struct global_variable_set = 2;
-  LambdaFunctionDefinition transformer_lambda_function = 3;
+  Lambda.Function transformer_lambda_function = 3;
 }
 
 

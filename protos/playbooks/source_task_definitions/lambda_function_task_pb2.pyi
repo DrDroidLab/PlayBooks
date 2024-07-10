@@ -21,27 +21,6 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class LambdaFunctionDefinition(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    EXECUTABLE_FIELD_NUMBER: builtins.int
-    REQUIREMENTS_FIELD_NUMBER: builtins.int
-    @property
-    def executable(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def requirements(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
-    def __init__(
-        self,
-        *,
-        executable: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        requirements: collections.abc.Iterable[builtins.str] | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["executable", b"executable"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["executable", b"executable", "requirements", b"requirements"]) -> None: ...
-
-global___LambdaFunctionDefinition = LambdaFunctionDefinition
-
-@typing_extensions.final
 class Lambda(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -63,19 +42,23 @@ class Lambda(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         DEFINITION_FIELD_NUMBER: builtins.int
+        REQUIREMENTS_FIELD_NUMBER: builtins.int
         INPUTS_FIELD_NUMBER: builtins.int
         @property
-        def definition(self) -> global___LambdaFunctionDefinition: ...
+        def definition(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def requirements(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         @property
         def inputs(self) -> google.protobuf.struct_pb2.Struct: ...
         def __init__(
             self,
             *,
-            definition: global___LambdaFunctionDefinition | None = ...,
+            definition: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            requirements: collections.abc.Iterable[builtins.str] | None = ...,
             inputs: google.protobuf.struct_pb2.Struct | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["definition", b"definition", "inputs", b"inputs"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["definition", b"definition", "inputs", b"inputs"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["definition", b"definition", "inputs", b"inputs", "requirements", b"requirements"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     FUNCTION_FIELD_NUMBER: builtins.int
