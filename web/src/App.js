@@ -92,60 +92,57 @@ const App = () => {
 
   return (
     <Routes>
-        <Route path="/playbooks/create" element={<CreatePlaybook />} />
-        <Route path="/playbooks/:playbook_id" element={<CreatePlaybook />} />
-        <Route
-          path="/playbooks/logs/:playbook_run_id"
-          element={<PlaybookLog />}
-        />
-        <Route
-          path="/playbooks/edit/:playbook_id"
-          element={<CreatePlaybook />}
-        />
+      <Route path="/playbooks/create" element={<CreatePlaybook />} />
+      <Route path="/playbooks/:playbook_id" element={<CreatePlaybook />} />
+      <Route
+        path="/playbooks/logs/:playbook_run_id"
+        element={<PlaybookLog />}
+      />
+      <Route path="/playbooks/edit/:playbook_id" element={<CreatePlaybook />} />
 
-        <Route element={<Layout />}>
-          <Route path="/" element={<Playbooks />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/playbooks" element={<Playbooks />} />
-          <Route
-            path="/playbooks/executions/list"
-            element={<PlaybookExecutionsList />}
-          />
-          <Route
-            path="/playbooks/executions/:id"
-            element={<PlaybookExecutions />}
-          />
-          {/* <Route
+      <Route element={<Layout />}>
+        <Route path="/" element={<Playbooks />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/playbooks" element={<Playbooks />} />
+        <Route
+          path="/playbooks/executions/list"
+          element={<PlaybookExecutionsList />}
+        />
+        <Route
+          path="/playbooks/executions/:id"
+          element={<PlaybookExecutions />}
+        />
+        {/* <Route
             path="/playbooks/logs/:playbook_run_id"
             element={<PlaybookLog />}
           /> */}
-          <Route path="/workflows/create" element={<CreateWorkflow />} />
-          <Route exact path="/workflows" element={<Workflows />} />
-          <Route path="/workflows/:id" element={<CreateWorkflow />} />
-          <Route
-            path="/workflows/executions/:id"
-            element={<WorkflowExecutions />}
-          />
-          <Route path="/executions/list" element={<WorkflowExecutionsList />} />
-          <Route
-            path="/workflows/logs/:workflow_run_id"
-            element={<WorkflowExecutionLogs />}
-          />
-          <Route path="/playgrounds" element={<Playground />} />
-          <Route path="/data-sources/add" element={<Integrations />} />
-          <Route path="/data-sources" element={<DataSources />} />
-          <Route
-            path="/data-sources/:connectorEnum"
-            element={<ConnectorPage />}
-          />
-          <Route
-            path="/data-sources/:connectorEnum/:id"
-            element={<ConnectorPage />}
-          />
-          <Route path="/settings/api-keys" element={<ApiTokens />} />
-          <Route path="/settings/invite-team" element={<InviteTeam />} />
-          <Route path="/support" element={<Support />} />
-        </Route>
+        <Route path="/workflows/create" element={<CreateWorkflow />} />
+        <Route exact path="/workflows" element={<Workflows />} />
+        <Route path="/workflows/:id" element={<CreateWorkflow />} />
+        <Route
+          path="/workflows/executions/:id"
+          element={<WorkflowExecutions />}
+        />
+        <Route path="/executions/list" element={<WorkflowExecutionsList />} />
+        <Route
+          path="/workflows/logs/:workflow_run_id"
+          element={<WorkflowExecutionLogs />}
+        />
+        <Route path="/playgrounds" element={<Playground />} />
+        <Route path="/data-sources/add" element={<Integrations />} />
+        <Route path="/data-sources" element={<DataSources />} />
+        <Route
+          path="/data-sources/:connectorEnum"
+          element={<ConnectorPage />}
+        />
+        <Route
+          path="/data-sources/:connectorEnum/:id"
+          element={<ConnectorPage />}
+        />
+        <Route path="/settings/api-keys" element={<ApiTokens />} />
+        <Route path="/settings/invite-team" element={<InviteTeam />} />
+        <Route path="/support" element={<Support />} />
+      </Route>
 
       <Route path="*" element={<NotFound />} />
     </Routes>
