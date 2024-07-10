@@ -10,6 +10,11 @@ def transform(context):
   }"
   return json.loads(out)`;
 
+const exampleInput = `{
+  "key1": "value1",
+  "key2": "value2"
+}`;
+
 const initialState: any = {
   currentWorkflow: {
     name: "",
@@ -21,6 +26,7 @@ const initialState: any = {
     globalVariables: [],
     useTransformer: false,
     transformerCode: defaultCode,
+    exampleInput,
   },
 };
 
