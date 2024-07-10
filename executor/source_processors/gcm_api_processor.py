@@ -1,11 +1,10 @@
 import json
 import logging
-
+from datetime import datetime
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
 
 from executor.source_processors.processor import Processor
 
@@ -81,4 +80,25 @@ class GcmApiProcessor(Processor):
             return response.get('entries', [])
         except Exception as e:
             logger.error(f"Exception occurred while fetching logs: {e}")
+            raise e
+
+    def gcm_get_metric_aggregation(self, metric_type, start_time, end_time, aggregation, labels):
+        try:
+            service = build('monitoring', 'v3', credentials=self.__credentials)
+            filter_str = f'metric.type="{metric_type}"'
+            if labels:
+                label_filters = ' AND '.join([f'metric.labels.{label["key"]}="{label["value"]}"' for label in labels])
+                filter_str += f' AND {label_filters}'
+
+            request = service.projects().timeSeries().list(
+                name=f"projects/{self.__project_id}",
+                filter=filter_str,
+                interval={'startTime': start_time.isoformat() + 'Z', 'endTime': end_time.isoformat() + 'Z'},
+                aggregation={'alignmentPeriod': '300s', 'perSeriesAligner': aggregation},
+                view='FULL'
+            )
+            response = request.execute()
+            return response.get('timeSeries', [])
+        except Exception as e:
+            logger.error(f"Exception occurred while fetching metric aggregation: {e}")
             raise e
