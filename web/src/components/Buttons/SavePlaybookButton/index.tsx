@@ -54,6 +54,9 @@ function SavePlaybookButton({
       return;
     }
 
+    const error = handlePlaybookSavingValidations();
+    if (error) return;
+
     try {
       await triggerUpdatePlaybook(stateToPlaybook()).unwrap();
       if (shouldNavigate) {
