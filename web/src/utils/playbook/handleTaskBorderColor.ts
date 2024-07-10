@@ -1,27 +1,13 @@
 import getCurrentTask from "../getCurrentTask.ts";
-import { extractLogs } from "./extractLogs.ts";
 
 function handleTaskBorderColor(taskId: string) {
   const [task] = getCurrentTask(taskId);
-  // const logs = extractLogs(taskId);
-  // const results = logs?.reduce((logResults, log) => {
-  //   logResults.push(log.evaluation_result);
-  //   return logResults;
-  // }, []);
 
-  if (
-    task?.ui_requirement?.outputError
-    // ||
-    // (results.length > 0 && results.findIndex((result) => result) === -1)
-  ) {
+  if (task?.ui_requirement?.outputError) {
     return "red";
   }
 
-  if (
-    task?.ui_requirement?.output?.data
-    // ||
-    // (results.length > 0 && results.find((result) => result))
-  ) {
+  if (task?.ui_requirement?.output?.data) {
     return "green";
   }
 }

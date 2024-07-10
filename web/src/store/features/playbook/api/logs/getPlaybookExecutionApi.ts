@@ -27,8 +27,6 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled;
           dispatch(setPlaybookData(data));
           const steps = data.steps;
-          // const steps = executionToPlaybook(data?.playbook_execution);
-          // addOutputsToSteps(steps);
           // const lastStep = steps[steps.length - 1];
           // const relationLogs = lastStep?.relationLogs ?? [];
           // const nextPossibleStepLogs = relationLogs?.filter(

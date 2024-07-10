@@ -38,6 +38,9 @@ function playbookToState(playbook: Playbook): Playbook {
     const sourceId =
       typeof relation.parent !== "string" ? (relation.parent as Step).id : "";
     const targetId = (relation.child as Step).id;
+    relation.ui_requirement = {
+      playbookRelationId: relation.id,
+    };
     relation.id = `edge-${sourceId}-${targetId}`;
     const rules = relation.condition?.rules ?? [];
     if (relation.condition) {

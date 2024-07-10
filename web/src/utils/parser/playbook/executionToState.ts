@@ -1,12 +1,17 @@
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
+import extractExecutionRelations from "./execution/extractExecutionRelations.ts";
+import extractExecutionTasks from "./execution/extractExecutionTasks.ts";
 
 function executionToState(playbook_execution: any): Playbook {
   const currentPlaybook: Playbook | undefined = currentPlaybookSelector(
     store.getState(),
   );
   const playbookSteps = structuredClone(currentPlaybook?.steps ?? []);
+  const playbookRelations = structuredClone(
+    currentPlaybook?.step_relations ?? [],
+  );
   const playbook: Playbook = playbook_execution?.playbook;
   const stepExecutionLogs: any = playbook_execution?.step_execution_logs ?? {};
 
@@ -30,41 +35,17 @@ function executionToState(playbook_execution: any): Playbook {
       step.tasks = [];
     }
 
-    (stepExecutionLog as any)?.task_execution_logs?.forEach((log: any) => {
-      const taskInPlaybook: Task | undefined = tasks.find(
-        (task) => task.id === log.task?.id,
-      );
-      if (taskInPlaybook) {
-        taskInPlaybook.ui_requirement = {
-          ...taskInPlaybook.ui_requirement,
-          output: {
-            data: { ...log.result, timestamp: log.timestamp },
-            interpretation: log.interpretation,
-          },
-          showOutput: true,
-          showError: log?.result?.error !== undefined,
-          outputError: log?.result?.error,
-          outputLoading: false,
-        };
-      } else {
-        tasks.push({
-          ...log.task,
-          ui_requirement: {
-            output: {
-              data: log.result,
-              interpretation: log.interpretation,
-            },
-            showOutput: true,
-            showError: log?.result?.error !== undefined,
-            outputError: log?.result?.error,
-            outputLoading: false,
-          },
-        });
-        if (stepIndex === -1) {
-          step.tasks.push(log.task.id);
-        }
-      }
-    });
+    extractExecutionTasks(
+      stepExecutionLog?.task_execution_logs,
+      tasks,
+      step,
+      stepIndex,
+    );
+
+    extractExecutionRelations(
+      stepExecutionLog?.relation_execution_logs,
+      playbookRelations,
+    );
 
     if (stepIndex === -1) {
       playbookSteps.push(step);
@@ -76,6 +57,7 @@ function executionToState(playbook_execution: any): Playbook {
   return {
     ...(currentPlaybook ?? playbook),
     steps: playbookSteps,
+    step_relations: playbookRelations,
     ui_requirement: {
       tasks,
       isCopied: false,

@@ -11,6 +11,16 @@ enum RuleType {
   TABLE = "table",
 }
 
+export type RelationEvaluation = {
+  evaluation_result: boolean;
+  evaluation_output: any;
+};
+
+export type StepRelationUIRequirement = {
+  playbookRelationId?: string;
+  evaluation?: RelationEvaluation;
+};
+
 export type ConditionRule = {
   type: string;
   task: {
@@ -35,6 +45,7 @@ export type StepRelationContract = {
     reference_id: string;
   };
   condition?: StepCondition;
+  ui_requirement?: StepRelationUIRequirement;
 };
 
 export type StepRelation = {
@@ -42,4 +53,5 @@ export type StepRelation = {
   parent: Step | string;
   child: Step;
   condition?: StepCondition;
+  ui_requirement?: StepRelationUIRequirement;
 };
