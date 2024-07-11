@@ -46,51 +46,51 @@ def workflow_scheduler():
     current_time = int(current_time_utc.timestamp())
     all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
     for wf_execution in all_scheduled_wf_executions:
-        workflow_id = wf_execution.workflow_id
-        workflow_execution_configuration = wf_execution.workflow_execution_configuration
-        workflow_execution_metadata = wf_execution.metadata
+        wf_execution_proto: WorkflowExecutionProto = wf_execution.proto_partial
+        workflow_id = wf_execution_proto.workflow.id.value
+        execution_configuration: WorkflowConfigurationProto = wf_execution_proto.execution_configuration
+        execution_metadata: WorkflowExecutionProto.WorkflowExecutionMetadata = wf_execution_proto.metadata
         event_context = None
-        if workflow_execution_metadata:
-            if workflow_execution_metadata.get('type', '') in ['PAGER_DUTY_INCIDENT', 'SLACK_MESSAGE']:
-                event = workflow_execution_metadata.get('event', {})
-                if event and workflow_execution_configuration.get('transformer_lambda_function', None):
-                    transformer_lambda_function = workflow_execution_configuration.get('transformer_lambda_function',
-                                                                                       None)
-                    transformer_lambda_function_proto: Lambda.Function = dict_to_proto(transformer_lambda_function,
-                                                                                       Lambda.Function)
+        if execution_metadata and execution_metadata is not None:
+            if execution_metadata.type in [WorkflowExecutionProto.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
+                                           WorkflowExecutionProto.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT]:
+                event = execution_metadata.event
+                if event and execution_configuration.transformer_lambda_function is not None:
+                    event_dict = proto_to_dict(event)
+                    transformer_lambda_function_proto: Lambda.Function = execution_configuration.transformer_lambda_function
                     lambda_function_processor = LambdaFunctionProcessor(
                         transformer_lambda_function_proto.definition.value,
                         transformer_lambda_function_proto.requirements)
-                    event_context = lambda_function_processor.execute(event)
+                    event_context = lambda_function_processor.execute(event_dict)
                     if event_context and isinstance(event_context, dict):
-                        workflow_execution_metadata['event_context'] = event_context
+                        workflow_execution_metadata = proto_to_dict(execution_metadata)
+                        execution_metadata['event_context'] = event_context
                         update_db_account_workflow_execution_metadata(wf_execution.account, wf_execution.id,
                                                                       workflow_execution_metadata)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
         account = wf_execution.account
-        time_range = wf_execution.time_range
-        update_time_range = None
-        if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
+        if wf_execution_proto.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
             logger.info(f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id}, workflow_id: "
                         f"{workflow_id} at {current_time}")
             continue
 
-        scheduled_at = wf_execution.scheduled_at
+        scheduled_at = wf_execution_proto.scheduled_at
         if current_time_utc < scheduled_at:
-            logger.info(f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution.id}, "
-                        f"workflow_id: {workflow_id} at {current_time}")
+            logger.info(
+                f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution_proto.id.value}, "
+                f"workflow_id: {workflow_id} at {current_time}")
             continue
 
-        expiry_at = wf_execution.expiry_at
+        expiry_at = wf_execution_proto.expiry_at
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
-            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}, workflow_id: "
-                        f"{workflow_id} at {current_time}")
-            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution_proto.id.value}, "
+                        f"workflow_id: {workflow_id} at {current_time}")
+            update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
 
-        update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+        update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
                                                     WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
@@ -98,17 +98,17 @@ def workflow_scheduler():
             try:
                 uuid_str = uuid.uuid4().hex
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
-                if update_time_range:
-                    time_range_proto = dict_to_proto(update_time_range, TimeRange)
-                else:
-                    time_range_proto = dict_to_proto(time_range, TimeRange)
+                time_range = proto_to_dict(wf_execution_proto.time_range)
                 execution_global_variable_set = None
-                if workflow_execution_configuration and 'global_variable_set' in workflow_execution_configuration:
-                    execution_global_variable_set = workflow_execution_configuration['global_variable_set']
+                if execution_configuration and execution_configuration.global_variable_set is not None:
+                    execution_global_variable_set = proto_to_dict(execution_configuration.global_variable_set)
                     if event_context and isinstance(event_context, dict):
+                        event_context = {f"${key}": value for key, value in event_context.items()}
                         execution_global_variable_set.update(event_context)
-                playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
-                                                               wf_execution.created_by, execution_global_variable_set)
+                playbook_execution = create_playbook_execution(account, wf_execution_proto.time_range, pb_id,
+                                                               playbook_run_uuid, wf_execution_proto.created_by.value,
+                                                               execution_global_variable_set)
+                workflow_execution_configuration = proto_to_dict(execution_configuration)
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
                                                 pb_id, playbook_execution.id, time_range,
                                                 workflow_execution_configuration)
@@ -117,8 +117,8 @@ def workflow_scheduler():
                                  f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
                     continue
                 logger.info("workflow_execution_configuration in scheduler", workflow_execution_configuration)
-                task = workflow_executor.delay(account.id, workflow_id, wf_execution.id, pb_id, playbook_execution.id,
-                                               time_range, workflow_execution_configuration)
+                task = workflow_executor.delay(account.id, workflow_id, wf_execution_proto.id.value, pb_id,
+                                               playbook_execution.id, time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                                   status=PeriodicTaskStatus.SCHEDULED,
                                                   account_id=account.id,

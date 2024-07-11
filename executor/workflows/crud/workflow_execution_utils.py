@@ -2,6 +2,8 @@ import logging
 from datetime import timedelta
 
 import uuid
+from struct import Struct
+
 from django.conf import settings
 
 from accounts.models import Account
@@ -11,14 +13,14 @@ from protos.playbooks.workflow_schedules.cron_schedule_pb2 import CronSchedule
 from protos.playbooks.workflow_schedules.interval_schedule_pb2 import IntervalSchedule
 from utils.time_utils import calculate_cron_times, current_datetime, calculate_interval_times
 from protos.base_pb2 import TimeRange
-from protos.playbooks.workflow_pb2 import WorkflowSchedule, Workflow
+from protos.playbooks.workflow_pb2 import WorkflowSchedule, Workflow, WorkflowExecution
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
 
 
-def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread_ts, slack_message) -> (bool, str):
+def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, slack_message) -> (bool, str):
     try:
         account = Account.objects.get(id=account_id)
     except Account.DoesNotExist:
@@ -32,13 +34,17 @@ def trigger_slack_alert_entry_point_workflows(account_id, entry_point_id, thread
         uuid_str = uuid.uuid4().hex
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run_{uuid_str}'
         schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
-        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
-                                       current_time_utc, workflow_run_uuid, 'SLACK_ALERT',
-                                       metadata={'type': 'SLACK_MESSAGE', 'event': slack_message},
+
+        execution_metadata = WorkflowExecution.WorkflowExecutionMetadata(
+            type=WorkflowExecution.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
+            event=dict_to_proto(slack_message, Struct)
+        )
+        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule, current_time_utc,
+                                       workflow_run_uuid, 'SLACK_ALERT', workflow_execution_metadata=execution_metadata,
                                        workflow_config=workflow_proto.configuration)
 
 
-def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, incident_id, pager_duty_incident) -> \
+def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, pager_duty_incident) -> \
         (bool, str):
     try:
         account = Account.objects.get(id=account_id)
@@ -53,16 +59,22 @@ def trigger_pagerduty_alert_entry_point_workflows(account_id, entry_point_id, in
         uuid_str = uuid.uuid4().hex
         workflow_run_id = f'{str(int(current_time_utc.timestamp()))}_{account_id}_{workflow.id}_wf_run_{uuid_str}'
         schedule: WorkflowSchedule = dict_to_proto(workflow.schedule, WorkflowSchedule)
-        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule,
-                                       current_time_utc, workflow_run_id, 'PAGERDUTY',
-                                       metadata={'type': 'PAGER_DUTY_INCIDENT', 'event': pager_duty_incident},
+
+        execution_metadata = WorkflowExecution.WorkflowExecutionMetadata(
+            type=WorkflowExecution.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT,
+            event=dict_to_proto(pager_duty_incident, Struct)
+        )
+
+        create_workflow_execution_util(account, workflow.id, workflow.schedule_type, schedule, current_time_utc,
+                                       workflow_run_id, 'PAGERDUTY', workflow_execution_metadata=execution_metadata,
                                        workflow_config=workflow_proto.configuration)
 
 
 def create_workflow_execution_util(account: Account, workflow_id, schedule_type, schedule, scheduled_at,
-                                   workflow_run_uuid, triggered_by=None, metadata=None, workflow_config=None) -> \
-        (bool, str):
+                                   workflow_run_uuid, triggered_by=None, workflow_execution_metadata=None,
+                                   workflow_config=None) -> (bool, str):
     workflow_config_dict = proto_to_dict(workflow_config)
+    metadata = proto_to_dict(workflow_execution_metadata)
     if schedule_type == WorkflowSchedule.Type.INTERVAL:
         interval_schedule: IntervalSchedule = schedule.interval
 

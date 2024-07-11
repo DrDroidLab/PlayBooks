@@ -199,4 +199,5 @@ message WorkflowExecution {
   repeated WorkflowExecutionLog workflow_logs = 11;
   WorkflowConfiguration execution_configuration = 12;
   WorkflowExecutionMetadata metadata = 13;
+  TimeRange time_range = 14;
 }

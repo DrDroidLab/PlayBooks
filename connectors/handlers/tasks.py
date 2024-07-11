@@ -299,7 +299,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                 for ep in ep_protos:
                     is_triggered = entry_point_evaluator_facade.evaluate(ep, slack_alert_event)
                     if is_triggered:
-                        trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, event_ts, message)
+                        trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, message)
             except Exception as e:
                 print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
                       f"for account: {account_id}")
@@ -338,7 +338,7 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
         for ep in ep_protos:
             is_triggered = entry_point_evaluator_facade.evaluate(ep, pager_duty_incident)
             if is_triggered:
-                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, incident_id, pager_duty_incident)
+                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, pager_duty_incident)
     except Exception as e:
         logger.error(f"Error while handling pagerduty webhook call with error: {e} for event: {pager_duty_incident}")
     return
