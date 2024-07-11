@@ -5,15 +5,37 @@ import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../../store/features/playbook/playbookSlice.ts";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import { Playbook, Step } from "../../../types/index.ts";
+import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import { v4 as uuidv4 } from "uuid";
 
 function TemplatesList() {
   const { toggle } = useDrawerState(DrawerTypes.TEMPLATES);
   const { data: templates, isLoading } = useGetTemplatesQuery();
   const dispatch = useDispatch();
 
-  const handleImportTemplate = (template) => {
-    console.log("templa", template);
-    // dispatch(copyPlaybook(template));
+  const handleImportTemplate = (template: Playbook) => {
+    const steps: Step[] = template.steps.map((step: Step) => ({
+      ...step,
+      id: generateUUIDWithoutHyphens(),
+      reference_id: uuidv4(),
+      tasks: [],
+      ui_requirement: {
+        isOpen: false,
+        showError: false,
+      },
+    }));
+    const pb: Playbook = {
+      ...template,
+      steps,
+      step_relations: [],
+      ui_requirement: {
+        isExisting: false,
+        tasks: [],
+      },
+      global_variable_set: {},
+    };
+    dispatch(copyPlaybook({ pb, isTemplate: true }));
     toggle();
   };
 

@@ -77,16 +77,17 @@ const playbookSlice = createSlice({
       state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
-      const useState = payload.useState;
+      const { useState, pb, isTemplate } = payload;
       if (useState) {
         state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
         state.currentPlaybook!.ui_requirement.isExisting = false;
         return;
       }
-      state.currentPlaybook = payload;
-      state.currentPlaybook!.name = "Copy of " + payload.name;
-      state.currentPlaybook!.description = payload.description;
+      state.currentPlaybook = pb;
       state.currentPlaybook!.ui_requirement.isExisting = false;
+      if (!isTemplate) {
+        state.currentPlaybook!.name = "Copy of " + pb.name;
+      }
     },
     setErrors(state, { payload }) {
       const { id, errors } = payload;

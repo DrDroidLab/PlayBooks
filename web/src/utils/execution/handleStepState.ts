@@ -28,7 +28,7 @@ function handleStepState(stepId: string): StepStateType {
     return parentId === id;
   });
 
-  const stepTasks = step?.tasks.map((task) =>
+  const stepTasks = step?.tasks?.map((task) =>
     tasks.find((t) => t.id === (typeof task === "string" ? task : task.id)),
   );
 
