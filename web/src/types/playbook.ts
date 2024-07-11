@@ -6,7 +6,6 @@ import { Task } from "./task.ts";
 type PlaybookUIRequirement = {
   tasks: Task[];
   isExisting: boolean;
-  isCopied: boolean;
   executedSteps?: Step[];
 };
 

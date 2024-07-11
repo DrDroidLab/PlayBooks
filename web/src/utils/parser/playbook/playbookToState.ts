@@ -55,7 +55,6 @@ function playbookToState(playbook: Playbook): Playbook {
     steps,
     ui_requirement: {
       tasks,
-      isCopied: false,
       isExisting: true,
     },
   };

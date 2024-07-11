@@ -74,7 +74,6 @@ function executionToState(playbook_execution: any): Playbook {
     step_relations: playbookRelations,
     ui_requirement: {
       tasks,
-      isCopied: false,
       isExisting: true,
       executedSteps,
     },

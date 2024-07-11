@@ -41,7 +41,6 @@ const initialState: PlaybookUIState = {
     ui_requirement: {
       tasks: [],
       isExisting: false,
-      isCopied: false,
     },
   },
   meta: {
@@ -81,14 +80,12 @@ const playbookSlice = createSlice({
       const useState = payload.useState;
       if (useState) {
         state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
-        state.currentPlaybook!.ui_requirement.isCopied = true;
         state.currentPlaybook!.ui_requirement.isExisting = false;
         return;
       }
       state.currentPlaybook = payload;
       state.currentPlaybook!.name = "Copy of " + payload.name;
       state.currentPlaybook!.description = payload.description;
-      state.currentPlaybook!.ui_requirement.isCopied = true;
       state.currentPlaybook!.ui_requirement.isExisting = false;
     },
     setErrors(state, { payload }) {

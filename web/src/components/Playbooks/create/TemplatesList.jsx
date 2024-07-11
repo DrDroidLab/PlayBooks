@@ -12,7 +12,8 @@ function TemplatesList() {
   const dispatch = useDispatch();
 
   const handleImportTemplate = (template) => {
-    dispatch(copyPlaybook(template));
+    console.log("templa", template);
+    // dispatch(copyPlaybook(template));
     toggle();
   };
 
