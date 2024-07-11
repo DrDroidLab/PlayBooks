@@ -1,28 +1,29 @@
 import React, { useState } from "react";
-import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  currentPlaybookSelector,
   deleteVariable,
-  playbookSelector,
   updateGlobalVariable,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ValueComponent from "../../ValueComponent";
 import AddVariableOverlay from "./AddVariableOverlay.jsx";
-import { Close } from "@mui/icons-material";
+import { CloseRounded } from "@mui/icons-material";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import CustomButton from "../CustomButton/index.tsx";
 
 function GlobalVariables() {
   const [isAddVariableOpen, setIsAddVariableOpen] = useState(false);
-  const playbook = useSelector(playbookSelector);
+  const playbook = useSelector(currentPlaybookSelector);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
+  const variables = playbook?.global_variable_set;
 
   const openOverlay = () => {
     setIsAddVariableOpen(true);
   };
 
-  const handleDelete = (index) => {
-    dispatch(deleteVariable({ index }));
+  const handleDelete = (key) => {
+    dispatch(deleteVariable({ name: key }));
   };
 
   if (isPrefetched && playbook?.globalVariables?.length === 0) {
@@ -31,14 +32,10 @@ function GlobalVariables() {
 
   return (
     <div
-      className={`w-[300px] my-0 text-sm p-1 border rounded min-h-[100px] bg-white`}>
+      className={`w-[330px] my-0 text-sm p-1 border rounded min-h-[100px] bg-white`}>
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
-          <button
-            className={`${styles["pb-button"]} global_var`}
-            onClick={openOverlay}>
-            + Add Variable
-          </button>
+          <CustomButton onClick={openOverlay}>+ Add Variable</CustomButton>
         )}
         {playbook?.globalVariables?.length > 0 &&
           `(${playbook?.globalVariables?.length} variable${
@@ -46,34 +43,36 @@ function GlobalVariables() {
           })`}
       </div>
       {!isPrefetched && <hr />}
-      <div className={styles.info}>
-        {playbook?.globalVariables?.length > 0 ? (
-          playbook?.globalVariables.map((variable, index) => (
-            <div
-              key={index}
-              className={`${styles.variable} flex flex-wrap p-2 border-b`}>
-              <div className={styles.name}>{variable.name}</div>
+      <div className="flex items-center flex-wrap gap-1 mt-2">
+        {Object.keys(playbook?.global_variable_set ?? {})?.length > 0 ? (
+          Object.keys(playbook?.global_variable_set ?? {}).map((key) => (
+            <div key={key} className={`flex gap-1 flex-wrap p-1`}>
+              <div className="bg-violet-100 p-1 flex items-center rounded w-[80px]">
+                <p className="text-xs text-center text-ellipsis overflow-hidden">
+                  {key}
+                </p>
+              </div>
               <div className="flex gap-2 items-center">
                 <ValueComponent
                   valueType={"STRING"}
-                  value={variable.value}
+                  value={variables[key]}
                   placeHolder={"Enter variable value"}
                   length={200}
                   onValueChange={(val) => {
-                    dispatch(updateGlobalVariable({ index, value: val }));
+                    dispatch(updateGlobalVariable({ name: key, value: val }));
                   }}
                 />
                 {!isPrefetched && (
-                  <Close
-                    onClick={() => handleDelete(index)}
-                    className={styles.close}
+                  <CloseRounded
+                    onClick={() => handleDelete(key)}
+                    className="text-black cursor-pointer hover:text-red-500 transition-all !text-sm"
                   />
                 )}
               </div>
             </div>
           ))
         ) : (
-          <p className="text-gray-400">
+          <p className="text-gray-400 text-xs">
             Variables defined in the playbook will be visible here. Read more
             about variables{" "}
             <a
