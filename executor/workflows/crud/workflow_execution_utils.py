@@ -74,7 +74,7 @@ def create_workflow_execution_util(account: Account, workflow_id, schedule_type,
                                    workflow_run_uuid, triggered_by=None, workflow_execution_metadata=None,
                                    workflow_config=None) -> (bool, str):
     workflow_config_dict = proto_to_dict(workflow_config)
-    metadata = proto_to_dict(workflow_execution_metadata)
+    metadata = proto_to_dict(workflow_execution_metadata) if workflow_execution_metadata else None
     if schedule_type == WorkflowSchedule.Type.INTERVAL:
         interval_schedule: IntervalSchedule = schedule.interval
 

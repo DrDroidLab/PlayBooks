@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import uuid
 
 from celery import shared_task
@@ -75,14 +75,16 @@ def workflow_scheduler():
                         f"{workflow_id} at {current_time}")
             continue
 
-        scheduled_at = wf_execution_proto.scheduled_at
+        scheduled_at = datetime.fromtimestamp(float(wf_execution_proto.scheduled_at))
+        scheduled_at = scheduled_at.replace(tzinfo=timezone.utc)
         if current_time_utc < scheduled_at:
             logger.info(
                 f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution_proto.id.value}, "
                 f"workflow_id: {workflow_id} at {current_time}")
             continue
 
-        expiry_at = wf_execution_proto.expiry_at
+        expiry_at = datetime.fromtimestamp(float(wf_execution_proto.expiry_at))
+        expiry_at = expiry_at.replace(tzinfo=timezone.utc)
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
             logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution_proto.id.value}, "
                         f"workflow_id: {workflow_id} at {current_time}")
@@ -101,7 +103,8 @@ def workflow_scheduler():
                 time_range = proto_to_dict(wf_execution_proto.time_range)
                 execution_global_variable_set = None
                 if execution_configuration and execution_configuration.global_variable_set is not None:
-                    execution_global_variable_set = proto_to_dict(execution_configuration.global_variable_set)
+                    execution_global_variable_set = proto_to_dict(
+                        execution_configuration.global_variable_set) if execution_configuration.global_variable_set else {}
                     if event_context and isinstance(event_context, dict):
                         event_context = {f"${key}": value for key, value in event_context.items()}
                         execution_global_variable_set.update(event_context)
@@ -150,7 +153,7 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
         workflow_config = WorkflowConfigurationProto()
         if workflow_execution_configuration:
             workflow_config = dict_to_proto(workflow_execution_configuration, WorkflowConfigurationProto)
-        if workflow_config.generate_summary.value:
+        if workflow_config.generate_summary and workflow_config.generate_summary.value:
             execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         try:
             saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
@@ -334,7 +337,8 @@ def test_workflow_transformer(lambda_function: Lambda.Function, event):
     try:
         lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
                                                             lambda_function.requirements)
-        event_context = lambda_function_processor.execute(event)
+        event_dict = proto_to_dict(event)
+        event_context = lambda_function_processor.execute(event_dict)
         return event_context
     except Exception as e:
         logger.error(f"Error occurred while running transformer lambda function: {e}")
