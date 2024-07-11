@@ -28,7 +28,7 @@ export default function handlePlaybookSavingValidations() {
       if (!task) {
         error = "Task not found in playbook";
       } else {
-        if (Object.keys(task.ui_requirement.errors ?? {}).length > 0) {
+        if (Object.keys(task.ui_requirement?.errors ?? {}).length > 0) {
           updateCardById("showError", true, task.id);
           error = "Please fix the errors in the playbook";
         }
