@@ -250,9 +250,13 @@ const playbookSlice = createSlice({
             const taskIndex = tasks.findIndex((e) => e.id === taskId);
             tasks.splice(taskIndex, 1);
           });
-          state.currentPlaybook!.step_relations.filter((relation) =>
-            relation.id.includes(id),
-          );
+          state.currentPlaybook!.step_relations =
+            state.currentPlaybook!.step_relations.filter((relation) => {
+              if (typeof relation.parent === "string") {
+                return relation.parent !== id;
+              }
+              return relation.parent.reference_id === step.reference_id;
+            });
         }
         state.permanentView = PermanentDrawerTypes.DEFAULT;
       }

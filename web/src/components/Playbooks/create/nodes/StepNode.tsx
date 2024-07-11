@@ -16,6 +16,7 @@ import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
+import useHasChildren from "../../../../hooks/useHasChildren.ts";
 
 const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
@@ -26,7 +27,7 @@ function StepNode({ data }) {
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
   const dispatch = useDispatch();
-  // const hasChildren = useHasChildren(step?.id);
+  const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
   const { toggle, openDrawer, permanentView, addAdditionalData } =
     usePermanentDrawerState();
@@ -61,19 +62,21 @@ function StepNode({ data }) {
       </div>
       {!isPrefetched && <StepButtons id={step.id} />}
 
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
-      />
+      {step?.ui_requirement?.stepIndex !== 0 && (
+        <Handle
+          type="target"
+          position={Position.Top}
+          className="!bg-white !w-5 !h-5 absolute !top-0 !transform !-translate-x-1/2 !-translate-y-1/2 !border-violet-500 !border-2"
+        />
+      )}
 
-      {/* {hasChildren && ( */}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
-      />
-      {/* )} */}
+      {hasChildren && (
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
+        />
+      )}
 
       {!isPrefetched && (
         <NodeToolbar isVisible={true} position={Position.Bottom}>
