@@ -253,9 +253,15 @@ const playbookSlice = createSlice({
           state.currentPlaybook!.step_relations =
             state.currentPlaybook!.step_relations.filter((relation) => {
               if (typeof relation.parent === "string") {
-                return relation.parent !== id;
+                return (
+                  relation.parent !== id &&
+                  relation.child.reference_id !== step?.reference_id
+                );
               }
-              return relation.parent.reference_id === step.reference_id;
+              return (
+                relation.parent.reference_id !== step?.reference_id &&
+                relation.child.reference_id !== step.reference_id
+              );
             });
         }
         state.permanentView = PermanentDrawerTypes.DEFAULT;

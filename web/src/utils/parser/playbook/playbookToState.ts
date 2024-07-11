@@ -49,6 +49,8 @@ function playbookToState(playbook: Playbook): Playbook {
         task: { id: rule?.task?.id, reference_id: rule?.task?.reference_id },
       }));
     }
+    relation.parent = steps?.find((e) => e.id === sourceId) ?? relation.parent;
+    relation.child = steps?.find((e) => e.id === targetId) ?? relation.child;
   });
   return {
     ...playbook,
