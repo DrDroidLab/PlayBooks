@@ -18,6 +18,7 @@ import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
   const [open, setOpen] = useState(false);
+  const [tableLoading, setTableLoading] = useState(true);
 
   const [tableData, setTableData] = useState([]);
 
@@ -28,8 +29,9 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
       result.table.rows &&
       result.table.rows.length > 0
     ) {
-      setTableData(result.table.rows);
       setShowTable(true);
+      setTableData(result.table.rows);
+      setTableLoading(false);
     }
   }, [result]);
 
@@ -37,8 +39,12 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
     setOpen(false);
   };
 
-  const columnLength = tableData[0]?.columns?.length;
-  const shouldNoWrap = columnLength < 5;
+  if (tableLoading)
+    return (
+      <div>
+        <p className="text-xs font-semibold">Loading...</p>
+      </div>
+    );
 
   return (
     <div
@@ -64,6 +70,7 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
                         text={col.name}
                         maxLength={50}
                         className={"font-bold text-xs"}
+                        shouldNoWrap={true}
                       />
                     </TableCell>
                   );
@@ -84,9 +91,9 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
                             col.name === "@message"
                               ? "min-w-[100px]"
                               : "min-w-[50px]"
-                          } !text-xs !border`}>
+                          } !text-xs !border !min-w-[max-content]`}>
                           <SeeMoreTextWithoutModal
-                            shouldNoWrap={shouldNoWrap}
+                            shouldNoWrap={true}
                             text={
                               isDate(col.value)
                                 ? renderTimestamp(

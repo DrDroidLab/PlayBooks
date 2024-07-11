@@ -173,7 +173,10 @@ class DatadogSourceManager(PlaybookSourceManager):
                         TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
                                                                  unit=StringValue(value=unit), datapoints=datapoints))
 
-                timeseries_result = TimeseriesResult(labeled_metric_timeseries=labeled_metric_timeseries)
+                list_of_queries = ",".join(queries)
+                timeseries_result = TimeseriesResult(metric_expression=StringValue(value=list_of_queries),
+                                                     metric_name=StringValue(value=""),
+                                                     labeled_metric_timeseries=labeled_metric_timeseries)
 
                 task_result = PlaybookTaskResult(
                     type=PlaybookTaskResultType.TIMESERIES,

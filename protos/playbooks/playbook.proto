@@ -114,6 +114,7 @@ message PlaybookStepRelationExecutionLog {
   PlaybookStepRelation relation = 2;
   google.protobuf.BoolValue evaluation_result = 3;
   google.protobuf.Struct evaluation_output = 4;
+  Interpretation step_relation_interpretation = 5;
 }
 
 message PlaybookStepExecutionLog {

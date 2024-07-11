@@ -39,28 +39,62 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
             raise ValueError('MS Teams Webhook is not configured in the notification config')
         logger.info(f"Sending MS Teams message  to webhook {webhook_url}")
         blocks = []
-        playbook_name = ""
-        playbook_url = ""
-        for i, interpretation in enumerate(execution_output):
-            if i == 0 and interpretation.type == InterpretationProto.Type.SUMMARY:
-                playbook_url = interpretation.description.value
-                playbook_name = interpretation.title.value
-                body_block = [{
-                    "type": "TextBlock",
-                    "text": f"Hello team, here's the executed version of [{playbook_name}]({playbook_url}) that's configured in the Workflow triggered.",
-                    "size": "large",
-                    "wrap": True,
-                    "style": "heading"
-                }]
-            else:
-                step_execution = interpretation.title.value
-                interpretation_explainer = interpretation.description.value
-                interpretation_result = interpretation.summary.value
-                if interpretation.type == InterpretationProto.Type.IMAGE:
-                    body_block = [
+        text_message = ""
+        step_number = 1
+        for i, interpretation in enumerate(execution_output):            
+            title = interpretation.title.value
+            description = interpretation.description.value
+            summary = interpretation.summary.value
+            block_message = ""
+            if description:
+                block_message += f"{description}\n"
+            if summary:
+                block_message += f"{summary}\n"
+            text_message = text_message + block_message
+            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+                if title:
+                    blocks.extend([
                         {
                             "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
+                            "text": f"{title}",
+                            "size": "large",
+                            "wrap": True,
+                            "style": "heading"
+                        }])
+                if block_message:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"{description} \n {summary}",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }])
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                blocks.extend([
+                    {
+                        "type": "TextBlock",
+                        "text": f"{step_number}. {title}",
+                        "size": "large",
+                        "wrap": True,
+                        "style": "heading"
+                    }])
+                step_number += 1
+            elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
+                if interpretation.type == InterpretationProto.Type.TEXT:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f"{block_message}",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }])
+                elif interpretation.type == InterpretationProto.Type.IMAGE:
+                    blocks.extend([
+                        {
+                            "type": "TextBlock",
+                            "text": f'{description}',
                             "size": "medium",
                             "wrap": True,
                             "weight": "lighter"
@@ -68,14 +102,14 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                         {
                             "type": "Image",
                             "url": interpretation.image_url.value,
-                            "altText": step_execution
+                            "altText": f'{description}'
                         }
-                    ]
+                    ])
                 elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                    body_block = [
+                    blocks.extend([
                         {
                             "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
+                            "text": f'{description}',
                             "size": "medium",
                             "wrap": True,
                             "weight": "lighter"
@@ -87,24 +121,20 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                             "wrap": True,
                             "weight": "lighter"
                         }
-                    ]
-                else:
-                    body_block = [
+                    ])
+                elif interpretation.type == InterpretationProto.Type.JSON:
+                    blocks.extend([
                         {
                             "type": "TextBlock",
-                            "text": step_execution + "\n" + interpretation_result + "\n" + interpretation_explainer,
-                            "size": "medium",
+                            "text": f"```\n{summary}\n```",
+                            "size": "Medium",
                             "wrap": True,
-                            "weight": "lighter"
+                            "fontType": "Monospace"
                         }
-                    ]
-            blocks.extend(body_block)
+                    ])
         payload = {"type": "message", "attachments": [{"contentType": "application/vnd.microsoft.card.adaptive",
                                                        "content": {"type": "AdaptiveCard", "version": "1.2",
-                                                                   "body": blocks, "actions": [
-                                                               {"type": "Action.OpenUrl",
-                                                                "title": f"View Current Execution for {playbook_name}",
-                                                                "url": f"{playbook_url}"}]}}]}
+                                                                   "body": blocks}}]}
         message_params = {'payload': payload}
         try:
             if webhook_url:

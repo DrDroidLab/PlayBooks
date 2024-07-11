@@ -5,6 +5,11 @@ import { showSnackbar } from "../features/snackbar/snackbarSlice.ts";
 import { CustomError, ErrorType } from "../../utils/Error.ts";
 import { refreshToken } from "./refreshTokenService.ts";
 import { logOut } from "../features/auth/authSlice.ts";
+import { isUnAuth } from "../../utils/auth/unauthenticatedRoutes.ts";
+import {
+  PaginationKeys,
+  paginationSelector,
+} from "../features/pagination/paginationSlice.ts";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
@@ -25,10 +30,16 @@ const modifyRequestBody = (originalArgs, api) => {
   ) {
     const modifiedArgs = { ...originalArgs };
     const timeRange = rangeSelector(api.getState());
+    const pagination = paginationSelector(api.getState());
     modifiedArgs.body = {
       ...originalArgs.body,
       meta: {
         time_range: timeRange,
+        page: {
+          limit: pagination[PaginationKeys.LIMIT],
+          offset:
+            pagination[PaginationKeys.LIMIT] * pagination[PaginationKeys.PAGE],
+        },
         ...originalArgs.body.meta,
       },
     };
@@ -41,7 +52,7 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
   const modifiedArgs = modifyRequestBody(args, api);
   let result: any = await baseQuery(modifiedArgs, api, extraOptions);
 
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 && !isUnAuth) {
     try {
       const refreshResult = await refreshToken();
       const newAccessToken = refreshResult.data?.access;

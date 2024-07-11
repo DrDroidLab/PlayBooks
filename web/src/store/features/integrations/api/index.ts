@@ -11,3 +11,4 @@ export * from "./getAgentProxyKeysApi.ts";
 export * from "./getAgentKeyOptionsApi.ts";
 export * from "./getGoogleSpacesListApi.ts";
 export * from "./registerGoogleSpacesApi.ts";
+export * from "./updateSiteUrlApi.ts";

@@ -5,6 +5,13 @@ import { StepStateType, StepStates } from "./StepStates.ts";
 function handleStepState(stepId: string, log?: any) {
   const [step] = getCurrentTask(stepId);
 
+  if (!step) {
+    return {
+      state: StepStates.DEFAULT,
+      errorMessage: undefined,
+    };
+  }
+
   if (!step.showError) {
     return {
       state: StepStates.DEFAULT,

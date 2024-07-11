@@ -10,10 +10,5 @@ export const elasticSearch = [
     label: "Query",
     key: "query",
     type: InfoTypes.TEXT,
-  },
-  {
-    label: "Size",
-    key: "size",
-    type: InfoTypes.TEXT,
-  },
+  }
 ];

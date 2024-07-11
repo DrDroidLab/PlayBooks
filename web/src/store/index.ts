@@ -9,6 +9,8 @@ import snackbarSlice from "./features/snackbar/snackbarSlice.ts";
 import workflowSlice from "./features/workflow/workflowSlice.ts";
 import drawersSlice from "./features/drawers/drawersSlice.ts";
 import fakeLoadingSlice from "./features/fakeLoading/fakeLoadingSlice.ts";
+import searchSlice from "./features/search/searchSlice.ts";
+import paginationSlice from "./features/pagination/paginationSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +23,8 @@ export const store = configureStore({
     snackbar: snackbarSlice,
     drawers: drawersSlice,
     fakeLoading: fakeLoadingSlice,
+    search: searchSlice,
+    pagination: paginationSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

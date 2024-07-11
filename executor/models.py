@@ -627,6 +627,7 @@ class PlayBookStepRelationExecutionLog(models.Model):
     playbook_execution = models.ForeignKey(PlayBookExecution, on_delete=models.CASCADE, db_index=True)
     playbook_step_execution_log = models.ForeignKey(PlayBookStepExecutionLog, on_delete=models.CASCADE, db_index=True)
     evaluation_result = models.BooleanField()
+    interpretation = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     evaluation_output = models.JSONField(null=True, blank=True)
 
@@ -637,5 +638,8 @@ class PlayBookStepRelationExecutionLog(models.Model):
             id=UInt64Value(value=self.id),
             relation=self.playbook_step_relation.proto,
             evaluation_result=BoolValue(value=self.evaluation_result),
-            evaluation_output=evaluation_output_proto
+            evaluation_output=evaluation_output_proto,
+            step_relation_interpretation=dict_to_proto(self.interpretation,
+                                        InterpretationProto) if self.interpretation else InterpretationProto(),
+
         )

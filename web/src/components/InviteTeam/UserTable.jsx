@@ -1,16 +1,23 @@
-import { LinearProgress, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import PaginatedTable from '../PaginatedTable';
-import styles from './index.module.css';
+import {
+  LinearProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import styles from "./index.module.css";
+import React from "react";
 
-const UserTableRender = ({ data, loading, refreshTable }) => {
+const UserTable = ({ data, loading }) => {
   return (
     <>
       {loading ? <LinearProgress /> : null}
-      <Table stickyHeader>
+      <Table stickyHeader className="bg-white">
         <TableHead>
           <TableRow>
-            <TableCell className={styles['tableTitle']}>Name</TableCell>
-            <TableCell className={styles['tableTitle']}>Email</TableCell>
+            <TableCell className={styles["tableTitle"]}>Name</TableCell>
+            <TableCell className={styles["tableTitle"]}>Email</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -18,11 +25,10 @@ const UserTableRender = ({ data, loading, refreshTable }) => {
             <TableRow
               key={index}
               sx={{
-                '&:last-child td, &:last-child th': { border: 0 }
-              }}
-            >
+                "&:last-child td, &:last-child th": { border: 0 },
+              }}>
               <TableCell component="th" scope="row">
-                {item.first_name + ' ' + item.last_name}
+                {item.first_name + " " + item.last_name}
               </TableCell>
               <TableCell component="th" scope="row">
                 {item.email}
@@ -32,19 +38,6 @@ const UserTableRender = ({ data, loading, refreshTable }) => {
         </TableBody>
       </Table>
     </>
-  );
-};
-
-const UserTable = ({ userList, total, pageSize, pageUpdateCb, tableContainerStyles, isCard }) => {
-  return (
-    <PaginatedTable
-      renderTable={UserTableRender}
-      data={userList}
-      total={total}
-      pageSize={pageSize}
-      pageUpdateCb={pageUpdateCb}
-      tableContainerStyles={tableContainerStyles ? tableContainerStyles : {}}
-    />
   );
 };
 
