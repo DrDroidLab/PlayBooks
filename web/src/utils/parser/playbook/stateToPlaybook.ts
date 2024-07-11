@@ -20,7 +20,7 @@ function stateToPlaybook() {
     id: checkId(step.id),
     tasks: step.tasks?.map((taskId: Task | string) => ({
       ...tasks.find(
-        (task) => task.id === (typeof taskId === "string" ? taskId : task.id),
+        (task) => task.id === (typeof taskId === "string" ? taskId : taskId.id),
       ),
       id: checkId(
         (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),

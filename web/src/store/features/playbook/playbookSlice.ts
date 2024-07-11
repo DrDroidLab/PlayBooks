@@ -137,6 +137,7 @@ const playbookSlice = createSlice({
       const task: Task = {
         id: taskId,
         reference_id: uuidv4(),
+        name: uuidv4(),
         source: payload.source,
         interpreter_type: "BASIC_I",
         task_connector_sources: [],
@@ -474,6 +475,7 @@ const playbookSlice = createSlice({
       const newTask: Task = JSON.parse(JSON.stringify(task));
       newTask.id = newTaskId;
       newTask.reference_id = uuidv4();
+      newTask.name = uuidv4();
       newTask.ui_requirement.errors = {};
       const source = newTask.source;
       const type = newTask[source.toLowerCase()].type;
