@@ -12,6 +12,7 @@ import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
 import usePlaybookKey from "../hooks/usePlaybookKey.ts";
+import TimeRangeSelector from "./common/TimeRangeSelector/index.tsx";
 
 const renderChildren = (children) => {
   return React.Children.map(children, (child) => {
@@ -136,7 +137,7 @@ const Heading = ({
           )} */}
           <HeadingPlaybookButtons />
           {renderChildren(children)}
-          {customTimeRange && (
+          {/* {customTimeRange && (
             <CustomTimeRangePicker
               onRefreshButtonDisable={handleRefreshButtonDisable}
               onTimeRangeChangeCb={onTimeRangeChangeCb}
@@ -161,7 +162,8 @@ const Heading = ({
                 disabled={isRefreshBtnDisabled}
               />
             </Grid>
-          ) : null}
+          ) : null} */}
+          <TimeRangeSelector />
         </div>
       </div>
     </>
