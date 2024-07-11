@@ -1,16 +1,18 @@
 import React from "react";
-import { DatePicker } from "rsuite";
+import Picker, { PickerType } from "./Picker.tsx";
+import CustomButton from "../CustomButton/index.tsx";
 
 function CustomTimeRangeSection() {
+  const handleApply = () => {};
+
   return (
-    <div className="p-1">
+    <div className="p-2 w-full">
       <p className="font-medium text-sm">Absolute Time Range</p>
-      <DatePicker
-        format="dd MMM yyyy hh:mm:ss aa"
-        showMeridian
-        className="z-[1000]"
-        style={{ width: 220 }}
-      />
+      <div className="flex flex-col gap-3 my-3">
+        <Picker label={"From"} type={PickerType.FROM} />
+        <Picker label={"To"} type={PickerType.TO} />
+      </div>
+      <CustomButton onClick={handleApply}>Apply Time Range</CustomButton>
     </div>
   );
 }
