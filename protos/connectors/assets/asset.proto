@@ -16,6 +16,7 @@ import "protos/connectors/assets/azure_asset.proto";
 import "protos/connectors/assets/remote_server_asset.proto";
 import "protos/connectors/assets/gke_asset.proto";
 import "protos/connectors/assets/elastic_search_asset.proto";
+import "protos/connectors/assets/gcm_asset.proto";
 
 message ConnectorModelTypeOptions {
   SourceModelType model_type = 1;
@@ -35,6 +36,8 @@ message ConnectorModelTypeOptions {
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 14;
     GkeClusterAssetOptions gke_cluster_model_options = 15;
     ElasticSearchIndexAssetOptions elastic_search_index_model_options = 16;
+    GcmLogSinkAssetOptions gcm_log_sink_model_options = 17;
+    GcmMetricAssetOptions gcm_metric_model_options = 18;
   }
 }
 
@@ -61,6 +64,8 @@ message AccountConnectorAssetsModelFilters {
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 13;
     GkeClusterAssetOptions gke_cluster_model_filters = 14;
     ElasticSearchIndexAssetOptions elastic_search_index_model_filters = 15;
+    GcmLogSinkAssetOptions gcm_log_sink_model_filters = 16;
+    GcmMetricAssetOptions gcm_metric_model_filters = 17;
   }
 }
 
@@ -79,5 +84,6 @@ message AccountConnectorAssets {
     AzureAssets azure = 11;
     GkeAssets gke = 12;
     ElasticSearchAssets elastic_search = 13;
+    GcmAssets gcm = 14;
   }
 }
