@@ -1,13 +1,16 @@
-import json
+from datetime import datetime
+from typing import Dict
 
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+import pytz
+from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
-from protos.base_pb2 import Source, SourceModelType
+from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
+from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
+    PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
 
 
@@ -17,98 +20,147 @@ class GcmSourceManager(PlaybookSourceManager):
         self.source = Source.GCM
         self.task_proto = Gcm
         self.task_type_callable_map = {
-            Gcm.TaskType.GET_METRICS: {
-                'executor': self.get_metrics,
+            Gcm.TaskType.METRIC_EXECUTION: {
+                'executor': self.execute_metric_execution,
                 'model_types': [SourceModelType.GCM_METRIC],
-                'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Metrics from GCM',
-                'category': 'Monitoring'
+                'result_type': PlaybookTaskResultType.TIMESERIES,
+                'display_name': 'Fetch a Metric from GCM',
+                'category': 'Metrics'
             },
-            Gcm.TaskType.GET_LOGS: {
-                'executor': self.get_logs,
-                'model_types': [SourceModelType.GCM_LOGS],
+            Gcm.TaskType.FILTER_LOG_ENTRIES: {
+                'executor': self.execute_filter_log_entries,
+                'model_types': [SourceModelType.GCM_LOG_SINK],
                 'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Logs from GCM',
-                'category': 'Logging'
+                'display_name': 'Fetch Logs from GCM',
+                'category': 'Logs'
             },
         }
 
     def get_connector_processor(self, gcm_connector, **kwargs):
         generated_credentials = generate_credentials_dict(gcm_connector.type, gcm_connector.keys)
-        return GcmApiProcessor(**generated_credentials)
+        generated_credentials['client_type'] = kwargs.get('client_type')
+        return GcmApiProcessor(project_id=gcm_connector.account_id.value, service_account_json=generated_credentials)
 
-    def get_metrics(self, gcm_task: Gcm, gcm_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+                                 gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
 
-            gcm_command = gcm_task.get_metrics
-            metric_type = gcm_command.metricType.value
-            start_time = gcm_command.startTime.value
-            end_time = gcm_command.endTime.value
+            task_result = PlaybookTaskResult()
 
-            gcm_connector = self.get_connector_processor(gcm_connector)
-            metrics = gcm_connector.fetch_metrics(metric_type, start_time, end_time)
+            tr_end_time = time_range.time_lt
+            end_time = datetime.utcfromtimestamp(tr_end_time)
+            tr_start_time = time_range.time_geq
+            start_time = datetime.utcfromtimestamp(tr_start_time)
+            period = 300
 
-            table_rows = []
-            for metric in metrics:
-                table_columns = [
-                    TableResult.TableColumn(name=StringValue(value='METRIC_TYPE'),
-                                            value=StringValue(value=metric['metric']['type'])),
-                    TableResult.TableColumn(name=StringValue(value='START_TIME'),
-                                            value=StringValue(value=metric['points'][0]['interval']['startTime'])),
-                    TableResult.TableColumn(name=StringValue(value='END_TIME'),
-                                            value=StringValue(value=metric['points'][0]['interval']['endTime'])),
-                    TableResult.TableColumn(name=StringValue(value='VALUE'),
-                                            value=StringValue(value=str(metric['points'][0]['value']['doubleValue'])))
-                ]
-                table_rows.append(TableResult.TableRow(columns=table_columns))
+            task = gcm_task.metric_execution
+            metric_type = task.metric_type.value
+            project_id = task.project_id.value
+            aggregation = 'ALIGN_MEAN'  # Example aggregation
+            if task.aggregation and task.aggregation.value in ['ALIGN_MEAN', 'ALIGN_SUM', 'ALIGN_COUNT', 'ALIGN_MAX', 'ALIGN_MIN']:
+                aggregation = task.aggregation.value
+            task_labels = task.labels
+            labels = [{'key': label.key.value, 'value': label.value.value} for label in task_labels]
 
-            table = TableResult(raw_query=StringValue(value='Get Metrics'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
+            gcm_api_processor = self.get_connector_processor(gcm_connector, client_type='monitoring')
+
+            print(
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Metric_Type -> {}, Start_Time "
+                "-> {}, End_Time -> {}, Aggregation -> {}, Labels -> {}".format(
+                    "GCM_Metrics", gcm_connector.account_id.value, project_id, metric_type,
+                    start_time, end_time, aggregation, labels), flush=True)
+
+            response = gcm_api_processor.gcm_get_metric_aggregation(metric_type, start_time, end_time, aggregation, labels)
+            if not response:
+                raise Exception("No data returned from GCM")
+            response_datapoints = response
+            if len(response_datapoints) > 0:
+                metric_unit = response_datapoints[0]['unit']
+            else:
+                metric_unit = ''
+            process_function = task.process_function.value
+            if process_function == 'timeseries':
+                metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                for item in response_datapoints:
+                    utc_timestamp = item['interval']['endTime']
+                    utc_datetime = datetime.fromisoformat(utc_timestamp)
+                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                    val = item['value']['doubleValue']
+                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                    metric_datapoints.append(datapoint)
+
+                labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
+                    metric_label_values=[
+                        LabelValuePair(name=StringValue(value='metric_type'), value=StringValue(value=metric_type)),
+                        LabelValuePair(name=StringValue(value='aggregation'),
+                                       value=StringValue(value=aggregation)),
+                    ],
+                    unit=StringValue(value=metric_unit),
+                    datapoints=metric_datapoints
+                )]
+
+                timeseries_result = TimeseriesResult(metric_name=StringValue(value=metric_type),
+                                                     metric_expression=StringValue(value=project_id),
+                                                     labeled_metric_timeseries=labeled_metric_timeseries)
+
+                task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
+                                                 source=self.source)
+
+            return task_result
         except Exception as e:
-            raise Exception(f"Failed to get metrics from GCM: {e}")
+            raise Exception(f"Error while executing GCM task: {e}")
 
-    def get_logs(self, gcm_task: Gcm, gcm_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_filter_log_entries(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+                                   gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
+            task_result = PlaybookTaskResult()
+            tr_end_time = time_range.time_lt
+            end_time = int(tr_end_time * 1000)
+            tr_start_time = time_range.time_geq
+            start_time = int(tr_start_time * 1000)
 
-            gcm_command = gcm_task.get_logs
-            filter_str = gcm_command.filter.value
-            start_time = gcm_command.startTime.value
-            end_time = gcm_command.endTime.value
+            task = gcm_task.filter_log_entries
+            project_id = task.project_id.value
+            log_name = task.log_name.value
+            filter_query = task.filter_query.value
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    filter_query = filter_query.replace(key, str(value))
 
-            gcm_connector = self.get_connector_processor(gcm_connector)
-            logs = gcm_connector.fetch_logs(filter_str, start_time, end_time)
+            logs_api_processor = self.get_connector_processor(gcm_connector, client_type='logging')
 
-            table_rows = []
-            for log in logs:
-                table_columns = [
-                    TableResult.TableColumn(name=StringValue(value='TIMESTAMP'),
-                                            value=StringValue(value=log.get('timestamp', ''))),
-                    TableResult.TableColumn(name=StringValue(value='SEVERITY'),
-                                            value=StringValue(value=log.get('severity', ''))),
-                    TableResult.TableColumn(name=StringValue(value='TEXT_PAYLOAD'),
-                                            value=StringValue(value=log.get('textPayload', ''))),
-                    TableResult.TableColumn(name=StringValue(value='JSON_PAYLOAD'),
-                                            value=StringValue(value=json.dumps(log.get('jsonPayload', {})))),
-                    TableResult.TableColumn(name=StringValue(value='PROTO_PAYLOAD'),
-                                            value=StringValue(value=json.dumps(log.get('protoPayload', {})))),
-                    TableResult.TableColumn(name=StringValue(value='RESOURCE'),
-                                            value=StringValue(value=json.dumps(log.get('resource', {})))),
-                    TableResult.TableColumn(name=StringValue(value='LOG_NAME'),
-                                            value=StringValue(value=log.get('logName', ''))),
-                    TableResult.TableColumn(name=StringValue(value='RECEIVE_TIMESTAMP'),
-                                            value=StringValue(value=log.get('receiveTimestamp', ''))),
-                    TableResult.TableColumn(name=StringValue(value='LABELS'),
-                                            value=StringValue(value=json.dumps(log.get('labels', {}))))
-                ]
-                table_rows.append(TableResult.TableRow(columns=table_columns))
+            print(
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Log_Name -> {}, Query -> "
+                "{}, Start_Time -> {}, End_Time -> {}".format("GCM_Logs", gcm_connector.account_id.value,
+                                                              project_id, log_name, filter_query, start_time, end_time),
+                flush=True)
 
-            table = TableResult(raw_query=StringValue(value='Get Logs'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
-            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
+            response = logs_api_processor.fetch_logs(filter_query, start_time, end_time)
+            if not response:
+                raise Exception("No data returned from GCM Logs")
+
+            table_rows: [TableResult.TableRow] = []
+            for item in response:
+                table_columns: [TableResult.TableColumn] = []
+                for key, value in item.items():
+                    table_column = TableResult.TableColumn(name=StringValue(value=key),
+                                                           value=StringValue(value=value))
+                    table_columns.append(table_column)
+                table_row = TableResult.TableRow(columns=table_columns)
+                table_rows.append(table_row)
+
+            result = TableResult(
+                raw_query=StringValue(value=filter_query),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)),
+            )
+
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=result, source=self.source)
+            return task_result
         except Exception as e:
-            raise Exception(f"Failed to get logs from GCM: {e}")
+            raise Exception(f"Error while executing GCM task: {e}")

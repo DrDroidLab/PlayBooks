@@ -82,6 +82,16 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching logs: {e}")
             raise e
 
+    def fetch_log_sinks(self):
+        try:
+            service = build('logging', 'v2', credentials=self.__credentials)
+            request = service.projects().sinks().list(parent=f"projects/{self.__project_id}")
+            response = request.execute()
+            return response.get('sinks', [])
+        except Exception as e:
+            logger.error(f"Exception occurred while fetching log sinks: {e}")
+            raise e
+
     def gcm_get_metric_aggregation(self, metric_type, start_time, end_time, aggregation, labels):
         try:
             service = build('monitoring', 'v3', credentials=self.__credentials)

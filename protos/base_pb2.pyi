@@ -470,7 +470,7 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Elastic Search Models"""
     GCM_METRIC: _SourceModelType.ValueType  # 1701
     """GCM Models"""
-    GCM_LOGS: _SourceModelType.ValueType  # 1702
+    GCM_LOG_SINK: _SourceModelType.ValueType  # 1702
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -532,7 +532,7 @@ ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
 GCM_METRIC: SourceModelType.ValueType  # 1701
 """GCM Models"""
-GCM_LOGS: SourceModelType.ValueType  # 1702
+GCM_LOG_SINK: SourceModelType.ValueType  # 1702
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

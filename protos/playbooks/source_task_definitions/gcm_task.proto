@@ -2,25 +2,36 @@ syntax = "proto3";
 package protos.playbooks;
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
 
 message Gcm {
-  message Command {
-    google.protobuf.StringValue description = 1;
-    google.protobuf.StringValue metricType = 2;
-    google.protobuf.StringValue startTime = 3;
-    google.protobuf.StringValue endTime = 4;
-    google.protobuf.StringValue filter = 5;
+  message MetricExecution {
+    message Label {
+      google.protobuf.StringValue key = 1;
+      google.protobuf.StringValue value = 2;
+    }
+    google.protobuf.StringValue project_id = 1;
+    google.protobuf.StringValue metric_type = 2;
+    repeated Label labels = 3;
+    google.protobuf.StringValue aggregation = 4;
+    google.protobuf.StringValue process_function = 5;
+  }
+
+  message FilterLogEntries {
+    google.protobuf.StringValue project_id = 1;
+    google.protobuf.StringValue log_name = 2;
+    google.protobuf.StringValue filter_query = 3;
   }
 
   enum TaskType {
     UNKNOWN = 0;
-    GET_METRICS = 1;
-    GET_LOGS = 2;
+    METRIC_EXECUTION = 1;
+    FILTER_LOG_ENTRIES = 2;
   }
 
   TaskType type = 1;
   oneof task {
-    Command get_metrics = 2;
-    Command get_logs = 3;
+    MetricExecution metric_execution = 2;
+    FilterLogEntries filter_log_entries = 3;
   }
 }
