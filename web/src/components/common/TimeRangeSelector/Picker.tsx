@@ -13,7 +13,8 @@ function Picker({ type, label }) {
       <DatePicker
         format="dd MMM yyyy hh:mm:ss aa"
         showMeridian
-        menuClassName="!z-[90]"
+        className="text-violet-500"
+        menuClassName="!z-[90] text-violet-500 bg-violet-500"
       />
     </div>
   );
