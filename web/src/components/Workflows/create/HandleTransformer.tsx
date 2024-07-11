@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Editor from "react-simple-code-editor";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
@@ -10,6 +10,7 @@ import {
 } from "../../../store/features/workflow/workflowSlice.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { useTestTransformerMutation } from "../../../store/features/workflow/api/testTransformerApi.ts";
+import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
@@ -21,10 +22,22 @@ function HandleTransformer() {
   const code = currentWorkflow[key];
   const exampleInput = currentWorkflow[exampleInputKey];
   const dispatch = useDispatch();
-  const [triggerTestTransformer, { isLoading }] = useTestTransformerMutation();
+  const [triggerTestTransformer, { isLoading, data }] =
+    useTestTransformerMutation();
+  const outputRef = useRef<HTMLDivElement>(null);
 
-  const testCode = () => {
-    if (!isLoading) triggerTestTransformer();
+  const testCode = async () => {
+    if (isLoading) return;
+    await triggerTestTransformer().unwrap();
+    dispatch(
+      showSnackbar({
+        message: "Test connection successful",
+        type: "success",
+      }),
+    );
+    outputRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
   const setCode = (value: string) => {
@@ -71,6 +84,27 @@ function HandleTransformer() {
           }}
         />
       </div>
+
+      {data && (
+        <div ref={outputRef}>
+          <p className="font-semibold text-violet-500 text-sm">Output</p>
+          <Editor
+            value={JSON.stringify(data.event_context ?? {})}
+            className="border rounded outline-none"
+            onValueChange={() => {}}
+            highlight={(code) =>
+              hljs.highlight(code, {
+                language: "json",
+              }).value
+            }
+            padding={10}
+            style={{
+              fontFamily: '"Fira code", "Fira Mono", monospace',
+              fontSize: 12,
+            }}
+          />
+        </div>
+      )}
 
       <CustomButton className="w-fit" onClick={testCode}>
         {isLoading ? "Loading..." : "Test Code"}
