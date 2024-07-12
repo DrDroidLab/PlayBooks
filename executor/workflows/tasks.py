@@ -17,6 +17,7 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
+from intelligence_layer.result_interpreters.pdf_generator import generate_pdf
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
@@ -191,6 +192,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
         workflow_interpreter = workflow_definition_interpreter(we_proto, pe_proto)
         execution_output.insert(0, workflow_interpreter)
+        if we_proto.execution_configuration.generate_summary.value==True:
+            pdf_file = generate_pdf(execution_output)
+            logger.info(f"PDF file generated: {pdf_file}")
+        else:
+            pdf_file = ''
         workflow = workflows.first()
         w_proto: WorkflowProto = workflow.proto
         w_actions = w_proto.actions
@@ -297,6 +303,11 @@ def test_workflow_notification(user, account_id, workflow, message_type):
                                         model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
                                         )
         execution_output.insert(0, workflow_test_message)
+        if workflow.configuration.generate_summary.value==True:
+            pdf_file = generate_pdf(execution_output)
+            logger.info(f"PDF file generated: {pdf_file}")
+        else:
+            pdf_file = ''
         action_executor_facade.execute(workflow.actions[0], execution_output)
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
@@ -385,25 +396,25 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
     else:
         execution_time_block = ""
     if time_since_triggered == 1:
-        execution_trigger_time_block = f"\n Triggered by: {trigger_text}, {time_since_triggered} minute ago. \n"
+        execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minute ago."
     else:
-        execution_trigger_time_block = f"\n Triggered by: {trigger_text}, {time_since_triggered} minutes ago. \n"
+        execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minutes ago."
     if destination_text in ['Slack','Slack Thread']:
         if schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
-            workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} {execution_trigger_time_block} Configuration: <{workflow_link}|{workflow_name}>"""
+            workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> \n {execution_time_block} \n {execution_trigger_time_block} \n Configuration: <{workflow_link}|{workflow_name}>\n"""
         elif schedule_type == WorkflowScheduleProto.Type.INTERVAL or schedule_type == WorkflowScheduleProto.Type.CRON:
             if is_first_run:
-                workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} \n Triggered by: {trigger_text} at {string_created_time}. \n Configuration: <{workflow_link}|{workflow_name}>"""
+                workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> \n {execution_time_block} \n Triggered by: {trigger_text} at {string_created_time}. \n Configuration: <{workflow_link}|{workflow_name}> \n"""
             else:
-                workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> {execution_time_block} \n Triggered by: {trigger_text}. \n See workflow history: <{workflow_execution_url}|{workflow_name}>"""
+                workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> \n {execution_time_block} \n Triggered by: {trigger_text}. \n See workflow history: <{workflow_execution_url}|{workflow_name}> \n"""
     else:
         if schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
-            workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} {execution_trigger_time_block} Configuration: [{workflow_name}]({workflow_link})"""
+            workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) \n {execution_time_block} \n {execution_trigger_time_block} \n Configuration: [{workflow_name}]({workflow_link}) \n"""
         elif schedule_type == WorkflowScheduleProto.Type.INTERVAL or schedule_type == WorkflowScheduleProto.Type.CRON:
             if is_first_run:
-                workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} \n Triggered by: {trigger_text} at {string_created_time}. \n Configuration: [{workflow_name}]({workflow_link})"""
+                workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) \n {execution_time_block} \n Triggered by: {trigger_text} at {string_created_time}. \n Configuration: [{workflow_name}]({workflow_link}) \n"""
             else:
-                workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) {execution_time_block} \n Triggered by: {trigger_text}. \n See workflow history: [{workflow_name}]({workflow_execution_url})"""
+                workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) \n {execution_time_block} \n Triggered by: {trigger_text}. \n See workflow history: [{workflow_name}]({workflow_execution_url}) \n"""
     
     workflow_interpretation: InterpretationProto = InterpretationProto(type=InterpretationProto.Type.TEXT,
                                                                        description=StringValue(value=workflow_text), 

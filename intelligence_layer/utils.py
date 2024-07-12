@@ -96,7 +96,7 @@ def generate_graph_for_timeseries_result(timeseries: TimeseriesResult, file_key,
 
     try:
         pio.write_image(fig, file_key)
-        object_url = save_image_to_db(file_key, image_title, remove_file_from_os=True)
+        object_url = save_image_to_db(file_key, image_title, remove_file_from_os=False)
         return object_url
     except Exception as e:
         logger.error(f'Error generating graph using metric timeseries data: {e}')
