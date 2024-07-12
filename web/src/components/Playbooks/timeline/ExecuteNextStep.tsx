@@ -3,12 +3,25 @@ import { executeStep } from "../../../utils/execution/executeStep.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { Task } from "../../../types/index.ts";
 
 function ExecuteNextStep({ handleShowConfig, stepId }) {
   const [step, id] = useCurrentStep(stepId);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
+  const nextStepTasks: Task[] =
+    step?.tasks
+      ?.map((taskId) =>
+        typeof taskId === "string"
+          ? tasks.find((t) => t.id === taskId)
+          : taskId,
+      )
+      .filter((t) => t !== undefined) ?? [];
 
   const handleExecuteNextStep = () => {
-    executeStep(step, id);
+    executeStep(id);
   };
 
   if (Object.keys(step ?? {})?.length === 0) return <></>;
@@ -20,14 +33,13 @@ function ExecuteNextStep({ handleShowConfig, stepId }) {
         <h1 className="font-semibold text-lg line-clamp-3">
           {step?.description}
         </h1>
-        <div onClick={() => handleShowConfig(step?.id)}>
-          {/* (
-          <span className="text-violet-500 cursor-pointer hover:underline">
-            Show Config
-          </span>
-          ) */}
-        </div>
       </div>
+      <div className="flex flex-col">
+        {nextStepTasks?.map((t) => (
+          <p className="text-xs font-medium">- {t.description}</p>
+        ))}
+      </div>
+
       <div className="flex items-center gap-2 mt-3">
         <CustomButton onClick={handleExecuteNextStep}>
           <PlayArrowRounded /> Execute

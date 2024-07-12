@@ -11,17 +11,18 @@ function useExecutionStack() {
   const { executionStack, executionId, currentPlaybook } =
     useSelector(playbookSelector);
   const steps = currentPlaybook?.ui_requirement.executedSteps ?? [];
+  const playbookSteps = currentPlaybook?.steps;
   const dispatch = useDispatch();
   const { refetch } = useGetPlaybookExecutionQuery();
   const executingStep = (steps ?? []).find(
     (step: Step) => step.ui_requirement.outputLoading,
   );
-  const nextStep =
-    executionStack?.length > 0
-      ? steps.find(
-          (e: Step) => e.id === executionStack[executionStack.length - 1],
-        )
-      : {};
+
+  const nextStep: Step | undefined = structuredClone(
+    playbookSteps?.find(
+      (e: Step) => e.id === executionStack[executionStack.length - 1],
+    ),
+  );
 
   useEffect(() => {
     if (!executingStep?.ui_requirement.outputLoading && executionId) {

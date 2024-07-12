@@ -24,6 +24,8 @@ export async function executeStep(id?: string) {
     ),
   );
 
+  console.log("id", currentStepId);
+
   if (!currentStepId) return;
   const stepData = {
     ...step,

@@ -4,7 +4,7 @@ import { showTaskConfig } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
 import StepConfig from "./timeline/StepConfig.tsx";
-import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
+import ExecuteNextStep from "./timeline/ExecuteNextStep.tsx";
 import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 import useExecutionStack from "../../hooks/useExecutionStack.ts";
 
@@ -12,6 +12,7 @@ function Timeline() {
   const { isLoading } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
   const { steps, nextStep, executingStep } = useExecutionStack();
+  console.log("next", nextStep);
   const showNextStepExecution = Object.keys(nextStep ?? {}).length > 0;
 
   const handleShowConfig = (stepId) => {
