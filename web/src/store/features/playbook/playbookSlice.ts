@@ -438,9 +438,9 @@ const playbookSlice = createSlice({
         state.currentPlaybook[payload.key] = payload.value;
     },
     pushToExecutionStack(state, { payload }) {
-      const nextPossibleStepLogs = payload;
-      nextPossibleStepLogs.forEach((log) => {
-        const stepId = log.child.id;
+      const nextPossibleSteps = payload;
+
+      (nextPossibleSteps ?? []).forEach((stepId: string) => {
         if (!state.executionStack.includes(stepId)) {
           state.executionStack.push(stepId);
         }

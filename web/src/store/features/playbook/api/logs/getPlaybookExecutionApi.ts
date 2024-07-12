@@ -8,7 +8,8 @@ import {
 import { store } from "../../../../index.ts";
 import { Playbook } from "../../../../../types/playbook.ts";
 import executionToState from "../../../../../utils/parser/playbook/executionToState.ts";
-import { Step } from "../../../../../types/step.ts";
+import truncateArrayBeforeElement from "../../../../../utils/truncateArrayBeforeElement.ts";
+import constructDfs from "../../../../../utils/playbook/constructDfs.ts";
 
 export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -32,17 +33,10 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled;
           dispatch(setPlaybookData(data));
           const steps = data.ui_requirement.executedSteps ?? [];
+          const dfsOrder = constructDfs(data?.step_relations ?? []);
           const lastStep = steps[steps.length - 1];
-          const relations = data?.step_relations?.filter(
-            (relation) => (relation.parent as Step)?.id === lastStep?.id,
-          );
-          const nextPossibleStepLogs = relations?.filter(
-            (relation) =>
-              relation.ui_requirement?.evaluation?.evaluation_result,
-          );
-          dispatch(
-            pushToExecutionStack((nextPossibleStepLogs ?? []).reverse()),
-          );
+          const elements = truncateArrayBeforeElement(dfsOrder, lastStep?.id);
+          dispatch(pushToExecutionStack(elements));
         } catch (error) {
           // Handle any errors
           console.log(error);
