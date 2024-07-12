@@ -31,6 +31,7 @@ function Picker({ type, label }) {
   }
 
   const setTime = (value: Date | null) => {
+    dispatch(updateProperty({ key: "timeRange", value: undefined }));
     dispatch(updateProperty({ key, value }));
   };
 
@@ -43,10 +44,11 @@ function Picker({ type, label }) {
       <p className="font-medium text-xs">{label}</p>
       <div className="flex">
         <DatePicker
-          format="dd MMM yyyy hh:mm:ss aa"
+          format="dd/MM/yyyy hh:mm:ss aa"
+          placeholder=""
+          onChangeCalendarDate={setTime}
           showMeridian
-          onChange={setTime}
-          value={timeRange[key] === nowKey ? null : timeRange[key]}
+          value={typeof timeRange[key] === "string" ? null : timeRange[key]}
           className="!text-violet-500 !w-full"
           menuClassName="!z-[90] text-violet-500 bg-violet-500"
         />

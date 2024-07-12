@@ -7,7 +7,7 @@ import { timeRangeSelector } from "../../../store/features/timeRange/timeRangeSl
 
 function TimeRangeSelector() {
   const { dropdownRef, isOpen, toggle } = useDropdown();
-  const { startTime, endTime } = useSelector(timeRangeSelector);
+  const { startTime, endTime, timeRange } = useSelector(timeRangeSelector);
   const startTimeRender = startTime
     ? typeof startTime === "string"
       ? startTime
@@ -29,7 +29,7 @@ function TimeRangeSelector() {
         } border w-fit p-1 flex items-center gap-2 rounded hover:bg-gray-100 cursor-pointer transition-all`}>
         <ScheduleRounded fontSize="small" />
         <span className="text-xs font-medium">
-          {startTimeRender} to {endTimeRender}
+          {timeRange ?? `${startTimeRender} to ${endTimeRender}`}
         </span>
         <KeyboardArrowDownRounded fontSize="small" />
       </div>

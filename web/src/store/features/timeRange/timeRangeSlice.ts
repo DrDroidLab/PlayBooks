@@ -4,6 +4,9 @@ import {
   playbooksTimeRangeOptions,
 } from "../../../utils/timeRangeOptions.ts";
 import { RootState } from "../../index.ts";
+import { timeRangeOptions } from "../../../components/common/TimeRangeSelector/utils/timeRangeOptions.ts";
+
+const defaultRangeSelectionId = "now-30";
 
 type InitialStateType = {
   timeRange: string;
@@ -20,9 +23,10 @@ enum OptionType {
 }
 
 const initialState: InitialStateType = {
-  timeRange: "2 weeks",
-  startTime: null,
-  endTime: null,
+  timeRange:
+    timeRangeOptions.find((o) => o.id === defaultRangeSelectionId)?.label ?? "",
+  startTime: defaultRangeSelectionId,
+  endTime: "now",
   options: OptionType.default,
   time_lt: undefined,
   time_geq: undefined,
@@ -48,10 +52,10 @@ const timeRangeSlice = createSlice({
       state[payload.key] = payload.value;
     },
     setPlaybookState: (state) => {
-      state.timeRange = "CustomTillNow";
+      // state.timeRange = "CustomTillNow";
       // state.endTime = Date.now() / 1000;
       // state.startTime = (Date.now() - 1 * 60 * 60 * 1000) / 1000;
-      state.options = OptionType.playbooks;
+      // state.options = OptionType.playbooks;
     },
     resetTimeRange: (state) => {
       state.timeRange = "2 weeks";
