@@ -43,6 +43,7 @@ class PostgresSourceManager(PlaybookSourceManager):
             limit = sql_query.limit.value
             offset = sql_query.offset.value
             query = sql_query.query.value
+            timeout = sql_query.timeout.value
             query = query.strip()
             database = sql_query.database.value
             if not database:
@@ -73,12 +74,12 @@ class PostgresSourceManager(PlaybookSourceManager):
 
             pg_db_processor = self.get_connector_processor(pg_connector, database=database)
 
-            count_result = pg_db_processor.get_query_result_fetch_one(count_query)
+            count_result = pg_db_processor.get_query_result_fetch_one(count_query, timeout)
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format("Postgres",
                                                                                                     pg_connector.account_id.value,
                                                                                                     query), flush=True)
-            result = pg_db_processor.get_query_result(query)
+            result = pg_db_processor.get_query_result(query, timeout)
             table_rows: [TableResult.TableRow] = []
             for row in result:
                 table_columns = []

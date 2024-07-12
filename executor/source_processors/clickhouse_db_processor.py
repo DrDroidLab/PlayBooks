@@ -18,9 +18,12 @@ class ClickhouseDBProcessor(Processor):
             'database': database
         }
 
-    def get_connection(self):
+    def get_connection(self, timeout=None):
         try:
-            client = clickhouse_connect.get_client(**self.config)
+            if timeout:
+                client = clickhouse_connect.get_client(**self.config, connect_timeout=timeout)
+            else:
+                client = clickhouse_connect.get_client(**self.config)
             return client
         except Exception as e:
             logger.error(f"Exception occurred while creating clickhouse connection with error: {e}")
@@ -99,9 +102,9 @@ class ClickhouseDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching clickhouse table details with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout):
         try:
-            client = self.get_connection()
+            client = self.get_connection(timeout)
             result = client.query(query)
             client.close()
             return result

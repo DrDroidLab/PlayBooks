@@ -42,6 +42,7 @@ class ClickhouseSourceManager(PlaybookSourceManager):
             limit = sql_query.limit.value
             offset = sql_query.offset.value
             query = sql_query.query.value
+            timeout = sql_query.timeout.value
             query = query.strip()
             if query[-1] == ';':
                 query = query[:-1]
@@ -61,12 +62,12 @@ class ClickhouseSourceManager(PlaybookSourceManager):
 
             query_client = self.get_connector_processor(clickhouse_connector, database=database)
 
-            count_result = query_client.get_query_result(count_query)
+            count_result = query_client.get_query_result(count_query, timeout)
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "Clickhouse", clickhouse_connector.account_id.value, query), flush=True)
 
-            result = query_client.get_query_result(query)
+            result = query_client.get_query_result(query, timeout)
             columns = result.column_names
             table_rows: [TableResult.TableRow] = []
             for row in result.result_set:

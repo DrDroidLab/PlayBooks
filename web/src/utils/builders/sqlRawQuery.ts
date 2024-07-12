@@ -10,6 +10,14 @@ export const sqlRawQueryBuilder = () => {
           type: OptionType.MULTILINE,
         },
       ],
+      [
+        {
+          key: "timeout",
+          label: "Timeout (in seconds)",
+          type: OptionType.TEXT_ROW,
+          default: '10'
+        },
+      ],
     ],
   };
 };

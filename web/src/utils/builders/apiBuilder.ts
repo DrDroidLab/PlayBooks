@@ -60,6 +60,7 @@ export const apiBuilder = (task, id) => {
           label: "Timeout (in seconds)",
           type: OptionType.TEXT_ROW,
           selected: task.action?.timeout,
+          default: '10',
           handleChange: (val) => {
             store.dispatch(setActionKey({ id, key: "timeout", value: val }));
           },

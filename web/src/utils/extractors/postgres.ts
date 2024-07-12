@@ -18,6 +18,7 @@ export const extractPostgresTasks = (step: any) => {
     modelType,
     database: postgresTask?.database,
     dbQuery: postgresTask?.query,
+    timeout: postgresTask?.timeout,
   };
 
   return stepData;

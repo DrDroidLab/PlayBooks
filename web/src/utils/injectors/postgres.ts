@@ -7,6 +7,7 @@ export const injectPostgresTasks = (
   let task = {
     database: step.database!,
     query: step.dbQuery!,
+    timeout: step.timeout!,
   };
 
   return [

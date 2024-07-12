@@ -1,6 +1,6 @@
 import { OptionType } from "../playbooksData.ts";
 
-export const postgresBuilder = () => {
+export const postgresBuilder = (task, id) => {
   return {
     builder: [
       [
@@ -15,6 +15,14 @@ export const postgresBuilder = () => {
           key: "dbQuery",
           label: "Query",
           type: OptionType.MULTILINE,
+        },
+      ],
+      [
+        {
+          key: "timeout",
+          label: "Timeout (in seconds)",
+          type: OptionType.TEXT_ROW,
+          default: '10'
         },
       ],
     ],

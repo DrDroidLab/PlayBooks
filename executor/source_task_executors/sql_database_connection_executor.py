@@ -40,6 +40,7 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
             limit = sql_query.limit.value
             offset = sql_query.offset.value
             query = sql_query.query.value
+            timeout = sql_query.timeout.value
             query = query.strip()
             if query[-1] == ';':
                 query = query[:-1]
@@ -59,12 +60,12 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                 query = f"{query} LIMIT 2000 OFFSET 0"
 
             sql_db_processor = self.get_connector_processor(sql_db_connector)
-            count_result = sql_db_processor.get_query_result(count_query).fetchone()[0]
+            count_result = sql_db_processor.get_query_result(count_query, timeout).fetchone()[0]
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "SQL Database", sql_db_connector.account_id.value, query), flush=True)
 
-            query_result = sql_db_processor.get_query_result(query)
+            query_result = sql_db_processor.get_query_result(query, timeout)
 
             table_rows: [TableResult.TableRow] = []
             col_names = list(query_result.keys())

@@ -90,6 +90,7 @@ export interface Step {
   end_time?: string;
   index?: any;
   relationLogs?: any;
+  timeout?: any;
 }
 
 export interface StepPosition {

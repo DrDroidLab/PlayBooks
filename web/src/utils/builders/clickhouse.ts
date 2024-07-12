@@ -19,6 +19,14 @@ export const clickhouseBuilder = (options: any, task: any) => {
           value: task.dbQuery,
         },
       ],
+      [
+        {
+          key: "timeout",
+          label: "Timeout (in seconds)",
+          type: OptionType.TEXT_ROW,
+          default: '10'
+        },
+      ],
     ],
   };
 };

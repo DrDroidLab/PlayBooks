@@ -18,6 +18,7 @@ export const extractClickhouseTasks = (step: any) => {
     modelType,
     database: clickhouseTask.database,
     dbQuery: clickhouseTask.query,
+    timeout: step.timeout!,
   };
 
   return stepData;

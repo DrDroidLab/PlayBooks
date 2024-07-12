@@ -20,11 +20,16 @@ class PostgresDBProcessor(Processor):
             'port': port
         }
 
-    def get_connection(self):
+    def get_connection(self, timeout=None):
         try:
             if 'database' not in self.config:
                 raise Exception("Database name is required to connect to postgres")
-            client = psycopg2.connect(**self.config)
+            
+            conn_options = ''
+            if timeout:
+                conn_options = f'-c statement_timeout={timeout*1000}'
+
+            client = psycopg2.connect(**self.config, options=conn_options)
             return client
         except Exception as e:
             logger.error(f"Exception occurred while testing postgres connection with error: {e}")
@@ -96,9 +101,9 @@ class PostgresDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout):
         try:
-            client = self.get_connection()
+            client = self.get_connection(timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
             cursor.execute(query)
             result = cursor.fetchall()
@@ -109,9 +114,9 @@ class PostgresDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
             raise e
 
-    def get_query_result_fetch_one(self, query):
+    def get_query_result_fetch_one(self, query, timeout):
         try:
-            client = self.get_connection()
+            client = self.get_connection(timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
             cursor.execute(query)
             result = cursor.fetchone()[0]

@@ -13,9 +13,12 @@ class DBConnectionStringProcessor(Processor):
     def __init__(self, connection_string: str):
         self.connection_string = connection_string
 
-    def get_connection(self):
+    def get_connection(self, timeout=None):
         try:
-            engine = create_engine(self.connection_string)
+            if timeout:
+                engine = create_engine(self.connection_string, connect_args={"options": f"-c statement_timeout={timeout*1000}"})
+            else:
+                engine = create_engine(self.connection_string)
             connection = engine.connect()
             return connection
         except Exception as e:
@@ -32,9 +35,9 @@ class DBConnectionStringProcessor(Processor):
             logger.error(f"Exception occurred while testing db connection connection with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout):
         try:
-            connection = self.get_connection()
+            connection = self.get_connection(timeout)
             result = connection.execute(text(query))
             connection.close()
             return result
