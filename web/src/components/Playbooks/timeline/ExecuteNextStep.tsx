@@ -7,7 +7,7 @@ import { currentPlaybookSelector } from "../../../store/features/playbook/playbo
 import { useSelector } from "react-redux";
 import { Task } from "../../../types/index.ts";
 
-function ExecuteNextStep({ handleShowConfig, stepId }) {
+function ExecuteNextStep({ stepId, refetch }) {
   const [step, id] = useCurrentStep(stepId);
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
@@ -20,8 +20,9 @@ function ExecuteNextStep({ handleShowConfig, stepId }) {
       )
       .filter((t) => t !== undefined) ?? [];
 
-  const handleExecuteNextStep = () => {
-    executeStep(id);
+  const handleExecuteNextStep = async () => {
+    await executeStep(id);
+    refetch();
   };
 
   if (Object.keys(step ?? {})?.length === 0) return <></>;

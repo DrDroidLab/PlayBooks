@@ -9,7 +9,7 @@ import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 import useExecutionStack from "../../hooks/useExecutionStack.ts";
 
 function Timeline() {
-  const { isLoading } = useGetPlaybookExecutionQuery();
+  const { isLoading, refetch } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
   const { steps, nextStep, executingStep } = useExecutionStack();
   console.log("next", nextStep);
@@ -46,10 +46,7 @@ function Timeline() {
       <ExecutingStep handleShowConfig={handleShowConfig} />
 
       {showNextStepExecution && !executingStep && (
-        <ExecuteNextStep
-          handleShowConfig={handleShowConfig}
-          stepId={nextStep.id}
-        />
+        <ExecuteNextStep stepId={nextStep.id} refetch={refetch} />
       )}
 
       <ExecutionNavigateButtons steps={steps} />
