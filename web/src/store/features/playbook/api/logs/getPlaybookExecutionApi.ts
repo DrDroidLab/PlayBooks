@@ -36,7 +36,7 @@ export const getPlaybookExecutionApi = apiSlice.injectEndpoints({
           const dfsOrder = constructDfs(data?.step_relations ?? []);
           const lastStep = steps[steps.length - 1];
           const elements = truncateArrayBeforeElement(dfsOrder, lastStep?.id);
-          dispatch(pushToExecutionStack(elements));
+          dispatch(pushToExecutionStack(elements.reverse()));
         } catch (error) {
           // Handle any errors
           console.log(error);
