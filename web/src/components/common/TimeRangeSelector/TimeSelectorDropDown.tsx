@@ -2,11 +2,11 @@ import React from "react";
 import CustomTimeRangeSection from "./CustomTimeRangeSection.tsx";
 import TimeRangeOptionsSection from "./TimeRangeOptionsSection.tsx";
 
-function TimeSelectorDropDown() {
+function TimeSelectorDropDown({ toggle }) {
   return (
     <div className="absolute -bottom-3 right-0 translate-y-full bg-white border rounded w-[500px] h-[250px] flex">
       <div className="flex-1 w-full">
-        <CustomTimeRangeSection />
+        <CustomTimeRangeSection toggle={toggle} />
       </div>
       <div className="flex-[0.8] border-l w-full">
         <TimeRangeOptionsSection />

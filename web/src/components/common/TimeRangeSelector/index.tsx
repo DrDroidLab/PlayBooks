@@ -33,7 +33,7 @@ function TimeRangeSelector() {
         </span>
         <KeyboardArrowDownRounded fontSize="small" />
       </div>
-      {isOpen && <TimeSelectorDropDown />}
+      {isOpen && <TimeSelectorDropDown toggle={toggle} />}
     </div>
   );
 }

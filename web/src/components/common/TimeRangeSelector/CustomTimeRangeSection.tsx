@@ -2,9 +2,7 @@ import React from "react";
 import Picker, { PickerType } from "./Picker.tsx";
 import CustomButton from "../CustomButton/index.tsx";
 
-function CustomTimeRangeSection() {
-  const handleApply = () => {};
-
+function CustomTimeRangeSection({ toggle }) {
   return (
     <div className="p-2 w-full">
       <p className="font-medium text-sm">Absolute Time Range</p>
@@ -12,7 +10,7 @@ function CustomTimeRangeSection() {
         <Picker label={"From"} type={PickerType.FROM} />
         <Picker label={"To"} type={PickerType.TO} />
       </div>
-      <CustomButton onClick={handleApply}>Apply Time Range</CustomButton>
+      <CustomButton onClick={toggle}>Apply Time Range</CustomButton>
     </div>
   );
 }
