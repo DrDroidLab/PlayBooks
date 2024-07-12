@@ -22,5 +22,6 @@ urlpatterns = [
 
     # Platform APIs
     path('test_notification', workflow_views.test_workflows_notification),
+    path('test_transformer', workflow_views.test_workflows_transformer),
     path('generate/curl', workflow_views.generate_curl),
 ]
