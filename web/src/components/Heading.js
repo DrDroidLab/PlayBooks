@@ -1,12 +1,9 @@
 import { Grid } from "@mui/material";
 import React, { useState } from "react";
-import TimeRangePicker from "./TimeRangePicker";
-import Refresh from "../Refresh";
 import { Check, Edit, HomeRounded } from "@mui/icons-material";
 import ValueComponent from "./ValueComponent";
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
-import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
 import useIsPrefetched from "../hooks/useIsPrefetched.ts";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
@@ -24,19 +21,9 @@ const Heading = ({
   subHeading = "",
   heading,
   subHeadingLink = undefined,
-  onTimeRangeChangeCb = true,
-  onRefreshCb = true,
   children,
-  defaultTimeRange = undefined,
-  defaultCustomTimeRange = undefined,
-  defaultCustomTillNowTimeRange = undefined,
-  customTimeRange = false,
-  isPlayground = false,
 }) => {
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const hasPreviousPage = useHasPreviousPage();
-  const [isRefreshBtnDisabled, setIsRefreshBtnDisabled] = React.useState(false);
   const [showEdit, setShowEdit] = useState("");
   const playbook = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
@@ -44,15 +31,8 @@ const Heading = ({
   const [name, setName] = usePlaybookKey("name");
   const [executionId] = usePlaybookKey("executionId");
 
-  const handleRefreshButtonDisable = (isDisabled) => {
-    setIsRefreshBtnDisabled(isDisabled);
-  };
   const goBack = () => {
-    // if (location.key !== "default") {
-    //   navigate(-1);
-    // } else {
     navigate("/");
-    // }
   };
 
   return (
@@ -127,43 +107,9 @@ const Heading = ({
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          {/* {showRunAll && playbook.steps?.length > 0 && (
-            <button
-              className="text-violet-500 hover:text-white p-1 border-violet-500 border-[1px] text-sm rounded hover:bg-violet-500 transition-all my-2"
-              onClick={handleGlobalExecute}>
-              <PlayArrowIcon style={{ fontSize: "medium" }} />
-              <span style={{ marginLeft: "2px" }}>Run All</span>
-            </button>
-          )} */}
           <HeadingPlaybookButtons />
           {renderChildren(children)}
-          {/* {customTimeRange && (
-            <CustomTimeRangePicker
-              onRefreshButtonDisable={handleRefreshButtonDisable}
-              onTimeRangeChangeCb={onTimeRangeChangeCb}
-              isPlayground={isPlayground}
-            />
-          )}
-          {onTimeRangeChangeCb && !customTimeRange ? (
-            <Grid item>
-              <TimeRangePicker
-                onTimeRangeChangeCb={onTimeRangeChangeCb}
-                defaultTimeRange={defaultTimeRange}
-                defaultCustomTimeRange={defaultCustomTimeRange}
-                defaultCustomTillNowTimeRange={defaultCustomTillNowTimeRange}
-                onRefreshButtonDisable={handleRefreshButtonDisable}
-              />
-            </Grid>
-          ) : null}
-          {onRefreshCb ? (
-            <Grid item>
-              <Refresh
-                onRefreshCb={onRefreshCb}
-                disabled={isRefreshBtnDisabled}
-              />
-            </Grid>
-          ) : null} */}
-          <TimeRangeSelector />
+          {isOnPlaybookPage && <TimeRangeSelector />}
         </div>
       </div>
     </>

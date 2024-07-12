@@ -8,10 +8,7 @@ import {
   setPlaybookKey,
   resetExecutions,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import {
-  resetTimeRange,
-  setPlaybookState,
-} from "../../../store/features/timeRange/timeRangeSlice.ts";
+import { resetTimeRange } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
@@ -40,12 +37,10 @@ function CreatePlaybook() {
     if (!executionId) {
       dispatch(resetExecutions());
       dispatch(resetDrawerState());
-      dispatch(setPlaybookState());
     }
   }, [executionId, dispatch]);
 
   useEffect(() => {
-    dispatch(setPlaybookState());
     dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: true }));
     return () => {
       dispatch(resetState());

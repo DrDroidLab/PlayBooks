@@ -14,10 +14,10 @@ function extractTime(
   if (!date) return undefined;
 
   if (typeof date === "string") {
-    return extractDate(date).getTime() / 1000;
+    return Math.round(extractDate(date).getTime() / 1000);
   }
 
-  return date.getTime() / 1000;
+  return Math.round(date.getTime() / 1000);
 }
 
 export default extractTime;
