@@ -3,11 +3,14 @@ import {
   defaultTimeRangeOptions,
   playbooksTimeRangeOptions,
 } from "../../../utils/timeRangeOptions.ts";
+import { RootState } from "../../index.ts";
 
 type InitialStateType = {
   timeRange: string;
-  startTime: any;
-  endTime: any;
+  startTime?: string | Date | null;
+  endTime?: string | Date | null;
+  time_lt?: string | Date;
+  time_geq?: string | Date;
   options: OptionType;
 };
 
@@ -21,6 +24,8 @@ const initialState: InitialStateType = {
   startTime: null,
   endTime: null,
   options: OptionType.default,
+  time_lt: undefined,
+  time_geq: undefined,
 };
 
 const timeRangeSlice = createSlice({
@@ -44,8 +49,8 @@ const timeRangeSlice = createSlice({
     },
     setPlaybookState: (state) => {
       state.timeRange = "CustomTillNow";
-      state.endTime = Date.now() / 1000;
-      state.startTime = (Date.now() - 1 * 60 * 60 * 1000) / 1000;
+      // state.endTime = Date.now() / 1000;
+      // state.startTime = (Date.now() - 1 * 60 * 60 * 1000) / 1000;
       state.options = OptionType.playbooks;
     },
     resetTimeRange: (state) => {
@@ -68,7 +73,7 @@ export const {
 
 export default timeRangeSlice.reducer;
 
-export const timeRangeSelector = (state) => state.timeRange;
+export const timeRangeSelector = (state: RootState) => state.timeRange;
 export const rangeSelector = (state) => {
   const timeRange = state.timeRange;
   switch (timeRange.timeRange) {
