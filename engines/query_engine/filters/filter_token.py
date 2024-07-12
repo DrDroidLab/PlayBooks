@@ -168,5 +168,5 @@ class FilterTokenEvaluator:
             return qs
         annotations = self._filter_token_annotator.annotations(filter_token)
         q = self._filter_token_processor.process(filter_token)
-        filter_qs = qs.annotate(**annotations).filter(q)
+        filter_qs = qs.annotate(**annotations).filter(q).order_by('-id')
         return filter_qs
