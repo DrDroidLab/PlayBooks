@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import updateStepById from "../../utils/playbook/step/updateStepById.ts";
+import useCurrentStep from "../useCurrentStep.ts";
 
 function useStepDimensions(stepId: string) {
   const stepRef = useRef<HTMLDivElement>(null);
+  const [step] = useCurrentStep(stepId);
 
   const setDimensions = () => {
     const height = (stepRef.current?.clientHeight ?? 0) + 300;
@@ -16,7 +18,7 @@ function useStepDimensions(stepId: string) {
       setDimensions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stepRef.current?.clientHeight, stepRef.current?.clientWidth]);
+  }, [stepRef.current?.clientHeight, stepRef.current?.clientWidth, step]);
 
   return stepRef;
 }

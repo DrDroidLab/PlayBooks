@@ -12,7 +12,6 @@ function Timeline() {
   const { isLoading, refetch } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
   const { steps, nextStep, executingStep } = useExecutionStack();
-  console.log("next", nextStep);
   const showNextStepExecution = Object.keys(nextStep ?? {}).length > 0;
 
   const handleShowConfig = (stepId) => {
