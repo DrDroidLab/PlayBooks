@@ -24,8 +24,6 @@ export async function executeStep(id?: string) {
     ),
   );
 
-  console.log("id", currentStepId);
-
   if (!currentStepId) return;
   const stepData = {
     ...step,
@@ -90,9 +88,6 @@ export async function executeStep(id?: string) {
         updateCardById("ui_requirement.showError", true, id);
         updateCardById("ui_requirement.outputError", outputError, id);
       }
-
-      updateCardById("ui_requirement.outputLoading", false, id);
-      updateCardById("ui_requirement.showOutput", true, id);
     });
 
     // Set step output
@@ -104,10 +99,6 @@ export async function executeStep(id?: string) {
       },
       currentStepId,
     );
-
-    // Set step to loaded
-    updateStepById("ui_requirement.outputLoading", false, currentStepId);
-    updateStepById("ui_requirement.showOutput", true, currentStepId);
 
     // Push step to execution stack
     dispatch(popFromExecutionStack());

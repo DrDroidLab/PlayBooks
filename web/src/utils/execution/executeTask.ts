@@ -4,6 +4,7 @@ import { popFromExecutionStack } from "../../store/features/playbook/playbookSli
 import getCurrentTask from "../getCurrentTask.ts";
 import { executionTaskExecute } from "../../store/features/playbook/api/executions/executionTaskExecuteApi.ts";
 import checkId from "../checkId.ts";
+import updateStepById from "../playbook/step/updateStepById.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
@@ -13,6 +14,11 @@ export async function executeTask(id?: string) {
     updateCardById("ui_requirement.showError", true, id);
     return;
   }
+
+  const stepId = task.ui_requirement.stepId;
+  updateStepById("ui_requirement.outputLoading", true, stepId);
+  updateStepById("ui_requirement.showOutput", false, stepId);
+  updateStepById("ui_requirement.outputError", undefined, stepId);
 
   updateCardById("ui_requirement.outputLoading", true, id);
   updateCardById("ui_requirement.showOutput", false, id);
@@ -53,5 +59,8 @@ export async function executeTask(id?: string) {
   } finally {
     updateCardById("ui_requirement.showOutput", true, id);
     updateCardById("ui_requirement.outputLoading", false, id);
+
+    updateStepById("ui_requirement.showOutput", true, stepId);
+    updateStepById("ui_requirement.outputLoading", false, stepId);
   }
 }

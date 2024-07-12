@@ -37,7 +37,9 @@ function ExecuteNextStep({ stepId, refetch }) {
       </div>
       <div className="flex flex-col">
         {nextStepTasks?.map((t) => (
-          <p className="text-xs font-medium">- {t.description}</p>
+          <p key={t.id} className="text-xs font-medium">
+            - {t.description}
+          </p>
         ))}
       </div>
 
