@@ -11,6 +11,7 @@ import "protos/playbooks/playbook.proto";
 import "protos/playbooks/workflow.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 import "protos/playbooks/playbook_commons.proto";
+import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
 
 
 ///////////////////// PlayBooks Run APIs /////////////////////
@@ -415,4 +416,15 @@ message SearchQueryOptionsResponse {
   Message message = 3;
   Context context = 4;
   repeated ColumnOption column_options = 5;
+}
+
+message TestWorkflowTransformerRequest {
+  Lambda.Function transformer_lambda_function = 1;
+  google.protobuf.Struct event = 2;
+}
+
+message TestWorkflowTransformerResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  google.protobuf.Struct event_context = 3;
 }
