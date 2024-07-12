@@ -207,34 +207,30 @@ slack_bot_data_fetch_job_task_postrun_notifier = publish_post_run_task(slack_bot
 @shared_task(max_retries=3, default_retry_delay=10)
 def slack_bot_handle_receive_message(slack_connector_id, message):
     try:
-        slack_connector = get_db_connectors(connector_id=slack_connector_id)
-        if not slack_connector:
+        db_slack_connector = get_db_connectors(connector_id=slack_connector_id)
+        if not db_slack_connector:
             print(f"Error while handling slack handle_receive_message: Connector not found for connector_id: "
                   f"{slack_connector_id}")
             return
-        slack_connector = slack_connector.first()
-        account_id = slack_connector.account_id
-        bot_auth_token = get_db_connector_keys(account_id=account_id, connector_id=slack_connector.id,
-                                               key_type=SourceKeyType.SLACK_BOT_AUTH_TOKEN)
-        if not bot_auth_token:
+        db_slack_connector = db_slack_connector.first()
+        slack_connector = db_slack_connector.unmasked_proto
+        bot_auth_token, doctor_droid_app_id = None, None
+        for key in slack_connector.keys:
+            if key.key_type == SourceKeyType.SLACK_BOT_AUTH_TOKEN:
+                bot_auth_token = key.key.value
+            elif key.key_type == SourceKeyType.SLACK_APP_ID:
+                doctor_droid_app_id = key.key.value
+        if not bot_auth_token or not doctor_droid_app_id:
             print(f"Error while handling slack handle_receive_message: Bot auth token not found for connector_id: "
                   f"{slack_connector_id}")
             return
-        bot_auth_token = bot_auth_token.first().key
-        doctor_droid_app_id = None
-        app_id = get_db_connector_keys(account_id=account_id, connector_id=slack_connector.id,
-                                       key_type=SourceKeyType.SLACK_APP_ID)
-        if app_id:
-            doctor_droid_app_id = app_id.first().key
 
         api_app_id = message['api_app_id']
-
         if api_app_id != doctor_droid_app_id:
             print(f"Received message not from doctor droid app: {api_app_id}, ignoring event: {message}")
             return
 
         event = message.get('event', '')
-
         if not event.get('bot_profile'):
             if not event.get('subtype') or event.get('subtype') != 'bot_message':
                 print(f"Received message from a non-bot user, ignoring event: {message}")
@@ -244,10 +240,6 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                 event['bot_profile']['app_id'] == doctor_droid_app_id:
             print(f"Received message from doctor droid app, ignoring event: {event['bot_profile']['app_id']}")
             return
-
-        bot_profile = event.get('bot_profile', {}).get("name")
-        if not bot_profile:
-            bot_profile = event.get('subtype')
 
         event_ts = event.get('ts', None)
         channel_id = event.get('channel', None)
@@ -262,7 +254,8 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
             data_timestamp = datetime.utcfromtimestamp(float(event_ts))
             data_timestamp = data_timestamp.replace(tzinfo=pytz.utc)
 
-        if event_ts and channel_id and bot_auth_token and account_id:
+        if event_ts and channel_id and bot_auth_token and slack_connector.account_id.value:
+            account_id = slack_connector.account_id.value
             try:
                 alert_title = title_identifier(message['event'], 'slack')
                 alert_text = text_identifier_v2(message['event'], 'slack')
@@ -272,7 +265,8 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                     account_id=slack_connector.account_id,
                     connector=slack_connector,
                     channel_id=channel_id,
-                    alert_type=alert_type)
+                    alert_type=alert_type
+                )
 
                 slack_received_msg = SlackConnectorDataReceived(
                     account_id=slack_connector.account_id,
@@ -305,7 +299,7 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                 for ep in ep_protos:
                     is_triggered = entry_point_evaluator_facade.evaluate(ep, slack_alert_event)
                     if is_triggered:
-                        trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, event_ts)
+                        trigger_slack_alert_entry_point_workflows(account_id, ep.id.value, message)
             except Exception as e:
                 print(f"Error while handling slack_alert_trigger_playbook with error: {e} for message: {message} "
                       f"for account: {account_id}")
@@ -344,7 +338,7 @@ def pager_duty_handle_webhook_call(pagerduty_connector_id, pager_duty_incident):
         for ep in ep_protos:
             is_triggered = entry_point_evaluator_facade.evaluate(ep, pager_duty_incident)
             if is_triggered:
-                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, incident_id)
+                trigger_pagerduty_alert_entry_point_workflows(account_id, ep.id.value, pager_duty_incident)
     except Exception as e:
         logger.error(f"Error while handling pagerduty webhook call with error: {e} for event: {pager_duty_incident}")
     return
