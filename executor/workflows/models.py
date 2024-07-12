@@ -5,8 +5,8 @@ from django.db import models
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from accounts.models import Account
-from connectors.models import Connector
 from executor.models import PlayBook, PlayBookExecution
+from protos.base_pb2 import TimeRange
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint as WorkflowEntryPointProto, \
     WorkflowAction as WorkflowActionProto, WorkflowSchedule as WorkflowScheduleProto, Workflow as WorkflowProto, \
     WorkflowExecutionStatusType, WorkflowExecution as WorkflowExecutionProto, \
@@ -231,6 +231,17 @@ class WorkflowExecution(models.Model):
 
     @property
     def proto_max(self) -> WorkflowExecutionProto:
+        execution_configuration = WorkflowConfigurationProto()
+        if self.workflow_execution_configuration:
+            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+
+        metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
+        if self.metadata:
+            metadata = dict_to_proto(self.metadata, WorkflowExecutionProto.WorkflowExecutionMetadata)
+
+        if self.time_range:
+            time_range_proto = dict_to_proto(self.time_range, TimeRange)
+
         workflow_execution_logs = self.workflowexecutionlog_set.all()
         wf_logs = [wel.proto for wel in workflow_execution_logs]
         return WorkflowExecutionProto(
@@ -244,11 +255,25 @@ class WorkflowExecution(models.Model):
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_by=StringValue(value=self.created_by) if self.created_by else None,
-            workflow_logs=wf_logs
+            workflow_logs=wf_logs,
+            execution_configuration=execution_configuration,
+            metadata=metadata,
+            time_range=time_range_proto
         )
 
     @property
     def proto(self) -> WorkflowExecutionProto:
+        execution_configuration = WorkflowConfigurationProto()
+        if self.workflow_execution_configuration:
+            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+
+        metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
+        if self.metadata:
+            metadata = dict_to_proto(self.metadata, WorkflowExecutionProto.WorkflowExecutionMetadata)
+
+        if self.time_range:
+            time_range_proto = dict_to_proto(self.time_range, TimeRange)
+
         workflow_execution_logs = self.workflowexecutionlog_set.all()
         wf_logs = [wel.proto for wel in workflow_execution_logs]
         return WorkflowExecutionProto(
@@ -262,11 +287,25 @@ class WorkflowExecution(models.Model):
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_by=StringValue(value=self.created_by) if self.created_by else None,
-            workflow_logs=wf_logs
+            workflow_logs=wf_logs,
+            execution_configuration=execution_configuration,
+            metadata=metadata,
+            time_range=time_range_proto
         )
 
     @property
     def proto_partial(self) -> WorkflowExecutionProto:
+        execution_configuration = WorkflowConfigurationProto()
+        if self.workflow_execution_configuration:
+            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+
+        metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
+        if self.metadata:
+            metadata = dict_to_proto(self.metadata, WorkflowExecutionProto.WorkflowExecutionMetadata)
+
+        if self.time_range:
+            time_range_proto = dict_to_proto(self.time_range, TimeRange)
+
         return WorkflowExecutionProto(
             id=UInt64Value(value=self.id),
             workflow_run_id=StringValue(value=self.workflow_run_id),
@@ -278,6 +317,9 @@ class WorkflowExecution(models.Model):
             started_at=int(self.started_at.replace(tzinfo=timezone.utc).timestamp()) if self.started_at else 0,
             finished_at=int(self.finished_at.replace(tzinfo=timezone.utc).timestamp()) if self.finished_at else 0,
             created_by=StringValue(value=self.created_by) if self.created_by else None,
+            execution_configuration=execution_configuration,
+            metadata=metadata,
+            time_range=time_range_proto
         )
 
 
