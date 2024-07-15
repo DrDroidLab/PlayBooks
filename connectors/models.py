@@ -1,4 +1,6 @@
 from datetime import timezone
+from hashlib import md5
+
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
@@ -41,7 +43,7 @@ integrations_connector_type_display_name_map = {
     Source.MS_TEAMS: 'MS TEAMS',
     Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
-    Source.SMTP: 'SMTP EMAIL',
+    Source.SMTP: 'EMAIL SERVER',
 }
 
 integrations_connector_type_category_map = {
@@ -430,13 +432,19 @@ class ConnectorKey(models.Model):
     key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(SourceKeyType),
                                    default=SourceKeyType.UNKNOWN_SKT)
     key = models.TextField()
+    key_md5 = models.CharField(max_length=255, null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
-        unique_together = [['account', 'connector', 'key_type', 'key']]
+        unique_together = [['account', 'connector', 'key_type', 'key_md5']]
+
+    def save(self, **kwargs):
+        if self.key:
+            self.key_md5 = md5(str(self.key).encode('utf-8')).hexdigest()
+        super().save(**kwargs)
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
@@ -465,8 +473,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
-                             SourceKeyType.SMTP_HOST, SourceKeyType.SMTP_USER, SourceKeyType.SMTP_PASSWORD,
-                             SourceKeyType.SMTP_PORT,
+                             SourceKeyType.SMTP_PASSWORD,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,
