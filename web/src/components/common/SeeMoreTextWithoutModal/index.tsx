@@ -3,7 +3,7 @@ import React, { useState } from "react";
 interface SeeMoreTextWithoutModalProps {
   text: string;
   maxLength?: number;
-  className: React.ClassAttributes<string>;
+  className?: string;
   showMoreText?: boolean;
 }
 
