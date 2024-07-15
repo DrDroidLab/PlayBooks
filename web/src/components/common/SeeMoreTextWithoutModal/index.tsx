@@ -4,12 +4,14 @@ interface SeeMoreTextWithoutModalProps {
   text: string;
   maxLength?: number;
   className: React.ClassAttributes<string>;
+  showMoreText?: boolean;
 }
 
 const SeeMoreTextWithoutModal: React.FC<SeeMoreTextWithoutModalProps> = ({
   text,
   maxLength = 100,
   className,
+  showMoreText = true,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -42,7 +44,7 @@ const SeeMoreTextWithoutModal: React.FC<SeeMoreTextWithoutModalProps> = ({
         }`}>
         {displayedText}
       </p>
-      {shouldTruncateByLength && (
+      {shouldTruncateByLength && showMoreText && (
         <button
           onClick={handleToggle}
           className="text-violet-500 hover:underline mt-2">

@@ -7,18 +7,23 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  IconButton,
+  Collapse,
   Button,
   Dialog,
   DialogActions,
 } from "@mui/material";
 
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
 import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
+import Code from "../common/Code/index.tsx";
 
 const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
   const [open, setOpen] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
+  const [expandedRows, setExpandedRows] = useState({});
 
   const [tableData, setTableData] = useState([]);
 
@@ -30,6 +35,13 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleRowClick = (rowIndex) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [rowIndex]: !prev[rowIndex],
+    }));
   };
 
   if (tableLoading)
@@ -52,6 +64,7 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
           className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2 h-full`}>
           <TableHead>
             <TableRow>
+              <TableCell />
               {tableData[0]?.columns
                 ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
@@ -73,33 +86,58 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
           <TableBody>
             {tableData?.map((row, rowIndex) => {
               return (
-                <TableRow key={rowIndex}>
-                  {row?.columns
-                    ?.filter((x) => x.name !== "@ptr")
-                    .map((col, colIndex) => {
-                      return (
-                        <TableCell
-                          key={colIndex}
-                          className={`${
-                            col.name === "@message"
-                              ? "min-w-[100px]"
-                              : "min-w-[50px]"
-                          } !text-xs !border !min-w-[max-content]`}>
-                          <SeeMoreTextWithoutModal
-                            shouldNoWrap={true}
-                            text={
-                              isDate(col.value)
-                                ? renderTimestamp(
-                                    new Date(col.value).getTime() / 1000,
-                                  )
-                                : col.value
-                            }
-                            maxLength={200}
-                          />
-                        </TableCell>
-                      );
-                    })}
-                </TableRow>
+                <>
+                  <TableRow
+                    key={rowIndex}
+                    onClick={() => handleRowClick(rowIndex)}>
+                    <TableCell>
+                      <IconButton aria-label="expand row" size="small">
+                        {expandedRows[rowIndex] ? (
+                          <KeyboardArrowUp />
+                        ) : (
+                          <KeyboardArrowDown />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                    {row?.columns
+                      ?.filter((x) => x.name !== "@ptr")
+                      .map((col, colIndex) => {
+                        return (
+                          <TableCell
+                            key={colIndex}
+                            className={`${
+                              col.name === "@message"
+                                ? "min-w-[100px]"
+                                : "min-w-[50px]"
+                            } !text-xs !border !min-w-[max-content]`}>
+                            <SeeMoreTextWithoutModal
+                              shouldNoWrap={true}
+                              showMoreText={false}
+                              text={
+                                isDate(col.value)
+                                  ? renderTimestamp(
+                                      new Date(col.value).getTime() / 1000,
+                                    )
+                                  : col.value
+                              }
+                              maxLength={150}
+                            />
+                          </TableCell>
+                        );
+                      })}
+                  </TableRow>
+                  <tr className="p-0">
+                    <td className="p-0" colSpan={6}>
+                      <Collapse
+                        in={expandedRows[rowIndex]}
+                        timeout="auto"
+                        className="max-w-[600px] p-0"
+                        unmountOnExit>
+                        <Code content={JSON.stringify(row, null, 2)} />
+                      </Collapse>
+                    </td>
+                  </tr>
+                </>
               );
             })}
           </TableBody>
