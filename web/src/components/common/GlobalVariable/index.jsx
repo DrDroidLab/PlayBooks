@@ -26,7 +26,7 @@ function GlobalVariables() {
     dispatch(deleteVariable({ name: key }));
   };
 
-  if (isPrefetched && playbook?.globalVariables?.length === 0) {
+  if (isPrefetched && Object.keys(variables).length === 0) {
     return null;
   }
 
