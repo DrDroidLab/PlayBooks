@@ -21,12 +21,12 @@ message GcmMetricAssetModel {
     repeated string metrics = 3;
   }
 
-  google.protobuf.StringValue namespace = 1;
+  google.protobuf.StringValue metric_type = 1;
   repeated MetricLabel label_value_metric_map = 2;
 }
 
 message GcmMetricAssetOptions {
-  repeated string namespaces = 1;
+  repeated string metric_types = 1;
 }
 
 message GcmAssetModel {

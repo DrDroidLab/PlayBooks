@@ -45,8 +45,8 @@ class GcmApiProcessor(Processor):
             request = service.projects().timeSeries().list(
                 name=f"projects/{self.__project_id}",
                 filter=f'metric.type="{metric_type}"',
-                interval_endTime=end_time,
-                interval_startTime=start_time,
+                interval_startTime=start_time.isoformat() + 'Z',
+                interval_endTime=end_time.isoformat() + 'Z',
                 view='FULL'
             )
             response = request.execute()
@@ -92,7 +92,7 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching log sinks: {e}")
             raise e
 
-    def gcm_get_metric_aggregation(self, metric_type, start_time, end_time, aggregation, labels):
+    def gcm_get_metric_aggregation(self, metric_type, start_time, end_time, labels):
         try:
             service = build('monitoring', 'v3', credentials=self.__credentials)
             filter_str = f'metric.type="{metric_type}"'
@@ -103,8 +103,10 @@ class GcmApiProcessor(Processor):
             request = service.projects().timeSeries().list(
                 name=f"projects/{self.__project_id}",
                 filter=filter_str,
-                interval={'startTime': start_time.isoformat() + 'Z', 'endTime': end_time.isoformat() + 'Z'},
-                aggregation={'alignmentPeriod': '300s', 'perSeriesAligner': aggregation},
+                interval={
+                    'startTime': start_time.isoformat() + 'Z',
+                    'endTime': end_time.isoformat() + 'Z'
+                },
                 view='FULL'
             )
             response = request.execute()

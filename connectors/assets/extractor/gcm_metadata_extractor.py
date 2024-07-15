@@ -22,17 +22,20 @@ class GcmSourceMetadataExtractor(SourceMetadataExtractor):
         try:
             all_metric_descriptors = gcm_api_processor.fetch_metrics_list()
             for descriptor in all_metric_descriptors:
-                metric_type = descriptor['type']
-                description = descriptor.get('description', '')
-                labels = descriptor.get('labels', [])
+                try:
+                    metric_type = descriptor['type']
+                    description = descriptor.get('description', '')
+                    labels = descriptor.get('labels', [])
 
-                model_data[metric_type] = {
-                    'description': description,
-                    'labels': labels
-                }
+                    model_data[metric_type] = {
+                        'description': description,
+                        'labels': labels
+                    }
 
-                if save_to_db:
-                    self.create_or_update_model_metadata(model_type, metric_type, model_data[metric_type])
+                    if save_to_db:
+                        self.create_or_update_model_metadata(model_type, metric_type, model_data[metric_type])
+                except Exception as e:
+                    logger.error(f'Error processing metric descriptor: {e}')
         except Exception as e:
             logger.error(f'Error extracting metric descriptors: {e}')
 

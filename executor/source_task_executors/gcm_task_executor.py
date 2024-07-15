@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Dict
+import json
 
 import pytz
 from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
@@ -38,8 +39,7 @@ class GcmSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, gcm_connector, **kwargs):
         generated_credentials = generate_credentials_dict(gcm_connector.type, gcm_connector.keys)
-        generated_credentials['client_type'] = kwargs.get('client_type')
-        return GcmApiProcessor(project_id=gcm_connector.account_id.value, service_account_json=generated_credentials)
+        return GcmApiProcessor(**generated_credentials)
 
     def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
                                  gcm_connector: ConnectorProto) -> PlaybookTaskResult:
@@ -53,14 +53,10 @@ class GcmSourceManager(PlaybookSourceManager):
             end_time = datetime.utcfromtimestamp(tr_end_time)
             tr_start_time = time_range.time_geq
             start_time = datetime.utcfromtimestamp(tr_start_time)
-            period = 300
 
             task = gcm_task.metric_execution
             metric_type = task.metric_type.value
             project_id = task.project_id.value
-            aggregation = 'ALIGN_MEAN'  # Example aggregation
-            if task.aggregation and task.aggregation.value in ['ALIGN_MEAN', 'ALIGN_SUM', 'ALIGN_COUNT', 'ALIGN_MAX', 'ALIGN_MIN']:
-                aggregation = task.aggregation.value
             task_labels = task.labels
             labels = [{'key': label.key.value, 'value': label.value.value} for label in task_labels]
 
@@ -68,35 +64,43 @@ class GcmSourceManager(PlaybookSourceManager):
 
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Metric_Type -> {}, Start_Time "
-                "-> {}, End_Time -> {}, Aggregation -> {}, Labels -> {}".format(
+                "-> {}, End_Time -> {}, Labels -> {}".format(
                     "GCM_Metrics", gcm_connector.account_id.value, project_id, metric_type,
-                    start_time, end_time, aggregation, labels), flush=True)
+                    start_time, end_time, labels), flush=True)
 
-            response = gcm_api_processor.gcm_get_metric_aggregation(metric_type, start_time, end_time, aggregation, labels)
+            response = gcm_api_processor.fetch_metrics(metric_type, start_time, end_time)
             if not response:
                 raise Exception("No data returned from GCM")
             response_datapoints = response
             if len(response_datapoints) > 0:
-                metric_unit = response_datapoints[0]['unit']
+                metric_unit = response_datapoints[0]['metric'].get('unit', '')
             else:
                 metric_unit = ''
             process_function = task.process_function.value
             if process_function == 'timeseries':
                 metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
                 for item in response_datapoints:
-                    utc_timestamp = item['interval']['endTime']
-                    utc_datetime = datetime.fromisoformat(utc_timestamp)
-                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
-                    val = item['value']['doubleValue']
-                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
-                    metric_datapoints.append(datapoint)
+                    if 'points' not in item:
+                        print("Warning: 'points' key is missing in the response item. Item details: {item}")
+                        continue
+
+                    for point in item['points']:
+                        if 'interval' not in point or 'endTime' not in point['interval']:
+                            print(
+                                f"Warning: 'interval' or 'endTime' key is missing in the point. Point details: {point}")
+                            continue
+
+                        utc_timestamp = point['interval']['endTime'].rstrip('Z')
+                        utc_datetime = datetime.fromisoformat(utc_timestamp)
+                        utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                        val = point['value']['doubleValue']
+                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                        metric_datapoints.append(datapoint)
 
                 labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
                     metric_label_values=[
-                        LabelValuePair(name=StringValue(value='metric_type'), value=StringValue(value=metric_type)),
-                        LabelValuePair(name=StringValue(value='aggregation'),
-                                       value=StringValue(value=aggregation)),
+                        LabelValuePair(name=StringValue(value='metric_type'), value=StringValue(value=metric_type))
                     ],
                     unit=StringValue(value=metric_unit),
                     datapoints=metric_datapoints
@@ -125,9 +129,9 @@ class GcmSourceManager(PlaybookSourceManager):
             start_time = int(tr_start_time * 1000)
 
             task = gcm_task.filter_log_entries
-            project_id = task.project_id.value
-            log_name = task.log_name.value
-            filter_query = task.filter_query.value
+            project_id = str(task.project_id.value)
+            log_name = str(task.log_name.value)
+            filter_query = str(task.filter_query.value)
             if global_variable_set:
                 for key, value in global_variable_set.items():
                     filter_query = filter_query.replace(key, str(value))
@@ -146,10 +150,15 @@ class GcmSourceManager(PlaybookSourceManager):
 
             table_rows: [TableResult.TableRow] = []
             for item in response:
+                json_payload = item.get('jsonPayload', {})
+                message = json_payload.get('message', '')
+                if message == "failed to acquire lease gke-managed-filestorecsi/filestore-csi-storage-gke-io-node":
+                    print("Error: Failed to acquire lease for GKE-managed Filestore CSI.")
+                    continue
                 table_columns: [TableResult.TableColumn] = []
                 for key, value in item.items():
                     table_column = TableResult.TableColumn(name=StringValue(value=key),
-                                                           value=StringValue(value=value))
+                                                           value=StringValue(value=str(value)))
                     table_columns.append(table_column)
                 table_row = TableResult.TableRow(columns=table_columns)
                 table_rows.append(table_row)
