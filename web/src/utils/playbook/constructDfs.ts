@@ -12,7 +12,9 @@ function dfsStep(
 
     // Find the next relations where the current step is the parent
     for (const relation of relationsMap.values()) {
-      if ((relation.parent as Step).id === step.id) {
+      const evaluationResult =
+        relation.ui_requirement?.evaluation?.evaluation_result;
+      if ((relation.parent as Step).id === step.id && evaluationResult) {
         dfsStep(relation.child as Step, visited, result, relationsMap);
       }
     }
