@@ -1,4 +1,6 @@
 from datetime import timezone
+from hashlib import md5
+
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
 
@@ -416,13 +418,19 @@ class ConnectorKey(models.Model):
     key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(SourceKeyType),
                                    default=SourceKeyType.UNKNOWN_SKT)
     key = models.TextField()
+    key_md5 = models.CharField(max_length=255, null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
-        unique_together = [['account', 'connector', 'key_type', 'key']]
+        unique_together = [['account', 'connector', 'key_type', 'key_md5']]
+
+    def save(self, **kwargs):
+        if self.key:
+            self.key_md5 = md5(str(self.key).encode('utf-8')).hexdigest()
+        super().save(**kwargs)
 
     @property
     def proto(self):
