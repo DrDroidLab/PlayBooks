@@ -14,6 +14,7 @@ import protos.playbooks.deprecated_playbook_pb2
 import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_commons_pb2
 import protos.playbooks.playbook_pb2
+import protos.playbooks.source_task_definitions.lambda_function_task_pb2
 import protos.playbooks.workflow_pb2
 import protos.query_base_pb2
 import sys
@@ -1654,3 +1655,49 @@ class SearchQueryOptionsResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["column_options", b"column_options", "context", b"context", "message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
 
 global___SearchQueryOptionsResponse = SearchQueryOptionsResponse
+
+@typing_extensions.final
+class TestWorkflowTransformerRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    TRANSFORMER_LAMBDA_FUNCTION_FIELD_NUMBER: builtins.int
+    EVENT_FIELD_NUMBER: builtins.int
+    @property
+    def transformer_lambda_function(self) -> protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function: ...
+    @property
+    def event(self) -> google.protobuf.struct_pb2.Struct: ...
+    def __init__(
+        self,
+        *,
+        transformer_lambda_function: protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function | None = ...,
+        event: google.protobuf.struct_pb2.Struct | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["event", b"event", "transformer_lambda_function", b"transformer_lambda_function"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["event", b"event", "transformer_lambda_function", b"transformer_lambda_function"]) -> None: ...
+
+global___TestWorkflowTransformerRequest = TestWorkflowTransformerRequest
+
+@typing_extensions.final
+class TestWorkflowTransformerResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    EVENT_CONTEXT_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def event_context(self) -> google.protobuf.struct_pb2.Struct: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        event_context: google.protobuf.struct_pb2.Struct | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["event_context", b"event_context", "message", b"message", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["event_context", b"event_context", "message", b"message", "success", b"success"]) -> None: ...
+
+global___TestWorkflowTransformerResponse = TestWorkflowTransformerResponse

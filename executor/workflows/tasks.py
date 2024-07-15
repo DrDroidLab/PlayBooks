@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import uuid
 
 from celery import shared_task
@@ -10,10 +10,12 @@ from connectors.crud.connectors_crud import get_db_connector_keys, get_db_connec
 
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution
 from executor.crud.playbooks_crud import get_db_playbooks
+from executor.source_processors.lambda_function_processor import LambdaFunctionProcessor
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log, \
+    update_db_account_workflow_execution_metadata
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
@@ -22,17 +24,19 @@ from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.playbooks.playbook_pb2 import PlaybookExecution
+from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from utils.time_utils import current_datetime, current_epoch_timestamp, epoch_to_string
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
-    WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, WorkflowExecution as WorkflowExecutionProto, WorkflowSchedule as WorkflowScheduleProto, WorkflowEntryPoint as WorkflowEntryPointProto
+    WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, \
+    WorkflowExecution as WorkflowExecutionProto, WorkflowSchedule as WorkflowScheduleProto, \
+    WorkflowEntryPoint as WorkflowEntryPointProto
 from protos.base_pb2 import Source
 from google.protobuf.wrappers_pb2 import StringValue
 
 from utils.proto_utils import dict_to_proto, proto_to_dict
 from utils.uri_utils import build_absolute_uri
-
 
 logger = logging.getLogger(__name__)
 
@@ -43,33 +47,53 @@ def workflow_scheduler():
     current_time = int(current_time_utc.timestamp())
     all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
     for wf_execution in all_scheduled_wf_executions:
-        workflow_id = wf_execution.workflow_id
-        workflow_execution_configuration = wf_execution.workflow_execution_configuration
+        wf_execution_proto: WorkflowExecutionProto = wf_execution.proto_partial
+        workflow_id = wf_execution_proto.workflow.id.value
+        execution_configuration: WorkflowConfigurationProto = wf_execution_proto.execution_configuration
+        execution_metadata: WorkflowExecutionProto.WorkflowExecutionMetadata = wf_execution_proto.metadata
+        event_context = None
+        if execution_metadata and execution_metadata is not None:
+            if execution_metadata.type in [WorkflowExecutionProto.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
+                                           WorkflowExecutionProto.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT]:
+                event = execution_metadata.event
+                if event and execution_configuration.transformer_lambda_function is not None:
+                    event_dict = proto_to_dict(event)
+                    transformer_lambda_function_proto: Lambda.Function = execution_configuration.transformer_lambda_function
+                    lambda_function_processor = LambdaFunctionProcessor(
+                        transformer_lambda_function_proto.definition.value,
+                        transformer_lambda_function_proto.requirements)
+                    event_context = lambda_function_processor.execute(event_dict)
+                    if event_context and isinstance(event_context, dict):
+                        workflow_execution_metadata = proto_to_dict(execution_metadata)
+                        execution_metadata['event_context'] = event_context
+                        update_db_account_workflow_execution_metadata(wf_execution.account, wf_execution.id,
+                                                                      workflow_execution_metadata)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
                     f"{workflow_id} at {current_time}")
         account = wf_execution.account
-        time_range = wf_execution.time_range
-        update_time_range = None
-        if wf_execution.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
+        if wf_execution_proto.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
             logger.info(f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id}, workflow_id: "
                         f"{workflow_id} at {current_time}")
             continue
 
-        scheduled_at = wf_execution.scheduled_at
+        scheduled_at = datetime.fromtimestamp(float(wf_execution_proto.scheduled_at))
+        scheduled_at = scheduled_at.replace(tzinfo=timezone.utc)
         if current_time_utc < scheduled_at:
-            logger.info(f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution.id}, "
-                        f"workflow_id: {workflow_id} at {current_time}")
+            logger.info(
+                f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution_proto.id.value}, "
+                f"workflow_id: {workflow_id} at {current_time}")
             continue
 
-        expiry_at = wf_execution.expiry_at
+        expiry_at = datetime.fromtimestamp(float(wf_execution_proto.expiry_at))
+        expiry_at = expiry_at.replace(tzinfo=timezone.utc)
         if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
-            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution.id}, workflow_id: "
-                        f"{workflow_id} at {current_time}")
-            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution_proto.id.value}, "
+                        f"workflow_id: {workflow_id} at {current_time}")
+            update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
 
-        update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+        update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
                                                     WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
         all_playbook_ids = [pb.id for pb in all_pbs]
@@ -77,15 +101,18 @@ def workflow_scheduler():
             try:
                 uuid_str = uuid.uuid4().hex
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
-                if update_time_range:
-                    time_range_proto = dict_to_proto(update_time_range, TimeRange)
-                else:
-                    time_range_proto = dict_to_proto(time_range, TimeRange)
+                time_range = proto_to_dict(wf_execution_proto.time_range)
                 execution_global_variable_set = None
-                if workflow_execution_configuration and 'global_variable_set' in workflow_execution_configuration:
-                    execution_global_variable_set = workflow_execution_configuration['global_variable_set']
-                playbook_execution = create_playbook_execution(account, time_range_proto, pb_id, playbook_run_uuid,
-                                                               wf_execution.created_by, execution_global_variable_set)
+                if execution_configuration and execution_configuration.global_variable_set is not None:
+                    execution_global_variable_set = proto_to_dict(
+                        execution_configuration.global_variable_set) if execution_configuration.global_variable_set else {}
+                    if event_context and isinstance(event_context, dict):
+                        event_context = {f"${key}": value for key, value in event_context.items()}
+                        execution_global_variable_set.update(event_context)
+                playbook_execution = create_playbook_execution(account, wf_execution_proto.time_range, pb_id,
+                                                               playbook_run_uuid, wf_execution_proto.created_by.value,
+                                                               execution_global_variable_set)
+                workflow_execution_configuration = proto_to_dict(execution_configuration)
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
                                                 pb_id, playbook_execution.id, time_range,
                                                 workflow_execution_configuration)
@@ -94,8 +121,8 @@ def workflow_scheduler():
                                  f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
                     continue
                 logger.info("workflow_execution_configuration in scheduler", workflow_execution_configuration)
-                task = workflow_executor.delay(account.id, workflow_id, wf_execution.id, pb_id, playbook_execution.id,
-                                               time_range, workflow_execution_configuration)
+                task = workflow_executor.delay(account.id, workflow_id, wf_execution_proto.id.value, pb_id,
+                                               playbook_execution.id, time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                                   status=PeriodicTaskStatus.SCHEDULED,
                                                   account_id=account.id,
@@ -127,7 +154,7 @@ def workflow_executor(account_id, workflow_id, workflow_execution_id, playbook_i
         workflow_config = WorkflowConfigurationProto()
         if workflow_execution_configuration:
             workflow_config = dict_to_proto(workflow_execution_configuration, WorkflowConfigurationProto)
-        if workflow_config.generate_summary.value:
+        if workflow_config.generate_summary and workflow_config.generate_summary.value:
             execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         try:
             saved_task = get_or_create_task(workflow_action_execution.__name__, account_id, workflow_id,
@@ -180,7 +207,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         slack_thread_ts = None
         pd_incident_id = None
         if workflow_execution.metadata:
-            slack_thread_ts = workflow_execution.metadata.get('thread_ts', None)
+            slack_thread_ts = workflow_execution.metadata.get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
@@ -192,7 +219,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
         workflow_interpreter = workflow_definition_interpreter(we_proto, pe_proto)
         execution_output.insert(0, workflow_interpreter)
-        if we_proto.execution_configuration.generate_summary.value==True:
+        if we_proto.execution_configuration.generate_summary.value == True:
             pdf_file = generate_pdf(execution_output)
             logger.info(f"PDF file generated: {pdf_file}")
         else:
@@ -285,25 +312,29 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
         playbook_url = build_absolute_uri(None, settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(p_proto.id.value),
-                                                 settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
+                                          settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL,
+                                          settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
-        if workflow.actions[0].type == WorkflowActionProto.Type.SLACK_MESSAGE or workflow.actions[0].type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
+        if workflow.actions[0].type == WorkflowActionProto.Type.SLACK_MESSAGE or workflow.actions[
+            0].type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
             workflow_test_message = InterpretationProto(
-                                        type=InterpretationProto.Type.TEXT,
-                                        title = StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
-                                        description=StringValue(value=f'This is a sample run of <{playbook_url}|{p_proto.name.value}> playbook.'),
-                                        model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
-                                        )
+                type=InterpretationProto.Type.TEXT,
+                title=StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
+                description=StringValue(
+                    value=f'This is a sample run of <{playbook_url}|{p_proto.name.value}> playbook.'),
+                model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
+            )
         else:
             workflow_test_message = InterpretationProto(
-                                        type=InterpretationProto.Type.TEXT,
-                                        title = StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
-                                        description=StringValue(value=f'This is a sample run of [{p_proto.name.value}]({playbook_url}) playbook.'),
-                                        model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
-                                        )
+                type=InterpretationProto.Type.TEXT,
+                title=StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
+                description=StringValue(
+                    value=f'This is a sample run of [{p_proto.name.value}]({playbook_url}) playbook.'),
+                model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
+            )
         execution_output.insert(0, workflow_test_message)
-        if workflow.configuration.generate_summary.value==True:
+        if workflow.configuration.generate_summary.value == True:
             pdf_file = generate_pdf(execution_output)
             logger.info(f"PDF file generated: {pdf_file}")
         else:
@@ -313,38 +344,51 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         logger.error(f"Error occurred while running playbook: {exc}")
 
 
-def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, playbook_execution: PlaybookExecution) -> InterpretationProto:
+def test_workflow_transformer(lambda_function: Lambda.Function, event):
+    try:
+        lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
+                                                            lambda_function.requirements)
+        event_dict = proto_to_dict(event)
+        event_context = lambda_function_processor.execute(event_dict)
+        return event_context
+    except Exception as e:
+        logger.error(f"Error occurred while running transformer lambda function: {e}")
+        raise e
+
+
+def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto,
+                                    playbook_execution: PlaybookExecution) -> InterpretationProto:
     trigger_list = workflow_execution.workflow.entry_points
     trigger_text = ''
     logger.info(trigger_list)
     # trigger_type_mapping = {0: "UNKNOWN", 1: "API", 2: "SLACK_CHANNEL_ALERT", 3: "PAGERDUTY_INCIDENT"}
-    if(len(trigger_list) == 1):
+    if (len(trigger_list) == 1):
         trigger_type = trigger_list[0].type
-        if trigger_type==WorkflowEntryPointProto.Type.SLACK_CHANNEL_ALERT:
+        if trigger_type == WorkflowEntryPointProto.Type.SLACK_CHANNEL_ALERT:
             trigger_text = "Slack Alert"
-        elif trigger_type==WorkflowEntryPointProto.Type.PAGERDUTY_INCIDENT:
+        elif trigger_type == WorkflowEntryPointProto.Type.PAGERDUTY_INCIDENT:
             trigger_text = "PagerDuty Incident"
-        elif trigger_type==WorkflowEntryPointProto.Type.API:
+        elif trigger_type == WorkflowEntryPointProto.Type.API:
             trigger_text = "API"
         else:
             trigger_text = "UNKNOWN"
     else:
         logger.info("Multiple entry points found for same workflow")
-    schedule_type = workflow_execution.workflow.schedule.type    
+    schedule_type = workflow_execution.workflow.schedule.type
     scheduled_time = workflow_execution.scheduled_at
     created_at = workflow_execution.created_at
     destination_list = workflow_execution.workflow.actions
     destination_text = ''
     # destination_mapping = {0: "UNKNOWN", 1: "API", 2: "SLACK_MESSAGE", 3: "SLACK_THREAD_REPLY", 4: "MS_TEAMS_MESSAGE_WEBHOOK", 5: "PAGERDUTY_NOTES"}
-    if(len(destination_list) == 1):
+    if (len(destination_list) == 1):
         destination_type = destination_list[0].type
-        if destination_type==WorkflowActionProto.Type.SLACK_MESSAGE:
+        if destination_type == WorkflowActionProto.Type.SLACK_MESSAGE:
             destination_text = "Slack"
-        elif destination_type==WorkflowActionProto.Type.SLACK_THREAD_REPLY:
+        elif destination_type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
             destination_text = "Slack Thread"
-        elif destination_type==WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
+        elif destination_type == WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
             destination_text = "Teams"
-        elif destination_type==WorkflowActionProto.Type.PAGERDUTY_NOTES:
+        elif destination_type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
             destination_text = "Pagerduty"
         else:
             destination_text = "UNKNOWN"
@@ -353,17 +397,22 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
 
     playbook_name = playbook_execution.playbook.name.value
 
-    playbook_execution_url = build_absolute_uri(None, settings.PLATFORM_PLAYBOOKS_EXECUTION_PAGE_LOCATION.format(playbook_execution.playbook.id.value, playbook_execution.playbook_run_id.value),
-                                                 settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
+    playbook_execution_url = build_absolute_uri(None, settings.PLATFORM_PLAYBOOKS_EXECUTION_PAGE_LOCATION.format(
+        playbook_execution.playbook.id.value, playbook_execution.playbook_run_id.value),
+                                                settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL,
+                                                settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
 
     workflow_name = workflow_execution.workflow.name.value
 
     workflow_id = workflow_execution.workflow.id.value
     workflow_summary_generation = workflow_execution.workflow.configuration.generate_summary.value
     workflow_link = build_absolute_uri(None, settings.PLATFORM_WORKFLOWS_PAGE_LOCATION.format(workflow_id),
-                                        settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
-    workflow_execution_url = build_absolute_uri(None, settings.PLATFORM_WORKFLOWS_EXECUTION_PAGE_LOCATION.format(workflow_execution.workflow_run_id.value),
-                                        settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL, settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
+                                       settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL,
+                                       settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
+    workflow_execution_url = build_absolute_uri(None, settings.PLATFORM_WORKFLOWS_EXECUTION_PAGE_LOCATION.format(
+        workflow_execution.workflow_run_id.value),
+                                                settings.PLATFORM_WORKFLOWS_PAGE_SITE_HTTP_PROTOCOL,
+                                                settings.PLATFORM_WORKFLOWS_PAGE_USE_SITE)
 
     ## Check if the execution is the first run of the scheduled workflow
     if schedule_type == WorkflowScheduleProto.Type.INTERVAL and scheduled_time - created_at < 15:
@@ -374,21 +423,21 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
         is_first_run = False
     time = scheduled_time
 
-    if trigger_text=="UNKNOWN" or destination_text=="UNKNOWN":
+    if trigger_text == "UNKNOWN" or destination_text == "UNKNOWN":
         logger.info("Invalid trigger or destination type.")
         return InterpretationProto()
-    if trigger_text=='API' and destination_text in ['Slack thread','Pagerduty']:
+    if trigger_text == 'API' and destination_text in ['Slack thread', 'Pagerduty']:
         logger.info("Incorrect Format Type. API output cannot be in a Slack Thread or to PagerDuty")
         return InterpretationProto()
-    if trigger_text=="PagerDuty Incident" and destination_text!="Pagerduty":
+    if trigger_text == "PagerDuty Incident" and destination_text != "Pagerduty":
         logger.info("Incorrect Format Type. PagerDuty Incident output can only be to PagerDuty")
         return InterpretationProto()
-    if destination_text=="Pagerduty" and trigger_text!="PagerDuty Incident":
+    if destination_text == "Pagerduty" and trigger_text != "PagerDuty Incident":
         logger.info("Incorrect Format Type. PagerDuty output can only be from PagerDuty Incident")
         return InterpretationProto()
 
-# time in minutes difference between now and scheduled time
-    time_since_triggered = int((current_epoch_timestamp()-created_at)/60) + 1
+    # time in minutes difference between now and scheduled time
+    time_since_triggered = int((current_epoch_timestamp() - created_at) / 60) + 1
     string_time = epoch_to_string(time)
     string_created_time = epoch_to_string(created_at)
     if workflow_summary_generation:
@@ -399,7 +448,7 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
         execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minute ago."
     else:
         execution_trigger_time_block = f"Triggered by: {trigger_text}, {time_since_triggered} minutes ago."
-    if destination_text in ['Slack','Slack Thread']:
+    if destination_text in ['Slack', 'Slack Thread']:
         if schedule_type == WorkflowScheduleProto.Type.ONE_OFF:
             workflow_text = f"""Investigation PlayBook link: <{playbook_execution_url}|{playbook_name}> \n {execution_time_block} \n {execution_trigger_time_block} \n Configuration: <{workflow_link}|{workflow_name}>\n"""
         elif schedule_type == WorkflowScheduleProto.Type.INTERVAL or schedule_type == WorkflowScheduleProto.Type.CRON:
@@ -415,8 +464,8 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto, 
                 workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) \n {execution_time_block} \n Triggered by: {trigger_text} at {string_created_time}. \n Configuration: [{workflow_name}]({workflow_link}) \n"""
             else:
                 workflow_text = f"""Investigation PlayBook link: [{playbook_name}]({playbook_execution_url}) \n {execution_time_block} \n Triggered by: {trigger_text}. \n See workflow history: [{workflow_name}]({workflow_execution_url}) \n"""
-    
+
     workflow_interpretation: InterpretationProto = InterpretationProto(type=InterpretationProto.Type.TEXT,
-                                                                       description=StringValue(value=workflow_text), 
+                                                                       description=StringValue(value=workflow_text),
                                                                        model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION)
     return workflow_interpretation
