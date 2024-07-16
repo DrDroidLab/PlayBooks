@@ -28,7 +28,6 @@ function PlaybookDetails() {
           + Create New
         </a>
       </label>
-      {console.log(data?.playbooks)}
       <div className="flex gap-2 items-center">
         <SelectComponent
           data={data?.playbooks?.map((e) => {
