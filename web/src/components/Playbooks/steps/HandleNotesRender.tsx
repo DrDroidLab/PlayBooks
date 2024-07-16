@@ -29,7 +29,7 @@ function HandleNotesRender({ id }) {
         ) : (
           <>
             <div
-              className="mt-2 text-sm cursor-pointer text-violet-500"
+              className="mt-2 text-sm cursor-pointer text-violet-500 mb-2"
               onClick={toggleNotes}>
               <b>{task.ui_requirement.showNotes ? "-" : "+"}</b> Add Notes about
               this step
