@@ -38,7 +38,7 @@ function NotesOutput({ taskId }: NotesOutputPropTypes) {
       className="max-h-[400px] max-w-md">
       <MDEditor.Markdown
         source={task.notes}
-        className="border-2 rounded p-1 w-full max-h-[400px] overflow-y-auto"
+        className="border-2 rounded p-3 w-full max-h-[400px] overflow-y-auto"
       />
     </div>
   );

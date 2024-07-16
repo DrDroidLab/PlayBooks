@@ -52,7 +52,7 @@ function TaskNode({ taskId }) {
           <TaskInformation taskId={task?.id} />
         </div>
       </div>
-      <div className="task-notes absolute top-1/2 -right-full">
+      <div className="task-notes absolute top-1/2 left-3/4">
         <NotesOutput taskId={task?.id} />
       </div>
     </>
