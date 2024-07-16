@@ -7,6 +7,7 @@ from executor.source_processors.processor import Processor
 
 logger = logging.getLogger(__name__)
 
+
 class SmtpApiProcessor(Processor):
     client = None
 
@@ -38,21 +39,6 @@ class SmtpApiProcessor(Processor):
             return True
         except Exception as e:
             logger.error(f"Error sending email: {e}")
-            return False
-
-    def send_html_email(self, to_email, subject, html_body):
-        try:
-            msg = MIMEMultipart()
-            msg['From'] = self.__username
-            msg['To'] = to_email
-            msg['Subject'] = subject
-
-            msg.attach(MIMEText(html_body, 'html'))
-
-            self.client.send_message(msg)
-            return True
-        except Exception as e:
-            logger.error(f"Error sending HTML email: {e}")
             return False
 
     def test_connection(self):
