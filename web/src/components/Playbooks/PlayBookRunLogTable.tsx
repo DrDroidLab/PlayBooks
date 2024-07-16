@@ -4,17 +4,15 @@ import styles from "./index.module.css";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableRow,
-  IconButton,
   Collapse,
   Button,
   Dialog,
   DialogActions,
 } from "@mui/material";
 
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { ArrowRightRounded } from "@mui/icons-material";
 import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
 import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 import Code from "../common/Code/index.tsx";
@@ -25,14 +23,12 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
   const [open, setOpen] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [expandedRows, setExpandedRows] = useState({});
-
-  const [tableData, setTableData] = useState<any>([]);
+  const rows = result?.table?.rows;
 
   useEffect(() => {
-    if (result?.table?.rows?.length > 0) setShowTable(true);
-    setTableData(result?.table?.rows ?? []);
+    if (rows?.length > 0) setShowTable(true);
     setTableLoading(false);
-  }, [result]);
+  }, [rows]);
 
   const handleClose = () => {
     setOpen(false);
@@ -65,72 +61,63 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
           className={`text-xs min-w-[50px] !border !rounded !overflow-hidden mt-2 h-full`}>
           <TableHead>
             <TableRow>
-              <TableCell />
-              {tableData[0]?.columns
+              <th className="!w-fit !border" />
+              {rows?.[0]?.columns
                 ?.filter((x) => x.name !== "@ptr")
                 .map((col, index) => {
                   return (
-                    <TableCell
+                    <th
                       key={index}
-                      className="!w-fit !min-w-[50px] !max-w-[200px] !border">
+                      className="!w-[200px] !border text-left p-2">
                       <SeeMoreTextWithoutModal
                         text={col.name}
                         maxLength={50}
                         className="font-bold text-xs"
                       />
-                    </TableCell>
+                    </th>
                   );
                 })}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData?.map((row, rowIndex) => {
+            {rows?.map((row, rowIndex) => {
               return (
                 <>
-                  <TableRow
-                    key={rowIndex}
-                    onClick={() => handleRowClick(rowIndex)}>
-                    <TableCell>
-                      <IconButton aria-label="expand row" size="small">
-                        {expandedRows[rowIndex] ? (
-                          <KeyboardArrowUp />
-                        ) : (
-                          <KeyboardArrowDown />
-                        )}
-                      </IconButton>
-                    </TableCell>
+                  <tr key={rowIndex} onClick={() => handleRowClick(rowIndex)}>
+                    <td>
+                      <ArrowRightRounded
+                        fontSize="large"
+                        className={`${
+                          expandedRows[rowIndex] ? "rotate-90" : "rotate-0"
+                        } text-gray-500`}
+                      />
+                    </td>
                     {row?.columns
                       ?.filter((x) => x.name !== "@ptr")
                       .map((col, colIndex) => {
+                        const colValue = isDate(col.value)
+                          ? renderTimestamp(
+                              new Date(col.value).getTime() / 1000,
+                            )
+                          : col.value;
                         return (
-                          <TableCell
+                          <td
                             key={colIndex}
-                            className={`${
-                              col.name === "@message"
-                                ? "min-w-[100px]"
-                                : "min-w-[50px]"
-                            } !text-xs !border !min-w-[max-content]`}>
-                            <SeeMoreTextWithoutModal
-                              showMoreText={false}
-                              text={
-                                isDate(col.value)
-                                  ? renderTimestamp(
-                                      new Date(col.value).getTime() / 1000,
-                                    )
-                                  : col.value
-                              }
-                              maxLength={150}
-                            />
-                          </TableCell>
+                            className={`w-[200px] text-xs p-2`}>
+                            <p className="text-ellipsis overflow-hidden whitespace-nowrap max-w-sm p-0 font-medium">
+                              {colValue}
+                            </p>
+                          </td>
                         );
                       })}
-                  </TableRow>
+                  </tr>
                   <tr className="p-0">
-                    <td className="p-0" colSpan={6}>
+                    <td />
+                    <td colSpan={2}>
                       <Collapse
                         in={expandedRows[rowIndex]}
                         timeout="auto"
-                        className="max-w-[600px] p-0"
+                        className="max-w-[550px] p-2 relative"
                         unmountOnExit>
                         <Code content={JSON.stringify(row, null, 2)} />
                       </Collapse>
