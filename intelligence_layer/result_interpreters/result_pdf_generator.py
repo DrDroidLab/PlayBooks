@@ -1,13 +1,14 @@
+# from xhtml2pdf import pisa
 
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
 import pandas as pd
 import os
-from weasyprint import HTML
 import markdown
 from markdown_include.include import MarkdownInclude
 from django.conf import settings
 from utils.time_utils import current_epoch_timestamp
 import uuid
+
 
 def _html(markdown_file_name, css_file_name):
     with open(markdown_file_name, mode="r", encoding="utf-8") as markdown_file:
@@ -30,25 +31,32 @@ def _html(markdown_file_name, css_file_name):
             </html>
             """
 
-# def convert(md, css):
-#     """Converts Markdown file MD and stylesheet CSS to HTML and PDF documents."""
-#     _convert(md, css)
-#     return 
+
+# def convert_html_to_pdf(html_string, pdf_path):
+#     with open(pdf_path, "wb") as pdf_file:
+#         pisa_status = pisa.CreatePDF(html_string, dest=pdf_file)
+#
+#     return not pisa_status.err
+
 
 def convert_md_to_pdf(markdown_file_name, css_file_name):
     file_name = os.path.splitext(markdown_file_name)[0]
     html_string = _html(markdown_file_name, css_file_name)
 
-    with open(
-        file_name + ".html", "w", encoding="utf-8", errors="xmlcharrefreplace"
-    ) as output_file:
-        output_file.write(html_string)
-
-    markdown_path = os.path.dirname(markdown_file_name)
-    html = HTML(string=html_string, base_url=markdown_path)
-    html.write_pdf(file_name + ".pdf")
-    pdf_file_path = file_name + ".pdf"
-    return pdf_file_path
+    # with open(
+    #         file_name + ".html", "w", encoding="utf-8", errors="xmlcharrefreplace"
+    # ) as output_file:
+    #     output_file.write(html_string)
+    #
+    # # markdown_path = os.path.dirname(markdown_file_name)
+    # # html = HTML(string=html_string, base_url=markdown_path)
+    # # html.write_pdf(file_name + ".pdf")
+    # pdf_file_path = file_name + ".pdf"
+    # if convert_html_to_pdf(html_string, pdf_file_path):
+    #     print(f"PDF generated and saved at {pdf_file_path}")
+    # else:
+    #     print("PDF generation failed")
+    return None
 
 
 def save_md_file(md_file_content, file_path):
@@ -62,6 +70,7 @@ def save_md_file(md_file_content, file_path):
             f.write(md_file_content)
             return os.path.abspath(file_path)
 
+
 def proto_to_markdown(execution_proto):
     md_file_content = ""
     step_number = 1
@@ -74,7 +83,7 @@ def proto_to_markdown(execution_proto):
             block_message += f"{description}\n"
         if summary:
             block_message += f"{summary}\n"
-        if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+        if (interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
             if title:
                 md_file_content += f'## {title}\n'
             if block_message:
@@ -120,33 +129,34 @@ def proto_to_markdown(execution_proto):
                         column_counter += 1
                         if (len(str(value)) > 140):
                             value = str(value)[:140] + '...'
-                        row_view += ' | '+str(value)
+                        row_view += ' | ' + str(value)
                         if column_counter > 5:
                             break
                     row_view += ' | \n'
                     column_view += row_view
                     if row_counter > 10:
-                        md_file_content +=" \n Content Truncated. Please see remaining content in file. \n"
+                        md_file_content += " \n Content Truncated. Please see remaining content in file. \n"
                         break
                 md_file_content += '\n'
                 md_file_content += column_view
                 md_file_content += '\n'
                 md_file_content += f' \n File URL: {interpretation.object_url.value}\n'
-                    # md_file_content += '|'.join(row) + '\n'
+                # md_file_content += '|'.join(row) + '\n'
             elif interpretation.type == InterpretationProto.Type.JSON:
                 md_file_content += f" ```{summary}```\n"
     return md_file_content
 
+
 def generate_pdf(execution_output):
-    
     md_file_content = proto_to_markdown(execution_output)
     current_epoch = current_epoch_timestamp()
     uuid_str = uuid.uuid4().hex
     file_name = f'workflow_execution_pdf_{str(current_epoch)}_{uuid_str}.md'
-    md_file_path = os.path.join(settings.MEDIA_ASSETS_ROOT,os.path.join('files', file_name))
+    md_file_path = os.path.join(settings.MEDIA_ASSETS_ROOT, os.path.join('files', file_name))
 
-    saved_md_file_path = save_md_file(md_file_content,md_file_path)
-    styling_file = os.path.join(settings.STYLING_FILE,'style.css')
+    saved_md_file_path = save_md_file(md_file_content, md_file_path)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    styling_file = os.path.join(current_dir, 'style.css')
 
     pdf_file_path = convert_md_to_pdf(saved_md_file_path, styling_file)
     return pdf_file_path

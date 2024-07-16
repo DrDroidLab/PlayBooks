@@ -76,7 +76,7 @@ gql==3.5.0
 graphql-core==3.2.3
 grpcio==1.62.0
 grpcio-status==1.62.0
-grpcio-tools==1.64.1
+grpcio-tools==1.51.1
 gunicorn==22.0.0
 h11==0.14.0
 hdbcli==2.20.23
@@ -184,11 +184,9 @@ urllib3==1.26.18
 uuid==1.30
 vine==5.1.0
 wcwidth==0.2.13
-weasyprint==62.3
 webencodings==0.5.1
 websocket-client==1.7.0
 wsproto==1.2.0
 yarl==1.9.4
 zipp==3.18.1
-zopfli==0.2.3
 zstandard==0.22.0
