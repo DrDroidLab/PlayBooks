@@ -22,6 +22,7 @@ from executor.source_processors.pd_api_processor import PdApiProcessor
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
 from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.smtp_api_processor import SmtpApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
@@ -50,7 +51,8 @@ connector_type_api_processor_map = {
     Source.MS_TEAMS: MSTeamsApiProcessor,
     Source.PAGER_DUTY: PdApiProcessor,
     Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
-    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor
+    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
+    Source.SMTP: SmtpApiProcessor
 }
 
 
