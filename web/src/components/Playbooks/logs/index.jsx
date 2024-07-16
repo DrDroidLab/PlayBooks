@@ -9,7 +9,6 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import {
   resetTimeRange,
-  setPlaybookState,
   updateCustomTimeRange,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useParams } from "react-router-dom";
@@ -47,7 +46,6 @@ function PlaybookLogs() {
   }, [playbook]);
 
   useEffect(() => {
-    dispatch(setPlaybookState());
     return () => {
       dispatch(resetState());
       dispatch(resetTimeRange());
