@@ -7,7 +7,13 @@ export const getPlaybooksApi = apiSlice.injectEndpoints({
     getPlaybooks: builder.query<any, void>({
       query: () => ({
         url: GET_PLAYBOOKS,
-        body: {},
+        body: {
+          meta: {
+            page: {
+              limit: 1000,
+            },
+          },
+        },
         method: "POST",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {

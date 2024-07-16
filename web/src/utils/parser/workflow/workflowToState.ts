@@ -1,4 +1,7 @@
-import { exampleInput } from "../../../store/features/workflow/workflowSlice.ts";
+import {
+  defaultCode,
+  exampleInput,
+} from "../../../store/features/workflow/workflowSlice.ts";
 import * as Extractors from "../../workflow/extractors/index.ts";
 import * as Types from "../../workflow/types/index.ts";
 import globalVariableToState from "./globalVariableToState.ts";
@@ -39,7 +42,8 @@ export const workflowToState = (workflow) => {
       workflow?.configuration?.transformer_lambda_function?.definition !==
       undefined,
     transformerCode:
-      workflow?.configuration?.transformer_lambda_function?.definition,
+      workflow?.configuration?.transformer_lambda_function?.definition ??
+      defaultCode,
     globalVariables: globalVariableToState(
       workflow?.configuration?.global_variable_set ?? {},
     ),

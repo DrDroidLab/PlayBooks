@@ -1,4 +1,5 @@
 import logging
+from hashlib import md5
 
 from django.db import transaction as dj_transaction
 
@@ -167,11 +168,15 @@ def update_or_create_connector(account: Account, created_by, connector_proto: Co
                                                                  connector_type=connector_type,
                                                                  defaults={'is_active': True, 'created_by': created_by})
             for c_key in connector_keys:
+                key_md5 = md5(str(c_key.key.value).encode('utf-8')).hexdigest()
                 ConnectorKey.objects.update_or_create(account=account,
                                                       connector=db_connector,
                                                       key_type=c_key.key_type,
-                                                      key=c_key.key.value,
-                                                      defaults={'is_active': True})
+                                                      key_md5=key_md5,
+                                                      defaults={'is_active': True,
+                                                                'key': c_key.key.value
+                                                                }
+                                                      )
         except Exception as e:
             logger.error(f'Error creating Connector: {str(e)}')
             return None, f'Error creating Connector: {str(e)}'

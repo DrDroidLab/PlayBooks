@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const defaultCode = `import json
+export const defaultCode = `import json
 
 def transform(context):
   # TODO implement

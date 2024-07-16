@@ -10,15 +10,29 @@ logger = logging.getLogger(__name__)
 
 
 def reconstruct_rsa_key(key_string):
-    key_string = key_string.replace('-----BEGIN RSA PRIVATE KEY-----', '').replace('-----END RSA PRIVATE KEY-----', '')
+    reconstructed_key = ''
+    if '-----BEGIN RSA PRIVATE KEY-----' in key_string and '-----END RSA PRIVATE KEY-----' in key_string:
+        key_string = key_string.replace('-----BEGIN RSA PRIVATE KEY-----', '').replace('-----END RSA PRIVATE KEY-----',
+                                                                                       '')
 
-    # Remove any whitespace or line breaks
-    key_string = ''.join(key_string.split())
+        # Remove any whitespace or line breaks
+        key_string = ''.join(key_string.split())
 
-    # Add line breaks to reconstruct the key
-    reconstructed_key = '-----BEGIN RSA PRIVATE KEY-----\n'
-    reconstructed_key += '\n'.join([key_string[i:i + 64] for i in range(0, len(key_string), 64)])
-    reconstructed_key += '\n-----END RSA PRIVATE KEY-----'
+        # Add line breaks to reconstruct the key
+        reconstructed_key = '-----BEGIN RSA PRIVATE KEY-----\n'
+        reconstructed_key += '\n'.join([key_string[i:i + 64] for i in range(0, len(key_string), 64)])
+        reconstructed_key += '\n-----END RSA PRIVATE KEY-----'
+    elif '-----BEGIN OPENSSH PRIVATE KEY-----' in key_string and '-----END OPENSSH PRIVATE KEY-----' in key_string:
+        key_string = key_string.replace('-----BEGIN OPENSSH PRIVATE KEY-----', '').replace(
+            '-----END OPENSSH PRIVATE KEY-----', '')
+
+        # Remove any whitespace or line breaks
+        key_string = ''.join(key_string.split())
+
+        # Add line breaks to reconstruct the key
+        reconstructed_key = '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+        reconstructed_key += '\n'.join([key_string[i:i + 70] for i in range(0, len(key_string), 70)])
+        reconstructed_key += '\n-----END OPENSSH PRIVATE KEY-----'
 
     return reconstructed_key
 
@@ -35,15 +49,21 @@ class RemoteServerProcessor(Processor):
 
     def get_connection(self):
         try:
-            if self.remote_host and self.remote_password:
+            if self.remote_host and self.remote_user and self.remote_pem:
+                client = paramiko.SSHClient()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                try:
+                    key = paramiko.RSAKey.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)))
+                    client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                except paramiko.ssh_exception.PasswordRequiredException:
+                    key = paramiko.RSAKey.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)),
+                                                           password=self.remote_password)
+                    client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+
+            elif self.remote_host and self.remote_password:
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.connect(hostname=self.remote_host, username=self.remote_user, password=self.remote_password)
-            elif self.remote_host and self.remote_user and self.remote_pem:
-                client = paramiko.SSHClient()
-                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                key = paramiko.RSAKey.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)))
-                client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
             elif self.remote_host and self.remote_user:
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
