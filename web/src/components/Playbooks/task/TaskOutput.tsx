@@ -5,12 +5,14 @@ import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
 import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
+import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
   BASH_COMMAND_OUTPUT: "BASH_COMMAND_OUTPUT",
   TIMESERIES: "TIMESERIES",
   TABLE: "TABLE",
+  LOGS: "LOGS",
 };
 
 const TaskOutput = ({ id, showHeading }) => {
@@ -39,12 +41,16 @@ const TaskOutput = ({ id, showHeading }) => {
       );
     case OutputTypes.TABLE:
       return (
-        // <PlayBookRunDataTable
-        //   title={"Results"}
-        //   result={output}
-        //   timestamp={output.timestamp}
-        //   showHeading={showHeading}
-        // />
+        <PlayBookRunDataTable
+          title={"Results"}
+          result={output}
+          timestamp={output.timestamp}
+          showHeading={showHeading}
+        />
+      );
+
+    case OutputTypes.LOGS:
+      return (
         <PlayBookRunLogTable
           title={"Results"}
           result={output}
