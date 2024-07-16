@@ -85,7 +85,9 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
               return (
                 <>
                   <tr
-                    className={`${rowIndex % 2 === 0 ? "bg-white" : ""}`}
+                    className={`${
+                      rowIndex % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    }`}
                     key={rowIndex}
                     onClick={() => handleRowClick(rowIndex)}>
                     <td>
@@ -115,7 +117,10 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
                         );
                       })}
                   </tr>
-                  <tr className={`${rowIndex % 2 === 0 ? "bg-white" : ""} p-0`}>
+                  <tr
+                    className={`${
+                      rowIndex % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    } p-0`}>
                     <td />
                     <td colSpan={2}>
                       <Collapse
