@@ -1,6 +1,7 @@
 import json
 import logging
 
+import uuid
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connectors_crud import get_db_connectors, get_db_account_connector_keys
@@ -14,6 +15,7 @@ from protos.base_pb2 import Source as ConnectorType, SourceKeyType, Source
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto, InterpreterType, \
     Interpretation
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TimeseriesResult
+from utils.time_utils import current_epoch_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -114,13 +116,17 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
         if data_type == 'metric':
             try:
                 timeseries_result: TimeseriesResult = task_result.timeseries
-                file_key = generate_local_image_path()
                 metric_expression = timeseries_result.metric_expression.value
                 metric_expression = metric_expression.replace('`', '')
                 metric_name = timeseries_result.metric_name.value
                 metric_source = integrations_connector_type_display_name_map.get(task_result.source,
                                                                                  Source.Name(task_result.source))
-                object_url = generate_graph_for_timeseries_result(timeseries_result, file_key, metric_expression)
+                current_epoch = current_epoch_timestamp()
+                uuid_str = uuid.uuid4().hex
+                img_file_title = f'{metric_source}_data_{str(current_epoch)}_{uuid_str}.png'
+                image_title = f'{metric_source}:{metric_expression}, {metric_name}'
+                file_path = generate_local_image_path(image_name=img_file_title)
+                object_url = generate_graph_for_timeseries_result(timeseries_result, file_path, image_title)
                 if not object_url:
                     return Interpretation()
                 inference = vision_api_evaluation_function(open_ai_api_key, data_type, object_url)
@@ -138,7 +144,8 @@ class LlmChatGptVisionResultInterpreter(ResultInterpreter):
                     description=StringValue(value=description),
                     summary=StringValue(value=summary),
                     image_url=StringValue(value=object_url),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    model_type = Interpretation.ModelType.PLAYBOOK_TASK,
+                    file_path=StringValue(value=file_path)
                 )
             except Exception as e:
                 logger.error(f'Error writing image: {e}')
