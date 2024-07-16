@@ -96,7 +96,7 @@ class PostgresDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching postgres databases with error: {e}")
             raise e
 
-    def get_query_result(self, query, timeout=None):
+    def get_query_result(self, query, timeout=120):
         try:
             client = self.get_connection(timeout=timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
@@ -109,7 +109,7 @@ class PostgresDBProcessor(Processor):
             logger.error(f"Exception occurred while fetching postgres query result with error: {e}")
             raise e
 
-    def get_query_result_fetch_one(self, query, timeout=None):
+    def get_query_result_fetch_one(self, query, timeout=120):
         try:
             client = self.get_connection(timeout=timeout)
             cursor = client.cursor(cursor_factory=extras.DictCursor)
