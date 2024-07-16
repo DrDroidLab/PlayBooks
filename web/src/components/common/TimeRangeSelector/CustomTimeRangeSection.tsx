@@ -1,8 +1,11 @@
 import React from "react";
 import Picker, { PickerType } from "./Picker.tsx";
 import CustomButton from "../CustomButton/index.tsx";
+import { useDropdownContext } from "../../../contexts/DropdownContext.tsx";
 
-function CustomTimeRangeSection({ toggle }) {
+function CustomTimeRangeSection() {
+  const { toggle } = useDropdownContext();
+
   return (
     <div className="p-2 w-full">
       <p className="font-medium text-sm">Absolute Time Range</p>

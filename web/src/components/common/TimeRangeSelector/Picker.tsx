@@ -6,6 +6,7 @@ import {
   updateProperty,
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import CustomButton from "../CustomButton/index.tsx";
+import { isAfter, isBefore } from "rsuite/esm/internals/utils/date/index";
 
 const nowKey = "now";
 
@@ -18,13 +19,24 @@ function Picker({ type, label }) {
   const dispatch = useDispatch();
   const timeRange = useSelector(timeRangeSelector);
   let key: string = "time_geq";
+  let disabledDate = (date: Date) => isAfter(date, new Date());
 
   switch (type) {
     case PickerType.FROM:
       key = "startTime";
+      if (timeRange.endTime && typeof timeRange.endTime === "object") {
+        disabledDate = (date: Date) =>
+          isAfter(date, new Date(timeRange.endTime as Date));
+      }
       break;
     case PickerType.TO:
       key = "endTime";
+      console.log("start", typeof timeRange.startTime);
+      if (timeRange.startTime && typeof timeRange.startTime === "object") {
+        disabledDate = (date: Date) =>
+          isAfter(date, new Date()) ||
+          isBefore(date, new Date(timeRange.startTime as Date));
+      }
       break;
     default:
       break;
@@ -48,6 +60,7 @@ function Picker({ type, label }) {
           placeholder=""
           onChangeCalendarDate={setTime}
           showMeridian
+          shouldDisableDate={disabledDate}
           value={typeof timeRange[key] === "string" ? null : timeRange[key]}
           className="!text-violet-500 !w-full"
           menuClassName="!z-[90] text-violet-500 bg-violet-500"
