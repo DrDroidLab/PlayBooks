@@ -17,6 +17,7 @@ import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx
 import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
 import Code from "../common/Code/index.tsx";
 import React from "react";
+import transformLogData from "../../utils/execution/transformLogData.ts";
 
 const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
@@ -119,7 +120,13 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
                         timeout="auto"
                         className="max-w-[550px] p-2 relative"
                         unmountOnExit>
-                        <Code content={JSON.stringify(row, null, 2)} />
+                        <Code
+                          content={JSON.stringify(
+                            transformLogData(row),
+                            null,
+                            2,
+                          )}
+                        />
                       </Collapse>
                     </td>
                   </tr>
