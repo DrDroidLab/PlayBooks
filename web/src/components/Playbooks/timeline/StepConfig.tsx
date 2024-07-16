@@ -1,4 +1,4 @@
-import React, { useEffect, MouseEvent } from "react";
+import React, { useEffect } from "react";
 import { renderTimestamp } from "../../../utils/DateUtils.js";
 import useVisibility from "../../../hooks/useVisibility.ts";
 import useScrollIntoView from "../../../hooks/useScrollIntoView.ts";
@@ -33,7 +33,7 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
     )
     .filter((task) => task !== undefined);
 
-  const handleNoAction = (e: MouseEvent<HTMLElement>) => {
+  const handleNoAction = (e) => {
     e.stopPropagation();
   };
 
@@ -67,13 +67,6 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
             <h1 className="font-semibold text-lg line-clamp-3">
               {step.description}
             </h1>
-            <div onClick={() => handleShowConfig(step.id)}>
-              {/* (
-              <span className="text-violet-500 cursor-pointer hover:underline">
-                Config
-              </span>
-              ) */}
-            </div>
           </div>
         </div>
         <div className="flex flex-col mr-2">
