@@ -16,6 +16,7 @@ spec:
       containers:
         - name: postgresql
           image: postgres:latest
+          imagePullPolicy: Always
           env:
             - name: POSTGRES_USER
               value: '{{ .Values.postgresqlUsername }}'

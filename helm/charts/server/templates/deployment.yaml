@@ -17,6 +17,7 @@ spec:
       containers:
         - name: server
           image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+          imagePullPolicy: Always
           env:
             - name: CELERY_BROKER_URL
               value: {{ .Values.redisUrl }}

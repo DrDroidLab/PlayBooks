@@ -4,9 +4,10 @@ metadata:
   name: postgres-pv
   labels:
     app: postgres
-    type: local
+    type: csi
 spec:
   storageClassName: standard
+  persistentVolumeReclaimPolicy: Retain
   capacity:
     storage: {{ .Values.persistence.size }}
   accessModes:

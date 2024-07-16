@@ -17,7 +17,7 @@ spec:
       containers:
         - name: web
           image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
