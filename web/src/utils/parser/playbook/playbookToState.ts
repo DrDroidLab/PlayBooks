@@ -23,6 +23,7 @@ function playbookToState(playbook: Playbook): Playbook {
       );
       return {
         ...e,
+        reference_id: uuidv4(),
         ui_requirement: {
           stepId: step.id,
           resultType: supportedType?.result_type,
