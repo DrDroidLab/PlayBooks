@@ -40,19 +40,3 @@ class GcmSourceMetadataExtractor(SourceMetadataExtractor):
             logger.error(f'Error extracting metric descriptors: {e}')
 
         return model_data
-
-    def extract_log_sinks(self, save_to_db=False):
-        model_type = SourceModelType.GCM_LOG_SINK
-        model_data = {}
-        gcm_api_processor = GcmApiProcessor(self.__project_id, self.__service_account_json)
-
-        try:
-            all_log_sinks = gcm_api_processor.fetch_log_sinks()
-            model_data[self.__project_id] = {'log_sinks': all_log_sinks}
-
-            if save_to_db:
-                self.create_or_update_model_metadata(model_type, self.__project_id, model_data[self.__project_id])
-        except Exception as e:
-            logger.error(f'Error extracting log sinks: {e}')
-
-        return model_data

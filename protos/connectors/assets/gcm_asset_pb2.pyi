@@ -19,43 +19,6 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class GcmLogSinkAssetModel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    PROJECT_ID_FIELD_NUMBER: builtins.int
-    LOG_SINKS_FIELD_NUMBER: builtins.int
-    @property
-    def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def log_sinks(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
-    def __init__(
-        self,
-        *,
-        project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        log_sinks: collections.abc.Iterable[builtins.str] | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["project_id", b"project_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["log_sinks", b"log_sinks", "project_id", b"project_id"]) -> None: ...
-
-global___GcmLogSinkAssetModel = GcmLogSinkAssetModel
-
-@typing_extensions.final
-class GcmLogSinkAssetOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    PROJECT_IDS_FIELD_NUMBER: builtins.int
-    @property
-    def project_ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
-    def __init__(
-        self,
-        *,
-        project_ids: collections.abc.Iterable[builtins.str] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["project_ids", b"project_ids"]) -> None: ...
-
-global___GcmLogSinkAssetOptions = GcmLogSinkAssetOptions
-
-@typing_extensions.final
 class GcmMetricAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -64,23 +27,23 @@ class GcmMetricAssetModel(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         NAME_FIELD_NUMBER: builtins.int
-        VALUES_FIELD_NUMBER: builtins.int
+        DESCRIPTION_FIELD_NUMBER: builtins.int
         METRICS_FIELD_NUMBER: builtins.int
         @property
         def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def values(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+        def description(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         @property
         def metrics(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         def __init__(
             self,
             *,
             name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            values: collections.abc.Iterable[builtins.str] | None = ...,
+            description: collections.abc.Iterable[builtins.str] | None = ...,
             metrics: collections.abc.Iterable[builtins.str] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["name", b"name"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["metrics", b"metrics", "name", b"name", "values", b"values"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "metrics", b"metrics", "name", b"name"]) -> None: ...
 
     METRIC_TYPE_FIELD_NUMBER: builtins.int
     LABEL_VALUE_METRIC_MAP_FIELD_NUMBER: builtins.int
@@ -123,15 +86,12 @@ class GcmAssetModel(google.protobuf.message.Message):
     CONNECTOR_TYPE_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     LAST_UPDATED_FIELD_NUMBER: builtins.int
-    GCM_LOG_SINK_FIELD_NUMBER: builtins.int
     GCM_METRIC_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     connector_type: protos.base_pb2.Source.ValueType
     type: protos.base_pb2.SourceModelType.ValueType
     last_updated: builtins.int
-    @property
-    def gcm_log_sink(self) -> global___GcmLogSinkAssetModel: ...
     @property
     def gcm_metric(self) -> global___GcmMetricAssetModel: ...
     def __init__(
@@ -141,12 +101,11 @@ class GcmAssetModel(google.protobuf.message.Message):
         connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.base_pb2.SourceModelType.ValueType = ...,
         last_updated: builtins.int = ...,
-        gcm_log_sink: global___GcmLogSinkAssetModel | None = ...,
         gcm_metric: global___GcmMetricAssetModel | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["asset", b"asset", "gcm_log_sink", b"gcm_log_sink", "gcm_metric", b"gcm_metric", "id", b"id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["asset", b"asset", "connector_type", b"connector_type", "gcm_log_sink", b"gcm_log_sink", "gcm_metric", b"gcm_metric", "id", b"id", "last_updated", b"last_updated", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["asset", b"asset"]) -> typing_extensions.Literal["gcm_log_sink", "gcm_metric"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["asset", b"asset", "gcm_metric", b"gcm_metric", "id", b"id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["asset", b"asset", "connector_type", b"connector_type", "gcm_metric", b"gcm_metric", "id", b"id", "last_updated", b"last_updated", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["asset", b"asset"]) -> typing_extensions.Literal["gcm_metric"] | None: ...
 
 global___GcmAssetModel = GcmAssetModel
 

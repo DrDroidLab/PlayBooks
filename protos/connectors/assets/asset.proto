@@ -36,7 +36,6 @@ message ConnectorModelTypeOptions {
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_options = 14;
     GkeClusterAssetOptions gke_cluster_model_options = 15;
     ElasticSearchIndexAssetOptions elastic_search_index_model_options = 16;
-    GcmLogSinkAssetOptions gcm_log_sink_model_options = 17;
     GcmMetricAssetOptions gcm_metric_model_options = 18;
   }
 }
@@ -64,7 +63,6 @@ message AccountConnectorAssetsModelFilters {
     GrafanaDatasourceAssetOptions grafana_prometheus_datasource_model_filters = 13;
     GkeClusterAssetOptions gke_cluster_model_filters = 14;
     ElasticSearchIndexAssetOptions elastic_search_index_model_filters = 15;
-    GcmLogSinkAssetOptions gcm_log_sink_model_filters = 16;
     GcmMetricAssetOptions gcm_metric_model_filters = 17;
   }
 }

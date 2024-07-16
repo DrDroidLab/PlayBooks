@@ -30,7 +30,7 @@ class GcmSourceManager(PlaybookSourceManager):
             },
             Gcm.TaskType.FILTER_LOG_ENTRIES: {
                 'executor': self.execute_filter_log_entries,
-                'model_types': [SourceModelType.GCM_LOG_SINK],
+                'model_types': [],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from GCM',
                 'category': 'Logs'
