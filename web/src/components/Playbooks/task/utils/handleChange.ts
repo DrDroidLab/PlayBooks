@@ -48,6 +48,7 @@ function handleChangeInput(
     case InputTypes.TEXT_ROW:
     case InputTypes.MULTILINE:
     case InputTypes.DROPDOWN:
+    case InputTypes.WYISWYG:
       return handleChangeFunction;
     case InputTypes.TYPING_DROPDOWN:
       return handleTypingDropdownChange;
