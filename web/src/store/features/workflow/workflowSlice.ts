@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const defaultCode = `def transform(context):
+export const defaultCode = `def transform(context):
   out = {}
   for k in context.keys():
     out[k] = str(context[k]) + "-a"
