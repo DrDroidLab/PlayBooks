@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -8,8 +9,24 @@ import {
 import NoExistingTrigger from "./NoExistingTrigger";
 import { renderTimestamp } from "../../../utils/DateUtils";
 import SeeMoreText from "../../Playbooks/SeeMoreText";
+import { useSelector } from "react-redux";
+import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import { useGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 
-const AlertsTable = ({ data }) => {
+const AlertsTable = () => {
+  const currentWorkflow = useSelector(currentWorkflowSelector);
+  const { data: searchTriggerResult, isFetching } = useGetSearchTriggersQuery({
+    workspaceId: currentWorkflow?.trigger?.workspaceId,
+    channel_id: currentWorkflow?.trigger?.channel?.channel_id,
+    alert_type: currentWorkflow?.trigger?.source,
+    filter_string: currentWorkflow?.trigger?.filterString,
+  });
+  const data = searchTriggerResult?.slack_alerts ?? [];
+
+  if (isFetching) {
+    return <CircularProgress size={20} style={{ marginLeft: "10px" }} />;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <p className="font-bold mb-2">Alerts matching the search criteria</p>

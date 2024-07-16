@@ -1,5 +1,5 @@
-import { SEARCH_TRIGGER } from '../../../../constants/index.ts';
-import { apiSlice } from '../../../app/apiSlice.ts';
+import { SEARCH_TRIGGER } from "../../../../constants/index.ts";
+import { apiSlice } from "../../../app/apiSlice.ts";
 
 type SearchTriggerApiArgTypes = {
   workspace_id: number;
@@ -11,37 +11,38 @@ type SearchTriggerApiArgTypes = {
 const currentTimestamp = Math.floor(Date.now() / 1000);
 
 export const searchTriggerApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     getSearchTriggers: builder.query<any, SearchTriggerApiArgTypes>({
       query: ({ workspace_id, channel_id, alert_type, filter_string }) => ({
         url: SEARCH_TRIGGER,
-        method: 'POST',
+        method: "POST",
         body: {
           meta: {
             page: {
               limit: 5,
-              offset: 0
+              offset: 0,
             },
             time_range: {
               time_geq: currentTimestamp - 259200,
-              time_lt: currentTimestamp
-            }
+              time_lt: currentTimestamp,
+            },
           },
           workspace_id,
           channel_id,
           alert_type,
-          pattern: filter_string
-        }
+          pattern: filter_string,
+        },
       }),
       transformResponse: (response: any) => {
         const data = {
           alerts: response?.slack_alerts ?? [],
-          total: response?.meta?.total_count ?? 0
+          total: response?.meta?.total_count ?? 0,
         };
         return data;
-      }
-    })
-  })
+      },
+    }),
+  }),
 });
 
-export const { useLazyGetSearchTriggersQuery } = searchTriggerApi;
+export const { useGetSearchTriggersQuery, useLazyGetSearchTriggersQuery } =
+  searchTriggerApi;
