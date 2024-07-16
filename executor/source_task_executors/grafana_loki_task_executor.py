@@ -21,7 +21,7 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
             GrafanaLoki.TaskType.QUERY_LOGS: {
                 'executor': self.execute_query_logs,
                 'model_types': [],
-                'result_type': PlaybookTaskResultType.TABLE,
+                'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Query Logs from Grafana Loki',
                 'category': 'Logs'
             }
@@ -99,6 +99,6 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                     table_rows.append(table_row)
             table = TableResult(raw_query=StringValue(value=f"Execute ```{query}```"), total_count=UInt64Value(value=len(result)),
                                 rows=table_rows)
-            return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
+            return PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=table, source=self.source)
         except Exception as e:
             raise Exception(f"Error while executing Grafana task: {e}")
