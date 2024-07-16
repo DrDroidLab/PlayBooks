@@ -19,6 +19,8 @@ import Code from "../common/Code/index.tsx";
 import React from "react";
 import transformLogData from "../../utils/execution/transformLogData.ts";
 
+const DISPLAY_COLUMNS = ['@timestamp', 'timestamp', '@message', 'message', '@log', 'log'];
+
 const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);
   const [open, setOpen] = useState(false);
@@ -64,7 +66,7 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
             <TableRow>
               <th className="!w-fit !border" />
               {rows?.[0]?.columns
-                ?.filter((x) => x.name !== "@ptr")
+                ?.filter((x) => DISPLAY_COLUMNS.includes(x.name))
                 .map((col, index) => {
                   return (
                     <th
@@ -99,7 +101,7 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
                       />
                     </td>
                     {row?.columns
-                      ?.filter((x) => x.name !== "@ptr")
+                      ?.filter((x) => DISPLAY_COLUMNS.includes(x.name))
                       .map((col, colIndex) => {
                         const colValue = isDate(col.value)
                           ? renderTimestamp(
