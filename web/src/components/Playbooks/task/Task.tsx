@@ -7,7 +7,6 @@ import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import SelectInterpretation from "../steps/Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
-import HandleNotesRender from "../steps/HandleNotesRender.tsx";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
@@ -46,7 +45,6 @@ function Task({ id }) {
 
           {addQuery && <TaskQuery id={currentTaskId} />}
         </div>
-        <HandleNotesRender id={currentTaskId} />
         <SelectInterpretation id={currentTaskId} />
 
         {!isPrefetched && (

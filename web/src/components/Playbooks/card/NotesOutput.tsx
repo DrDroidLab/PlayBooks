@@ -1,13 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 type NotesOutputPropTypes = {
-  taskId: string | undefined;
+  stepId: string | undefined;
 };
 
-function NotesOutput({ taskId }: NotesOutputPropTypes) {
-  const [task] = useCurrentTask(taskId);
+function NotesOutput({ stepId }: NotesOutputPropTypes) {
+  const [step] = useCurrentStep(stepId);
   const notesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function NotesOutput({ taskId }: NotesOutputPropTypes) {
     };
   }, []);
 
-  if (!task?.notes) return null;
+  if (!step?.notes) return null;
 
   return (
     <div
@@ -37,7 +37,7 @@ function NotesOutput({ taskId }: NotesOutputPropTypes) {
       ref={notesRef}
       className="max-h-[400px] max-w-md">
       <MDEditor.Markdown
-        source={task.notes}
+        source={step.notes}
         className="border-2 rounded p-3 w-full max-h-[400px] overflow-y-auto"
       />
     </div>

@@ -96,16 +96,16 @@ td {
   opacity: 1;
 }
 
-.task-notes {
+.step-notes {
   opacity: 0;
   transition: all 0.2s;
 }
 
-.task-information:hover + .task-notes {
+.step-information:hover + .step-notes {
   opacity: 1;
 }
 
-.task-notes:hover {
+.step-notes:hover {
   opacity: 1;
 }
 

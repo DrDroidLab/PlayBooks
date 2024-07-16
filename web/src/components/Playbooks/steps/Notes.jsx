@@ -4,10 +4,10 @@ import rehypeSanitize from "rehype-sanitize";
 import { useDispatch } from "react-redux";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useIsExisting from "../../../hooks/useIsExisting.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function Notes({ id }) {
-  const [task] = useCurrentTask(id);
+  const [step] = useCurrentStep(id);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
   const isExisting = useIsExisting();
@@ -17,7 +17,7 @@ function Notes({ id }) {
       <div
         style={
           isExisting
-            ? task?.notes
+            ? step?.notes
               ? {
                   display: "flex",
                   marginTop: "5px",
@@ -36,9 +36,9 @@ function Notes({ id }) {
           data-color-mode="light"
           style={{ display: "flex", flexDirection: "column", width: "100%" }}>
           {isPrefetched ? (
-            task?.notes && (
+            step?.notes && (
               <MDEditor.Markdown
-                source={task.notes}
+                source={step.notes}
                 height={200}
                 style={{
                   whiteSpace: "pre-wrap",
@@ -54,7 +54,7 @@ function Notes({ id }) {
           ) : (
             <>
               <MDEditor
-                value={task.notes}
+                value={step.notes}
                 onChange={(val) => {
                   dispatch(addNotes({ notes: val, id }));
                 }}

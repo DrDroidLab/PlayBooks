@@ -10,7 +10,6 @@ import {
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import { useDispatch, useSelector } from "react-redux";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
-import NotesOutput from "../../card/NotesOutput.tsx";
 
 const taskDetailsId = PermanentDrawerTypes.TASK_DETAILS;
 
@@ -43,7 +42,7 @@ function TaskNode({ taskId }) {
         onClick={handleClick}
         className={`${
           currentVisibleTask === taskId ? "border-violet-500 border-2" : ""
-        } rounded-md overflow-hidden border-2 border-transparent task-information`}
+        } rounded-md overflow-hidden border-2 border-transparent`}
         style={{ borderColor: handleTaskBorderColor(taskId) }}>
         <div className="">
           <TaskTitle taskId={task?.id} />
@@ -51,9 +50,6 @@ function TaskNode({ taskId }) {
         <div className="">
           <TaskInformation taskId={task?.id} />
         </div>
-      </div>
-      <div className="task-notes absolute top-1/2 left-3/4">
-        <NotesOutput taskId={task?.id} />
       </div>
     </>
   );

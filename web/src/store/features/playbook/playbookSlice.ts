@@ -353,11 +353,11 @@ const playbookSlice = createSlice({
     addNotes(state, { payload }) {
       const { id, notes } = payload;
       if (id) {
-        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
-          (task) => task.id === id,
+        const step = state.currentPlaybook?.steps?.find(
+          (step) => step.id === id,
         );
-        if (task) {
-          task.notes = notes;
+        if (step) {
+          step.notes = notes;
         }
       }
     },
