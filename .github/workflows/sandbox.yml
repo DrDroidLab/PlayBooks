@@ -1,0 +1,23 @@
+name: SSH into EC2 and run script
+
+on:
+  push:
+    branches:
+      - sandbox  # Change this to the branch you want to trigger on
+
+jobs:
+  ssh-ec2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_PEM_FILE }}
+
+    - name: SSH and run script
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_PEM_FILE }} ec2-user@<SANDBOX_EC2_IP_ADDRESS> 'bash -s' < /home/ec2-user/deploy.sh
