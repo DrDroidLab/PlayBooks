@@ -19,7 +19,6 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
-# from intelligence_layer.result_interpreters.result_pdf_generator import generate_pdf
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
