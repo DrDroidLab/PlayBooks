@@ -1,6 +1,4 @@
 import React from "react";
-// import BasicSearch from "../BasicSearch/index.tsx";
-// import useBasicSearch from "../../../hooks/useBasicSearch.ts";
 import { timeRangeOptions } from "./utils/timeRangeOptions.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,10 +9,6 @@ import {
 function TimeRangeOptionsSection() {
   const dispatch = useDispatch();
   const { startTime } = useSelector(timeRangeSelector);
-  console.log("time", startTime);
-  // const { query, setValue, filteredList } = useBasicSearch(timeRangeOptions, [
-  //   "label",
-  // ]);
 
   const setTime = (id: string) => {
     dispatch(
@@ -29,14 +23,7 @@ function TimeRangeOptionsSection() {
 
   return (
     <div className="h-full overflow-auto">
-      <div className="p-1 sticky top-0">
-        {/* <BasicSearch
-          query={query}
-          setValue={setValue}
-          placeholder="Search Quick Ranges"
-          inputClassName="text-xs"
-        /> */}
-      </div>
+      <div className="p-1 sticky top-0"></div>
       <div className="overflow-scroll">
         {timeRangeOptions.map((timeRange) => (
           <div

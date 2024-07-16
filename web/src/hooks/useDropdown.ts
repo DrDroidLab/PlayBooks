@@ -4,21 +4,17 @@ type UseDropdownReturnType = {
   isOpen: boolean;
   toggle: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
-  datetimePickerRef: React.RefObject<HTMLDivElement>;
 };
 
 function useDropdown(): UseDropdownReturnType {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const datetimePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        datetimePickerRef.current &&
-        !datetimePickerRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
@@ -28,7 +24,7 @@ function useDropdown(): UseDropdownReturnType {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef, datetimePickerRef]);
+  }, [dropdownRef]);
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -38,7 +34,6 @@ function useDropdown(): UseDropdownReturnType {
     isOpen,
     toggle,
     dropdownRef,
-    datetimePickerRef,
   };
 }
 

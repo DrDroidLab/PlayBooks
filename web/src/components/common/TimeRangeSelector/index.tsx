@@ -21,8 +21,9 @@ function TimeRangeSelector() {
     : "";
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <>
       <div
+        ref={dropdownRef}
         onClick={toggle}
         className={`${
           isOpen ? "bg-gray-100" : ""
@@ -34,7 +35,7 @@ function TimeRangeSelector() {
         <KeyboardArrowDownRounded fontSize="small" />
       </div>
       {isOpen && <TimeSelectorDropDown toggle={toggle} />}
-    </div>
+    </>
   );
 }
 
