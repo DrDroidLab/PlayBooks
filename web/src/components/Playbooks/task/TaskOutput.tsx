@@ -5,6 +5,7 @@ import PlaybookBashActionOutput from "../PlaybookBashActionOutput.jsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
+import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
@@ -32,7 +33,7 @@ const TaskOutput = ({ id, showHeading }) => {
           title={
             error
               ? "Error from Source"
-              : output?.timeseries?.metric_name ??
+              : handleTaskTypeLabels(task).labelValue ??
                 "No data available for this step"
           }
         />

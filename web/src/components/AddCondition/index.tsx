@@ -99,7 +99,7 @@ function AddCondition() {
                 error={undefined}
                 data={taskTypeOptions?.map((task) => ({
                   id: task?.id,
-                  label: handleTaskTypeLabels(task),
+                  label: handleTaskTypeLabels(task).label,
                 }))}
                 selected={condition?.task?.id}
                 placeholder={`Select Task`}
