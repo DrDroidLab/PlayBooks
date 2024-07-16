@@ -226,7 +226,7 @@ const playbookSlice = createSlice({
         child: newStep,
         condition: addCondition
           ? {
-              logical_opertaor: LogicalOperator.AND_LO,
+              logical_operator: LogicalOperator.AND_LO,
               rules: [],
             }
           : undefined,

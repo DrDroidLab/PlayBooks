@@ -81,7 +81,7 @@ function AddCondition() {
         </p>
         <SelectComponent
           data={ruleOptions}
-          selected={condition?.logical_opertaor}
+          selected={condition?.logical_operator}
           placeholder={`Select Global Rule`}
           onSelectionChange={handleGlobalRule}
           error={undefined}
