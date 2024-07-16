@@ -13,6 +13,7 @@ import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
 import Loading from "./components/common/Loading/index.tsx";
 import { ReactFlowProvider } from "reactflow";
 import "highlight.js/styles/github.min.css";
+import "rsuite/DatePicker/styles/index.css";
 
 if (config.posthogEnabled === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
