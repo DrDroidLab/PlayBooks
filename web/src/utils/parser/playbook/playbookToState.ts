@@ -47,7 +47,13 @@ function playbookToState(playbook: Playbook): Playbook {
     if (relation.condition) {
       relation.condition.rules = rules.map((rule) => ({
         ...rule,
-        task: { id: rule?.task?.id, reference_id: rule?.task?.reference_id },
+        task: tasks.find((e) => e.id === rule.task.id) ?? rule.task,
+        [rule.type.toLowerCase()]: {
+          ...rule?.[rule?.type?.toLowerCase()],
+          isNumeric:
+            rule?.[rule?.type?.toLowerCase()]?.numeric_value_threshold !==
+              undefined ?? false,
+        },
       }));
     }
     relation.parent = steps?.find((e) => e.id === sourceId) ?? relation.parent;
