@@ -2,12 +2,18 @@ import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setPlaybooks } from "../playbookSlice.ts";
 
-export const getPlaybooksApi = apiSlice.injectEndpoints({
+export const getPlaybooksNoLimitApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPlaybooks: builder.query<any, void>({
+    getPlaybooksNoLimit: builder.query<any, void>({
       query: () => ({
         url: GET_PLAYBOOKS,
-        body: {},
+        body: {
+          meta: {
+            page: {
+              limit: 1000,
+            },
+          },
+        },
         method: "POST",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -24,4 +30,4 @@ export const getPlaybooksApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetPlaybooksQuery } = getPlaybooksApi;
+export const { useGetPlaybooksNoLimitQuery } = getPlaybooksNoLimitApi;
