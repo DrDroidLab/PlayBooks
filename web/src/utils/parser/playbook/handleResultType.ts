@@ -27,7 +27,15 @@ function handleResultType(resultType: ResultTypeType, condition: any) {
         threshold: condition.value,
         window: condition.window,
       };
-    default:
+    case ResultTypeTypes.BASH_COMMAND_OUTPUT:
+      return {
+        type: condition.conditionType,
+        operator: condition.operation,
+        pattern: condition.pattern,
+        case_sensitive: condition.caseSensitive,
+        grep_count: condition.grepCount,
+      };
+      default:
       return {};
   }
 }

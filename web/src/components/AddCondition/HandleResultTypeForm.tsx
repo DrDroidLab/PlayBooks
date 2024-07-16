@@ -5,6 +5,7 @@ import {
 } from "../../utils/conditionals/resultTypeOptions.ts";
 import Table from "./Table.tsx";
 import Timeseries from "./Timeseries.tsx";
+import BashCommandOutput from "./BashCommandOutput.tsx";
 
 type HandleResultTypePropTypes = {
   resultType: ResultTypeType;
@@ -23,6 +24,10 @@ function HandleResultTypeForm({
     case ResultTypeTypes.TIMESERIES:
       return (
         <Timeseries condition={condition} conditionIndex={conditionIndex} />
+      );
+    case ResultTypeTypes.BASH_COMMAND_OUTPUT:
+      return (
+        <BashCommandOutput condition={condition} conditionIndex={conditionIndex} />
       );
     default:
       return (

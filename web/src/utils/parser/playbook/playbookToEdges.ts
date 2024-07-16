@@ -34,6 +34,9 @@ function playbookToEdges(playbook: PlaybookContract, steps: Step[]): any {
         isNumeric: ruleType.numeric_value_threshold !== undefined,
         conditionType: ruleType.type,
         type: rule.type,
+        pattern: ruleType.pattern,
+        caseSensitive: ruleType.case_sensitive,
+        grepCount: ruleType.grep_count,
       };
     });
 
