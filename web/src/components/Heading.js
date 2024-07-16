@@ -1,11 +1,11 @@
 import { Grid } from "@mui/material";
 import React from "react";
 import { HomeRounded } from "@mui/icons-material";
-import CustomTimeRangePicker from "./common/TimeRangePicker/TimeRangePicker.jsx";
 import { useNavigate } from "react-router-dom";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
 import usePlaybookKey from "../hooks/usePlaybookKey.ts";
+import TimeRangeSelector from "./common/TimeRangeSelector/index.tsx";
 import HeadingTitle from "./HeadingTitle.tsx";
 
 const renderChildren = (children) => {
@@ -14,13 +14,7 @@ const renderChildren = (children) => {
   });
 };
 
-const Heading = ({
-  subHeading = "",
-  heading,
-  children,
-  customTimeRange = false,
-  isPlayground = false,
-}) => {
+const Heading = ({ subHeading = "", heading, children }) => {
   const navigate = useNavigate();
   const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
 
@@ -55,12 +49,10 @@ const Heading = ({
             </div>
           </div>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-stretch">
           <HeadingPlaybookButtons />
           {renderChildren(children)}
-          {customTimeRange && (
-            <CustomTimeRangePicker isPlayground={isPlayground} />
-          )}
+          {isOnPlaybookPage && <TimeRangeSelector />}
         </div>
       </div>
     </>

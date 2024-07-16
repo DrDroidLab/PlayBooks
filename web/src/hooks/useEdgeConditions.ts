@@ -23,7 +23,7 @@ function useEdgeConditions(id: string) {
   const conditions = edge?.condition?.rules ?? [];
   const condition = relation?.condition;
   const rules = condition?.rules ?? [];
-  const globalRule = edge?.condition?.logical_opertaor ?? ruleOptions[0].id;
+  const globalRule = edge?.condition?.logical_operator ?? ruleOptions[0].id;
   const dispatch = useDispatch();
 
   const setPlaybookRelations = (
@@ -73,7 +73,7 @@ function useEdgeConditions(id: string) {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
     if (!tempEdge.condition) return;
-    tempEdge.condition.logical_opertaor = value as LogicalOperator;
+    tempEdge.condition.logical_operator = value as LogicalOperator;
     setPlaybookRelations(temp);
   };
 

@@ -81,7 +81,7 @@ function AddCondition() {
         </p>
         <SelectComponent
           data={ruleOptions}
-          selected={condition?.logical_opertaor}
+          selected={condition?.logical_operator}
           placeholder={`Select Global Rule`}
           onSelectionChange={handleGlobalRule}
           error={undefined}
@@ -99,7 +99,7 @@ function AddCondition() {
                 error={undefined}
                 data={taskTypeOptions?.map((task) => ({
                   id: task?.id,
-                  label: handleTaskTypeLabels(task),
+                  label: handleTaskTypeLabels(task).label,
                 }))}
                 selected={condition?.task?.id}
                 placeholder={`Select Task`}
