@@ -1,10 +1,10 @@
 import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.jsx";
-import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput.jsx";
 import PlaybookBashActionOutput from "../PlaybookBashActionOutput.jsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
+import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
@@ -39,7 +39,13 @@ const TaskOutput = ({ id, showHeading }) => {
       );
     case OutputTypes.TABLE:
       return (
-        <PlayBookRunDataTable
+        // <PlayBookRunDataTable
+        //   title={"Results"}
+        //   result={output}
+        //   timestamp={output.timestamp}
+        //   showHeading={showHeading}
+        // />
+        <PlayBookRunLogTable
           title={"Results"}
           result={output}
           timestamp={output.timestamp}
