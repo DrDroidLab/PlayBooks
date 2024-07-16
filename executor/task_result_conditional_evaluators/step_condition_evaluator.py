@@ -3,6 +3,7 @@ from typing import Dict
 from executor.task_result_conditional_evaluators.table_result_evaluator import TableResultEvaluator
 from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
 from executor.task_result_conditional_evaluators.timeseries_result_evaluator import TimeseriesResultEvaluator
+from executor.task_result_conditional_evaluators.bash_command_result_evaluator import BashCommandOutputResultEvaluator
 from protos.base_pb2 import LogicalOperator
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookStepResultCondition, PlaybookTaskResultRule, \
@@ -58,3 +59,4 @@ class StepConditionEvaluator:
 step_condition_evaluator = StepConditionEvaluator()
 step_condition_evaluator.register(PlaybookTaskResultType.TIMESERIES, TimeseriesResultEvaluator())
 step_condition_evaluator.register(PlaybookTaskResultType.TABLE, TableResultEvaluator())
+step_condition_evaluator.register(PlaybookTaskResultType.BASH_COMMAND_OUTPUT, BashCommandOutputResultEvaluator())

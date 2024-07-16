@@ -36,3 +36,15 @@ message TableResultRule {
     google.protobuf.StringValue string_value_threshold = 102;
   }
 }
+
+message BashCommandOutputResultRule {
+  enum Type {
+    UNKNOWN_TEC = 0;
+    GREP_COUNTER = 1;
+  }
+  Type type = 1;
+  Operator operator = 2;
+  google.protobuf.StringValue pattern = 3;
+  google.protobuf.BoolValue case_sensitive = 4;
+  google.protobuf.UInt64Value grep_count = 101;
+}
