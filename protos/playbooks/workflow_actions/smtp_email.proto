@@ -1,0 +1,11 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message SMTPEmailWorkflowAction {
+  google.protobuf.StringValue to_email = 1;
+  google.protobuf.StringValue subject = 2;
+  google.protobuf.StringValue body = 3;
+}
