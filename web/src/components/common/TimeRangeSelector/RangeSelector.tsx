@@ -1,13 +1,19 @@
 import { KeyboardArrowDownRounded, ScheduleRounded } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect } from "react";
 import TimeSelectorDropDown from "./TimeSelectorDropDown.tsx";
 import { useSelector } from "react-redux";
 import { timeRangeSelector } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useDropdownContext } from "../../../contexts/DropdownContext.tsx";
 
 function RangeSelector() {
-  const { dropdownRef, isOpen, toggle } = useDropdownContext();
+  const { dropdownRef, isOpen, toggle, registerRef } = useDropdownContext();
   const { startTime, endTime, timeRange } = useSelector(timeRangeSelector);
+
+  useEffect(() => {
+    if (dropdownRef.current) {
+      registerRef(dropdownRef);
+    }
+  }, [dropdownRef, registerRef]);
 
   const startTimeRender = startTime
     ? typeof startTime === "string"

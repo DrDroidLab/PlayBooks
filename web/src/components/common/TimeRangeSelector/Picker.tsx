@@ -7,6 +7,7 @@ import {
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import { isAfter, isBefore } from "rsuite/esm/internals/utils/date/index";
+import useDatePicker from "../../../hooks/useDatePicker.ts";
 
 const nowKey = "now";
 
@@ -20,6 +21,7 @@ function Picker({ type, label }) {
   const timeRange = useSelector(timeRangeSelector);
   let key: string = "time_geq";
   let disabledDate = (date: Date) => isAfter(date, new Date());
+  const pickerRef = useDatePicker();
 
   switch (type) {
     case PickerType.FROM:
@@ -31,7 +33,6 @@ function Picker({ type, label }) {
       break;
     case PickerType.TO:
       key = "endTime";
-      console.log("start", typeof timeRange.startTime);
       if (timeRange.startTime && typeof timeRange.startTime === "object") {
         disabledDate = (date: Date) =>
           isAfter(date, new Date()) ||
@@ -52,12 +53,11 @@ function Picker({ type, label }) {
   };
 
   return (
-    <div>
+    <div ref={pickerRef}>
       <p className="font-medium text-xs">{label}</p>
       <div className="flex">
         <DatePicker
           format="dd/MM/yyyy hh:mm:ss aa"
-          placeholder=""
           onChangeCalendarDate={setTime}
           showMeridian
           shouldDisableDate={disabledDate}

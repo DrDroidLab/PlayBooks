@@ -11,6 +11,7 @@ type DropdownContextType = {
   isOpen: boolean;
   toggle: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
+  registerRef: (ref: React.RefObject<HTMLElement>) => void;
 };
 
 const DropdownContext = createContext<DropdownContextType | undefined>(
@@ -20,25 +21,36 @@ const DropdownContext = createContext<DropdownContextType | undefined>(
 export const DropdownProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const additionalRefs = useRef<React.RefObject<HTMLElement>[]>([]);
 
   const toggle = () => setIsOpen((prev) => !prev);
+  const close = () => setIsOpen(false);
+
+  const registerRef = (ref: React.RefObject<HTMLElement>) => {
+    additionalRefs.current.push(ref);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+      const refsToCheck = [dropdownRef, ...additionalRefs.current];
+      const isClickOutside = refsToCheck
+        .filter((e) => e?.current)
+        .every(
+          (ref) => ref.current && !ref.current.contains(event.target as Node),
+        );
+
+      if (isClickOutside) {
+        close();
       }
     };
 
-    // document.addEventListener("mousedown", handleClickOutside);
-    // return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <DropdownContext.Provider value={{ isOpen, toggle, dropdownRef }}>
+    <DropdownContext.Provider
+      value={{ isOpen, toggle, dropdownRef, registerRef }}>
       {children}
     </DropdownContext.Provider>
   );
