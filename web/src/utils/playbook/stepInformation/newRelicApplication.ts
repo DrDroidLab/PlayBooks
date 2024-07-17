@@ -1,14 +1,15 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const newRelicApplication = [
   {
     label: "Application",
-    key: "application_name",
+    key: Key.APPLICATION_NAME,
     type: InfoTypes.TEXT,
   },
   {
     label: "Metrics",
-    key: "golden_metrics",
-    type: InfoTypes.CHIPS,
+    key: Key.GOLDEN_METRIC_NAME,
+    type: InfoTypes.TEXT,
   },
 ];

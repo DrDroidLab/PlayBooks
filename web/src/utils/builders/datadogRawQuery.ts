@@ -1,55 +1,58 @@
-import { OptionType } from "../playbooksData.ts";
 import { updateCardById } from "../execution/updateCardById.ts";
+import { Key } from "../playbook/key.ts";
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
-export const datadogRawQueryBuilder = (task, id: string) => {
+const getTaskUiRequirements = (task: Task) => {
+  return task.ui_requirement;
+};
+
+export const datadogRawQueryBuilder = (task: Task, id: string) => {
   return {
     builder: [
       [
         {
-          key: "query1",
+          key: Key.QUERY1,
           label: "a",
-          type: OptionType.TEXT_ROW,
-          additionalProps: {
-            length: 400,
-          },
+          type: InputTypes.TEXT_ROW,
+          length: 400,
         },
         {
-          key: "requiresFormula",
           isOptional: true,
-          label: task.requiresFormula ? "- Query" : "+ Query",
-          type: OptionType.BUTTON,
-          selected: task.requiresFormula,
+          label: getTaskUiRequirements(task)?.requiresFormula
+            ? "- Query"
+            : "+ Query",
+          type: InputTypes.BUTTON,
+          selected: getTaskUiRequirements(task)?.requiresFormula,
           handleClick: () => {
-            updateCardById("requiresFormula", !task.requiresFormula, id);
+            updateCardById(
+              "ui_requirement.requiresFormula",
+              !getTaskUiRequirements(task)?.requiresFormula,
+              id,
+            );
           },
-          additionalProps: {
-            length: 400,
-          },
+          length: 400,
         },
       ],
       [
         {
-          key: "query2",
+          key: Key.QUERY2,
           label: "b",
           isOptional: true,
-          type: OptionType.TEXT_ROW,
-          additionalProps: {
-            length: 400,
-          },
-          condition: task.requiresFormula === true,
+          type: InputTypes.TEXT_ROW,
+          length: 400,
+          condition: getTaskUiRequirements(task)?.requiresFormula === true,
         },
       ],
       [
         {
-          key: "formula",
+          key: Key.FORMULA,
           label: "Formula",
           isOptional: true,
-          type: OptionType.TEXT_ROW,
+          type: InputTypes.TEXT_ROW,
           placeholder: "Enter Formula, eg: a+b",
-          additionalProps: {
-            length: 400,
-          },
-          condition: task.requiresFormula === true,
+          length: 400,
+          condition: getTaskUiRequirements(task)?.requiresFormula === true,
         },
       ],
     ],

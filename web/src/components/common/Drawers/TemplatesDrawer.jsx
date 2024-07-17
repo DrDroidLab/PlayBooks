@@ -1,7 +1,7 @@
 import React from "react";
 import CustomDrawer from "../CustomDrawer";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import TemplatesList from "../../Playbooks/create/TemplatesList";
+import TemplatesList from "../../Playbooks/create/TemplatesList.tsx";
 
 const id = DrawerTypes.TEMPLATES;
 

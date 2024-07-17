@@ -1,96 +1,104 @@
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { updateCardById } from "../execution/updateCardById.ts";
-import { OptionType } from "../playbooksData.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { Key } from "../playbook/key.ts";
 
-const getCurrentAsset = (task) => {
-  const currentAsset = task?.assets?.find(
-    (e) => e.dashboard_guid === task?.dashboard?.id,
-  );
-
-  return currentAsset;
-};
-
-export const newRelicEntityDashboardBuilder = (options, task, id: string) => {
+export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
+  const widgetOptions =
+    getCurrentAsset(task, Key.DASHBOARD_GUID, "dashboard_guid")?.pages?.length >
+    0
+      ? getCurrentAsset(
+          task,
+          Key.DASHBOARD_GUID,
+          "dashboard_guid",
+        )?.pages[0].widgets?.map((e) => {
+          return {
+            id: e.widget_id,
+            label: e.widget_title || e.widget_nrql_expression,
+            widget: e,
+          };
+        })
+      : [];
+  const pageOptions = options
+    ?.find((e) => e.dashboard_guid === getTaskData(task)?.[Key.DASHBOARD_GUID])
+    ?.page_options?.map((page) => {
+      return {
+        id: page.page_guid,
+        label: page.page_name,
+      };
+    });
+  const source = task.source;
+  const taskType = task?.[source.toLowerCase()]?.type;
+  const taskKey = `${[source.toLowerCase()]}.${taskType.toLowerCase()}`;
   return {
-    triggerGetAssetsKey: "page",
-    assetFilterQuery: {
-      new_relic_entity_dashboard_model_filters: {
-        dashboards: [
-          {
-            dashboard_guid: task?.dashboard?.id,
-            dashboard_name: task?.dashboard?.label,
-            page_options: [
-              {
-                page_guid: task?.page?.page_guid,
-                page_name: task?.page?.page_name,
-              },
-            ],
-          },
-        ],
-      },
-    },
     builder: [
       [
         {
-          key: "dashboard",
+          key: Key.DASHBOARD_GUID,
           label: "Dashboard",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.dashboard_guid,
               label: e.dashboard_name,
             };
           }),
-          handleChange: (_, val) => {
-            updateCardById("dashboard", val, id);
+          handleChange: (id: string) => {
+            const dashboard = options?.find((op) => op.dashboard_guid === id);
+            updateCardById(`${taskKey}.${Key.DASHBOARD_GUID}`, id, task.id);
+            updateCardById(
+              `${taskKey}.${Key.DASHBOARD_NAME}`,
+              dashboard.dashboard_name,
+              task.id,
+            );
           },
-          selected: task?.dashboard?.id,
-          helperText: task?.dashboard?.label,
+          helperText: getTaskData(task)?.[Key.DASHBOARD_NAME],
         },
         {
-          key: "page",
+          key: Key.PAGE_GUID,
           label: "Page",
-          type: OptionType.TYPING_DROPDOWN,
-          options: options
-            ?.find((e) => e.dashboard_guid === task?.dashboard?.id)
-            ?.page_options?.map((page) => {
-              return {
-                id: page.page_guid,
-                label: page.page_name,
-                page,
-              };
-            }),
-          // requires: ['dashboard'],
-          selected: task?.page?.page_name,
-          handleChange: (_, val) => {
-            updateCardById("page", val.page, id);
+          type: InputTypes.TYPING_DROPDOWN,
+          options: pageOptions,
+          handleChange: (id: string) => {
+            const page = pageOptions?.find((op) => op.id === id);
+            updateCardById(`${taskKey}.${Key.PAGE_GUID}`, id, task.id);
+            updateCardById(`${taskKey}.${Key.PAGE_NAME}`, page?.label, task.id);
           },
+          helperText: getTaskData(task)?.[Key.PAGE_NAME],
         },
         {
-          key: "widget",
+          key: Key.WIDGET_NRQL_EXPRESSION,
           label: "Widget",
-          type: OptionType.MULTI_SELECT,
-          options:
-            getCurrentAsset(task)?.pages?.length > 0
-              ? getCurrentAsset(task)?.pages[0].widgets?.map((e) => {
-                  return {
-                    id: e.widget_id,
-                    label: e.widget_title || e.widget_nrql_expression,
-                    widget: e,
-                  };
-                })
-              : [],
+          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          options: widgetOptions,
+          handleChange: (id: string) => {
+            const widget = widgetOptions?.find((op) => op.id === id)?.widget;
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_ID}`,
+              widget.widget_id,
+              task.id,
+            );
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_TITLE}`,
+              widget.widget_title,
+              task.id,
+            );
+            updateCardById(
+              `${taskKey}.${Key.WIDGET_NRQL_EXPRESSION}`,
+              widget.widget_nrql_expression,
+              task.id,
+            );
+          },
         },
       ],
       [
         {
+          key: Key.WIDGET_NRQL_EXPRESSION,
           label: "Selected Query",
-          type: OptionType.MULTILINE,
-          value: task?.widget
-            ? task?.widget[0]?.widget?.widget_nrql_expression
-            : "",
+          type: InputTypes.MULTILINE,
           disabled: true,
-          condition: !task.widget || task.widget.length < 2,
-          // requires: ['widget']
         },
       ],
     ],

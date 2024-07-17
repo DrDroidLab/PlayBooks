@@ -6,9 +6,10 @@ function ExternalLinksList({ id }) {
   const [step] = useCurrentStep(id);
 
   if (!step) return <></>;
+
   return (
     <div className="flex flex-wrap gap-2 items-center my-2">
-      {step.externalLinks?.map((link, i) => (
+      {step.external_links?.map((link, i) => (
         <a
           key={i}
           href={link.url}

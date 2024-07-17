@@ -81,20 +81,20 @@ td {
 }
 
 .add-step-buttons {
+  max-height: 0;
   opacity: 0;
-  display: none;
+  overflow: hidden;
 }
 
 .add-button:hover + .add-step-buttons {
-  display: block !important;
+  max-height: 250px; /* Set a maximum height that covers the expanded content */
   opacity: 1;
 }
 
 .add-step-buttons:hover {
-  display: block !important;
+  max-height: 250px;
   opacity: 1;
 }
-
 /* .echarts-for-react canvas {
   width: 100% !important;
   min-height: 100% !important;
