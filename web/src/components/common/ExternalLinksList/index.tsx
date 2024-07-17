@@ -8,7 +8,7 @@ function ExternalLinksList({ id }) {
   if (!step || step?.external_links?.length === 0) return <></>;
 
   return (
-    <div className="flex flex-wrap gap-3 items-center my-2">
+    <div className="flex flex-wrap gap-3 items-center my-1">
       {step.external_links?.map((link, i) => (
         <a
           key={i}
