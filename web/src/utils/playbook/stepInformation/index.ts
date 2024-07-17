@@ -16,3 +16,5 @@ export * from "./mimir.ts";
 export * from "./datadogCustom.ts";
 export * from "./loki.ts";
 export * from "./elasticSearch.ts";
+export * from "./gcmLogs.ts";
+export * from "./gcmMetrics.ts";
