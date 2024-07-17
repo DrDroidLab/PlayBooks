@@ -1,4 +1,4 @@
-name: SSH into EC2 and run script
+name: Deploy Coruscant
 
 on:
   push:
