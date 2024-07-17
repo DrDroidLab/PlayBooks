@@ -1,13 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
-type NotesOutputPropTypes = {
-  stepId: string | undefined;
+type MarkdownOutputPropTypes = {
+  content: string | undefined;
+  className?: string;
 };
 
-function NotesOutput({ stepId }: NotesOutputPropTypes) {
-  const [step] = useCurrentStep(stepId);
+function MarkdownOutput({ content, className }: MarkdownOutputPropTypes) {
   const notesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,16 +28,16 @@ function NotesOutput({ stepId }: NotesOutputPropTypes) {
     };
   }, []);
 
-  if (!step?.notes) return null;
+  if (!content) return null;
 
   return (
     <div data-color-mode="light" ref={notesRef}>
       <MDEditor.Markdown
-        source={step.notes}
-        className="p-3 w-full max-h-[400px] overflow-y-auto"
+        source={content}
+        className={`${className} p-3 w-full max-h-[400px] overflow-y-auto`}
       />
     </div>
   );
 }
 
-export default NotesOutput;
+export default MarkdownOutput;

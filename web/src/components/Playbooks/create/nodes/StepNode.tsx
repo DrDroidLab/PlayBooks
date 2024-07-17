@@ -17,8 +17,8 @@ import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.t
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
 import useHasChildren from "../../../../hooks/useHasChildren.ts";
-import NotesOutput from "../../card/NotesOutput.tsx";
 import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
+import MarkdownOutput from "../../card/MarkdownOutput.tsx";
 
 const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
@@ -92,7 +92,7 @@ function StepNode({ data }) {
         <div className="px-3 py-1">
           <ExternalLinksList id={step?.id} />
         </div>
-        <NotesOutput stepId={step?.id} />
+        <MarkdownOutput content={step?.notes} />
       </div>
     </>
   );
