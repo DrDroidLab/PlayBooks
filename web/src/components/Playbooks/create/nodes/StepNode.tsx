@@ -1,57 +1,31 @@
 import React from "react";
 import { Step } from "../../../../types/index.ts";
 import TaskNode from "./TaskNode.tsx";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  currentPlaybookSelector,
-  playbookSelector,
-  setCurrentVisibleStep,
-} from "../../../../store/features/playbook/playbookSlice.ts";
+import { useSelector } from "react-redux";
+import { currentPlaybookSelector } from "../../../../store/features/playbook/playbookSlice.ts";
 import { Handle, NodeToolbar, Position } from "reactflow";
 import AddButtonOptions from "../../card/AddButtonOptions.tsx";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import StepTitle from "../../steps/StepTitle.tsx";
 import StepButtons from "../../steps/StepButtons.tsx";
 import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
-import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
-import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
 import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
 import MarkdownOutput from "../../card/MarkdownOutput.tsx";
 
-const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
-
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
-  const { currentVisibleStep } = useSelector(playbookSelector);
   const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
-  const dispatch = useDispatch();
   const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
-  const { toggle, openDrawer, permanentView, addAdditionalData } =
-    usePermanentDrawerState();
-
-  const showStepDetails = () => {
-    if (
-      permanentView === stepDetailsId &&
-      currentVisibleStep === stepDetailsId
-    ) {
-      toggle(stepDetailsId);
-      return;
-    }
-    addAdditionalData({});
-    dispatch(setCurrentVisibleStep(step.id));
-    openDrawer(stepDetailsId);
-  };
 
   return (
     <>
       <div
         ref={stepRef}
-        onClick={showStepDetails}
         style={{ borderColor: handleStepBorderColor(step.id) }}
         className="p-2 rounded bg-gray-50 border-2 w-[350px] step-information">
         <StepTitle step={step} />
