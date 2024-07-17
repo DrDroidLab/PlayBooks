@@ -250,6 +250,14 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['ssl_verify'] = 'true'
                 if conn_key.key.value.lower() == 'false':
                     credentials_dict['ssl_verify'] = 'false'
+    elif connector_type == Source.KUBERNETES:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_API_SERVER:
+                credentials_dict['api_server'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_TOKEN:
+                credentials_dict['token'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA:
+                credentials_dict['ca_cert'] = conn_key.key.value
     else:
         return None
     return credentials_dict
