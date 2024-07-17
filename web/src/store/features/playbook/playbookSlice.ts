@@ -386,11 +386,11 @@ const playbookSlice = createSlice({
     toggleNotesVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const task = state.currentPlaybook?.ui_requirement?.tasks?.find(
-          (task) => task.id === id,
+        const step = state.currentPlaybook?.steps?.find(
+          (step) => step.id === id,
         );
-        if (task)
-          task.ui_requirement.showNotes = !task.ui_requirement.showNotes;
+        if (step)
+          step.ui_requirement.showNotes = !step.ui_requirement.showNotes;
       }
     },
     resetState(state) {
