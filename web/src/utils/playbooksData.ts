@@ -69,7 +69,7 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return Builders.elasticSearchBuilder(ops?.indexes);
     case taskTypes.GCM_METRIC_EXECUTION:
-      return Builders.gcmMetricsBuilder(ops?.namespaces, task);
+      return Builders.gcmMetricsBuilder(ops?.metricTypes);
     case taskTypes.GCM_FILTER_LOG_ENTRIES:
       return Builders.gcmLogsBuilder(ops?.namespaces, task);
     default:

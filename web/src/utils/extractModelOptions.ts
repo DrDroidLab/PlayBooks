@@ -127,7 +127,7 @@ export default function extractModelOptions(assets: any, task: Task) {
       };
     case taskTypes.GCM_METRIC_EXECUTION:
       return {
-        regions: assets.map((asset) => asset.namespace),
+        metricTypes: assets.map((asset) => asset.metric_type),
       };
     case taskTypes.GCM_FILTER_LOG_ENTRIES:
       return {
