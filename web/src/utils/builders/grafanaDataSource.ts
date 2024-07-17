@@ -1,41 +1,33 @@
-import { updateCardById } from "../execution/updateCardById.ts";
-import { OptionType } from "../playbooksData.ts";
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { Key } from "../playbook/key.ts";
 
-export const grafanaDataSourceBuilder = (options: any, task, id: string) => {
+export const grafanaDataSourceBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
         {
-          key: "datasource",
+          key: Key.DATASOURCE_UID,
           label: "Data Source UID",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.datasource_uid,
               label: e.datasource_name,
             };
           }),
-          handleChange: (_, val) => {
-            updateCardById("datasource", val, id);
-            if (!task?.grafanaQuery?.expression) {
-              updateCardById("grafanaQuery", { query: { expression: "" } }, id);
-            }
-          },
-          helperText: task.datasource?.label,
-          selected: task.datasource?.id,
+          helperText: options?.find(
+            (op) =>
+              op.datasource_uid === getTaskData(task)?.[Key.DATASOURCE_UID],
+          )?.datasource_name,
         },
       ],
       [
         {
-          key: "grafanaQuery",
+          key: Key.PROMQL_EXPRESSION,
           label: "PromQL",
-          type: OptionType.MULTILINE,
-          value: task?.grafanaQuery?.expression,
-          handleChange: (e) => {
-            const val = e.target.value;
-            updateCardById("grafanaQuery", { expression: val }, id);
-          },
-          condition: task?.grafanaQuery,
+          type: InputTypes.MULTILINE,
         },
       ],
     ],

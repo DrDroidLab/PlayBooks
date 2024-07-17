@@ -3,7 +3,6 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 import {
   addStep,
@@ -18,9 +17,7 @@ import useZoom from "../../../hooks/useZoom.ts";
 const addDataId = DrawerTypes.ADD_DATA;
 
 function AddButtonOptions({ stepId }) {
-  const [step] = useCurrentStep(stepId);
-  const dispatch = useDispatch();
-  const source = `node-${step?.id}`;
+  const source = `node-${stepId}`;
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
   const { openDrawer } = usePermanentDrawerState();
@@ -28,6 +25,7 @@ function AddButtonOptions({ stepId }) {
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
   const { toolbarStyle } = useZoom();
+  const dispatch = useDispatch();
 
   const handleNoAction = (e) => {
     e.preventDefault();
@@ -38,16 +36,16 @@ function AddButtonOptions({ stepId }) {
     handleNoAction(e);
     if (!isEditing) return;
     toggleAddData();
-    addAdditionalData({ parentId: step.id });
+    addAdditionalData({ parentId: stepId });
   };
 
   const handleAddWithCondition = (e) => {
     handleNoAction(e);
     if (!isEditing) return;
-    const parentId = step.id;
+    const parentId = stepId;
 
     const id = generateUUIDWithoutHyphens();
-    dispatch(addStep({ parentId: step?.id, addConditions: true, id }));
+    dispatch(addStep({ parentId, id, addCondition: true }));
     addAdditionalData({
       source,
       id: `edge-${parentId}-${id}`,
