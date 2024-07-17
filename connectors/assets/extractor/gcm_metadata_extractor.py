@@ -24,12 +24,9 @@ class GcmSourceMetadataExtractor(SourceMetadataExtractor):
             for descriptor in all_metric_descriptors:
                 try:
                     metric_type = descriptor['type']
-                    description = descriptor.get('description', '')
-                    labels = descriptor.get('labels', [])
 
                     model_data[metric_type] = {
-                        'description': description,
-                        'labels': labels
+                        'metric_type': metric_type
                     }
 
                     if save_to_db:

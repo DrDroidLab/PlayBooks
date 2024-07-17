@@ -45,37 +45,10 @@ class GcmAssetManager(ConnectorAssetManager):
 
         gcm_metric_asset_protos = []
         for asset in gcm_metric_assets:
-            all_metrics = []
-            all_label_value_metric_map = {}
-            for metric_type, labels in asset.metadata.items():
-                if isinstance(labels, list):
-                    for label in labels:
-                        if isinstance(label, dict):
-                            label_name = label.get('key')
-                            label_description = label.get('description')
-
-                            if label_name and label_description:
-                                all_label_value_metric_dict = all_label_value_metric_map.get(label_name, {})
-                                all_label_value_metric_dict_descriptions = all_label_value_metric_dict.get(
-                                    'descriptions', [])
-                                all_label_value_metric_dict_descriptions.append(label_description)
-                                all_label_value_metric_dict['descriptions'] = list(
-                                    set(all_label_value_metric_dict_descriptions))
-
-                                all_label_value_metric_dict_metrics = all_label_value_metric_dict.get('metrics', [])
-                                all_label_value_metric_dict_metrics.append(metric_type)
-                                all_label_value_metric_dict['metrics'] = list(set(all_label_value_metric_dict_metrics))
-
-                                all_label_value_metric_map[label_name] = all_label_value_metric_dict
-
-            for label_name, label_values_metrics in all_label_value_metric_map.items():
-                all_metrics.append(GcmMetricAssetProto.MetricLabel(name=StringValue(value=label_name),
-                                                                   description=label_values_metrics['descriptions'],
-                                                                   metrics=label_values_metrics['metrics']))
-            gcm_metric_proto = GcmMetricAssetProto(metric_type=StringValue(value=asset.model_uid),
-                                                   label_value_metric_map=all_metrics)
+            gcm_metric_proto = GcmMetricAssetProto(metric_type=StringValue(value=asset.model_uid))
             gcm_metric_asset_protos.append(GcmAssetModelProto(
-                id=UInt64Value(value=asset.id), connector_type=asset.connector_type,
+                id=UInt64Value(value=asset.id),
+                connector_type=asset.connector_type,
                 type=asset.model_type,
                 last_updated=int(asset.updated_at.replace(tzinfo=timezone.utc).timestamp()) if (
                     asset.updated_at) else None,
