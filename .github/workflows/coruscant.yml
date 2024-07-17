@@ -13,11 +13,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SID_EC2_PEM_FILE }}
+    - name: Create PEM file from secret
+      run: echo "${{ secrets.SID_EC2_PEM_FILE }}" > ec2_key.pem
+
+    - name: Set permissions for the PEM file
+      run: chmod 600 ec2_key.pem
 
     - name: SSH and run script
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SID_EC2_PEM_FILE }} ec2-user@<CORUSCANT_EC2_IP_ADDRESS> 'bash -s' < /home/ec2-user/deploy.sh
+        ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@<CORUSCANT_EC2_IP_ADDRESS> 'bash -s' < /home/ec2-user/deploy.sh
