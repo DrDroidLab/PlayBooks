@@ -53,7 +53,7 @@ function useEdgeConditions(id: string) {
 
   const handleCondition = (
     key: string,
-    value: string,
+    value: string | undefined,
     conditionIndex: number,
   ) => {
     if (conditions.length !== 0) {
