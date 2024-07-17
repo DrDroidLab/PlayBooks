@@ -18,6 +18,7 @@ import { PermanentDrawerTypes } from "../../../../store/features/drawers/permane
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
 import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import NotesOutput from "../../card/NotesOutput.tsx";
+import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
 
 const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 
@@ -87,7 +88,10 @@ function StepNode({ data }) {
           </NodeToolbar>
         )}
       </div>
-      <div className="step-notes absolute top-1/2 left-full -translate-x-1/4">
+      <div className="step-notes absolute top-1/2 left-full -translate-x-1/4 rounded-3xl overflow-hidden max-w-md shadow-xl rounded-tl-none bg-white">
+        <div className="px-3 py-1">
+          <ExternalLinksList id={step?.id} />
+        </div>
         <NotesOutput stepId={step?.id} />
       </div>
     </>

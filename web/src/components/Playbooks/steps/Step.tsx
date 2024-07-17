@@ -1,7 +1,6 @@
 import React from "react";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.tsx";
-import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import StepDetailsButtons from "./StepDetailsButtons.tsx";
 import { Task } from "../../../types/index.ts";
 import HandleOutput from "../task/HandleOutput.tsx";
@@ -20,7 +19,6 @@ function Step({ id }: StepProps) {
 
   return (
     <div className="p-1">
-      <ExternalLinksList id={currentStepId} />
       <HandleExternalLinksRender id={currentStepId} />
       <HandleNotesRender id={currentStepId} />
       <StepDetailsButtons id={currentStepId} />

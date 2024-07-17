@@ -32,13 +32,10 @@ function NotesOutput({ stepId }: NotesOutputPropTypes) {
   if (!step?.notes) return null;
 
   return (
-    <div
-      data-color-mode="light"
-      ref={notesRef}
-      className="max-h-[400px] max-w-md">
+    <div data-color-mode="light" ref={notesRef}>
       <MDEditor.Markdown
         source={step.notes}
-        className="border-2 rounded p-3 w-full max-h-[400px] overflow-y-auto"
+        className="p-3 w-full max-h-[400px] overflow-y-auto"
       />
     </div>
   );
