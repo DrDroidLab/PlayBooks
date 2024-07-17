@@ -11,6 +11,14 @@ export const sqlRawQueryBuilder = () => {
           type: InputTypes.MULTILINE,
         },
       ],
+      [
+        {
+          key: Key.TIMEOUT,
+          label: "Timeout (in seconds)",
+          type: InputTypes.TEXT_ROW,
+          default: 10,
+        },
+      ],
     ],
   };
 };
