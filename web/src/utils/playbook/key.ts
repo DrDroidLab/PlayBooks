@@ -17,6 +17,7 @@ export const Key = {
   DATABASE: "database",
   QUERY: "query",
   LOG_GROUP_NAME: "log_group_name",
+  LOG_NAME: "log_name",
   SERVICE_NAME: "service_name",
   ENVIRONMENT_NAME: "environment_name",
   METRIC_FAMILY: "metric_family",

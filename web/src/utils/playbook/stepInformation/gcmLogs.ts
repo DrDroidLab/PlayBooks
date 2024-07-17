@@ -3,8 +3,13 @@ import { InfoTypes } from "./InfoTypes.ts";
 
 export const gcmLogs = [
   {
-    label: "Metric Type",
-    key: Key.METRIC_TYPE,
+    label: "Log Name",
+    key: Key.LOG_NAME,
+    type: InfoTypes.TEXT,
+  },
+  {
+    label: "Filter Query",
+    key: Key.FILTER_QUERY,
     type: InfoTypes.TEXT,
   },
 ];
