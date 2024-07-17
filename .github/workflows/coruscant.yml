@@ -23,4 +23,4 @@ jobs:
       env:
         EC2_IP_ADDRESS: ${{ secrets.CORUSCANT_EC2_IP_ADDRESS }}
       run: |
-        ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${EC2_IP_ADDRESS} 'bash -s' < /home/ec2-user/deploy.sh
+        ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${EC2_IP_ADDRESS} 'bash /home/ec2-user/deploy.sh'
