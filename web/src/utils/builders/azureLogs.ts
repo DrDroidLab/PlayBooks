@@ -1,36 +1,36 @@
-import { OptionType } from "../playbooksData.ts";
-import { updateCardById } from "../execution/updateCardById.ts";
+import { Key } from "../playbook/key.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Task } from "../../types/index.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 
-export const azureLogsBuilder = (options: any, task, id: string) => {
+export const azureLogsBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
         {
-          key: "workspaceId",
+          key: Key.WORKSPACE_ID,
           label: "Workspace ID",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op.workspace,
             label: `${op.workspace} - ${op.name}`,
-            workspace: op,
           })),
-          helperText: task.workspaceName,
-          handleChange: (_, val) => {
-            updateCardById("workspaceId", val.id, id);
-            updateCardById("workspaceName", val.workspace.name, id);
-          },
+          helperText:
+            options?.find(
+              (op) => op.workspace === getTaskData(task)?.[Key.WORKSPACE_ID],
+            )?.name ?? "",
         },
       ],
       [
         {
-          key: "filter_query",
+          key: Key.FILTER_QUERY,
           label: "Log Filter Query",
-          type: OptionType.MULTILINE,
+          type: InputTypes.MULTILINE,
         },
         {
-          key: "timespan",
+          key: Key.TIMESPAN,
           label: "Timespan (hours)",
-          type: OptionType.TEXT_ROW,
+          type: InputTypes.TEXT_ROW,
         },
       ],
     ],

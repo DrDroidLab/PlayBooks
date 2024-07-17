@@ -1,42 +1,35 @@
 import React from "react";
 import { Delete } from "@mui/icons-material";
-import {
-  deleteStep,
-  playbookSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import { useDispatch, useSelector } from "react-redux";
+import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
+import { useDispatch } from "react-redux";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import CustomButton from "../../common/CustomButton/index.tsx";
 
-function DeleteStepButton({ stepId }) {
-  const [step] = useCurrentStep(stepId);
+function DeleteStepButton({ id }) {
+  const [step, currentStepId] = useCurrentStep(id);
   const dispatch = useDispatch();
   const { closeDrawer } = usePermanentDrawerState();
-  const { executionId } = useSelector(playbookSelector);
-  const isPrefetched = useIsPrefetched();
-  const isEditing = !isPrefetched && !executionId;
 
-  const handleNoAction = (e) => {
+  const handleNoAction = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     handleNoAction(e);
-    if (!isEditing) return;
-    dispatch(deleteStep(step.id));
+    dispatch(deleteStep(currentStepId));
     closeDrawer();
   };
 
-  if (!isEditing) return;
+  if (step?.ui_requirement?.stepIndex === 0) return;
 
   return (
-    <button
-      className="w-fit cursor-pointer text-violet-500 hover:text-gray-400"
-      onClick={handleDelete}>
+    <CustomButton onClick={handleDelete}>
       <Delete fontSize="medium" />
-    </button>
+    </CustomButton>
   );
 }
 

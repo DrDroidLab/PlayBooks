@@ -1,10 +1,12 @@
 import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
+import { Playbook } from "../../../../types/index.ts";
+import playbookToState from "../../../../utils/parser/playbook/playbookToState.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setCurrentPlaybook, setPlaybookData } from "../playbookSlice.ts";
+import { setPlaybookDataBeta } from "../playbookSlice.ts";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPlaybook: builder.query<any, { playbookId: number }>({
+    getPlaybook: builder.query<Playbook, { playbookId: number }>({
       query: ({ playbookId }) => ({
         url: GET_PLAYBOOKS,
         body: {
@@ -13,15 +15,14 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
         method: "POST",
       }),
       transformResponse: (response) => {
-        return response?.playbooks[0];
+        const playbook: Playbook = response?.playbooks?.[0] ?? {};
+        return playbookToState(playbook);
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setCurrentPlaybook(data));
-          dispatch(setPlaybookData(data));
+          dispatch(setPlaybookDataBeta(data));
         } catch (error) {
-          // Handle any errors
           console.log(error);
         }
       },
