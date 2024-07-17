@@ -38,7 +38,7 @@ const PlaybookTable = ({ data, refreshTable }) => {
   const handleCopyPlaybook = async (id) => {
     setCopyLoading(true);
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
-    dispatch(copyPlaybook(res));
+    dispatch(copyPlaybook({ pb: res }));
     setTimeout(() => {
       navigate("/playbooks/create");
     }, COPY_LOADING_DELAY);

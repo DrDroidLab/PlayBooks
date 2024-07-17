@@ -1,12 +1,8 @@
 import { useSelector } from "react-redux";
-import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../store/features/playbook/playbookSlice.ts";
 
 export default function useIsExisting() {
-  const playbook = useSelector(playbookSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
 
-  return (
-    !playbook?.currentPlaybook?.isCopied &&
-    playbook?.isEditing &&
-    Object.keys(playbook?.currentPlaybook ?? {}).length > 0
-  );
+  return currentPlaybook?.ui_requirement.isExisting;
 }

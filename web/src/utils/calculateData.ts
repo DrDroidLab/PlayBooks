@@ -15,15 +15,15 @@ export const calculateData = (
     return {};
   });
 
-  nodes.forEach((node) => {
+  nodes?.forEach((node) => {
     g.setNode(node.id, {
       label: node.id,
-      width: 350,
-      height: node.type === "custom" ? 450 : 200,
+      width: node.type === "step" ? node.dimensions.width : 350,
+      height: node.type === "step" ? node.dimensions.height : 200,
     });
   });
 
-  edges.forEach((edge) => {
+  edges?.forEach((edge) => {
     g.setEdge(edge.source, edge.target);
   });
 

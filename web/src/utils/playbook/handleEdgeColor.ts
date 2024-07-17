@@ -1,32 +1,34 @@
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { store } from "../../store/index.ts";
-import { StepStates } from "../execution/StepStates.ts";
-import handleStepState from "../execution/handleStepState.ts";
-import { extractParent, extractSource } from "../extractData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
-import { extractLogs } from "./extractLogs.ts";
+import {
+  RelationStates,
+  RelationStateType,
+} from "../execution/RelationStates.ts";
+import handleStepRelationState from "../execution/handleStepRelationState.ts";
+import getCurrentRelation from "../getCurrentRelation.ts";
 
 function handleEdgeColor(edgeId: string) {
   const state = store.getState();
   const additonalState = additionalStateSelector(state);
   const { id } = additonalState;
-  const sourceId = extractSource(edgeId);
-  const parentId = extractParent(edgeId);
-  const [childStep] = getCurrentTask(sourceId);
-  const logs = childStep?.id ? extractLogs(childStep.id, parentId) : [];
-  const log = logs?.length > 0 ? logs[0] : null;
+  const [relation] = getCurrentRelation(edgeId);
+  let relationState: RelationStateType = RelationStates.DEFAULT;
 
   if (id === edgeId) {
-    return "rgba(139, 92, 246, 1)";
+    relationState = RelationStates.SELECTED;
   }
 
-  const { state: stepState } = handleStepState(parentId, log);
+  relationState = relation
+    ? handleStepRelationState(relation)
+    : RelationStates.DEFAULT;
 
-  switch (stepState) {
-    case StepStates.SUCCESS:
+  switch (relationState) {
+    case RelationStates.SUCCESS:
       return "green";
-    case StepStates.ERROR:
+    case RelationStates.ERROR:
       return "red";
+    case RelationStates.SELECTED:
+      return "rgba(139, 92, 246, 1)";
     default:
       return undefined;
   }

@@ -23,16 +23,9 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    if (
-      result &&
-      result.table &&
-      result.table.rows &&
-      result.table.rows.length > 0
-    ) {
-      setShowTable(true);
-      setTableData(result.table.rows);
-      setTableLoading(false);
-    }
+    if (result?.table?.rows?.length > 0) setShowTable(true);
+    setTableData(result?.table?.rows ?? []);
+    setTableLoading(false);
   }, [result]);
 
   const handleClose = () => {
@@ -114,12 +107,12 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
       )}
       {!showTable && timestamp && (
         <p className={styles["graph-ts-error"]}>
-          <i>Updated at: {timestamp}</i>
+          <i>Updated at: {renderTimestamp(timestamp)}</i>
         </p>
       )}
       {showTable && timestamp && (
         <p className={styles["graph-ts"]}>
-          <i>Updated at: {timestamp}</i>
+          <i>Updated at: {renderTimestamp(timestamp)}</i>
         </p>
       )}
       <Dialog open={open} onClose={handleClose}>
