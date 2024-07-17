@@ -16,7 +16,7 @@ export const sqlRawQueryBuilder = () => {
           key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
           type: InputTypes.TEXT_ROW,
-          default: 10,
+          default: 120,
         },
       ],
     ],
