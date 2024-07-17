@@ -49,7 +49,7 @@ class SMTPEmailWorkflowExecutor(WorkflowActionExecutor):
 
     def __init__(self):
         self.source = Source.SMTP
-        self.type = WorkflowAction.Type.EMAIL_MESSAGE
+        self.type = WorkflowAction.Type.SMTP_EMAIL
 
     def get_action_connector_processor(self, email_connector: ConnectorProto, **kwargs):
         if not email_connector:
@@ -64,7 +64,7 @@ class SMTPEmailWorkflowExecutor(WorkflowActionExecutor):
 
     def execute(self, action: WorkflowAction, execution_output: List[InterpretationProto],
                 connector: ConnectorProto = None):
-        email_config: SMTPEmailWorkflowAction = action.email_message
+        email_config: SMTPEmailWorkflowAction = action.smtp_email
         to_email = email_config.to_email.value
         subject = email_config.subject.value
         if not to_email:
