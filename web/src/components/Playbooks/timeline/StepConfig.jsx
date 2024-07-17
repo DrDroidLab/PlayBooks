@@ -1,5 +1,4 @@
-import React, { useEffect, MouseEvent } from "react";
-import { Link, Notes } from "@mui/icons-material";
+import React, { useEffect } from "react";
 import { renderTimestamp } from "../../../utils/DateUtils";
 import HandleOutput from "../steps/HandleOutput";
 import useVisibility from "../../../hooks/useVisibility.ts";
@@ -14,7 +13,7 @@ function StepConfig({ step, index, handleShowConfig }) {
   const isVisible = useVisibility(scrollRef, 0.5);
   const [, setShouldScroll] = usePlaybookKey("shouldScroll");
 
-  const handleNoAction = (e: MouseEvent<HTMLElement>) => {
+  const handleNoAction = (e) => {
     e.stopPropagation();
   };
 
