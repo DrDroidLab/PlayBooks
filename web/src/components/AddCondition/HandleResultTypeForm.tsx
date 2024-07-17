@@ -18,12 +18,24 @@ function HandleResultTypeForm({
   condition,
   conditionIndex,
 }: HandleResultTypePropTypes) {
+  const rule = condition?.[resultType?.toLowerCase()] ?? {};
   switch (resultType) {
     case ResultTypeTypes.TABLE:
-      return <Table condition={condition} conditionIndex={conditionIndex} />;
+      return (
+        <Table
+          condition={condition}
+          conditionIndex={conditionIndex}
+          rule={rule}
+        />
+      );
     case ResultTypeTypes.TIMESERIES:
       return (
-        <Timeseries condition={condition} conditionIndex={conditionIndex} />
+        <Timeseries
+          condition={condition}
+          conditionIndex={conditionIndex}
+          rule={rule}
+          resultType={resultType}
+        />
       );
     case ResultTypeTypes.BASH_COMMAND_OUTPUT:
       return (

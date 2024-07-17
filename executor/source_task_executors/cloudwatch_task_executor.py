@@ -30,7 +30,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.execute_filter_log_events,
                 'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
-                'result_type': PlaybookTaskResultType.TABLE,
+                'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Fetch Logs from Cloudwatch',
                 'category': 'Logs'
             },
@@ -175,7 +175,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                 total_count=UInt64Value(value=len(table_rows)),
             )
 
-            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=result, source=self.source)
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=result, source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Cloudwatch task: {e}")

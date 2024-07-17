@@ -1,52 +1,40 @@
-import { OptionType } from "../playbooksData.ts";
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { Key } from "../playbook/key.ts";
 
-const getCurrentAsset = (task) => {
-  const currentAsset = task?.assets?.find(
-    (e) => e.service_name === task?.datadogService,
-  );
-
-  return currentAsset;
-};
-
-export const datadogBuilder = (options, task, id: string) => {
+export const datadogBuilder = (options: any, task: Task) => {
   return {
-    triggerGetAssetsKey: "datadogMetricFamily",
-    assetFilterQuery: {
-      datadog_service_model_filters: {
-        services: [
-          {
-            name: task?.datadogService,
-            metric_families: [task?.datadogMetricFamily],
-          },
-        ],
-      },
-    },
     builder: [
       [
         {
-          key: "datadogService",
+          key: Key.SERVICE_NAME,
           label: "Service",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({
             id: x.name,
             label: x.name,
             service: x,
           })),
-          selected: task.datadogService,
         },
         {
-          key: "datadogMetricFamily",
+          key: Key.METRIC_FAMILY,
           label: "Metric Family",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.name === task?.datadogService)
+            ?.find((e) => e.name === getTaskData(task)?.datadogService)
             ?.metric_families?.map((x) => ({ id: x, label: x })),
         },
         {
-          key: "datadogEnvironment",
+          key: Key.ENVIRONMENT_NAME,
           label: "Environment",
-          type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset(task)?.environments?.map((e) => {
+          type: InputTypes.TYPING_DROPDOWN,
+          options: getCurrentAsset(
+            task,
+            Key.SERVICE_NAME,
+            "service_name",
+          )?.environments?.map((e) => {
             return {
               id: e,
               label: e,
@@ -54,12 +42,12 @@ export const datadogBuilder = (options, task, id: string) => {
           }),
         },
         {
-          key: "datadogMetric",
+          key: Key.METRIC,
           label: "Metric",
-          type: OptionType.MULTI_SELECT,
-          options: getCurrentAsset(task)
+          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          options: getCurrentAsset(task, Key.SERVICE_NAME, "service_name")
             ?.metrics?.filter(
-              (e) => e.metric_family === task.datadogMetricFamily,
+              (e) => e.metric_family === getTaskData(task).datadogMetricFamily,
             )
             ?.map((e) => {
               return {
@@ -67,7 +55,6 @@ export const datadogBuilder = (options, task, id: string) => {
                 label: e.metric,
               };
             }),
-          selected: task?.datadogMetric,
         },
       ],
     ],
