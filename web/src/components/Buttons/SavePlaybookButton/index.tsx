@@ -58,7 +58,8 @@ function SavePlaybookButton({
     if (error) return;
 
     try {
-      await triggerUpdatePlaybook(stateToPlaybook()).unwrap();
+      const res = await triggerUpdatePlaybook(stateToPlaybook()).unwrap();
+      if (!res.success) return;
       if (shouldNavigate) {
         navigate(`/playbooks`);
         return;

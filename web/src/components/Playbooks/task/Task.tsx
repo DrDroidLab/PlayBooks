@@ -4,10 +4,8 @@ import { Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 import SelectInterpretation from "../steps/Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
-import HandleNotesRender from "../steps/HandleNotesRender.tsx";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
@@ -30,13 +28,6 @@ function Task({ id }) {
   return (
     <div className="rounded my-2">
       <div className="flex flex-col">
-        <div className="flex text-sm">
-          {isPrefetched && task?.description && (
-            <div className="flex gap-5">
-              <ExternalLinksList id={currentTaskId} />
-            </div>
-          )}
-        </div>
         <div>
           <div
             className="mt-2 text-sm cursor-pointer text-violet-500"
@@ -46,7 +37,6 @@ function Task({ id }) {
 
           {addQuery && <TaskQuery id={currentTaskId} />}
         </div>
-        <HandleNotesRender id={currentTaskId} />
         <SelectInterpretation id={currentTaskId} />
 
         {!isPrefetched && (
