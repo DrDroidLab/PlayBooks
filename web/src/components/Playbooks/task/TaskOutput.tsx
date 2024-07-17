@@ -1,16 +1,19 @@
 import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.jsx";
-import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput.jsx";
 import PlaybookBashActionOutput from "../PlaybookBashActionOutput.jsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
+import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
+import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
+import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
   BASH_COMMAND_OUTPUT: "BASH_COMMAND_OUTPUT",
   TIMESERIES: "TIMESERIES",
   TABLE: "TABLE",
+  LOGS: "LOGS",
 };
 
 const TaskOutput = ({ id, showHeading }) => {
@@ -32,7 +35,7 @@ const TaskOutput = ({ id, showHeading }) => {
           title={
             error
               ? "Error from Source"
-              : output?.timeseries?.metric_name ??
+              : handleTaskTypeLabels(task).labelValue ??
                 "No data available for this step"
           }
         />
@@ -40,6 +43,16 @@ const TaskOutput = ({ id, showHeading }) => {
     case OutputTypes.TABLE:
       return (
         <PlayBookRunDataTable
+          title={"Results"}
+          result={output}
+          timestamp={output.timestamp}
+          showHeading={showHeading}
+        />
+      );
+
+    case OutputTypes.LOGS:
+      return (
+        <PlayBookRunLogTable
           title={"Results"}
           result={output}
           timestamp={output.timestamp}

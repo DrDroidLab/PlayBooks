@@ -12,7 +12,7 @@ function Table({ condition, conditionIndex, rule }) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
 
-  const handleChange = (val: string, type: string) => {
+  const handleChange = (val: string | undefined, type: string) => {
     handleCondition(type, val, conditionIndex);
   };
 
@@ -65,10 +65,18 @@ function Table({ condition, conditionIndex, rule }) {
           onValueChange={(val: string) => {
             if (checkIfNumeric) {
               handleChange(
+                undefined,
+                `${condition.type?.toLowerCase()}.string_value_threshold`,
+              );
+              handleChange(
                 val,
                 `${condition.type?.toLowerCase()}.numeric_value_threshold`,
               );
             } else {
+              handleChange(
+                undefined,
+                `${condition.type?.toLowerCase()}.numeric_value_threshold`,
+              );
               handleChange(
                 val,
                 `${condition.type?.toLowerCase()}.string_value_threshold`,

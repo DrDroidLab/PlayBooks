@@ -33,7 +33,7 @@ export type ConditionRule = {
 
 type StepCondition = {
   rules: ConditionRule[];
-  logical_opertaor: LogicalOperator;
+  logical_operator: LogicalOperator;
 };
 
 export type StepRelationContract = {

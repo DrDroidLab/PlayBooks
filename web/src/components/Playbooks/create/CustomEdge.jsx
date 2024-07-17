@@ -22,8 +22,13 @@ const CustomEdge = ({
   source,
 }) => {
   const { rules } = useEdgeConditions(id);
-  const { toggle, addAdditionalData, additionalData } =
-    usePermanentDrawerState();
+  const {
+    toggle,
+    permanentView,
+    openDrawer,
+    addAdditionalData,
+    additionalData,
+  } = usePermanentDrawerState();
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -37,11 +42,18 @@ const CustomEdge = ({
 
   const handleAddConditionClick = (e) => {
     e.stopPropagation();
+    if (
+      permanentView === PermanentDrawerTypes.CONDITION &&
+      id === additionalData.id
+    ) {
+      toggle(PermanentDrawerTypes.CONDITION);
+      return;
+    }
     addAdditionalData({
       source,
       id,
     });
-    toggle(PermanentDrawerTypes.CONDITION);
+    openDrawer(PermanentDrawerTypes.CONDITION);
   };
 
   return (

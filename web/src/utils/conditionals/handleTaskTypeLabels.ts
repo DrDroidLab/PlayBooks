@@ -2,7 +2,11 @@ import { taskTypes } from "../../constants/index.ts";
 import { Task } from "../../types/index.ts";
 import { Key } from "../playbook/key.ts";
 
-function handleTaskTypeLabels(task: Task) {
+function handleTaskTypeLabels(task?: Task): {
+  label: string;
+  labelValue: string;
+} {
+  if (!task) return { label: "", labelValue: "" };
   const source = task.source;
   const taskType = task[source?.toLowerCase()]?.type;
   const taskData = task[source?.toLowerCase()][taskType.toLowerCase()];
@@ -67,10 +71,16 @@ function handleTaskTypeLabels(task: Task) {
       labelValue = taskData[Key.NRQL_EXPRESSION];
       break;
     default:
-      return;
+      return {
+        label: task.description ?? "",
+        labelValue: task.description ?? "",
+      };
   }
 
-  return `${task.description}${labelValue ? " - " : ""}${labelValue}`;
+  return {
+    label: `${task.description}${labelValue ? " - " : ""}${labelValue}`,
+    labelValue,
+  };
 }
 
 export default handleTaskTypeLabels;

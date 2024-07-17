@@ -12,10 +12,9 @@ import { useSelector } from "react-redux";
 type StepConfigPropTypes = {
   step: Step;
   index: number;
-  handleShowConfig: Function;
 };
 
-function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
+function StepConfig({ step, index }: StepConfigPropTypes) {
   const [, setCurrentVisibleStep] = usePlaybookKey(
     "currentVisibleStepOnTimeline",
   );
@@ -67,7 +66,6 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
             <h1 className="font-semibold text-lg line-clamp-3">
               {step.description}
             </h1>
-            <div onClick={() => handleShowConfig(step.id)}></div>
           </div>
         </div>
         <div className="flex flex-col mr-2">
