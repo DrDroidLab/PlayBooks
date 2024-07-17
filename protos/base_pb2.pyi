@@ -203,6 +203,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     GKE: _Source.ValueType  # 44
     MS_TEAMS: _Source.ValueType  # 45
     GRAFANA_LOKI: _Source.ValueType  # 46
+    KUBERNETES: _Source.ValueType  # 47
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -253,6 +254,7 @@ GRAFANA_MIMIR: Source.ValueType  # 43
 GKE: Source.ValueType  # 44
 MS_TEAMS: Source.ValueType  # 45
 GRAFANA_LOKI: Source.ValueType  # 46
+KUBERNETES: Source.ValueType  # 47
 global___Source = Source
 
 class _SourceKeyType:
@@ -332,6 +334,10 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GRAFANA_LOKI_PROTOCOL: _SourceKeyType.ValueType  # 69
     GRAFANA_LOKI_HOST: _SourceKeyType.ValueType  # 70
     GRAFANA_LOKI_PORT: _SourceKeyType.ValueType  # 71
+    KUBERNETES_CLUSTER_NAME: _SourceKeyType.ValueType  # 72
+    KUBERNETES_CLUSTER_API_SERVER: _SourceKeyType.ValueType  # 73
+    KUBERNETES_CLUSTER_TOKEN: _SourceKeyType.ValueType  # 74
+    KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: _SourceKeyType.ValueType  # 75
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -406,6 +412,10 @@ ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 68
 GRAFANA_LOKI_PROTOCOL: SourceKeyType.ValueType  # 69
 GRAFANA_LOKI_HOST: SourceKeyType.ValueType  # 70
 GRAFANA_LOKI_PORT: SourceKeyType.ValueType  # 71
+KUBERNETES_CLUSTER_NAME: SourceKeyType.ValueType  # 72
+KUBERNETES_CLUSTER_API_SERVER: SourceKeyType.ValueType  # 73
+KUBERNETES_CLUSTER_TOKEN: SourceKeyType.ValueType  # 74
+KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: SourceKeyType.ValueType  # 75
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
