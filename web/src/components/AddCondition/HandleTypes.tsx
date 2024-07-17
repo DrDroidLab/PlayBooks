@@ -76,6 +76,40 @@ function HandleTypes({
           </div>
         </>
       );
+    case "GREP_COUNT":
+      return (
+        <>
+          <div className="flex flex-col gap-1">
+            <ValueComponent
+              error={undefined}
+              valueType={"STRING"}
+              onValueChange={(val: string) =>
+                handleChange(val, `${keyValue}.pattern`)
+              }
+              value={rule.pattern}
+              valueOptions={[]}
+              placeHolder={"Enter pattern to evaluate"}
+              length={200}
+            />
+          </div>
+          <div className="flex flex-wrap gap-2 items-center">
+            <Checkbox
+              id="case_sensitive"
+              isChecked={rule.case_sensitive}
+              onChange={() => {
+                addConditionToEdgeByIndex(
+                  `${keyValue}.case_sensitive`,
+                  !rule.case_sensitive,
+                  edgeIndex,
+                  conditionIndex,
+                );
+              }}
+              label="Pattern is Case Sensitive"
+              isSmall={true}
+            />
+          </div>
+        </>
+      );
     default:
       return <></>;
   }

@@ -1,10 +1,10 @@
 export const bashCommandOutputOptions = [
   {
-    id: "grep_exists",
-    label: "Grep Pattern Exists",
+    id: "GREP",
+    label: "Match output with Grep Pattern",
   },
   {
-    id: "does_not_exist",
-    label: "Grep Pattern Does Not Exist",
+    id: "GREP_COUNT",
+    label: "Count occurrences of Grep Pattern",
   },
 ];
