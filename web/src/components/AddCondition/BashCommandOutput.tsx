@@ -12,20 +12,13 @@ import ValueComponent from "../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
-import useCurrentStep from "../../hooks/useCurrentStep.ts";
-import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import Checkbox from "../common/Checkbox/index.tsx";
-import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { bashCommandOutputOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
-import { extractSource } from "../../utils/extractData.ts";
 
-function BashCommandOutput({ condition, conditionIndex }) {
-  const { source, id } = useSelector(additionalStateSelector);
+function BashCommandOutput({ rule, condition, conditionIndex }) {
+  const { id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
-  const sourceId = extractSource(source);
-  const [parentStep] = useCurrentStep(sourceId);
-  const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -35,15 +28,7 @@ function BashCommandOutput({ condition, conditionIndex }) {
     <>
       <div className="flex items-center gap-1">
         <SelectComponent
-          data={taskTypeOptions}
-          selected={condition.task}
-          placeholder={`Select Task`}
-          onSelectionChange={(id: string) => handleChange(id, "task")}
-        />
-      </div>
-
-      <div className="flex items-center gap-1">
-        <SelectComponent
+          error={undefined}
           data={bashCommandOutputOptions}
           selected={condition.conditionType}
           placeholder={`Select Condition`}
@@ -53,6 +38,7 @@ function BashCommandOutput({ condition, conditionIndex }) {
 
       <div className="flex flex-col gap-1">
         <ValueComponent
+          error={undefined}
           valueType={"STRING"}
           onValueChange={(val: string) => handleChange(val, "pattern")}
           value={condition.pattern}
@@ -65,14 +51,19 @@ function BashCommandOutput({ condition, conditionIndex }) {
         <Checkbox
           id="caseSensitive"
           isChecked={condition.caseSensitive}
-          onChange={() => {handleChange("caseSensitive",condition.caseSensitive)}}
+          onChange={() => {
+            handleChange("caseSensitive", condition.caseSensitive);
+          }}
           label="Pattern is Case Sensitive"
           isSmall={true}
         />
       </div>
 
-      <HandleTypes condition={condition} conditionIndex={conditionIndex} />
-
+      <HandleTypes
+        rule={rule}
+        condition={condition}
+        conditionIndex={conditionIndex}
+      />
     </>
   );
 }

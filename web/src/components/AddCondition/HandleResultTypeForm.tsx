@@ -39,7 +39,11 @@ function HandleResultTypeForm({
       );
     case ResultTypeTypes.BASH_COMMAND_OUTPUT:
       return (
-        <BashCommandOutput condition={condition} conditionIndex={conditionIndex} />
+        <BashCommandOutput
+          rule={rule}
+          condition={condition}
+          conditionIndex={conditionIndex}
+        />
       );
     default:
       return (
