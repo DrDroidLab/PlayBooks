@@ -5,17 +5,17 @@ import getCurrentTask from "./getCurrentTask.ts";
 import { connectorsWithoutAssets } from "./connectorsWithoutAssets.ts";
 
 export const fetchData = async (val: any = undefined) => {
-  const { currentStepId } = playbookSelector(store.getState());
-  const id = val?.index ?? currentStepId;
-  const [step, currentId] = getCurrentTask(id);
+  const { currentVisibleTask } = playbookSelector(store.getState());
+  const id = val?.id ?? currentVisibleTask;
+  const [task, currentId] = getCurrentTask(id);
 
-  if (step?.source === "API" || val?.connector_type === "API") return;
+  if (task?.source === "API" || val?.connector_type === "API") return;
   if (
-    connectorsWithoutAssets.includes(step?.source) ||
+    connectorsWithoutAssets.includes(task?.source ?? "") ||
     connectorsWithoutAssets.includes(val?.connector_type)
   )
     return;
-  if (step.connectorType && step.modelType) await getAssetsFunction(currentId);
+  if (currentId) await getAssetsFunction(currentId);
 };
 
 export const getAssetsFunction = async (id: string) => {

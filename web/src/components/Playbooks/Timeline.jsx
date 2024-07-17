@@ -1,26 +1,22 @@
 import { useGetPlaybookExecutionQuery } from "../../store/features/playbook/api/index.ts";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  showStepConfig,
-  stepsSelector,
-} from "../../store/features/playbook/playbookSlice.ts";
+import { useDispatch } from "react-redux";
+import { showTaskConfig } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
 import ExecutingStep from "./timeline/ExecutingStep.jsx";
-import StepConfig from "./timeline/StepConfig.jsx";
-import ExecuteNextStep from "./timeline/ExecuteNextStep.jsx";
+import StepConfig from "./timeline/StepConfig.tsx";
+import ExecuteNextStep from "./timeline/ExecuteNextStep.tsx";
 import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
 import useExecutionStack from "../../hooks/useExecutionStack.ts";
 
 function Timeline() {
-  const playbookSteps = useSelector(stepsSelector);
-  const { isLoading } = useGetPlaybookExecutionQuery();
+  const { isLoading, refetch } = useGetPlaybookExecutionQuery();
   const dispatch = useDispatch();
   const { steps, nextStep, executingStep } = useExecutionStack();
   const showNextStepExecution = Object.keys(nextStep ?? {}).length > 0;
 
   const handleShowConfig = (stepId) => {
-    const index = playbookSteps.findIndex((step) => step.id === stepId);
-    dispatch(showStepConfig(index));
+    const index = steps.findIndex((step) => step.id === stepId);
+    dispatch(showTaskConfig(index));
   };
 
   if (isLoading) {
@@ -49,10 +45,7 @@ function Timeline() {
       <ExecutingStep handleShowConfig={handleShowConfig} />
 
       {showNextStepExecution && !executingStep && (
-        <ExecuteNextStep
-          handleShowConfig={handleShowConfig}
-          stepId={nextStep.id}
-        />
+        <ExecuteNextStep stepId={nextStep.id} refetch={refetch} />
       )}
 
       <ExecutionNavigateButtons steps={steps} />

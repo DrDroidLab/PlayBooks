@@ -1,0 +1,149 @@
+/* Page setup */
+@page {
+    margin: 2cm;
+    size: A4;
+  
+    @bottom-right {
+      content: counter(page) " of " counter(pages);
+    }
+  
+    @bottom-center {
+      color: #808080;
+      content: string(report-title) " - " string(report-section);
+    }
+  
+    /* @top-right {
+      background: url('./../../logo.png') no-repeat bottom;
+      background-size: 5cm;
+      content: "";
+      width: 5cm;
+    } */
+  }
+  
+  /* Cover page setup */
+  @page cover {
+    @bottom-center {
+      content: "";
+    }
+  
+    @bottom-right {
+      content: "";
+    }
+  }
+  
+  html {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  /* Headers */
+  h1 {
+    font-size: 2.5rem;
+    page: cover;
+    string-set: report-title content();
+    margin-bottom: 0;
+    margin-top: 50%;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    string-set: report-section content();
+    page-break-before: always;
+    margin-top: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  h4 {
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+  }
+  
+  h2 + h3, h3 + h4 {
+    margin-top: inherit;
+  }
+  
+  /* Paragraphs */
+  p {
+    margin: 1rem 0;
+  }
+  
+  /* Lists */
+  ul, ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin: 0.5rem 0;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    table-layout: auto;
+    max-width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+  }
+  
+  /* Links */
+  a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+  
+  /* Blockquotes */
+  blockquote {
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid #ddd;
+    color: #555;
+    font-style: italic;
+  }
+  
+  /* Code blocks */
+  pre {
+    background: #f4f4f4;
+    padding: 1rem;
+    overflow: auto;
+  }
+  
+  code {
+    font-family: "Courier New", Courier, monospace;
+    background: #f4f4f4;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+  }
+  
+  /* Page breaks inside elements */
+  ul, ol, blockquote, pre, table {
+    page-break-inside: avoid;
+  }
+  

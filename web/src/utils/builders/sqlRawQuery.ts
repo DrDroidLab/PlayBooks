@@ -1,13 +1,14 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const sqlRawQueryBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "query",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          type: InputTypes.MULTILINE,
         },
       ],
     ],
