@@ -23,10 +23,10 @@ export default function OptionRender({ data, removeErrors, id }) {
   };
 
   useEffect(() => {
-    if (data.default) {
-      updateCardById(data.key, data.default, currentTaskId);
+    if (data.default && !value) {
+      updateCardById(key, data.default, currentTaskId);
     }
-  }, [data.default, currentTaskId, data.key]);
+  }, [data.default, currentTaskId, key, value]);
 
   useEffect(() => {
     if (task?.ui_requirement.errors?.[data.key]) {
