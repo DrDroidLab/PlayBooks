@@ -7,6 +7,7 @@ import {
 } from "../../../store/features/workflow/workflowSlice.ts";
 import HandleTransformer from "./HandleTransformer.tsx";
 import handleTransformerAvailable from "../../../utils/workflow/handleTransformerAvailable.ts";
+import AlertOutput from "./AlertOutput.tsx";
 
 const key = "useTransformer";
 
@@ -41,6 +42,7 @@ function Transformer() {
           Only supported for slack triggers
         </p>
       )}
+      {currentWorkflow[key] && <AlertOutput />}
       {currentWorkflow[key] && <HandleTransformer />}
     </div>
   );

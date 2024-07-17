@@ -7,8 +7,8 @@ const currentTimestamp = Math.floor(Date.now() / 1000);
 
 export const searchTriggerApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSearchTriggers: builder.query<any, void>({
-      query: () => {
+    getSearchTriggers: builder.query<any, number | void>({
+      query: (limit) => {
         const currentWorkflow = currentWorkflowSelector(store.getState());
         const workspace_id = currentWorkflow?.trigger?.workspaceId;
         const channel_id = currentWorkflow?.trigger?.channel?.channel_id;
@@ -20,7 +20,7 @@ export const searchTriggerApi = apiSlice.injectEndpoints({
           body: {
             meta: {
               page: {
-                limit: 5,
+                limit: limit ?? 5,
                 offset: 0,
               },
               time_range: {
@@ -46,4 +46,5 @@ export const searchTriggerApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetSearchTriggersQuery } = searchTriggerApi;
+export const { useGetSearchTriggersQuery, useLazyGetSearchTriggersQuery } =
+  searchTriggerApi;

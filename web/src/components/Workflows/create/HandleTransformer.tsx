@@ -50,21 +50,24 @@ function HandleTransformer() {
 
   return (
     <div className="my-2 flex flex-col gap-2">
-      <Editor
-        value={code}
-        className="border rounded outline-none"
-        onValueChange={setCode}
-        highlight={(code) =>
-          hljs.highlight(code, {
-            language: "python",
-          }).value
-        }
-        padding={10}
-        style={{
-          fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 12,
-        }}
-      />
+      <div>
+        <p className="font-semibold text-violet-500 text-sm">Transformer</p>
+        <Editor
+          value={code}
+          className="border rounded outline-none"
+          onValueChange={setCode}
+          highlight={(code) =>
+            hljs.highlight(code, {
+              language: "python",
+            }).value
+          }
+          padding={10}
+          style={{
+            fontFamily: '"Fira code", "Fira Mono", monospace',
+            fontSize: 12,
+          }}
+        />
+      </div>
 
       <div>
         <p className="font-semibold text-violet-500 text-sm">Example Input</p>
@@ -102,6 +105,7 @@ function HandleTransformer() {
               fontFamily: '"Fira code", "Fira Mono", monospace',
               fontSize: 12,
             }}
+            disabled
           />
         </div>
       )}
