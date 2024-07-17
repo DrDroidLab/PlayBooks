@@ -125,6 +125,14 @@ export default function extractModelOptions(assets: any, task: Task) {
       return {
         indexes: assets?.map((asset) => asset.index) ?? [],
       };
+    case taskTypes.GCM_METRIC_EXECUTION:
+      return {
+        regions: assets.map((asset) => asset.namespace),
+      };
+    case taskTypes.GCM_FILTER_LOG_ENTRIES:
+      return {
+        namespaces: assets.map((asset) => asset.namespace),
+      };
     default:
       return [];
   }
