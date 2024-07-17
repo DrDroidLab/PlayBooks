@@ -25,7 +25,7 @@ class AzureSourceManager(PlaybookSourceManager):
             Azure.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.filter_log_events,
                 'model_types': [SourceModelType.AZURE_WORKSPACE],
-                'result_type': PlaybookTaskResultType.TABLE,
+                'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Fetch logs from Azure Log Analytics Workspace',
                 'category': 'Logs'
             },
@@ -80,7 +80,7 @@ class AzureSourceManager(PlaybookSourceManager):
                 total_count=UInt64Value(value=len(table_rows)),
             )
 
-            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=result, source=self.source)
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=result, source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Azure task: {e}")

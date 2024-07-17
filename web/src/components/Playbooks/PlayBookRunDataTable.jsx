@@ -23,9 +23,16 @@ const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    if (result?.table?.rows?.length > 0) setShowTable(true);
-    setTableData(result?.table?.rows ?? []);
-    setTableLoading(false);
+    if (
+      result &&
+      result.table &&
+      result.table.rows &&
+      result.table.rows.length > 0
+    ) {
+      setShowTable(true);
+      setTableData(result.table.rows);
+      setTableLoading(false);
+    }
   }, [result]);
 
   const handleClose = () => {
