@@ -116,3 +116,54 @@ class TableResultRule(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["threshold", b"threshold"]) -> typing_extensions.Literal["numeric_value_threshold", "string_value_threshold"] | None: ...
 
 global___TableResultRule = TableResultRule
+
+@typing_extensions.final
+class BashCommandOutputResultRule(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _Type:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[BashCommandOutputResultRule._Type.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN_BEC: BashCommandOutputResultRule._Type.ValueType  # 0
+        GREP: BashCommandOutputResultRule._Type.ValueType  # 1
+        GREP_COUNT: BashCommandOutputResultRule._Type.ValueType  # 2
+
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+    UNKNOWN_BEC: BashCommandOutputResultRule.Type.ValueType  # 0
+    GREP: BashCommandOutputResultRule.Type.ValueType  # 1
+    GREP_COUNT: BashCommandOutputResultRule.Type.ValueType  # 2
+
+    TYPE_FIELD_NUMBER: builtins.int
+    OPERATOR_FIELD_NUMBER: builtins.int
+    PATTERN_FIELD_NUMBER: builtins.int
+    CASE_SENSITIVE_FIELD_NUMBER: builtins.int
+    NUMERIC_VALUE_THRESHOLD_FIELD_NUMBER: builtins.int
+    STRING_VALUE_THRESHOLD_FIELD_NUMBER: builtins.int
+    type: global___BashCommandOutputResultRule.Type.ValueType
+    operator: protos.base_pb2.Operator.ValueType
+    @property
+    def pattern(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def case_sensitive(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def numeric_value_threshold(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
+    @property
+    def string_value_threshold(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def __init__(
+        self,
+        *,
+        type: global___BashCommandOutputResultRule.Type.ValueType = ...,
+        operator: protos.base_pb2.Operator.ValueType = ...,
+        pattern: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        case_sensitive: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        numeric_value_threshold: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
+        string_value_threshold: google.protobuf.wrappers_pb2.StringValue | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["case_sensitive", b"case_sensitive", "numeric_value_threshold", b"numeric_value_threshold", "pattern", b"pattern", "string_value_threshold", b"string_value_threshold", "threshold", b"threshold"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["case_sensitive", b"case_sensitive", "numeric_value_threshold", b"numeric_value_threshold", "operator", b"operator", "pattern", b"pattern", "string_value_threshold", b"string_value_threshold", "threshold", b"threshold", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["threshold", b"threshold"]) -> typing_extensions.Literal["numeric_value_threshold", "string_value_threshold"] | None: ...
+
+global___BashCommandOutputResultRule = BashCommandOutputResultRule
