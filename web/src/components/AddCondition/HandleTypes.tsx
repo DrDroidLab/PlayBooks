@@ -83,9 +83,7 @@ function HandleTypes({
             <ValueComponent
               error={undefined}
               valueType={"STRING"}
-              onValueChange={(val: string) =>
-                handleChange(val, `${keyValue}.pattern`)
-              }
+              onValueChange={(val: string) => handleChange(val, `pattern`)}
               value={rule.pattern}
               valueOptions={[]}
               placeHolder={"Enter pattern to evaluate"}
