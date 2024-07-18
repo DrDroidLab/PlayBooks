@@ -3,7 +3,6 @@ import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
-import ValueComponent from "../ValueComponent/index.jsx";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
 import HandleTypes from "./HandleTypes.tsx";
@@ -74,15 +73,13 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
       </div>
 
       <div className="flex items-center gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) =>
+        <CustomInput
+          type={InputTypes.TEXT}
+          handleChange={(val: string) =>
             handleChange(val, `${resultType?.toLowerCase()}.threshold`)
           }
           value={rule.threshold}
-          valueOptions={[]}
-          placeHolder={"Enter Value of condition"}
+          placeholder={"Enter Value of condition"}
           length={200}
         />
       </div>

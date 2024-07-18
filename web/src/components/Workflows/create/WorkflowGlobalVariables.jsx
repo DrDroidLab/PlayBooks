@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ValueComponent from "../../ValueComponent";
 import { Close } from "@mui/icons-material";
 import AddWorkflowVariableOverlay from "./AddWorkflowVariableOverlay";
 import {
@@ -9,6 +8,8 @@ import {
 } from "../../../store/features/workflow/workflowSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function WorkflowGlobalVariables() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -41,12 +42,12 @@ function WorkflowGlobalVariables() {
               className={`flex flex-wrap p-2 items-center gap-1`}>
               <div className="bg-violet-100 p-1 rounded">{variable.name}</div>
               <div className="flex gap-1 items-center">
-                <ValueComponent
-                  valueType={"STRING"}
+                <CustomInput
+                  type={InputTypes.TEXT}
                   value={variable.value}
-                  placeHolder={"Enter variable value"}
+                  placeholder={"Enter variable value"}
                   length={200}
-                  onValueChange={(val) => {
+                  handleChange={(val) => {
                     dispatch(updateGlobalVariable({ index, value: val }));
                   }}
                 />

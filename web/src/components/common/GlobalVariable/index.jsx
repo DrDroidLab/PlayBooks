@@ -5,11 +5,12 @@ import {
   deleteVariable,
   updateGlobalVariable,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import ValueComponent from "../../ValueComponent";
 import AddVariableOverlay from "./AddVariableOverlay.jsx";
 import { CloseRounded } from "@mui/icons-material";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import CustomButton from "../CustomButton/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function GlobalVariables() {
   const [isAddVariableOpen, setIsAddVariableOpen] = useState(false);
@@ -53,12 +54,12 @@ function GlobalVariables() {
                 </p>
               </div>
               <div className="flex gap-2 items-center">
-                <ValueComponent
-                  valueType={"STRING"}
+                <CustomInput
+                  type={InputTypes.TEXT}
                   value={variables[key]}
-                  placeHolder={"Enter variable value"}
+                  placeholder={"Enter variable value"}
                   length={200}
-                  onValueChange={(val) => {
+                  handleChange={(val) => {
                     dispatch(updateGlobalVariable({ name: key, value: val }));
                   }}
                 />

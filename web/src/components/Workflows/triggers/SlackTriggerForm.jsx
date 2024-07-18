@@ -1,4 +1,3 @@
-import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { useGetTriggerOptionsQuery } from "../../../store/features/triggers/api/getTriggerOptionsApi.ts";
@@ -74,14 +73,14 @@ function SlackTriggerForm() {
         />
       </div>
       <div className="text-sm flex items-center gap-2">
-        <p className="text-xs">Matching string</p>
-        <ValueComponent
-          valueType={"STRING"}
-          onValueChange={(val) => {
+        <p className="text-xs shrink-0">Matching string</p>
+        <CustomInput
+          type={InputTypes.TEXT}
+          handleChange={(val) => {
             handleTriggerInput("filterString", val);
           }}
           value={currentWorkflow?.trigger?.filterString}
-          placeHolder={"Enter Matching string"}
+          placeholder={"Enter Matching string"}
           length={300}
           error={currentWorkflow?.errors?.filterString ?? false}
         />

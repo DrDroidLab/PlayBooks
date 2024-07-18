@@ -1,11 +1,12 @@
 import React from "react";
-import ValueComponent from "../../ValueComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   connectorSelector,
   setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import Checkbox from "../../common/Checkbox/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
   const dispatch = useDispatch();
@@ -53,9 +54,9 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
       );
     default:
       return (
-        <ValueComponent
-          valueType={"STRING"}
-          onValueChange={(val) => {
+        <CustomInput
+          type={InputTypes.TEXT}
+          handleChange={(val) => {
             if (onValueChange) {
               onValueChange(val);
               return;
@@ -64,7 +65,7 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
           }}
           disabled={connectorActive}
           value={value ?? currentConnector[option.key_type]}
-          placeHolder={option.display_name}
+          placeholder={option.display_name}
           length={500}
         />
       );

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -62,16 +61,11 @@ function BasicDetails() {
     <>
       <div className="flex gap-4">
         <div className="space-y-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            Workflow Name
-          </label>
-          <ValueComponent
-            valueType={"STRING"}
-            placeHolder={"Enter workflow name"}
+          <CustomInput
+            label="Workflow Name"
+            type={InputTypes.TEXT}
             value={currentWorkflow.name}
-            onValueChange={(val) => {
+            handleChange={(val) => {
               handleInput("name", val);
             }}
             error={currentWorkflow?.errors?.name ?? false}

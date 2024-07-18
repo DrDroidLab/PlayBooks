@@ -22,13 +22,14 @@ export type HandleInputRenderType = {
   placeholder?: string;
   options?: any[];
   searchable?: boolean;
+  length?: number;
 };
 
 function HandleInputRender({ type, ...props }: HandleInputRenderType) {
   switch (type) {
     case InputTypes.TEXT_ROW:
     case InputTypes.TEXT:
-      return <Text {...props} handleChange={props.handleChange!} type={type} />;
+      return <Text {...props} handleChange={props.handleChange!} />;
 
     case InputTypes.MULTILINE:
       return <Multiline handleChange={props.handleChange!} {...props} />;

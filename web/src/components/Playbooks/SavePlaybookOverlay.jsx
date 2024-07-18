@@ -6,9 +6,10 @@ import {
   currentPlaybookSelector,
   setPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import ValueComponent from "../ValueComponent/index.jsx";
 import Toast from "../Toast.js";
 import useIsExisting from "../../hooks/useIsExisting.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
   const currentPlaybook = useSelector(currentPlaybookSelector);
@@ -60,12 +61,12 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
             </div>
             {!isExisting && !currentPlaybook?.name && (
               <div>
-                <label className="text-xs font-bold text-gray-500">Name</label>
-                <ValueComponent
-                  valueType={"STRING"}
-                  onValueChange={(val) => setName(val)}
+                <CustomInput
+                  type={InputTypes.TEXT}
+                  label="Name"
+                  handleChange={(val) => setName(val)}
                   value={name}
-                  placeHolder={"Enter Playbook name"}
+                  placeholder={"Enter Playbook name"}
                   length={300}
                 />
               </div>

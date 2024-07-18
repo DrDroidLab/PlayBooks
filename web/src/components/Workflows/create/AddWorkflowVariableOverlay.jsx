@@ -4,9 +4,10 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import { addGlobalVariable } from "../../../store/features/workflow/workflowSlice.ts";
 import Overlay from "../../Overlay";
 import { Close } from "@mui/icons-material";
-import ValueComponent from "../../ValueComponent";
 import Toast from "../../Toast";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 const AddWorkflowVariableOverlay = ({ isOpen, close }) => {
   const [name, setName] = useState("");
@@ -47,18 +48,18 @@ const AddWorkflowVariableOverlay = ({ isOpen, close }) => {
             </div>
           </div>
           <div className={"flex flex-col gap-3"}>
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val) => setName(val)}
+            <CustomInput
+              type={InputTypes.TEXT}
+              handleChange={(val) => setName(val)}
               value={name}
-              placeHolder={"Enter variable name"}
+              placeholder={"Enter variable name"}
               length={100}
             />
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val) => setValue(val)}
+            <CustomInput
+              type={InputTypes.TEXT}
+              handleChange={(val) => setValue(val)}
               value={value}
-              placeHolder={"Enter variable value"}
+              placeholder={"Enter variable value"}
               length={100}
             />
           </div>

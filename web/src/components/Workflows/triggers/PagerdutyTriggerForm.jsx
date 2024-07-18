@@ -1,8 +1,9 @@
-import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { handleTriggerInput } from "../utils/handleInputs.ts";
 import CopyCode from "../../common/CopyCode/index.jsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function PagerdutyTriggerForm() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -12,7 +13,8 @@ function PagerdutyTriggerForm() {
       {currentWorkflow.webhook && (
         <div className="flex flex-col gap-2 lg:w-1/2">
           <p className="text-sm p-2 border border-violet-500 bg-violet-50 rounded">
-            Add these Webhook details in your PagerDuty Generic Webhook(V3) page.
+            Add these Webhook details in your PagerDuty Generic Webhook(V3)
+            page.
           </p>
           <CopyCode content={currentWorkflow.webhook} language={"curl"} />
         </div>
@@ -20,30 +22,32 @@ function PagerdutyTriggerForm() {
       <div className="max-w-[415px] flex flex-col gap-2 items-start">
         <div className="text-sm flex items-center gap-2 w-full">
           <p className="text-sm">Filters</p>
-          <p className="text-gray-500 text-xs italic">(Enter service and title to select incidents)</p>
+          <p className="text-gray-500 text-xs italic">
+            (Enter service and title to select incidents)
+          </p>
         </div>
         <div className="text-sm flex items-center gap-2 justify-between w-full">
           <p className="text-xs">Service</p>
-          <ValueComponent
-            valueType={"STRING"}
-            onValueChange={(val) => {
+          <CustomInput
+            type={InputTypes.TEXT}
+            handleChange={(val) => {
               handleTriggerInput("serviceName", val);
             }}
             value={currentWorkflow?.trigger?.serviceName}
-            placeHolder={"Enter Service Name"}
+            placeholder={"Enter Service Name"}
             length={300}
             error={currentWorkflow?.errors?.serviceName ?? false}
           />
         </div>
         <div className="text-sm flex items-center gap-2 justify-between w-full">
           <p className="text-xs">Title</p>
-          <ValueComponent
-            valueType={"STRING"}
-            onValueChange={(val) => {
+          <CustomInput
+            type={InputTypes.TEXT}
+            handleChange={(val) => {
               handleTriggerInput("title", val);
             }}
             value={currentWorkflow?.trigger?.title}
-            placeHolder={"Enter Title"}
+            placeholder={"Enter Title"}
             length={300}
             error={currentWorkflow?.errors?.title ?? false}
           />

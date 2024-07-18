@@ -1,34 +1,33 @@
 import React from "react";
 import ValueComponent from "../../ValueComponent";
-import { InputType } from "../../../types/inputs/inputTypes.ts";
 
 type TextInputTypes = {
-  type: InputType;
   label?: string;
   value: string;
   handleChange: (val: string) => void;
   error?: string;
+  placeholder?: string;
+  length?: number;
 };
 
 function Text({
-  type,
   label,
   value,
   error,
   handleChange,
-  ...props
+  placeholder,
+  length = 200,
 }: TextInputTypes) {
   return (
     <ValueComponent
-      length={200}
+      length={length}
       valueOptions={[]}
-      placeHolder={`Enter ${label}`}
+      placeHolder={placeholder ?? `Enter ${label}`}
       valueType={"STRING"}
       onValueChange={handleChange}
       value={value}
       error={error}
       disabled={false}
-      {...props}
     />
   );
 }

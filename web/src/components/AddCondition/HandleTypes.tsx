@@ -1,10 +1,11 @@
 import React from "react";
-import ValueComponent from "../ValueComponent";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
 import Checkbox from "../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 type HandleTypesPropTypes = {
   condition: any;
@@ -31,14 +32,12 @@ function HandleTypes({
     case "ROLLING":
       return (
         <div className="flex items-center gap-1">
-          <ValueComponent
-            valueType={"STRING"}
-            onValueChange={(val: string) => handleChange(val, "window")}
+          <CustomInput
+            type={InputTypes.TEXT}
+            handleChange={(val: string) => handleChange(val, "window")}
             value={rule.window}
-            valueOptions={[]}
-            placeHolder={"Enter window size"}
+            placeholder={"Enter window size"}
             length={200}
-            error={undefined}
           />
         </div>
       );
@@ -50,12 +49,11 @@ function HandleTypes({
       return (
         <>
           <div className="flex flex-wrap gap-2 items-center">
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val: string) => handleChange(val, "column_name")}
+            <CustomInput
+              type={InputTypes.TEXT}
+              handleChange={(val: string) => handleChange(val, "column_name")}
               value={rule.column_name}
-              valueOptions={[]}
-              placeHolder={"Enter column name"}
+              placeholder={"Enter column name"}
               length={200}
               error={undefined}
             />

@@ -1,5 +1,4 @@
 import React from "react";
-import ValueComponent from "../ValueComponent";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
@@ -62,10 +61,9 @@ function Table({ condition, conditionIndex, rule }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => {
+        <CustomInput
+          type={InputTypes.TEXT}
+          handleChange={(val: string) => {
             if (checkIfNumeric) {
               handleChange(
                 undefined,
@@ -87,8 +85,7 @@ function Table({ condition, conditionIndex, rule }) {
             }
           }}
           value={threshold}
-          valueOptions={[]}
-          placeHolder={"Enter threshold of condition"}
+          placeholder={"Enter threshold of condition"}
           length={200}
         />
       </div>
