@@ -3,9 +3,9 @@ import React from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 type WsyisygInputTypes = {
-  label: string;
   value: string;
   handleChange: any;
+  label?: string;
   error?: string;
   disabled?: boolean;
 };

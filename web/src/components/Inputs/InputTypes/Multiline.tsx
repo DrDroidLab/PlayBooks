@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 
 type MultilineInputType = {
-  label: string;
+  label?: string;
   value: string;
   handleChange: (val: string) => void;
   error?: string;
@@ -14,6 +14,7 @@ function Multiline({
   handleChange,
   disabled,
   error,
+  ...props
 }: MultilineInputType) {
   const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -30,6 +31,8 @@ function Multiline({
       onChange={onChange}
       disabled={disabled}
       style={error ? { borderColor: "red" } : {}}
+      placeholder={`Enter ${label}`}
+      {...props}
     />
   );
 }

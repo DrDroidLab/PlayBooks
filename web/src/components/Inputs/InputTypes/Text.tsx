@@ -4,7 +4,7 @@ import { InputType } from "../../../types/inputs/inputTypes.ts";
 
 type TextInputTypes = {
   type: InputType;
-  label: string;
+  label?: string;
   value: string;
   handleChange: (val: string) => void;
   error?: string;

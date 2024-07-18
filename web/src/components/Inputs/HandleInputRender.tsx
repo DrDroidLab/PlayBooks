@@ -11,8 +11,8 @@ import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 
 export type HandleInputRenderType = {
   type: InputType;
-  label: string;
   value: string;
+  label?: string;
   handleChange?: (val: string) => void;
   handleClick?: React.MouseEventHandler<HTMLButtonElement>;
   handleAddClick?: () => void;

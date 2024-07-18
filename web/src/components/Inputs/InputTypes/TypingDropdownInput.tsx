@@ -2,10 +2,10 @@ import React from "react";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 
 type TypingDropdownInputType = {
-  label: string;
   value: string;
   handleChange: (val: string) => void;
   options: any[];
+  label?: string;
   placeholder?: string;
   error?: string;
   disabled?: boolean;

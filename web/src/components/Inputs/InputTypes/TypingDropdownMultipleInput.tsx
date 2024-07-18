@@ -4,11 +4,11 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 
 type TypingDropdownMultipleInputType = {
-  label: string;
   value: string;
   handleChange: (val: string) => void;
   handleAddClick: () => void;
   options: any[];
+  label?: string;
   placeholder?: string;
   error?: string;
   disabled?: boolean;
