@@ -24,6 +24,7 @@ export type HandleInputRenderType = {
   options?: any[];
   searchable?: boolean;
   length?: number;
+  className?: string;
 };
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
