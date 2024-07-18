@@ -55,6 +55,7 @@ export const Key = {
   UNIT: "unit",
   NRQL_EXPRESSION: "nrql_expression",
   METRIC_TYPE: "metric_type",
+  CONTENT: "content",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];

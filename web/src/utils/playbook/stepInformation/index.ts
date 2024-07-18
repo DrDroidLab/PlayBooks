@@ -18,3 +18,4 @@ export * from "./loki.ts";
 export * from "./elasticSearch.ts";
 export * from "./gcmLogs.ts";
 export * from "./gcmMetrics.ts";
+export * from "./markdown.ts";

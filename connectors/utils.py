@@ -16,6 +16,7 @@ from executor.source_processors.elastic_search_api_processor import ElasticSearc
 from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
+from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from executor.source_processors.pd_api_processor import PdApiProcessor
@@ -52,7 +53,8 @@ connector_type_api_processor_map = {
     Source.PAGER_DUTY: PdApiProcessor,
     Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
     Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
-    Source.GCM: GcmApiProcessor
+    Source.GCM: GcmApiProcessor,
+    Source.KUBERNETES: KubectlApiProcessor
 }
 
 
@@ -258,6 +260,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['project_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GCM_SERVICE_ACCOUNT_JSON:
                 credentials_dict['service_account_json'] = conn_key.key.value
+    elif connector_type == Source.KUBERNETES:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_API_SERVER:
+                credentials_dict['api_server'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_TOKEN:
+                credentials_dict['token'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA:
+                credentials_dict['ssl_ca_cert'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH:
+                credentials_dict['ssl_ca_cert_path'] = conn_key.key.value
     else:
         return None
     return credentials_dict

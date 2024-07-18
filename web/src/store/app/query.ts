@@ -99,7 +99,6 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
 
   const timeRange = result.data?.meta?.time_range;
   if (timeRange && timeRange.time_geq && timeRange.time_lt) {
-    console.log("time range", timeRange);
     api.dispatch(
       updateProperty({
         key: "timeRange",

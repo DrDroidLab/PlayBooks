@@ -20,3 +20,7 @@ export * from "./grafanaLoki.ts";
 export * from "./elasticSearchBuilder.ts";
 export * from "./gcmMetricsBuilder.ts";
 export * from "./gcmLogsBuilder.ts";
+export * from "./documentation.ts";
+export * from "./gkeKubectl.ts";
+export * from "./eksKubectl.ts";
+export * from "./kubernetesKubectl.ts";

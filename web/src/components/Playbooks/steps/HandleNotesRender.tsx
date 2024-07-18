@@ -3,23 +3,23 @@ import { useDispatch } from "react-redux";
 import { toggleNotesVisibility } from "../../../store/features/playbook/playbookSlice.ts";
 import Notes from "./Notes.jsx";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function HandleNotesRender({ id }) {
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
-  const [task] = useCurrentTask(id);
+  const [step] = useCurrentStep(id);
 
   const toggleNotes = () => {
     dispatch(toggleNotesVisibility({ id }));
   };
 
-  if (!task) return;
+  if (!step) return;
 
   return (
     <div>
       {!isPrefetched ? (
-        task.notes ? (
+        step.notes ? (
           <>
             <div className="mt-2 text-sm cursor-pointer text-violet-500">
               <b>Notes</b>
@@ -29,16 +29,16 @@ function HandleNotesRender({ id }) {
         ) : (
           <>
             <div
-              className="mt-2 text-sm cursor-pointer text-violet-500"
+              className="mt-2 text-sm cursor-pointer text-violet-500 mb-2"
               onClick={toggleNotes}>
-              <b>{task.ui_requirement.showNotes ? "-" : "+"}</b> Add Notes about
+              <b>{step.ui_requirement.showNotes ? "-" : "+"}</b> Add Notes about
               this step
             </div>
-            {task.ui_requirement.showNotes && <Notes id={id} />}
+            {step.ui_requirement.showNotes && <Notes id={id} />}
           </>
         )
       ) : (
-        task.notes && (
+        step.notes && (
           <>
             <div className="mt-2 text-sm cursor-pointer text-violet-500">
               <b>Notes</b>

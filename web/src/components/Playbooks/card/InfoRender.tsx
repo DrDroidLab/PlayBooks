@@ -5,6 +5,7 @@ import Text from "./info/Text.tsx";
 import Chips from "./info/Chips.tsx";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import MarkdownOutput from "./MarkdownOutput.tsx";
 
 type InfoRenderPropTypes = {
   taskId: string;
@@ -20,6 +21,8 @@ function InfoRender({ taskId, info }: InfoRenderPropTypes) {
       return <Text value={value} />;
     case InfoTypes.CHIPS:
       return <Chips value={value} />;
+    case InfoTypes.MARKDOWN:
+      return <MarkdownOutput className="!p-0" content={value} />;
     default:
       return <></>;
   }
