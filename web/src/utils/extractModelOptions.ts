@@ -89,7 +89,21 @@ export default function extractModelOptions(assets: any, task: Task) {
           clusters: asset.clusters,
         })),
       };
+    case taskTypes.EKS_KUBECTL_COMMAND:
+        return {
+          regions: assets.map((asset) => ({
+            region: asset.region,
+            clusters: asset.clusters,
+          })),
+        };
     case taskTypes.GKE_GET_DEPLOYMENTS:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
+    case taskTypes.GKE_KUBECTL_COMMAND:
       return {
         zones: assets.map((asset) => ({
           zone: asset.zone,
@@ -124,6 +138,14 @@ export default function extractModelOptions(assets: any, task: Task) {
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return {
         indexes: assets?.map((asset) => asset.index) ?? [],
+      };
+    case taskTypes.GCM_METRIC_EXECUTION:
+      return {
+        metricTypes: assets.map((asset) => asset.metric_type),
+      };
+    case taskTypes.GCM_FILTER_LOG_ENTRIES:
+      return {
+        namespaces: assets.map((asset) => asset.namespace),
       };
     default:
       return [];

@@ -8,10 +8,12 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_processors.gke_api_processor import GkeApiProcessor
+from executor.source_processors.gke_api_processor import GkeApiProcessor, get_gke_api_instance
+from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
+    BashCommandOutputResult
 from protos.playbooks.source_task_definitions.gke_task_pb2 import Gke
 
 
@@ -49,11 +51,27 @@ class GkeSourceManager(PlaybookSourceManager):
                 'display_name': 'Get Services from GKE Cluster',
                 'category': 'Deployment'
             },
+            Gke.TaskType.KUBECTL_COMMAND: {
+                'executor': self.execute_kubectl_command,
+                'model_types': [SourceModelType.GKE_CLUSTER],
+                'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                'display_name': 'Execute Kubectl Command in GKE Cluster',
+                'category': 'Actions'
+            },
         }
 
     def get_connector_processor(self, gke_connector, **kwargs):
         generated_credentials = generate_credentials_dict(gke_connector.type, gke_connector.keys)
-        return GkeApiProcessor(**generated_credentials)
+        if 'native_connection' not in kwargs or not kwargs['native_connection']:
+            return GkeApiProcessor(**generated_credentials)
+        else:
+            zone = kwargs.get('zone')
+            cluster_name = kwargs.get('cluster_name')
+            instance = get_gke_api_instance(**generated_credentials, zone=zone, cluster_name=cluster_name)
+            gke_host = instance.api_client.configuration.host
+            token = instance.api_client.configuration.api_key.get('authorization')
+            ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
+            return KubectlApiProcessor(api_server=gke_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
 
     def get_pods(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
                  gke_connector: ConnectorProto) -> PlaybookTaskResult:
@@ -101,7 +119,8 @@ class GkeSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Pods from {zone}, {cluster_name}, {namespace}'), rows=table_rows,
+            table = TableResult(raw_query=StringValue(value=f'Get Pods from {zone}, {cluster_name}, {namespace}'),
+                                rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
@@ -156,8 +175,10 @@ class GkeSourceManager(PlaybookSourceManager):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Deployments from {zone}, {cluster_name}, {namespace}'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Deployments from {zone}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get deployments in gke: {e}")
@@ -212,7 +233,8 @@ class GkeSourceManager(PlaybookSourceManager):
                 table_columns.append(
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value=f'Get Events from {zone}, {cluster_name}, {namespace}'), rows=table_rows,
+            table = TableResult(raw_query=StringValue(value=f'Get Events from {zone}, {cluster_name}, {namespace}'),
+                                rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
@@ -266,10 +288,59 @@ class GkeSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Services from {zone}, {cluster_name}, {namespace}'), rows=table_rows,
+            table = TableResult(raw_query=StringValue(value=f'Get Services from {zone}, {cluster_name}, {namespace}'),
+                                rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get services in gke: {e}")
         except Exception as e:
             raise Exception(f"Failed to get services in gke: {e}")
+
+    def execute_kubectl_command(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
+                                gke_connector: ConnectorProto) -> PlaybookTaskResult:
+        try:
+            if not gke_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            gke_command = gke_task.kubectl_command
+            zone = gke_command.zone.value
+            cluster_name = gke_command.cluster.value
+
+            command_str = gke_command.command.value
+            commands = command_str.split('\n')
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    updated_commands = []
+                    for command in commands:
+                        command = command.replace(f"{{{key}}}", value)
+                        updated_commands.append(command)
+                    commands = updated_commands
+            try:
+                outputs = {}
+                kubectl_client = self.get_connector_processor(gke_connector, native_connection=True, zone=zone,
+                                                              cluster_name=cluster_name)
+                for command in commands:
+                    command_to_execute = command
+                    output = kubectl_client.execute_command(command_to_execute)
+                    outputs[command] = output
+
+                command_output_protos = []
+                for command, output in outputs.items():
+                    bash_command_result = BashCommandOutputResult.CommandOutput(
+                        command=StringValue(value=command),
+                        output=StringValue(value=output)
+                    )
+                    command_output_protos.append(bash_command_result)
+
+                return PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                    bash_command_output=BashCommandOutputResult(
+                        command_outputs=command_output_protos
+                    )
+                )
+            except Exception as e:
+                raise Exception(f"Error while executing GKE kubectl task: {e}")
+        except Exception as e:
+            raise Exception(f"Error while executing GKE kubectl task: {e}")

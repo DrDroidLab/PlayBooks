@@ -5,33 +5,27 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 message Gcm {
-  message MetricExecution {
-    message Label {
-      google.protobuf.StringValue key = 1;
-      google.protobuf.StringValue value = 2;
-    }
-    google.protobuf.StringValue project_id = 1;
-    google.protobuf.StringValue metric_type = 2;
-    repeated Label labels = 3;
-    google.protobuf.StringValue aggregation = 4;
-    google.protobuf.StringValue process_function = 5;
-  }
-
   message FilterLogEntries {
     google.protobuf.StringValue project_id = 1;
     google.protobuf.StringValue log_name = 2;
     google.protobuf.StringValue filter_query = 3;
   }
 
+  message MqlQuery {
+    google.protobuf.StringValue project_id = 1;
+    google.protobuf.StringValue query = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
   enum TaskType {
     UNKNOWN = 0;
-    METRIC_EXECUTION = 1;
-    FILTER_LOG_ENTRIES = 2;
+    FILTER_LOG_ENTRIES = 1;
+    RUN_MQL_QUERY = 2;
   }
 
   TaskType type = 1;
   oneof task {
-    MetricExecution metric_execution = 2;
-    FilterLogEntries filter_log_entries = 3;
+    FilterLogEntries filter_log_entries = 2;
+    MqlQuery mql_query = 3;
   }
 }

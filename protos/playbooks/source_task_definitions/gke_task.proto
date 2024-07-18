@@ -6,10 +6,16 @@ import "google/protobuf/wrappers.proto";
 
 message Gke {
   message Command {
-    google.protobuf.StringValue description = 2;
-    google.protobuf.StringValue zone = 3;
-    google.protobuf.StringValue cluster = 4;
-    google.protobuf.StringValue namespace = 5;
+    google.protobuf.StringValue description = 1;
+    google.protobuf.StringValue zone = 2;
+    google.protobuf.StringValue cluster = 3;
+    google.protobuf.StringValue namespace = 4;
+  }
+
+  message KubectlCommand {
+    google.protobuf.StringValue zone = 1;
+    google.protobuf.StringValue cluster = 2;
+    google.protobuf.StringValue command = 3;
   }
 
   enum TaskType {
@@ -18,6 +24,7 @@ message Gke {
     GET_DEPLOYMENTS = 2;
     GET_EVENTS = 3;
     GET_SERVICES = 4;
+    KUBECTL_COMMAND = 5;
   }
 
   TaskType type = 1;
@@ -26,5 +33,6 @@ message Gke {
     Command get_deployments = 3;
     Command get_events = 4;
     Command get_services = 5;
+    KubectlCommand kubectl_command = 6;
   }
 }
