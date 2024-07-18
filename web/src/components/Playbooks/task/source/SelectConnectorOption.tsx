@@ -13,9 +13,19 @@ import CustomButton from "../../../common/CustomButton/index.tsx";
 import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.jsx";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
-import HandleInputRender from "../../../Inputs/HandleInputRender.tsx";
+import CustomInput from "../../../Inputs/CustomInput.tsx";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
+
+const RefreshButton = ({ refetch }) => {
+  return (
+    <button onClick={refetch}>
+      <RefreshRounded
+        className={`text-gray-400 hover:text-gray-600 transition-all`}
+      />
+    </button>
+  );
+};
 
 function SelectConnectorOption({ id: taskId }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -38,7 +48,7 @@ function SelectConnectorOption({ id: taskId }) {
       <div className="flex gap-1 items-center">
         {currentConnectorOptions.length > 0 ? (
           <div className="flex gap-2">
-            <HandleInputRender
+            <CustomInput
               label="Connector"
               options={currentConnectorOptions.map((option) => ({
                 id: option.connector_id,
@@ -49,6 +59,7 @@ function SelectConnectorOption({ id: taskId }) {
               value={task?.task_connector_sources?.[0]?.id ?? ""}
               handleChange={handleConnectorOptionChange}
               disabled={!!isPrefetched}
+              suffix={<RefreshButton refetch={refetch} />}
             />
           </div>
         ) : (
@@ -56,11 +67,6 @@ function SelectConnectorOption({ id: taskId }) {
             <CustomButton onClick={toggle}>+ Add New Source</CustomButton>
           </>
         )}
-        <button onClick={refetch}>
-          <RefreshRounded
-            className={`text-gray-400 hover:text-gray-600 transition-all`}
-          />
-        </button>
         {(isFetching || task?.ui_requirement?.assetsLoading) && (
           <CircularProgress size={20} />
         )}

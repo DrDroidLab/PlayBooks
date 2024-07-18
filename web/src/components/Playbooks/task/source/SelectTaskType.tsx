@@ -8,7 +8,7 @@ import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
-import HandleInputRender from "../../../Inputs/HandleInputRender.tsx";
+import CustomInput from "../../../Inputs/CustomInput.tsx";
 
 function SelectTaskType({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -43,7 +43,7 @@ function SelectTaskType({ id }) {
 
   return (
     <div className="flex flex-col">
-      <HandleInputRender
+      <CustomInput
         label="Task Type"
         options={options}
         type={InputTypes.DROPDOWN}

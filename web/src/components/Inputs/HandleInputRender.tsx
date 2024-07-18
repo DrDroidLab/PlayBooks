@@ -9,7 +9,7 @@ import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInpu
 import DropdownInput from "./InputTypes/DropdownInput.tsx";
 import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 
-type HandleInputRenderType = {
+export type HandleInputRenderType = {
   type: InputType;
   label: string;
   value: string;

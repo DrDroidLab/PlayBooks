@@ -21,26 +21,17 @@ function DropdownInput({
   ...props
 }: DropdownInputType) {
   return (
-    <div className={`flex flex-col`}>
-      <p
-        style={{
-          fontSize: "13px",
-          color: "#676666",
-        }}>
-        <b>{label}</b>
-      </p>
-      <SelectComponent
-        data={options ?? []}
-        placeholder={`Select ${label}`}
-        onSelectionChange={handleChange}
-        selected={value}
-        searchable={true}
-        disabled={disabled}
-        error={error}
-        containerClassName={"w-56"}
-        {...props}
-      />
-    </div>
+    <SelectComponent
+      data={options ?? []}
+      placeholder={`Select ${label}`}
+      onSelectionChange={handleChange}
+      selected={value}
+      searchable={true}
+      disabled={disabled}
+      error={error}
+      containerClassName={"w-56"}
+      {...props}
+    />
   );
 }
 

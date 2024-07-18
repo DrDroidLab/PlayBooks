@@ -6,8 +6,8 @@ import {
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
-import HandleInputRender from "../../../Inputs/HandleInputRender.tsx";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
+import CustomInput from "../../../Inputs/CustomInput.tsx";
 
 function SelectSource({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -21,7 +21,7 @@ function SelectSource({ id }) {
 
   return (
     <div className="flex flex-col">
-      <HandleInputRender
+      <CustomInput
         label="Data Source"
         options={connectorOptions}
         type={InputTypes.DROPDOWN}
