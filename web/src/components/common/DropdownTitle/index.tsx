@@ -32,21 +32,20 @@ function DropdownTitle({
   return (
     <div
       onClick={() => (disabled ? () => {} : toggle())}
-      style={{
-        backgroundColor: disabled ? "#efefef" : "",
-      }}
-      className={`${
-        error ? "border-red-500" : ""
+      className={`${error ? "border-red-500" : ""} ${
+        disabled ? "!bg-gray-100" : ""
       } flex items-center gap-2 justify-between w-full rounded border p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none overflow-hidden cursor-pointer`}>
       <input
-        className={`${className} w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis disabled:bg-transparent`}
+        className={`${className} ${
+          disabled ? "bg-transparent" : ""
+        } w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis disabled:bg-transparent`}
         type="text"
         placeholder={placeholder ?? `Select ${label}`}
         value={value}
         disabled={inputDisabed}
         onChange={onChange}
       />
-      {showIcon && (
+      {showIcon && !disabled && (
         <KeyboardArrowDownRounded
           fontSize="small"
           className={`${
