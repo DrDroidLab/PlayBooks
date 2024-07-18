@@ -44,6 +44,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.EKS_GET_SERVICES:
       return Builders.eksBuilder(ops?.regions, task);
+    case taskTypes.EKS_KUBECTL_COMMAND:
+      return Builders.eksKubectlBuilder(ops?.regions, task);
     case taskTypes.GKE_GET_DEPLOYMENTS:
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_EVENTS:
@@ -52,6 +54,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_SERVICES:
       return Builders.gkeBuilder(ops?.zones, task);
+    case taskTypes.GKE_KUBECTL_COMMAND:
+        return Builders.gkeKubectlBuilder(ops?.zones, task);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:

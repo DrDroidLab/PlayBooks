@@ -19,3 +19,5 @@ export * from "./gke.ts";
 export * from "./grafanaLoki.ts";
 export * from "./elasticSearchBuilder.ts";
 export * from "./documentation.ts";
+export * from "./gke_kubectl.ts";
+export * from "./eks_kubectl.ts";
