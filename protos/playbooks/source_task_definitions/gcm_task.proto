@@ -11,7 +11,7 @@ message Gcm {
     google.protobuf.StringValue filter_query = 3;
   }
 
-  message MqlQuery {
+  message RunMqlQuery {
     google.protobuf.StringValue project_id = 1;
     google.protobuf.StringValue query = 2;
     google.protobuf.StringValue process_function = 3;
@@ -26,6 +26,6 @@ message Gcm {
   TaskType type = 1;
   oneof task {
     FilterLogEntries filter_log_entries = 2;
-    MqlQuery mql_query = 3;
+    RunMqlQuery run_mql_query = 3;
   }
 }

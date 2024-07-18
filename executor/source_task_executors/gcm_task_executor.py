@@ -76,13 +76,13 @@ class GcmSourceManager(PlaybookSourceManager):
             task_result = PlaybookTaskResult()
 
             tr_end_time = time_range.time_lt
-            end_time = datetime.utcfromtimestamp(tr_end_time)
+            end_time = datetime.utcfromtimestamp(tr_end_time).strftime("d'%Y/%m/%d %H:%M'")
             tr_start_time = time_range.time_geq
-            start_time = datetime.utcfromtimestamp(tr_start_time)
+            start_time = datetime.utcfromtimestamp(tr_start_time).strftime("d'%Y/%m/%d %H:%M'")
 
-            task = gcm_task.mql_query
+            task = gcm_task.run_mql_query
             project_id = get_project_id(gcm_connector)
-            query = task.query.value
+            query = task.query.value.strip()
 
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Query -> {}, Start_Time "
@@ -90,9 +90,13 @@ class GcmSourceManager(PlaybookSourceManager):
                     "RUN_MQL_QUERY", gcm_connector.account_id.value, project_id, query,
                     start_time, end_time), flush=True)
 
+            # Remove any existing within clause from the query
+            if "| within " in query:
+                query = query.split("| within ")[0].strip()
+
             # Add the time range to the query
             query_with_time = f"""
-            {query} | within {int((end_time - start_time).total_seconds() // 60)}m
+            {query} | within {start_time}, {end_time}
             """
 
             gcm_api_processor = self.get_connector_processor(gcm_connector, client_type='monitoring')
@@ -129,6 +133,7 @@ class GcmSourceManager(PlaybookSourceManager):
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing GCM task: {e}")
+
 
     def execute_filter_log_entries(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
                                    gcm_connector: ConnectorProto) -> PlaybookTaskResult:

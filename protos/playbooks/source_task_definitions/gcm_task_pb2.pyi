@@ -60,7 +60,7 @@ class Gcm(google.protobuf.message.Message):
         def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "project_id", b"project_id"]) -> None: ...
 
     @typing_extensions.final
-    class MqlQuery(google.protobuf.message.Message):
+    class RunMqlQuery(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         PROJECT_ID_FIELD_NUMBER: builtins.int
@@ -84,21 +84,21 @@ class Gcm(google.protobuf.message.Message):
 
     TYPE_FIELD_NUMBER: builtins.int
     FILTER_LOG_ENTRIES_FIELD_NUMBER: builtins.int
-    MQL_QUERY_FIELD_NUMBER: builtins.int
+    RUN_MQL_QUERY_FIELD_NUMBER: builtins.int
     type: global___Gcm.TaskType.ValueType
     @property
     def filter_log_entries(self) -> global___Gcm.FilterLogEntries: ...
     @property
-    def mql_query(self) -> global___Gcm.MqlQuery: ...
+    def run_mql_query(self) -> global___Gcm.RunMqlQuery: ...
     def __init__(
         self,
         *,
         type: global___Gcm.TaskType.ValueType = ...,
         filter_log_entries: global___Gcm.FilterLogEntries | None = ...,
-        mql_query: global___Gcm.MqlQuery | None = ...,
+        run_mql_query: global___Gcm.RunMqlQuery | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "mql_query", b"mql_query", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "mql_query", b"mql_query", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["filter_log_entries", "mql_query"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "run_mql_query", b"run_mql_query", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "run_mql_query", b"run_mql_query", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["filter_log_entries", "run_mql_query"] | None: ...
 
 global___Gcm = Gcm
