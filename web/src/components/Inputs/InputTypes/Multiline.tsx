@@ -24,7 +24,7 @@ function Multiline({
   return (
     <textarea
       className={
-        "w-full border border-gray-300 p-1 rounded text-sm resize-none text-[#676666] h-32"
+        "w-full border border-gray-300 p-1 rounded text-xs resize-none text-[#676666] h-32"
       }
       rows={4}
       value={value}
