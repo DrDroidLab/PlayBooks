@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/source_task_definitions/eks_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xbf\x04\n\x03\x45ks\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x1e.protos.playbooks.Eks.TaskType\x12\x31\n\x08get_pods\x18\x02 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x38\n\x0fget_deployments\x18\x03 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x33\n\nget_events\x18\x04 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x35\n\x0cget_services\x18\x05 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x1a\xca\x01\n\x07\x43ommand\x12\x31\n\x0b\x64\x65scription\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06region\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07\x63luster\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tnamespace\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\\\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08GET_PODS\x10\x01\x12\x13\n\x0fGET_DEPLOYMENTS\x10\x02\x12\x0e\n\nGET_EVENTS\x10\x03\x12\x10\n\x0cGET_SERVICES\x10\x04\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/source_task_definitions/eks_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xb4\x06\n\x03\x45ks\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x1e.protos.playbooks.Eks.TaskType\x12\x31\n\x08get_pods\x18\x02 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x38\n\x0fget_deployments\x18\x03 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x33\n\nget_events\x18\x04 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12\x35\n\x0cget_services\x18\x05 \x01(\x0b\x32\x1d.protos.playbooks.Eks.CommandH\x00\x12?\n\x0fkubectl_command\x18\x06 \x01(\x0b\x32$.protos.playbooks.Eks.KubectlCommandH\x00\x1a\xca\x01\n\x07\x43ommand\x12\x31\n\x0b\x64\x65scription\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12,\n\x06region\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07\x63luster\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tnamespace\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x9c\x01\n\x0eKubectlCommand\x12,\n\x06region\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07\x63luster\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07\x63ommand\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"q\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08GET_PODS\x10\x01\x12\x13\n\x0fGET_DEPLOYMENTS\x10\x02\x12\x0e\n\nGET_EVENTS\x10\x03\x12\x10\n\x0cGET_SERVICES\x10\x04\x12\x13\n\x0fKUBECTL_COMMAND\x10\x05\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.eks_task_pb2', globals())
@@ -22,9 +22,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _EKS._serialized_start=110
-  _EKS._serialized_end=685
-  _EKS_COMMAND._serialized_start=381
-  _EKS_COMMAND._serialized_end=583
-  _EKS_TASKTYPE._serialized_start=585
-  _EKS_TASKTYPE._serialized_end=677
+  _EKS._serialized_end=930
+  _EKS_COMMAND._serialized_start=446
+  _EKS_COMMAND._serialized_end=648
+  _EKS_KUBECTLCOMMAND._serialized_start=651
+  _EKS_KUBECTLCOMMAND._serialized_end=807
+  _EKS_TASKTYPE._serialized_start=809
+  _EKS_TASKTYPE._serialized_end=922
 # @@protoc_insertion_point(module_scope)

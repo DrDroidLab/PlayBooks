@@ -6,9 +6,11 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function HandleExternalLinksRender({ id }) {
   const dispatch = useDispatch();
+  const isPrefetched = useIsPrefetched();
 
   const [step] = useCurrentStep(id);
 
@@ -20,16 +22,28 @@ function HandleExternalLinksRender({ id }) {
     dispatch(addExternalLinks({ links, id }));
   };
 
+  if (isPrefetched || !step) return;
+
+  const showLinks =
+    step?.ui_requirement.showExternalLinks ||
+    (step?.external_links?.length ?? 0) > 0;
+
   return (
     <>
-      <div
-        className="mt-2 text-sm cursor-pointer text-violet-500"
-        onClick={toggleExternalLinks}>
-        <b>{step?.ui_requirement.showExternalLinks ? "-" : "+"}</b> Add External
-        Links
-      </div>
-      {step?.ui_requirement.showExternalLinks && (
-        <ExternalLinks links={step.external_links} setLinks={setLinks} />
+      {(step?.external_links?.length ?? 0) > 0 ? (
+        <div className="mt-2 text-sm cursor-pointer text-violet-500">
+          <b>External Links</b>
+        </div>
+      ) : (
+        <div
+          className="mt-2 text-sm cursor-pointer text-violet-500"
+          onClick={toggleExternalLinks}>
+          <b>{step?.ui_requirement.showExternalLinks ? "-" : "+"}</b> Add
+          External Links
+        </div>
+      )}
+      {showLinks && (
+        <ExternalLinks links={step?.external_links} setLinks={setLinks} />
       )}
     </>
   );

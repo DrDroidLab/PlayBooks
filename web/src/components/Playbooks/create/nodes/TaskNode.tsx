@@ -37,19 +37,21 @@ function TaskNode({ taskId }) {
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className={`${
-        currentVisibleTask === taskId ? "border-violet-500 border-2" : ""
-      } rounded-md overflow-hidden border-2 border-transparent`}
-      style={{ borderColor: handleTaskBorderColor(taskId) }}>
-      <div className="">
-        <TaskTitle taskId={task?.id} />
+    <>
+      <div
+        onClick={handleClick}
+        className={`${
+          currentVisibleTask === taskId ? "border-violet-500 border-2" : ""
+        } rounded-md overflow-hidden border-2 border-transparent`}
+        style={{ borderColor: handleTaskBorderColor(taskId) }}>
+        <div className="">
+          <TaskTitle taskId={task?.id} />
+        </div>
+        <div className="">
+          <TaskInformation taskId={task?.id} />
+        </div>
       </div>
-      <div className="">
-        <TaskInformation taskId={task?.id} />
-      </div>
-    </div>
+    </>
   );
 }
 
