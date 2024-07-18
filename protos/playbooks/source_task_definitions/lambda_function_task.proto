@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+
+message Lambda {
+  message Function {
+    google.protobuf.StringValue definition = 1;
+    repeated string requirements = 2;
+    google.protobuf.Struct inputs = 3;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    FUNCTION = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    Function function = 3;
+  }
+}

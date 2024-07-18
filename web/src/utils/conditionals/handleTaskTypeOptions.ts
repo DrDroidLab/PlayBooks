@@ -1,54 +1,23 @@
-import { taskTypes } from "../../constants/taskTypes.ts";
-import { Step } from "../../types.ts";
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import { store } from "../../store/index.ts";
+import { Step, Task } from "../../types/index.ts";
 
-function handleTaskTypeOptions(step: Step) {
-  const type = `${step.source} ${step.taskType}`;
-  let options: any = [];
-
-  switch (type) {
-    case taskTypes.CLOUDWATCH_METRIC:
-      options =
-        step?.metric?.map((e, i) => ({
-          id: `${i}`,
-          label: e.label,
-        })) ?? [];
-      break;
-
-    case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
-      options =
-        step?.datadogMetric?.map((e, i) => ({
-          id: `${i}`,
-          label: e.label,
-        })) ?? [];
-      break;
-
-    case taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION:
-      options =
-        step.golden_metrics?.map((e, i) => ({
-          id: `${i}`,
-          label: e.label,
-        })) ?? [];
-      break;
-
-    case taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION:
-      options =
-        step.widget?.map((e, i) => ({
-          id: `${i}`,
-          label: e?.widget_title ?? e?.widget_nrql_expression,
-        })) ?? [];
-      break;
-
-    default:
-      options = [
-        {
-          id: "0",
-          label: step.description ?? step.taskType,
-        },
-      ];
-      break;
-  }
-
-  return options;
+function handleTaskTypeOptions(step: Step | undefined): Task[] {
+  const currentPlaybook = currentPlaybookSelector(store.getState());
+  const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
+  const stepTasks: Task[] =
+    step?.tasks
+      ?.map((task: Task | string) => {
+        const taskData: Task | undefined = tasks.find(
+          (e) => e.id === (typeof task === "string" ? task : task.id),
+        );
+        if (Object.keys(taskData?.ui_requirement?.errors ?? {}).length > 0) {
+          return undefined;
+        }
+        return taskData;
+      })
+      ?.filter((task: Task | undefined) => task !== undefined) ?? [];
+  return stepTasks ?? [];
 }
 
 export default handleTaskTypeOptions;
