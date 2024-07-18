@@ -1,6 +1,7 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
+import re
 import json
 
 import pytz
@@ -134,7 +135,6 @@ class GcmSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing GCM task: {e}")
 
-
     def execute_filter_log_entries(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
                                    gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
@@ -142,38 +142,56 @@ class GcmSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No GCM source found")
             task_result = PlaybookTaskResult()
             tr_end_time = time_range.time_lt
-            end_time = int(tr_end_time * 1000)
+            end_time = datetime.utcfromtimestamp(tr_end_time)
             tr_start_time = time_range.time_geq
-            start_time = int(tr_start_time * 1000)
+            start_time = datetime.utcfromtimestamp(tr_start_time)
 
             task = gcm_task.filter_log_entries
-            project_id = str(task.project_id.value)
-            log_name = str(task.log_name.value)
+            project_id = get_project_id(gcm_connector)
             filter_query = str(task.filter_query.value)
             if global_variable_set:
                 for key, value in global_variable_set.items():
                     filter_query = filter_query.replace(key, str(value))
 
+            # Parse timestamp from the query if it exists
+            timestamp_match = re.search(r'timestamp\s*>=\s*"([^"]+)"', filter_query)
+            if timestamp_match:
+                start_time = datetime.strptime(timestamp_match.group(1), "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                    tzinfo=timezone.utc)
+                # Remove the timestamp part from the query as we'll add it back later
+                filter_query = re.sub(r'timestamp\s*>=\s*"[^"]+"', '', filter_query).strip()
+            else:
+                start_time = datetime.utcfromtimestamp(time_range.time_geq).replace(tzinfo=timezone.utc)
+
+            end_time = datetime.utcfromtimestamp(time_range.time_lt).replace(tzinfo=timezone.utc)
+
+            # Add the time range to the filter_query
+            time_filter = f'timestamp >= "{start_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}" AND timestamp <= "{end_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}"'
+            if filter_query:
+                filter_query = f'({filter_query}) AND {time_filter}'
+            else:
+                filter_query = time_filter
+
             logs_api_processor = self.get_connector_processor(gcm_connector, client_type='logging')
 
             print(
-                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Log_Name -> {}, Query -> "
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Query -> "
                 "{}, Start_Time -> {}, End_Time -> {}".format("GCM_Logs", gcm_connector.account_id.value,
-                                                              project_id, log_name, filter_query, start_time, end_time),
-                flush=True)
+                                                              project_id, filter_query, start_time, end_time))
 
             response = logs_api_processor.fetch_logs(filter_query, start_time, end_time)
             if not response:
+                logger.error("No data returned from GCM Logs")
                 raise Exception("No data returned from GCM Logs")
 
-            table_rows: [TableResult.TableRow] = []
+            table_rows = []
             for item in response:
                 json_payload = item.get('jsonPayload', {})
                 message = json_payload.get('message', '')
                 if message == "failed to acquire lease gke-managed-filestorecsi/filestore-csi-storage-gke-io-node":
-                    print("Error: Failed to acquire lease for GKE-managed Filestore CSI.")
+                    logger.error("Error: Failed to acquire lease for GKE-managed Filestore CSI.")
                     continue
-                table_columns: [TableResult.TableColumn] = []
+                table_columns = []
                 for key, value in item.items():
                     table_column = TableResult.TableColumn(name=StringValue(value=key),
                                                            value=StringValue(value=str(value)))
@@ -190,4 +208,7 @@ class GcmSourceManager(PlaybookSourceManager):
             task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=result, source=self.source)
             return task_result
         except Exception as e:
+            logger.error(f"Error while executing GCM task: {e}")
             raise Exception(f"Error while executing GCM task: {e}")
+
+

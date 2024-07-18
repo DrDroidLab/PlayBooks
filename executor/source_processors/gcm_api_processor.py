@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -68,15 +68,22 @@ class GcmApiProcessor(Processor):
     def fetch_logs(self, filter_str, start_time=None, end_time=None):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
+
+            # The filter_str already contains the timestamp, so we don't need to add it again
             body = {
-                "projectIds": [self.__project_id],
                 "resourceNames": [f"projects/{self.__project_id}"],
                 "filter": filter_str,
                 "orderBy": "timestamp desc",
-                "pageSize": 10
+                "pageSize": 2000
             }
+
+            logger.debug(f"Fetching logs with body: {body}")
+
             request = service.entries().list(body=body)
             response = request.execute()
+
+            logger.debug(f"Received response: {response}")
+
             return response.get('entries', [])
         except Exception as e:
             logger.error(f"Exception occurred while fetching logs: {e}")
