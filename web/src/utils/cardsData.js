@@ -441,4 +441,11 @@ export const cardsData = [
     desc: "Connect to Grafana Loki",
     docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
   },
+  {
+    id: 49,
+    url: "/integrations/kubernetes_logo.png",
+    enum: "KUBERNETES",
+    desc: "Connect to Kubernetes Cluster",
+    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
+  },
 ];

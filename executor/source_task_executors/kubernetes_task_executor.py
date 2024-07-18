@@ -21,7 +21,7 @@ class KubernetesSourceManager(PlaybookSourceManager):
                 'executor': self.execute_command,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
-                'display_name': 'Trigger a Kubectl Command',
+                'display_name': 'Execute a Kubectl Command',
                 'category': 'Actions'
             },
         }
