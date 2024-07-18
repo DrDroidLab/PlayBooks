@@ -1,16 +1,17 @@
 import { store } from "../../store/index.ts";
 import {
+  currentPlaybookSelector,
   setSteps,
-  stepsSelector,
 } from "../../store/features/playbook/playbookSlice.ts";
 
 export const addOutputsToSteps = (timelineSteps: any[]) => {
-  const playbookSteps = stepsSelector(store.getState());
+  const currentPlaybook = currentPlaybookSelector(store.getState());
+  const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const dispatch = store.dispatch;
 
-  const steps = playbookSteps?.map((step) => {
+  const steps = tasks?.map((step) => {
     const found = timelineSteps.find(
-      (stepData) => stepData.id.toString() === step.id.toString(),
+      (stepData) => stepData.id.toString() === step.id!.toString(),
     );
     if (found) {
       return found;
@@ -18,5 +19,5 @@ export const addOutputsToSteps = (timelineSteps: any[]) => {
       return step;
     }
   });
-  if (steps.length > 0) dispatch(setSteps(steps));
+  if (tasks.length > 0) dispatch(setSteps(steps));
 };

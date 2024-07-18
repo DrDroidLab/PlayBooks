@@ -1,51 +1,62 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Playbook } from "../../../types.ts";
-import { playbookToSteps } from "../../../utils/parser/playbook/playbookToSteps.ts";
 import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
-import { ruleOptions } from "../../../utils/conditionals/ruleOptions.ts";
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
-import playbookToEdges from "../../../utils/parser/playbook/playbookToEdges.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
+import { RootState } from "../../index.ts";
+import { Task } from "../../../types/task.ts";
+import setNestedValue from "../../../utils/setNestedValue.ts";
+import { v4 as uuidv4 } from "uuid";
+import { LogicalOperator } from "../../../types/stepRelations.ts";
 
-const emptyStep = {
-  modelType: "",
-  source: "",
-  assets: [],
-  isOpen: true,
-  isPlayground: false,
-  showError: false,
-  stepType: null,
-  action: {},
-  requireCondition: false,
-  isEditing: true,
+const firstStepId = generateUUIDWithoutHyphens();
+const firstStep: Step = {
+  id: firstStepId,
+  description: `Step`,
+  reference_id: uuidv4(),
+  tasks: [],
+  ui_requirement: {
+    isOpen: true,
+    showError: false,
+    stepIndex: 0,
+  },
 };
 
-const initialState: Playbook = {
-  id: null,
-  name: "",
-  globalVariables: [],
-  interpreterTypes: [],
-  steps: [],
+const emptyStep: Step = {
+  id: "",
+  tasks: [],
+  ui_requirement: {
+    isOpen: true,
+    showError: false,
+  },
+};
+
+const initialState: PlaybookUIState = {
   playbooks: [],
-  currentPlaybook: {},
+  currentPlaybook: {
+    id: undefined,
+    global_variable_set: {},
+    steps: [firstStep],
+    step_relations: [],
+    ui_requirement: {
+      tasks: [],
+      isExisting: false,
+    },
+  },
   meta: {
     page: {
       limit: 10,
       offset: 0,
     },
   },
-  isEditing: false,
-  lastUpdatedAt: null,
-  view: "builder",
   shouldScroll: undefined,
-  currentVisibleStep: undefined,
-  playbookEdges: [],
   permanentView: undefined,
+  currentVisibleStepOnTimeline: undefined,
   executionId: undefined,
-  currentStepId: undefined,
   isOnPlaybookPage: false,
   executionStack: [],
   zoomLevel: 0.75,
+  connectorOptions: [],
 };
 
 const playbookSlice = createSlice({
@@ -53,391 +64,383 @@ const playbookSlice = createSlice({
   initialState,
   reducers: {
     setPlaybooks(state, { payload }) {
-      if (Object.keys(state.meta).length > 0) {
+      if (Object.keys(state.meta ?? {}).length > 0) {
         state.playbooks.push(...payload);
       } else {
         state.playbooks = [...payload];
       }
     },
-    setView(state, { payload }) {
-      state.view = payload;
-    },
-    setCurrentPlaybook(state, { payload }) {
-      state.currentPlaybook = { isPrefetched: true, ...payload };
-    },
     setPlaybookData(state, { payload }) {
-      state.currentPlaybook.name = payload.name;
-      state.description = payload.description;
-      state.currentPlaybook.globalVariables = Object.entries(
-        payload?.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.globalVariables = Object.entries(
-        payload?.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
+      state.currentPlaybook = payload;
     },
     setPlaybookDataBeta(state, { payload }) {
-      state.name = payload.name;
-      state.id = payload.id;
-      state.globalVariables = Object.entries(
-        payload?.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.globalVariables = Object.entries(
-        payload?.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.steps = playbookToSteps(payload, false);
-      state.playbookEdges = playbookToEdges(payload, state.steps);
-      state.isEditing = true;
+      state.currentPlaybook = payload;
     },
     copyPlaybook(state, { payload }) {
-      const useState = payload.useState;
-
+      const { useState, pb, isTemplate } = payload;
       if (useState) {
-        state.name = "Copy of " + state.name;
-        state.currentPlaybook.isCopied = true;
-        state.isEditing = false;
+        state.currentPlaybook!.name = "Copy of " + state.currentPlaybook!.name;
+        state.currentPlaybook!.ui_requirement.isExisting = false;
         return;
       }
-
-      state.name = "Copy of " + payload.name;
-      state.description = payload.description;
-      state.currentPlaybook.globalVariables = Object.entries(
-        payload.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.globalVariables = Object.entries(
-        payload.global_variable_set ?? {},
-      ).map((val) => {
-        return {
-          name: val[0] as string,
-          value: val[1] as string,
-        };
-      });
-      state.currentPlaybook.isCopied = true;
-      state.steps = playbookToSteps(payload, true);
-      state.playbookEdges = playbookToEdges(payload, state.steps);
-      state.isEditing = false;
+      state.currentPlaybook = pb;
+      state.currentPlaybook!.ui_requirement.isExisting = false;
+      if (!isTemplate) {
+        state.currentPlaybook!.name = "Copy of " + pb.name;
+      }
     },
     setErrors(state, { payload }) {
       const { id, errors } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
-        if (step) {
-          step.errors = errors;
+        const task = state.currentPlaybook!.ui_requirement.tasks?.find(
+          (step) => step.id === id,
+        );
+        if (task) {
+          task.ui_requirement.errors = errors;
         }
       }
     },
     addGlobalVariable(state, { payload }) {
-      const list = state.globalVariables ?? [];
-      list?.push({
-        name: payload.name,
-        value: payload.value,
-      });
-      state.globalVariables = list;
-
-      state.steps.forEach((step) => {
-        step.globalVariables = list ?? [];
-      });
+      state.currentPlaybook!.global_variable_set[payload.name] = payload.value;
     },
     deleteVariable(state, { payload }) {
-      const list = state.globalVariables ?? [];
-      list.splice(payload.index, 1);
-      state.globalVariables = list;
-
-      state.steps.forEach((step) => {
-        step.globalVariables = list ?? [];
-      });
+      if (state.currentPlaybook!.global_variable_set[payload.name])
+        delete state.currentPlaybook!.global_variable_set[payload.name];
     },
     updateGlobalVariable(state, { payload }) {
-      const list = state.globalVariables ?? [];
-      list[payload.index].value = payload.value;
-      state.globalVariables = list;
-
-      state.steps.forEach((step) => {
-        step.globalVariables = list ?? [];
-      });
+      state.currentPlaybook!.global_variable_set[payload.name] = payload.value;
     },
     setMeta(state, { payload }) {
       state.meta = payload;
     },
-    setCurrentStepId(state, { payload }) {
-      state.currentStepId = payload;
+    setCurrentVisibleTask(state, { payload }) {
+      state.currentVisibleStep = undefined;
+      state.currentVisibleTask = payload;
     },
-    showStepConfig(state, { payload }) {
-      state.currentStepId = payload.toString();
-      state.steps.forEach((step) => (step.isOpen = false));
-      const step = state.steps.find(
-        (e) => e.id?.toString() === state.currentStepId,
+    setCurrentVisibleStep(state, { payload }) {
+      state.currentVisibleTask = undefined;
+      state.currentVisibleStep = payload;
+    },
+    showTaskConfig(state, { payload }) {
+      state.currentVisibleTask = payload.toString();
+      const task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (task) => task.id === state.currentVisibleTask,
       );
-      if (step) step.isOpen = true;
+      if (task) task.ui_requirement.isOpen = true;
     },
-    createStepWithSource(state, { payload }) {
-      state.steps.forEach((step) => {
-        step.isOpen = false;
-      });
-      const index = state.steps.length;
-      const parentId = payload.parentId;
-      const parentExists = parentId !== null && parentId !== undefined;
-      const id = generateUUIDWithoutHyphens();
-      state.steps.push({
-        ...{
-          id,
-          source: payload.source,
-          stepIndex: index,
-          taskType: payload.taskType,
-          modelType: payload.modelType,
-          selectedSource: payload.key,
-          description:
-            state?.steps[index]?.description ??
-            payload.description ??
-            integrationSentenceMap[payload.modelType],
-          notes: state?.steps[index]?.notes,
-          assets: [],
-          isOpen: true,
-          isPlayground: false,
-          globalVariables: state.globalVariables ?? [],
-          showError: false,
-          stepType: "data",
-          action: {},
-          position: {
-            x: 0,
-            y: 0,
-          },
-          requireCondition: payload.requireCondition ?? false,
-          currentConditionParentId: payload.currentConditionParentId,
-          resultType: payload.resultType,
-        },
-        globalVariables: state.globalVariables ?? [],
-        isEditing: true,
-      });
+    createTaskWithSource(state, { payload }) {
+      const { parentId, stepId: existingStepId, resultType } = payload;
+      const parent = parentId ?? state.currentPlaybook?.steps[0].id;
+      const stepId = existingStepId ?? generateUUIDWithoutHyphens();
+      const taskId = generateUUIDWithoutHyphens();
 
-      if (parentExists) {
-        state.playbookEdges.push({
-          id: `edge-${parentId}-${id}`,
-          source: `node-${parentId}`,
-          target: `node-${id}`,
-          type: "custom",
-        });
-      } else {
-        state.playbookEdges.push({
-          id: `edge-${id}`,
-          source: `playbook`,
-          target: `node-${id}`,
-          type: "custom",
-        });
+      const task: Task = {
+        id: taskId,
+        reference_id: uuidv4(),
+        name: uuidv4(),
+        source: payload.source,
+        interpreter_type: "BASIC_I",
+        task_connector_sources: [],
+        ui_requirement: {
+          isOpen: true,
+          taskType: payload.taskType,
+          stepId: stepId,
+          model_type: payload.modelType,
+          resultType,
+        },
+        [payload.source.toLowerCase() as TaskType]: {
+          type: payload.taskType,
+          [payload.taskType.toLowerCase()]: {
+            process_function: "timeseries",
+            statistic: "Average",
+          },
+        },
+        description:
+          payload.description ?? integrationSentenceMap[payload.modelType],
+      };
+
+      if (existingStepId) {
+        const step = state.currentPlaybook?.steps.find((e) => e.id === stepId);
+        step?.tasks.push(taskId);
+        state.currentPlaybook?.ui_requirement.tasks.push(task);
+
+        state.currentVisibleTask = taskId;
+
+        return;
       }
 
-      state.currentStepId = id.toString();
-    },
-    addParentId: (state, { payload }) => {
-      const { id, parentId } = payload;
-      const parentExists = parentId !== undefined && parentId !== null;
-      const edgeId = parentExists ? `edge-${parentId}-${id}` : `edge-${id}`;
-      state.playbookEdges.filter((e) => e.id !== id);
-      state.playbookEdges.push({
-        id: edgeId,
-        source: parentExists ? `node-${parentId}` : `playbook`,
-        target: `node-${id}`,
-        type: "custom",
+      const newStep: Step = {
+        ...emptyStep,
+        id: stepId,
+        reference_id: uuidv4(),
+        description: `Step`,
+        tasks: [task.id!],
+      };
+
+      state.currentPlaybook?.steps.push(newStep);
+      state.currentPlaybook?.ui_requirement.tasks.push(task);
+
+      const parentStep = state.currentPlaybook?.steps.find(
+        (step) => step.id === parent,
+      );
+
+      if (
+        state.currentPlaybook &&
+        (!state.currentPlaybook?.step_relations ||
+          state.currentPlaybook?.step_relations?.length === 0)
+      ) {
+        state.currentPlaybook.step_relations = [];
+      }
+      state.currentPlaybook?.step_relations?.push({
+        id: `edge-${parent}-${stepId}`,
+        parent: parentStep!,
+        child: newStep,
       });
+
+      state.currentVisibleTask = taskId;
     },
     addStep: (state, { payload }) => {
-      const { parentId, addConditions, id } = payload;
-      state.steps.forEach((step) => {
-        step.isOpen = false;
-      });
-      const index = state.steps.length;
-      const currentStep = {
+      const { parentId, id, addCondition } = payload;
+      const stepId = id ?? generateUUIDWithoutHyphens();
+      const newStep: Step = {
         ...emptyStep,
-        id: id ?? generateUUIDWithoutHyphens(),
-        description: `Step-${index + 1}`,
-        stepIndex: index,
-        globalVariables: state.globalVariables ?? [],
-        position: {
-          x: 0,
-          y: 0,
-        },
+        id: stepId,
+        reference_id: uuidv4(),
+        description: `Step`,
+        tasks: [],
       };
-      state.steps.push(currentStep);
-      if (parentId !== undefined) {
-        state.playbookEdges.push({
-          id: `edge-${parentId}-${currentStep.id}`,
-          source: `node-${parentId}`,
-          target: `node-${currentStep.id}`,
-          type: "custom",
-          conditions: addConditions
-            ? [
-                {
-                  function: "",
-                  operation: "",
-                  value: "",
-                },
-              ]
-            : [],
-          globalRule: addConditions ? ruleOptions[0].id : undefined,
-        });
-      } else {
-        state.playbookEdges.push({
-          id: `edge-${currentStep.id}`,
-          source: `playbook`,
-          target: `node-${currentStep.id}`,
-        });
+      state.currentPlaybook?.steps.push(newStep);
+      const parentStep = state.currentPlaybook?.steps.find(
+        (step) => step.id === parentId,
+      );
+      if (
+        state.currentPlaybook &&
+        (!state.currentPlaybook?.step_relations ||
+          state.currentPlaybook?.step_relations?.length === 0)
+      ) {
+        state.currentPlaybook.step_relations = [];
       }
-
-      state.currentStepId = currentStep.id.toString();
-      state.permanentView = addConditions
-        ? PermanentDrawerTypes.STEP_DETAILS
-        : PermanentDrawerTypes.CONDITION;
-    },
-    toggleStep: (state, { payload }) => {
-      const id = payload;
-      const step = state.steps.find((step) => step.id === id);
-      if (step) step.isOpen = !step.isOpen;
+      state.currentPlaybook?.step_relations?.push({
+        id: `edge-${parentId}-${stepId}`,
+        parent: parentStep!,
+        child: newStep,
+        condition: addCondition
+          ? {
+              logical_operator: LogicalOperator.AND_LO,
+              rules: [],
+            }
+          : undefined,
+      });
     },
     deleteStep: (state, { payload }) => {
       const id = payload;
       if (id) {
-        const index = state.steps.findIndex((step) => step.id === id);
-        if (index !== undefined && index !== null) state.steps.splice(index, 1);
-        state.currentStepId = undefined;
-        state.playbookEdges = state.playbookEdges.filter(
-          (e) => e.source !== `node-${id}` && e.target !== `node-${id}`,
+        const step = state.currentPlaybook!.steps.find(
+          (step) => step.id === id,
         );
+        const stepIndex = state.currentPlaybook!.steps.findIndex(
+          (step) => step.id === id,
+        );
+        if (step) {
+          const taskIds = step.tasks.map((task) =>
+            typeof task === "string" ? task : task.id,
+          );
+          state.currentPlaybook!.steps.splice(stepIndex, 1);
+          taskIds.forEach((taskId) => {
+            const tasks = state.currentPlaybook!.ui_requirement.tasks;
+            const taskIndex = tasks.findIndex((e) => e.id === taskId);
+            tasks.splice(taskIndex, 1);
+          });
+          state.currentPlaybook!.step_relations =
+            state.currentPlaybook!.step_relations.filter((relation) => {
+              if (typeof relation.parent === "string") {
+                return (
+                  relation.parent !== id &&
+                  relation.child.reference_id !== step?.reference_id
+                );
+              }
+              return (
+                relation.parent.reference_id !== step?.reference_id &&
+                relation.child.reference_id !== step.reference_id
+              );
+            });
+        }
         state.permanentView = PermanentDrawerTypes.DEFAULT;
       }
     },
-    updateStep: (state, { payload }) => {
+    deleteTask: (state, { payload }) => {
+      const id = payload;
+      if (id) {
+        const task = state.currentPlaybook!.ui_requirement.tasks?.find(
+          (task) => task.id === id,
+        );
+        const taskIndex = state.currentPlaybook!.ui_requirement.tasks.findIndex(
+          (task) => task.id === id,
+        );
+        if (task) {
+          const stepId = task.ui_requirement.stepId;
+          const step = state.currentPlaybook!.steps.find(
+            (step) => step.id === stepId,
+          );
+          const taskIndexInStep = step?.tasks.findIndex(
+            (e) => (e as string) === id,
+          );
+          if (
+            taskIndexInStep !== undefined &&
+            taskIndexInStep !== null &&
+            taskIndexInStep !== -1
+          )
+            step?.tasks.splice(taskIndexInStep, 1);
+          state.currentPlaybook!.ui_requirement.tasks.splice(taskIndex, 1);
+        }
+        state.permanentView = PermanentDrawerTypes.DEFAULT;
+      }
+    },
+    updateTask: (state, { payload }) => {
       const id = payload.id;
-      const step = state.steps?.find((step) => step.id === id);
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (e) => e.id === id,
+      );
+      if (task) {
+        task = setNestedValue(task, payload.key, payload.value);
+      }
+    },
+    updateStep: (state, { payload }) => {
+      const { id, key, value } = payload;
+      if (!state.currentPlaybook) return;
+      if (
+        !state.currentPlaybook.steps ||
+        state.currentPlaybook.steps?.length === 0
+      )
+        return;
+      let step = state.currentPlaybook.steps.find((e) => e.id === id);
       if (step) {
-        step[payload.key] = payload.value;
-        step.isEditing = true;
+        step = setNestedValue(step, key, value);
+      }
+    },
+    updateSource: (state, { payload }) => {
+      const id = payload.id;
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (e) => e.id === id,
+      );
+      if (task) {
+        delete task[task?.source?.toLowerCase()];
+        task.source = payload.value;
+        task[task?.source?.toLowerCase()] = {};
+      }
+    },
+    updateTaskType: (state, { payload }) => {
+      const id = payload.id;
+      let task = state.currentPlaybook!.ui_requirement.tasks.find(
+        (e) => e.id === id,
+      );
+      if (task) {
+        const type: string = task[task?.source?.toLowerCase()].type;
+        delete task[task?.source?.toLowerCase()][type?.toLowerCase()];
+        task[task?.source?.toLowerCase()].type = payload.value;
+        task[task?.source?.toLowerCase()][payload.value?.toLowerCase()] = {};
       }
     },
     setAssets(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
-        if (step) step.assets = payload.assets;
+        const task = state.currentPlaybook!.ui_requirement.tasks?.find(
+          (task) => task.id === id,
+        );
+        if (task) task.ui_requirement.assets = payload.assets;
       }
     },
     addNotes(state, { payload }) {
       const { id, notes } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
+        const step = state.currentPlaybook?.steps?.find(
+          (step) => step.id === id,
+        );
         if (step) {
           step.notes = notes;
-          step.isEditing = true;
         }
       }
     },
     addExternalLinks(state, { payload }) {
       const { id, links } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
+        const step = state.currentPlaybook!.steps?.find(
+          (step) => step.id === id,
+        );
         if (step) {
-          step.externalLinks = links;
-          step.isEditing = true;
+          step.external_links = links;
         }
       }
     },
     toggleExternalLinkVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
-        if (step) step.showExternalLinks = !step.showExternalLinks;
+        const step = state.currentPlaybook?.steps?.find(
+          (step) => step.id === id,
+        );
+        if (step)
+          step.ui_requirement.showExternalLinks =
+            !step.ui_requirement.showExternalLinks;
       }
     },
     toggleNotesVisibility(state, { payload }) {
       const { id } = payload;
       if (id) {
-        const step = state.steps?.find((step) => step.id === id);
-        if (step) step.showNotes = !step.showNotes;
+        const step = state.currentPlaybook?.steps?.find(
+          (step) => step.id === id,
+        );
+        if (step)
+          step.ui_requirement.showNotes = !step.ui_requirement.showNotes;
       }
     },
     resetState(state) {
-      state.steps = [];
-      state.name = "";
-      state.description = "";
-      state.globalVariables = [];
-      state.currentPlaybook = {};
-      state.isEditing = false;
-      state.lastUpdatedAt = undefined;
-      state.currentStepId = undefined;
-      state.view = initialState.view;
-      state.playbookEdges = [];
-      state.currentVisibleStep = undefined;
+      state.currentPlaybook = initialState.currentPlaybook;
+      state.currentVisibleTask = undefined;
       state.executionId = undefined;
       state.isOnPlaybookPage = false;
+      state.meta = undefined;
+      state.permanentView = PermanentDrawerTypes.DEFAULT;
+      state.playbooks = [];
+      state.shouldScroll = false;
       state.zoomLevel = 0.75;
     },
     resetExecutions(state) {
       state.executionId = undefined;
-      state.steps = state.steps.map((step) => ({
-        ...step,
-        showOutput: false,
-        outputError: "",
-        showError: false,
-        outputLoading: false,
-        outputs: [],
-        relationLogs: [],
-      }));
     },
     setSteps(state, { payload }) {
-      state.steps = payload;
+      state.currentPlaybook!.steps = payload;
     },
     setNRQLData(state, { payload }) {
       const { id, key, value } = payload;
-      const step = state.steps?.find((step) => step.id === id);
-      if (step) {
-        step.nrqlData = {
-          ...step?.nrqlData,
+      const task = state.currentPlaybook?.ui_requirement.tasks?.find(
+        (task) => task.id === id,
+      );
+      if (task) {
+        task.ui_requirement.nrqlData = {
+          ...task?.ui_requirement.nrqlData,
           [key]: value,
         };
-        step.isEditing = true;
       }
-    },
-    setLastUpdatedAt(state) {
-      state.lastUpdatedAt = new Date();
     },
     setActionKey(state, { payload }) {
-      const { id, key, value } = payload;
-      const step = state.steps?.find((step) => step.id === id);
-      if (step) {
-        step.action[key] = value;
-        step.isEditing = true;
-      }
+      // const { id, key, value } = payload;
+      // const step = state.steps?.find((step) => step.id === id);
+      // if (step) {
+      //   step.action[key] = value;
+      //   step.isEditing = true;
+      // }
     },
     setPlaybookKey(state, { payload }) {
       state[payload.key] = payload.value;
     },
+    setCurrentPlaybookKey(state, { payload }) {
+      if (state.currentPlaybook)
+        state.currentPlaybook[payload.key] = payload.value;
+    },
     pushToExecutionStack(state, { payload }) {
-      const nextPossibleStepLogs = payload;
-      nextPossibleStepLogs.forEach((log) => {
-        const stepId = log.relation.child.id;
+      const nextPossibleSteps = payload;
+
+      (nextPossibleSteps ?? []).forEach((stepId: string) => {
         if (!state.executionStack.includes(stepId)) {
           state.executionStack.push(stepId);
         }
@@ -446,48 +449,93 @@ const playbookSlice = createSlice({
     popFromExecutionStack(state) {
       if (state.executionStack.length > 0) state.executionStack.pop();
     },
+    addRule: (state, { payload }) => {
+      const { id } = payload;
+      const relation = state.currentPlaybook?.step_relations.find(
+        (e) => e.id === id,
+      );
+      if (!relation) return;
+      relation.condition?.rules.push({
+        type: "",
+        task: {
+          reference_id: "",
+          id: "",
+        },
+      });
+    },
+    duplicateTask: (state, { payload }) => {
+      const { id, keyToBeRemoved } = payload;
+      const playbook = state.currentPlaybook;
+      const tasks = playbook?.ui_requirement.tasks ?? [];
+      const steps = playbook?.steps ?? [];
+      const task = tasks.find((e) => e.id === id);
+
+      if (!task) return;
+      const newTaskId = generateUUIDWithoutHyphens();
+      const newTask: Task = JSON.parse(JSON.stringify(task));
+      newTask.id = newTaskId;
+      newTask.reference_id = uuidv4();
+      newTask.name = uuidv4();
+      newTask.ui_requirement.errors = {};
+      const source = newTask.source;
+      const type = newTask[source.toLowerCase()].type;
+      const data = newTask[source.toLowerCase()][type.toLowerCase()];
+      if (keyToBeRemoved) data[keyToBeRemoved] = "";
+      const stepId = task.ui_requirement.stepId;
+      const step = steps.find((step) => step.id === stepId);
+      tasks.push(newTask);
+      step?.tasks.push(newTaskId);
+
+      state.currentVisibleTask = newTaskId;
+    },
   },
 });
 
 export const {
   setPlaybooks,
   setPlaybookData,
-  setCurrentPlaybook,
   setPlaybookDataBeta,
   copyPlaybook,
+  createTaskWithSource,
+  setCurrentVisibleTask,
+  showTaskConfig,
+  updateTask,
   addGlobalVariable,
   deleteVariable,
   updateGlobalVariable,
   setMeta,
-  showStepConfig,
-  createStepWithSource,
-  addStep,
-  toggleStep,
   deleteStep,
-  updateStep,
-  setCurrentStepId,
   setAssets,
   addNotes,
   addExternalLinks,
   resetState,
   setSteps,
   setNRQLData,
-  setLastUpdatedAt,
   setErrors,
-  setView,
   toggleExternalLinkVisibility,
   toggleNotesVisibility,
   setActionKey,
   setPlaybookKey,
-  addParentId,
+  setCurrentPlaybookKey,
   resetExecutions,
   pushToExecutionStack,
   popFromExecutionStack,
+  deleteTask,
+  updateSource,
+  updateTaskType,
+  updateStep,
+  setCurrentVisibleStep,
+  addStep,
+  addRule,
+  duplicateTask,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
 
-export const playbookSelector = (state) => state.playbook;
-export const stepsSelector = (state) => state.playbook?.steps ?? [];
-export const playbooksSelector = (state) => state.playbook.playbooks;
-export const metaSelector = (state) => state.playbook.meta;
+export const playbookSelector = (state: RootState) => state.playbook;
+export const playbooksSelector = (state: RootState) => state.playbook.playbooks;
+export const metaSelector = (state: RootState) => state.playbook.meta;
+export const currentPlaybookSelector = (state: RootState) =>
+  state.playbook.currentPlaybook;
+export const stepsSelector = (state: RootState) =>
+  state.playbook.currentPlaybook?.ui_requirement.tasks ?? [];

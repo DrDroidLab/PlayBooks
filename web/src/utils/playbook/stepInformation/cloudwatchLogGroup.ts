@@ -1,9 +1,10 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const cloudwatchLogGroup = [
   {
     label: "Query",
-    key: "cw_log_query",
+    key: Key.FILTER_QUERY,
     type: InfoTypes.TEXT,
   },
 ];

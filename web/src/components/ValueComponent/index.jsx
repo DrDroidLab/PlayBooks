@@ -33,7 +33,7 @@ const ValueComponent = ({
   placeHolder,
   isPassword = false,
   disabled = false,
-  error = null,
+  error,
 }) => {
   const [hideText, setHideText] = useState(isPassword);
   // let hideText = isPassword;

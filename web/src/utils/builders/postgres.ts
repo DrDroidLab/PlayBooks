@@ -1,20 +1,21 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const postgresBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "database",
+          key: Key.DATABASE,
           label: "Database",
-          type: OptionType.TEXT,
+          type: InputTypes.TEXT,
         },
       ],
       [
         {
-          key: "dbQuery",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          type: InputTypes.MULTILINE,
         },
       ],
     ],

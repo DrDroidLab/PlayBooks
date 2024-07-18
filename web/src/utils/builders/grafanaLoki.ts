@@ -1,35 +1,36 @@
 import { store } from "../../store/index.ts";
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const grafanaLokiBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "query",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          type: InputTypes.MULTILINE,
         },
       ],
       [
         {
-          key: "limit",
+          key: Key.LIMIT,
           label: "Limit",
-          type: OptionType.TEXT,
-          default: 10
+          type: InputTypes.TEXT,
+          default: 10,
         },
       ],
       [
         {
-          key: "start_time",
+          key: Key.START_TIME,
           label: "Start time",
-          type: OptionType.TEXT,
+          type: InputTypes.TEXT,
           default: Math.floor(store.getState().timeRange.startTime),
         },
         {
-          key: "end_time",
+          key: Key.END_TIME,
           label: "End time",
-          type: OptionType.TEXT,
+          type: InputTypes.TEXT,
           default: Math.floor(store.getState().timeRange.endTime),
         },
       ],

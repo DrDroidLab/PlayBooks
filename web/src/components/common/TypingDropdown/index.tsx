@@ -34,7 +34,7 @@ const TypingDropdown = ({
     option: any,
   ) => {
     e.preventDefault();
-    change(option.label, option);
+    change(option.id, option);
     setIsOpen(false);
   };
 

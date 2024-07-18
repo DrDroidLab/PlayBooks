@@ -1,56 +1,39 @@
-import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
+import { Key } from "../playbook/key.ts";
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 
-const getCurrentAsset = (index) => {
-  const [task] = getCurrentTask(index);
-  const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
-
-  return currentAsset;
-};
-
-export const eksBuilder = (options: any, task, index) => {
+export const eksBuilder = (options: any, task: Task) => {
   return {
-    triggerGetAssetsKey: "cluster",
-    assetFilterQuery: {
-      eks_cluster_model_filters: {
-        regions: [
-          {
-            region: task.eksRegion,
-            clusters: [
-              {
-                name: task.cluster,
-              },
-            ],
-          },
-        ],
-      },
-    },
     builder: [
       [
         {
-          key: "eksRegion",
+          key: Key.REGION,
           label: "Region",
-          type: OptionType.TYPING_DROPDOWN,
-          value: task.eksRegion,
+          type: InputTypes.TYPING_DROPDOWN,
           options:
             options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
         },
         {
-          key: "cluster",
+          key: Key.CLUSTER,
           label: "Cluster",
-          type: OptionType.TYPING_DROPDOWN,
-          value: task.cluster,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.region === task.eksRegion)
+            ?.find((e) => e.region === getTaskData(task)?.[Key.REGION])
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
         },
         {
-          key: "eksNamespace",
+          key: Key.NAMESPACE,
           label: "Namespace",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options:
-            getCurrentAsset(index)?.clusters?.length > 0
-              ? getCurrentAsset(index)?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset(task, Key.REGION, "region")?.clusters?.length > 0
+              ? getCurrentAsset(
+                  task,
+                  Key.REGION,
+                  "region",
+                )?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],

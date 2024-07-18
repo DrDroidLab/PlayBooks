@@ -1,14 +1,15 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const eks = [
   {
     label: "cluster",
-    key: "cluster",
+    key: Key.CLUSTER,
     type: InfoTypes.TEXT,
   },
   {
     label: "Namespace",
-    key: "eksNamespace",
+    key: Key.NAMESPACE,
     type: InfoTypes.TEXT,
   },
 ];
