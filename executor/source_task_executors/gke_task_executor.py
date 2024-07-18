@@ -53,7 +53,7 @@ class GkeSourceManager(PlaybookSourceManager):
             },
             Gke.TaskType.KUBECTL_COMMAND: {
                 'executor': self.execute_kubectl_command,
-                'model_types': [],
+                'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute Kubectl Command in GKE Cluster',
                 'category': 'Actions'
