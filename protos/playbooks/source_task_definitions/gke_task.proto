@@ -33,6 +33,6 @@ message Gke {
     Command get_deployments = 3;
     Command get_events = 4;
     Command get_services = 5;
-    google.protobuf.StringValue kubectl_command = 6;
+    KubectlCommand kubectl_command = 6;
   }
 }

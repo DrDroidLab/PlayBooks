@@ -323,7 +323,7 @@ class EksSourceManager(PlaybookSourceManager):
             aws_region = eks_command.region.value
             cluster_name = eks_command.cluster.value
 
-            command_str = eks_task.kubectl_command.command.value
+            command_str = eks_command.command.value
             commands = command_str.split('\n')
             if global_variable_set:
                 for key, value in global_variable_set.items():
