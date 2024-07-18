@@ -338,6 +338,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     KUBERNETES_CLUSTER_API_SERVER: _SourceKeyType.ValueType  # 73
     KUBERNETES_CLUSTER_TOKEN: _SourceKeyType.ValueType  # 74
     KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: _SourceKeyType.ValueType  # 75
+    KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: _SourceKeyType.ValueType  # 76
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -416,6 +417,7 @@ KUBERNETES_CLUSTER_NAME: SourceKeyType.ValueType  # 72
 KUBERNETES_CLUSTER_API_SERVER: SourceKeyType.ValueType  # 73
 KUBERNETES_CLUSTER_TOKEN: SourceKeyType.ValueType  # 74
 KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: SourceKeyType.ValueType  # 75
+KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: SourceKeyType.ValueType  # 76
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:

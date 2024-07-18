@@ -259,7 +259,9 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_TOKEN:
                 credentials_dict['token'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA:
-                credentials_dict['ca_cert'] = conn_key.key.value
+                credentials_dict['ssl_ca_cert'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH:
+                credentials_dict['ssl_ca_cert_path'] = conn_key.key.value
     else:
         return None
     return credentials_dict

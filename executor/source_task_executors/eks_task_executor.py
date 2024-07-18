@@ -9,9 +9,11 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.aws_boto_3_api_processor import get_eks_api_instance
+from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
+    BashCommandOutputResult
 from protos.playbooks.source_task_definitions.eks_task_pb2 import Eks
 
 
@@ -43,11 +45,18 @@ class EksSourceManager(PlaybookSourceManager):
                 'category': 'Deployment'
             },
             Eks.TaskType.GET_SERVICES: {
-                'category': 'Deployment',
                 'executor': self.get_services,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Services from EKS Cluster',
+                'category': 'Deployment',
+            },
+            Eks.TaskType.KUBECTL_COMMAND: {
+                'executor': self.execute_kubectl_command,
+                'model_types': [],
+                'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                'display_name': 'Execute Kubectl Command in EKS Cluster',
+                'category': 'Actions',
             },
         }
 
@@ -64,7 +73,15 @@ class EksSourceManager(PlaybookSourceManager):
         generated_credentials['client'] = kwargs.get('client', 'api')
         if 'regions' in generated_credentials:
             generated_credentials.pop('regions', None)
-        return get_eks_api_instance(**generated_credentials)
+
+        if 'native_connection' not in kwargs or not kwargs['native_connection']:
+            return get_eks_api_instance(**generated_credentials)
+        else:
+            instance = get_eks_api_instance(**generated_credentials)
+            eks_host = instance.api_client.configuration.host
+            token = instance.api_client.configuration.api_key.get('authorization')
+            ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
+            return KubectlApiProcessor(api_server=eks_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
 
     def get_pods(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
                  eks_connector: ConnectorProto) -> PlaybookTaskResult:
@@ -113,7 +130,8 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Pods from {aws_region}, {cluster_name}, {namespace}'), rows=table_rows,
+            table = TableResult(raw_query=StringValue(value=f'Get Pods from {aws_region}, {cluster_name}, {namespace}'),
+                                rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
@@ -169,8 +187,10 @@ class EksSourceManager(PlaybookSourceManager):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Deployments from {aws_region}, {cluster_name}, {namespace}'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Deployments from {aws_region}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
@@ -225,8 +245,10 @@ class EksSourceManager(PlaybookSourceManager):
                 table_columns.append(
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value=f'Get Events from {aws_region}, {cluster_name}, {namespace}'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Events from {aws_region}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get events in eks: {e}")
@@ -280,10 +302,62 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Services from {aws_region}, {cluster_name}, {namespace}'), rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Services from {aws_region}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
             raise Exception(f"Failed to get services in eks: {e}")
         except Exception as e:
             raise Exception(f"Failed to get services in eks: {e}")
+
+    def execute_kubectl_command(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
+                                eks_connector: ConnectorProto) -> PlaybookTaskResult:
+        try:
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
+
+            eks_command = eks_task.kubectl_command
+
+            aws_region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+
+            command_str = eks_task.kubectl_command.command.value
+            commands = command_str.split('\n')
+            if global_variable_set:
+                for key, value in global_variable_set.items():
+                    updated_commands = []
+                    for command in commands:
+                        command = command.replace(f"{{{key}}}", value)
+                        updated_commands.append(command)
+                    commands = updated_commands
+            try:
+                outputs = {}
+                kubectl_client = self.get_connector_processor(eks_connector, aws_region=aws_region,
+                                                              cluster_name=cluster_name, client='api',
+                                                              native_connection=True)
+                for command in commands:
+                    command_to_execute = command
+                    output = kubectl_client.execute_command(command_to_execute)
+                    outputs[command] = output
+
+                command_output_protos = []
+                for command, output in outputs.items():
+                    bash_command_result = BashCommandOutputResult.CommandOutput(
+                        command=StringValue(value=command),
+                        output=StringValue(value=output)
+                    )
+                    command_output_protos.append(bash_command_result)
+
+                return PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                    bash_command_output=BashCommandOutputResult(
+                        command_outputs=command_output_protos
+                    )
+                )
+            except Exception as e:
+                raise Exception(f"Error while executing EKS kubectl task: {e}")
+        except Exception as e:
+            raise Exception(f"Error while executing EKS kubectl task: {e}")

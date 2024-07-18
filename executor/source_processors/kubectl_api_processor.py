@@ -10,15 +10,20 @@ logger = logging.getLogger(__name__)
 class KubectlApiProcessor(Processor):
     client = None
 
-    def __init__(self, api_server, token, ca_cert):
+    def __init__(self, api_server, token, ssl_ca_cert=None, ssl_ca_cert_path=None):
+        if not ssl_ca_cert and not ssl_ca_cert_path:
+            raise Exception("Either ssl_ca_cert or ssl_ca_cert_path should be provided")
         self.__api_server = api_server
         self.__token = token
-        fp = tempfile.NamedTemporaryFile(delete=False)
-        ca_filename = fp.name
-        cert_bs = ca_cert.encode('utf-8')
-        fp.write(cert_bs)
-        fp.close()
-        self.__ca_cert = ca_filename
+        if ssl_ca_cert_path:
+            self.__ca_cert = ssl_ca_cert_path
+        else:
+            fp = tempfile.NamedTemporaryFile(delete=False)
+            ca_filename = fp.name
+            cert_bs = ssl_ca_cert.encode('utf-8')
+            fp.write(cert_bs)
+            fp.close()
+            self.__ca_cert = ca_filename
 
     def test_connection(self):
         command = "kubectl get namespaces"

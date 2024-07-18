@@ -66,6 +66,6 @@ class KubernetesSourceManager(PlaybookSourceManager):
                     )
                 )
             except Exception as e:
-                raise Exception(f"Error while executing Bash task: {e}")
+                raise Exception(f"Error while executing Kubernetes task: {e}")
         except Exception as e:
-            raise Exception(f"Error while executing Bash task: {e}")
+            raise Exception(f"Error while executing Kubernetes task: {e}")
