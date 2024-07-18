@@ -20,7 +20,7 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
             ElasticSearch.TaskType.QUERY_LOGS: {
                 'executor': self.execute_query_logs,
                 'model_types': [SourceModelType.ELASTIC_SEARCH_INDEX],
-                'result_type': PlaybookTaskResultType.TABLE,
+                'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Query Logs from an ElasticSearch Index',
                 'category': 'Logs'
             },
@@ -131,6 +131,6 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value=f"Execute ```{lucene_query}``` on index {index}"),
                                 total_count=UInt64Value(value=count_result),
                                 rows=table_rows)
-            return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
+            return PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=table, source=self.source)
         except Exception as e:
             raise Exception(f"Error while executing ElasticSearch task: {e}")

@@ -7,9 +7,10 @@ import {
   addGlobalVariable,
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import { Close } from "@mui/icons-material";
+import { CloseRounded } from "@mui/icons-material";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import Toast from "../../Toast.js";
+import CustomButton from "../CustomButton/index.tsx";
 
 const AddVariableOverlay = ({ isOpen, close }) => {
   const [name, setName] = useState("");
@@ -46,7 +47,7 @@ const AddVariableOverlay = ({ isOpen, close }) => {
           <div className={styles["dashboardSaveOverlay__content"]}>
             <div className={styles.title}>
               Add a new variable
-              <Close onClick={() => close()} />
+              <CloseRounded onClick={() => close()} />
             </div>
           </div>
           <div className={styles.variable}>
@@ -65,19 +66,9 @@ const AddVariableOverlay = ({ isOpen, close }) => {
               length={100}
             />
           </div>
-          <div className={styles["actions"]}>
-            <button className={styles["submitButton"]} onClick={() => close()}>
-              Cancel
-            </button>
-
-            <button
-              className={styles["submitButton"]}
-              onClick={handleSubmit}
-              style={{
-                marginLeft: "12px",
-              }}>
-              Add
-            </button>
+          <div className="flex items-center gap-2 mt-10">
+            <CustomButton onClick={() => close()}>Cancel</CustomButton>
+            <CustomButton onClick={handleSubmit}>Add</CustomButton>
           </div>
         </div>
         <Toast

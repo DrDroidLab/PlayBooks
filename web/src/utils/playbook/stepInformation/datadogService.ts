@@ -1,19 +1,20 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const datadogService = [
   {
     label: "Service",
-    key: "datadogService",
+    key: Key.SERVICE_NAME,
     type: InfoTypes.TEXT,
   },
   {
     label: "Environment",
-    key: "datadogEnvironment",
+    key: Key.ENVIRONMENT_NAME,
     type: InfoTypes.TEXT,
   },
   {
-    label: "Metrics",
-    key: "datadogMetric",
-    type: InfoTypes.CHIPS,
+    label: "Metric",
+    key: Key.METRIC,
+    type: InfoTypes.TEXT,
   },
 ];
