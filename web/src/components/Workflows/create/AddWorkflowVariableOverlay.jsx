@@ -49,14 +49,14 @@ const AddWorkflowVariableOverlay = ({ isOpen, close }) => {
           </div>
           <div className={"flex flex-col gap-3"}>
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val) => setName(val)}
               value={name}
               placeholder={"Enter variable name"}
               length={100}
             />
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val) => setValue(val)}
               value={value}
               placeholder={"Enter variable value"}

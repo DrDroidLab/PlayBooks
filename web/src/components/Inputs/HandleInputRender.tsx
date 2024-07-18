@@ -1,4 +1,4 @@
-import React from "react";
+import React, { HTMLInputTypeAttribute } from "react";
 import { InputType, InputTypes } from "../../types/inputs/inputTypes.ts";
 import Text from "./InputTypes/Text.tsx";
 import Multiline from "./InputTypes/Multiline.tsx";
@@ -10,8 +10,9 @@ import DropdownInput from "./InputTypes/DropdownInput.tsx";
 import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 
 export type HandleInputRenderType = {
-  type: InputType;
+  inputType: InputType;
   value: string;
+  type?: HTMLInputTypeAttribute;
   label?: string;
   handleChange?: (val: string) => void;
   handleClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -25,8 +26,8 @@ export type HandleInputRenderType = {
   length?: number;
 };
 
-function HandleInputRender({ type, ...props }: HandleInputRenderType) {
-  switch (type) {
+function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
+  switch (inputType) {
     case InputTypes.TEXT:
       return <Text {...props} handleChange={props.handleChange!} />;
 

@@ -24,7 +24,7 @@ function SelectSource({ id }) {
       <CustomInput
         label="Data Source"
         options={connectorOptions}
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         value={task?.source ?? ""}
         handleChange={handleSourceChange}
         disabled={!!isPrefetched}

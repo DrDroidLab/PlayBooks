@@ -62,7 +62,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
             {!isExisting && !currentPlaybook?.name && (
               <div>
                 <CustomInput
-                  type={InputTypes.TEXT}
+                  inputType={InputTypes.TEXT}
                   label="Name"
                   handleChange={(val) => setName(val)}
                   value={name}

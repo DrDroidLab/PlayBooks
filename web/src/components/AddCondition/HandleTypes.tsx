@@ -33,7 +33,7 @@ function HandleTypes({
       return (
         <div className="flex items-center gap-1">
           <CustomInput
-            type={InputTypes.TEXT}
+            inputType={InputTypes.TEXT}
             handleChange={(val: string) => handleChange(val, "window")}
             value={rule.window}
             placeholder={"Enter window size"}
@@ -50,7 +50,7 @@ function HandleTypes({
         <>
           <div className="flex flex-wrap gap-2 items-center">
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val: string) => handleChange(val, "column_name")}
               value={rule.column_name}
               placeholder={"Enter column name"}

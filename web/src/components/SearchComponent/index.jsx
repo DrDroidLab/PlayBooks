@@ -29,7 +29,7 @@ export const SearchComponent = ({
     <div className={styles["container"]}>
       <div className={styles["container__search"]}>
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={options}
           value={selectedOption}
           disabled={selectDisabled}

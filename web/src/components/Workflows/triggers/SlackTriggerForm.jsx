@@ -30,7 +30,7 @@ function SlackTriggerForm() {
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Channel</p>
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={options?.active_channels?.map((e) => {
             return {
               id: e.channel_id,
@@ -57,7 +57,7 @@ function SlackTriggerForm() {
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Bot</p>
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={sources?.map((e) => {
             return {
               id: e.alert_type,
@@ -75,7 +75,7 @@ function SlackTriggerForm() {
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs shrink-0">Matching string</p>
         <CustomInput
-          type={InputTypes.TEXT}
+          inputType={InputTypes.TEXT}
           handleChange={(val) => {
             handleTriggerInput("filterString", val);
           }}

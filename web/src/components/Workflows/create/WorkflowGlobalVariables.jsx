@@ -43,7 +43,7 @@ function WorkflowGlobalVariables() {
               <div className="bg-violet-100 p-1 rounded">{variable.name}</div>
               <div className="flex gap-1 items-center">
                 <CustomInput
-                  type={InputTypes.TEXT}
+                  inputType={InputTypes.TEXT}
                   value={variable.value}
                   placeholder={"Enter variable value"}
                   length={200}

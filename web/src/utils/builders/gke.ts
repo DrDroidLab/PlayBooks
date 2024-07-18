@@ -11,13 +11,13 @@ export const gkeBuilder = (options: any, task: Task) => {
         {
           key: Key.ZONE,
           label: "Zone",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x.zone, label: x.zone })) ?? [],
         },
         {
           key: Key.CLUSTER,
           label: "Cluster",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.zone === getTaskData(task)?.zone)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
@@ -25,7 +25,7 @@ export const gkeBuilder = (options: any, task: Task) => {
         {
           key: Key.NAMESPACE,
           label: "Namespace",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options:
             getCurrentAsset(task, Key.REGION, "region")?.clusters?.length > 0
               ? getCurrentAsset(

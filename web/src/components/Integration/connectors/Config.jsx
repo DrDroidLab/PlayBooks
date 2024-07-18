@@ -46,7 +46,7 @@ function Config({ connector }) {
             className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
             <div className={styles["content"]}>Name</div>
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val) => {
                 dispatch(setKey({ key: "name", value: val }));
               }}

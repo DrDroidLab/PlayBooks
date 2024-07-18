@@ -8,7 +8,7 @@ export const clickhouseBuilder = (options: any) => {
         {
           key: Key.DATABASE,
           label: "Database",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
         },
       ],
@@ -16,7 +16,7 @@ export const clickhouseBuilder = (options: any) => {
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

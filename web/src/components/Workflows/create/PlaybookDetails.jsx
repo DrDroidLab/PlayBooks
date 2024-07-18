@@ -30,7 +30,7 @@ function PlaybookDetails() {
         </a>
       </label>
       <CustomInput
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         options={data?.playbooks?.map((e) => {
           return {
             id: e.id,

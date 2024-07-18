@@ -46,7 +46,7 @@ function SelectTaskType({ id }) {
       <CustomInput
         label="Task Type"
         options={options}
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         value={taskType}
         handleChange={handleTaskTypeChange}
         disabled={!!isPrefetched}

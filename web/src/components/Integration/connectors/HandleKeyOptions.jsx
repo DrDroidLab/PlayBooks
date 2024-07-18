@@ -55,7 +55,7 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
     default:
       return (
         <CustomInput
-          type={InputTypes.TEXT}
+          inputType={InputTypes.TEXT}
           handleChange={(val) => {
             if (onValueChange) {
               onValueChange(val);

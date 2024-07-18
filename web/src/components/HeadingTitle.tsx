@@ -31,7 +31,7 @@ function HeadingTitle({ heading }: HeadingTitleProps) {
       {showEdit ? (
         <form onSubmit={() => setShowEdit(!showEdit)}>
           <CustomInput
-            type={InputTypes.TEXT}
+            inputType={InputTypes.TEXT}
             value={currentPlaybook?.name ?? ""}
             handleChange={setName}
             placeholder={"Enter Playbook name"}

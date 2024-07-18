@@ -27,7 +27,7 @@ function SlackMessage() {
       <CustomInput
         label="Select Channel"
         labelPosition={LabelPosition.LEFT}
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         options={channelOptions}
         placeholder="Select Channel"
         handleChange={(id) => {

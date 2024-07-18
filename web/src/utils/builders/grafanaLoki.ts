@@ -9,14 +9,14 @@ export const grafanaLokiBuilder = () => {
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
           key: Key.LIMIT,
           label: "Limit",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           default: 10,
         },
       ],
@@ -24,13 +24,13 @@ export const grafanaLokiBuilder = () => {
         {
           key: Key.START_TIME,
           label: "Start time",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           default: Math.floor(store.getState().timeRange.startTime),
         },
         {
           key: Key.END_TIME,
           label: "End time",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           default: Math.floor(store.getState().timeRange.endTime),
         },
       ],

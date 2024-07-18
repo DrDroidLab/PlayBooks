@@ -53,14 +53,14 @@ const AddVariableOverlay = ({ isOpen, close }) => {
           </div>
           <div className={styles.variable}>
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val) => setName(val)}
               value={name}
               placeholder={"Enter variable name"}
               length={100}
             />
             <CustomInput
-              type={InputTypes.TEXT}
+              inputType={InputTypes.TEXT}
               handleChange={(val) => setValue(val)}
               value={value}
               placeholder={"Enter variable value"}

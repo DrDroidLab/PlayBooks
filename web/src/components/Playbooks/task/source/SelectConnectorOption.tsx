@@ -55,7 +55,7 @@ function SelectConnectorOption({ id: taskId }) {
                 label: option.display_name,
                 option: option,
               }))}
-              type={InputTypes.DROPDOWN}
+              inputType={InputTypes.DROPDOWN}
               value={task?.task_connector_sources?.[0]?.id ?? ""}
               handleChange={handleConnectorOptionChange}
               disabled={!!isPrefetched}

@@ -29,7 +29,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
     <>
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={timeseriesOptions}
           value={rule.type}
           placeholder={`Select Type`}
@@ -47,7 +47,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={functionOptions(
             (task?.ui_requirement?.resultType as ResultTypeType) ??
               ResultTypeTypes.OTHERS,
@@ -62,7 +62,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={operationOptions}
           value={rule.operator}
           placeholder={`Select Operator`}
@@ -74,7 +74,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.TEXT}
+          inputType={InputTypes.TEXT}
           handleChange={(val: string) =>
             handleChange(val, `${resultType?.toLowerCase()}.threshold`)
           }

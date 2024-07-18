@@ -26,7 +26,7 @@ function Table({ condition, conditionIndex, rule }) {
     <>
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           error={undefined}
           options={tableOptions}
           value={rule.type}
@@ -45,7 +45,7 @@ function Table({ condition, conditionIndex, rule }) {
 
       <div className="flex items-center gap-1">
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           error={undefined}
           options={
             checkIfNumeric
@@ -62,7 +62,7 @@ function Table({ condition, conditionIndex, rule }) {
 
       <div className="flex flex-col gap-1">
         <CustomInput
-          type={InputTypes.TEXT}
+          inputType={InputTypes.TEXT}
           handleChange={(val: string) => {
             if (checkIfNumeric) {
               handleChange(

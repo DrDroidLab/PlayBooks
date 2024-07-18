@@ -8,14 +8,14 @@ export const postgresBuilder = () => {
         {
           key: Key.DATABASE,
           label: "Database",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

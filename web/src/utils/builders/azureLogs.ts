@@ -11,7 +11,7 @@ export const azureLogsBuilder = (options: any, task: Task) => {
         {
           key: Key.WORKSPACE_ID,
           label: "Workspace ID",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op.workspace,
             label: `${op.workspace} - ${op.name}`,
@@ -26,12 +26,12 @@ export const azureLogsBuilder = (options: any, task: Task) => {
         {
           key: Key.FILTER_QUERY,
           label: "Log Filter Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
         {
           key: Key.TIMESPAN,
           label: "Timespan (hours)",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
         },
       ],

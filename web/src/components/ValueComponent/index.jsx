@@ -183,7 +183,7 @@ const ValueComponent = ({
       )}
       {checkForId && (
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={valueOptions}
           searchable={true}
           handleChange={handleCheckboxChange}

@@ -16,7 +16,7 @@ function HandleDocumentationOutputs({ taskId }) {
     case taskTypes.DOCUMENTATION_IFRAME:
       return (
         <CustomInput
-          type={InputTypes.IFRAME_RENDER}
+          inputType={InputTypes.IFRAME_RENDER}
           value={taskData?.iframe_url}
         />
       );

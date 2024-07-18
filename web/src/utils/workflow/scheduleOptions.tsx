@@ -26,13 +26,13 @@ export const scheduleOptions = [
             )
           </>
         ),
-        type: InputTypes.TEXT,
+        inputType: InputTypes.TEXT,
         placeholder: "Enter Cron Schedule",
       },
       {
         id: "duration",
         label: "Stop after (in seconds)",
-        type: InputTypes.TEXT,
+        inputType: InputTypes.TEXT,
         placeholder: "Enter Duration (in seconds)",
         valueType: "LONG",
         length: 200,
@@ -47,13 +47,13 @@ export const scheduleOptions = [
         id: "interval",
         label: "Interval (in seconds)",
         valueType: "LONG",
-        type: InputTypes.TEXT,
+        inputType: InputTypes.TEXT,
         placeholder: "Enter Interval in seconds",
       },
       {
         id: "duration",
         label: "Stop after (in seconds)",
-        type: InputTypes.TEXT,
+        inputType: InputTypes.TEXT,
         placeholder: "Enter Duration (in seconds)",
         valueType: "LONG",
         length: 200,

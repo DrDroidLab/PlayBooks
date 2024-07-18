@@ -8,7 +8,7 @@ export const sqlRawQueryBuilder = () => {
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

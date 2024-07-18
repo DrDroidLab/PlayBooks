@@ -15,7 +15,7 @@ export const datadogRawQueryBuilder = (task: Task, id: string) => {
         {
           key: Key.QUERY1,
           label: "a",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
           length: 400,
         },
@@ -24,7 +24,7 @@ export const datadogRawQueryBuilder = (task: Task, id: string) => {
           label: getTaskUiRequirements(task)?.requiresFormula
             ? "- Query"
             : "+ Query",
-          type: InputTypes.BUTTON,
+          inputType: InputTypes.BUTTON,
           selected: getTaskUiRequirements(task)?.requiresFormula,
           handleClick: () => {
             updateCardById(
@@ -41,7 +41,7 @@ export const datadogRawQueryBuilder = (task: Task, id: string) => {
           key: Key.QUERY2,
           label: "b",
           isOptional: true,
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
           length: 400,
           condition: getTaskUiRequirements(task)?.requiresFormula === true,
@@ -52,7 +52,7 @@ export const datadogRawQueryBuilder = (task: Task, id: string) => {
           key: Key.FORMULA,
           label: "Formula",
           isOptional: true,
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
           placeholder: "Enter Formula, eg: a+b",
           length: 400,

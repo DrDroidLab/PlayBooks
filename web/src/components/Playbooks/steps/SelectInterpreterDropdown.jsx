@@ -27,7 +27,7 @@ function SelectInterpreterDropdown({ id }) {
         />
       )}
       <CustomInput
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         options={data?.interpreterTypes?.map((interpreter) => ({
           id: interpreter.type,
           label: interpreter.display_name,

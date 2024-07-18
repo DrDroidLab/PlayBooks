@@ -29,7 +29,7 @@ function PagerdutyTriggerForm() {
         <div className="text-sm flex items-center gap-2 justify-between w-full">
           <p className="text-xs">Service</p>
           <CustomInput
-            type={InputTypes.TEXT}
+            inputType={InputTypes.TEXT}
             handleChange={(val) => {
               handleTriggerInput("serviceName", val);
             }}
@@ -42,7 +42,7 @@ function PagerdutyTriggerForm() {
         <div className="text-sm flex items-center gap-2 justify-between w-full">
           <p className="text-xs">Title</p>
           <CustomInput
-            type={InputTypes.TEXT}
+            inputType={InputTypes.TEXT}
             handleChange={(val) => {
               handleTriggerInput("title", val);
             }}

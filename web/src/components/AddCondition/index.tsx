@@ -81,7 +81,7 @@ function AddCondition() {
           Select a global rule
         </p>
         <CustomInput
-          type={InputTypes.DROPDOWN}
+          inputType={InputTypes.DROPDOWN}
           options={ruleOptions}
           value={condition?.logical_operator ?? ""}
           placeholder={`Select Global Rule`}
@@ -98,7 +98,7 @@ function AddCondition() {
           <div className="flex flex-col gap-2 flex-wrap">
             <div className="flex items-center gap-1">
               <CustomInput
-                type={InputTypes.DROPDOWN}
+                inputType={InputTypes.DROPDOWN}
                 error={undefined}
                 options={taskTypeOptions?.map((task) => ({
                   id: task?.id,

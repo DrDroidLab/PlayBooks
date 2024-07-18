@@ -55,7 +55,7 @@ function GlobalVariables() {
               </div>
               <div className="flex gap-2 items-center">
                 <CustomInput
-                  type={InputTypes.TEXT}
+                  inputType={InputTypes.TEXT}
                   value={variables[key]}
                   placeholder={"Enter variable value"}
                   length={200}

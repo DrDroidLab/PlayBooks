@@ -23,7 +23,7 @@ function MsWebhook() {
       <CustomInput
         label="Webhook"
         labelPosition={LabelPosition.LEFT}
-        type={InputTypes.DROPDOWN}
+        inputType={InputTypes.DROPDOWN}
         options={data?.map((e) => {
           return {
             id: e.keyId,

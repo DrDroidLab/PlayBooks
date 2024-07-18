@@ -51,7 +51,7 @@ export default function OptionRender({ data, removeErrors, id }) {
       {...data}
       error={error}
       handleChange={handleChangeInput(
-        data.type,
+        data.inputType,
         key,
         currentTaskId!,
         removeErrors,

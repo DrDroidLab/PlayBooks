@@ -11,14 +11,14 @@ export const iframeBuilder = (task: Task) => {
         {
           key: Key.IFRAME_URL,
           label: "Iframe URL",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
         },
       ],
       [
         {
           label: "Iframe RENDER",
-          type: InputTypes.IFRAME_RENDER,
+          inputType: InputTypes.IFRAME_RENDER,
           value: getTaskData(task)?.[Key.IFRAME_URL],
         },
       ],

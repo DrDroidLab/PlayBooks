@@ -63,7 +63,7 @@ function BasicDetails() {
         <div className="space-y-2">
           <CustomInput
             label="Workflow Name"
-            type={InputTypes.TEXT}
+            inputType={InputTypes.TEXT}
             value={currentWorkflow.name}
             handleChange={(val) => {
               handleInput("name", val);
@@ -96,7 +96,7 @@ function BasicDetails() {
           </div>
           <div className="flex gap-2 items-center">
             <CustomInput
-              type={InputTypes.DROPDOWN}
+              inputType={InputTypes.DROPDOWN}
               options={triggerOptions?.map((e) => {
                 return {
                   id: e.id,

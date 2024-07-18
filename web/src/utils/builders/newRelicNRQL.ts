@@ -8,21 +8,21 @@ export const newRelicNRQLBuilder = () => {
         {
           key: Key.METRIC_NAME,
           label: "Metric Name",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
           key: Key.UNIT,
           label: "Unit",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
           key: Key.NRQL_EXPRESSION,
           label: "NRQL Expression",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],
