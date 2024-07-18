@@ -1,5 +1,6 @@
 import { Task } from "../../types/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 import { getTaskData } from "../playbook/getTaskData.ts";
 import { Key } from "../playbook/key.ts";
 
@@ -10,7 +11,8 @@ export const iframeBuilder = (task: Task) => {
         {
           key: Key.IFRAME_URL,
           label: "Iframe URL",
-          type: InputTypes.TEXT_ROW,
+          type: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
       [

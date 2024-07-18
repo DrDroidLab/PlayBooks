@@ -2,6 +2,7 @@ import { Key } from "../playbook/key.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { Task } from "../../types/index.ts";
 import { getTaskData } from "../playbook/getTaskData.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 
 export const azureLogsBuilder = (options: any, task: Task) => {
   return {
@@ -30,7 +31,8 @@ export const azureLogsBuilder = (options: any, task: Task) => {
         {
           key: Key.TIMESPAN,
           label: "Timespan (hours)",
-          type: InputTypes.TEXT_ROW,
+          type: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
     ],

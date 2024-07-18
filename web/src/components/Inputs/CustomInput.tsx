@@ -2,26 +2,23 @@ import React, { ReactNode } from "react";
 import HandleInputRender, {
   HandleInputRenderType,
 } from "./HandleInputRender.tsx";
-import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
+import * as InputUtils from "./utils/index.ts";
 
 type CustomInputPropTypes = {
   suffix?: ReactNode;
+  labelPosition?: LabelPosition;
 } & HandleInputRenderType;
 
-function CustomInput(props: CustomInputPropTypes) {
+function CustomInput({
+  labelPosition = LabelPosition.TOP,
+  ...props
+}: CustomInputPropTypes) {
   return (
     <div
-      className={`flex ${
-        props.type === InputTypes.TEXT_ROW
-          ? "flex-row items-center gap-2"
-          : "flex-col"
-      } w-full`}>
+      className={`${InputUtils.handleClassname(labelPosition)} gap-1 w-full`}>
       {props.label && (
-        <p
-          className="text-xs text-gray-500"
-          style={{
-            marginTop: props.type === InputTypes.TEXT ? "10px" : "",
-          }}>
+        <p className="text-xs text-gray-500">
           <b>{props.label}</b>
         </p>
       )}

@@ -27,7 +27,6 @@ export type HandleInputRenderType = {
 
 function HandleInputRender({ type, ...props }: HandleInputRenderType) {
   switch (type) {
-    case InputTypes.TEXT_ROW:
     case InputTypes.TEXT:
       return <Text {...props} handleChange={props.handleChange!} />;
 
