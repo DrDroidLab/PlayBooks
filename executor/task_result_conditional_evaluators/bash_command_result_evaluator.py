@@ -96,7 +96,7 @@ class BashCommandOutputResultEvaluator(TaskResultEvaluator):
             evaluation, value = bash_command_grep_rule_evaluator(operator, threshold, pattern, case_sensitive,
                                                                  bash_command_result)
             return evaluation, {'value': value}
-        elif rule_type == bash_command_result_rule.Type.GREP_COUNTER:
+        elif rule_type == bash_command_result_rule.Type.GREP_COUNT:
             evaluation, value = bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_sensitive,
                                                                          bash_command_result)
             return evaluation, {'value': value}

@@ -6,7 +6,7 @@ from protos.playbooks.playbook_task_result_evaluator_pb2 import BashCommandOutpu
 
 
 def rule_type_to_str(rule: BashCommandOutputResultRule):
-    if rule.type == BashCommandOutputResultRule.Type.GREP_COUNTER:
+    if rule.type == BashCommandOutputResultRule.Type.GREP_COUNT:
         return 'check grep with pattern'
     else:
         return ''
