@@ -5,8 +5,9 @@ import {
   updateSource,
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
-import SelectComponent from "../../../SelectComponent";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import HandleInputRender from "../../../Inputs/HandleInputRender.tsx";
+import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 
 function SelectSource({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -20,14 +21,12 @@ function SelectSource({ id }) {
 
   return (
     <div className="flex flex-col">
-      <p className="text-xs text-gray-500 font-bold">Data Source</p>
-      <SelectComponent
-        error={undefined}
-        data={connectorOptions}
-        placeholder="Select Data Source"
-        onSelectionChange={handleSourceChange}
-        selected={task?.source}
-        searchable={true}
+      <HandleInputRender
+        label="Data Source"
+        options={connectorOptions}
+        type={InputTypes.DROPDOWN}
+        value={task?.source ?? ""}
+        handleChange={handleSourceChange}
         disabled={!!isPrefetched}
       />
     </div>

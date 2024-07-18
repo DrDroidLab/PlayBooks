@@ -9,10 +9,11 @@ import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playb
 import useDrawerState from "../../../../hooks/useDrawerState.ts";
 import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import React from "react";
-import SelectComponent from "../../../SelectComponent/index.jsx";
 import CustomButton from "../../../common/CustomButton/index.tsx";
 import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.jsx";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
+import HandleInputRender from "../../../Inputs/HandleInputRender.tsx";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 
@@ -23,7 +24,7 @@ function SelectConnectorOption({ id: taskId }) {
   const { toggle } = useDrawerState(id);
   const isPrefetched = useIsPrefetched();
 
-  function handleConnectorOptionChange(id) {
+  function handleConnectorOptionChange(id: string) {
     updateCardById("task_connector_sources.0.id", id, currentTaskId);
     if (!isPrefetched) fetchData({ id: currentTaskId });
   }
@@ -34,21 +35,19 @@ function SelectConnectorOption({ id: taskId }) {
 
   return (
     <div className="relative flex flex-col">
-      <p className="text-xs text-gray-500 font-bold">Connector</p>
       <div className="flex gap-1 items-center">
         {currentConnectorOptions.length > 0 ? (
           <div className="flex gap-2">
-            <SelectComponent
-              error={undefined}
-              data={currentConnectorOptions.map((option) => ({
+            <HandleInputRender
+              label="Connector"
+              options={currentConnectorOptions.map((option) => ({
                 id: option.connector_id,
                 label: option.display_name,
                 option: option,
               }))}
-              placeholder="Select Connector"
-              onSelectionChange={handleConnectorOptionChange}
-              selected={task?.task_connector_sources?.[0]?.id}
-              searchable={true}
+              type={InputTypes.DROPDOWN}
+              value={task?.task_connector_sources?.[0]?.id ?? ""}
+              handleChange={handleConnectorOptionChange}
               disabled={!!isPrefetched}
             />
           </div>
