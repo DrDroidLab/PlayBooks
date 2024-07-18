@@ -281,7 +281,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
             SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH
-        ]
+        ],
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+        ],
     ],
 }
 
@@ -492,7 +497,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.ELASTIC_SEARCH_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
-                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,]:
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
