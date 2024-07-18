@@ -8,10 +8,14 @@ RUN apt-get update \
   # Translations dependencies
   && apt-get install -y gettext \
   # Nginx
-  && apt-get install nginx vim procps curl libpq-dev -y --no-install-recommends \
+  && apt-get install -y nginx vim procps curl libpq-dev -y --no-install-recommends \
+  # Install kubectl
+  && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+  && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && rm kubectl
 
 COPY nginx.default /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
