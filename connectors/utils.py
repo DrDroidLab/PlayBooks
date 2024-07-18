@@ -16,6 +16,7 @@ from executor.source_processors.elastic_search_api_processor import ElasticSearc
 from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
+from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from executor.source_processors.mimir_api_processor import MimirApiProcessor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from executor.source_processors.pd_api_processor import PdApiProcessor
@@ -50,7 +51,8 @@ connector_type_api_processor_map = {
     Source.MS_TEAMS: MSTeamsApiProcessor,
     Source.PAGER_DUTY: PdApiProcessor,
     Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
-    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor
+    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
+    Source.KUBERNETES: KubectlApiProcessor
 }
 
 

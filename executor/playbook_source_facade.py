@@ -13,6 +13,7 @@ from executor.source_task_executors.gke_task_executor import GkeSourceManager
 from executor.source_task_executors.grafana_loki_task_executor import GrafanaLokiSourceManager
 from executor.source_task_executors.grafana_task_executor import GrafanaSourceManager
 from executor.source_task_executors.grafana_vpc_executor import GrafanaVpcSourceManager
+from executor.source_task_executors.kubernetes_task_executor import KubernetesSourceManager
 from executor.source_task_executors.mimir_task_executor import MimirSourceManager
 from executor.source_task_executors.newrelic_task_executor import NewRelicSourceManager
 from executor.source_task_executors.clickhouse_task_executor import ClickhouseSourceManager
@@ -116,5 +117,6 @@ playbook_source_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceManage
 
 playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
+playbook_source_facade.register(Source.KUBERNETES, KubernetesSourceManager())
 
 playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())

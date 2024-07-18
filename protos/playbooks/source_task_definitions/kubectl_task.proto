@@ -1,0 +1,16 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message Kubectl {
+  enum TaskType {
+    UNKNOWN = 0;
+    COMMAND = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    google.protobuf.StringValue command = 3;
+  }
+}
