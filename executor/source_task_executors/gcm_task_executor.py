@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict
 import json
@@ -14,6 +15,31 @@ from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePa
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
 
+logger = logging.getLogger(__name__)
+
+
+def get_project_id(gcm_connector: ConnectorProto) -> str:
+    project_id = next(
+        (key.key.value for key in gcm_connector.keys if key.display_name.value.lower() == "project id"), '')
+
+    if not project_id:
+        service_account_json = next((key.key.value for key in gcm_connector.keys if
+                                     key.display_name.value.lower() == "service account json"), '')
+        if service_account_json:
+            try:
+                import json
+                service_account_info = json.loads(service_account_json)
+                project_id = service_account_info.get('project_id', '')
+            except json.JSONDecodeError:
+                logger.error("Error: Unable to parse service account JSON")
+        else:
+            logger.error("Error: Service Account JSON not found in connector keys")
+
+    if not project_id:
+        raise Exception("Unable to extract project ID from GCM connector")
+
+    return project_id
+
 
 class GcmSourceManager(PlaybookSourceManager):
 
@@ -21,11 +47,11 @@ class GcmSourceManager(PlaybookSourceManager):
         self.source = Source.GCM
         self.task_proto = Gcm
         self.task_type_callable_map = {
-            Gcm.TaskType.METRIC_EXECUTION: {
-                'executor': self.execute_metric_execution,
+            Gcm.TaskType.RUN_MQL_QUERY: {
+                'executor': self.execute_run_mql_query,
                 'model_types': [SourceModelType.GCM_METRIC],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
-                'display_name': 'Fetch a Metric from GCM',
+                'display_name': 'Run MQL Query on GCM',
                 'category': 'Metrics'
             },
             Gcm.TaskType.FILTER_LOG_ENTRIES: {
@@ -41,8 +67,8 @@ class GcmSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(gcm_connector.type, gcm_connector.keys)
         return GcmApiProcessor(**generated_credentials)
 
-    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
-                                 gcm_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_run_mql_query(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+                              gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
@@ -54,64 +80,51 @@ class GcmSourceManager(PlaybookSourceManager):
             tr_start_time = time_range.time_geq
             start_time = datetime.utcfromtimestamp(tr_start_time)
 
-            task = gcm_task.metric_execution
-            metric_type = task.metric_type.value
-            project_id = task.project_id.value
-            task_labels = task.labels
-            labels = [{'key': label.key.value, 'value': label.value.value} for label in task_labels]
-
-            gcm_api_processor = self.get_connector_processor(gcm_connector, client_type='monitoring')
+            task = gcm_task.mql_query
+            project_id = get_project_id(gcm_connector)
+            query = task.query.value
 
             print(
-                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Metric_Type -> {}, Start_Time "
-                "-> {}, End_Time -> {}, Labels -> {}".format(
-                    "GCM_Metrics", gcm_connector.account_id.value, project_id, metric_type,
-                    start_time, end_time, labels), flush=True)
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Query -> {}, Start_Time "
+                "-> {}, End_Time -> {}".format(
+                    "RUN_MQL_QUERY", gcm_connector.account_id.value, project_id, query,
+                    start_time, end_time), flush=True)
 
-            response = gcm_api_processor.fetch_metrics(metric_type, start_time, end_time)
+            # Add the time range to the query
+            query_with_time = f"""
+            {query} | within {int((end_time - start_time).total_seconds() // 60)}m
+            """
+
+            gcm_api_processor = self.get_connector_processor(gcm_connector, client_type='monitoring')
+            response = gcm_api_processor.run_mql_query(query_with_time, project_id)
+
             if not response:
                 raise Exception("No data returned from GCM")
-            response_datapoints = response
-            if len(response_datapoints) > 0:
-                metric_unit = response_datapoints[0]['metric'].get('unit', '')
-            else:
-                metric_unit = ''
-            process_function = task.process_function.value
-            if process_function == 'timeseries':
-                metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                for item in response_datapoints:
-                    if 'points' not in item:
-                        print("Warning: 'points' key is missing in the response item. Item details: {item}")
-                        continue
 
-                    for point in item['points']:
-                        if 'interval' not in point or 'endTime' not in point['interval']:
-                            print(
-                                f"Warning: 'interval' or 'endTime' key is missing in the point. Point details: {point}")
-                            continue
+            metric_datapoints = []
+            for item in response:
+                for point in item['pointData']:
+                    utc_timestamp = point['timeInterval']['endTime'].rstrip('Z')
+                    utc_datetime = datetime.fromisoformat(utc_timestamp)
+                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                    val = point['values'][0]['doubleValue']
+                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                    metric_datapoints.append(datapoint)
 
-                        utc_timestamp = point['interval']['endTime'].rstrip('Z')
-                        utc_datetime = datetime.fromisoformat(utc_timestamp)
-                        utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
-                        val = point['value']['doubleValue']
-                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
-                        metric_datapoints.append(datapoint)
+            labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
+                metric_label_values=[
+                    LabelValuePair(name=StringValue(value='query'), value=StringValue(value=query))
+                ],
+                datapoints=metric_datapoints
+            )]
 
-                labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
-                    metric_label_values=[
-                        LabelValuePair(name=StringValue(value='metric_type'), value=StringValue(value=metric_type))
-                    ],
-                    unit=StringValue(value=metric_unit),
-                    datapoints=metric_datapoints
-                )]
+            timeseries_result = TimeseriesResult(metric_name=StringValue(value=query),
+                                                 metric_expression=StringValue(value=project_id),
+                                                 labeled_metric_timeseries=labeled_metric_timeseries)
 
-                timeseries_result = TimeseriesResult(metric_name=StringValue(value=metric_type),
-                                                     metric_expression=StringValue(value=project_id),
-                                                     labeled_metric_timeseries=labeled_metric_timeseries)
-
-                task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
-                                                 source=self.source)
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
+                                             source=self.source)
 
             return task_result
         except Exception as e:
