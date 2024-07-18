@@ -17,13 +17,16 @@ import CustomInput from "../../../Inputs/CustomInput.tsx";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 
-const RefreshButton = ({ refetch }) => {
+const RefreshButton = ({ refetch, loading }) => {
   return (
-    <button onClick={refetch}>
-      <RefreshRounded
-        className={`text-gray-400 hover:text-gray-600 transition-all`}
-      />
-    </button>
+    <>
+      <button onClick={refetch}>
+        <RefreshRounded
+          className={`text-gray-400 hover:text-gray-600 transition-all`}
+        />
+      </button>
+      {loading && <CircularProgress size={20} />}
+    </>
   );
 };
 
@@ -43,6 +46,8 @@ function SelectConnectorOption({ id: taskId }) {
     connectorOptions?.find((e) => e.id === task?.source)?.connector
       ?.connector_options ?? [];
 
+  const loading = isFetching || task?.ui_requirement?.assetsLoading;
+
   return (
     <div className="relative flex flex-col">
       <div className="flex gap-1 items-center">
@@ -59,16 +64,13 @@ function SelectConnectorOption({ id: taskId }) {
               value={task?.task_connector_sources?.[0]?.id ?? ""}
               handleChange={handleConnectorOptionChange}
               disabled={!!isPrefetched}
-              suffix={<RefreshButton refetch={refetch} />}
+              suffix={<RefreshButton refetch={refetch} loading={loading} />}
             />
           </div>
         ) : (
           <>
             <CustomButton onClick={toggle}>+ Add New Source</CustomButton>
           </>
-        )}
-        {(isFetching || task?.ui_requirement?.assetsLoading) && (
-          <CircularProgress size={20} />
         )}
         <AddDataSourcesDrawer />
       </div>
