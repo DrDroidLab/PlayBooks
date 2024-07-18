@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
 import CheckboxGroupComponent from "../CheckboxGroupComponent";
 import CheckboxComponent from "../CheckboxComponent";
-import MultiSelectComponent from "../MultiSelectComponent";
 import RadioGroup from "../common/RadioGroupComponent/index.tsx";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
@@ -135,17 +134,6 @@ const ValueComponent = ({
     return false;
   }, [valueType, valueOptions]);
 
-  const checkIdArrayForMultiSelect = useMemo(() => {
-    if (
-      valueType === "ID_ARRAY" &&
-      Array.isArray(valueOptions) &&
-      valueOptions.length > 2
-    ) {
-      return true;
-    }
-    return false;
-  }, [valueType, valueOptions]);
-
   const checkForId = useMemo(() => {
     if (valueType === "ID" && Array.isArray(valueOptions)) {
       return true;
@@ -199,15 +187,6 @@ const ValueComponent = ({
             checkedIds={value}
           />
         </div>
-      )}
-      {checkIdArrayForMultiSelect && (
-        <MultiSelectComponent
-          data={valueOptions}
-          searchable={true}
-          onSelectionChange={handleCheckboxChange}
-          selectedValues={value || []}
-          disabled={disabled}
-        />
       )}
       {valueType === "BOOLEAN" && (
         <div className={styles["boolean__valueContainer"]}>
