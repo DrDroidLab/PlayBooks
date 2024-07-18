@@ -64,6 +64,8 @@ export default function handleStepInformation(
       return StepInformation.elasticSearch;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
+    case taskTypes.DOCUMENTATION_MARKDOWN:
+      return StepInformation.markdown;
 
     default:
       return [];

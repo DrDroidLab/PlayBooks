@@ -7,6 +7,7 @@ import IframeRender from "../Playbooks/options/IframeRender.tsx";
 import TypingDropdownInput from "./InputTypes/TypingDropdownInput.tsx";
 import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInput.tsx";
 import DropdownInput from "./InputTypes/DropdownInput.tsx";
+import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 
 type HandleInputRenderType = {
   type: InputType;
@@ -68,6 +69,9 @@ function HandleInputRender({ type, ...props }: HandleInputRenderType) {
           handleAddClick={props.handleAddClick!}
         />
       );
+
+    case InputTypes.WYISWYG:
+      return <Wysiwyg handleChange={props.handleChange!} {...props} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

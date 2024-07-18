@@ -33,12 +33,7 @@ function Timeline() {
 
       <div className="flex flex-col gap-8 overflow-scroll">
         {steps?.map((step, index) => (
-          <StepConfig
-            key={index}
-            step={step}
-            index={index}
-            handleShowConfig={handleShowConfig}
-          />
+          <StepConfig key={index} step={step} index={index} />
         ))}
       </div>
 

@@ -53,6 +53,7 @@ export const Key = {
   WIDGET_NRQL_EXPRESSION: "widget_nrql_expression",
   UNIT: "unit",
   NRQL_EXPRESSION: "nrql_expression",
+  CONTENT: "content",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
