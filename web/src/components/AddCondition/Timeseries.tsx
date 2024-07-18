@@ -1,5 +1,4 @@
 import React from "react";
-import SelectComponent from "../SelectComponent";
 import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
@@ -13,6 +12,8 @@ import {
   ResultTypeType,
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const { id } = useSelector(additionalStateSelector);
@@ -28,12 +29,12 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={timeseriesOptions}
-          selected={rule.type}
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={timeseriesOptions}
+          value={rule.type}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) =>
+          handleChange={(id: string) =>
             handleChange(id, `${resultType?.toLowerCase()}.type`)
           }
         />
@@ -46,27 +47,27 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
       />
 
       <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={functionOptions(
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={functionOptions(
             (task?.ui_requirement?.resultType as ResultTypeType) ??
               ResultTypeTypes.OTHERS,
           )}
-          selected={rule.function}
+          value={rule.function}
           placeholder={`Select Function`}
-          onSelectionChange={(id: string) =>
+          handleChange={(id: string) =>
             handleChange(id, `${resultType?.toLowerCase()}.function`)
           }
         />
       </div>
 
       <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={operationOptions}
-          selected={rule.operator}
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={operationOptions}
+          value={rule.operator}
           placeholder={`Select Operator`}
-          onSelectionChange={(id: string) =>
+          handleChange={(id: string) =>
             handleChange(id, `${resultType?.toLowerCase()}.operator`)
           }
         />

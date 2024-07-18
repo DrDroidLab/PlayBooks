@@ -1,4 +1,3 @@
-import SelectComponent from "../../SelectComponent/index.jsx";
 import ValueComponent from "../../ValueComponent/index.jsx";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
@@ -12,6 +11,8 @@ import { RefreshRounded } from "@mui/icons-material";
 import AlertsDrawer from "../../common/Drawers/AlertsDrawer.jsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function SlackTriggerForm() {
   const { data: options, isFetching, refetch } = useGetTriggerOptionsQuery();
@@ -29,8 +30,9 @@ function SlackTriggerForm() {
     <div className="flex flex-col gap-2 items-start bg-gray-50 rounded p-2">
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Channel</p>
-        <SelectComponent
-          data={options?.active_channels?.map((e) => {
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={options?.active_channels?.map((e) => {
             return {
               id: e.channel_id,
               label: e.channel_name,
@@ -38,10 +40,13 @@ function SlackTriggerForm() {
             };
           })}
           placeholder="Select Channel"
-          onSelectionChange={(_, val) => {
-            handleTriggerSelect("channel", val?.channel);
+          handleChange={(id) => {
+            const channel = options?.active_channels.find(
+              (e) => e.channel_id === id,
+            );
+            handleTriggerSelect("channel", channel);
           }}
-          selected={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
+          value={currentWorkflow?.trigger?.channel?.channel_id ?? ""}
           searchable={true}
           error={currentWorkflow?.errors?.channelId ?? false}
         />
@@ -52,8 +57,9 @@ function SlackTriggerForm() {
       </div>
       <div className="text-sm flex items-center gap-2">
         <p className="text-xs">Bot</p>
-        <SelectComponent
-          data={sources?.map((e) => {
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={sources?.map((e) => {
             return {
               id: e.alert_type,
               label: e.alert_type,
@@ -61,8 +67,8 @@ function SlackTriggerForm() {
             };
           })}
           placeholder="Select Bot"
-          onSelectionChange={(id) => handleTriggerSelect("source", id)}
-          selected={currentWorkflow?.trigger?.source ?? ""}
+          handleChange={(id) => handleTriggerSelect("source", id)}
+          value={currentWorkflow?.trigger?.source ?? ""}
           searchable={true}
           error={currentWorkflow?.errors?.source ?? false}
         />

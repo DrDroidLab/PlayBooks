@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
-import SelectComponent from "../SelectComponent";
 import CheckboxGroupComponent from "../CheckboxGroupComponent";
 import CheckboxComponent from "../CheckboxComponent";
 import MultiSelectComponent from "../MultiSelectComponent";
 import RadioGroup from "../common/RadioGroupComponent/index.tsx";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 const InputValueType = {
   LONG: "LONG",
@@ -181,11 +182,12 @@ const ValueComponent = ({
         </div>
       )}
       {checkForId && (
-        <SelectComponent
-          data={valueOptions}
+        <CustomInput
+          type={InputTypes.DROPDOWN}
+          options={valueOptions}
           searchable={true}
-          onSelectionChange={handleCheckboxChange}
-          selected={value}
+          handleChange={handleCheckboxChange}
+          value={value}
           disabled={disabled}
         />
       )}

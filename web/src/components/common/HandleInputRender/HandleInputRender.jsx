@@ -6,7 +6,8 @@ import {
 } from "../../../utils/workflow/handleInputs.ts";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import ValueComponent from "../../ValueComponent/index.jsx";
-import SelectComponent from "../../SelectComponent/index.jsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 export const HandleInputRender = ({ option }) => {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -48,16 +49,12 @@ export const HandleInputRender = ({ option }) => {
     case "dropdown":
       return (
         <div key={option.id}>
-          <label
-            className="text-xs flex-wrap font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            {option.label}
-          </label>
-          <SelectComponent
-            data={option.options}
+          <CustomInput
+            type={InputTypes.DROPDOWN}
+            options={option.options}
             placeholder={option.placeholder || `Select ${option.label}`}
-            onSelectionChange={(val) => handleInput(option.id, val)}
-            selected={currentWorkflow[option.id]}
+            handleChange={(val) => handleInput(option.id, val)}
+            value={currentWorkflow[option.id]}
             {...option.additionalProps}
           />
         </div>

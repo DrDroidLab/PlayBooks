@@ -29,7 +29,7 @@ function DropdownInput({
       searchable={true}
       disabled={disabled}
       error={error}
-      containerClassName={"w-56"}
+      containerClassName={"min-w-56 max-w-full"}
       {...props}
     />
   );

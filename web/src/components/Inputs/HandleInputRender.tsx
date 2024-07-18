@@ -21,6 +21,7 @@ export type HandleInputRenderType = {
   helpText?: string;
   placeholder?: string;
   options?: any[];
+  searchable?: boolean;
 };
 
 function HandleInputRender({ type, ...props }: HandleInputRenderType) {

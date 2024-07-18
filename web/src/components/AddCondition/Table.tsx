@@ -1,5 +1,4 @@
 import React from "react";
-import SelectComponent from "../SelectComponent";
 import ValueComponent from "../ValueComponent";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
@@ -7,6 +6,8 @@ import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
 
 function Table({ condition, conditionIndex, rule }) {
   const { id } = useSelector(additionalStateSelector);
@@ -25,12 +26,13 @@ function Table({ condition, conditionIndex, rule }) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <SelectComponent
+        <CustomInput
+          type={InputTypes.DROPDOWN}
           error={undefined}
-          data={tableOptions}
-          selected={rule.type}
+          options={tableOptions}
+          value={rule.type}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) =>
+          handleChange={(id: string) =>
             handleChange(id, `${condition.type?.toLowerCase()}.type`)
           }
         />
@@ -43,16 +45,17 @@ function Table({ condition, conditionIndex, rule }) {
       />
 
       <div className="flex items-center gap-1">
-        <SelectComponent
+        <CustomInput
+          type={InputTypes.DROPDOWN}
           error={undefined}
-          data={
+          options={
             checkIfNumeric
               ? operationOptions
               : operationOptions.filter((e) => e.id === "EQUAL_O")
           }
-          selected={rule.operator}
+          value={rule.operator}
           placeholder={`Select Operator`}
-          onSelectionChange={(id: string) =>
+          handleChange={(id: string) =>
             handleChange(id, `${condition.type?.toLowerCase()}.operator`)
           }
         />
