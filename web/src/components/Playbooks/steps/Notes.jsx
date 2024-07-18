@@ -1,41 +1,10 @@
-import MDEditor, { EditorContext } from "@uiw/react-md-editor";
-import { useContext } from "react";
+import MDEditor from "@uiw/react-md-editor";
 import { addNotes } from "../../../store/features/playbook/playbookSlice.ts";
 import rehypeSanitize from "rehype-sanitize";
-import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import useIsExisting from "../../../hooks/useIsExisting.ts";
-
-const Button = () => {
-  const { preview, dispatch } = useContext(EditorContext);
-  const click = () => {
-    dispatch({
-      preview: preview === "edit" ? "preview" : "edit",
-    });
-  };
-  if (preview === "edit") {
-    return (
-      <div className="flex items-center gap-2">
-        <ToggleOff color="disabled" fontSize="medium" onClick={click} />
-        Raw
-      </div>
-    );
-  }
-  return (
-    <div className="flex items-center gap-2">
-      <ToggleOn color="primary" fontSize="medium" onClick={click} /> Preview
-    </div>
-  );
-};
-
-const codePreview = {
-  name: "preview",
-  keyCommand: "preview",
-  value: "preview",
-  icon: <Button />,
-};
+import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 
 function Notes({ id }) {
   const [step] = useCurrentStep(id);
@@ -47,7 +16,7 @@ function Notes({ id }) {
     <>
       <div
         style={
-          isExisting && !step?.isCopied
+          isExisting
             ? step?.notes
               ? {
                   display: "flex",
@@ -66,14 +35,14 @@ function Notes({ id }) {
         <div
           data-color-mode="light"
           style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          {isPrefetched && !step?.isCopied ? (
+          {isPrefetched ? (
             step?.notes && (
               <MDEditor.Markdown
                 source={step.notes}
-                height={100}
+                height={200}
                 style={{
                   whiteSpace: "pre-wrap",
-                  maxHeight: "200px",
+                  maxHeight: "400px",
                   overflow: "scroll",
                   border: "1px solid black",
                   borderRadius: "5px",
@@ -89,20 +58,17 @@ function Notes({ id }) {
                 onChange={(val) => {
                   dispatch(addNotes({ notes: val, id }));
                 }}
-                height={100}
+                height={200}
                 style={{
                   width: "100%",
                 }}
                 textareaProps={{
                   placeholder: "Please enter Markdown text",
                 }}
-                // hideToolbar={true}
-                preview="edit"
+                preview="live"
                 previewOptions={{
                   rehypePlugins: [[rehypeSanitize]],
                 }}
-                commands={[codePreview]}
-                extraCommands={[]}
               />
             </>
           )}

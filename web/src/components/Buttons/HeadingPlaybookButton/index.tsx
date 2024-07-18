@@ -3,16 +3,15 @@ import { useSelector } from "react-redux";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import SavePlaybookButton from "../SavePlaybookButton/index.tsx";
-import useShowExecution from "../../../hooks/useShowExecution.ts";
 import ExecutionButton from "../ExecutionButton/index.tsx";
 import EditPlaybookButton from "../EditPlaybookButton/index.tsx";
 import CopyPlaybookButton from "../CopyPlaybookButton/index.tsx";
 import PastExecutionsButton from "../PastExecutionsButton/index.tsx";
 
 function HeadingPlaybookButtons() {
-  const { view, isEditing, isOnPlaybookPage } = useSelector(playbookSelector);
+  const { currentPlaybook, isOnPlaybookPage } = useSelector(playbookSelector);
   const isPrefetched = useIsPrefetched();
-  const showExecution = useShowExecution();
+  const isExisting = currentPlaybook?.ui_requirement.isExisting;
 
   if (!isOnPlaybookPage) {
     return null;
@@ -20,9 +19,9 @@ function HeadingPlaybookButtons() {
 
   return (
     <div className="flex gap-2 items-center">
-      {view === "builder" && !isPrefetched && <SavePlaybookButton />}
-      {isEditing && !isPrefetched && <CopyPlaybookButton />}
-      {showExecution && <ExecutionButton />}
+      {!isPrefetched && <SavePlaybookButton />}
+      {isExisting && !isPrefetched && <CopyPlaybookButton />}
+      {isExisting && <ExecutionButton />}
       {isPrefetched && <EditPlaybookButton />}
       {!isPrefetched && <PastExecutionsButton />}
     </div>
