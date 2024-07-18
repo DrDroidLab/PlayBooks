@@ -1,10 +1,10 @@
 import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
-export const gcmMetrics = [
+export const gcmMqlQuery = [
   {
-    label: "Metric Type",
-    key: Key.METRIC_TYPE,
+    label: "MQL Query",
+    key: Key.MQL_QUERY,
     type: InfoTypes.TEXT,
   },
 ];

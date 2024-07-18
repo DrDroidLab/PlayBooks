@@ -54,7 +54,7 @@ export const Key = {
   WIDGET_NRQL_EXPRESSION: "widget_nrql_expression",
   UNIT: "unit",
   NRQL_EXPRESSION: "nrql_expression",
-  METRIC_TYPE: "metric_type",
+  MQL_QUERY: "mql_query",
   CONTENT: "content",
 } as const;
 
