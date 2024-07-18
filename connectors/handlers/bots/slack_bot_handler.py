@@ -1,5 +1,4 @@
 import logging
-import traceback
 from typing import Dict
 from datetime import datetime, timedelta
 

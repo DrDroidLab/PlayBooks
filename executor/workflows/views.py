@@ -9,6 +9,7 @@ import uuid
 from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest, JsonResponse
+from google.protobuf.struct_pb2 import Struct
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
@@ -17,10 +18,11 @@ from executor.workflows.crud.workflow_execution_crud import get_db_workflow_exec
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
-from executor.workflows.tasks import test_workflow_notification
 from playbooks.utils.decorators import api_blocked, web_api, account_post_api, account_get_api, deprecated
+from executor.workflows.tasks import test_workflow_notification, test_workflow_transformer
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
+from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from utils.proto_utils import proto_to_dict, dict_to_proto
 from utils.time_utils import current_datetime
 from protos.base_pb2 import Meta, Message, Page
@@ -28,7 +30,7 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
-    ExecutionsWorkflowsGetAllResponse
+    ExecutionsWorkflowsGetAllResponse, TestWorkflowTransformerRequest, TestWorkflowTransformerResponse
 from protos.playbooks.workflow_pb2 import Workflow, WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -387,3 +389,21 @@ def generate_curl(request_message: ExecuteWorkflowRequest) -> HttpResponse:
     headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {account_api_token.key}'}
     curl = construct_curl('POST', uri, headers=headers, payload=payload)
     return HttpResponse(curl, content_type="text/plain", status=200)
+
+
+@web_api(TestWorkflowTransformerRequest)
+def test_workflows_transformer(request_message: TestWorkflowTransformerRequest) -> \
+        Union[TestWorkflowTransformerResponse, HttpResponse]:
+    lambda_function: Lambda.Function = request_message.transformer_lambda_function
+    event = request_message.event
+    try:
+        event_context = test_workflow_transformer(lambda_function, event)
+        if not isinstance(event_context, dict):
+            return TestWorkflowTransformerResponse(success=BoolValue(value=False),
+                                                   message=Message(title="Error",
+                                                                   description="Transformer function did not return a valid dictioanry."))
+        event_context_struct = dict_to_proto(event_context, Struct)
+        return TestWorkflowTransformerResponse(success=BoolValue(value=True), event_context=event_context_struct)
+    except Exception as e:
+        return TestWorkflowTransformerResponse(success=BoolValue(value=False),
+                                               message=Message(title="Error", description=str(e)))

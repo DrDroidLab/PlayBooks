@@ -1,6 +1,9 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_URL } from "../../constants/index.ts";
-import { rangeSelector } from "../features/timeRange/timeRangeSlice.ts";
+import {
+  rangeSelector,
+  updateProperty,
+} from "../features/timeRange/timeRangeSlice.ts";
 import { showSnackbar } from "../features/snackbar/snackbarSlice.ts";
 import { CustomError, ErrorType } from "../../utils/Error.ts";
 import { refreshToken } from "./refreshTokenService.ts";
@@ -96,6 +99,28 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
     if (result?.data?.task_execution_result?.error) {
       throw new CustomError(message, ErrorType.TASK_FAILED);
     } else throw new CustomError(message, ErrorType.GENERAL);
+  }
+
+  const timeRange = result.data?.meta?.time_range;
+  if (timeRange && timeRange.time_geq && timeRange.time_lt) {
+    api.dispatch(
+      updateProperty({
+        key: "timeRange",
+        value: undefined,
+      }),
+    );
+    api.dispatch(
+      updateProperty({
+        key: "startTime",
+        value: new Date(timeRange?.time_geq * 1000),
+      }),
+    );
+    api.dispatch(
+      updateProperty({
+        key: "endTime",
+        value: new Date(timeRange?.time_lt * 1000),
+      }),
+    );
   }
 
   return result;

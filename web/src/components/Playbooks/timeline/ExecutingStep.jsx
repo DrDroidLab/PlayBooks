@@ -1,13 +1,12 @@
 import { CircularProgress } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
-import { stepsSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 
 function ExecutingStep() {
-  const playbookSteps = useSelector(stepsSelector);
-  const executingStep = (playbookSteps ?? []).find(
-    (step) => step.outputLoading,
-  );
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const steps = currentPlaybook.steps ?? [];
+  const executingStep = steps.find((step) => step.ui_requirement.outputLoading);
 
   if (Object.keys(executingStep ?? {}).length === 0) return <></>;
 

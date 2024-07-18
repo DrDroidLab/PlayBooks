@@ -1,14 +1,15 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const elasticSearch = [
   {
     label: "Index",
-    key: "index",
+    key: Key.INDEX,
     type: InfoTypes.TEXT,
   },
   {
     label: "Query",
-    key: "query",
+    key: Key.QUERY,
     type: InfoTypes.TEXT,
-  }
+  },
 ];

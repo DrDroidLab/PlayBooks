@@ -11,7 +11,6 @@ export const startExecutionApi = apiSlice.injectEndpoints({
         },
         method: "POST",
       }),
-      invalidatesTags: ["Playbooks"],
     }),
   }),
 });

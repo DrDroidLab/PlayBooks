@@ -18,3 +18,4 @@ export * from "./grafanaDataSource.ts";
 export * from "./gke.ts";
 export * from "./grafanaLoki.ts";
 export * from "./elasticSearchBuilder.ts";
+export * from "./documentation.ts";

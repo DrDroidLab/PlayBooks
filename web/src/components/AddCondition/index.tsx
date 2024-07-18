@@ -9,18 +9,25 @@ import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
-import { ResultTypeType } from "../../utils/conditionals/resultTypeOptions.ts";
+import {
+  ResultTypeType,
+  ResultTypeTypes,
+} from "../../utils/conditionals/resultTypeOptions.ts";
 import { extractSource } from "../../utils/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
+import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const {
     playbookEdges,
-    conditions,
-    globalRule,
-    handleCondition,
-    addNewCondition,
+    rules,
+    condition,
+    handleRule,
+    addNewRule,
     deleteCondition,
     handleGlobalRule,
   } = useEdgeConditions(id);
@@ -29,11 +36,24 @@ function AddCondition() {
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
+  const handleTaskChange = (id: string, i: number) => {
+    const task = tasks?.find((task) => task.id === id);
+    if (!task) return;
+    handleRule("task.id", id, i);
+    handleRule("task.reference_id", task?.reference_id ?? "", i);
+    handleRule(
+      "type",
+      (task?.ui_requirement.resultType ??
+        ResultTypeTypes.OTHERS) as ResultTypeType,
+      i,
+    );
+  };
+
   useEffect(() => {
-    if (conditions?.length === 0) {
-      handleCondition("", "", 0);
+    if (rules?.length === 0) {
+      handleRule("", "", 0);
     }
-  }, [conditions, handleCondition, playbookEdges]);
+  }, [rules, handleRule, playbookEdges]);
 
   return (
     <div className="p-2">
@@ -42,8 +62,7 @@ function AddCondition() {
       </h1>
       <hr />
 
-      {(Object.keys(parentStep?.errors ?? {}).length > 0 ||
-        taskTypeOptions.length === 0) && (
+      {taskTypeOptions.length === 0 && (
         <div className="bg-red-50 p-2 flex items-center gap-1 my-1 rounded flex-wrap">
           <ErrorOutlineRounded
             color="error"
@@ -62,38 +81,57 @@ function AddCondition() {
         </p>
         <SelectComponent
           data={ruleOptions}
-          selected={globalRule}
+          selected={condition?.logical_operator}
           placeholder={`Select Global Rule`}
           onSelectionChange={handleGlobalRule}
+          error={undefined}
         />
       </div>
 
-      {conditions?.map((condition, i) => (
+      {rules?.map((condition, i) => (
         <div className="mt-2 border p-1 rounded-md">
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
           <div className="flex flex-col gap-2 flex-wrap">
+            <div className="flex items-center gap-1">
+              <SelectComponent
+                error={undefined}
+                data={taskTypeOptions?.map((task) => ({
+                  id: task?.id,
+                  label: handleTaskTypeLabels(task).label,
+                }))}
+                selected={condition?.task?.id}
+                placeholder={`Select Task`}
+                onSelectionChange={(id: string) => handleTaskChange(id, i)}
+              />
+            </div>
             <div className="flex flex-wrap gap-2">
               <HandleResultTypeForm
-                resultType={parentStep.resultType as ResultTypeType}
+                resultType={
+                  (tasks?.find((task) => task.id === condition?.task?.id)
+                    ?.ui_requirement.resultType ??
+                    ResultTypeTypes.OTHERS) as ResultTypeType
+                }
                 condition={condition}
                 conditionIndex={i}
               />
             </div>
 
-            <div className="flex gap-2 flex-wrap">
-              <CustomButton
-                className="!text-sm !w-fit"
-                onClick={() => deleteCondition(i)}>
-                <Delete fontSize="inherit" />
-              </CustomButton>
-            </div>
+            {i !== 0 && (
+              <div className="flex gap-2 flex-wrap">
+                <CustomButton
+                  className="!text-sm !w-fit"
+                  onClick={() => deleteCondition(i)}>
+                  <Delete fontSize="inherit" />
+                </CustomButton>
+              </div>
+            )}
           </div>
         </div>
       ))}
 
-      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewCondition}>
+      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewRule}>
         <Add fontSize="inherit" /> Add
       </CustomButton>
 

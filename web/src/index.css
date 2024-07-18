@@ -81,17 +81,31 @@ td {
 }
 
 .add-step-buttons {
+  max-height: 0;
   opacity: 0;
-  display: none;
+  overflow: hidden;
 }
 
 .add-button:hover + .add-step-buttons {
-  display: block !important;
+  max-height: 250px;
   opacity: 1;
 }
 
 .add-step-buttons:hover {
-  display: block !important;
+  max-height: 250px;
+  opacity: 1;
+}
+
+.step-notes {
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.step-information:hover + .step-notes {
+  opacity: 1;
+}
+
+.step-notes:hover {
   opacity: 1;
 }
 

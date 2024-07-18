@@ -1,21 +1,23 @@
-import { OptionType } from "../playbooksData.ts";
+import { Task } from "../../types/index.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { Key } from "../playbook/key.ts";
 
-export const iframeBuilder = (task) => {
+export const iframeBuilder = (task: Task) => {
   return {
     builder: [
       [
         {
-          key: "iframe_url",
+          key: Key.IFRAME_URL,
           label: "Iframe URL",
-          type: OptionType.TEXT_ROW,
-          value: task.iframe_url,
+          type: InputTypes.TEXT_ROW,
         },
       ],
       [
         {
           label: "Iframe RENDER",
-          type: OptionType.IFRAME_RENDER,
-          value: task.iframe_url,
+          type: InputTypes.IFRAME_RENDER,
+          value: getTaskData(task)?.[Key.IFRAME_URL],
         },
       ],
     ],

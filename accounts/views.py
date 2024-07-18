@@ -206,7 +206,7 @@ def get_redirect_uri_okta(request_message: HttpRequest) -> JsonResponse:
     session_id = oauth_session.session_id
     return JsonResponse({
         'success': True,
-        'redirect_uri': f'{domain}/oauth2/default/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256'},
+        'redirect_uri': f'{domain}/oauth2/v1/authorize?client_id={client_id}&response_type=code&response_mode=query&scope=openid profile email&redirect_uri={okta_redirect_uri}&state={session_id}&code_challenge={code_challenge}&code_challenge_method=S256'},
         status=200)
 
 
@@ -241,7 +241,7 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
     if current_time > db_account_user_oauth2_session.valid_until:
         return JsonResponse({'success': False, 'message': 'Session expired. Please try again.'}, status=500)
 
-    url = f'{domain}/oauth2/default/v1/token'
+    url = f'{domain}/oauth2/v1/token'
     code_verifier = db_account_user_oauth2_session.code_verifier
     token_data = {
         'grant_type': 'authorization_code',
@@ -255,7 +255,7 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
     if not response.ok:
         return JsonResponse({'success': False, 'message': 'Failed to get token from okta oauth server'}, status=500)
 
-    response = requests.get(f'{domain}/oauth2/default/v1/userinfo', headers={'Accept': 'application/json',
+    response = requests.get(f'{domain}/oauth2/v1/userinfo', headers={'Accept': 'application/json',
                                                                              'Authorization': f'Bearer {response.json()["access_token"]}'})
 
     email = response.json()['email']
