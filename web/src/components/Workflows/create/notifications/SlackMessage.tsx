@@ -7,6 +7,7 @@ import { useGetTriggerOptionsQuery } from "../../../../store/features/triggers/a
 import AddNewIntegration from "./AddNewIntegration.tsx";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../../../types/inputs/labelPosition.ts";
 
 function SlackMessage() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -25,6 +26,7 @@ function SlackMessage() {
       {isFetching && <CircularProgress size={20} />}
       <CustomInput
         label="Select Channel"
+        labelPosition={LabelPosition.LEFT}
         type={InputTypes.DROPDOWN}
         options={channelOptions}
         placeholder="Select Channel"

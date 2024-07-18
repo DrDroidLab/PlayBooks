@@ -7,6 +7,7 @@ import { currentWorkflowSelector } from "../../../../store/features/workflow/wor
 import AddNewIntegration from "./AddNewIntegration.tsx";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../../../types/inputs/labelPosition.ts";
 
 function MsWebhook() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -21,6 +22,7 @@ function MsWebhook() {
       {msTeamsOptionsFetching && <CircularProgress size={20} />}
       <CustomInput
         label="Webhook"
+        labelPosition={LabelPosition.LEFT}
         type={InputTypes.DROPDOWN}
         options={data?.map((e) => {
           return {
