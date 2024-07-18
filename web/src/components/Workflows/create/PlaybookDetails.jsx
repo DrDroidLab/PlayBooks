@@ -1,5 +1,5 @@
 import SelectComponent from "../../SelectComponent";
-import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
+import { useGetPlaybooksNoLimitQuery } from "../../../store/features/playbook/api/index.ts";
 import { handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
@@ -12,7 +12,7 @@ function PlaybookDetails() {
     data,
     isFetching: playbooksLoading,
     refetch,
-  } = useGetPlaybooksQuery();
+  } = useGetPlaybooksNoLimitQuery();
 
   return (
     <div className="space-y-2">

@@ -7,6 +7,7 @@ import collections.abc
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
+import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import sys
 
@@ -192,6 +193,7 @@ class SlackAlert(google.protobuf.message.Message):
     SLACK_CHANNEL_FIELD_NUMBER: builtins.int
     ALERT_TIMESTAMP_FIELD_NUMBER: builtins.int
     ALERT_TAGS_FIELD_NUMBER: builtins.int
+    ALERT_JSON_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     @property
@@ -205,6 +207,8 @@ class SlackAlert(google.protobuf.message.Message):
     alert_timestamp: builtins.int
     @property
     def alert_tags(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SlackAlert.AlertTag]: ...
+    @property
+    def alert_json(self) -> google.protobuf.struct_pb2.Struct: ...
     def __init__(
         self,
         *,
@@ -215,8 +219,9 @@ class SlackAlert(google.protobuf.message.Message):
         slack_channel: global___CommChannel | None = ...,
         alert_timestamp: builtins.int = ...,
         alert_tags: collections.abc.Iterable[global___SlackAlert.AlertTag] | None = ...,
+        alert_json: google.protobuf.struct_pb2.Struct | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["alert_text", b"alert_text", "alert_title", b"alert_title", "alert_type", b"alert_type", "id", b"id", "slack_channel", b"slack_channel"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["alert_tags", b"alert_tags", "alert_text", b"alert_text", "alert_timestamp", b"alert_timestamp", "alert_title", b"alert_title", "alert_type", b"alert_type", "id", b"id", "slack_channel", b"slack_channel"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["alert_json", b"alert_json", "alert_text", b"alert_text", "alert_title", b"alert_title", "alert_type", b"alert_type", "id", b"id", "slack_channel", b"slack_channel"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["alert_json", b"alert_json", "alert_tags", b"alert_tags", "alert_text", b"alert_text", "alert_timestamp", b"alert_timestamp", "alert_title", b"alert_title", "alert_type", b"alert_type", "id", b"id", "slack_channel", b"slack_channel"]) -> None: ...
 
 global___SlackAlert = SlackAlert
