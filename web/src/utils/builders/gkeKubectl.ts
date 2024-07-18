@@ -10,13 +10,13 @@ export const gkeKubectlBuilder = (options: any, task: Task) => {
         {
           key: Key.ZONE,
           label: "Zone",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x.zone, label: x.zone })) ?? [],
         },
         {
           key: Key.CLUSTER,
           label: "Cluster",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.zone === getTaskData(task)?.zone)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
@@ -24,7 +24,7 @@ export const gkeKubectlBuilder = (options: any, task: Task) => {
         {
           key: Key.COMMAND,
           label: "Kubectl Command",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],
