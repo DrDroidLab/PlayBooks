@@ -33,7 +33,7 @@ class KubernetesSourceManager(PlaybookSourceManager):
     def execute_command(self, time_range: TimeRange, global_variable_set: Dict,
                         kubernetes_task: Kubectl, kubernetes_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            command_str = kubernetes_task.command.value
+            command_str = kubernetes_task.command.command.value
             commands = command_str.split('\n')
             if global_variable_set:
                 for key, value in global_variable_set.items():

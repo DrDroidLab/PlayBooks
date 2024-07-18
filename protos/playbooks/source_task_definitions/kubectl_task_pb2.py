@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/source_task_definitions/kubectl_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\x9a\x01\n\x07Kubectl\x12\x30\n\x04type\x18\x01 \x01(\x0e\x32\".protos.playbooks.Kubectl.TaskType\x12/\n\x07\x63ommand\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValueH\x00\"$\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07\x43OMMAND\x10\x01\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/source_task_definitions/kubectl_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xd9\x01\n\x07Kubectl\x12\x30\n\x04type\x18\x01 \x01(\x0e\x32\".protos.playbooks.Kubectl.TaskType\x12\x34\n\x07\x63ommand\x18\x02 \x01(\x0b\x32!.protos.playbooks.Kubectl.CommandH\x00\x1a\x38\n\x07\x43ommand\x12-\n\x07\x63ommand\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"$\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07\x43OMMAND\x10\x01\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.kubectl_task_pb2', globals())
@@ -22,7 +22,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _KUBECTL._serialized_start=114
-  _KUBECTL._serialized_end=268
-  _KUBECTL_TASKTYPE._serialized_start=224
-  _KUBECTL_TASKTYPE._serialized_end=260
+  _KUBECTL._serialized_end=331
+  _KUBECTL_COMMAND._serialized_start=229
+  _KUBECTL_COMMAND._serialized_end=285
+  _KUBECTL_TASKTYPE._serialized_start=287
+  _KUBECTL_TASKTYPE._serialized_end=323
 # @@protoc_insertion_point(module_scope)

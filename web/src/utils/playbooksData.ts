@@ -56,6 +56,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_KUBECTL_COMMAND:
         return Builders.gkeKubectlBuilder(ops?.zones, task);
+    case taskTypes.KUBERNETES_COMMAND:
+      return Builders.kubernetesKubectlBuilder(task);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:

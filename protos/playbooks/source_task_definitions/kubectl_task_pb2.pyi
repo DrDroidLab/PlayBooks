@@ -34,16 +34,31 @@ class Kubectl(google.protobuf.message.Message):
     UNKNOWN: Kubectl.TaskType.ValueType  # 0
     COMMAND: Kubectl.TaskType.ValueType  # 1
 
+    @typing_extensions.final
+    class Command(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        COMMAND_FIELD_NUMBER: builtins.int
+        @property
+        def command(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            command: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["command", b"command"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["command", b"command"]) -> None: ...
+
     TYPE_FIELD_NUMBER: builtins.int
     COMMAND_FIELD_NUMBER: builtins.int
     type: global___Kubectl.TaskType.ValueType
     @property
-    def command(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def command(self) -> global___Kubectl.Command: ...
     def __init__(
         self,
         *,
         type: global___Kubectl.TaskType.ValueType = ...,
-        command: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        command: global___Kubectl.Command | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["command", b"command", "task", b"task"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["command", b"command", "task", b"task", "type", b"type"]) -> None: ...
