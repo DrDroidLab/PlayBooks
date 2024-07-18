@@ -65,11 +65,10 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching metric descriptors: {e}")
             raise e
 
-    def fetch_logs(self, filter_str, start_time=None, end_time=None):
+    def fetch_logs(self, filter_str):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
 
-            # The filter_str already contains the timestamp, so we don't need to add it again
             body = {
                 "resourceNames": [f"projects/{self.__project_id}"],
                 "filter": filter_str,

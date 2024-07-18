@@ -91,11 +91,9 @@ class GcmSourceManager(PlaybookSourceManager):
                     "RUN_MQL_QUERY", gcm_connector.account_id.value, project_id, query,
                     start_time, end_time), flush=True)
 
-            # Remove any existing within clause from the query
             if "| within " in query:
                 query = query.split("| within ")[0].strip()
 
-            # Add the time range to the query
             query_with_time = f"""
             {query} | within {start_time}, {end_time}
             """
@@ -141,10 +139,6 @@ class GcmSourceManager(PlaybookSourceManager):
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
             task_result = PlaybookTaskResult()
-            tr_end_time = time_range.time_lt
-            end_time = datetime.utcfromtimestamp(tr_end_time)
-            tr_start_time = time_range.time_geq
-            start_time = datetime.utcfromtimestamp(tr_start_time)
 
             task = gcm_task.filter_log_entries
             project_id = get_project_id(gcm_connector)
@@ -153,19 +147,16 @@ class GcmSourceManager(PlaybookSourceManager):
                 for key, value in global_variable_set.items():
                     filter_query = filter_query.replace(key, str(value))
 
-            # Parse timestamp from the query if it exists
             timestamp_match = re.search(r'timestamp\s*>=\s*"([^"]+)"', filter_query)
             if timestamp_match:
                 start_time = datetime.strptime(timestamp_match.group(1), "%Y-%m-%dT%H:%M:%S.%fZ").replace(
                     tzinfo=timezone.utc)
-                # Remove the timestamp part from the query as we'll add it back later
                 filter_query = re.sub(r'timestamp\s*>=\s*"[^"]+"', '', filter_query).strip()
             else:
                 start_time = datetime.utcfromtimestamp(time_range.time_geq).replace(tzinfo=timezone.utc)
 
             end_time = datetime.utcfromtimestamp(time_range.time_lt).replace(tzinfo=timezone.utc)
 
-            # Add the time range to the filter_query
             time_filter = f'timestamp >= "{start_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}" AND timestamp <= "{end_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}"'
             if filter_query:
                 filter_query = f'({filter_query}) AND {time_filter}'
@@ -179,7 +170,7 @@ class GcmSourceManager(PlaybookSourceManager):
                 "{}, Start_Time -> {}, End_Time -> {}".format("GCM_Logs", gcm_connector.account_id.value,
                                                               project_id, filter_query, start_time, end_time))
 
-            response = logs_api_processor.fetch_logs(filter_query, start_time, end_time)
+            response = logs_api_processor.fetch_logs(filter_query)
             if not response:
                 logger.error("No data returned from GCM Logs")
                 raise Exception("No data returned from GCM Logs")
