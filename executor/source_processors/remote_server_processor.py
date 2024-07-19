@@ -59,6 +59,10 @@ class RemoteServerProcessor(Processor):
                     key = paramiko.RSAKey.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)),
                                                            password=self.remote_password)
                     client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                except Exception as e:
+                    key = paramiko.Ed25519Key.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)))
+                    client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                    raise e
 
             elif self.remote_host and self.remote_password:
                 client = paramiko.SSHClient()
