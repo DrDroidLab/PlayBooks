@@ -2,7 +2,7 @@ import React from "react";
 import Rolling from "./typeForms/Rolling.tsx";
 import { RuleTypes } from "../../utils/conditionals/types/ruleTypes.ts";
 import ColumnValue from "./typeForms/ColumnValue.tsx";
-import GrepCount from "./typeForms/GrepCount.tsx";
+import Grep from "./typeForms/Grep.tsx";
 
 export type HandleTypesPropTypes = {
   condition: any;
@@ -19,7 +19,7 @@ function HandleTypes(props: HandleTypesPropTypes) {
     case RuleTypes.COLUMN_VALUE:
       return <ColumnValue {...props} />;
     case RuleTypes.GREP_COUNT:
-      return <GrepCount {...props} />;
+      return <Grep {...props} />;
     default:
       return <></>;
   }

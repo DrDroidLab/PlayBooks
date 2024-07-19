@@ -1,11 +1,11 @@
 import React from "react";
-import ValueComponent from "../../ValueComponent";
-import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import { useSelector } from "react-redux";
-import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
-import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
-import Checkbox from "../../common/Checkbox/index.tsx";
-import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import { additionalStateSelector } from "../../../../store/features/drawers/drawersSlice.ts";
+import useEdgeConditions from "../../../../hooks/useEdgeConditions.ts";
+import { HandleTypesPropTypes } from "../../HandleTypes.tsx";
+import ValueComponent from "../../../ValueComponent/index.jsx";
+import Checkbox from "../../../common/Checkbox/index.tsx";
+import { addConditionToEdgeByIndex } from "../../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 
 function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id, edgeIndex } = useSelector(additionalStateSelector);
