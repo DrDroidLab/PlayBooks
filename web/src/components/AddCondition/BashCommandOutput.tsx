@@ -29,11 +29,14 @@ function BashCommandOutput({ rule, condition, conditionIndex }) {
         <SelectComponent
           error={undefined}
           data={bashCommandOutputOptions}
-          selected={rule.type}
+          selected={rule.type_id}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${keyValue}.type`)
-          }
+          onSelectionChange={(id: string) => {
+            const option = bashCommandOutputOptions.find((e) => e.id === id);
+            if (!option) return;
+            handleChange(option.type, `${keyValue}.type`);
+            handleChange(option.id, `${keyValue}.type_id`);
+          }}
         />
       </div>
 

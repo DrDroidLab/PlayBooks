@@ -5,18 +5,17 @@ import { additionalStateSelector } from "../../store/features/drawers/drawersSli
 import { useSelector } from "react-redux";
 import Checkbox from "../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import Rolling from "./typeForms/Rolling.tsx";
+import { RuleTypes } from "../../utils/conditionals/types/ruleTypes.ts";
 
-type HandleTypesPropTypes = {
+export type HandleTypesPropTypes = {
   condition: any;
   conditionIndex: number;
   rule: any;
 };
 
-function HandleTypes({
-  condition,
-  conditionIndex,
-  rule,
-}: HandleTypesPropTypes) {
+function HandleTypes(props: HandleTypesPropTypes) {
+  const { condition, conditionIndex, rule } = props;
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const type = rule?.type;
@@ -28,24 +27,8 @@ function HandleTypes({
   };
 
   switch (type) {
-    case "ROLLING":
-      return (
-        <div className="flex items-center gap-1">
-          <ValueComponent
-            valueType={"STRING"}
-            onValueChange={(val: string) => handleChange(val, "window")}
-            value={rule.window}
-            valueOptions={[]}
-            placeHolder={"Enter window size"}
-            length={200}
-            error={undefined}
-          />
-        </div>
-      );
-    case "CUMULATIVE":
-      return <></>;
-    case "ROW_COUNT":
-      return <></>;
+    case RuleTypes.ROLLING:
+      return <Rolling {...props} />;
     case "COLUMN_VALUE":
       return (
         <>
