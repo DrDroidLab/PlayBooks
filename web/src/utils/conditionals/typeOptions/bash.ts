@@ -27,5 +27,11 @@ export const bashCommandOutputOptions = [
     id: GrepRuleTypes.GREP_COUNT,
     label: "Count occurrences of Grep Pattern",
     type: RuleTypes.GREP_COUNT,
+    defaultValues: {
+      numeric_value_threshold: undefined,
+      string_value_threshold: undefined,
+      operator: undefined,
+      case_sensitive: false,
+    },
   },
 ];
