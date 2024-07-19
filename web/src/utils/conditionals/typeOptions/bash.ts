@@ -1,17 +1,30 @@
+import { OperatorOptions } from "../types/operatorOptionTypes.ts";
+import { RuleTypes } from "../types/ruleTypes.ts";
+
 export const bashCommandOutputOptions = [
   {
-    id: "GREP_EXISTS",
+    id: RuleTypes.GREP,
     label: "Grep Pattern exists",
-    type: "GREP",
+    defaultValues: {
+      threshold: 1,
+      operator: OperatorOptions.GREATER_THAN_EQUAL_O,
+    },
   },
   {
-    id: "GREP_DOES_NOT_EXIST",
+    id: RuleTypes.NO_GREP,
     label: "Grep Pattern does not exist",
-    type: "GREP",
+    defaultValues: {
+      threshold: 0,
+      operator: OperatorOptions.EQUAL_O,
+    },
   },
   {
-    id: "GREP_COUNT",
+    id: RuleTypes.GREP_COUNT,
     label: "Count occurrences of Grep Pattern",
-    type: "GREP_COUNT",
+    defaultValues: {
+      threshold: undefined,
+      operator: undefined,
+      case_sensitive: false,
+    },
   },
 ];
