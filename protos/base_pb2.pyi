@@ -204,6 +204,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     MS_TEAMS: _Source.ValueType  # 45
     GRAFANA_LOKI: _Source.ValueType  # 46
     KUBERNETES: _Source.ValueType  # 47
+    SMTP: _Source.ValueType  # 48
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -255,6 +256,7 @@ GKE: Source.ValueType  # 44
 MS_TEAMS: Source.ValueType  # 45
 GRAFANA_LOKI: Source.ValueType  # 46
 KUBERNETES: Source.ValueType  # 47
+SMTP: Source.ValueType  # 48
 global___Source = Source
 
 class _SourceKeyType:
@@ -339,6 +341,10 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     KUBERNETES_CLUSTER_TOKEN: _SourceKeyType.ValueType  # 74
     KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: _SourceKeyType.ValueType  # 75
     KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: _SourceKeyType.ValueType  # 76
+    SMTP_HOST: _SourceKeyType.ValueType  # 77
+    SMTP_PORT: _SourceKeyType.ValueType  # 78
+    SMTP_USER: _SourceKeyType.ValueType  # 79
+    SMTP_PASSWORD: _SourceKeyType.ValueType  # 80
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -418,6 +424,10 @@ KUBERNETES_CLUSTER_API_SERVER: SourceKeyType.ValueType  # 73
 KUBERNETES_CLUSTER_TOKEN: SourceKeyType.ValueType  # 74
 KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: SourceKeyType.ValueType  # 75
 KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: SourceKeyType.ValueType  # 76
+SMTP_HOST: SourceKeyType.ValueType  # 77
+SMTP_PORT: SourceKeyType.ValueType  # 78
+SMTP_USER: SourceKeyType.ValueType  # 79
+SMTP_PASSWORD: SourceKeyType.ValueType  # 80
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -482,6 +492,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Pagerduty Models"""
     ELASTIC_SEARCH_INDEX: _SourceModelType.ValueType  # 1601
     """Elastic Search Models"""
+    SMTP_EMAIL: _SourceModelType.ValueType  # 1701
+    """SMTP Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -541,6 +553,8 @@ PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
 """Pagerduty Models"""
 ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
+SMTP_EMAIL: SourceModelType.ValueType  # 1701
+"""SMTP Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

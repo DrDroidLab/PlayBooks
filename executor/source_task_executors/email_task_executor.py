@@ -22,7 +22,7 @@ class SMTPSourceManager(PlaybookSourceManager):
         self.task_type_callable_map = {
             SMTP.TaskType.SEND_EMAIL: {
                 'executor': self.execute_send_email,
-                'model_types': [SourceModelType.SMTP_EMAIL],
+                'model_types': [],
                 'result_type': PlaybookTaskResultType.UNKNOWN,
                 'display_name': 'Send an email using SMTP',
                 'category': 'Actions',
@@ -31,6 +31,10 @@ class SMTPSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, smtp_connector, **kwargs):
         generated_credentials = generate_credentials_dict(smtp_connector.type, smtp_connector.keys)
+        username = generated_credentials.pop('user', None)
+        if username is not None:
+            generated_credentials['username'] = username
+
         return SmtpApiProcessor(**generated_credentials)
 
     def execute_send_email(self, time_range: TimeRange, global_variable_set: Dict,
