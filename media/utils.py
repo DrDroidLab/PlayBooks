@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 def generate_local_image_path(image_data=None, image_name: str = None):
-    randon_name = str(uuid.uuid4())
+    random_name = str(uuid.uuid4())
     if not image_name:
-        image_name = f'{current_milli_time()}_{randon_name}' + '.png'
+        image_name = f'{current_milli_time()}_{random_name}' + '.png'
     if not image_name.endswith('.png'):
         image_name += '.png'
     file_path = os.path.join('images', image_name)
@@ -30,9 +30,9 @@ def generate_local_image_path(image_data=None, image_name: str = None):
 
 
 def generate_local_csv_path(file_name: str = None):
-    randon_name = str(uuid.uuid4())
+    random_name = str(uuid.uuid4())
     if not file_name:
-        file_name = f'{current_milli_time()}_{randon_name}' + '.csv'
+        file_name = f'{current_milli_time()}_{random_name}' + '.csv'
     if not file_name.endswith('.csv'):
         file_name += '.csv'
     file_path = os.path.join('files', file_name)

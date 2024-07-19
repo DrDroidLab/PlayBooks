@@ -4,14 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   resetState,
-  setPlaybookDataBeta,
   setPlaybookKey,
   resetExecutions,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import {
-  resetTimeRange,
-  setPlaybookState,
-} from "../../../store/features/timeRange/timeRangeSlice.ts";
+import { resetTimeRange } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import Loading from "../../common/Loading/index.tsx";
@@ -22,6 +18,7 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import { resetDrawerState } from "../../../store/features/drawers/drawersSlice.ts";
+import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/playbookBuilderOptionsApi.ts";
 
 function CreatePlaybook() {
   const { openDrawer, permanentView } = usePermanentDrawerState();
@@ -33,6 +30,8 @@ function CreatePlaybook() {
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
   const isEditing = !isPrefetched && !executionId;
+  const { data, isLoading: builderOptionsLoading } =
+    usePlaybookBuilderOptionsQuery();
   const [triggerGetPlaybook, { isLoading }] = useLazyGetPlaybookQuery();
 
   useEffect(() => {
@@ -40,12 +39,10 @@ function CreatePlaybook() {
     if (!executionId) {
       dispatch(resetExecutions());
       dispatch(resetDrawerState());
-      dispatch(setPlaybookState());
     }
   }, [executionId, dispatch]);
 
   useEffect(() => {
-    dispatch(setPlaybookState());
     dispatch(setPlaybookKey({ key: "isOnPlaybookPage", value: true }));
     return () => {
       dispatch(resetState());
@@ -57,7 +54,6 @@ function CreatePlaybook() {
   const fetchPlaybook = async () => {
     const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
     playbookDataRef.current = res;
-    dispatch(setPlaybookDataBeta(res));
     if (executionId) handleTimeline();
   };
 
@@ -66,13 +62,13 @@ function CreatePlaybook() {
   };
 
   useEffect(() => {
-    if (id || executionId) {
+    if ((id || executionId) && data) {
       fetchPlaybook();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, executionId]);
+  }, [id, executionId, data]);
 
-  if (isLoading) {
+  if (isLoading || builderOptionsLoading) {
     return <Loading />;
   }
 
@@ -108,7 +104,7 @@ function CreatePlaybook() {
             </div>
           )}
         </main>
-        {playbook.view === "builder" && <PermenantDrawer />}
+        <PermenantDrawer />
       </div>
       {/* <ConditionDrawer /> */}
     </div>

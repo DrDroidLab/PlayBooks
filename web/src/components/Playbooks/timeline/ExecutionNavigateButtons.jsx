@@ -10,9 +10,10 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
 
 function ExecutionNavigateButtons({ steps }) {
-  const { currentVisibleStep } = useSelector(playbookSelector);
-  const showNextStepLogButton = currentVisibleStep !== steps.length - 1;
-  const showPreviousStepLogButton = currentVisibleStep !== 0;
+  const { currentVisibleStepOnTimeline } = useSelector(playbookSelector);
+  const showNextStepLogButton =
+    currentVisibleStepOnTimeline !== steps.length - 1;
+  const showPreviousStepLogButton = currentVisibleStepOnTimeline !== 0;
   const [, setShouldScroll] = usePlaybookKey("shouldScroll");
 
   const handleNextStepClick = () => {

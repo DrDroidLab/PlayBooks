@@ -1,10 +1,11 @@
 import { store } from "../../store/index.ts";
 import {
-  playbookSelector,
-  setPlaybookKey,
+  currentPlaybookSelector,
+  setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
+import setNestedValue from "../setNestedValue.ts";
 
-const playbookKey = "playbookEdges";
+const playbookKey = "step_relations";
 
 export function addConditionToEdgeByIndex(
   key: string,
@@ -12,13 +13,14 @@ export function addConditionToEdgeByIndex(
   index: number,
   conditionIndex: number,
 ) {
-  const { playbookEdges } = playbookSelector(store.getState());
-  const edges = structuredClone(playbookEdges ?? []);
+  const currentPlaybook = currentPlaybookSelector(store.getState());
+  const relations = currentPlaybook?.[playbookKey];
+  const edges = structuredClone(relations ?? []);
   if (edges.length === 0) return;
-  if (!edges[index]) return;
-  edges[index].conditions[conditionIndex][key] = value;
+  if (!edges[index] || !edges[index].condition) return;
+  setNestedValue(edges[index].condition.rules[conditionIndex], key, value);
   store.dispatch(
-    setPlaybookKey({
+    setCurrentPlaybookKey({
       key: playbookKey,
       value: edges,
     }),

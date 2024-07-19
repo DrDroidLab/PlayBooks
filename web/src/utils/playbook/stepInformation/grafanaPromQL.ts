@@ -1,14 +1,15 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const grafanaPromQL = [
   {
     label: "Datasource",
-    key: "datasource.label",
+    key: Key.DATASOURCE_UID,
     type: InfoTypes.TEXT,
   },
   {
     label: "PromQL query",
-    key: "grafanaQuery.expression",
+    key: Key.PROMQL_EXPRESSION,
     type: InfoTypes.TEXT,
   },
 ];
