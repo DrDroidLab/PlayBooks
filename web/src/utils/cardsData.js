@@ -444,6 +444,6 @@ export const cardsData = [
     url: "/integrations/kubernetes_logo.png",
     enum: "KUBERNETES",
     desc: "Connect to Kubernetes Cluster",
-    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
+    docs: "https://docs.drdroid.io/docs/service-account-token"
   },
 ];
