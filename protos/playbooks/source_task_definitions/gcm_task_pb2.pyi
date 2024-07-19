@@ -3,7 +3,9 @@
 isort:skip_file
 """
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
@@ -66,6 +68,7 @@ class Gcm(google.protobuf.message.Message):
         PROJECT_ID_FIELD_NUMBER: builtins.int
         LOG_NAME_FIELD_NUMBER: builtins.int
         FILTER_QUERY_FIELD_NUMBER: builtins.int
+        RESOURCE_NAMES_FIELD_NUMBER: builtins.int
         ORDER_BY_FIELD_NUMBER: builtins.int
         PAGE_SIZE_FIELD_NUMBER: builtins.int
         PAGE_TOKEN_FIELD_NUMBER: builtins.int
@@ -75,6 +78,8 @@ class Gcm(google.protobuf.message.Message):
         def log_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def resource_names(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.wrappers_pb2.StringValue]: ...
         @property
         def order_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -87,12 +92,13 @@ class Gcm(google.protobuf.message.Message):
             project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
             log_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            resource_names: collections.abc.Iterable[google.protobuf.wrappers_pb2.StringValue] | None = ...,
             order_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
             page_size: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
             page_token: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id", "resource_names", b"resource_names"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     MQL_EXECUTION_FIELD_NUMBER: builtins.int

@@ -64,12 +64,12 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching metric descriptors: {e}")
             raise e
 
-    def fetch_logs(self, filter_str, order_by="timestamp desc", page_size=2000, page_token=None):
+    def fetch_logs(self, filter_str, order_by="timestamp desc", page_size=2000, page_token=None, resource_names=None):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
-
+            resource_names = resource_names or [f"projects/{self.__project_id}"]
             body = {
-                "resourceNames": [f"projects/{self.__project_id}"],
+                "resourceNames": resource_names,
                 "filter": filter_str,
                 "orderBy": order_by,
                 "pageSize": page_size

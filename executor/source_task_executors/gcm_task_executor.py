@@ -125,12 +125,12 @@ class GcmSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No GCM source found")
 
             log_task = gcm_task.filter_log_events
-            project_id = get_project_id(gcm_connector)
             filter_query = log_task.filter_query.value
             filter_query = filter_query.strip()
             order_by = log_task.order_by.value if log_task.order_by else "timestamp desc"
             page_size = log_task.page_size.value if log_task.page_size else 2000
             page_token = log_task.page_token.value if log_task.page_token else None
+            resource_names = [r.value for r in log_task.resource_names] if log_task.resource_names else None
             if global_variable_set:
                 for key, value in global_variable_set.items():
                     filter_query = filter_query.replace(key, str(value))
@@ -170,12 +170,12 @@ class GcmSourceManager(PlaybookSourceManager):
             logs_api_processor = self.get_connector_processor(gcm_connector)
 
             print(
-                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Query -> "
+                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> "
                 "{}, Start_Time -> {}, End_Time -> {}".format("GCM_Logs", gcm_connector.account_id.value,
-                                                              project_id, filter_query, start_time, end_time))
+                                                              filter_query, start_time, end_time))
 
             response = logs_api_processor.fetch_logs(filter_query, order_by=order_by, page_size=page_size,
-                                                     page_token=page_token)
+                                                     page_token=page_token, resource_names=resource_names)
             if not response:
                 logger.error("No data returned from GCM Logs")
                 raise Exception("No data returned from GCM Logs")
