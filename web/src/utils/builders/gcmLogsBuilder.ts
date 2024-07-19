@@ -20,6 +20,7 @@ export const gcmLogsBuilder = () => {
           key: Key.PAGE_SIZE,
           label: "Page Size",
           type: InputTypes.TEXT,
+          isOptional: true,
           default: '2000'
         },
       ],
