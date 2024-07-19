@@ -42,8 +42,10 @@ def bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_
     for command_output in bash_command_result.command_outputs:
         try:
             output_str = f'{command_output.output.value}'
-            if regex.search(output_str):
-                count += 1
+            lines = output_str.splitlines()
+            for line in lines:
+                if regex.search(line):
+                    count += 1
         except Exception as e:
             logger.error(f'Error while evaluating grep counter rule: {e}')
     if numeric_function_result_operator_threshold(count, operator, threshold):
@@ -81,24 +83,10 @@ class BashCommandOutputResultEvaluator(TaskResultEvaluator):
         operator = bash_command_result_rule.operator
         pattern = bash_command_result_rule.pattern.value if bash_command_result_rule.pattern else None
         case_sensitive = bash_command_result_rule.case_sensitive.value if bash_command_result_rule.case_sensitive else False
-
-        which_one_of = bash_command_result_rule.WhichOneof('threshold')
-        if which_one_of is None:
-            raise ValueError('Threshold not provided for table rule')
-        if which_one_of == 'numeric_value_threshold':
-            threshold = bash_command_result_rule.numeric_value_threshold.value
-        elif which_one_of == 'string_value_threshold':
-            threshold = bash_command_result_rule.string_value_threshold.value
-        else:
-            raise ValueError('Threshold type not supported')
-
-        if rule_type == bash_command_result_rule.Type.GREP:
-            evaluation, value = bash_command_grep_rule_evaluator(operator, threshold, pattern, case_sensitive,
-                                                                 bash_command_result)
+        threshold = bash_command_result_rule.threshold.value
+        try:
+            evaluation, value = bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_sensitive, bash_command_result)
             return evaluation, {'value': value}
-        elif rule_type == bash_command_result_rule.Type.GREP_COUNT:
-            evaluation, value = bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_sensitive,
-                                                                         bash_command_result)
-            return evaluation, {'value': value}
-        else:
-            raise ValueError(f'Rule type {rule_type} not supported')
+        except Exception as e:
+            logger.error(f'Error while evaluating bash command output rule: {e}')
+            return ValueError(f'Rule type {rule_type} not supported')

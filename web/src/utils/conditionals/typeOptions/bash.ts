@@ -8,6 +8,7 @@ export const bashCommandOutputOptions = [
     defaultValues: {
       threshold: 1,
       operator: OperatorOptions.GREATER_THAN_EQUAL_O,
+      case_sensitive: false,
     },
   },
   {
@@ -16,14 +17,13 @@ export const bashCommandOutputOptions = [
     defaultValues: {
       threshold: 0,
       operator: OperatorOptions.EQUAL_O,
+      case_sensitive: false,
     },
   },
   {
     id: RuleTypes.GREP_COUNT,
     label: "Count occurrences of Grep Pattern",
     defaultValues: {
-      threshold: undefined,
-      operator: undefined,
       case_sensitive: false,
     },
   },

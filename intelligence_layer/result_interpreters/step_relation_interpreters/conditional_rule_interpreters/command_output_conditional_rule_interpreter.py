@@ -6,7 +6,7 @@ from protos.playbooks.playbook_task_result_evaluator_pb2 import BashCommandOutpu
 
 
 def rule_type_to_str(rule: BashCommandOutputResultRule):
-    if rule.type == BashCommandOutputResultRule.Type.GREP_COUNT:
+    if rule.type == BashCommandOutputResultRule.Type.GREP_COUNT or rule.type == BashCommandOutputResultRule.Type.GREP or rule.type == BashCommandOutputResultRule.Type.NO_GREP:
         return 'check grep with pattern'
     else:
         return ''
@@ -26,7 +26,7 @@ class BashCommandOutputConditionalRuleInterpreter(ConditionalRuleInterpreter):
             pattern = f'{pattern} (case sensitive)'
         else:
             pattern = f'{pattern} (case insensitive)'
-        grep_count = bash_command_rule.grep_count
+        grep_count = bash_command_rule.threshold.value
         if grep_count > 0:
             interpretation_string = f'{rule_type} {pattern} occurrence count is atleast {grep_count}'
         elif grep_count == 0:
