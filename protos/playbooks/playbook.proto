@@ -23,6 +23,8 @@ import "protos/playbooks/source_task_definitions/azure_task.proto";
 import "protos/playbooks/source_task_definitions/gke_task.proto";
 import "protos/playbooks/source_task_definitions/elastic_search_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
+import "protos/playbooks/source_task_definitions/kubectl_task.proto";
+import "protos/playbooks/source_task_definitions/gcm_task.proto";
 
 
 // Playbook Task Protos
@@ -59,6 +61,8 @@ message PlaybookTask {
     Gke gke = 114;
     ElasticSearch elastic_search = 115;
     GrafanaLoki grafana_loki = 116;
+    Kubectl kubernetes = 117;
+    Gcm gcm = 118;
   }
 }
 

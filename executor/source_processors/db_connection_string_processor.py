@@ -32,10 +32,10 @@ class DBConnectionStringProcessor(Processor):
             logger.error(f"Exception occurred while testing db connection connection with error: {e}")
             raise e
 
-    def get_query_result(self, query):
+    def get_query_result(self, query, timeout=120):
         try:
             connection = self.get_connection()
-            result = connection.execute(text(query))
+            result = connection.execution_options(timeout=timeout).execute(text(query))
             connection.close()
             return result
         except Exception as e:

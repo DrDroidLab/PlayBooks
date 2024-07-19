@@ -1,0 +1,37 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+
+message GcmMetricAssetModel {
+  message MetricLabel {
+    google.protobuf.StringValue name = 1;
+    repeated string description = 2;
+    repeated string metrics = 3;
+  }
+
+  google.protobuf.StringValue metric_type = 1;
+  repeated MetricLabel label_value_metric_map = 2;
+}
+
+message GcmMetricAssetOptions {
+  repeated string metric_types = 1;
+}
+
+message GcmAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+
+  oneof asset {
+    GcmMetricAssetModel gcm_metric = 6;
+  }
+}
+
+message GcmAssets {
+  repeated GcmAssetModel assets = 1;
+}
