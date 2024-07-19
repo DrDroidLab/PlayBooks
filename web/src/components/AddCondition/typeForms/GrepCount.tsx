@@ -1,13 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { additionalStateSelector } from "../../../../store/features/drawers/drawersSlice.ts";
-import useEdgeConditions from "../../../../hooks/useEdgeConditions.ts";
-import { HandleTypesPropTypes } from "../../HandleTypes.tsx";
-import ValueComponent from "../../../ValueComponent/index.jsx";
-import Checkbox from "../../../common/Checkbox/index.tsx";
-import { addConditionToEdgeByIndex } from "../../../../utils/conditionals/addConditionToEdgeByIndex.ts";
-import SelectComponent from "../../../SelectComponent/index.jsx";
-import { operationOptions } from "../../../../utils/conditionals/operationOptions.ts";
+import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
+import { HandleTypesPropTypes } from "../HandleTypes.tsx";
+import ValueComponent from "../../ValueComponent/index.jsx";
+import Checkbox from "../../common/Checkbox/index.tsx";
+import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import SelectComponent from "../../SelectComponent/index.jsx";
+import { operationOptions } from "../../../utils/conditionals/operationOptions.ts";
 
 function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
@@ -66,7 +66,7 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
           onValueChange={(val: string) => handleChange(val, `threshold`)}
           value={rule.threshold}
           valueOptions={[]}
-          placeHolder={"Enter Value of condition"}
+          placeHolder={"Enter threshold"}
           length={200}
         />
       </div>

@@ -1,11 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { additionalStateSelector } from "../../../../store/features/drawers/drawersSlice.ts";
-import useEdgeConditions from "../../../../hooks/useEdgeConditions.ts";
-import { HandleTypesPropTypes } from "../../HandleTypes.tsx";
-import ValueComponent from "../../../ValueComponent/index.jsx";
-import Checkbox from "../../../common/Checkbox/index.tsx";
-import { addConditionToEdgeByIndex } from "../../../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
+import { HandleTypesPropTypes } from "../HandleTypes.tsx";
+import ValueComponent from "../../ValueComponent/index.jsx";
+import Checkbox from "../../common/Checkbox/index.tsx";
+import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 
 function GrepExistence({
   condition,
@@ -19,6 +19,7 @@ function GrepExistence({
   const handleChange = (val: string, type: string) => {
     handleCondition(`${keyValue}.${type}`, val, conditionIndex);
   };
+
   return (
     <>
       <div className="flex flex-col gap-1">

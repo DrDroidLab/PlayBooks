@@ -23,12 +23,9 @@ function BashCommandOutput({ rule, condition, conditionIndex }) {
           data={bashCommandOutputOptions}
           selected={rule.type_id}
           placeholder={`Select Type`}
-          onSelectionChange={(id: string) => {
-            const option = bashCommandOutputOptions.find((e) => e.id === id);
-            if (!option) return;
-            handleChange(option.type, `${keyValue}.type`);
-            handleChange(option.id, `${keyValue}.type_id`);
-          }}
+          onSelectionChange={(id: string) =>
+            handleChange(id, `${keyValue}.type_id`)
+          }
         />
       </div>
 
