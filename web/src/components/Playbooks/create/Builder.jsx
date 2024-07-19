@@ -8,17 +8,13 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 
 function Builder({ isLog = false }) {
   const { toggle: toggleAddData } = useDrawerState(DrawerTypes.ADD_DATA);
-  const { toggle: toggleTemplates } = useDrawerState(DrawerTypes.TEMPLATES);
 
   return (
     <div className="h-full w-full">
       <div className="absolute top-2 left-2 flex flex-col items-start gap-4 z-10">
         {!isLog && (
           <>
-            <CustomButton onClick={toggleAddData}>Add Step</CustomButton>
-            <CustomButton onClick={toggleTemplates}>
-              Import from templates
-            </CustomButton>
+            <CustomButton onClick={toggleAddData}>Add Data</CustomButton>
           </>
         )}
         <GlobalVariables />
