@@ -98,6 +98,7 @@ message PlaybookTaskResult {
     ApiResponseResult api_response = 103;
     BashCommandOutputResult bash_command_output = 104;
     TextResult text = 105;
+    TableResult logs = 106;
   }
 }
 

@@ -1,0 +1,23 @@
+name: Deploy Sandbox
+
+on:
+  push:
+    branches:
+      - sandbox
+
+jobs:
+  ssh-ec2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create PEM file from secret
+      run: echo "${{ secrets.EC2_PEM_FILE }}" > ec2_key.pem
+
+    - name: Set permissions for the PEM file
+      run: chmod 600 ec2_key.pem
+
+    - name: SSH and run script
+      env:
+        EC2_IP_ADDRESS: ${{ secrets.SANDBOX_EC2_IP_ADDRESS }}
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${EC2_IP_ADDRESS} 'bash /home/ec2-user/deploy.sh'

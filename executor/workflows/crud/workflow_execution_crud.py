@@ -100,7 +100,7 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
 def update_db_account_workflow_execution_status(account: Account, workflow_execution_id: int, scheduled_at,
                                                 status: WorkflowExecutionStatusType):
     try:
-        workflow_execution = account.workflowexecution_set.get(id=workflow_execution_id, scheduled_at=scheduled_at)
+        workflow_execution = account.workflowexecution_set.get(id=workflow_execution_id)
         workflow_execution.status = status
         update_fields = ['status']
         if status == WorkflowExecutionStatusType.WORKFLOW_RUNNING:
