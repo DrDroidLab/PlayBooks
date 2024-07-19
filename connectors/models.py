@@ -317,7 +317,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AWS_SECRET_KEY: 'AWS Secret Key',
     SourceKeyType.AWS_REGION: 'AWS Region',
     SourceKeyType.GCM_PROJECT_ID: 'Project ID',
-    SourceKeyType.GCM_SERVICE_ACCOUNT_JSON: 'Service Account Json',
+    SourceKeyType.GCM_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
     SourceKeyType.GCM_CLIENT_EMAIL: 'Client Email',
     SourceKeyType.GCM_TOKEN_URI: 'Token URI',
     SourceKeyType.CLICKHOUSE_INTERFACE: 'Interface',

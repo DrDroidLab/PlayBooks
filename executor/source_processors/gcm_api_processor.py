@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -45,8 +45,8 @@ class GcmApiProcessor(Processor):
             request = service.projects().timeSeries().list(
                 name=f"projects/{self.__project_id}",
                 filter=f'metric.type="{metric_type}"',
-                interval_endTime=end_time,
-                interval_startTime=start_time,
+                interval_startTime=start_time.isoformat() + 'Z',
+                interval_endTime=end_time.isoformat() + 'Z',
                 view='FULL'
             )
             response = request.execute()
@@ -65,50 +65,47 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching metric descriptors: {e}")
             raise e
 
-    def fetch_logs(self, filter_str, start_time=None, end_time=None):
+    def fetch_logs(self, filter_str):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
+
             body = {
-                "projectIds": [self.__project_id],
                 "resourceNames": [f"projects/{self.__project_id}"],
                 "filter": filter_str,
                 "orderBy": "timestamp desc",
-                "pageSize": 10
+                "pageSize": 2000
             }
+
+            logger.debug(f"Fetching logs with body: {body}")
+
             request = service.entries().list(body=body)
             response = request.execute()
+
+            logger.debug(f"Received response: {response}")
+
             return response.get('entries', [])
         except Exception as e:
             logger.error(f"Exception occurred while fetching logs: {e}")
             raise e
 
-    def fetch_log_sinks(self):
-        try:
-            service = build('logging', 'v2', credentials=self.__credentials)
-            request = service.projects().sinks().list(parent=f"projects/{self.__project_id}")
-            response = request.execute()
-            return response.get('sinks', [])
-        except Exception as e:
-            logger.error(f"Exception occurred while fetching log sinks: {e}")
-            raise e
-
-    def gcm_get_metric_aggregation(self, metric_type, start_time, end_time, aggregation, labels):
+    def run_mql_query(self, query, project_id):
         try:
             service = build('monitoring', 'v3', credentials=self.__credentials)
-            filter_str = f'metric.type="{metric_type}"'
-            if labels:
-                label_filters = ' AND '.join([f'metric.labels.{label["key"]}="{label["value"]}"' for label in labels])
-                filter_str += f' AND {label_filters}'
-
-            request = service.projects().timeSeries().list(
-                name=f"projects/{self.__project_id}",
-                filter=filter_str,
-                interval={'startTime': start_time.isoformat() + 'Z', 'endTime': end_time.isoformat() + 'Z'},
-                aggregation={'alignmentPeriod': '300s', 'perSeriesAligner': aggregation},
-                view='FULL'
+            request = service.projects().timeSeries().query(
+                name=f"projects/{project_id}",
+                body={"query": query}
             )
             response = request.execute()
-            return response.get('timeSeries', [])
+
+            logger.debug(f"MQL Query Response: {response}")
+
+            if 'timeSeriesData' in response:
+                time_series_data = response['timeSeriesData']
+                return time_series_data
+            else:
+                logger.error("'timeSeriesData' not found in response")
+
+            return []
         except Exception as e:
-            logger.error(f"Exception occurred while fetching metric aggregation: {e}")
+            logger.error(f"Exception occurred while executing MQL query: {e}")
             raise e

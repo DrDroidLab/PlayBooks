@@ -141,7 +141,7 @@ export const cardsData = [
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",
     buttonType: "available",
-    docs: "https://docs.drdroid.io/docs/elk"
+    docs: "https://docs.drdroid.io/docs/elk",
   },
   {
     id: 11,
@@ -261,9 +261,7 @@ export const cardsData = [
     url: "/integrations/google-cloud-logo.png",
     title: "GOOGLE CLOUD MONITORING",
     enum: "GCM",
-    desc: "Share metrics for your cloud components from Google Cloud",
-    buttonTitle: "Request Access",
-    buttonType: "available",
+    desc: "Connect metrics and logs from Google Cloud",
   },
   {
     id: 32,
@@ -439,7 +437,7 @@ export const cardsData = [
     url: "/integrations/grafana_loki_logo.svg",
     enum: "GRAFANA_LOKI",
     desc: "Connect to Grafana Loki",
-    docs: "https://docs.drdroid.io/docs/grafana-loki-logs"
+    docs: "https://docs.drdroid.io/docs/grafana-loki-logs",
   },
   {
     id: 49,

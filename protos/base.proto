@@ -346,5 +346,4 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
-  GCM_LOG_SINK = 1702;
 }

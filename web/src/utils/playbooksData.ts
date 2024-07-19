@@ -55,7 +55,7 @@ export const constructBuilder = (id?: string) => {
     case taskTypes.GKE_GET_SERVICES:
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_KUBECTL_COMMAND:
-        return Builders.gkeKubectlBuilder(ops?.zones, task);
+      return Builders.gkeKubectlBuilder(ops?.zones, task);
     case taskTypes.KUBERNETES_COMMAND:
       return Builders.kubernetesKubectlBuilder(task);
     case taskTypes.BASH_COMMAND:
@@ -76,6 +76,10 @@ export const constructBuilder = (id?: string) => {
       return Builders.grafanaLokiBuilder();
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return Builders.elasticSearchBuilder(ops?.indexes);
+    case taskTypes.GCM_RUN_MQL_QUERY:
+      return Builders.gcmMqlQueryBuilder();
+    case taskTypes.GCM_FILTER_LOG_ENTRIES:
+      return Builders.gcmLogsBuilder();
     default:
       break;
   }
