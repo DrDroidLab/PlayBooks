@@ -10,6 +10,16 @@ export const gcmLogsBuilder = () => {
           label: "Filter Query",
           type: InputTypes.MULTILINE,
         },
+        {
+          key: Key.ORDER_BY,
+          label: "Order By",
+          type: InputTypes.TEXT,
+        },
+        {
+          key: Key.PAGE_SIZE,
+          label: "Page Size",
+          type: InputTypes.TEXT,
+        },
       ],
     ],
   };

@@ -64,11 +64,11 @@ class GcmSourceManager(PlaybookSourceManager):
             start_time = datetime.utcfromtimestamp(tr_start_time).strftime("d'%Y/%m/%d %H:%M'")
 
             mql_task = gcm_task.mql_execution
-            mql = mql_task.mql_query.value
+            mql = mql_task.query.value
             mql = mql.strip()
             if global_variable_set:
                 for key, value in global_variable_set.items():
-                    mql = mql.query.value.replace(key, str(value))
+                    mql = mql.replace(key, str(value))
 
             project_id = get_project_id(gcm_connector)
 
@@ -79,7 +79,7 @@ class GcmSourceManager(PlaybookSourceManager):
                     start_time, end_time), flush=True)
 
             if "| within " in mql:
-                query = mql.split("| within ")[0].strip()
+                mql = mql.split("| within ")[0].strip()
 
             query_with_time = f"""
             {mql} | within {start_time}, {end_time}

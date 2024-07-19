@@ -76,9 +76,9 @@ export const constructBuilder = (id?: string) => {
       return Builders.grafanaLokiBuilder();
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return Builders.elasticSearchBuilder(ops?.indexes);
-    case taskTypes.GCM_RUN_MQL_QUERY:
+    case taskTypes.GCM_MQL_EXECUTION:
       return Builders.gcmMqlQueryBuilder();
-    case taskTypes.GCM_FILTER_LOG_ENTRIES:
+    case taskTypes.GCM_FILTER_LOG_EVENTS:
       return Builders.gcmLogsBuilder();
     default:
       break;

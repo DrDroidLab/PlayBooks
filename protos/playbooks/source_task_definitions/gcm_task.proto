@@ -6,19 +6,15 @@ import "google/protobuf/timestamp.proto";
 
 message Gcm {
   message MqlExecution {
-    google.protobuf.StringValue project_id = 1;
-    google.protobuf.StringValue mql_query = 2;
-    google.protobuf.StringValue process_function = 3;
+    google.protobuf.StringValue query = 1;
   }
 
   message FilterLogEvents {
-    google.protobuf.StringValue project_id = 1;
-    google.protobuf.StringValue log_name = 2;
-    google.protobuf.StringValue filter_query = 3;
-    repeated google.protobuf.StringValue resource_names = 4;
-    google.protobuf.StringValue order_by = 5;
-    google.protobuf.UInt64Value page_size = 6;
-    google.protobuf.StringValue page_token = 7;
+    google.protobuf.StringValue filter_query = 1;
+    repeated google.protobuf.StringValue resource_names = 2;
+    google.protobuf.StringValue order_by = 3;
+    google.protobuf.UInt64Value page_size = 4;
+    google.protobuf.StringValue page_token = 5;
   }
 
   enum TaskType {

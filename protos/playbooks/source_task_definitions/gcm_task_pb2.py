@@ -15,7 +15,7 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/source_task_definitions/gcm_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9e\x06\n\x03Gcm\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x1e.protos.playbooks.Gcm.TaskType\x12;\n\rmql_execution\x18\x02 \x01(\x0b\x32\".protos.playbooks.Gcm.MqlExecutionH\x00\x12\x42\n\x11\x66ilter_log_events\x18\x03 \x01(\x0b\x32%.protos.playbooks.Gcm.FilterLogEventsH\x00\x1a\xa9\x01\n\x0cMqlExecution\x12\x30\n\nproject_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tmql_query\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x36\n\x10process_function\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\xf0\x02\n\x0f\x46ilterLogEvents\x12\x30\n\nproject_id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08log_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0c\x66ilter_query\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0eresource_names\x18\x04 \x03(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08order_by\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_size\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x30\n\npage_token\x18\x07 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"A\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x11\n\rMQL_EXECUTION\x10\x01\x12\x15\n\x11\x46ILTER_LOG_EVENTS\x10\x02\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/source_task_definitions/gcm_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcd\x04\n\x03Gcm\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x1e.protos.playbooks.Gcm.TaskType\x12;\n\rmql_execution\x18\x02 \x01(\x0b\x32\".protos.playbooks.Gcm.MqlExecutionH\x00\x12\x42\n\x11\x66ilter_log_events\x18\x03 \x01(\x0b\x32%.protos.playbooks.Gcm.FilterLogEventsH\x00\x1a;\n\x0cMqlExecution\x12+\n\x05query\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x8e\x02\n\x0f\x46ilterLogEvents\x12\x32\n\x0c\x66ilter_query\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x34\n\x0eresource_names\x18\x02 \x03(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08order_by\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12/\n\tpage_size\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x30\n\npage_token\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"A\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x11\n\rMQL_EXECUTION\x10\x01\x12\x15\n\x11\x46ILTER_LOG_EVENTS\x10\x02\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.gcm_task_pb2', globals())
@@ -23,11 +23,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _GCM._serialized_start=143
-  _GCM._serialized_end=941
-  _GCM_MQLEXECUTION._serialized_start=326
-  _GCM_MQLEXECUTION._serialized_end=495
-  _GCM_FILTERLOGEVENTS._serialized_start=498
-  _GCM_FILTERLOGEVENTS._serialized_end=866
-  _GCM_TASKTYPE._serialized_start=868
-  _GCM_TASKTYPE._serialized_end=933
+  _GCM._serialized_end=732
+  _GCM_MQLEXECUTION._serialized_start=325
+  _GCM_MQLEXECUTION._serialized_end=384
+  _GCM_FILTERLOGEVENTS._serialized_start=387
+  _GCM_FILTERLOGEVENTS._serialized_end=657
+  _GCM_TASKTYPE._serialized_start=659
+  _GCM_TASKTYPE._serialized_end=724
 # @@protoc_insertion_point(module_scope)

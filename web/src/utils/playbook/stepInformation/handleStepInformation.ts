@@ -62,9 +62,9 @@ export default function handleStepInformation(
       return StepInformation.loki;
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return StepInformation.elasticSearch;
-    case taskTypes.GCM_RUN_MQL_QUERY:
+    case taskTypes.GCM_MQL_EXECUTION:
       return StepInformation.gcmMqlQuery;
-    case taskTypes.GCM_FILTER_LOG_ENTRIES:
+    case taskTypes.GCM_FILTER_LOG_EVENTS:
       return StepInformation.gcmLogs;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];

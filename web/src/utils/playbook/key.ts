@@ -17,7 +17,6 @@ export const Key = {
   DATABASE: "database",
   QUERY: "query",
   LOG_GROUP_NAME: "log_group_name",
-  LOG_NAME: "log_name",
   SERVICE_NAME: "service_name",
   ENVIRONMENT_NAME: "environment_name",
   METRIC_FAMILY: "metric_family",
@@ -49,12 +48,14 @@ export const Key = {
   DASHBOARD_NAME: "dashboard_name",
   PAGE_GUID: "page_guid",
   PAGE_NAME: "page_name",
+  PAGE_SIZE: "page_size",
   WIDGET_ID: "widget_id",
   WIDGET_TITLE: "widget_title",
   WIDGET_NRQL_EXPRESSION: "widget_nrql_expression",
   UNIT: "unit",
   NRQL_EXPRESSION: "nrql_expression",
   CONTENT: "content",
+  ORDER_BY: "order_by"
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];

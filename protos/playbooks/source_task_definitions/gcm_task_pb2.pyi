@@ -42,40 +42,26 @@ class Gcm(google.protobuf.message.Message):
     class MqlExecution(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        PROJECT_ID_FIELD_NUMBER: builtins.int
-        MQL_QUERY_FIELD_NUMBER: builtins.int
-        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
+        QUERY_FIELD_NUMBER: builtins.int
         @property
-        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def mql_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
-            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            mql_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            query: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["mql_query", b"mql_query", "process_function", b"process_function", "project_id", b"project_id"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["mql_query", b"mql_query", "process_function", b"process_function", "project_id", b"project_id"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["query", b"query"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["query", b"query"]) -> None: ...
 
     @typing_extensions.final
     class FilterLogEvents(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-        PROJECT_ID_FIELD_NUMBER: builtins.int
-        LOG_NAME_FIELD_NUMBER: builtins.int
         FILTER_QUERY_FIELD_NUMBER: builtins.int
         RESOURCE_NAMES_FIELD_NUMBER: builtins.int
         ORDER_BY_FIELD_NUMBER: builtins.int
         PAGE_SIZE_FIELD_NUMBER: builtins.int
         PAGE_TOKEN_FIELD_NUMBER: builtins.int
-        @property
-        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def log_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -89,16 +75,14 @@ class Gcm(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            log_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
             resource_names: collections.abc.Iterable[google.protobuf.wrappers_pb2.StringValue] | None = ...,
             order_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
             page_size: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
             page_token: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id", "resource_names", b"resource_names"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "resource_names", b"resource_names"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     MQL_EXECUTION_FIELD_NUMBER: builtins.int
