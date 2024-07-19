@@ -9,6 +9,7 @@ from executor.source_task_executors.azure_task_executor import AzureSourceManage
 from executor.source_task_executors.bash_task_executor import BashSourceManager
 from executor.source_task_executors.documentation_task_executor import DocumentationSourceManager
 from executor.source_task_executors.elastic_search_task_executor import ElasticSearchSourceManager
+from executor.source_task_executors.gcm_task_executor import GcmSourceManager
 from executor.source_task_executors.gke_task_executor import GkeSourceManager
 from executor.source_task_executors.grafana_loki_task_executor import GrafanaLokiSourceManager
 from executor.source_task_executors.grafana_task_executor import GrafanaSourceManager
@@ -108,6 +109,7 @@ playbook_source_facade.register(Source.GRAFANA_VPC, GrafanaVpcSourceManager())
 playbook_source_facade.register(Source.GRAFANA_MIMIR, MimirSourceManager())
 playbook_source_facade.register(Source.AZURE, AzureSourceManager())
 playbook_source_facade.register(Source.GKE, GkeSourceManager())
+playbook_source_facade.register(Source.GCM, GcmSourceManager())
 playbook_source_facade.register(Source.GRAFANA_LOKI, GrafanaLokiSourceManager())
 
 playbook_source_facade.register(Source.POSTGRES, PostgresSourceManager())
