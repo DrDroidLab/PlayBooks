@@ -19,6 +19,7 @@ import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Settings = React.lazy(() => import("./pages/Settings.tsx"));
 const Login = React.lazy(() => import("./pages/Login"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword.tsx"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
 const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
@@ -104,6 +105,7 @@ const App = () => {
       <Route element={<BaseLayout />}>
         <Route path="/oauth/callback/:oauthId" element={<OAuthCallback />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUp />} />
       </Route>
 
