@@ -19,3 +19,4 @@ export * from "./elasticSearch.ts";
 export * from "./gcmLogs.ts";
 export * from "./gcmMqlQuery.ts";
 export * from "./markdown.ts";
+export * from "./kubectl.ts";
