@@ -22,8 +22,6 @@ function DataSources() {
       <Heading
         heading={"Data Sources"}
         subHeading={"View and manage your data sources"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
         children={<></>}
       />
       <main className="p-2">

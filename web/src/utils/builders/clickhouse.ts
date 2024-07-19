@@ -19,6 +19,14 @@ export const clickhouseBuilder = (options: any) => {
           type: InputTypes.MULTILINE,
         },
       ],
+      [
+        {
+          key: Key.TIMEOUT,
+          label: "Timeout (in seconds)",
+          type: InputTypes.TEXT_ROW,
+          default: 120,
+        },
+      ],
     ],
   };
 };

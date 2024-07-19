@@ -8,12 +8,7 @@ import TeamsSection from "../components/Settings/TeamsSection.tsx";
 function Settings() {
   return (
     <main>
-      <Heading
-        heading={"Settings"}
-        children={undefined}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Settings"} children={undefined} />
 
       <div className="bg-white m-2 rounded-lg p-2">
         <UserSection />
