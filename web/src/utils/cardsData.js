@@ -444,6 +444,13 @@ export const cardsData = [
     url: "/integrations/kubernetes_logo.png",
     enum: "KUBERNETES",
     desc: "Connect to Kubernetes Cluster",
-    docs: "https://docs.drdroid.io/docs/service-account-token"
+    docs: "https://docs.drdroid.io/docs/service-account-token",
+  },
+  {
+    id: 50,
+    url: "/integrations/email_logo.png",
+    enum: "SMTP",
+    desc: "Connect to SMTP Server",
+    docs: "https://docs.drdroid.io/docs/service-account-token",
   },
 ];
