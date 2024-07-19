@@ -8,7 +8,6 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 
 function Builder({ isLog = false }) {
   const { toggle: toggleAddData } = useDrawerState(DrawerTypes.ADD_DATA);
-  const { toggle: toggleTemplates } = useDrawerState(DrawerTypes.TEMPLATES);
 
   return (
     <div className="h-full w-full">

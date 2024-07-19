@@ -22,6 +22,8 @@ function StepNode({ data }) {
   const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
 
+  const showPopup = (step?.external_links?.length ?? 0) > 0 || step.notes;
+
   return (
     <>
       <div
@@ -62,12 +64,14 @@ function StepNode({ data }) {
           </NodeToolbar>
         )}
       </div>
-      <div className="step-notes absolute top-1/2 left-full -translate-x-1/4 rounded-3xl overflow-hidden max-w-md shadow-xl rounded-tl-none bg-white">
-        <div className="px-3 py-1">
-          <ExternalLinksList id={step?.id} />
+      {showPopup && (
+        <div className="step-notes absolute top-1/2 left-full -translate-x-1/4 rounded-3xl overflow-hidden max-w-md shadow-xl rounded-tl-none bg-white">
+          <div className="px-3 py-1">
+            <ExternalLinksList id={step?.id} />
+          </div>
+          <MarkdownOutput content={step?.notes} />
         </div>
-        <MarkdownOutput content={step?.notes} />
-      </div>
+      )}
     </>
   );
 }

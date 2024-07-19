@@ -1,6 +1,9 @@
 import { store } from "../../store/index.ts";
 import { updateCardById } from "./updateCardById.ts";
-import { popFromExecutionStack } from "../../store/features/playbook/playbookSlice.ts";
+import {
+  currentPlaybookSelector,
+  popFromExecutionStack,
+} from "../../store/features/playbook/playbookSlice.ts";
 import getCurrentTask from "../getCurrentTask.ts";
 import { executionTaskExecute } from "../../store/features/playbook/api/executions/executionTaskExecuteApi.ts";
 import checkId from "../checkId.ts";
@@ -8,6 +11,7 @@ import updateStepById from "../playbook/step/updateStepById.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
+  const currentPlaybook = currentPlaybookSelector(store.getState());
   if (!task) return;
   const dispatch = store.dispatch;
   if (Object.keys(task?.ui_requirement.errors ?? {}).length > 0) {
@@ -33,6 +37,7 @@ export async function executeTask(id?: string) {
           ...task,
           id: checkId(task.id!),
           ui_requirement: undefined,
+          global_variable_set: currentPlaybook?.global_variable_set,
         }),
       )
       .unwrap();
