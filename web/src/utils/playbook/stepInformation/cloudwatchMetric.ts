@@ -1,14 +1,15 @@
+import { Key } from "../key.ts";
 import { InfoTypes } from "./InfoTypes.ts";
 
 export const cloudwatchMetric = [
   {
     label: "Dimension",
-    key: "dimensionName",
+    key: Key.DIMENSION_NAME,
     type: InfoTypes.TEXT,
   },
   {
-    label: "Metrics",
-    key: "metric",
-    type: InfoTypes.CHIPS,
+    label: "Metric Name",
+    key: Key.METRIC_NAME,
+    type: InfoTypes.TEXT,
   },
 ];

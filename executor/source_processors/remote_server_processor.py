@@ -9,20 +9,6 @@ from executor.source_processors.processor import Processor
 logger = logging.getLogger(__name__)
 
 
-def reconstruct_rsa_key(key_string):
-    key_string = key_string.replace('-----BEGIN RSA PRIVATE KEY-----', '').replace('-----END RSA PRIVATE KEY-----', '')
-
-    # Remove any whitespace or line breaks
-    key_string = ''.join(key_string.split())
-
-    # Add line breaks to reconstruct the key
-    reconstructed_key = '-----BEGIN RSA PRIVATE KEY-----\n'
-    reconstructed_key += '\n'.join([key_string[i:i + 64] for i in range(0, len(key_string), 64)])
-    reconstructed_key += '\n-----END RSA PRIVATE KEY-----'
-
-    return reconstructed_key
-
-
 class RemoteServerProcessor(Processor):
     client = None
 
@@ -31,19 +17,52 @@ class RemoteServerProcessor(Processor):
             self.remote_user = remote_host.split("@")[0]
             self.remote_host = remote_host.split("@")[1]
         self.remote_password = remote_password
-        self.remote_pem = remote_pem
+        self.remote_pem = remote_pem.strip()
 
     def get_connection(self):
         try:
-            if self.remote_host and self.remote_password:
+            if self.remote_host and self.remote_user and self.remote_pem:
+                client = paramiko.SSHClient()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                try:
+                    if self.remote_password:
+                        key = paramiko.RSAKey.from_private_key(io.StringIO(self.remote_pem),
+                                                               password=self.remote_password)
+                    else:
+                        key = paramiko.RSAKey.from_private_key(io.StringIO(self.remote_pem))
+                    client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                except Exception as e:
+                    try:
+                        if self.remote_password:
+                            key = paramiko.Ed25519Key.from_private_key(io.StringIO(self.remote_pem),
+                                                                       password=self.remote_password)
+                        else:
+                            key = paramiko.Ed25519Key.from_private_key(io.StringIO(self.remote_pem))
+                        client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                    except Exception as e:
+                        try:
+                            if self.remote_password:
+                                key = paramiko.ECDSAKey.from_private_key(
+                                    io.StringIO(self.remote_pem), password=self.remote_password)
+                            else:
+                                key = paramiko.ECDSAKey.from_private_key(io.StringIO(self.remote_pem))
+                            client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                        except Exception as e:
+                            try:
+                                if self.remote_password:
+                                    key = paramiko.DSSKey.from_private_key(
+                                        io.StringIO(self.remote_pem), password=self.remote_password)
+                                else:
+                                    key = paramiko.DSSKey.from_private_key(io.StringIO(self.remote_pem))
+                                client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                            except Exception as e:
+                                logger.error(f"Exception occurred while creating remote connection with error: {e}")
+                                raise e
+
+            elif self.remote_host and self.remote_password:
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.connect(hostname=self.remote_host, username=self.remote_user, password=self.remote_password)
-            elif self.remote_host and self.remote_user and self.remote_pem:
-                client = paramiko.SSHClient()
-                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                key = paramiko.RSAKey.from_private_key(io.StringIO(reconstruct_rsa_key(self.remote_pem)))
-                client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
             elif self.remote_host and self.remote_user:
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())

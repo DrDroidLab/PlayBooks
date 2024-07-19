@@ -1,4 +1,4 @@
-import { Step } from "../../types.ts";
+import { ResultTypeType } from "./resultTypeOptions.ts";
 
 enum ResultTypeTypes {
   TIMESERIES = "TIMESERIES",
@@ -6,10 +6,8 @@ enum ResultTypeTypes {
   OTHERS = "others",
 }
 
-export const functionOptions = (step: Step) => {
-  const type = step.resultType;
-
-  switch (type) {
+export const functionOptions = (resultType: ResultTypeType) => {
+  switch (resultType) {
     case ResultTypeTypes.TIMESERIES:
       return [
         {

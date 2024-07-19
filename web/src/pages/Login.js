@@ -86,11 +86,11 @@ function Login() {
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
-      if (!err?.response) {
+      if (!err) {
         handleOpenToast("No Server Response", "error");
-      } else if (err.response?.status === 400) {
-        handleOpenToast(err.response?.data?.non_field_errors[0], "error");
-      } else if (err.response?.status === 401) {
+      } else if (err?.status === 400) {
+        handleOpenToast(err.data?.non_field_errors[0], "error");
+      } else if (err?.status === 401) {
         handleOpenToast("Unauthorized", "error");
       } else {
         handleOpenToast("Login Failed", "error");

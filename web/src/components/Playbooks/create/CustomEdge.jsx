@@ -21,9 +21,14 @@ const CustomEdge = ({
   markerEndId,
   source,
 }) => {
-  const { conditions } = useEdgeConditions(id);
-  const { toggle, addAdditionalData, additionalData } =
-    usePermanentDrawerState();
+  const { rules } = useEdgeConditions(id);
+  const {
+    toggle,
+    permanentView,
+    openDrawer,
+    addAdditionalData,
+    additionalData,
+  } = usePermanentDrawerState();
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -37,11 +42,18 @@ const CustomEdge = ({
 
   const handleAddConditionClick = (e) => {
     e.stopPropagation();
+    if (
+      permanentView === PermanentDrawerTypes.CONDITION &&
+      id === additionalData.id
+    ) {
+      toggle(PermanentDrawerTypes.CONDITION);
+      return;
+    }
     addAdditionalData({
       source,
       id,
     });
-    toggle(PermanentDrawerTypes.CONDITION);
+    openDrawer(PermanentDrawerTypes.CONDITION);
   };
 
   return (
@@ -64,7 +76,7 @@ const CustomEdge = ({
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
         <div className={`flex items-center justify-center w-full h-full`}>
-          {conditions.length > 0 && (
+          {rules?.length > 0 && (
             <CustomButton
               className={`${
                 additionalData.id === id ? "shadow-md shadow-violet-500 " : ""

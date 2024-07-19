@@ -1,22 +1,22 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
-export const clickhouseBuilder = (options: any, task: any) => {
+export const clickhouseBuilder = (options: any) => {
   return {
     builder: [
       [
         {
-          key: "database",
+          key: Key.DATABASE,
           label: "Database",
-          type: OptionType.TYPING_DROPDOWN,
+          type: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
         },
       ],
       [
         {
-          key: "dbQuery",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
-          value: task.dbQuery,
+          type: InputTypes.MULTILINE,
         },
       ],
     ],

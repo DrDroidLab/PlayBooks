@@ -5,10 +5,11 @@ import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 function ExternalLinksList({ id }) {
   const [step] = useCurrentStep(id);
 
-  if (!step) return <></>;
+  if (!step || step?.external_links?.length === 0) return <></>;
+
   return (
-    <div className="flex flex-wrap gap-2 items-center my-2">
-      {step.externalLinks?.map((link, i) => (
+    <div className="flex flex-wrap gap-3 items-center my-1">
+      {step.external_links?.map((link, i) => (
         <a
           key={i}
           href={link.url}
