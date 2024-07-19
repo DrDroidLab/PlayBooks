@@ -73,6 +73,7 @@ message PlaybookTaskResultRule {
     TimeseriesResultRule timeseries = 101;
     TableResultRule table = 102;
     TableResultRule logs = 103;
+    BashCommandOutputResultRule bash_command_output = 104;
   }
 }
 
