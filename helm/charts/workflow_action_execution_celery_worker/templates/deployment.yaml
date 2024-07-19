@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: workflow-action-executor-celery-worker
-          image: "BACKEND_IMAGE"
+          image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
           env:
             - name: CELERY_BROKER_URL
               value: {{ .Values.redisUrl }}
