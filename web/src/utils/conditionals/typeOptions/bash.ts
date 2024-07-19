@@ -1,4 +1,5 @@
 import { GrepRuleTypes } from "../types/grepRuleTypes.ts";
+import { OperatorOptions } from "../types/operatorOptionTypes.ts";
 import { RuleTypes } from "../types/ruleTypes.ts";
 
 export const bashCommandOutputOptions = [
@@ -7,8 +8,9 @@ export const bashCommandOutputOptions = [
     label: "Grep Pattern exists",
     type: RuleTypes.GREP_COUNT,
     defaultValues: {
-      numeric_value_threshold: 0,
+      numeric_value_threshold: 1,
       string_value_threshold: undefined,
+      operator: OperatorOptions.GREATER_THAN_EQUAL_O,
     },
   },
   {
@@ -16,8 +18,9 @@ export const bashCommandOutputOptions = [
     label: "Grep Pattern does not exist",
     type: RuleTypes.GREP_COUNT,
     defaultValues: {
-      numeric_value_threshold: 1,
+      numeric_value_threshold: 0,
       string_value_threshold: undefined,
+      operator: OperatorOptions.EQUAL_O,
     },
   },
   {
