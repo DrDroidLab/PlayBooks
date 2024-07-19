@@ -13,7 +13,9 @@ function SearchForm({ context }: SearchProps) {
   const dispatch = useDispatch();
 
   return (
-    <form className="h-full rounded flex-1" onSubmit={handleSubmit}>
+    <form
+      className="h-full max-h-[28px] rounded flex-1"
+      onSubmit={handleSubmit}>
       <input
         className="w-full h-full rounded outline-none min-w-[200px]"
         type="text"
