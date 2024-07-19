@@ -8,8 +8,8 @@ import Checkbox from "../../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 
 function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
-  const { id, edgeIndex } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { id } = useSelector(additionalStateSelector);
+  const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
 
   const handleChange = (val: string, type: string) => {
