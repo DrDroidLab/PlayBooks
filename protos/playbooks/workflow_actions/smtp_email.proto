@@ -7,5 +7,4 @@ import "protos/base.proto";
 message SMTPEmailWorkflowAction {
   google.protobuf.StringValue to_email = 1;
   google.protobuf.StringValue subject = 2;
-  google.protobuf.StringValue body = 3;
 }

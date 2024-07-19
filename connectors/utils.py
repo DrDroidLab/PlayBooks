@@ -271,7 +271,7 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.SMTP_PORT:
                 credentials_dict['port'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SMTP_USER:
-                credentials_dict['user'] = conn_key.key.value
+                credentials_dict['username'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SMTP_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
     else:

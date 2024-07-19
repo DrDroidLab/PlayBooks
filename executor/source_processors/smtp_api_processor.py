@@ -28,14 +28,17 @@ class SmtpApiProcessor(Processor):
             logger.error(f"Error creating SMTP client: {e}")
             raise e
 
-    def send_email(self, to_email, subject, body):
+    def send_email(self, to_email, subject, body, html=True):
         try:
             msg = MIMEMultipart()
             msg['From'] = self.__username
             msg['To'] = to_email
             msg['Subject'] = subject
 
-            msg.attach(MIMEText(body, 'plain'))
+            if html:
+                msg.attach(MIMEText(body, 'html'))
+            else:
+                msg.attach(MIMEText(body, 'plain'))
 
             self.client.send_message(msg)
             return True

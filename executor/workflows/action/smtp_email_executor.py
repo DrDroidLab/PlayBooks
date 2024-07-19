@@ -15,7 +15,50 @@ logger = logging.getLogger(__name__)
 
 
 def generate_email_body(execution_output: List[InterpretationProto]) -> str:
-    body = ""
+    body = """
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                background-color: #f4f4f9;
+                padding: 20px;
+            }
+            .container {
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+            }
+            h1, h2 {
+                color: #333;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 20px;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            p {
+                margin: 10px 0;
+                font-size: 16px;
+                line-height: 1.5;
+            }
+            a {
+                color: #1a73e8;
+                text-decoration: none;
+            }
+            .block {
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+    """
     step_number = 1
     for interpretation in execution_output:
         title = interpretation.title.value
@@ -23,25 +66,56 @@ def generate_email_body(execution_output: List[InterpretationProto]) -> str:
         summary = interpretation.summary.value
 
         if interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION:
-            body += f"<h1>{title}</h1>\n"
-            body += f"<p>{description}</p>\n"
-            body += f"<p>{summary}</p>\n"
+            body += f"""
+            <div class="block">
+                <h1>{title}</h1>
+                <p>{description}</p>
+                <p>{summary}</p>
+            </div>
+            """
         elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
-            body += f"<h2>{step_number}. {title}</h2>\n"
+            body += f"""
+            <div class="block">
+                <h2>{step_number}. {title}</h2>
+                <p>{description}</p>
+            </div>
+            """
             step_number += 1
         elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
             if interpretation.type == InterpretationProto.Type.TEXT:
-                body += f"<p>{description}</p>\n"
-                body += f"<p>{summary}</p>\n"
+                body += f"""
+                <div class="block">
+                    <h2>{title}</h2>
+                    <p>{description}</p>
+                    <p>{summary}</p>
+                </div>
+                """
             elif interpretation.type == InterpretationProto.Type.IMAGE:
-                body += f"<p>{description}</p>\n"
-                body += f'<img src="{interpretation.image_url.value}" alt="{description}">\n'
+                body += f"""
+                <div class="block">
+                    <p>{description}</p>
+                    <img src="{interpretation.image_url.value}" alt="{description}" style="max-width:100%;">
+                </div>
+                """
             elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                body += f"<p>{description}</p>\n"
-                body += f'<p>Here\'s the <a href="{interpretation.object_url.value}">csv file</a>.</p>\n'
+                body += f"""
+                <div class="block">
+                    <p>{description}</p>
+                    <p>Here’s the <a href="{interpretation.object_url.value}">CSV file</a>.</p>
+                </div>
+                """
             elif interpretation.type == InterpretationProto.Type.JSON:
-                body += f"<pre><code>{summary}</code></pre>\n"
+                body += f"""
+                <div class="block">
+                    <pre><code>{summary}</code></pre>
+                </div>
+                """
 
+    body += """
+        </div>
+    </body>
+    </html>
+    """
     return body
 
 
