@@ -1,10 +1,12 @@
+import { RuleTypes } from "../types/ruleTypes.ts";
+
 export const tableOptions = [
   {
-    id: "ROW_COUNT",
+    id: RuleTypes.ROW_COUNT,
     label: "Row Count",
   },
   {
-    id: "COLUMN_VALUE",
+    id: RuleTypes.COLUMN_VALUE,
     label: "Column value",
   },
 ];
