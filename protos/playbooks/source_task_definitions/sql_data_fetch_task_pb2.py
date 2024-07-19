@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\nBprotos/playbooks/source_task_definitions/sql_data_fetch_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xaf\x03\n\x0cSqlDataFetch\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.protos.playbooks.SqlDataFetch.TaskType\x12<\n\tsql_query\x18\x02 \x01(\x0b\x32\'.protos.playbooks.SqlDataFetch.SqlQueryH\x00\x1a\xf9\x01\n\x08SqlQuery\x12.\n\x08\x64\x61tabase\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05query\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0forder_by_column\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05limit\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12,\n\x06offset\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"&\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\r\n\tSQL_QUERY\x10\x01\x42\x06\n\x04taskb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\nBprotos/playbooks/source_task_definitions/sql_data_fetch_task.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xde\x03\n\x0cSqlDataFetch\x12\x35\n\x04type\x18\x01 \x01(\x0e\x32\'.protos.playbooks.SqlDataFetch.TaskType\x12<\n\tsql_query\x18\x02 \x01(\x0b\x32\'.protos.playbooks.SqlDataFetch.SqlQueryH\x00\x1a\xa8\x02\n\x08SqlQuery\x12.\n\x08\x64\x61tabase\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05query\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0forder_by_column\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05limit\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12,\n\x06offset\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12-\n\x07timeout\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\"&\n\x08TaskType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\r\n\tSQL_QUERY\x10\x01\x42\x06\n\x04taskb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2', globals())
@@ -22,9 +22,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _SQLDATAFETCH._serialized_start=121
-  _SQLDATAFETCH._serialized_end=552
+  _SQLDATAFETCH._serialized_end=599
   _SQLDATAFETCH_SQLQUERY._serialized_start=255
-  _SQLDATAFETCH_SQLQUERY._serialized_end=504
-  _SQLDATAFETCH_TASKTYPE._serialized_start=506
-  _SQLDATAFETCH_TASKTYPE._serialized_end=544
+  _SQLDATAFETCH_SQLQUERY._serialized_end=551
+  _SQLDATAFETCH_TASKTYPE._serialized_start=553
+  _SQLDATAFETCH_TASKTYPE._serialized_end=591
 # @@protoc_insertion_point(module_scope)
