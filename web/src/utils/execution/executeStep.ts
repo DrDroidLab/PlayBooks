@@ -33,8 +33,8 @@ export async function executeStep(id?: string) {
       ...e,
       id: checkId(e?.id ?? ""),
       ui_requirement: undefined,
+      global_variable_set: currentPlaybook?.global_variable_set,
     })),
-    global_variable_set: currentPlaybook?.global_variable_set,
   };
 
   // Check Task errors
