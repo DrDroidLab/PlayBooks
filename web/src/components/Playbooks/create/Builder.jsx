@@ -15,7 +15,7 @@ function Builder({ isLog = false }) {
       <div className="absolute top-2 left-2 flex flex-col items-start gap-4 z-10">
         {!isLog && (
           <>
-            <CustomButton onClick={toggleAddData}>Add Data</CustomButton>
+            <CustomButton onClick={toggleAddData}>Add Step</CustomButton>
             <CustomButton onClick={toggleTemplates}>
               Import from templates
             </CustomButton>
