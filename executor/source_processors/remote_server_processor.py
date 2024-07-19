@@ -34,8 +34,8 @@ class RemoteServerProcessor(Processor):
                 except Exception as e:
                     try:
                         if self.remote_password:
-                            key = paramiko.DSSKey.from_private_key(io.StringIO(self.remote_pem),
-                                                                   password=self.remote_password)
+                            key = paramiko.Ed25519Key.from_private_key(io.StringIO(self.remote_pem),
+                                                                       password=self.remote_password)
                         else:
                             key = paramiko.Ed25519Key.from_private_key(io.StringIO(self.remote_pem))
                         client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
@@ -48,8 +48,16 @@ class RemoteServerProcessor(Processor):
                                 key = paramiko.ECDSAKey.from_private_key(io.StringIO(self.remote_pem))
                             client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
                         except Exception as e:
-                            logger.error(f"Exception occurred while creating remote connection with error: {e}")
-                            raise e
+                            try:
+                                if self.remote_password:
+                                    key = paramiko.DSSKey.from_private_key(
+                                        io.StringIO(self.remote_pem), password=self.remote_password)
+                                else:
+                                    key = paramiko.DSSKey.from_private_key(io.StringIO(self.remote_pem))
+                                client.connect(hostname=self.remote_host, username=self.remote_user, pkey=key)
+                            except Exception as e:
+                                logger.error(f"Exception occurred while creating remote connection with error: {e}")
+                                raise e
 
             elif self.remote_host and self.remote_password:
                 client = paramiko.SSHClient()
