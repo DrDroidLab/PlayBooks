@@ -59,7 +59,9 @@ const useSearch = (context: string) => {
         setFilteredOptions(
           options?.filter(
             (option: Option) =>
-              selected.findIndex((e) => e.label === option.label) === -1,
+              selected.findIndex((e) =>
+                e.label.includes(option.label.split(": ")[0]),
+              ) === -1,
           ),
         ),
       );
