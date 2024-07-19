@@ -28,6 +28,7 @@ function HandleResultTypeForm({
   }, [rule.type]);
 
   switch (resultType) {
+    case ResultTypeTypes.LOGS:
     case ResultTypeTypes.TABLE:
       return (
         <Table

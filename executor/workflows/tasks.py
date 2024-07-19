@@ -52,7 +52,7 @@ def get_entry_point_type_text(entry_point):
 
 
 def get_action_type_text(action):
-    destination_type = action[0].type
+    destination_type = action.type
     if destination_type == WorkflowActionProto.Type.SLACK_MESSAGE:
         return "Slack"
     elif destination_type == WorkflowActionProto.Type.SLACK_THREAD_REPLY:
@@ -80,7 +80,7 @@ def workflow_scheduler():
             if execution_metadata.type in [WorkflowExecutionProto.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
                                            WorkflowExecutionProto.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT]:
                 event = execution_metadata.event
-                if event and execution_configuration.transformer_lambda_function is not None:
+                if event and execution_configuration.transformer_lambda_function and 'transformer_lambda_function' in wf_execution.workflow_execution_configuration.keys():
                     event_dict = proto_to_dict(event)
                     transformer_lambda_function_proto: Lambda.Function = execution_configuration.transformer_lambda_function
                     lambda_function_processor = LambdaFunctionProcessor(
@@ -231,7 +231,7 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         slack_thread_ts = None
         pd_incident_id = None
         if workflow_execution.metadata:
-            slack_thread_ts = workflow_execution.metadata.get('event', {}).get('ts', None)
+            slack_thread_ts = workflow_execution.metadata.get('event', {}).get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
 
         playbook_execution = playbook_executions.first()

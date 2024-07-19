@@ -1,6 +1,6 @@
 from typing import Dict
 
-from executor.task_result_conditional_evaluators.table_result_evaluator import TableResultEvaluator
+from executor.task_result_conditional_evaluators.table_result_evaluator import LogsResultEvaluator, TableResultEvaluator
 from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
 from executor.task_result_conditional_evaluators.timeseries_result_evaluator import TimeseriesResultEvaluator
 from executor.task_result_conditional_evaluators.bash_command_result_evaluator import BashCommandOutputResultEvaluator
@@ -59,4 +59,5 @@ class StepConditionEvaluator:
 step_condition_evaluator = StepConditionEvaluator()
 step_condition_evaluator.register(PlaybookTaskResultType.TIMESERIES, TimeseriesResultEvaluator())
 step_condition_evaluator.register(PlaybookTaskResultType.TABLE, TableResultEvaluator())
+step_condition_evaluator.register(PlaybookTaskResultType.LOGS, LogsResultEvaluator())
 step_condition_evaluator.register(PlaybookTaskResultType.BASH_COMMAND_OUTPUT, BashCommandOutputResultEvaluator())
