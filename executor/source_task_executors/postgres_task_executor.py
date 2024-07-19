@@ -1,4 +1,5 @@
 from typing import Dict
+import threading
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
@@ -9,6 +10,10 @@ from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
+
+
+class TimeoutException(Exception):
+    pass
 
 
 class PostgresSourceManager(PlaybookSourceManager):
@@ -26,8 +31,8 @@ class PostgresSourceManager(PlaybookSourceManager):
             },
         }
 
-    def get_connector_processor(self, grafana_connector, **kwargs):
-        generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
+    def get_connector_processor(self, pg_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(pg_connector.type, pg_connector.keys)
         if kwargs and 'database' in kwargs:
             generated_credentials['database'] = kwargs['database']
         return PostgresDBProcessor(**generated_credentials)
@@ -45,6 +50,8 @@ class PostgresSourceManager(PlaybookSourceManager):
             query = sql_query.query.value
             query = query.strip()
             database = sql_query.database.value
+            timeout = sql_query.timeout.value if sql_query.timeout.value else 120
+
             if not database:
                 pg_keys = pg_connector.keys
                 for key in pg_keys:
@@ -71,14 +78,32 @@ class PostgresSourceManager(PlaybookSourceManager):
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
 
-            pg_db_processor = self.get_connector_processor(pg_connector, database=database)
+            def query_db():
+                nonlocal count_result, result, exception
+                try:
+                    pg_db_processor = self.get_connector_processor(pg_connector, database=database)
+                    count_result = pg_db_processor.get_query_result_fetch_one(count_query, timeout=timeout)
+                    result = pg_db_processor.get_query_result(query, timeout=timeout)
+                except Exception as e:
+                    exception = e
 
-            count_result = pg_db_processor.get_query_result_fetch_one(count_query)
+            count_result = None
+            result = None
+            exception = None
 
-            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format("Postgres",
-                                                                                                    pg_connector.account_id.value,
-                                                                                                    query), flush=True)
-            result = pg_db_processor.get_query_result(query)
+            query_thread = threading.Thread(target=query_db)
+            query_thread.start()
+            query_thread.join(timeout)
+
+            if query_thread.is_alive():
+                raise TimeoutException(f"Function 'execute_sql_query' exceeded the timeout of {timeout} seconds")
+
+            if exception:
+                raise exception
+
+            print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
+                "Postgres", pg_connector.account_id.value, query), flush=True)
+
             table_rows: [TableResult.TableRow] = []
             for row in result:
                 table_columns = []

@@ -1,3 +1,4 @@
+import base64
 import logging
 import subprocess
 import tempfile
@@ -19,7 +20,7 @@ class KubectlApiProcessor(Processor):
         elif ssl_ca_cert:
             fp = tempfile.NamedTemporaryFile(delete=False)
             ca_filename = fp.name
-            cert_bs = ssl_ca_cert.encode('utf-8')
+            cert_bs = base64.urlsafe_b64decode(ssl_ca_cert.encode('utf-8'))
             fp.write(cert_bs)
             fp.close()
             self.__ca_cert = ca_filename

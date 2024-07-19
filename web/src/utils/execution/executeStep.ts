@@ -32,6 +32,8 @@ export async function executeStep(id?: string) {
     tasks: (stepTasks ?? [])?.map((e: Task | undefined) => ({
       ...e,
       id: checkId(e?.id ?? ""),
+      ui_requirement: undefined,
+      global_variable_set: currentPlaybook?.global_variable_set,
     })),
   };
 
@@ -119,5 +121,11 @@ export async function executeStep(id?: string) {
   } finally {
     updateStepById("ui_requirement.showOutput", true, currentStepId);
     updateStepById("ui_requirement.outputLoading", false, currentStepId);
+
+    // Stop tasks loading
+    stepTasks?.forEach((task) => {
+      updateCardById("ui_requirement.outputLoading", false, task?.id);
+      updateCardById("ui_requirement.showOutput", true, task?.id);
+    });
   }
 }
