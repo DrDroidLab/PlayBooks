@@ -55,7 +55,7 @@ class BasicResultInterpreter(ResultInterpreter):
             except Exception as e:
                 logger.error(f'Error writing image: {e}')
                 raise e
-        elif result_type == PlaybookTaskResultType.TABLE:
+        elif result_type == PlaybookTaskResultType.TABLE or result_type == PlaybookTaskResultType.LOGS:
             try:
                 data_source = integrations_connector_type_display_name_map.get(task_result.source,
                                                                                Source.Name(task_result.source))

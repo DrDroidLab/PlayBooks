@@ -27,3 +27,4 @@ class ConditionalRuleInterpreterFacade:
 conditional_rule_interpreter_facade = ConditionalRuleInterpreterFacade()
 conditional_rule_interpreter_facade.register(PlaybookTaskResultType.TIMESERIES, TimeseriesConditionalRuleInterpreter())
 conditional_rule_interpreter_facade.register(PlaybookTaskResultType.TABLE, TableConditionalRuleInterpreter())
+conditional_rule_interpreter_facade.register(PlaybookTaskResultType.LOGS, TableConditionalRuleInterpreter())
