@@ -14,11 +14,13 @@ export const gcmLogsBuilder = () => {
           key: Key.ORDER_BY,
           label: "Order By",
           type: InputTypes.TEXT,
+          isOptional: true,
         },
         {
           key: Key.PAGE_SIZE,
           label: "Page Size",
           type: InputTypes.TEXT,
+          default: '2000'
         },
       ],
     ],
