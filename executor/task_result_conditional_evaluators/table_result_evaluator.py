@@ -83,3 +83,32 @@ class TableResultEvaluator(TaskResultEvaluator):
             return evaluation, {'value': value}
         else:
             raise ValueError(f'Rule type {rule_type} not supported')
+        
+
+class LogsResultEvaluator(TaskResultEvaluator):
+
+    def evaluate(self, rule: PlaybookTaskResultRule, task_result: PlaybookTaskResult) -> (bool, Dict):
+        if rule.type != PlaybookTaskResultType.LOGS or task_result.type != PlaybookTaskResultType.LOGS:
+            raise ValueError("Received unsupported rule and task types")
+        table_result = task_result.table
+        table_result_rule: TableResultRule = rule.logs
+        rule_type = table_result_rule.type
+        operator = table_result_rule.operator
+        column = table_result_rule.column_name.value
+        which_one_of = table_result_rule.WhichOneof('threshold')
+        if which_one_of is None:
+            raise ValueError('Threshold not provided for table rule')
+        if which_one_of == 'numeric_value_threshold':
+            threshold = table_result_rule.numeric_value_threshold.value
+        elif which_one_of == 'string_value_threshold':
+            threshold = table_result_rule.string_value_threshold.value
+        else:
+            raise ValueError('Threshold type not supported')
+        if rule_type == TableResultRule.Type.ROW_COUNT:
+            evaluation, value = table_row_count_operator(operator, threshold, table_result.total_count.value)
+            return evaluation, {'value': value}
+        elif rule_type == TableResultRule.Type.COLUMN_VALUE:
+            evaluation, value = table_column_value_operator(operator, column, threshold, table_result)
+            return evaluation, {'value': value}
+        else:
+            raise ValueError(f'Rule type {rule_type} not supported')

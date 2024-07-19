@@ -19,6 +19,7 @@ function HandleResultTypeForm({
 }: HandleResultTypePropTypes) {
   const rule = condition?.[resultType?.toLowerCase()] ?? {};
   switch (resultType) {
+    case ResultTypeTypes.LOGS:
     case ResultTypeTypes.TABLE:
       return (
         <Table
