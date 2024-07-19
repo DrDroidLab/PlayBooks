@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ResultTypeType,
   ResultTypeTypes,
@@ -6,6 +6,7 @@ import {
 import Table from "./Table.tsx";
 import Timeseries from "./Timeseries.tsx";
 import BashCommandOutput from "./BashCommandOutput.tsx";
+import handleRuleDefaults from "../../utils/conditionals/handleRuleDefaults.ts";
 
 type HandleResultTypePropTypes = {
   resultType: ResultTypeType;
@@ -19,6 +20,13 @@ function HandleResultTypeForm({
   conditionIndex,
 }: HandleResultTypePropTypes) {
   const rule = condition?.[resultType?.toLowerCase()] ?? {};
+
+  useEffect(() => {
+    if (rule && conditionIndex !== undefined)
+      handleRuleDefaults(rule, conditionIndex, condition);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rule.type, rule.type_id]);
+
   switch (resultType) {
     case ResultTypeTypes.TABLE:
       return (
