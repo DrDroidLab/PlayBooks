@@ -30,7 +30,7 @@ export default function OptionRender({ data, removeErrors, id }) {
 
   useEffect(() => {
     if (task?.ui_requirement.errors?.[data.key]) {
-      if (getNestedValue(taskData, data.key)) {
+      if (getNestedValue(taskData, data.key) || data.isOptional) {
         removeErrors(data.key);
       }
     }
@@ -40,6 +40,7 @@ export default function OptionRender({ data, removeErrors, id }) {
   const error = data.key
     ? task?.ui_requirement?.showError &&
       !data.selected &&
+      !data.isOptional &&
       !getNestedValue(
         task?.[source?.toLowerCase()][taskType?.toLowerCase()],
         data.key,
