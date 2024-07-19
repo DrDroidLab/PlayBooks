@@ -43,11 +43,17 @@ export default function handleStepInformation(
     case taskTypes.EKS_GET_PODS:
     case taskTypes.EKS_GET_SERVICES:
       return StepInformation.eks;
+    case taskTypes.EKS_KUBECTL_COMMAND:
+        return StepInformation.kubectl;
     case taskTypes.GKE_GET_DEPLOYMENTS:
     case taskTypes.GKE_GET_EVENTS:
     case taskTypes.GKE_GET_PODS:
     case taskTypes.GKE_GET_SERVICES:
       return StepInformation.eks;
+    case taskTypes.GKE_KUBECTL_COMMAND:
+      return StepInformation.kubectl;
+    case taskTypes.KUBERNETES_COMMAND:
+      return StepInformation.kubectl;
     case taskTypes.BASH_COMMAND:
       return StepInformation.bash;
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
