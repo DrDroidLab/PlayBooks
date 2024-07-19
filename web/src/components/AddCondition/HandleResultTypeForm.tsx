@@ -25,7 +25,7 @@ function HandleResultTypeForm({
     if (rule && conditionIndex !== undefined)
       handleRuleDefaults(rule, conditionIndex, condition);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rule.type, rule.type_id]);
+  }, [rule.type]);
 
   switch (resultType) {
     case ResultTypeTypes.TABLE:

@@ -29,8 +29,10 @@ function handleRuleDefaults(rule: any, conditionIndex: number, condition: any) {
   };
 
   switch (rule.type) {
+    case RuleTypes.GREP:
+    case RuleTypes.NO_GREP:
     case RuleTypes.GREP_COUNT:
-      values = handleDefaults(rule.type_id, bashCommandOutputOptions);
+      values = handleDefaults(rule.type, bashCommandOutputOptions);
       break;
     default:
       return;
