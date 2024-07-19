@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import datetime, timedelta
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -65,16 +64,18 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching metric descriptors: {e}")
             raise e
 
-    def fetch_logs(self, filter_str):
+    def fetch_logs(self, filter_str, order_by="timestamp desc", page_size=2000, page_token=None):
         try:
             service = build('logging', 'v2', credentials=self.__credentials)
 
             body = {
                 "resourceNames": [f"projects/{self.__project_id}"],
                 "filter": filter_str,
-                "orderBy": "timestamp desc",
-                "pageSize": 2000
+                "orderBy": order_by,
+                "pageSize": page_size
             }
+            if page_token:
+                body['pageToken'] = page_token
 
             logger.debug(f"Fetching logs with body: {body}")
 
@@ -88,7 +89,7 @@ class GcmApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching logs: {e}")
             raise e
 
-    def run_mql_query(self, query, project_id):
+    def execute_mql(self, query, project_id):
         try:
             service = build('monitoring', 'v3', credentials=self.__credentials)
             request = service.projects().timeSeries().query(

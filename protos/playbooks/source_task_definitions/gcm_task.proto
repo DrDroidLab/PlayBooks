@@ -5,27 +5,30 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 message Gcm {
-  message FilterLogEntries {
+  message MqlExecution {
+    google.protobuf.StringValue project_id = 1;
+    google.protobuf.StringValue mql_query = 2;
+    google.protobuf.StringValue process_function = 3;
+  }
+
+  message FilterLogEvents {
     google.protobuf.StringValue project_id = 1;
     google.protobuf.StringValue log_name = 2;
     google.protobuf.StringValue filter_query = 3;
-  }
-
-  message RunMqlQuery {
-    google.protobuf.StringValue project_id = 1;
-    google.protobuf.StringValue query = 2;
-    google.protobuf.StringValue process_function = 3;
+    google.protobuf.StringValue order_by = 4;
+    google.protobuf.UInt64Value page_size = 5;
+    google.protobuf.StringValue page_token = 6;
   }
 
   enum TaskType {
     UNKNOWN = 0;
-    FILTER_LOG_ENTRIES = 1;
-    RUN_MQL_QUERY = 2;
+    MQL_EXECUTION = 1;
+    FILTER_LOG_EVENTS = 2;
   }
 
   TaskType type = 1;
   oneof task {
-    FilterLogEntries filter_log_entries = 2;
-    RunMqlQuery run_mql_query = 3;
+    MqlExecution mql_execution = 2;
+    FilterLogEvents filter_log_events = 3;
   }
 }

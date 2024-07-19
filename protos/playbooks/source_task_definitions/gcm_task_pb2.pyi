@@ -28,77 +28,89 @@ class Gcm(google.protobuf.message.Message):
     class _TaskTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Gcm._TaskType.ValueType], builtins.type):  # noqa: F821
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         UNKNOWN: Gcm._TaskType.ValueType  # 0
-        FILTER_LOG_ENTRIES: Gcm._TaskType.ValueType  # 1
-        RUN_MQL_QUERY: Gcm._TaskType.ValueType  # 2
+        MQL_EXECUTION: Gcm._TaskType.ValueType  # 1
+        FILTER_LOG_EVENTS: Gcm._TaskType.ValueType  # 2
 
     class TaskType(_TaskType, metaclass=_TaskTypeEnumTypeWrapper): ...
     UNKNOWN: Gcm.TaskType.ValueType  # 0
-    FILTER_LOG_ENTRIES: Gcm.TaskType.ValueType  # 1
-    RUN_MQL_QUERY: Gcm.TaskType.ValueType  # 2
+    MQL_EXECUTION: Gcm.TaskType.ValueType  # 1
+    FILTER_LOG_EVENTS: Gcm.TaskType.ValueType  # 2
 
     @typing_extensions.final
-    class FilterLogEntries(google.protobuf.message.Message):
+    class MqlExecution(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         PROJECT_ID_FIELD_NUMBER: builtins.int
-        LOG_NAME_FIELD_NUMBER: builtins.int
-        FILTER_QUERY_FIELD_NUMBER: builtins.int
-        @property
-        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def log_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
-        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        def __init__(
-            self,
-            *,
-            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            log_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "project_id", b"project_id"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "project_id", b"project_id"]) -> None: ...
-
-    @typing_extensions.final
-    class RunMqlQuery(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-        PROJECT_ID_FIELD_NUMBER: builtins.int
-        QUERY_FIELD_NUMBER: builtins.int
+        MQL_QUERY_FIELD_NUMBER: builtins.int
         PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
         @property
         def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def mql_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
             *,
             project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            mql_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
             process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "project_id", b"project_id", "query", b"query"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["process_function", b"process_function", "project_id", b"project_id", "query", b"query"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["mql_query", b"mql_query", "process_function", b"process_function", "project_id", b"project_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["mql_query", b"mql_query", "process_function", b"process_function", "project_id", b"project_id"]) -> None: ...
+
+    @typing_extensions.final
+    class FilterLogEvents(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        PROJECT_ID_FIELD_NUMBER: builtins.int
+        LOG_NAME_FIELD_NUMBER: builtins.int
+        FILTER_QUERY_FIELD_NUMBER: builtins.int
+        ORDER_BY_FIELD_NUMBER: builtins.int
+        PAGE_SIZE_FIELD_NUMBER: builtins.int
+        PAGE_TOKEN_FIELD_NUMBER: builtins.int
+        @property
+        def project_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def log_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def filter_query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def order_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def page_size(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def page_token(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        def __init__(
+            self,
+            *,
+            project_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            log_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            filter_query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            order_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            page_size: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            page_token: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["filter_query", b"filter_query", "log_name", b"log_name", "order_by", b"order_by", "page_size", b"page_size", "page_token", b"page_token", "project_id", b"project_id"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
-    FILTER_LOG_ENTRIES_FIELD_NUMBER: builtins.int
-    RUN_MQL_QUERY_FIELD_NUMBER: builtins.int
+    MQL_EXECUTION_FIELD_NUMBER: builtins.int
+    FILTER_LOG_EVENTS_FIELD_NUMBER: builtins.int
     type: global___Gcm.TaskType.ValueType
     @property
-    def filter_log_entries(self) -> global___Gcm.FilterLogEntries: ...
+    def mql_execution(self) -> global___Gcm.MqlExecution: ...
     @property
-    def run_mql_query(self) -> global___Gcm.RunMqlQuery: ...
+    def filter_log_events(self) -> global___Gcm.FilterLogEvents: ...
     def __init__(
         self,
         *,
         type: global___Gcm.TaskType.ValueType = ...,
-        filter_log_entries: global___Gcm.FilterLogEntries | None = ...,
-        run_mql_query: global___Gcm.RunMqlQuery | None = ...,
+        mql_execution: global___Gcm.MqlExecution | None = ...,
+        filter_log_events: global___Gcm.FilterLogEvents | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "run_mql_query", b"run_mql_query", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["filter_log_entries", b"filter_log_entries", "run_mql_query", b"run_mql_query", "task", b"task", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["filter_log_entries", "run_mql_query"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["filter_log_events", b"filter_log_events", "mql_execution", b"mql_execution", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["filter_log_events", b"filter_log_events", "mql_execution", b"mql_execution", "task", b"task", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["mql_execution", "filter_log_events"] | None: ...
 
 global___Gcm = Gcm

@@ -1,4 +1,3 @@
-import json
 import logging
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
