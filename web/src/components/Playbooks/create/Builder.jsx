@@ -16,9 +16,6 @@ function Builder({ isLog = false }) {
         {!isLog && (
           <>
             <CustomButton onClick={toggleAddData}>Add Data</CustomButton>
-            <CustomButton onClick={toggleTemplates}>
-              Import from templates
-            </CustomButton>
           </>
         )}
         <GlobalVariables />
