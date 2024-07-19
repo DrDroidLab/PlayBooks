@@ -4,7 +4,6 @@ import { Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import SelectInterpretation from "../steps/Interpretation.jsx";
 import { Delete } from "@mui/icons-material";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
@@ -37,7 +36,7 @@ function Task({ id }) {
 
           {addQuery && <TaskQuery id={currentTaskId} />}
         </div>
-        <SelectInterpretation id={currentTaskId} />
+        {/* <SelectInterpretation id={currentTaskId} /> */}
 
         {!isPrefetched && (
           <div className="flex gap-2 mt-2">
