@@ -18,6 +18,8 @@ export * from "./grafanaDataSource.ts";
 export * from "./gke.ts";
 export * from "./grafanaLoki.ts";
 export * from "./elasticSearchBuilder.ts";
+export * from "./gcmMqlQuery.ts";
+export * from "./gcmLogsBuilder.ts";
 export * from "./documentation.ts";
 export * from "./gkeKubectl.ts";
 export * from "./eksKubectl.ts";

@@ -1,0 +1,31 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+message Gcm {
+  message MqlExecution {
+    google.protobuf.StringValue query = 1;
+  }
+
+  message FilterLogEvents {
+    google.protobuf.StringValue filter_query = 1;
+    repeated google.protobuf.StringValue resource_names = 2;
+    google.protobuf.StringValue order_by = 3;
+    google.protobuf.UInt64Value page_size = 4;
+    google.protobuf.StringValue page_token = 5;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    MQL_EXECUTION = 1;
+    FILTER_LOG_EVENTS = 2;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    MqlExecution mql_execution = 2;
+    FilterLogEvents filter_log_events = 3;
+  }
+}
