@@ -20,6 +20,18 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
 
   return (
     <>
+      <div className="flex flex-col gap-1">
+        <ValueComponent
+          error={undefined}
+          valueType={"STRING"}
+          onValueChange={(val: string) => handleChange(val, `pattern`)}
+          value={rule.pattern}
+          valueOptions={[]}
+          placeHolder={"Enter pattern to evaluate"}
+          length={200}
+        />
+      </div>
+
       <div className="flex flex-wrap gap-2 items-center">
         <Checkbox
           id="case_sensitive"
@@ -34,18 +46,6 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
           }}
           label="Pattern is Case Sensitive"
           isSmall={true}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, `pattern`)}
-          value={rule.pattern}
-          valueOptions={[]}
-          placeHolder={"Enter pattern to evaluate"}
-          length={200}
         />
       </div>
 

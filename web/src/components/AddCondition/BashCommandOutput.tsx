@@ -21,10 +21,10 @@ function BashCommandOutput({ rule, condition, conditionIndex }) {
         <SelectComponent
           error={undefined}
           data={bashCommandOutputOptions}
-          selected={rule.type_id}
+          selected={rule.type}
           placeholder={`Select Type`}
           onSelectionChange={(id: string) =>
-            handleChange(id, `${keyValue}.type_id`)
+            handleChange(id, `${keyValue}.type`)
           }
         />
       </div>
