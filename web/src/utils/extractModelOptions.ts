@@ -90,12 +90,12 @@ export default function extractModelOptions(assets: any, task: Task) {
         })),
       };
     case taskTypes.EKS_KUBECTL_COMMAND:
-        return {
-          regions: assets.map((asset) => ({
-            region: asset.region,
-            clusters: asset.clusters,
-          })),
-        };
+      return {
+        regions: assets.map((asset) => ({
+          region: asset.region,
+          clusters: asset.clusters,
+        })),
+      };
     case taskTypes.GKE_GET_DEPLOYMENTS:
       return {
         zones: assets.map((asset) => ({

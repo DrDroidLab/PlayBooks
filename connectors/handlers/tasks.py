@@ -262,15 +262,15 @@ def slack_bot_handle_receive_message(slack_connector_id, message):
                 alert_type = source_identifier(message['event'], 'slack')
 
                 db_alert_type, is_created = SlackConnectorAlertType.objects.get_or_create(
-                    account_id=slack_connector.account_id,
-                    connector=slack_connector,
+                    account_id=account_id,
+                    connector=db_slack_connector,
                     channel_id=channel_id,
                     alert_type=alert_type
                 )
 
                 slack_received_msg = SlackConnectorDataReceived(
-                    account_id=slack_connector.account_id,
-                    connector=slack_connector,
+                    account_id=account_id,
+                    connector=db_slack_connector,
                     data=message,
                     data_timestamp=data_timestamp,
                     text=alert_text,

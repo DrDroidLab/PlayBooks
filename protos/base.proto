@@ -207,7 +207,7 @@ enum SourceKeyType {
   CLICKHOUSE_PASSWORD = 28;
 
   GCM_PROJECT_ID = 29;
-  GCM_PRIVATE_KEY = 30;
+  GCM_SERVICE_ACCOUNT_JSON = 30;
   GCM_CLIENT_EMAIL = 31;
   GCM_TOKEN_URI = 32;
 
@@ -350,6 +350,9 @@ enum SourceModelType {
   // Elastic Search Models
   ELASTIC_SEARCH_INDEX = 1601;
 
+  // GCM Models
+  GCM_METRIC = 1701;
+
   // SMTP Models
-  SMTP_EMAIL = 1701;
+  SMTP_EMAIL = 1702;
 }

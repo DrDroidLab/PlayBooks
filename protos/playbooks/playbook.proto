@@ -24,6 +24,7 @@ import "protos/playbooks/source_task_definitions/gke_task.proto";
 import "protos/playbooks/source_task_definitions/elastic_search_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
 import "protos/playbooks/source_task_definitions/kubectl_task.proto";
+import "protos/playbooks/source_task_definitions/gcm_task.proto";
 import "protos/playbooks/source_task_definitions/email_task.proto";
 
 
@@ -62,7 +63,8 @@ message PlaybookTask {
     ElasticSearch elastic_search = 115;
     GrafanaLoki grafana_loki = 116;
     Kubectl kubernetes = 117;
-    SMTP smtp = 118;
+    Gcm gcm = 118;
+    SMTP smtp = 119;
   }
 }
 
@@ -72,6 +74,7 @@ message PlaybookTaskResultRule {
   oneof rule {
     TimeseriesResultRule timeseries = 101;
     TableResultRule table = 102;
+    TableResultRule logs = 103;
   }
 }
 
