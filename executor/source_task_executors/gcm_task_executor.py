@@ -42,7 +42,7 @@ class GcmSourceManager(PlaybookSourceManager):
             Gcm.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.execute_filter_log_events,
                 'model_types': [],
-                'result_type': PlaybookTaskResultType.LOGS,
+                'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from GCM',
                 'category': 'Logs'
             },
