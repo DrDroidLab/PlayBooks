@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { MaskCharacter } from "../../utils/Apikeys";
+import { MaskCharacter } from "../../utils/Apikeys.js";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
-import TableSkeleton from "../Skeleton/TableLoader";
-import SuspenseLoader from "../Skeleton/SuspenseLoader";
-import Heading from "../Heading";
-import NoAPIKeys from "./NoAPIKeys";
+import TableSkeleton from "../Skeleton/TableLoader.js";
+import SuspenseLoader from "../Skeleton/SuspenseLoader.js";
+import Heading from "../Heading.js";
+import NoAPIKeys from "./NoAPIKeys.js";
 import dayjs from "dayjs";
 import {
   useGenerateAPIKeyMutation,

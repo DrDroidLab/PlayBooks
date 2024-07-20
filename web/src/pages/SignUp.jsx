@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CardContent, CircularProgress } from "@mui/material";
-import Toast from "../components/Toast";
+import Toast from "../components/Toast.js";
 import {
   useSignupMutation,
   useLazySaveSiteUrlQuery,

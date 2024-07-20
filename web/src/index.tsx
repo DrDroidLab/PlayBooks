@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
-import config from "./config";
+import App from "./App.jsx";
+import config from "./config.js";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { TimeRangeProvider } from "./context/TimeRangeProvider";
 import { Provider } from "react-redux";

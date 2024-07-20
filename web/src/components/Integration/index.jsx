@@ -1,4 +1,4 @@
-import Heading from "../Heading";
+import Heading from "../Heading.jsx";
 import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
 import BasicSearch from "../common/BasicSearch/index.tsx";
 import useBasicSearch from "../../hooks/useBasicSearch.ts";
