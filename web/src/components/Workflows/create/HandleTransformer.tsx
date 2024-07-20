@@ -51,7 +51,7 @@ function HandleTransformer() {
   return (
     <div className="my-2 flex flex-col gap-2">
       <div>
-        <p className="font-semibold text-violet-500 text-sm">Transformer</p>
+        <p className="font-semibold text-violet-500 text-xs">Transformer (Write a python function returning a dict)</p>
         <Editor
           value={code}
           className="border rounded outline-none"
@@ -70,7 +70,7 @@ function HandleTransformer() {
       </div>
 
       <div>
-        <p className="font-semibold text-violet-500 text-sm">Example Input</p>
+        <p className="font-semibold text-violet-500 text-xs">Example Input for testing your function</p>
         <Editor
           value={exampleInput}
           className="border rounded outline-none"

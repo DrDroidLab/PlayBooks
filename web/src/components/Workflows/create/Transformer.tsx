@@ -32,14 +32,16 @@ function Transformer() {
       <Checkbox
         id={key}
         isChecked={currentWorkflow[key]}
-        label="Add a Transformer"
+        label="Add a context transformer"
         onChange={handleTransformer}
         isSmall={true}
         disabled={disabled}
       />
       {disabled && (
-        <p className="text-xs italic text-gray-700">
+        <p className="text-xs italic text-gray-700 my-1">
           Only supported for slack triggers
+          <br/>
+          For API Triggers, see <a className="text-violet-500 underline" href="https://docs.drdroid.io/docs/api-triggers#custom-parameters" target="_blank">this</a> for passing custom parameters
         </p>
       )}
       {currentWorkflow[key] && <AlertOutput />}

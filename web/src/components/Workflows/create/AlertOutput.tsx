@@ -23,8 +23,8 @@ function AlertOutput() {
 
   return (
     <div className="my-2">
-      <p className="font-semibold text-violet-500 text-sm">
-        Last slack message
+      <p className="font-semibold text-violet-500 text-xs">
+        Sample slack message matching the filter
       </p>
       <Editor
         value={JSON.stringify(code, null, 2)}
