@@ -19,55 +19,47 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   };
 
   return (
-    <>
-      <div className="flex flex-col gap-1">
-        <CustomInput
-          inputType={InputTypes.TEXT}
-          value={rule.pattern}
-          handleChange={(val: string) => handleChange(val, `pattern`)}
-          placeholder={"Enter pattern to evaluate"}
-          length={200}
-        />
-      </div>
+    <div className="flex flex-wrap gap-2 items-center">
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        value={rule.pattern}
+        handleChange={(val: string) => handleChange(val, `pattern`)}
+        placeholder={"Enter pattern to evaluate"}
+        className="!w-[200px]"
+      />
 
-      <div className="flex flex-wrap gap-2 items-center">
-        <Checkbox
-          id="case_sensitive"
-          isChecked={rule.case_sensitive}
-          onChange={() => {
-            addConditionToEdgeByIndex(
-              `${keyValue}.case_sensitive`,
-              !rule.case_sensitive,
-              edgeIndex,
-              conditionIndex,
-            );
-          }}
-          label="Pattern is Case Sensitive"
-          isSmall={true}
-        />
-      </div>
+      <Checkbox
+        id="case_sensitive"
+        isChecked={rule.case_sensitive}
+        onChange={() => {
+          addConditionToEdgeByIndex(
+            `${keyValue}.case_sensitive`,
+            !rule.case_sensitive,
+            edgeIndex,
+            conditionIndex,
+          );
+        }}
+        label="Pattern is Case Sensitive"
+        isSmall={true}
+      />
 
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.DROPDOWN}
-          error={undefined}
-          options={operationOptions}
-          value={rule.operator}
-          handleChange={(id: string) => handleChange(id, `operator`)}
-          placeholder={`Select Operator`}
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        error={undefined}
+        options={operationOptions}
+        value={rule.operator}
+        handleChange={(id: string) => handleChange(id, `operator`)}
+        placeholder={`Select Operator`}
+      />
 
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.TEXT}
-          value={rule.threshold}
-          handleChange={(val: string) => handleChange(val, `threshold`)}
-          placeholder={"Enter threshold"}
-          length={200}
-        />
-      </div>
-    </>
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        value={rule.threshold}
+        handleChange={(val: string) => handleChange(val, `threshold`)}
+        placeholder={"Enter threshold"}
+        className="!w-[200px]"
+      />
+    </div>
   );
 }
 

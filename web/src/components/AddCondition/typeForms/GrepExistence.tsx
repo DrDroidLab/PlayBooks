@@ -22,33 +22,29 @@ function GrepExistence({
   };
 
   return (
-    <>
-      <div className="flex flex-col gap-1">
-        <CustomInput
-          inputType={InputTypes.TEXT}
-          value={rule.pattern}
-          handleChange={(val: string) => handleChange(val, `pattern`)}
-          placeholder={"Enter pattern to evaluate"}
-          length={200}
-        />
-      </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <Checkbox
-          id="case_sensitive"
-          isChecked={rule.case_sensitive}
-          onChange={() => {
-            addConditionToEdgeByIndex(
-              `${keyValue}.case_sensitive`,
-              !rule.case_sensitive,
-              edgeIndex,
-              conditionIndex,
-            );
-          }}
-          label="Pattern is Case Sensitive"
-          isSmall={true}
-        />
-      </div>
-    </>
+    <div className="flex flex-wrap items-center gap-2">
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        value={rule.pattern}
+        handleChange={(val: string) => handleChange(val, `pattern`)}
+        placeholder={"Enter pattern to evaluate"}
+        className="!w-[200px]"
+      />
+      <Checkbox
+        id="case_sensitive"
+        isChecked={rule.case_sensitive}
+        onChange={() => {
+          addConditionToEdgeByIndex(
+            `${keyValue}.case_sensitive`,
+            !rule.case_sensitive,
+            edgeIndex,
+            conditionIndex,
+          );
+        }}
+        label="Pattern is Case Sensitive"
+        isSmall={true}
+      />
+    </div>
   );
 }
 

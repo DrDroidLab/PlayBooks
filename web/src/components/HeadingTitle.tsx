@@ -35,7 +35,7 @@ function HeadingTitle({ heading }: HeadingTitleProps) {
             value={currentPlaybook?.name ?? ""}
             handleChange={setName}
             placeholder={"Enter Playbook name"}
-            length={300}
+            className="!w-[300px]"
           />
         </form>
       ) : (

@@ -58,7 +58,7 @@ function GlobalVariables() {
                   inputType={InputTypes.TEXT}
                   value={variables[key]}
                   placeholder={"Enter variable value"}
-                  length={200}
+                  className="!w-[200px]"
                   handleChange={(val) => {
                     dispatch(updateGlobalVariable({ name: key, value: val }));
                   }}

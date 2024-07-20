@@ -69,6 +69,7 @@ function BasicDetails() {
               handleInput("name", val);
             }}
             error={currentWorkflow?.errors?.name ?? false}
+            className="!w-[200px]"
           />
         </div>
       </div>

@@ -46,7 +46,7 @@ function WorkflowGlobalVariables() {
                   inputType={InputTypes.TEXT}
                   value={variable.value}
                   placeholder={"Enter variable value"}
-                  length={200}
+                  className="!w-[200px]"
                   handleChange={(val) => {
                     dispatch(updateGlobalVariable({ index, value: val }));
                   }}

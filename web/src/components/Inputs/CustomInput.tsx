@@ -15,8 +15,7 @@ function CustomInput({
   ...props
 }: CustomInputPropTypes) {
   return (
-    <div
-      className={`${InputUtils.handleClassname(labelPosition)} gap-1 w-full`}>
+    <div className={`${InputUtils.handleClassname(labelPosition)} gap-1 w-fit`}>
       {props.label && (
         <p className="text-xs text-gray-500">
           <b>{props.label}</b>

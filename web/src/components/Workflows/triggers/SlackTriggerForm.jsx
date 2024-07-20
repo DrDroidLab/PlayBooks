@@ -81,7 +81,7 @@ function SlackTriggerForm() {
           }}
           value={currentWorkflow?.trigger?.filterString}
           placeholder={"Enter Matching string"}
-          length={300}
+          className="!w-[300px]"
           error={currentWorkflow?.errors?.filterString ?? false}
         />
       </div>

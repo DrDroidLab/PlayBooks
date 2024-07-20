@@ -35,7 +35,7 @@ function PagerdutyTriggerForm() {
             }}
             value={currentWorkflow?.trigger?.serviceName}
             placeholder={"Enter Service Name"}
-            length={300}
+            className="!w-[300px]"
             error={currentWorkflow?.errors?.serviceName ?? false}
           />
         </div>
@@ -48,7 +48,7 @@ function PagerdutyTriggerForm() {
             }}
             value={currentWorkflow?.trigger?.title}
             placeholder={"Enter Title"}
-            length={300}
+            className="!w-[300px]"
             error={currentWorkflow?.errors?.title ?? false}
           />
         </div>

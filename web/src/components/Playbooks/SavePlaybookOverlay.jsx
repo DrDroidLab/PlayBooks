@@ -67,7 +67,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
                   handleChange={(val) => setName(val)}
                   value={name}
                   placeholder={"Enter Playbook name"}
-                  length={300}
+                  className="!w-[300px]"
                 />
               </div>
             )}

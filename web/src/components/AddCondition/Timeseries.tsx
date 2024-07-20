@@ -26,18 +26,16 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
   };
 
   return (
-    <>
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.DROPDOWN}
-          options={timeseriesOptions}
-          value={rule.type}
-          placeholder={`Select Type`}
-          handleChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.type`)
-          }
-        />
-      </div>
+    <div className="flex flex-wrap gap-2">
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={timeseriesOptions}
+        value={rule.type}
+        placeholder={`Select Type`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.type`)
+        }
+      />
 
       <HandleTypes
         condition={condition}
@@ -45,45 +43,39 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
         rule={rule}
       />
 
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.DROPDOWN}
-          options={functionOptions(
-            (task?.ui_requirement?.resultType as ResultTypeType) ??
-              ResultTypeTypes.OTHERS,
-          )}
-          value={rule.function}
-          placeholder={`Select Function`}
-          handleChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.function`)
-          }
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={functionOptions(
+          (task?.ui_requirement?.resultType as ResultTypeType) ??
+            ResultTypeTypes.OTHERS,
+        )}
+        value={rule.function}
+        placeholder={`Select Function`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.function`)
+        }
+      />
 
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.DROPDOWN}
-          options={operationOptions}
-          value={rule.operator}
-          placeholder={`Select Operator`}
-          handleChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.operator`)
-          }
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={operationOptions}
+        value={rule.operator}
+        placeholder={`Select Operator`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.operator`)
+        }
+      />
 
-      <div className="flex items-center gap-1">
-        <CustomInput
-          inputType={InputTypes.TEXT}
-          handleChange={(val: string) =>
-            handleChange(val, `${resultType?.toLowerCase()}.threshold`)
-          }
-          value={rule.threshold}
-          placeholder={"Enter Value of condition"}
-          length={200}
-        />
-      </div>
-    </>
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        handleChange={(val: string) =>
+          handleChange(val, `${resultType?.toLowerCase()}.threshold`)
+        }
+        value={rule.threshold}
+        placeholder={"Enter Value of condition"}
+        className="!w-[200px]"
+      />
+    </div>
   );
 }
 

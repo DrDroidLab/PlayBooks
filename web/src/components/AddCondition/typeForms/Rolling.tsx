@@ -16,13 +16,13 @@ function Rolling({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex flex-wrap items-center gap-2">
       <CustomInput
         inputType={InputTypes.TEXT}
         value={rule.window}
         handleChange={(val: string) => handleChange(val, "window")}
         placeholder={"Enter window size"}
-        length={200}
+        className="!w-[200px]"
       />
     </div>
   );

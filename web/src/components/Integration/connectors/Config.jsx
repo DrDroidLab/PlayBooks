@@ -53,7 +53,7 @@ function Config({ connector }) {
               disabled={connectorActive}
               value={currentConnector.name}
               placeholder={"Enter connector name"}
-              length={500}
+              className="!w-[300px]"
             />
           </div>
           {keyOptions?.map((option, i) => (

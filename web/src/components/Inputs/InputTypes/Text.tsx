@@ -1,5 +1,4 @@
-import React from "react";
-import ValueComponent from "../../ValueComponent";
+import React, { HTMLInputTypeAttribute } from "react";
 
 type TextInputTypes = {
   label?: string;
@@ -7,7 +6,9 @@ type TextInputTypes = {
   handleChange: (val: string) => void;
   error?: string;
   placeholder?: string;
-  length?: number;
+  disabled?: boolean;
+  className?: string;
+  type?: HTMLInputTypeAttribute;
 };
 
 function Text({
@@ -16,18 +17,27 @@ function Text({
   error,
   handleChange,
   placeholder,
-  length = 200,
+  disabled,
+  className,
+  type,
+  ...props
 }: TextInputTypes) {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    handleChange(value);
+  };
+
   return (
-    <ValueComponent
-      length={length}
-      valueOptions={[]}
-      placeHolder={placeholder ?? `Enter ${label}`}
-      valueType={"STRING"}
-      onValueChange={handleChange}
+    <input
+      className={`${className} ${
+        error ? "border-red-500" : ""
+      } border p-2 rounded text-xs outline-none font-normal text-ellipsis min-w-[100px] w-fit max-w-full h-auto`}
+      onChange={onChange}
+      placeholder={placeholder ?? `Enter ${label}`}
       value={value}
-      error={error}
-      disabled={false}
+      disabled={disabled}
+      type={type}
+      {...props}
     />
   );
 }

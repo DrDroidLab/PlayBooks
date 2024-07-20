@@ -29,7 +29,7 @@ function ColumnValue({
           value={rule.column_name}
           handleChange={(val: string) => handleChange(val, "column_name")}
           placeholder={"Enter column name"}
-          length={200}
+          className="!w-[200px]"
         />
         <Checkbox
           id="isNumeric"
