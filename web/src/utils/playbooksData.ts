@@ -44,6 +44,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.eksBuilder(ops?.regions, task);
     case taskTypes.EKS_GET_SERVICES:
       return Builders.eksBuilder(ops?.regions, task);
+    case taskTypes.EKS_KUBECTL_COMMAND:
+      return Builders.eksKubectlBuilder(ops?.regions, task);
     case taskTypes.GKE_GET_DEPLOYMENTS:
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_EVENTS:
@@ -52,6 +54,10 @@ export const constructBuilder = (id?: string) => {
       return Builders.gkeBuilder(ops?.zones, task);
     case taskTypes.GKE_GET_SERVICES:
       return Builders.gkeBuilder(ops?.zones, task);
+    case taskTypes.GKE_KUBECTL_COMMAND:
+      return Builders.gkeKubectlBuilder(ops?.zones, task);
+    case taskTypes.KUBERNETES_COMMAND:
+      return Builders.kubernetesKubectlBuilder(task);
     case taskTypes.BASH_COMMAND:
       return Builders.bashBuilder(ops?.ssh_servers);
     case taskTypes.DATADOG_QUERY_METRIC_EXECUTION:
@@ -64,10 +70,16 @@ export const constructBuilder = (id?: string) => {
       return Builders.mimirBuilder();
     case taskTypes.DOCUMENTATION_IFRAME:
       return Builders.iframeBuilder(task);
+    case taskTypes.DOCUMENTATION_MARKDOWN:
+      return Builders.documentationBuilder();
     case taskTypes.GRAFANA_LOKI_QUERY_LOGS:
       return Builders.grafanaLokiBuilder();
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return Builders.elasticSearchBuilder(ops?.indexes);
+    case taskTypes.GCM_MQL_EXECUTION:
+      return Builders.gcmMqlQueryBuilder();
+    case taskTypes.GCM_FILTER_LOG_EVENTS:
+      return Builders.gcmLogsBuilder();
     default:
       break;
   }

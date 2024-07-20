@@ -203,6 +203,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     GKE: _Source.ValueType  # 44
     MS_TEAMS: _Source.ValueType  # 45
     GRAFANA_LOKI: _Source.ValueType  # 46
+    KUBERNETES: _Source.ValueType  # 47
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -253,6 +254,7 @@ GRAFANA_MIMIR: Source.ValueType  # 43
 GKE: Source.ValueType  # 44
 MS_TEAMS: Source.ValueType  # 45
 GRAFANA_LOKI: Source.ValueType  # 46
+KUBERNETES: Source.ValueType  # 47
 global___Source = Source
 
 class _SourceKeyType:
@@ -293,7 +295,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     CLICKHOUSE_USER: _SourceKeyType.ValueType  # 27
     CLICKHOUSE_PASSWORD: _SourceKeyType.ValueType  # 28
     GCM_PROJECT_ID: _SourceKeyType.ValueType  # 29
-    GCM_PRIVATE_KEY: _SourceKeyType.ValueType  # 30
+    GCM_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 30
     GCM_CLIENT_EMAIL: _SourceKeyType.ValueType  # 31
     GCM_TOKEN_URI: _SourceKeyType.ValueType  # 32
     POSTGRES_HOST: _SourceKeyType.ValueType  # 33
@@ -332,6 +334,11 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     GRAFANA_LOKI_PROTOCOL: _SourceKeyType.ValueType  # 69
     GRAFANA_LOKI_HOST: _SourceKeyType.ValueType  # 70
     GRAFANA_LOKI_PORT: _SourceKeyType.ValueType  # 71
+    KUBERNETES_CLUSTER_NAME: _SourceKeyType.ValueType  # 72
+    KUBERNETES_CLUSTER_API_SERVER: _SourceKeyType.ValueType  # 73
+    KUBERNETES_CLUSTER_TOKEN: _SourceKeyType.ValueType  # 74
+    KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: _SourceKeyType.ValueType  # 75
+    KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: _SourceKeyType.ValueType  # 76
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -367,7 +374,7 @@ CLICKHOUSE_PORT: SourceKeyType.ValueType  # 26
 CLICKHOUSE_USER: SourceKeyType.ValueType  # 27
 CLICKHOUSE_PASSWORD: SourceKeyType.ValueType  # 28
 GCM_PROJECT_ID: SourceKeyType.ValueType  # 29
-GCM_PRIVATE_KEY: SourceKeyType.ValueType  # 30
+GCM_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 30
 GCM_CLIENT_EMAIL: SourceKeyType.ValueType  # 31
 GCM_TOKEN_URI: SourceKeyType.ValueType  # 32
 POSTGRES_HOST: SourceKeyType.ValueType  # 33
@@ -406,6 +413,11 @@ ELASTIC_SEARCH_API_KEY: SourceKeyType.ValueType  # 68
 GRAFANA_LOKI_PROTOCOL: SourceKeyType.ValueType  # 69
 GRAFANA_LOKI_HOST: SourceKeyType.ValueType  # 70
 GRAFANA_LOKI_PORT: SourceKeyType.ValueType  # 71
+KUBERNETES_CLUSTER_NAME: SourceKeyType.ValueType  # 72
+KUBERNETES_CLUSTER_API_SERVER: SourceKeyType.ValueType  # 73
+KUBERNETES_CLUSTER_TOKEN: SourceKeyType.ValueType  # 74
+KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: SourceKeyType.ValueType  # 75
+KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: SourceKeyType.ValueType  # 76
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -470,6 +482,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Pagerduty Models"""
     ELASTIC_SEARCH_INDEX: _SourceModelType.ValueType  # 1601
     """Elastic Search Models"""
+    GCM_METRIC: _SourceModelType.ValueType  # 1701
+    """GCM Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -529,6 +543,8 @@ PAGERDUTY_INCIDENT: SourceModelType.ValueType  # 1501
 """Pagerduty Models"""
 ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
+GCM_METRIC: SourceModelType.ValueType  # 1701
+"""GCM Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

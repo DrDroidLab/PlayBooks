@@ -26,7 +26,7 @@ const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
   const [open, setOpen] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [expandedRows, setExpandedRows] = useState({});
-  const rows = result?.table?.rows;
+  const rows = result?.logs?.rows;
 
   useEffect(() => {
     if (rows?.length > 0) setShowTable(true);

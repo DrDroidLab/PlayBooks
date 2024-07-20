@@ -8,14 +8,15 @@ import HandleOutput from "../task/HandleOutput.tsx";
 import { Step, Task } from "../../../types/index.ts";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { useSelector } from "react-redux";
+import MarkdownOutput from "../card/MarkdownOutput.tsx";
+import ExternalLinksList from "../../common/ExternalLinksList/index.tsx";
 
 type StepConfigPropTypes = {
   step: Step;
   index: number;
-  handleShowConfig: Function;
 };
 
-function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
+function StepConfig({ step, index }: StepConfigPropTypes) {
   const [, setCurrentVisibleStep] = usePlaybookKey(
     "currentVisibleStepOnTimeline",
   );
@@ -32,10 +33,6 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
       ),
     )
     .filter((task) => task !== undefined);
-
-  const handleNoAction = (e) => {
-    e.stopPropagation();
-  };
 
   useEffect(() => {
     if (additionalData.showStepId === step?.id?.toString()) {
@@ -86,25 +83,14 @@ function StepConfig({ step, index, handleShowConfig }: StepConfigPropTypes) {
       {step.notes && (
         <div className="flex flex-wrap flex-col mt-1">
           <h2 className="text-violet-500 text-sm font-bold">Notes</h2>
-          <p className="line-clamp-2 text-xs">{step.notes}</p>
+          <MarkdownOutput content={step.notes} />
         </div>
       )}
 
       {(step?.external_links?.length ?? 0) > 0 && (
         <div className="flex gap-1 flex-wrap flex-col mt-1">
           <h2 className="text-violet-500 text-sm font-bold">External Links</h2>
-          <div className="flex gap-1 flex-wrap flex-row">
-            {step.external_links?.map((link) => (
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="line-clamp-1 text-xs text-violet-500 underline"
-                onClick={handleNoAction}>
-                {link.name || link.url}
-              </a>
-            ))}
-          </div>
+          <ExternalLinksList id={step.id} />
         </div>
       )}
     </div>

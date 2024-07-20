@@ -13,7 +13,7 @@ export const searchApi = apiSlice.injectEndpoints({
             context,
             query: {
               filter: {
-                op: "OR",
+                op: "AND",
                 filters: selected?.map((el) => ({
                   op: "EQ",
                   lhs: {

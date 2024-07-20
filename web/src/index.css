@@ -87,7 +87,7 @@ td {
 }
 
 .add-button:hover + .add-step-buttons {
-  max-height: 250px; /* Set a maximum height that covers the expanded content */
+  max-height: 250px;
   opacity: 1;
 }
 
@@ -95,6 +95,20 @@ td {
   max-height: 250px;
   opacity: 1;
 }
+
+.step-notes {
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.step-information:hover + .step-notes {
+  opacity: 1;
+}
+
+.step-notes:hover {
+  opacity: 1;
+}
+
 /* .echarts-for-react canvas {
   width: 100% !important;
   min-height: 100% !important;

@@ -1,7 +1,6 @@
 import React from "react";
 import InfoRender from "./InfoRender.tsx";
 import handleStepInformation from "../../../utils/playbook/stepInformation/handleStepInformation.ts";
-import { Notes } from "@mui/icons-material";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
@@ -34,13 +33,6 @@ function TaskInformation({ taskId }: TaskInformationPropTypes) {
             )}
           </div>
         ))}
-
-        {task.notes && (
-          <div className="flex gap-1 items-center flex-wrap">
-            <Notes fontSize="small" />
-            <p className="line-clamp-2 text-xs">{task.notes}</p>
-          </div>
-        )}
       </div>
       {!isPrefetched && (
         <div className="flex-[0.1] self-end">
