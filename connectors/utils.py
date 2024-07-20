@@ -25,6 +25,7 @@ from executor.source_processors.remote_server_processor import RemoteServerProce
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
+from executor.source_processors.gcm_api_processor import GcmApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import SourceKeyType, Source
@@ -52,7 +53,8 @@ connector_type_api_processor_map = {
     Source.PAGER_DUTY: PdApiProcessor,
     Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
     Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
-    Source.KUBERNETES: KubectlApiProcessor
+    Source.KUBERNETES: KubectlApiProcessor,
+    Source.GCM: GcmApiProcessor,
 }
 
 
@@ -262,6 +264,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['ssl_ca_cert'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH:
                 credentials_dict['ssl_ca_cert_path'] = conn_key.key.value
+    elif connector_type == Source.GCM:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.GCM_PROJECT_ID:
+                credentials_dict['project_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.GCM_SERVICE_ACCOUNT_JSON:
+                credentials_dict['service_account_json'] = conn_key.key.value
     else:
         return None
     return credentials_dict

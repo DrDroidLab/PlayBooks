@@ -1,3 +1,4 @@
+import { rangeSelector } from "../../store/features/timeRange/timeRangeSlice.ts";
 import { store } from "../../store/index.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { Key } from "../playbook/key.ts";
@@ -25,13 +26,13 @@ export const grafanaLokiBuilder = () => {
           key: Key.START_TIME,
           label: "Start time",
           inputType: InputTypes.TEXT,
-          default: Math.floor(store.getState().timeRange.startTime),
+          default: rangeSelector(store.getState()).time_geq,
         },
         {
           key: Key.END_TIME,
           label: "End time",
           inputType: InputTypes.TEXT,
-          default: Math.floor(store.getState().timeRange.endTime),
+          default: rangeSelector(store.getState()).time_lt,
         },
       ],
     ],

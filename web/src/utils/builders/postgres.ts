@@ -18,6 +18,14 @@ export const postgresBuilder = () => {
           inputType: InputTypes.MULTILINE,
         },
       ],
+      [
+        {
+          key: Key.TIMEOUT,
+          label: "Timeout (in seconds)",
+          type: InputTypes.TEXT_ROW,
+          default: 120,
+        },
+      ],
     ],
   };
 };

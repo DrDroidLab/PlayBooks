@@ -281,6 +281,17 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
             SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH
+        ],
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+        ],
+    ],
+    Source.GCM: [
+        [
+            SourceKeyType.GCM_PROJECT_ID,
+            SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
         ]
     ],
 }
@@ -306,7 +317,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AWS_SECRET_KEY: 'AWS Secret Key',
     SourceKeyType.AWS_REGION: 'AWS Region',
     SourceKeyType.GCM_PROJECT_ID: 'Project ID',
-    SourceKeyType.GCM_PRIVATE_KEY: 'Private Key',
+    SourceKeyType.GCM_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
     SourceKeyType.GCM_CLIENT_EMAIL: 'Client Email',
     SourceKeyType.GCM_TOKEN_URI: 'Token URI',
     SourceKeyType.CLICKHOUSE_INTERFACE: 'Interface',
@@ -479,7 +490,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,
                              SourceKeyType.CLICKHOUSE_USER, SourceKeyType.CLICKHOUSE_PASSWORD,
-                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
+                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
@@ -492,7 +503,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.ELASTIC_SEARCH_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
-                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,]:
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

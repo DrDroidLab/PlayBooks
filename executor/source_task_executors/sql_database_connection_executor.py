@@ -1,4 +1,5 @@
 from typing import Dict
+import threading
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from connectors.utils import generate_credentials_dict
@@ -8,6 +9,10 @@ from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
+
+
+class TimeoutException(Exception):
+    pass
 
 
 class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
@@ -41,6 +46,9 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
             offset = sql_query.offset.value
             query = sql_query.query.value
             query = query.strip()
+            database = sql_query.database.value
+            timeout = sql_query.timeout.value if sql_query.timeout.value else 120
+
             if query[-1] == ';':
                 query = query[:-1]
 
@@ -58,13 +66,31 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                 offset = 0
                 query = f"{query} LIMIT 2000 OFFSET 0"
 
-            sql_db_processor = self.get_connector_processor(sql_db_connector)
-            count_result = sql_db_processor.get_query_result(count_query).fetchone()[0]
+            def query_db():
+                nonlocal count_result, query_result, exception
+                try:
+                    sql_db_processor = self.get_connector_processor(sql_db_connector)
+                    count_result = sql_db_processor.get_query_result(count_query, timeout=timeout).fetchone()[0]
+                    query_result = sql_db_processor.get_query_result(query, timeout=timeout)
+                except Exception as e:
+                    exception = e
+
+            count_result = None
+            query_result = None
+            exception = None
+
+            query_thread = threading.Thread(target=query_db)
+            query_thread.start()
+            query_thread.join(timeout)
+
+            if query_thread.is_alive():
+                raise TimeoutException(f"Function 'execute_sql_query' exceeded the timeout of {timeout} seconds")
+
+            if exception:
+                raise exception
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "SQL Database", sql_db_connector.account_id.value, query), flush=True)
-
-            query_result = sql_db_processor.get_query_result(query)
 
             table_rows: [TableResult.TableRow] = []
             col_names = list(query_result.keys())
@@ -82,5 +108,7 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
                                 offset=UInt64Value(value=offset),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.TABLE, table=table, source=self.source)
+        except TimeoutException as te:
+            raise Exception(f"Timeout error while executing Sql Database task: {te}")
         except Exception as e:
             raise Exception(f"Error while executing Sql Database task: {e}")
