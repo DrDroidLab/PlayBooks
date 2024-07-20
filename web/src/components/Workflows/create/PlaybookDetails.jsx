@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import GlobalVariablesList from "./GlobalVariablesList.tsx";
 
 function PlaybookDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -52,6 +53,15 @@ function PlaybookDetails() {
           />
         </button>
       </div>
+
+      {currentWorkflow?.playbookId && (
+        <GlobalVariablesList
+          global_variable_set={
+            data?.playbooks.find((e) => e.id === currentWorkflow?.playbookId)
+              ?.global_variable_set ?? {}
+          }
+        />
+      )}
 
       {/* <WorkflowGlobalVariables /> */}
     </div>

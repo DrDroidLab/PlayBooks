@@ -133,9 +133,9 @@ function BasicDetails() {
         </div>
         <HandleWorkflowType />
         <hr />
-        <Transformer />
         <PlaybookDetails />
         <SummaryOptions />
+        <Transformer />
       </div>
     </>
   );
