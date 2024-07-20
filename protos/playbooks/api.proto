@@ -171,6 +171,7 @@ message UpdatePlaybookResponseV2 {
 message ExecutePlaybookRequest {
   Meta meta = 1;
   google.protobuf.UInt64Value playbook_id = 2;
+  google.protobuf.Struct global_variable_set = 3;
 }
 
 message ExecutePlaybookResponse {
@@ -264,6 +265,17 @@ message PlaybookExecutionStepExecuteResponse {
   Message message = 3;
   google.protobuf.StringValue playbook_run_id = 4;
   PlaybookStepExecutionLog step_execution_log = 5;
+}
+
+message PlaybookExecutionStopRequest {
+  Meta meta = 1;
+  google.protobuf.StringValue playbook_run_id = 2;
+}
+
+message PlaybookExecutionStopResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
 }
 
 ///////////////////// Playbook Builder APIs /////////////////////
