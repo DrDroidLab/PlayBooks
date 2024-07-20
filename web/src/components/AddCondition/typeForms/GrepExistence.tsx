@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function GrepExistence({
   condition,
@@ -23,13 +24,11 @@ function GrepExistence({
   return (
     <>
       <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, `pattern`)}
+        <CustomInput
+          inputType={InputTypes.TEXT}
           value={rule.pattern}
-          valueOptions={[]}
-          placeHolder={"Enter pattern to evaluate"}
+          handleChange={(val: string) => handleChange(val, `pattern`)}
+          placeholder={"Enter pattern to evaluate"}
           length={200}
         />
       </div>

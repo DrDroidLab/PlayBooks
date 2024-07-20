@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
-import SelectComponent from "../../SelectComponent/index.jsx";
 import { operationOptions } from "../../../utils/conditionals/operationOptions.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
@@ -21,13 +21,11 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   return (
     <>
       <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, `pattern`)}
+        <CustomInput
+          inputType={InputTypes.TEXT}
           value={rule.pattern}
-          valueOptions={[]}
-          placeHolder={"Enter pattern to evaluate"}
+          handleChange={(val: string) => handleChange(val, `pattern`)}
+          placeholder={"Enter pattern to evaluate"}
           length={200}
         />
       </div>
@@ -50,23 +48,22 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
       </div>
 
       <div className="flex items-center gap-1">
-        <SelectComponent
+        <CustomInput
+          inputType={InputTypes.DROPDOWN}
           error={undefined}
-          data={operationOptions}
-          selected={rule.operator}
+          options={operationOptions}
+          value={rule.operator}
+          handleChange={(id: string) => handleChange(id, `operator`)}
           placeholder={`Select Operator`}
-          onSelectionChange={(id: string) => handleChange(id, `operator`)}
         />
       </div>
 
       <div className="flex items-center gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, `threshold`)}
+        <CustomInput
+          inputType={InputTypes.TEXT}
           value={rule.threshold}
-          valueOptions={[]}
-          placeHolder={"Enter threshold"}
+          handleChange={(val: string) => handleChange(val, `threshold`)}
+          placeholder={"Enter threshold"}
           length={200}
         />
       </div>

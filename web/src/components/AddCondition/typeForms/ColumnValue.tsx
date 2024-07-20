@@ -1,11 +1,12 @@
 import React from "react";
-import ValueComponent from "../../ValueComponent";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 import Checkbox from "../../common/Checkbox/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function ColumnValue({
   condition,
@@ -23,14 +24,12 @@ function ColumnValue({
   return (
     <>
       <div className="flex flex-wrap gap-2 items-center">
-        <ValueComponent
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, "column_name")}
+        <CustomInput
+          inputType={InputTypes.TEXT}
           value={rule.column_name}
-          valueOptions={[]}
-          placeHolder={"Enter column name"}
+          handleChange={(val: string) => handleChange(val, "column_name")}
+          placeholder={"Enter column name"}
           length={200}
-          error={undefined}
         />
         <Checkbox
           id="isNumeric"
