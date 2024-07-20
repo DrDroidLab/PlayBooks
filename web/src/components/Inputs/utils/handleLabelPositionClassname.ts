@@ -1,6 +1,6 @@
 import { LabelPosition } from "../../../types/inputs/index.ts";
 
-export const handleClassname = (position: LabelPosition) => {
+export const handleLabelPositionClassname = (position: LabelPosition) => {
   switch (position) {
     case LabelPosition.TOP:
       return "flex flex-col";

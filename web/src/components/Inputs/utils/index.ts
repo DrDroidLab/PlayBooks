@@ -1,1 +1,2 @@
-export * from "./handleClassName.ts";
+export * from "./handleLabelPositionClassname.ts";
+export * from "./handleInputTypeClassname.ts";

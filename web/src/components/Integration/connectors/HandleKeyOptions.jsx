@@ -28,23 +28,25 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
           }}
           placeholder={`Enter ${option.display_name}`}
           length={500}
-          className="h-40 lg:!max-w-1/2 !max-w-full !w-[500px] text-xs outline-none"
+          className="h-40 lg:!max-w-1/2 !max-w-full !w-[300px] text-xs outline-none"
         />
       );
     case "SSL Certificate Authority Data":
       return (
-        <textarea
+        <CustomInput
+          inputType={InputTypes.MULTILINE}
           disabled={connectorActive}
           value={value ?? currentConnector[option.key_type]}
-          placeHolder={`Enter ${option.display_name} or enter path to certificate in the next field`}
-          onChange={(e) => {
+          handleChange={(e) => {
             if (onValueChange) {
               onValueChange(e.target.value);
               return;
             }
             dispatch(setKey({ key: option.key_type, value: e.target.value }));
           }}
-          className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[500px] resize-none text-xs outline-none"
+          placeholder={`Enter ${option.display_name} or enter path to certificate in the next field`}
+          length={500}
+          className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[300px] resize-none text-xs outline-none"
         />
       );
     case "Enable TLS certificate validation":
