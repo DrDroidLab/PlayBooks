@@ -1,10 +1,12 @@
+import { RuleTypes } from "../types/ruleTypes.ts";
+
 export const timeseriesOptions = [
   {
-    id: "ROLLING",
+    id: RuleTypes.ROLLING,
     label: "Rolling",
   },
   {
-    id: "CUMULATIVE",
+    id: RuleTypes.CUMULATIVE,
     label: "Cumulative",
   },
 ];

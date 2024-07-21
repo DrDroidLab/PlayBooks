@@ -43,6 +43,7 @@ class SqlDataFetch(google.protobuf.message.Message):
         ORDER_BY_COLUMN_FIELD_NUMBER: builtins.int
         LIMIT_FIELD_NUMBER: builtins.int
         OFFSET_FIELD_NUMBER: builtins.int
+        TIMEOUT_FIELD_NUMBER: builtins.int
         @property
         def database(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -53,6 +54,8 @@ class SqlDataFetch(google.protobuf.message.Message):
         def limit(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
         @property
         def offset(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+        @property
+        def timeout(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
         def __init__(
             self,
             *,
@@ -61,9 +64,10 @@ class SqlDataFetch(google.protobuf.message.Message):
             order_by_column: google.protobuf.wrappers_pb2.StringValue | None = ...,
             limit: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
             offset: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+            timeout: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["database", b"database", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "query", b"query"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "query", b"query"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["database", b"database", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "query", b"query", "timeout", b"timeout"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["database", b"database", "limit", b"limit", "offset", b"offset", "order_by_column", b"order_by_column", "query", b"query", "timeout", b"timeout"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     SQL_QUERY_FIELD_NUMBER: builtins.int
