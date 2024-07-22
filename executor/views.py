@@ -52,7 +52,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
     PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
-    PlaybookExecutionStopRequest, PlaybookExecutionStopResponse
+    PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -828,28 +828,33 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
                                                 step_execution_log=step_execution_log)
 
 
-@web_api(PlaybookExecutionStopRequest)
-def playbooks_execution_stop(request_message: PlaybookExecutionStopRequest) -> \
-        Union[PlaybookExecutionStopResponse, HttpResponse]:
+@web_api(PlaybookExecutionStatusUpdateRequest)
+def playbooks_execution_state_update(request_message: PlaybookExecutionStatusUpdateRequest) -> \
+        Union[PlaybookExecutionStatusUpdateResponse, HttpResponse]:
     account: Account = get_request_account()
     meta: Meta = request_message.meta
     time_range: TimeRange = meta.time_range
     playbook_run_id = request_message.playbook_run_id.value
+    status = request_message.status
     if not playbook_run_id:
-        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
-                                             message=Message(title="Invalid Request",
-                                                             description="Missing playbook_run_id"))
+        return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                     message=Message(title="Invalid Request",
+                                                                     description="Missing playbook_run_id"))
+    if status == PlaybookExecutionStatusType.UNKNOWN_STATUS:
+        return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                     message=Message(title="Invalid Request",
+                                                                     description="Invalid status"))
 
     playbook_execution = get_db_playbook_execution(account, playbook_run_id=playbook_run_id)
     if not playbook_execution:
-        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
-                                             message=Message(title="Internal Error",
-                                                             description="Playbook Execution not found"))
+        return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                     message=Message(title="Internal Error",
+                                                                     description="Playbook Execution not found"))
 
     playbook_execution = playbook_execution.first()
     if not update_db_account_playbook_execution_status(account, playbook_execution.id,
-                                                       PlaybookExecutionStatusType.FINISHED):
-        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
-                                             message=Message(title="Internal Error",
-                                                             description="Failed to stop playbook execution status"))
-    return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True))
+                                                       status):
+        return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                     message=Message(title="Internal Error",
+                                                                     description="Failed to stop playbook execution status"))
+    return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True))
