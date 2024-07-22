@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRedirectUriMutation } from "../../../store/features/auth/api/redirectUriApi.ts";
 import Loading from "../../common/Loading/index.tsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import Toast from "../../Toast.jsx";
+import { Toast } from "../../Toast.jsx";
 
 function OctaSignIn() {
   const [getRedirectUri, { isLoading }] = useRedirectUriMutation();

@@ -15,7 +15,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import MuiCard from "@mui/material/Card";
 import IconButton from "@mui/material/IconButton";
 import { CircularProgress, CardContent } from "@mui/material";
-import Toast from "../components/Toast.js";
+import { Toast } from "../components/Toast.jsx";
 import { useLoginMutation } from "../store/features/auth/api/loginApi.ts";
 import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 

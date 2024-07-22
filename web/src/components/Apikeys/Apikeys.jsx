@@ -6,10 +6,10 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
-import TableSkeleton from "../Skeleton/TableLoader.js";
-import SuspenseLoader from "../Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../Skeleton/TableLoader.jsx";
+import SuspenseLoader from "../Skeleton/SuspenseLoader.jsx";
 import Heading from "../Heading.jsx";
-import NoAPIKeys from "./NoAPIKeys.js";
+import NoAPIKeys from "./NoAPIKeys.jsx";
 import dayjs from "dayjs";
 import {
   useGenerateAPIKeyMutation,

@@ -2,8 +2,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Heading from "../../Heading.jsx";
 import { useEffect } from "react";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
-import TableSkeleton from "../../Skeleton/TableLoader.js";
+import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
+import TableSkeleton from "../../Skeleton/TableLoader.jsx";
 import ExecutionsTable from "./ExecutionsTable.jsx";
 import Loading from "../../common/Loading/index.tsx";
 import { useSelector } from "react-redux";
