@@ -9,9 +9,11 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
+from protos.ui_definition_pb2 import FormField
 
 
 class CloudwatchSourceManager(PlaybookSourceManager):
@@ -25,14 +27,55 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.CLOUDWATCH_METRIC],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Metric from Cloudwatch',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select Region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="dimensions"),
+                              display_name=StringValue(value="Dimension Name"),
+                              description=StringValue(value='Select Dimension Name'),
+                              is_composite=True,
+                              composite_fields=[
+                                  FormField(key_name=StringValue(value="name"),
+                                            display_name=StringValue(value="Dimension Name"),
+                                            description=StringValue(value='Select Dimension Name'),
+                                            data_type=LiteralType.STRING),
+                                  FormField(key_name=StringValue(value="value"),
+                                            display_name=StringValue(value="Dimension Value"),
+                                            description=StringValue(value='Select Dimension Value'),
+                                            data_type=LiteralType.STRING)
+                              ]),
+                    FormField(key_name=StringValue(value="metric_name"),
+                              display_name=StringValue(value="Metric"),
+                              description=StringValue(value='Add Metric'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.execute_filter_log_events,
                 'model_types': [SourceModelType.CLOUDWATCH_LOG_GROUP],
                 'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Fetch Logs from Cloudwatch',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select Region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="log_group_name"),
+                              display_name=StringValue(value="Log Group"),
+                              description=StringValue(value='Select Log Group'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="filter_query"),
+                              display_name=StringValue(value="Filter Query"),
+                              data_type=LiteralType.STRING)
+                ]
             },
         }
 
@@ -132,7 +175,6 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         try:
             if not cloudwatch_connector:
                 raise Exception("Task execution Failed:: No Cloudwatch source found")
-            task_result = PlaybookTaskResult()
             tr_end_time = time_range.time_lt
             end_time = int(tr_end_time * 1000)
             tr_start_time = time_range.time_geq
@@ -142,13 +184,9 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             region = task.region.value
             log_group = task.log_group_name.value
             query_pattern = task.filter_query.value
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    query_pattern = query_pattern.replace(key, str(value))
 
             logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
                                                                 client_type='logs')
-
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Region -> {}, Log_Group -> {}, Query -> "
                 "{}, Start_Time -> {}, End_Time -> {}".format("Cloudwatch_Logs", cloudwatch_connector.account_id.value,
@@ -170,7 +208,8 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                 table_rows.append(table_row)
 
             result = TableResult(
-                raw_query=StringValue(value=f"Execute ```{query_pattern}``` on log group {log_group} in region {region}"),
+                raw_query=StringValue(
+                    value=f"Execute ```{query_pattern}``` on log group {log_group} in region {region}"),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)),
             )

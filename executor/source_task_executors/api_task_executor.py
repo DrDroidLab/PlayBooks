@@ -4,12 +4,14 @@ from typing import Dict
 import requests
 from google.protobuf.struct_pb2 import Struct
 
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 from executor.playbook_source_manager import PlaybookSourceManager
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.api_task_pb2 import Api
+from protos.ui_definition_pb2 import FormField
 
 method_proto_string_mapping = {
     Api.HttpRequest.Method.GET: "GET",
@@ -31,19 +33,46 @@ class ApiSourceManager(PlaybookSourceManager):
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.API_RESPONSE,
                 'display_name': 'Trigger an API',
-                'category': 'Actions'
+                'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="method"),
+                              display_name=StringValue(value="Method"),
+                              description=StringValue(value='Select Method'),
+                              data_type=LiteralType.STRING,
+                              valid_values=[
+                                  Literal(type=LiteralType.STRING, string=StringValue(value="GET")),
+                                  Literal(type=LiteralType.STRING, string=StringValue(value="POST")),
+                                  Literal(type=LiteralType.STRING, string=StringValue(value="PUT")),
+                                  Literal(type=LiteralType.STRING, string=StringValue(value="PATCH")),
+                                  Literal(type=LiteralType.STRING, string=StringValue(value="DELETE"))
+                              ]),
+                    FormField(key_name=StringValue(value="url"),
+                              display_name=StringValue(value="URL"),
+                              description=StringValue(value='Enter URL'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="headers"),
+                              display_name=StringValue(value="Headers (Enter JSON)"),
+                              data_type=LiteralType.STRING,
+                              is_optional=True),
+                    FormField(key_name=StringValue(value="payload"),
+                              display_name=StringValue(value="Payload/Body (Enter JSON)"),
+                              data_type=LiteralType.STRING,
+                              is_optional=True),
+                    FormField(key_name=StringValue(value="timeout"),
+                              display_name=StringValue(value="Timeout (in seconds)"),
+                              description=StringValue(value='Enter Timeout (in seconds)'),
+                              data_type=LiteralType.LONG,
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120))),
+                ]
             },
         }
 
-    def execute_http_request(self, time_range: TimeRange, global_variable_set: Dict,
-                             api_task: Api, api_connector_proto: ConnectorProto) -> PlaybookTaskResult:
+    def execute_http_request(self, time_range: TimeRange, global_variable_set: Dict, api_task: Api,
+                             api_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
             http_request = api_task.http_request
             method = http_request.method
             url = http_request.url.value
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    url = url.replace(f"{{{key}}}", value)
             headers = http_request.headers.value
             headers = json.loads(headers) if headers else {}
             if 'Content-Type' not in headers:
