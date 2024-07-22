@@ -49,10 +49,10 @@ def create_playbook_execution(account: Account, time_range: TimeRange, playbook_
         raise e
 
 
-def update_db_account_playbook_execution_status(account: Account, playbook_run_id: int,
+def update_db_account_playbook_execution_status(account: Account, playbook_execution_id: int,
                                                 status: PlaybookExecutionStatusType):
     try:
-        playbook_execution = account.playbookexecution_set.get(id=playbook_run_id)
+        playbook_execution = account.playbookexecution_set.get(id=playbook_execution_id)
         playbook_execution.status = status
         update_fields = ['status']
         if status == PlaybookExecutionStatusType.RUNNING:
@@ -65,10 +65,10 @@ def update_db_account_playbook_execution_status(account: Account, playbook_run_i
         return True
     except PlayBookExecution.DoesNotExist:
         logger.error(
-            f"Failed to get playbook execution for account_id: {account.id}, playbook_run_id: {playbook_run_id}")
+            f"Failed to get playbook execution for account_id: {account.id}, playbook_run_id: {playbook_execution_id}")
     except Exception as e:
         logger.error(
-            f"Failed to get playbook execution for account_id: {account.id}, playbook_run_id: {playbook_run_id}, error: {e}")
+            f"Failed to get playbook execution for account_id: {account.id}, playbook_run_id: {playbook_execution_id}, error: {e}")
     return False
 
 
@@ -115,7 +115,7 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
             raise e
 
         for result in all_task_executions:
-            playbook_execution_log = PlayBookTaskExecutionLog(
+            playbook_task_execution_log = PlayBookTaskExecutionLog(
                 account=account,
                 playbook=playbook,
                 playbook_execution=playbook_execution,
@@ -125,9 +125,10 @@ def bulk_create_playbook_execution_log(account, playbook, playbook_execution, al
                 playbook_task_result=result['task_result'],
                 interpretation=result['task_interpretation'],
                 created_by=user,
-                time_range=time_range
+                time_range=time_range,
+                execution_global_variable_set=result['execution_global_variable_set']
             )
-            all_db_playbook_execution_logs.append(playbook_execution_log)
+            all_db_playbook_execution_logs.append(playbook_task_execution_log)
         for step_relation_execution_log in all_step_relation_executions:
             playbook_step_relation_execution_log = PlayBookStepRelationExecutionLog(
                 account=account,
