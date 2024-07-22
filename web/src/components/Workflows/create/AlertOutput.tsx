@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import Editor from "react-simple-code-editor";
 import hljs from "highlight.js/lib/core";
 import json from "highlight.js/lib/languages/json";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
+import CodeAccordion from "../../common/CodeAccordion/index.tsx";
+import { LanguageTypes } from "../../common/CodeAccordion/types/index.ts";
 
 hljs.registerLanguage("json", json as any);
 
@@ -23,24 +24,10 @@ function AlertOutput() {
 
   return (
     <div className="my-2">
-      <p className="font-semibold text-violet-500 text-xs">
-        Sample slack message matching the filter
-      </p>
-      <Editor
-        value={JSON.stringify(code, null, 2)}
-        className="border rounded outline-none max-h-[150px] !overflow-y-auto"
-        onValueChange={() => {}}
-        highlight={(code) =>
-          hljs.highlight(code, {
-            language: "json",
-          }).value
-        }
-        disabled
-        padding={10}
-        style={{
-          fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 12,
-        }}
+      <CodeAccordion
+        code={code}
+        label="Sample slack message matching the filter"
+        language={LanguageTypes.JSON}
       />
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import Editor from "react-simple-code-editor";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
 import json from "highlight.js/lib/languages/json";
@@ -11,6 +10,8 @@ import {
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { useTestTransformerMutation } from "../../../store/features/workflow/api/testTransformerApi.ts";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
+import CodeAccordion from "../../common/CodeAccordion/index.tsx";
+import { LanguageTypes } from "../../common/CodeAccordion/types/index.ts";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
@@ -50,64 +51,27 @@ function HandleTransformer() {
 
   return (
     <div className="my-2 flex flex-col gap-2">
-      <div>
-        <p className="font-semibold text-violet-500 text-xs">Transformer (Write a python function returning a dict)</p>
-        <Editor
-          value={code}
-          className="border rounded outline-none"
-          onValueChange={setCode}
-          highlight={(code) =>
-            hljs.highlight(code, {
-              language: "python",
-            }).value
-          }
-          padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
-          }}
-        />
-      </div>
+      <CodeAccordion
+        code={code}
+        label="Transformer (Write a python function returning a dict)"
+        language={LanguageTypes.PYTHON}
+        onValueChange={setCode}
+      />
 
-      <div>
-        <p className="font-semibold text-violet-500 text-xs">Example Input for testing your function</p>
-        <Editor
-          value={exampleInput}
-          className="border rounded outline-none"
-          onValueChange={setExampleInput}
-          highlight={(code) =>
-            hljs.highlight(code, {
-              language: "json",
-            }).value
-          }
-          padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
-          }}
-        />
-      </div>
+      <CodeAccordion
+        code={exampleInput}
+        label="Example Input for testing your function"
+        language={LanguageTypes.JSON}
+        onValueChange={setExampleInput}
+      />
 
       {data && (
-        <div ref={outputRef}>
-          <p className="font-semibold text-violet-500 text-sm">Output</p>
-          <Editor
-            value={JSON.stringify(data.event_context ?? {})}
-            className="border rounded outline-none"
-            onValueChange={() => {}}
-            highlight={(code) =>
-              hljs.highlight(code, {
-                language: "json",
-              }).value
-            }
-            padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 12,
-            }}
-            disabled
-          />
-        </div>
+        <CodeAccordion
+          ref={outputRef}
+          code={data?.event_context}
+          label="Output"
+          language={LanguageTypes.JSON}
+        />
       )}
 
       <CustomButton className="w-fit" onClick={testCode}>

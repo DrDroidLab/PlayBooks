@@ -40,8 +40,16 @@ function Transformer() {
       {disabled && (
         <p className="text-xs italic text-gray-700 my-1">
           Only supported for slack triggers
-          <br/>
-          For API Triggers, see <a className="text-violet-500 underline" href="https://docs.drdroid.io/docs/api-triggers#custom-parameters" target="_blank">this</a> for passing custom parameters
+          <br />
+          For API Triggers, see{" "}
+          <a
+            className="text-violet-500 underline"
+            href="https://docs.drdroid.io/docs/api-triggers#custom-parameters"
+            target="_blank"
+            rel="noreferrer">
+            this
+          </a>{" "}
+          for passing custom parameters
         </p>
       )}
       {currentWorkflow[key] && <AlertOutput />}
