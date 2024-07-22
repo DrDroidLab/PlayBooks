@@ -1,3 +1,4 @@
+import { ExecutionStatus } from "./ExecutionStatus.ts";
 import { GlobalVariableSet } from "./globalVariableSet.ts";
 import { Step } from "./step.ts";
 import { StepRelation, StepRelationContract } from "./stepRelations.ts";
@@ -7,12 +8,12 @@ type PlaybookUIRequirement = {
   tasks: Task[];
   isExisting: boolean;
   executedSteps?: Step[];
+  executionStatus?: ExecutionStatus;
 };
 
 export type Playbook = {
   id?: string;
   global_variable_set: GlobalVariableSet;
-  execution_global_variable_set?: GlobalVariableSet;
   name?: string;
   description?: string;
   steps: Step[];
