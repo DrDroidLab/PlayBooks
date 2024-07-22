@@ -10,12 +10,24 @@ hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
 
 const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
-  ({ code, language, label, onValueChange = () => {} }, ref) => {
+  (
+    {
+      code,
+      language,
+      label,
+      onValueChange = () => {},
+      disabled = false,
+      className = "",
+    },
+    ref,
+  ) => {
     const value =
       language === LanguageTypes.JSON
         ? isJSONString(code)
           ? JSON.parse(JSON.stringify(code, null, 2))
-          : JSON.stringify(code, null, 2)
+          : typeof code !== "string"
+          ? JSON.stringify(code, null, 2)
+          : code
         : code;
 
     return (
@@ -23,14 +35,14 @@ const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
         <p className="font-semibold text-violet-500 text-xs">{label}</p>
         <Editor
           value={value}
-          className="border rounded outline-none max-h-[150px] !overflow-y-auto"
+          className={`${className} border rounded outline-none`}
           onValueChange={onValueChange}
           highlight={(code: string) =>
             hljs.highlight(code, {
               language,
             }).value
           }
-          disabled
+          disabled={disabled}
           padding={10}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',

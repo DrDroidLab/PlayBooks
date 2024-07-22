@@ -71,6 +71,8 @@ function HandleTransformer() {
           code={data?.event_context}
           label="Output"
           language={LanguageTypes.JSON}
+          className="max-h-[150px] !overflow-y-auto"
+          disabled={true}
         />
       )}
 

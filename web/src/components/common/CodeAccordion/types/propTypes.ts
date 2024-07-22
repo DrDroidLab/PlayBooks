@@ -5,4 +5,6 @@ export type CodeAccordionPropTypes = {
   language: LanguageTypes;
   label: string;
   onValueChange?: (value: string) => void;
+  disabled?: boolean;
+  className?: string;
 };
