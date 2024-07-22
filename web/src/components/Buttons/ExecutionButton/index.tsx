@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded, StopCircleRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
@@ -25,10 +25,12 @@ function ExecutionButton() {
     useStartExecutionMutation();
   const [triggerStopExecution, { isLoading: stopLoading }] =
     useUpdateExecutionStatusMutation();
+  const [loading, setLoading] = useState(false);
 
   const handleStartExecution = async () => {
-    if (executionId) return;
+    if (executionId || loading) return;
     if (!currentPlaybook?.id) return;
+    setLoading(true);
     const response = await triggerStartExecution(
       parseInt(currentPlaybook.id, 10),
     );
@@ -39,6 +41,7 @@ function ExecutionButton() {
       if (step) await executeStep(step.id);
       setSearchParams({ executionId: data.playbook_run_id });
     }
+    setLoading(false);
   };
 
   const handleStopExecution = async () => {
@@ -49,7 +52,7 @@ function ExecutionButton() {
 
   return (
     <>
-      {(executionLoading || stopLoading) && (
+      {(executionLoading || stopLoading || loading) && (
         <CircularProgress
           style={{
             textAlign: "center",
@@ -65,7 +68,7 @@ function ExecutionButton() {
       ) : (
         <CustomButton onClick={handleStartExecution}>
           <PlayArrowRounded />
-          <span>Start</span>
+          <span>{loading ? "Executing..." : "Start"}</span>
         </CustomButton>
       )}
     </>
