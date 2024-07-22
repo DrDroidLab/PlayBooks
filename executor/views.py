@@ -6,7 +6,7 @@ from typing import Union
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 from rest_framework.decorators import api_view
@@ -51,7 +51,8 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     RunPlaybookStepResponseV3, RunPlaybookRequestV2, RunPlaybookResponseV2, CreatePlaybookRequestV2, \
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
-    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest
+    PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
+    PlaybookExecutionStopRequest, PlaybookExecutionStopResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -789,6 +790,12 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
                                                                     description="Playbook Execution not found"))
 
     playbook_execution = playbook_execution.first()
+    if playbook_execution.status != PlaybookExecutionStatusType.RUNNING:
+        if not update_db_account_playbook_execution_status(account, playbook_execution.id,
+                                                           PlaybookExecutionStatusType.RUNNING):
+            return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                                        message=Message(title="Error",
+                                                                        description="Failed to update playbook execution status"))
     playbook = get_db_playbooks(account, playbook_id=playbook_execution.playbook.id)
     if not playbook:
         return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
@@ -819,3 +826,30 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
     return PlaybookExecutionStepExecuteResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                                 playbook_run_id=StringValue(value=playbook_run_id),
                                                 step_execution_log=step_execution_log)
+
+
+@web_api(PlaybookExecutionStopRequest)
+def playbooks_execution_stop(request_message: PlaybookExecutionStopRequest) -> \
+        Union[PlaybookExecutionStopResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    playbook_run_id = request_message.playbook_run_id.value
+    if not playbook_run_id:
+        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                             message=Message(title="Invalid Request",
+                                                             description="Missing playbook_run_id"))
+
+    playbook_execution = get_db_playbook_execution(account, playbook_run_id=playbook_run_id)
+    if not playbook_execution:
+        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                             message=Message(title="Internal Error",
+                                                             description="Playbook Execution not found"))
+
+    playbook_execution = playbook_execution.first()
+    if not update_db_account_playbook_execution_status(account, playbook_execution.id,
+                                                       PlaybookExecutionStatusType.FINISHED):
+        return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                             message=Message(title="Internal Error",
+                                                             description="Failed to stop playbook execution status"))
+    return PlaybookExecutionStopResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True))

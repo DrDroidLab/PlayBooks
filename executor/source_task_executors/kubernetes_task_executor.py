@@ -39,7 +39,7 @@ class KubernetesSourceManager(PlaybookSourceManager):
                 for key, value in global_variable_set.items():
                     updated_commands = []
                     for command in commands:
-                        command = command.replace(f"{{{key}}}", value)
+                        command = command.replace(key, str(value))
                         updated_commands.append(command)
                     commands = updated_commands
             try:
