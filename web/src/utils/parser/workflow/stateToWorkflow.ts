@@ -35,6 +35,11 @@ export const stateToWorkflow = () => {
       configuration: {
         generate_summary: workflow?.generateSummary ?? false,
         global_variable_set: stateToGlobalVariable(workflow.globalVariables),
+        transformer_lambda_function: workflow.useTransformer
+          ? {
+              definition: workflow.transformerCode,
+            }
+          : undefined,
       },
     },
   };

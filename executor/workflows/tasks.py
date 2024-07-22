@@ -89,7 +89,7 @@ def workflow_scheduler():
                     event_context = lambda_function_processor.execute(event_dict)
                     if event_context and isinstance(event_context, dict):
                         workflow_execution_metadata = proto_to_dict(execution_metadata)
-                        execution_metadata['event_context'] = event_context
+                        workflow_execution_metadata['event_context'] = event_context
                         update_db_account_workflow_execution_metadata(wf_execution.account, wf_execution.id,
                                                                       workflow_execution_metadata)
         logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
