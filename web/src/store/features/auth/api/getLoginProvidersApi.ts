@@ -9,7 +9,7 @@ export const getLoginProvidersApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: any) => {
-        return [...(response?.active_providers ?? []), "EMAIL"];
+        return response?.active_providers ?? [];
       },
     }),
   }),
