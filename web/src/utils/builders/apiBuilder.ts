@@ -1,4 +1,5 @@
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 import { Key } from "../playbook/key.ts";
 
 const methodOptions = ["GET", "POST", "PUT", "PATCH", "DELETE"];
@@ -10,7 +11,7 @@ export const apiBuilder = () => {
         {
           key: Key.METHOD,
           label: "Method",
-          type: InputTypes.DROPDOWN,
+          inputType: InputTypes.DROPDOWN,
           options: methodOptions.map((x) => ({ id: x, label: x })),
         },
       ],
@@ -18,14 +19,15 @@ export const apiBuilder = () => {
         {
           key: Key.URL,
           label: "URL",
-          type: InputTypes.TEXT_ROW,
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
       [
         {
           key: Key.HEADERS,
           label: "Headers (Enter JSON)",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
           isOptional: true,
         },
       ],
@@ -33,7 +35,7 @@ export const apiBuilder = () => {
         {
           key: Key.PAYLOAD,
           label: "Payload/Body (Enter JSON)",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
           isOptional: true,
         },
       ],
@@ -41,7 +43,8 @@ export const apiBuilder = () => {
         {
           key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
-          type: InputTypes.TEXT_ROW,
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
     ],

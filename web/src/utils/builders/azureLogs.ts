@@ -2,6 +2,7 @@ import { Key } from "../playbook/key.ts";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import { Task } from "../../types/index.ts";
 import { getTaskData } from "../playbook/getTaskData.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 
 export const azureLogsBuilder = (options: any, task: Task) => {
   return {
@@ -10,7 +11,7 @@ export const azureLogsBuilder = (options: any, task: Task) => {
         {
           key: Key.WORKSPACE_ID,
           label: "Workspace ID",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op.workspace,
             label: `${op.workspace} - ${op.name}`,
@@ -25,12 +26,13 @@ export const azureLogsBuilder = (options: any, task: Task) => {
         {
           key: Key.FILTER_QUERY,
           label: "Log Filter Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
         {
           key: Key.TIMESPAN,
           label: "Timespan (hours)",
-          type: InputTypes.TEXT_ROW,
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
     ],

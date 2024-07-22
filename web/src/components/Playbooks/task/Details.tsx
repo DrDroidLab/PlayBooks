@@ -65,11 +65,9 @@ function Details({ id }) {
   }, [task?.[task?.source?.toLowerCase() ?? ""]?.type, task?.source]);
 
   return (
-    <div className="relative mt-2">
+    <div className="relative mt-2 flex flex-col gap-2">
       {data?.builder?.map((step, index) => (
-        <div
-          key={`data-${index}`}
-          className={`flex gap-2 flex-wrap ${"flex-col"}`}>
+        <div key={`data-${index}`} className={`flex gap-2 flex-wrap flex-col`}>
           {step.map((value, index) =>
             value.condition ?? true ? (
               <div
