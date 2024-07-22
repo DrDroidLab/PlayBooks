@@ -70,6 +70,8 @@ function executionToState(playbook_execution: any): Playbook {
 
   return {
     ...(currentPlaybook ?? playbook),
+    execution_global_variable_set:
+      playbook_execution?.execution_global_variable_set,
     steps: playbookSteps,
     step_relations: playbookRelations,
     ui_requirement: {

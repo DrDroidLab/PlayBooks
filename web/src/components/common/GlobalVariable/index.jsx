@@ -16,6 +16,10 @@ function GlobalVariables() {
   const playbook = useSelector(currentPlaybookSelector);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
+  console.log(
+    "playbook?.execution_global_variable_set",
+    playbook?.execution_global_variable_set,
+  );
   const variables = isPrefetched
     ? playbook?.execution_global_variable_set ??
       playbook?.global_variable_set ??
