@@ -8,9 +8,11 @@ import ForgotPasswordBox from "./ForgotPasswordBox.tsx";
 function LoginAdditionalData() {
   const { data } = useGetLoginProvidersQuery();
 
+  if (!data?.includes(AuthProviders.EMAIL)) return;
+
   return (
     <div className="my-2">
-      {data?.includes(AuthProviders.EMAIL) && <ForgotPasswordBox />}
+      <ForgotPasswordBox />
       <Box
         sx={{
           display: "flex",

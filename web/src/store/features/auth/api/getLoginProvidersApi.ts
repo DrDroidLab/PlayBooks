@@ -1,6 +1,5 @@
 import { GET_LOGIN_PROVIDERS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setProviders } from "../authSlice.ts";
 
 export const getLoginProvidersApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,14 +10,6 @@ export const getLoginProvidersApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: any) => {
         return [...(response?.active_providers ?? []), "EMAIL"];
-      },
-      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(setProviders(data));
-        } catch (error) {
-          console.log(error);
-        }
       },
     }),
   }),

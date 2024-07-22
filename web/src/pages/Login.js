@@ -1,29 +1,13 @@
 import React from "react";
 import "../css/Login.css";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import MuiCard from "@mui/material/Card";
 import { CardContent, CircularProgress } from "@mui/material";
 import EmailPasswordLoginForm from "../components/Auth/EmailPassword/EmailPasswordLoginForm.tsx";
 import LoginAdditionalData from "../components/Auth/AdditonalData/LoginAdditionalData.tsx";
 import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 import { useGetLoginProvidersQuery } from "../store/features/auth/api/getLoginProvidersApi.ts";
 import { AuthProviders } from "../components/Auth/utils/AuthProviders.ts";
-
-const BlankLayoutWrapper = styled(Box)(({ theme }) => ({
-  "& .content-center": {
-    display: "flex",
-    minHeight: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: theme.spacing(5),
-  },
-}));
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  [theme.breakpoints.up("sm")]: { width: "28rem" },
-  [theme.breakpoints.down("sm")]: { width: "100%" },
-}));
+import { Card, BlankLayoutWrapper } from "../components/Auth/Common/index.tsx";
 
 function Login() {
   const { data, isLoading } = useGetLoginProvidersQuery();
