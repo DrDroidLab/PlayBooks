@@ -12,7 +12,6 @@ type PlaybookUIRequirement = {
 export type Playbook = {
   id?: string;
   global_variable_set: GlobalVariableSet;
-  execution_global_variable_set?: GlobalVariableSet;
   name?: string;
   description?: string;
   steps: Step[];
