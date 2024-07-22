@@ -59,22 +59,32 @@ class KubectlApiProcessor(Processor):
         command = command.strip()
         if 'kubectl' in command:
             command = command.replace('kubectl', '')
+        if '|' in command:
+            commands = [cmd.strip() for cmd in command.split('|')]
+        else:
+            commands = [command]
         if self.__ca_cert:
             kubectl_command = [
                                   "kubectl",
                                   f"--server={self.__api_server}",
                                   f"--token={self.__token}",
                                   f"--certificate-authority={self.__ca_cert}"
-                              ] + command.split()
+                              ] + commands[0].split()
         else:
             kubectl_command = [
                                   "kubectl",
                                   f"--server={self.__api_server}",
-                                  f"--token={self.__token}"
-                              ] + command.split()
+                                  f"--token={self.__token}",
+                                  f"--insecure-skip-tls-verify=true"
+                              ] + commands[0].split()
         try:
             process = subprocess.Popen(kubectl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             stdout, stderr = process.communicate()
+            if len(commands) > 1:
+                for cmd in commands[1:]:
+                    process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                               stderr=subprocess.PIPE, text=True, shell=True)
+                    stdout, stderr = process.communicate(input=stdout)
             if process.returncode == 0:
                 print("Command Output:", stdout)
                 return stdout

@@ -19,3 +19,4 @@ export const GET_PLAYBOOK_EXECUTIONS = "/pb/executions/list";
 // Executions
 export const START_EXECUTION = "/executor/execution/create";
 export const EXECUTION_STEP_EXECUTE = "/executor/execution/step/execute";
+export const UPDATE_EXECUTION_STATUS = "/executor/execution/status/update";

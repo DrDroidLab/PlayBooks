@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
 
 message CommWorkspace {
   google.protobuf.UInt64Value id = 1;
@@ -50,6 +51,7 @@ message SlackAlert {
   CommChannel slack_channel = 5;
   sfixed64 alert_timestamp = 6;
   repeated AlertTag alert_tags = 7;
+  google.protobuf.Struct alert_json = 8;
 }
 
 
