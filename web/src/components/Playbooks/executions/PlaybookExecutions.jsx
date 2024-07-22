@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../../Heading.js";
+import Heading from "../../Heading.jsx";
 import { useEffect } from "react";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";

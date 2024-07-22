@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Heading from "../../Heading.js";
+import Heading from "../../Heading.jsx";
 import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../Skeleton/TableLoader.js";
 import ExecutionsTable from "./ExecutionsTable.jsx";

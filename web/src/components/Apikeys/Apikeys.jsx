@@ -8,7 +8,7 @@ import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
 import TableSkeleton from "../Skeleton/TableLoader.js";
 import SuspenseLoader from "../Skeleton/SuspenseLoader.js";
-import Heading from "../Heading.js";
+import Heading from "../Heading.jsx";
 import NoAPIKeys from "./NoAPIKeys.js";
 import dayjs from "dayjs";
 import {
