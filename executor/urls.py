@@ -32,7 +32,7 @@ urlpatterns = [
     path('executions/list', executor_views.playbooks_executions_list),
     path('execution/create', executor_views.playbooks_execution_create),
     path('execution/step/execute', executor_views.playbooks_execution_step_execute),
-    path('execution/state/update', executor_views.playbooks_execution_state_update),
+    path('execution/status/update', executor_views.playbooks_execution_status_update),
 
     # Playbooks API based executions
     path('api/execute', executor_views.playbooks_api_execute),
