@@ -829,7 +829,7 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
 
 
 @web_api(PlaybookExecutionStatusUpdateRequest)
-def playbooks_execution_state_update(request_message: PlaybookExecutionStatusUpdateRequest) -> \
+def playbooks_execution_status_update(request_message: PlaybookExecutionStatusUpdateRequest) -> \
         Union[PlaybookExecutionStatusUpdateResponse, HttpResponse]:
     account: Account = get_request_account()
     meta: Meta = request_message.meta
