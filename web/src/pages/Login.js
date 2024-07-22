@@ -8,6 +8,7 @@ import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
 import { useGetLoginProvidersQuery } from "../store/features/auth/api/getLoginProvidersApi.ts";
 import { AuthProviders } from "../components/Auth/utils/AuthProviders.ts";
 import { Card, BlankLayoutWrapper } from "../components/Auth/Common/index.tsx";
+import NoProviders from "../components/Auth/Common/NoProviders.tsx";
 
 function Login() {
   const { data, isLoading } = useGetLoginProvidersQuery();
@@ -46,6 +47,8 @@ function Login() {
                     <CircularProgress size={20} color="primary" />
                   </div>
                 )}
+
+                <NoProviders />
 
                 {data?.includes(AuthProviders.EMAIL) && (
                   <EmailPasswordLoginForm />

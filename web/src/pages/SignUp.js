@@ -8,6 +8,7 @@ import EmailPasswordSignupForm from "../components/Auth/EmailPassword/EmailPassw
 import { Card, BlankLayoutWrapper } from "../components/Auth/Common/index.tsx";
 import { AuthProviders } from "../components/Auth/utils/AuthProviders.ts";
 import { useGetLoginProvidersQuery } from "../store/features/auth/api/getLoginProvidersApi.ts";
+import NoProviders from "../components/Auth/Common/NoProviders.tsx";
 
 function SignUp() {
   const { data, isLoading } = useGetLoginProvidersQuery();
@@ -40,6 +41,8 @@ function SignUp() {
                     alt="Your logo"
                   />
                 </Box>
+
+                <NoProviders />
 
                 {isLoading && (
                   <div className="flex items-center justify-center">
