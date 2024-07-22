@@ -1,4 +1,4 @@
-import { useGetPlaybooksQuery } from "../../../store/features/playbook/api/index.ts";
+import { useGetPlaybooksNoLimitQuery } from "../../../store/features/playbook/api/index.ts";
 import { handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
@@ -6,6 +6,7 @@ import { CircularProgress } from "@mui/material";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import GlobalVariablesList from "./GlobalVariablesList.tsx";
 
 function PlaybookDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -13,7 +14,7 @@ function PlaybookDetails() {
     data,
     isFetching: playbooksLoading,
     refetch,
-  } = useGetPlaybooksQuery();
+  } = useGetPlaybooksNoLimitQuery();
 
   return (
     <div className="space-y-2">
@@ -57,6 +58,15 @@ function PlaybookDetails() {
           </>
         }
       />
+
+      {currentWorkflow?.playbookId && (
+        <GlobalVariablesList
+          global_variable_set={
+            data?.playbooks.find((e) => e.id === currentWorkflow?.playbookId)
+              ?.global_variable_set ?? {}
+          }
+        />
+      )}
 
       {/* <WorkflowGlobalVariables /> */}
     </div>

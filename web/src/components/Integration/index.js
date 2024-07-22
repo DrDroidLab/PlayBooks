@@ -15,7 +15,7 @@ function Integrations() {
   return (
     <>
       <Heading
-        heading={"Add a Data Source"}
+        heading={"Add an Integration"}
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
       />
