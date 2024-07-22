@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { useUpdateExecutionStatusMutation } from "../../../store/features/playbook/api/executions/updateExecutionStatusApi.ts";
 
 function ExecutionButton() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ function ExecutionButton() {
   const executionId = searchParams.get("executionId");
   const [triggerStartExecution, { isLoading: executionLoading }] =
     useStartExecutionMutation();
+  const [triggerStopExecution, { isLoading: stopLoading }] =
+    useUpdateExecutionStatusMutation();
 
   const handleStartExecution = async () => {
     if (executionId) return;
@@ -38,14 +41,15 @@ function ExecutionButton() {
     }
   };
 
-  const handleStopExecution = () => {
+  const handleStopExecution = async () => {
     if (!executionId) return;
+    await triggerStopExecution({ playbook_run_id: executionId });
     navigate(`/playbooks/${currentPlaybook?.id}`, { replace: true });
   };
 
   return (
     <>
-      {executionLoading && (
+      {(executionLoading || stopLoading) && (
         <CircularProgress
           style={{
             textAlign: "center",
