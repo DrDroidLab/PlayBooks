@@ -60,25 +60,24 @@ function HandleTransformer() {
 
       <CodeAccordion
         code={exampleInput}
-        label="Example Input for testing your function"
+        label="Test your transformer function against an input"
         language={LanguageTypes.JSON}
-        onValueChange={setExampleInput}
-      />
-
-      {data && (
-        <CodeAccordion
-          ref={outputRef}
-          code={data?.event_context}
-          label="Output"
-          language={LanguageTypes.JSON}
-          className="max-h-[150px] !overflow-y-auto"
-          disabled={true}
-        />
-      )}
-
-      <CustomButton className="w-fit" onClick={testCode}>
-        {isLoading ? "Loading..." : "Test Code"}
-      </CustomButton>
+        onValueChange={setExampleInput}>
+        {data && (
+          <CodeAccordion
+            ref={outputRef}
+            code={data?.event_context}
+            label="Output"
+            language={LanguageTypes.JSON}
+            className="max-h-[150px] !overflow-y-auto"
+            disabled={true}
+            defaultOpen={true}
+          />
+        )}
+        <CustomButton className="w-fit" onClick={testCode}>
+          {isLoading ? "Loading..." : "Test Code"}
+        </CustomButton>
+      </CodeAccordion>
     </div>
   );
 }

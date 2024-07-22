@@ -28,6 +28,8 @@ function AlertOutput() {
         code={code}
         label="Sample slack message matching the filter"
         language={LanguageTypes.JSON}
+        disabled={true}
+        defaultOpen={true}
       />
     </div>
   );

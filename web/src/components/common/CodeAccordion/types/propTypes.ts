@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import { LanguageTypes } from "./index.ts";
 
 export type CodeAccordionPropTypes = {
@@ -7,4 +8,5 @@ export type CodeAccordionPropTypes = {
   onValueChange?: (value: string) => void;
   disabled?: boolean;
   className?: string;
-};
+  defaultOpen?: boolean;
+} & PropsWithChildren;
