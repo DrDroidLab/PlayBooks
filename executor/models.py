@@ -394,6 +394,10 @@ class PlayBookExecution(models.Model):
     def proto_partial(self) -> PlaybookExecutionProto:
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
 
+        execution_global_variable_set_proto = Struct()
+        if self.execution_global_variable_set:
+            execution_global_variable_set_proto.update(self.execution_global_variable_set)
+
         return PlaybookExecutionProto(
             id=UInt64Value(value=self.id),
             playbook_run_id=StringValue(value=self.playbook_run_id),
@@ -404,10 +408,15 @@ class PlayBookExecution(models.Model):
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
             time_range=time_range_proto,
+            execution_global_variable_set=execution_global_variable_set_proto
         )
 
     @property
     def proto(self) -> PlaybookExecutionProto:
+        execution_global_variable_set_proto = Struct()
+        if self.execution_global_variable_set:
+            execution_global_variable_set_proto.update(self.execution_global_variable_set)
+
         playbook_step_execution_logs = self.playbookstepexecutionlog_set.all()
         if not playbook_step_execution_logs:
             playbook_execution_logs = self.playbooktaskexecutionlog_set.all()
@@ -442,7 +451,8 @@ class PlayBookExecution(models.Model):
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
             time_range=time_range_proto,
-            step_execution_logs=step_execution_logs
+            step_execution_logs=step_execution_logs,
+            execution_global_variable_set=execution_global_variable_set_proto
         )
 
     @property
@@ -547,8 +557,14 @@ class PlayBookTaskExecutionLog(models.Model):
     created_by = models.TextField(null=True, blank=True)
     time_range = models.JSONField(null=True, blank=True)
 
+    execution_global_variable_set = models.JSONField(null=True, blank=True)
+
     @property
     def proto(self) -> PlaybookTaskExecutionLogProto:
+        execution_global_variable_set_proto = Struct()
+        if self.execution_global_variable_set:
+            execution_global_variable_set_proto.update(self.execution_global_variable_set)
+
         task = self.playbook_task_definition.proto_with_connector_source(self.playbook.id, self.playbook_step.id)
         time_range_proto = dict_to_proto(self.time_range, TimeRange) if self.time_range else TimeRange()
         return PlaybookTaskExecutionLogProto(
@@ -559,7 +575,8 @@ class PlayBookTaskExecutionLog(models.Model):
             interpretation=dict_to_proto(self.interpretation,
                                          InterpretationProto) if self.interpretation else InterpretationProto(),
             created_by=StringValue(value=self.created_by) if self.created_by else None,
-            time_range=time_range_proto
+            time_range=time_range_proto,
+            execution_global_variable_set=execution_global_variable_set_proto
         )
 
     @property
@@ -640,6 +657,6 @@ class PlayBookStepRelationExecutionLog(models.Model):
             evaluation_result=BoolValue(value=self.evaluation_result),
             evaluation_output=evaluation_output_proto,
             step_relation_interpretation=dict_to_proto(self.interpretation,
-                                        InterpretationProto) if self.interpretation else InterpretationProto(),
+                                                       InterpretationProto) if self.interpretation else InterpretationProto(),
 
         )
