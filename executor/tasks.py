@@ -72,12 +72,16 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         pte_logs = []
         task_interpretations = []
         for task_proto in tasks:
+            global_variable_set_proto = Struct()
+            if not global_variable_set:
+                if task_proto.global_variable_set:
+                    global_variable_set = proto_to_dict(task_proto.global_variable_set)
+                    global_variable_set_proto.update(global_variable_set)
+                else:
+                    global_variable_set = {}
+            else:
+                global_variable_set_proto.update(global_variable_set)
             try:
-                if not global_variable_set:
-                    if task_proto.global_variable_set:
-                        global_variable_set = proto_to_dict(task_proto.global_variable_set)
-                    else:
-                        global_variable_set = {}
                 task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
                                                                                       global_variable_set,
                                                                                       task_proto)
@@ -85,14 +89,14 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                                                  task_result)
                 playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
                                                                        interpretation=task_interpretation,
-                                                                       execution_global_variable_set=task_proto.global_variable_set)
+                                                                       execution_global_variable_set=global_variable_set_proto)
                 task_interpretations.append(task_interpretation)
             except Exception as exc:
                 logger.error(f"Error occurred while running task: {exc}")
                 playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
                                                                        result=PlaybookTaskResult(
                                                                            error=StringValue(value=str(exc))),
-                                                                       execution_global_variable_set=task_proto.global_variable_set)
+                                                                       execution_global_variable_set=global_variable_set_proto)
             pte_logs.append(playbook_task_execution_log)
         step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
 
