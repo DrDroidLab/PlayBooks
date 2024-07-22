@@ -1,5 +1,6 @@
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
+import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import extractExecutionRelations from "./execution/extractExecutionRelations.ts";
 import extractExecutionTasks from "./execution/extractExecutionTasks.ts";
@@ -80,6 +81,8 @@ function executionToState(playbook_execution: any): Playbook {
       tasks,
       isExisting: true,
       executedSteps,
+      executionStatus: (playbook_execution.status ??
+        ExecutionStatus.CREATED) as ExecutionStatus,
     },
   };
 }

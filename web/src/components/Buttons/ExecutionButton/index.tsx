@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { useUpdateExecutionStatusMutation } from "../../../store/features/playbook/api/executions/updateExecutionStatusApi.ts";
+import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
 
 function ExecutionButton() {
   const navigate = useNavigate();
@@ -28,9 +29,17 @@ function ExecutionButton() {
   const [loading, setLoading] = useState(false);
 
   const handleStartExecution = async () => {
-    if (executionId || loading) return;
+    if (loading) return;
     if (!currentPlaybook?.id) return;
     setLoading(true);
+    if (executionId) {
+      dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+      if (step) await executeStep(step.id);
+      setSearchParams({ executionId: executionId });
+      setLoading(false);
+      window.location.reload();
+      return;
+    }
     const response = await triggerStartExecution(
       parseInt(currentPlaybook.id, 10),
     );
@@ -50,6 +59,10 @@ function ExecutionButton() {
     navigate(`/playbooks/${currentPlaybook?.id}`, { replace: true });
   };
 
+  const showStop =
+    currentPlaybook?.ui_requirement.executionStatus !==
+      ExecutionStatus.CREATED && executionId;
+
   return (
     <>
       {(executionLoading || stopLoading || loading) && (
@@ -60,7 +73,7 @@ function ExecutionButton() {
           size={20}
         />
       )}
-      {executionId ? (
+      {showStop ? (
         <CustomButton onClick={handleStopExecution}>
           <StopCircleRounded />
           <span>Stop</span>
