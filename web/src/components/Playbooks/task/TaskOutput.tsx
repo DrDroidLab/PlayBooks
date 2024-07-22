@@ -16,8 +16,9 @@ const OutputTypes = {
   LOGS: "LOGS",
 };
 
-const TaskOutput = ({ id, showHeading }) => {
-  const [task] = useCurrentTask(id);
+const TaskOutput = ({ id, showHeading, taskFromExecution }) => {
+  const [taskFromPlaybook] = useCurrentTask(id);
+  const task = taskFromExecution ?? taskFromPlaybook;
   const output = task?.ui_requirement.output?.data;
   const error = task?.ui_requirement?.outputError;
 
