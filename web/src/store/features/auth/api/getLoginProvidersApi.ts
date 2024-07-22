@@ -10,7 +10,7 @@ export const getLoginProvidersApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: any) => {
-        return response?.active_providers ?? [];
+        return [...(response?.active_providers ?? []), "EMAIL"];
       },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
