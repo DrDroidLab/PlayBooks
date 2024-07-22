@@ -18,15 +18,15 @@ import Loading from "./components/common/Loading/index.tsx";
 import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Settings = React.lazy(() => import("./pages/Settings.tsx"));
-const Login = React.lazy(() => import("./pages/Login.js"));
+const Login = React.lazy(() => import("./pages/Login.jsx"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword.tsx"));
-const SignUp = React.lazy(() => import("./pages/SignUp.js"));
+const SignUp = React.lazy(() => import("./pages/SignUp.jsx"));
 const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
   import("./components/Integration/connectors/ConnectorPage.jsx"),
 );
 const Integrations = React.lazy(() =>
-  import("./components/Integration/index.js"),
+  import("./components/Integration/index.jsx"),
 );
 const Playbooks = React.lazy(() => import("./components/Playbooks/index.jsx"));
 const Workflows = React.lazy(() => import("./components/Workflows/index.jsx"));
@@ -55,7 +55,7 @@ const InviteTeam = React.lazy(() =>
   import("./components/InviteTeam/index.jsx"),
 );
 const Support = React.lazy(() => import("./components/Support/index.jsx"));
-const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys.js"));
+const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys.jsx"));
 const CreatePlaybook = React.lazy(() =>
   import("./components/Playbooks/create/index.jsx"),
 );
