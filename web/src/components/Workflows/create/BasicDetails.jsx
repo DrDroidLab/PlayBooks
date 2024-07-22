@@ -15,6 +15,7 @@ import { useGenerateWebhookMutation } from "../../../store/features/workflow/api
 import SummaryOptions from "./SummaryOptions.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import Transformer from "./Transformer.tsx";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -130,6 +131,7 @@ function BasicDetails() {
         <hr />
         <PlaybookDetails />
         <SummaryOptions />
+        <Transformer />
       </div>
     </>
   );

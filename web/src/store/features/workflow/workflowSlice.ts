@@ -1,5 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export const defaultCode = `def transform(context):
+  out = {}
+  for k in context.keys():
+    out[k] = str(context[k]) + "-a"
+  return out`;
+
+export const exampleInput = `{
+  "key1": "value1",
+  "key2": "value2"
+}`;
+
 const initialState: any = {
   currentWorkflow: {
     name: "",
@@ -9,6 +20,9 @@ const initialState: any = {
     errors: {},
     generateSummary: false,
     globalVariables: [],
+    useTransformer: false,
+    transformerCode: defaultCode,
+    exampleInput,
   },
 };
 

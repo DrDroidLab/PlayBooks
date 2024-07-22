@@ -144,7 +144,7 @@ function Sidebar() {
               onClick={(event) => handleListItemClick(event, 2)}>
               <DataThresholdingIcon />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>Data Sources</p>
+            <p style={{ fontSize: "14px" }}>Integrations</p>
           </NavLink>
         </List>
       </div>

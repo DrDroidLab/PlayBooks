@@ -59,8 +59,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
             )}
           </div>
           <span
-            className={`${
-              isSmall ? "text-sm" : "text-base"
+            className={`${isSmall ? "text-sm" : "text-base"} ${
+              disabled ? "text-gray-300" : ""
             } text-gray-700 transition duration-300 ease-in-out`}>
             {label}
           </span>
