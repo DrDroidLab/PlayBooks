@@ -324,6 +324,8 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         logger.info("Sending test message")
     elif message_type == WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
         logger.info("Sending test MS Teams message")
+    elif message_type == WorkflowActionProto.Type.SMTP_EMAIL:
+        logger.info("Sending test email")
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
