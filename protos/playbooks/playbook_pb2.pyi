@@ -236,6 +236,7 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
     INTERPRETATION_FIELD_NUMBER: builtins.int
     TIME_RANGE_FIELD_NUMBER: builtins.int
     CREATED_BY_FIELD_NUMBER: builtins.int
+    EXECUTION_GLOBAL_VARIABLE_SET_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     timestamp: builtins.int
@@ -249,6 +250,8 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
     def time_range(self) -> protos.base_pb2.TimeRange: ...
     @property
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def execution_global_variable_set(self) -> google.protobuf.struct_pb2.Struct: ...
     def __init__(
         self,
         *,
@@ -259,9 +262,10 @@ class PlaybookTaskExecutionLog(google.protobuf.message.Message):
         interpretation: protos.playbooks.intelligence_layer.interpreter_pb2.Interpretation | None = ...,
         time_range: protos.base_pb2.TimeRange | None = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        execution_global_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range", "timestamp", b"timestamp"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "execution_global_variable_set", b"execution_global_variable_set", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "execution_global_variable_set", b"execution_global_variable_set", "id", b"id", "interpretation", b"interpretation", "result", b"result", "task", b"task", "time_range", b"time_range", "timestamp", b"timestamp"]) -> None: ...
 
 global___PlaybookTaskExecutionLog = PlaybookTaskExecutionLog
 

@@ -73,11 +73,11 @@ function Sidebar() {
               />
             </div>
           </Link>
-          <div class="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
+          <div className="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
             <p>{data?.current_version ? data?.current_version : ""}</p>
             {data?.should_upgrade ? (
               <>
-                <p class="bg-[#9553fe59] px-1 rounded-md">
+                <p className="bg-[#9553fe59] px-1 rounded-md">
                   <a
                     style={{ padding: "0px" }}
                     href="https://github.com/DrDroidLab/PlayBooks/releases"
@@ -144,7 +144,7 @@ function Sidebar() {
               onClick={(event) => handleListItemClick(event, 2)}>
               <DataThresholdingIcon />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>Data Sources</p>
+            <p style={{ fontSize: "14px" }}>Integrations</p>
           </NavLink>
         </List>
       </div>

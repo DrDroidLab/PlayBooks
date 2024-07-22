@@ -85,6 +85,7 @@ message PlaybookTaskExecutionLog {
   Interpretation interpretation = 5;
   TimeRange time_range = 6;
   google.protobuf.StringValue created_by = 7;
+  google.protobuf.Struct execution_global_variable_set = 8;
 }
 
 // Playbook Step Protos
