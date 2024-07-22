@@ -1060,28 +1060,31 @@ class PlaybookExecutionStepExecuteResponse(google.protobuf.message.Message):
 global___PlaybookExecutionStepExecuteResponse = PlaybookExecutionStepExecuteResponse
 
 @typing_extensions.final
-class PlaybookExecutionStopRequest(google.protobuf.message.Message):
+class PlaybookExecutionStatusUpdateRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     META_FIELD_NUMBER: builtins.int
     PLAYBOOK_RUN_ID_FIELD_NUMBER: builtins.int
+    STATUS_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
     def playbook_run_id(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    status: protos.playbooks.playbook_commons_pb2.PlaybookExecutionStatusType.ValueType
     def __init__(
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
         playbook_run_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        status: protos.playbooks.playbook_commons_pb2.PlaybookExecutionStatusType.ValueType = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbook_run_id", b"playbook_run_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbook_run_id", b"playbook_run_id"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta", "playbook_run_id", b"playbook_run_id", "status", b"status"]) -> None: ...
 
-global___PlaybookExecutionStopRequest = PlaybookExecutionStopRequest
+global___PlaybookExecutionStatusUpdateRequest = PlaybookExecutionStatusUpdateRequest
 
 @typing_extensions.final
-class PlaybookExecutionStopResponse(google.protobuf.message.Message):
+class PlaybookExecutionStatusUpdateResponse(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     META_FIELD_NUMBER: builtins.int
@@ -1103,7 +1106,7 @@ class PlaybookExecutionStopResponse(google.protobuf.message.Message):
     def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> None: ...
 
-global___PlaybookExecutionStopResponse = PlaybookExecutionStopResponse
+global___PlaybookExecutionStatusUpdateResponse = PlaybookExecutionStatusUpdateResponse
 
 @typing_extensions.final
 class PlaybooksBuilderOptionsRequest(google.protobuf.message.Message):

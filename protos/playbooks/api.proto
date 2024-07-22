@@ -267,12 +267,13 @@ message PlaybookExecutionStepExecuteResponse {
   PlaybookStepExecutionLog step_execution_log = 5;
 }
 
-message PlaybookExecutionStopRequest {
+message PlaybookExecutionStatusUpdateRequest {
   Meta meta = 1;
   google.protobuf.StringValue playbook_run_id = 2;
+  PlaybookExecutionStatusType status = 3;
 }
 
-message PlaybookExecutionStopResponse {
+message PlaybookExecutionStatusUpdateResponse {
   Meta meta = 1;
   google.protobuf.BoolValue success = 2;
   Message message = 3;
