@@ -21,6 +21,7 @@ export const getNodes = () => {
         index,
       },
       type: "step",
+      dragHandle: ".custom-drag-handle",
     };
   });
 

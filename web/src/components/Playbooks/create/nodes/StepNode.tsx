@@ -13,8 +13,12 @@ import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderCo
 // import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
 import MarkdownOutput from "../../card/MarkdownOutput.tsx";
+import { useDroppable } from "@dnd-kit/core";
 
 function StepNode({ data }) {
+  const { setNodeRef } = useDroppable({
+    id: data.step.id,
+  });
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
@@ -25,7 +29,7 @@ function StepNode({ data }) {
   const showPopup = (step?.external_links?.length ?? 0) > 0 || step.notes;
 
   return (
-    <>
+    <div ref={setNodeRef}>
       <div
         ref={stepRef}
         style={{ borderColor: handleStepBorderColor(step.id) }}
@@ -72,7 +76,7 @@ function StepNode({ data }) {
           <MarkdownOutput content={step?.notes} />
         </div>
       )}
-    </>
+    </div>
   );
 }
 

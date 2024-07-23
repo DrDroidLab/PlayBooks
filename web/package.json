@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@dagrejs/dagre": "^1.1.2",
+    "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.11.9",

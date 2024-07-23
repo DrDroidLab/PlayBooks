@@ -10,10 +10,20 @@ import {
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import { useDispatch, useSelector } from "react-redux";
 import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
+import { useDraggable } from "@dnd-kit/core";
 
 const taskDetailsId = PermanentDrawerTypes.TASK_DETAILS;
 
 function TaskNode({ taskId }) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: taskId,
+  });
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
   const [task] = useCurrentTask(taskId);
   const dispatch = useDispatch();
   const { toggle, openDrawer, permanentView, addAdditionalData } =
@@ -40,10 +50,13 @@ function TaskNode({ taskId }) {
     <>
       <div
         onClick={handleClick}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
         className={`${
           currentVisibleTask === taskId ? "border-violet-500 border-2" : ""
         } rounded-md overflow-hidden border-2 border-transparent`}
-        style={{ borderColor: handleTaskBorderColor(taskId) }}>
+        style={{ borderColor: handleTaskBorderColor(taskId), ...style }}>
         <div className="">
           <TaskTitle taskId={task?.id} />
         </div>

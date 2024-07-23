@@ -12,8 +12,10 @@ import { PostHogProvider } from "posthog-js/react";
 import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
 import Loading from "./components/common/Loading/index.tsx";
 import { ReactFlowProvider } from "reactflow";
+import { DndContext } from "@dnd-kit/core";
 import "highlight.js/styles/github.min.css";
 import "rsuite/DatePicker/styles/index.css";
+import { handleDragEnd } from "./components/Playbooks/create/utils/handleDragEnd.ts";
 
 if (config.posthogEnabled === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
@@ -26,24 +28,26 @@ if (config.posthogEnabled === "true") {
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <PostHogProvider client={posthog}>
-    <ReactFlowProvider>
-      <Provider store={store}>
-        <BrowserRouter>
-          <TimeRangeProvider>
-            <Routes>
-              <Route
-                path={"/*"}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <App />
-                  </React.Suspense>
-                }
-              />
-            </Routes>
-            <GlobalSnackbar />
-          </TimeRangeProvider>
-        </BrowserRouter>
-      </Provider>
-    </ReactFlowProvider>
+    <DndContext onDragEnd={handleDragEnd}>
+      <ReactFlowProvider>
+        <Provider store={store}>
+          <BrowserRouter>
+            <TimeRangeProvider>
+              <Routes>
+                <Route
+                  path={"/*"}
+                  element={
+                    <React.Suspense fallback={<Loading />}>
+                      <App />
+                    </React.Suspense>
+                  }
+                />
+              </Routes>
+              <GlobalSnackbar />
+            </TimeRangeProvider>
+          </BrowserRouter>
+        </Provider>
+      </ReactFlowProvider>
+    </DndContext>
   </PostHogProvider>,
 );
