@@ -12,9 +12,11 @@ from executor.source_processors.gke_api_processor import GkeApiProcessor, get_gk
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
     BashCommandOutputResult
 from protos.playbooks.source_task_definitions.gke_task_pb2 import Gke
+from protos.ui_definition_pb2 import FormField
 
 
 class GkeSourceManager(PlaybookSourceManager):
@@ -28,35 +30,104 @@ class GkeSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Pods from GKE Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="zone"),
+                              display_name=StringValue(value="Zone"),
+                              description=StringValue(value='Select GKE Zone'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select GKE Cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gke.TaskType.GET_DEPLOYMENTS: {
                 'executor': self.get_deployments,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Deployments from GKE Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="zone"),
+                              display_name=StringValue(value="Zone"),
+                              description=StringValue(value='Select GKE Zone'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select GKE Cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gke.TaskType.GET_EVENTS: {
                 'executor': self.get_events,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Events from GKE Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="zone"),
+                              display_name=StringValue(value="Zone"),
+                              description=StringValue(value='Select GKE Zone'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select GKE Cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gke.TaskType.GET_SERVICES: {
                 'executor': self.get_services,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Services from GKE Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="zone"),
+                              display_name=StringValue(value="Zone"),
+                              description=StringValue(value='Select GKE Zone'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select GKE Cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gke.TaskType.KUBECTL_COMMAND: {
                 'executor': self.execute_kubectl_command,
                 'model_types': [SourceModelType.GKE_CLUSTER],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute Kubectl Command in GKE Cluster',
-                'category': 'Actions'
+                'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="zone"),
+                              display_name=StringValue(value="Zone"),
+                              description=StringValue(value='Select GKE Zone'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select GKE Cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="command"),
+                              display_name=StringValue(value="Kubectl Command"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
