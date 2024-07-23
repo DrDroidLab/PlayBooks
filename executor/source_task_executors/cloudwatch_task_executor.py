@@ -9,7 +9,7 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
-from protos.literal_pb2 import LiteralType
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
@@ -55,6 +55,17 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value='Add Metric'),
                               data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="statistic"),
+                              display_name=StringValue(value="Metric Aggregation"),
+                              description=StringValue(value='Select Aggregation Function'),
+                              data_type=LiteralType.STRING,
+                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value="Average")),
+                              is_optional=True,
+                              valid_values=[Literal(type=LiteralType.STRING, string=StringValue(value="Average")),
+                                            Literal(type=LiteralType.STRING, string=StringValue(value="Sum")),
+                                            Literal(type=LiteralType.STRING, string=StringValue(value="SampleCount")),
+                                            Literal(type=LiteralType.STRING, string=StringValue(value="Maximum")),
+                                            Literal(type=LiteralType.STRING, string=StringValue(value="Minimum"))]),
                 ]
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
@@ -135,37 +146,35 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                 metric_unit = response_datapoints[0]['Unit']
             else:
                 metric_unit = ''
-            process_function = task.process_function.value
-            if process_function == 'timeseries':
-                metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                for item in response_datapoints:
-                    utc_timestamp = str(item['Timestamp'])
-                    utc_datetime = datetime.fromisoformat(utc_timestamp)
-                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
-                    val = item[requested_statistic]
-                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
-                    metric_datapoints.append(datapoint)
 
-                labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
-                    metric_label_values=[
-                        LabelValuePair(name=StringValue(value='namespace'), value=StringValue(value=namespace)),
-                        LabelValuePair(name=StringValue(value='statistic'),
-                                       value=StringValue(value=requested_statistic)),
-                    ],
-                    unit=StringValue(value=metric_unit),
-                    datapoints=metric_datapoints
-                )]
-                metric_metadata = f"{namespace} for region {region} "
-                for i in dimensions:
-                    metric_metadata += f"{i['Name']}:{i['Value']},  "
-                timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric_name),
-                                                     metric_name=StringValue(value=metric_metadata),
-                                                     labeled_metric_timeseries=labeled_metric_timeseries)
+            metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+            for item in response_datapoints:
+                utc_timestamp = str(item['Timestamp'])
+                utc_datetime = datetime.fromisoformat(utc_timestamp)
+                utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                val = item[requested_statistic]
+                datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                    timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                metric_datapoints.append(datapoint)
 
-                task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
-                                                 source=self.source)
+            labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
+                metric_label_values=[
+                    LabelValuePair(name=StringValue(value='namespace'), value=StringValue(value=namespace)),
+                    LabelValuePair(name=StringValue(value='statistic'),
+                                   value=StringValue(value=requested_statistic)),
+                ],
+                unit=StringValue(value=metric_unit),
+                datapoints=metric_datapoints
+            )]
+            metric_metadata = f"{namespace} for region {region} "
+            for i in dimensions:
+                metric_metadata += f"{i['Name']}:{i['Value']},  "
+            timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric_name),
+                                                 metric_name=StringValue(value=metric_metadata),
+                                                 labeled_metric_timeseries=labeled_metric_timeseries)
 
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
+                                             source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Cloudwatch task: {e}")
