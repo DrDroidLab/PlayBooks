@@ -41,6 +41,8 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                     'task_id': tel.task.id.value,
                     'task_result': proto_to_dict(tel.result),
                     'task_interpretation': proto_to_dict(tel.interpretation),
+                    'execution_global_variable_set': proto_to_dict(
+                        tel.execution_global_variable_set) if tel.execution_global_variable_set else None,
                 })
             for srel in sel.relation_execution_logs:
                 logger.info(f"Relation Execution Log: {srel}")
@@ -48,7 +50,8 @@ def store_step_execution_logs(account: Account, db_playbook: PlayBook, db_pb_exe
                     'relation_id': srel.relation.id.value,
                     'evaluation_result': srel.evaluation_result.value,
                     'evaluation_output': proto_to_dict(srel.evaluation_output) if srel.evaluation_output else None,
-                    'step_relation_interpretation': proto_to_dict(srel.step_relation_interpretation) if srel.step_relation_interpretation else None
+                    'step_relation_interpretation': proto_to_dict(
+                        srel.step_relation_interpretation) if srel.step_relation_interpretation else None
                 })
             all_step_executions[sel.step.id.value] = {
                 'all_task_executions': all_task_executions,
@@ -69,25 +72,31 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         pte_logs = []
         task_interpretations = []
         for task_proto in tasks:
+            global_variable_set_proto = Struct()
+            if not global_variable_set:
+                if task_proto.global_variable_set:
+                    global_variable_set = proto_to_dict(task_proto.global_variable_set)
+                    global_variable_set_proto.update(global_variable_set)
+                else:
+                    global_variable_set = {}
+            else:
+                global_variable_set_proto.update(global_variable_set)
             try:
-                if not global_variable_set:
-                    if task_proto.global_variable_set:
-                        global_variable_set = proto_to_dict(task_proto.global_variable_set)
-                    else:
-                        global_variable_set = {}
                 task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
                                                                                       global_variable_set,
                                                                                       task_proto)
                 task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
                                                                                  task_result)
                 playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
-                                                                       interpretation=task_interpretation)
+                                                                       interpretation=task_interpretation,
+                                                                       execution_global_variable_set=global_variable_set_proto)
                 task_interpretations.append(task_interpretation)
             except Exception as exc:
                 logger.error(f"Error occurred while running task: {exc}")
                 playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
                                                                        result=PlaybookTaskResult(
-                                                                           error=StringValue(value=str(exc))))
+                                                                           error=StringValue(value=str(exc))),
+                                                                       execution_global_variable_set=global_variable_set_proto)
             pte_logs.append(playbook_task_execution_log)
         step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
 
@@ -102,11 +111,11 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 condition_evaluation_result = False
                 condition_evaluation_output = {'error': str(exc) if exc else 'Unknown Error'}
             condition_evaluation_output_proto = dict_to_proto(condition_evaluation_output, Struct)
-            if condition_evaluation_output=={}:
+            if condition_evaluation_output == {}:
                 relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
-                                                                        evaluation_result=BoolValue(
-                                                                            value=condition_evaluation_result),
-                                                                        evaluation_output=condition_evaluation_output_proto)
+                                                                          evaluation_result=BoolValue(
+                                                                              value=condition_evaluation_result),
+                                                                          evaluation_output=condition_evaluation_output_proto)
             else:
                 step_relation_interpretation_string = step_relation_interpret(relation_proto)
                 # if condition_evaluation_result:
@@ -114,15 +123,15 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 # else:
                 #     summary = f"The condition {step_relation_interpretation_string} is False"
                 step_relation_interpretation: InterpretationProto = InterpretationProto(
-                                                                        type=InterpretationProto.Type.TEXT, 
-                                                                        summary=StringValue(value=step_relation_interpretation_string),
-                                                                        model_type=InterpretationProto.ModelType.PLAYBOOK_STEP_RELATION
-                                                                        )
+                    type=InterpretationProto.Type.TEXT,
+                    summary=StringValue(value=step_relation_interpretation_string),
+                    model_type=InterpretationProto.ModelType.PLAYBOOK_STEP_RELATION
+                )
                 relation_execution_log = PlaybookStepRelationExecutionLog(relation=relation_proto,
-                                                                        evaluation_result=BoolValue(
-                                                                            value=condition_evaluation_result),
-                                                                        evaluation_output=condition_evaluation_output_proto,
-                                                                        step_relation_interpretation=step_relation_interpretation)
+                                                                          evaluation_result=BoolValue(
+                                                                              value=condition_evaluation_result),
+                                                                          evaluation_output=condition_evaluation_output_proto,
+                                                                          step_relation_interpretation=step_relation_interpretation)
             relation_execution_logs.append(relation_execution_log)
         step_execution_log = PlaybookStepExecutionLog(step=step, task_execution_logs=pte_logs,
                                                       step_interpretation=step_interpretation,

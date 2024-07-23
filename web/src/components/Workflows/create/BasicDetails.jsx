@@ -15,6 +15,7 @@ import { useGenerateCurlMutation } from "../../../store/features/workflow/api/ge
 import PlaybookDetails from "./PlaybookDetails.jsx";
 import { useGenerateWebhookMutation } from "../../../store/features/workflow/api/generateWebHookApi.ts";
 import SummaryOptions from "./SummaryOptions.tsx";
+import Transformer from "./Transformer.tsx";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -44,9 +45,21 @@ function BasicDetails() {
     switch (currentWorkflow?.workflowType) {
       case "api":
         handleGenerateCurl();
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
         return;
       case "pagerduty_incident":
         handleGenerateWebhook();
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
         return;
       default:
         return;
@@ -134,6 +147,7 @@ function BasicDetails() {
         <hr />
         <PlaybookDetails />
         <SummaryOptions />
+        <Transformer />
       </div>
     </>
   );

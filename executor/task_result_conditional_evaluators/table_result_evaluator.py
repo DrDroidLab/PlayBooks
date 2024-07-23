@@ -1,36 +1,11 @@
 from typing import Dict
 
 from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
-from protos.base_pb2 import Operator
+from executor.task_result_conditional_evaluators.utils import numeric_function_result_operator_threshold, \
+    string_function_result_operator_threshold
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
 from protos.playbooks.playbook_pb2 import PlaybookTaskResultRule
 from protos.playbooks.playbook_task_result_evaluator_pb2 import TableResultRule
-
-
-def numeric_function_result_operator_threshold(function_result, operator, threshold):
-    if operator == Operator.GREATER_THAN_O:
-        return function_result > threshold
-    elif operator == Operator.LESS_THAN_O:
-        return function_result < threshold
-    elif operator == Operator.GREATER_THAN_EQUAL_O:
-        return function_result >= threshold
-    elif operator == Operator.LESS_THAN_EQUAL_O:
-        return function_result <= threshold
-    elif operator == Operator.EQUAL_O:
-        return function_result == threshold
-    elif operator == Operator.NOT_EQUAL_O:
-        return function_result != threshold
-    else:
-        raise ValueError(f'Operator {operator} not supported')
-
-
-def string_function_result_operator_threshold(column_value, operator, threshold):
-    if operator == Operator.EQUAL_O:
-        return column_value == threshold
-    elif operator == Operator.CONTAINS_O:
-        return threshold in column_value
-    else:
-        raise ValueError(f'Operator {operator} not supported')
 
 
 def table_row_count_operator(operator, threshold, row_count):

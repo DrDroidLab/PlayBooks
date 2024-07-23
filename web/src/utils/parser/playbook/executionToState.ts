@@ -1,5 +1,6 @@
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
+import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import extractExecutionRelations from "./execution/extractExecutionRelations.ts";
 import extractExecutionTasks from "./execution/extractExecutionTasks.ts";
@@ -68,14 +69,23 @@ function executionToState(playbook_execution: any): Playbook {
     executedSteps.push(executionStep);
   });
 
+  const variables =
+    Object.keys(playbook_execution?.execution_global_variable_set ?? {})
+      .length === 0
+      ? playbook.global_variable_set
+      : playbook_execution?.execution_global_variable_set;
+
   return {
     ...(currentPlaybook ?? playbook),
+    global_variable_set: variables ?? {},
     steps: playbookSteps,
     step_relations: playbookRelations,
     ui_requirement: {
       tasks,
       isExisting: true,
       executedSteps,
+      executionStatus: (playbook_execution.status ??
+        ExecutionStatus.CREATED) as ExecutionStatus,
     },
   };
 }

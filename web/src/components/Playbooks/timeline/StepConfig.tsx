@@ -28,9 +28,7 @@ function StepConfig({ step, index }: StepConfigPropTypes) {
   const tasks = playbook?.ui_requirement.tasks ?? [];
   const stepTasks: Task[] = step.tasks
     ?.map((taskId: string | Task) =>
-      tasks.find(
-        (e) => e.id === (typeof taskId === "string" ? taskId : taskId.id),
-      ),
+      typeof taskId === "string" ? tasks.find((e) => e.id === taskId) : taskId,
     )
     .filter((task) => task !== undefined);
 
@@ -77,7 +75,12 @@ function StepConfig({ step, index }: StepConfigPropTypes) {
         </div>
       </div>
       {stepTasks?.map((task: Task) => (
-        <HandleOutput key={task.id} id={task?.id} showHeading={false} />
+        <HandleOutput
+          key={task.id}
+          id={task?.id}
+          showHeading={false}
+          taskFromExecution={task}
+        />
       ))}
 
       {step.notes && (

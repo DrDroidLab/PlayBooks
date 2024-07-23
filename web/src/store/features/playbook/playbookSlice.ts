@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { integrationSentenceMap } from "../../../utils/integrationOptions/index.ts";
 import { PermanentDrawerTypes } from "../drawers/permanentDrawerTypes.ts";
 import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
 import { Step, PlaybookUIState, TaskType } from "../../../types/index.ts";
@@ -155,8 +154,7 @@ const playbookSlice = createSlice({
             statistic: "Average",
           },
         },
-        description:
-          payload.description ?? integrationSentenceMap[payload.modelType],
+        description: payload.description,
       };
 
       if (existingStepId) {

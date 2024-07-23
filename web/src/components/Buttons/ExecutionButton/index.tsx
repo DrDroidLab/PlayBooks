@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded, StopCircleRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
@@ -11,6 +11,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import { useUpdateExecutionStatusMutation } from "../../../store/features/playbook/api/executions/updateExecutionStatusApi.ts";
+import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
 
 function ExecutionButton() {
   const navigate = useNavigate();
@@ -22,10 +24,22 @@ function ExecutionButton() {
   const executionId = searchParams.get("executionId");
   const [triggerStartExecution, { isLoading: executionLoading }] =
     useStartExecutionMutation();
+  const [triggerStopExecution, { isLoading: stopLoading }] =
+    useUpdateExecutionStatusMutation();
+  const [loading, setLoading] = useState(false);
 
   const handleStartExecution = async () => {
-    if (executionId) return;
+    if (loading) return;
     if (!currentPlaybook?.id) return;
+    setLoading(true);
+    if (executionId) {
+      dispatch(setPlaybookKey({ key: "executionId", value: executionId }));
+      if (step) await executeStep(step.id);
+      setSearchParams({ executionId: executionId });
+      setLoading(false);
+      window.location.reload();
+      return;
+    }
     const response = await triggerStartExecution(
       parseInt(currentPlaybook.id, 10),
     );
@@ -36,16 +50,22 @@ function ExecutionButton() {
       if (step) await executeStep(step.id);
       setSearchParams({ executionId: data.playbook_run_id });
     }
+    setLoading(false);
   };
 
-  const handleStopExecution = () => {
+  const handleStopExecution = async () => {
     if (!executionId) return;
+    await triggerStopExecution({ playbook_run_id: executionId });
     navigate(`/playbooks/${currentPlaybook?.id}`, { replace: true });
   };
 
+  const showStop =
+    currentPlaybook?.ui_requirement.executionStatus !==
+      ExecutionStatus.CREATED && executionId;
+
   return (
     <>
-      {executionLoading && (
+      {(executionLoading || stopLoading || loading) && (
         <CircularProgress
           style={{
             textAlign: "center",
@@ -53,7 +73,7 @@ function ExecutionButton() {
           size={20}
         />
       )}
-      {executionId ? (
+      {showStop ? (
         <CustomButton onClick={handleStopExecution}>
           <StopCircleRounded />
           <span>Stop</span>
@@ -61,7 +81,7 @@ function ExecutionButton() {
       ) : (
         <CustomButton onClick={handleStartExecution}>
           <PlayArrowRounded />
-          <span>Start</span>
+          <span>{loading ? "Executing..." : "Start"}</span>
         </CustomButton>
       )}
     </>
