@@ -46,6 +46,11 @@ const CreateFlow = () => {
     }
   }, [dagreData]);
 
+  const handleEdgesDelete = (edges) => {
+    console.log("Deleted edges:", edges);
+    // Perform additional actions or state updates here if necessary
+  };
+
   return (
     <div ref={graphRef} className="h-full w-full">
       <ReactFlow
@@ -53,6 +58,7 @@ const CreateFlow = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onEdgesDelete={handleEdgesDelete}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         minZoom={-Infinity}
