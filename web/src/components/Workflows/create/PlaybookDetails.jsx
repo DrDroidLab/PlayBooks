@@ -1,10 +1,11 @@
-import SelectComponent from "../../SelectComponent";
 import { useGetPlaybooksNoLimitQuery } from "../../../store/features/playbook/api/index.ts";
 import { handleSelect } from "../utils/handleInputs.ts";
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import GlobalVariablesList from "./GlobalVariablesList.tsx";
 
 function PlaybookDetails() {
@@ -29,30 +30,34 @@ function PlaybookDetails() {
           + Create New
         </a>
       </label>
-      <div className="flex gap-2 items-center">
-        <SelectComponent
-          data={data?.playbooks?.map((e) => {
-            return {
-              id: e.id,
-              label: e.name,
-              playbook: e,
-            };
-          })}
-          placeholder={`Select Playbook`}
-          onSelectionChange={(_, val) => {
-            handleSelect("playbookId", val);
-          }}
-          selected={currentWorkflow?.playbookId}
-          searchable={true}
-          error={currentWorkflow?.errors?.playbookId ?? false}
-        />
-        {playbooksLoading && <CircularProgress size={20} />}
-        <button onClick={refetch}>
-          <RefreshRounded
-            className={`text-gray-400 hover:text-gray-600 transition-all`}
-          />
-        </button>
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={data?.playbooks?.map((e) => {
+          return {
+            id: e.id,
+            label: e.name,
+            playbook: e,
+          };
+        })}
+        placeholder={`Select Playbook`}
+        handleChange={(id) => {
+          const playbook = data?.playbooks.find((e) => e.id === id);
+          handleSelect("playbookId", playbook);
+        }}
+        value={currentWorkflow?.playbookId}
+        searchable={true}
+        error={currentWorkflow?.errors?.playbookId ?? false}
+        suffix={
+          <>
+            {playbooksLoading && <CircularProgress size={20} />}
+            <button onClick={refetch}>
+              <RefreshRounded
+                className={`text-gray-400 hover:text-gray-600 transition-all`}
+              />
+            </button>
+          </>
+        }
+      />
 
       {currentWorkflow?.playbookId && (
         <GlobalVariablesList

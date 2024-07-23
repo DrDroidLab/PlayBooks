@@ -1,45 +1,45 @@
 import React from "react";
-import SelectComponent from "../../SelectComponent";
+import DropdownOptions from "../../common/DropdownOptions/index.tsx";
+import DropdownTitle from "../../common/DropdownTitle/index.tsx";
+import useDropdown from "../../../hooks/useDropdown.ts";
 
 type DropdownInputType = {
-  label: string;
   value: string;
   handleChange: (val: string) => void;
   options: any[];
+  label?: string;
   placeholder?: string;
   error?: string;
   disabled?: boolean;
 };
 
 function DropdownInput({
-  label,
-  value,
   handleChange,
-  disabled,
-  error,
   options,
+  value,
+  disabled,
   ...props
 }: DropdownInputType) {
+  const { dropdownRef, handleSelect, isOpen, toggle } =
+    useDropdown(handleChange);
+
+  const selectedValue = value ? options.find((e) => e.id === value)?.label : "";
+
   return (
-    <div className={`flex flex-col`}>
-      <p
-        style={{
-          fontSize: "13px",
-          color: "#676666",
-        }}>
-        <b>{label}</b>
-      </p>
-      <SelectComponent
-        data={options ?? []}
-        placeholder={`Select ${label}`}
-        onSelectionChange={handleChange}
-        selected={value}
-        searchable={true}
-        disabled={disabled}
-        error={error}
-        containerClassName={"w-56"}
+    <div ref={dropdownRef} className="relative w-fit inline-block text-left">
+      <DropdownTitle
         {...props}
+        toggle={toggle}
+        value={selectedValue}
+        showIcon={true}
+        inputDisabled={true}
+        disabled={disabled}
+        className={`!min-w-[100px] pointer-events-none`}
       />
+
+      {isOpen && !disabled && (
+        <DropdownOptions options={options} handleSelect={handleSelect} />
+      )}
     </div>
   );
 }

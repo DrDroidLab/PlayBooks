@@ -4,13 +4,16 @@ import React from "react";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import updateStepById from "../../../utils/playbook/step/updateStepById.ts";
 import Step from "../../Playbooks/steps/Step.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function StepDetailsDrawer() {
   const [step, currentStepId] = useCurrentStep();
   const stepRef = useRef<HTMLDivElement>(null);
+  const isPrefetched = useIsPrefetched();
 
-  const handleUpdateStepName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const handleUpdateStepName = (val: string) => {
     updateStepById("description", val, currentStepId!);
   };
 
@@ -27,15 +30,15 @@ function StepDetailsDrawer() {
         {step?.ui_requirement?.outputLoading && <CircularProgress size={20} />}
       </h2>
 
-      <div className="flex items-center justify-between pr-2">
-        <div className="w-full">
-          <input
-            className="border-gray-300 border rounded w-full p-1 text-sm font-bold text-gray-500"
-            value={step?.description}
-            onChange={handleUpdateStepName}
-          />
-        </div>
-      </div>
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        value={step?.description ?? ""}
+        handleChange={handleUpdateStepName}
+        disabled={!!isPrefetched}
+        className="!w-full"
+        containerClassName="w-full"
+        placeholder="Enter step name"
+      />
 
       {currentStepId && <Step id={currentStepId} />}
     </div>
