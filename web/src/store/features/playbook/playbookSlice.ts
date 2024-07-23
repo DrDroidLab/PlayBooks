@@ -39,6 +39,7 @@ const playbookSlice = createSlice({
     addRule: Actions.addRule,
     duplicateTask: Actions.duplicateTask,
     removeRelation: Actions.removeRelation,
+    addRelation: Actions.addRelation,
   },
 });
 
@@ -76,6 +77,7 @@ export const {
   addRule,
   duplicateTask,
   removeRelation,
+  addRelation,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
