@@ -23,6 +23,6 @@ export const constructBuilder = (id?: string) => {
     })),
     inputType: field.form_field_type,
     isOptional: field.is_optional,
-    defaultValue: field.default_value,
+    default: field.default_value?.[field.default_value.type.toLowerCase()],
   }));
 };
