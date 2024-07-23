@@ -14,7 +14,7 @@ function useExecutionStack() {
   const playbookSteps = currentPlaybook?.steps;
   const dispatch = useDispatch();
   const { refetch } = useGetPlaybookExecutionQuery();
-  const executingStep = (steps ?? []).find(
+  const executingStep = (playbookSteps ?? []).find(
     (step: Step) => step.ui_requirement.outputLoading,
   );
 
