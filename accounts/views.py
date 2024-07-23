@@ -163,6 +163,12 @@ def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersRespon
 @api_view(['GET'])
 def get_login_providers(request_message: HttpRequest) -> JsonResponse:
     active_providers = []
+
+    # Add EMAIL provider if enabled
+    if settings.EMAIL_PASSWORD_AUTH_ENABLED:
+        active_providers.append("EMAIL")
+
+    # Add OKTA provider if configured
     if settings.OKTA_CLIENT_ID and settings.OKTA_DOMAIN:
         active_providers.append(SSOProvider.Name(SSOProvider.OKTA))
     return JsonResponse({'active_providers': active_providers}, status=200)
