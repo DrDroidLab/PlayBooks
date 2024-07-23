@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function GrepExistence({
   condition,
@@ -21,35 +22,29 @@ function GrepExistence({
   };
 
   return (
-    <>
-      <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => handleChange(val, `pattern`)}
-          value={rule.pattern}
-          valueOptions={[]}
-          placeHolder={"Enter pattern to evaluate"}
-          length={200}
-        />
-      </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <Checkbox
-          id="case_sensitive"
-          isChecked={rule.case_sensitive}
-          onChange={() => {
-            addConditionToEdgeByIndex(
-              `${keyValue}.case_sensitive`,
-              !rule.case_sensitive,
-              edgeIndex,
-              conditionIndex,
-            );
-          }}
-          label="Pattern is Case Sensitive"
-          isSmall={true}
-        />
-      </div>
-    </>
+    <div className="flex flex-wrap items-center gap-2">
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        value={rule.pattern}
+        handleChange={(val: string) => handleChange(val, `pattern`)}
+        placeholder={"Enter pattern to evaluate"}
+        className="!w-[200px]"
+      />
+      <Checkbox
+        id="case_sensitive"
+        isChecked={rule.case_sensitive}
+        onChange={() => {
+          addConditionToEdgeByIndex(
+            `${keyValue}.case_sensitive`,
+            !rule.case_sensitive,
+            edgeIndex,
+            conditionIndex,
+          );
+        }}
+        label="Pattern is Case Sensitive"
+        isSmall={true}
+      />
+    </div>
   );
 }
 

@@ -11,7 +11,7 @@ export const datadogBuilder = (options: any, task: Task) => {
         {
           key: Key.SERVICE_NAME,
           label: "Service",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({
             id: x.name,
             label: x.name,
@@ -21,7 +21,7 @@ export const datadogBuilder = (options: any, task: Task) => {
         {
           key: Key.METRIC_FAMILY,
           label: "Metric Family",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.name === getTaskData(task)?.datadogService)
             ?.metric_families?.map((x) => ({ id: x, label: x })),
@@ -29,7 +29,7 @@ export const datadogBuilder = (options: any, task: Task) => {
         {
           key: Key.ENVIRONMENT_NAME,
           label: "Environment",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getCurrentAsset(
             task,
             Key.SERVICE_NAME,
@@ -44,7 +44,7 @@ export const datadogBuilder = (options: any, task: Task) => {
         {
           key: Key.METRIC,
           label: "Metric",
-          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: getCurrentAsset(task, Key.SERVICE_NAME, "service_name")
             ?.metrics?.filter(
               (e) => e.metric_family === getTaskData(task).datadogMetricFamily,

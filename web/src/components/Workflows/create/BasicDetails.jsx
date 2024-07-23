@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import ValueComponent from "../../ValueComponent/index.jsx";
-import SelectComponent from "../../SelectComponent/index.jsx";
 import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,6 +13,8 @@ import { useGenerateCurlMutation } from "../../../store/features/workflow/api/ge
 import PlaybookDetails from "./PlaybookDetails.jsx";
 import { useGenerateWebhookMutation } from "../../../store/features/workflow/api/generateWebHookApi.ts";
 import SummaryOptions from "./SummaryOptions.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import Transformer from "./Transformer.tsx";
 
 function BasicDetails() {
@@ -74,19 +74,15 @@ function BasicDetails() {
     <>
       <div className="flex gap-4">
         <div className="space-y-2">
-          <label
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="playbook">
-            Workflow Name
-          </label>
-          <ValueComponent
-            valueType={"STRING"}
-            placeHolder={"Enter workflow name"}
+          <CustomInput
+            label="Workflow Name"
+            inputType={InputTypes.TEXT}
             value={currentWorkflow.name}
-            onValueChange={(val) => {
+            handleChange={(val) => {
               handleInput("name", val);
             }}
             error={currentWorkflow?.errors?.name ?? false}
+            className="!w-[200px]"
           />
         </div>
       </div>
@@ -113,31 +109,31 @@ function BasicDetails() {
             </p>
           </div>
           <div className="flex gap-2 items-center">
-            <SelectComponent
-              data={triggerOptions?.map((e) => {
+            <CustomInput
+              inputType={InputTypes.DROPDOWN}
+              options={triggerOptions?.map((e) => {
                 return {
                   id: e.id,
                   label: e.label,
                 };
               })}
               placeholder={`Select Workflow Type`}
-              onSelectionChange={(_, val) => {
+              handleChange={(id) => {
+                const val = triggerOptions.find((e) => e.id === id);
                 handleSelect("workflowType", val);
               }}
-              selected={currentWorkflow?.workflowType}
+              value={currentWorkflow?.workflowType}
               searchable={true}
               error={currentWorkflow?.errors?.workflowType ?? false}
+              suffix={
+                currentWorkflow?.workflowType === "api" &&
+                !currentWorkflow?.name && (
+                  <p className="text-sm">
+                    (Enter workflow name to see the curl)
+                  </p>
+                )
+              }
             />
-            {currentWorkflow?.workflowType === "api" &&
-              !currentWorkflow?.name && (
-                // <button
-                //   className="border p-1 rounded transition-all text-xs text-violet-500 border-violet-500 hover:bg-violet-500 hover:text-white cursor-pointer disabled:bg-gray-100 disabled:text-gray-300 disabled:border-gray-300 disabled:cursor-not-allowed"
-                //   onClick={handleGenerateCurl}
-                //   disabled={!currentWorkflow.name || generateCurlLoading}>
-                //   Generate Curl
-                // </button>
-                <p className="text-sm">(Enter workflow name to see the curl)</p>
-              )}
             {(generateCurlLoading || generateWebhookLoading) && (
               <CircularProgress size={20} />
             )}

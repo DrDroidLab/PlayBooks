@@ -69,6 +69,7 @@ class PlaybookSourceFacade:
                 model_types = task_info['model_types']
                 model_options: [PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] = []
                 task_result_type = task_info.get('result_type', PlaybookTaskResultType.UNKNOWN)
+                form_fields = task_info.get('form_fields', [])
                 for m in model_types:
                     model_type_display_name = model_type_display_name_maps.get(m, SourceModelType.Name(m))
                     model_options.append(
@@ -79,7 +80,8 @@ class PlaybookSourceFacade:
                                                          task_type=StringValue(value=task_type_name),
                                                          category=StringValue(value=task_type_category),
                                                          supported_model_types=model_options,
-                                                         result_type=task_result_type))
+                                                         result_type=task_result_type,
+                                                         form_fields=form_fields))
             display_name = integrations_connector_type_display_name_map.get(source, Source.Name(source))
             source_options.append(PlaybookSourceOptions(source=source,
                                                         display_name=StringValue(value=display_name),

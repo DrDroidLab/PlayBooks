@@ -8,7 +8,7 @@ export const bashBuilder = (options?: any) => {
         {
           key: Key.REMOTE_SERVER,
           label: "Remote Server",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
           isOptional: true,
         },
@@ -17,7 +17,7 @@ export const bashBuilder = (options?: any) => {
         {
           key: Key.COMMAND,
           label: "Command",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

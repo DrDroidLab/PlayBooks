@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
@@ -10,8 +9,10 @@ from executor.source_processors.azure_api_processor import AzureApiProcessor
 
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.azure_task_pb2 import Azure
+from protos.ui_definition_pb2 import FormField
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,21 @@ class AzureSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.AZURE_WORKSPACE],
                 'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Fetch logs from Azure Log Analytics Workspace',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="workspace_id"),
+                              display_name=StringValue(value="Azure Workspace ID"),
+                              description=StringValue(value='Select Workspace ID'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="filter_query"),
+                              display_name=StringValue(value="Log Filter Query"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="timespan"),
+                              display_name=StringValue(value="Timespan (hours)"),
+                              description=StringValue(value='Enter Timespan (hours)'),
+                              data_type=LiteralType.STRING,
+                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value="1")))
+                ]
             },
         }
 
@@ -35,8 +50,8 @@ class AzureSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(azure_connector.type, azure_connector.keys)
         return AzureApiProcessor(**generated_credentials)
 
-    def filter_log_events(self, time_range: TimeRange, global_variable_set: Dict,
-                          azure_task: Azure, azure_connector: ConnectorProto) -> PlaybookTaskResult:
+    def filter_log_events(self, time_range: TimeRange, azure_task: Azure,
+                          azure_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             tr_end_time = time_range.time_lt
             end_time = int(tr_end_time * 1000)
@@ -49,9 +64,6 @@ class AzureSourceManager(PlaybookSourceManager):
             timespan = timedelta(hours=int(timespan_delta)) if timespan_delta else timedelta(
                 seconds=end_time - start_time)
             query_pattern = task.filter_query.value
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    query_pattern = query_pattern.replace(key, str(value))
 
             azure_api_processor = self.get_connector_processor(azure_connector)
 
@@ -75,12 +87,13 @@ class AzureSourceManager(PlaybookSourceManager):
                     table_rows.append(table_row)
 
             result = TableResult(
-                raw_query=StringValue(value=f'Execute {query_pattern} on Azure Log Analytics workspace: {workspace_id}'),
+                raw_query=StringValue(
+                    value=f'Execute {query_pattern} on Azure Log Analytics workspace: {workspace_id}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)),
             )
 
-            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=result, source=self.source)
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, logs=result, source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Azure task: {e}")

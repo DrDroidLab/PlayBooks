@@ -25,7 +25,7 @@ export const newRelicEntityApplicationBuilder = (options: any, task: Task) => {
         {
           key: Key.APPLICATION_NAME,
           label: "Application",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.application_name,
@@ -36,7 +36,7 @@ export const newRelicEntityApplicationBuilder = (options: any, task: Task) => {
         {
           key: Key.GOLDEN_METRIC_NAME,
           label: "Metric",
-          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: metrics,
           handleChange: (id: string) => {
             const metric = metrics.find((m) => m.id === id);
@@ -56,7 +56,7 @@ export const newRelicEntityApplicationBuilder = (options: any, task: Task) => {
         {
           key: Key.GOLDEN_METRIC_UNIT,
           label: "Unit",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           disabled: true,
         },
       ],
@@ -64,7 +64,7 @@ export const newRelicEntityApplicationBuilder = (options: any, task: Task) => {
         {
           key: Key.GOLDEN_METRIC_NRQL_EXPRESSION,
           label: "Selected Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
           disabled: true,
         },
       ],

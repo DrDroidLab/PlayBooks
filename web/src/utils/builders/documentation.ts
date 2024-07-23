@@ -8,7 +8,7 @@ export const documentationBuilder = () => {
         {
           key: Key.CONTENT,
           label: "Content",
-          type: InputTypes.WYISWYG,
+          inputType: InputTypes.WYISWYG,
         },
       ],
     ],

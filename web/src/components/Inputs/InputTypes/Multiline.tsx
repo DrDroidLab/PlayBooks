@@ -1,11 +1,12 @@
 import React, { ChangeEvent } from "react";
 
 type MultilineInputType = {
-  label: string;
+  label?: string;
   value: string;
   handleChange: (val: string) => void;
   error?: string;
   disabled?: boolean;
+  className?: string;
 };
 
 function Multiline({
@@ -14,6 +15,8 @@ function Multiline({
   handleChange,
   disabled,
   error,
+  className,
+  ...props
 }: MultilineInputType) {
   const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -21,21 +24,16 @@ function Multiline({
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <p className="mt-2 text-sm text-gray-500">
-        <b>{label}</b>
-      </p>
-      <textarea
-        className={
-          "w-full border border-gray-300 p-1 rounded mt-1 text-sm resize-none text-[#676666] h-32"
-        }
-        rows={4}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        style={error ? { borderColor: "red" } : {}}
-      />
-    </div>
+    <textarea
+      className={`${className} w-full border border-gray-300 p-1 rounded text-xs resize-none text-[#676666] h-32 outline-none`}
+      rows={4}
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      style={error ? { borderColor: "red" } : {}}
+      placeholder={`Enter ${label}`}
+      {...props}
+    />
   );
 }
 

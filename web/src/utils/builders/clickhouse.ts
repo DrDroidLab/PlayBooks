@@ -1,4 +1,5 @@
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 import { Key } from "../playbook/key.ts";
 
 export const clickhouseBuilder = (options: any) => {
@@ -8,7 +9,7 @@ export const clickhouseBuilder = (options: any) => {
         {
           key: Key.DATABASE,
           label: "Database",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
         },
       ],
@@ -16,14 +17,15 @@ export const clickhouseBuilder = (options: any) => {
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
           key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
-          type: InputTypes.TEXT_ROW,
+          type: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
           default: 120,
         },
       ],
