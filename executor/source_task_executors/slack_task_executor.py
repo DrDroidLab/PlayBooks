@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import Dict
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
@@ -40,7 +39,7 @@ class SlackSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return SlackApiProcessor(**generated_credentials)
 
-    def execute_send_message(self, time_range: TimeRange, global_variable_set: Dict, slack_task: SlackTaskProto,
+    def execute_send_message(self, time_range: TimeRange, slack_task: SlackTaskProto,
                              slack_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not slack_connector:
@@ -80,7 +79,7 @@ class SlackSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing Postgres task: {e}")
 
-    def execute_send_thread_reply(self, time_range: TimeRange, global_variable_set: Dict, slack_task: SlackTaskProto,
+    def execute_send_thread_reply(self, time_range: TimeRange, slack_task: SlackTaskProto,
                                   slack_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not slack_connector:

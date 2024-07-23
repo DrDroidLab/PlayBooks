@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
@@ -9,8 +7,10 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.bash_task_pb2 import Bash
+from protos.ui_definition_pb2 import FormField
 
 
 class BashSourceManager(PlaybookSourceManager):
@@ -24,7 +24,16 @@ class BashSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.SSH_SERVER],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute a BASH Command',
-                'category': 'Actions'
+                'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="remote_server"),
+                              display_name=StringValue(value="Remote Server"),
+                              description=StringValue(value='Select Remote Server'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="command"),
+                              display_name=StringValue(value="Command"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
@@ -48,7 +57,7 @@ class BashSourceManager(PlaybookSourceManager):
             generated_credentials['remote_host'] = remote_server_str
         return RemoteServerProcessor(**generated_credentials)
 
-    def execute_command(self, time_range: TimeRange, global_variable_set: Dict, bash_task: Bash,
+    def execute_command(self, time_range: TimeRange, bash_task: Bash,
                         remote_server_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             bash_command: Bash.Command = bash_task.command
@@ -65,13 +74,6 @@ class BashSourceManager(PlaybookSourceManager):
 
             command_str = bash_command.command.value
             commands = command_str.split('\n')
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    updated_commands = []
-                    for command in commands:
-                        command = command.replace(key, str(value))
-                        updated_commands.append(command)
-                    commands = updated_commands
             try:
                 outputs = {}
                 ssh_client = self.get_connector_processor(remote_server_connector, remote_server_str=remote_server_str)

@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "protos/literal.proto";
+
+package protos;
+
+message FormField {
+  google.protobuf.StringValue key_name = 1;
+  google.protobuf.StringValue display_name = 2;
+  google.protobuf.StringValue description = 3;
+  LiteralType data_type = 4;
+  bool is_optional = 5;
+  Literal default_value = 6;
+  repeated Literal valid_values = 7;
+  bool is_composite = 8;
+  repeated FormField composite_fields = 9;
+  google.protobuf.UInt64Value max_length_allowed = 10;
+  bool is_date_time_field = 11;
+}

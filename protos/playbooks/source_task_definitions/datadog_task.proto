@@ -10,13 +10,11 @@ message Datadog {
     google.protobuf.StringValue environment_name = 2;
     google.protobuf.StringValue metric_family = 3;
     google.protobuf.StringValue metric = 4;
-    google.protobuf.StringValue process_function = 5;
   }
 
   message QueryMetricExecutionTask {
     repeated string queries = 1;
     google.protobuf.StringValue formula = 2;
-    google.protobuf.StringValue process_function = 3;
   }
 
   enum TaskType {

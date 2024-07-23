@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
@@ -8,9 +7,11 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
+from protos.ui_definition_pb2 import FormField
 
 
 class GrafanaVpcSourceManager(PlaybookSourceManager):
@@ -24,7 +25,42 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.GRAFANA_TARGET_METRIC_PROMQL],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus based dashboard panels from Grafana VPC',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="datasource_uid"),
+                              display_name=StringValue(value="Data Source UID"),
+                              description=StringValue(value="Select Data Source UID "),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="promql_expression"),
+                              display_name=StringValue(value="PromQL"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="promql_label_option_values"),
+                              display_name=StringValue(value="PromQl Labels"),
+                              is_composite=True,
+                              composite_fields=[
+                                  FormField(key_name=StringValue(value="name"),
+                                            display_name=StringValue(value="Label Name"),
+                                            data_type=LiteralType.STRING),
+                                  FormField(key_name=StringValue(value="value"),
+                                            display_name=StringValue(value="Label Value"),
+                                            data_type=LiteralType.STRING)
+                              ]),
+                    FormField(key_name=StringValue(value="dashboard_uid"),
+                              display_name=StringValue(value="Dashboard UID"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="dashboard_title"),
+                              display_name=StringValue(value="Dashboard Title"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="panel_id"),
+                              display_name=StringValue(value="Panel ID"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="panel_title"),
+                              display_name=StringValue(value="Panel Title"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="panel_promql_expression"),
+                              display_name=StringValue(value="Panel PromQL"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
@@ -32,7 +68,7 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return VpcApiProcessor(**generated_credentials)
 
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, grafana_task: Grafana,
+    def execute_promql_metric_execution(self, time_range: TimeRange, grafana_task: Grafana,
                                         vpc_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not vpc_connector:
@@ -58,9 +94,6 @@ class GrafanaVpcSourceManager(PlaybookSourceManager):
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                                   label_option.value.value)
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(vpc_connector)
 
