@@ -23,7 +23,8 @@ function extractExecutionTasks(
         outputError: log?.result?.error,
         outputLoading: false,
       };
-      if (taskInPlaybook.id) executionStep.tasks.push(taskInPlaybook.id);
+      if (taskInPlaybook.id)
+        executionStep.tasks.push(structuredClone(taskInPlaybook));
     } else {
       const newTask = {
         ...log.task,
@@ -40,9 +41,9 @@ function extractExecutionTasks(
       };
       tasks.push(newTask);
       if (newTask.id && !executionStep.tasks.includes(newTask.id))
-        executionStep.tasks.push(newTask.id);
+        executionStep.tasks.push(newTask);
       if (stepIndex === -1) {
-        step.tasks.push(log.task.id);
+        step.tasks.push(log.task);
       }
     }
   });

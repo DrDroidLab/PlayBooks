@@ -69,12 +69,15 @@ function executionToState(playbook_execution: any): Playbook {
     executedSteps.push(executionStep);
   });
 
+  const variables =
+    Object.keys(playbook_execution?.execution_global_variable_set ?? {})
+      .length === 0
+      ? playbook.global_variable_set
+      : playbook_execution?.execution_global_variable_set;
+
   return {
     ...(currentPlaybook ?? playbook),
-    global_variable_set:
-      playbook_execution?.execution_global_variable_set ??
-      playbook_execution?.global_variable_set ??
-      {},
+    global_variable_set: variables ?? {},
     steps: playbookSteps,
     step_relations: playbookRelations,
     ui_requirement: {
