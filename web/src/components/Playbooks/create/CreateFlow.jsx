@@ -12,6 +12,7 @@ import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
 import StepNode from "./nodes/StepNode.tsx";
+import handleEdgesDelete from "./utils/handleEdgesDelete.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -45,11 +46,6 @@ const CreateFlow = () => {
       setEdges(dagreData.edges);
     }
   }, [dagreData]);
-
-  const handleEdgesDelete = (edges) => {
-    console.log("Deleted edges:", edges);
-    // Perform additional actions or state updates here if necessary
-  };
 
   return (
     <div ref={graphRef} className="h-full w-full">
