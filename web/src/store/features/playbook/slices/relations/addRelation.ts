@@ -14,8 +14,12 @@ export const addRelation = (
   const { currentPlaybook } = state;
   const parent = currentPlaybook?.steps.find((step) => step.id === source);
   const child = currentPlaybook?.steps.find((step) => step.id === target);
+  const id = `edge-${source}-${target}`;
+  const existingEdge = currentPlaybook?.step_relations.find(
+    (relation) => relation.id === id,
+  );
 
-  if (!parent || !child) return;
+  if (!parent || !child || existingEdge) return;
 
   const newRelation: StepRelation = {
     id: `edge-${source}-${target}`,
