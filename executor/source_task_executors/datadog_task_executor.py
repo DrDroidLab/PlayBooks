@@ -1,15 +1,17 @@
 from typing import Dict
 
-from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
+from google.protobuf.wrappers_pb2 import DoubleValue, StringValue, UInt64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.datadog_task_pb2 import Datadog
+from protos.ui_definition_pb2 import FormField
 
 
 class DatadogSourceManager(PlaybookSourceManager):
@@ -23,14 +25,44 @@ class DatadogSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.DATADOG_SERVICE],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Datadog Metric by service',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="service_name"),
+                              display_name=StringValue(value="Service"),
+                              description=StringValue(value='Select Service'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="environment_name"),
+                              display_name=StringValue(value="Environment"),
+                              description=StringValue(value='Select Environment'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="metric_family"),
+                              display_name=StringValue(value="Metric Family"),
+                              description=StringValue(value='Select Metric Family'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="metric"),
+                              display_name=StringValue(value="Metric"),
+                              description=StringValue(value='Select Metric'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Datadog.TaskType.QUERY_METRIC_EXECUTION: {
                 'executor': self.execute_query_metric_execution,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a Datadog custom metric',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="queries"),
+                              display_name=StringValue(value="Queries"),
+                              description=StringValue(value='Enter Queries'),
+                              data_type=LiteralType.STRING_ARRAY,
+                              max_length_allowed=UInt64Value(value=2)),
+                    FormField(key_name=StringValue(value="formula"),
+                              display_name=StringValue(value="Formula"),
+                              description=StringValue(value='Select Formula'),
+                              data_type=LiteralType.STRING,
+                              is_optional=True),
+                ]
             },
         }
 

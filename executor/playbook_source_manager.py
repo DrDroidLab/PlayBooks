@@ -14,15 +14,18 @@ from utils.proto_utils import proto_to_dict, dict_to_proto
 
 
 def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField], source_type_task_def: Dict) -> Dict:
-    all_simple_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
+    all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
+    all_string_array_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING_ARRAY]
     all_composite_fields = {}
     for ff in form_fields:
         if ff.is_composite:
             all_composite_fields[ff.key_name.value] = ff.composite_fields
     for gk, gv in global_variable_set.items():
         for tk, tv in source_type_task_def.items():
-            if tk in all_simple_string_fields:
+            if tk in all_string_fields:
                 source_type_task_def[tk] = tv.replace(gk, gv)
+            elif tk in all_string_array_fields:
+                source_type_task_def[tk] = [item.replace(gk, gv) for item in tv]
             elif tk in all_composite_fields:
                 composite_fields = all_composite_fields[tk]
                 for item in source_type_task_def[tk]:
