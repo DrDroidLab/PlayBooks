@@ -1,15 +1,17 @@
 from datetime import datetime
 from typing import Dict
 
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.grafana_loki_task_pb2 import GrafanaLoki
+from protos.ui_definition_pb2 import FormField
 
 
 class GrafanaLokiSourceManager(PlaybookSourceManager):
@@ -23,7 +25,24 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Query Logs from Grafana Loki',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="query"),
+                              display_name=StringValue(value="Query"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="limit"),
+                              display_name=StringValue(value="Limit"),
+                              data_type=LiteralType.LONG,
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=10))),
+                    FormField(key_name=StringValue(value="start_time"),
+                              display_name=StringValue(value="Start Time"),
+                              data_type=LiteralType.LONG,
+                              is_date_time_field=True),
+                    FormField(key_name=StringValue(value="end_time"),
+                              display_name=StringValue(value="End Time"),
+                              data_type=LiteralType.LONG,
+                              is_date_time_field=True),
+                ]
             }
         }
 
@@ -97,7 +116,8 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                     update_columns = table_meta_columns + dc
                     table_row = TableResult.TableRow(columns=update_columns)
                     table_rows.append(table_row)
-            table = TableResult(raw_query=StringValue(value=f"Execute ```{query}```"), total_count=UInt64Value(value=len(result)),
+            table = TableResult(raw_query=StringValue(value=f"Execute ```{query}```"),
+                                total_count=UInt64Value(value=len(result)),
                                 rows=table_rows)
             return PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=table, source=self.source)
         except Exception as e:

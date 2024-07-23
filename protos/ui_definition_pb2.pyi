@@ -32,6 +32,7 @@ class FormField(google.protobuf.message.Message):
     IS_COMPOSITE_FIELD_NUMBER: builtins.int
     COMPOSITE_FIELDS_FIELD_NUMBER: builtins.int
     MAX_LENGTH_ALLOWED_FIELD_NUMBER: builtins.int
+    IS_DATE_TIME_FIELD_FIELD_NUMBER: builtins.int
     @property
     def key_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
@@ -49,6 +50,7 @@ class FormField(google.protobuf.message.Message):
     def composite_fields(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FormField]: ...
     @property
     def max_length_allowed(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
+    is_date_time_field: builtins.bool
     def __init__(
         self,
         *,
@@ -62,8 +64,9 @@ class FormField(google.protobuf.message.Message):
         is_composite: builtins.bool = ...,
         composite_fields: collections.abc.Iterable[global___FormField] | None = ...,
         max_length_allowed: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
+        is_date_time_field: builtins.bool = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["default_value", b"default_value", "description", b"description", "display_name", b"display_name", "key_name", b"key_name", "max_length_allowed", b"max_length_allowed"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["composite_fields", b"composite_fields", "data_type", b"data_type", "default_value", b"default_value", "description", b"description", "display_name", b"display_name", "is_composite", b"is_composite", "is_optional", b"is_optional", "key_name", b"key_name", "max_length_allowed", b"max_length_allowed", "valid_values", b"valid_values"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["composite_fields", b"composite_fields", "data_type", b"data_type", "default_value", b"default_value", "description", b"description", "display_name", b"display_name", "is_composite", b"is_composite", "is_date_time_field", b"is_date_time_field", "is_optional", b"is_optional", "key_name", b"key_name", "max_length_allowed", b"max_length_allowed", "valid_values", b"valid_values"]) -> None: ...
 
 global___FormField = FormField

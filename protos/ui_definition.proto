@@ -15,4 +15,5 @@ message FormField {
   bool is_composite = 8;
   repeated FormField composite_fields = 9;
   google.protobuf.UInt64Value max_length_allowed = 10;
+  bool is_date_time_field = 11;
 }

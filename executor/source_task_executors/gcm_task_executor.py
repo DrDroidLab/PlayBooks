@@ -4,7 +4,7 @@ from typing import Dict
 import re
 
 import pytz
-from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value, Int64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
@@ -65,7 +65,7 @@ class GcmSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Page Size"),
                               data_type=LiteralType.LONG,
                               is_optional=True,
-                              default_value=Literal(type=LiteralType.LONG, long=UInt64Value(value=2000))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
                 ]
             },
         }
