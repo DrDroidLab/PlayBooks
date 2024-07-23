@@ -1,11 +1,19 @@
 import React from "react";
 import { useGetLoginProvidersQuery } from "../../../store/features/auth/api/getLoginProvidersApi.ts";
 import { oAuthProviders } from "./oauthProvidersButtons.tsx";
+import { CircularProgress } from "@mui/material";
 
 function SocialSignIn() {
-  const { data } = useGetLoginProvidersQuery();
+  const { data, isLoading } = useGetLoginProvidersQuery();
 
-  if (!data || data?.length === 0) return;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center">
+        <CircularProgress size={20} color="primary" />
+      </div>
+    );
+
+  if (!data || (data as any)?.length === 0) return;
 
   return (
     <div className="my-2 flex flex-col gap-2">
@@ -16,7 +24,7 @@ function SocialSignIn() {
       </div>
 
       <div className="flex items-center justify-center">
-        {data?.map((e: string) => oAuthProviders[e])}
+        {(data as any)?.map((e: string) => oAuthProviders[e])}
       </div>
     </div>
   );

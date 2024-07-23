@@ -1,17 +1,14 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Task } from "../../types/index.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
+import { Key } from "../playbook/key.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 
-const getCurrentAsset = (task) => {
-  const currentAsset = task?.assets?.find(
-    (e) => e.namespace === task.namespaceName,
-  );
-
-  return currentAsset;
-};
-
-const getDimensionNames = (task) => {
-  const currentAsset = getCurrentAsset(task);
+const getDimensionNames = (task: Task) => {
+  const data = getTaskData(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   const dimensions: any =
-    currentAsset?.region_dimension_map?.find((el) => el.region === task.region)
+    currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
   for (let [idx, dimension] of Object.entries(dimensions)) {
@@ -25,14 +22,15 @@ const getDimensionNames = (task) => {
   return list;
 };
 
-const getDimensionValues = (task) => {
-  const currentAsset = getCurrentAsset(task);
+const getDimensionValues = (task: Task) => {
+  const data = getTaskData(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   const dimensions: any =
-    currentAsset?.region_dimension_map?.find((el) => el.region === task.region)
+    currentAsset?.region_dimension_map?.find((el) => el.region === data.region)
       ?.dimensions ?? {};
   const list: any = [];
   const dimension = Object.values(dimensions)?.find(
-    (el: any) => el.name === task.dimensionName,
+    (el: any) => el.name === data.dimensions?.[0]?.name,
   );
   for (let val of (dimension as any)?.values ?? []) {
     list.push({
@@ -44,12 +42,13 @@ const getDimensionValues = (task) => {
   return list;
 };
 
-const getMetrics = (task) => {
-  const currentAsset = getCurrentAsset(task);
+const getMetrics = (task: Task) => {
+  const data = getTaskData(task);
+  const currentAsset = getCurrentAsset(task, Key.NAMESPACE, "namespace");
   return (
     currentAsset?.region_dimension_map
-      ?.find((el) => el.region === task.region)
-      ?.dimensions?.find((el) => el.name === task.dimensionName)
+      ?.find((el) => el.region === data.region)
+      ?.dimensions?.find((el) => el.name === data.dimensions?.[0]?.name)
       ?.metrics?.map((el) => {
         return {
           id: el,
@@ -59,20 +58,14 @@ const getMetrics = (task) => {
   );
 };
 
-export const cloudwatchMetricBuilder = (options, task) => {
+export const cloudwatchMetricBuilder = (options: any, task: Task) => {
   return {
-    triggerGetAssetsKey: "namespaceName",
-    assetFilterQuery: {
-      cloudwatch_metric_model_filters: {
-        namespaces: [task.namespaceName],
-      },
-    },
     builder: [
       [
         {
-          key: "namespaceName",
+          key: Key.NAMESPACE,
           label: "Namespace",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((namespace) => {
             return {
               id: namespace,
@@ -81,32 +74,35 @@ export const cloudwatchMetricBuilder = (options, task) => {
           }),
         },
         {
-          key: "region",
+          key: Key.REGION,
           label: "Region",
-          type: OptionType.TYPING_DROPDOWN,
-          options: getCurrentAsset(task)?.region_dimension_map?.map((el) => {
+          inputType: InputTypes.TYPING_DROPDOWN,
+          options: getCurrentAsset(
+            task,
+            Key.NAMESPACE,
+            "namespace",
+          )?.region_dimension_map?.map((el) => {
             return { id: el.region, label: el.region };
           }),
         },
         {
-          key: "dimensionName",
+          key: Key.DIMENSION_NAME,
           label: "Dimension Name",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getDimensionNames(task),
         },
         {
-          key: "dimensionValue",
+          key: Key.DIMENSION_VALUE,
           label: "Dimension Value",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getDimensionValues(task),
         },
         {
-          key: "metric",
+          key: Key.METRIC_NAME,
           label: "Metric",
           placeholder: "Add Metric",
-          type: OptionType.MULTI_SELECT,
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: getMetrics(task),
-          selected: task?.metric,
         },
       ],
     ],

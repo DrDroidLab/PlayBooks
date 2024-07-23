@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { scheduleOptions } from "../../../utils/workflow/scheduleOptions.tsx";
-import { HandleInputRender } from "../../common/HandleInputRender/HandleInputRender.jsx";
-import { handleSelect } from "../utils/handleInputs.ts";
+import { handleInput, handleSelect } from "../utils/handleInputs.ts";
 import TabsComponent from "../../common/TabsComponent/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
 
 function ScheduleDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -23,23 +23,33 @@ function ScheduleDetails() {
           data-type="schedule"
         />
       </div>
-      <div className="mt-2">
+      <div className="flex flex-col gap-2 mt-2">
         {scheduleOptions
           .find((e) => e.id === currentWorkflow.schedule)
-          ?.options.map((option) => (
-            <HandleInputRender key={option.id} option={option} />
-          ))}
+          ?.options.map((option) => {
+            const disabled = option.disabledKey
+              ? currentWorkflow[option.disabledKey]
+              : false;
+            return (
+              <CustomInput
+                type={option.type}
+                handleChange={(val) =>
+                  option.handleChange
+                    ? option.handleChange(val)
+                    : handleInput(option.id, val)
+                }
+                value={option.value ?? currentWorkflow[option.id] ?? ""}
+                disabled={disabled}
+                error={
+                  currentWorkflow?.errors
+                    ? currentWorkflow.errors[option.id]
+                    : false
+                }
+                {...option}
+              />
+            );
+          })}
       </div>
-      {/* {(currentWorkflow["cron-schedule"] ||
-        (currentWorkflow.interval && currentWorkflow.duration)) && (
-        <p className="mt-4 text-xs p-1 bg-gray-50 rounded italic">{`This configuration means that this workflow will run ${
-          currentWorkflow["cron-schedule"]
-            ? `as per {${currentWorkflow["cron-schedule"]}} schedule`
-            : ""
-        } for the next ${currentWorkflow.duration} ${
-          currentWorkflow.interval
-        }`}</p>
-      )} */}
     </div>
   );
 }

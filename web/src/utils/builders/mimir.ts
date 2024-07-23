@@ -1,13 +1,14 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const mimirBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "promql_expression",
+          key: Key.PROMQL_EXPRESSION,
           label: "PromQL",
-          type: OptionType.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

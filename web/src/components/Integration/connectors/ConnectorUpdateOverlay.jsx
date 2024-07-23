@@ -85,7 +85,7 @@ const ConnectorUpdateOverlay = ({ isOpen, toggleOverlay, connector }) => {
             <AffectedPlaybooks id={connector.id} />
             <div className={styles.actions}>
               <CustomButton onClick={toggleOverlay}>Cancel</CustomButton>
-              <CustomButton onClick={handleSuccess}>Yes</CustomButton>
+              <CustomButton onClick={handleSuccess}>Update</CustomButton>
               <TestConnectorButton connector={connector} formData={formData} />
               {isLoading && (
                 <CircularProgress

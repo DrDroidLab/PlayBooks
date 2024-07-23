@@ -1,13 +1,9 @@
 import { CircularProgress } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
-import { stepsSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import useExecutionStack from "../../../hooks/useExecutionStack.ts";
 
 function ExecutingStep() {
-  const playbookSteps = useSelector(stepsSelector);
-  const executingStep = (playbookSteps ?? []).find(
-    (step) => step.outputLoading,
-  );
+  const { executingStep } = useExecutionStack();
 
   if (Object.keys(executingStep ?? {}).length === 0) return <></>;
 
@@ -18,13 +14,6 @@ function ExecutingStep() {
         <h1 className="font-semibold text-lg line-clamp-3">
           {executingStep.description}
         </h1>
-        {/* <div onClick={() => handleShowConfig(executingStep.id)}>
-          (
-          <span className="text-violet-500 cursor-pointer hover:underline">
-            Show Config
-          </span>
-          )
-        </div> */}
       </div>
       <div className="flex items-center gap-2 mt-3">
         <CircularProgress size={20} />

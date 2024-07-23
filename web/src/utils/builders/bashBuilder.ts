@@ -1,22 +1,23 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const bashBuilder = (options?: any) => {
   return {
     builder: [
       [
         {
-          key: "remote_server",
+          key: Key.REMOTE_SERVER,
           label: "Remote Server",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x, label: x })),
-          isOptional: true
+          isOptional: true,
         },
       ],
       [
         {
-          key: "command",
+          key: Key.COMMAND,
           label: "Command",
-          type: OptionType.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

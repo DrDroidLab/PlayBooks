@@ -16,9 +16,7 @@ import {
 } from "@mui/icons-material";
 import { useLogoutMutation } from "./store/features/auth/api/index.ts";
 
-import {
-  useFetchVersionInfoQuery
-} from "./store/features/management/api/index.ts";
+import { useFetchVersionInfoQuery } from "./store/features/management/api/index.ts";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -26,11 +24,7 @@ function Sidebar() {
   const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
 
-  const {
-    data,
-    isFetching: versionLoading,
-    refetch,
-  } = useFetchVersionInfoQuery({});
+  const { data } = useFetchVersionInfoQuery({});
 
   const signOut = async () => {
     await triggerLogout();
@@ -79,13 +73,21 @@ function Sidebar() {
               />
             </div>
           </Link>
-          <div class="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
-            <p>{data?.current_version ? data?.current_version : ''}</p>
-            {
-              data?.should_upgrade ? (<>
-                <p class="bg-[#9553fe59] px-1 rounded-md"><a style={{ padding: "0px" }} href="https://github.com/DrDroidLab/PlayBooks/releases" target="_blank">{data.upgrade_message}</a></p>
-              </>) : null
-            }
+          <div className="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
+            <p>{data?.current_version ? data?.current_version : ""}</p>
+            {data?.should_upgrade ? (
+              <>
+                <p className="bg-[#9553fe59] px-1 rounded-md">
+                  <a
+                    style={{ padding: "0px" }}
+                    href="https://github.com/DrDroidLab/PlayBooks/releases"
+                    target="_blank"
+                    rel="noreferrer">
+                    {data.upgrade_message}
+                  </a>
+                </p>
+              </>
+            ) : null}
           </div>
         </div>
 
@@ -142,7 +144,7 @@ function Sidebar() {
               onClick={(event) => handleListItemClick(event, 2)}>
               <DataThresholdingIcon />
             </ListItemIcon>
-            <p style={{ fontSize: "14px" }}>Data Sources</p>
+            <p style={{ fontSize: "14px" }}>Integrations</p>
           </NavLink>
         </List>
       </div>

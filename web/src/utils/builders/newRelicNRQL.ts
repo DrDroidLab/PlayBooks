@@ -1,46 +1,28 @@
-import { setNRQLData } from "../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../store/index.ts";
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
-export const newRelicNRQLBuilder = (task, index) => {
+export const newRelicNRQLBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "metric_name",
+          key: Key.METRIC_NAME,
           label: "Metric Name",
-          type: OptionType.TEXT,
-          selected: task?.nrqlData?.metric_name,
-          handleChange: (val) => {
-            store.dispatch(
-              setNRQLData({ index, key: "metric_name", value: val }),
-            );
-          },
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
-          key: "unit",
+          key: Key.UNIT,
           label: "Unit",
-          type: OptionType.TEXT,
-          selected: task?.nrqlData?.unit,
-          handleChange: (val) => {
-            store.dispatch(setNRQLData({ index, key: "unit", value: val }));
-          },
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
-          key: "nrql_expression",
+          key: Key.NRQL_EXPRESSION,
           label: "NRQL Expression",
-          type: OptionType.MULTILINE,
-          value: task.nrqlData?.nrql_expression,
-          handleChange: (e) => {
-            const val = e.target.value;
-            store.dispatch(
-              setNRQLData({ index, key: "nrql_expression", value: val }),
-            );
-          },
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

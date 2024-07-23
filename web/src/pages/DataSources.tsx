@@ -20,10 +20,8 @@ function DataSources() {
   return (
     <>
       <Heading
-        heading={"Data Sources"}
-        subHeading={"View and manage your data sources"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
+        heading={"Integrations"}
+        subHeading={"View and manage your integrations"}
         children={<></>}
       />
       <main className="p-2">
@@ -42,7 +40,7 @@ function DataSources() {
             {isEmpty && (
               <div className="flex flex-col gap-2 items-center justify-center">
                 <p className="text-sm">
-                  No Datasources found. Connect a new one
+                  No Integrations found. Connect a new one
                 </p>
                 <AddNewDataSource />
               </div>
@@ -51,7 +49,7 @@ function DataSources() {
             {!isEmpty && notFound && (
               <div className="flex flex-col gap-2 items-center justify-center">
                 <p className="text-sm">
-                  No Datasources found. try changing the search keyword
+                  No Integrations found. try changing the search keyword
                 </p>
               </div>
             )}
@@ -70,7 +68,7 @@ function AddNewDataSource() {
       to={"/data-sources/add"}
       className="flex gap-1 text-center justify-center w-fit items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
       <Add fontSize="inherit" />
-      <span>Add a new Data Source</span>
+      <span>Add a new Integration</span>
     </Link>
   );
 }

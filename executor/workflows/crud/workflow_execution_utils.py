@@ -2,7 +2,7 @@ import logging
 from datetime import timedelta
 
 import uuid
-from struct import Struct
+from google.protobuf.struct_pb2 import Struct
 
 from django.conf import settings
 

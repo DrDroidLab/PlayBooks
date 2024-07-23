@@ -1,38 +1,38 @@
-import { OptionType } from "../playbooksData.ts";
-import getCurrentTask from "../getCurrentTask.ts";
+import { Task } from "../../types/index.ts";
+import { Key } from "../playbook/key.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
+import { getTaskData } from "../playbook/getTaskData.ts";
 
-const getCurrentAsset = (index) => {
-  const [task] = getCurrentTask(index);
-  const currentAsset = task?.assets?.find((e) => e.region === task?.eksRegion);
-
-  return currentAsset;
-};
-
-export const gkeBuilder = (options: any, task, index) => {
+export const gkeBuilder = (options: any, task: Task) => {
   return {
     builder: [
       [
         {
-          key: "zone",
+          key: Key.ZONE,
           label: "Zone",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((x) => ({ id: x.zone, label: x.zone })) ?? [],
         },
         {
-          key: "cluster",
+          key: Key.CLUSTER,
           label: "Cluster",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options
-            ?.find((e) => e.zone === task.zone)
+            ?.find((e) => e.zone === getTaskData(task)?.zone)
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
         },
         {
-          key: "namespace",
+          key: Key.NAMESPACE,
           label: "Namespace",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options:
-            getCurrentAsset(index)?.clusters?.length > 0
-              ? getCurrentAsset(index)?.clusters[0].namespaces?.map((el) => {
+            getCurrentAsset(task, Key.REGION, "region")?.clusters?.length > 0
+              ? getCurrentAsset(
+                  task,
+                  Key.REGION,
+                  "region",
+                )?.clusters[0].namespaces?.map((el) => {
                   return { id: el.name, label: el.name };
                 })
               : [],

@@ -1,68 +1,50 @@
-import { setActionKey } from "../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../store/index.ts";
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
+import { Key } from "../playbook/key.ts";
 
 const methodOptions = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 
-export const apiBuilder = (task, id) => {
+export const apiBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "method",
+          key: Key.METHOD,
           label: "Method",
-          type: OptionType.OPTIONS,
+          inputType: InputTypes.DROPDOWN,
           options: methodOptions.map((x) => ({ id: x, label: x })),
-          selected: task.action?.method,
-          handleChange: (val) => {
-            store.dispatch(setActionKey({ id, key: "method", value: val }));
-          },
         },
       ],
       [
         {
-          key: "url",
+          key: Key.URL,
           label: "URL",
-          type: OptionType.TEXT_ROW,
-          selected: task.action?.url,
-          handleChange: (val) => {
-            store.dispatch(setActionKey({ id, key: "url", value: val }));
-          },
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
       [
         {
+          key: Key.HEADERS,
           label: "Headers (Enter JSON)",
-          type: OptionType.MULTILINE,
-          selected: task.action?.headers,
-          handleChange: (e) => {
-            store.dispatch(
-              setActionKey({ id, key: "headers", value: e.target.value }),
-            );
-          },
+          inputType: InputTypes.MULTILINE,
+          isOptional: true,
         },
       ],
       [
         {
+          key: Key.PAYLOAD,
           label: "Payload/Body (Enter JSON)",
-          type: OptionType.MULTILINE,
-          selected: task.action?.payload,
-          handleChange: (e) => {
-            store.dispatch(
-              setActionKey({ id, key: "payload", value: e.target.value }),
-            );
-          },
+          inputType: InputTypes.MULTILINE,
+          isOptional: true,
         },
       ],
       [
         {
-          key: "timeout",
+          key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
-          type: OptionType.TEXT_ROW,
-          selected: task.action?.timeout,
-          handleChange: (val) => {
-            store.dispatch(setActionKey({ id, key: "timeout", value: val }));
-          },
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
         },
       ],
     ],

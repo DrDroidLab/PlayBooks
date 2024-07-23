@@ -3,31 +3,31 @@ import styles from "./index.module.css";
 import Overlay from "../Overlay";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  playbookSelector,
+  currentPlaybookSelector,
   setPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import ValueComponent from "../ValueComponent/index.jsx";
 import Toast from "../Toast.js";
+import useIsExisting from "../../hooks/useIsExisting.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
-  const {
-    name: playbookName,
-    isEditing,
-    description: playbookDescription,
-  } = useSelector(playbookSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
   const dispatch = useDispatch();
-  const [name, setName] = useState(playbookName);
-  const [description, setDescription] = useState(playbookDescription);
+  const [name, setName] = useState(currentPlaybook?.name);
+  const [description, setDescription] = useState(currentPlaybook?.description);
   const [validationError, setValidationError] = useState("");
+  const isExisting = useIsExisting();
 
   const handleSubmit = () => {
-    if (!name && !playbookName) {
+    if (!name && !currentPlaybook?.name) {
       setValidationError("Please enter a name");
       return;
     }
     dispatch(setPlaybookKey({ key: "description", value: description }));
+    dispatch(setPlaybookKey({ key: "name", value: name }));
     saveCallback({
-      pbName: name || playbookName,
+      pbName: name || currentPlaybook?.name,
       description,
     });
     close();
@@ -39,39 +39,39 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
   };
 
   useEffect(() => {
-    setName(playbookName);
-  }, [playbookName]);
+    setName(currentPlaybook?.name);
+  }, [currentPlaybook?.name]);
 
   return (
     <div style={{ zIndex: "200" }}>
       <Overlay close={close} visible={isOpen}>
         <div className={styles["dashboardSaveOverlay"]}>
           <div
-            style={!isEditing ? { gap: "10px" } : {}}
+            style={!isExisting ? { gap: "10px" } : {}}
             className={styles["dashboardSaveOverlay__content"]}>
             <div className={styles["panel__description"]}>
-              {isEditing
-                ? `Update "${playbookName}" playbook? `
-                : playbookName
-                ? `Save this playbook as "${playbookName}"?`
+              {isExisting
+                ? `Update "${currentPlaybook?.name}" playbook? `
+                : currentPlaybook?.name
+                ? `Save this playbook as "${currentPlaybook?.name}"?`
                 : "Please enter a name"}
             </div>
             <div className={styles["panel__description"]}>
-              {isEditing && "NOTE: This action is irreversible"}
+              {isExisting && "NOTE: This action is irreversible"}
             </div>
-            {!isEditing && !playbookName && (
+            {!isExisting && !currentPlaybook?.name && (
               <div>
-                <label className="text-xs font-bold text-gray-500">Name</label>
-                <ValueComponent
-                  valueType={"STRING"}
-                  onValueChange={(val) => setName(val)}
+                <CustomInput
+                  inputType={InputTypes.TEXT}
+                  label="Name"
+                  handleChange={(val) => setName(val)}
                   value={name}
-                  placeHolder={"Enter Playbook name"}
-                  length={300}
+                  placeholder={"Enter Playbook name"}
+                  className="!w-[300px]"
                 />
               </div>
             )}
-            {!isEditing && !playbookDescription && (
+            {!isExisting && !currentPlaybook?.description && (
               <div>
                 <label className="text-xs font-bold text-gray-500">
                   Description

@@ -1,36 +1,38 @@
+import { rangeSelector } from "../../store/features/timeRange/timeRangeSlice.ts";
 import { store } from "../../store/index.ts";
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
 
 export const grafanaLokiBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "query",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
-          key: "limit",
+          key: Key.LIMIT,
           label: "Limit",
-          type: OptionType.TEXT,
-          default: 10
+          inputType: InputTypes.TEXT,
+          default: 10,
         },
       ],
       [
         {
-          key: "start_time",
+          key: Key.START_TIME,
           label: "Start time",
-          type: OptionType.TEXT,
-          default: Math.floor(store.getState().timeRange.startTime),
+          inputType: InputTypes.TEXT,
+          default: rangeSelector(store.getState()).time_geq,
         },
         {
-          key: "end_time",
+          key: Key.END_TIME,
           label: "End time",
-          type: OptionType.TEXT,
-          default: Math.floor(store.getState().timeRange.endTime),
+          inputType: InputTypes.TEXT,
+          default: rangeSelector(store.getState()).time_lt,
         },
       ],
     ],

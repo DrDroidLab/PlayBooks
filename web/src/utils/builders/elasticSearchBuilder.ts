@@ -1,13 +1,14 @@
-import { OptionType } from "../playbooksData.ts";
+import { Key } from "../playbook/key.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 export const elasticSearchBuilder = (options: any) => {
   return {
     builder: [
       [
         {
-          key: "index",
+          key: Key.INDEX,
           label: "Index",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op,
             label: op,
@@ -16,16 +17,16 @@ export const elasticSearchBuilder = (options: any) => {
       ],
       [
         {
-          key: "query",
+          key: Key.LUCENE_QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
-          key: "limit",
+          key: Key.LIMIT,
           label: "Limit",
-          type: OptionType.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
     ],

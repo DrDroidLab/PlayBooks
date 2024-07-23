@@ -1,31 +1,31 @@
 import { updateCardById } from "../execution/updateCardById.ts";
-import getCurrentTask from "../getCurrentTask.ts";
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { Key } from "../playbook/key.ts";
+import { Task } from "../../types/index.ts";
+import { getCurrentAsset } from "../playbook/getCurrentAsset.ts";
 
-const getCurrentAsset = (id: string) => {
-  const [task] = getCurrentTask(id);
-  if (!Array.isArray(task?.assets)) return [];
-  const currentAsset = task?.assets?.find(
-    (e) => e.application_name === task?.application_name,
-  );
-
-  return currentAsset;
-};
-
-export const newRelicEntityApplicationBuilder = (options, task, id) => {
+export const newRelicEntityApplicationBuilder = (options: any, task: Task) => {
+  const metrics = getCurrentAsset(
+    task,
+    Key.APPLICATION_NAME,
+    "application_name",
+  )?.golden_metrics?.map((e) => {
+    return {
+      id: e.golden_metric_name,
+      label: e.golden_metric_name,
+      metric: e,
+    };
+  });
+  const source = task.source;
+  const taskType = task?.[source.toLowerCase()]?.type;
+  const taskKey = `${[source.toLowerCase()]}.${taskType.toLowerCase()}`;
   return {
-    triggerGetAssetsKey: "application_name",
-    assetFilterQuery: {
-      new_relic_entity_application_model_filters: {
-        application_names: [task.application_name],
-      },
-    },
     builder: [
       [
         {
-          key: "application_name",
+          key: Key.APPLICATION_NAME,
           label: "Application",
-          type: OptionType.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.application_name,
@@ -34,52 +34,38 @@ export const newRelicEntityApplicationBuilder = (options, task, id) => {
           }),
         },
         {
-          key: "golden_metric",
+          key: Key.GOLDEN_METRIC_NAME,
           label: "Metric",
-          type: OptionType.MULTI_SELECT,
-          options: getCurrentAsset(id)?.golden_metrics?.map((e) => {
-            return {
-              id: e.golden_metric_name,
-              label: e.golden_metric_name,
-              metric: e,
-            };
-          }),
-          selected: task.golden_metrics,
-          handleChange: (val) => {
-            updateCardById("golden_metrics", val, id);
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          options: metrics,
+          handleChange: (id: string) => {
+            const metric = metrics.find((m) => m.id === id);
+            updateCardById(`${taskKey}.${Key.GOLDEN_METRIC_NAME}`, id, task.id);
+            updateCardById(
+              `${taskKey}.${Key.GOLDEN_METRIC_NRQL_EXPRESSION}`,
+              metric.metric[Key.GOLDEN_METRIC_NRQL_EXPRESSION],
+              task.id,
+            );
+            updateCardById(
+              `${taskKey}.${Key.GOLDEN_METRIC_UNIT}`,
+              metric.metric[Key.GOLDEN_METRIC_UNIT],
+              task.id,
+            );
           },
         },
         {
+          key: Key.GOLDEN_METRIC_UNIT,
           label: "Unit",
-          type: OptionType.OPTIONS,
-          options:
-            task?.golden_metrics?.length === 1
-              ? [
-                  {
-                    id: task?.golden_metrics[0]?.metric?.golden_metric_unit,
-                    label: task?.golden_metrics[0]?.metric?.golden_metric_unit,
-                  },
-                ]
-              : [],
+          inputType: InputTypes.TEXT,
           disabled: true,
-          selected:
-            task?.golden_metrics?.length === 1
-              ? task?.golden_metrics[0]?.metric?.golden_metric_unit
-              : "",
-          condition: !task.golden_metrics || task?.golden_metrics?.length < 2,
         },
       ],
       [
         {
+          key: Key.GOLDEN_METRIC_NRQL_EXPRESSION,
           label: "Selected Query",
-          type: OptionType.MULTILINE,
-          value:
-            task?.golden_metrics?.length === 1
-              ? task?.golden_metrics[0]?.metric?.golden_metric_nrql_expression
-              : "",
-          // requires: ['golden_metric'],
+          inputType: InputTypes.MULTILINE,
           disabled: true,
-          condition: !task.golden_metrics || task?.golden_metrics?.length < 2,
         },
       ],
     ],

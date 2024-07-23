@@ -1,20 +1,31 @@
-import { OptionType } from "../playbooksData.ts";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
+import { Key } from "../playbook/key.ts";
 
 export const postgresBuilder = () => {
   return {
     builder: [
       [
         {
-          key: "database",
+          key: Key.DATABASE,
           label: "Database",
-          type: OptionType.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
-          key: "dbQuery",
+          key: Key.QUERY,
           label: "Query",
-          type: OptionType.MULTILINE,
+          inputType: InputTypes.MULTILINE,
+        },
+      ],
+      [
+        {
+          key: Key.TIMEOUT,
+          label: "Timeout (in seconds)",
+          inputType: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
+          default: 120,
         },
       ],
     ],
