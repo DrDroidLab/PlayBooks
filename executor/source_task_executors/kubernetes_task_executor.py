@@ -7,8 +7,10 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, BashCommandOutputResult
 from protos.playbooks.source_task_definitions.kubectl_task_pb2 import Kubectl
+from protos.ui_definition_pb2 import FormField
 
 
 class KubernetesSourceManager(PlaybookSourceManager):
@@ -22,7 +24,12 @@ class KubernetesSourceManager(PlaybookSourceManager):
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute a Kubectl Command',
-                'category': 'Actions'
+                'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="command"),
+                              display_name=StringValue(value="Kubectl Command"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 

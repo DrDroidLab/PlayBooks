@@ -36,7 +36,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'category': 'Metrics',
                 'form_fields': [
                     FormField(key_name=StringValue(value="datasource_uid"),
-                              display_name=StringValue(value="Datasource UID"),
+                              display_name=StringValue(value="Data Source UID"),
+                              description=StringValue(value="Select Data Source UID "),
                               data_type=LiteralType.STRING),
                     FormField(key_name=StringValue(value="promql_expression"),
                               display_name=StringValue(value="PromQL"),
