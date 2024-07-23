@@ -1,5 +1,7 @@
 import logging
 from typing import Union
+
+from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from django.http import HttpResponse, JsonResponse
@@ -22,7 +24,7 @@ from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
 from protos.base_pb2 import Message, Meta, Page, TimeRange, SourceKeyType
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
-    GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
+        GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
     UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
     GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse, GetConnectedPlaybooksRequest, \
@@ -33,6 +35,7 @@ from protos.connectors.alert_ops_pb2 import CommWorkspace as CommWorkspaceProto,
     SlackAlert as SlackAlertProto
 from protos.base_pb2 import Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -287,11 +290,12 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
     total_count = qs.count()
     qs = filter_page(qs, page)
     qs = qs.values('id', 'alert_type', 'title', 'text', 'data_timestamp', 'slack_channel_metadata_model__id',
-                   'channel_id',
+                   'channel_id', 'data',
                    'slack_channel_metadata_model__metadata__channel_name')
 
     slack_alerts = []
     for a in qs:
+        data_struct = dict_to_proto(a['data'], Struct)
         slack_alerts.append(SlackAlertProto(id=UInt64Value(value=a['id']),
                                             alert_type=StringValue(value=a['alert_type']),
                                             alert_title=StringValue(value=a['title']),
@@ -301,7 +305,8 @@ def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
                                                 channel_id=StringValue(value=a['channel_id']),
                                                 channel_name=StringValue(
                                                     value=a['slack_channel_metadata_model__metadata__channel_name'])),
-                                            alert_timestamp=int(a['data_timestamp'].timestamp())))
+                                            alert_timestamp=int(a['data_timestamp'].timestamp()),
+                                            alert_json=data_struct))
     return GetSlackAlertsResponse(meta=get_meta(page=page, total_count=total_count),
                                   slack_alerts=slack_alerts)
 

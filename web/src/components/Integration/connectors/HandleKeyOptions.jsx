@@ -1,11 +1,12 @@
 import React from "react";
-import ValueComponent from "../../ValueComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   connectorSelector,
   setKey,
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import Checkbox from "../../common/Checkbox/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
   const dispatch = useDispatch();
@@ -15,36 +16,39 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
     case "Service Account JSON":
     case "PEM":
       return (
-        <textarea
+        <CustomInput
+          inputType={InputTypes.MULTILINE}
           disabled={connectorActive}
           value={value ?? currentConnector[option.key_type]}
-          placeHolder={`Enter ${option.display_name}`}
-          onChange={(e) => {
+          handleChange={(e) => {
+            if (onValueChange) {
+              onValueChange(e.target.value);
+              return;
+            }
+          }}
+          placeholder={`Enter ${option.display_name}`}
+          length={500}
+          className="h-40 lg:!max-w-1/2 !max-w-full !w-[300px] text-xs outline-none"
+        />
+      );
+    case "SSL Certificate Authority Data":
+      return (
+        <CustomInput
+          inputType={InputTypes.MULTILINE}
+          disabled={connectorActive}
+          value={value ?? currentConnector[option.key_type]}
+          handleChange={(e) => {
             if (onValueChange) {
               onValueChange(e.target.value);
               return;
             }
             dispatch(setKey({ key: option.key_type, value: e.target.value }));
           }}
-          className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[500px] resize-none text-xs outline-none"
+          placeholder={`Enter ${option.display_name} or enter path to certificate in the next field`}
+          length={500}
+          className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[300px] resize-none text-xs outline-none"
         />
       );
-    case "SSL Certificate Authority Data":
-        return (
-          <textarea
-            disabled={connectorActive}
-            value={value ?? currentConnector[option.key_type]}
-            placeHolder={`Enter ${option.display_name} or enter path to certificate in the next field`}
-            onChange={(e) => {
-              if (onValueChange) {
-                onValueChange(e.target.value);
-                return;
-              }
-              dispatch(setKey({ key: option.key_type, value: e.target.value }));
-            }}
-            className="border rounded-lg h-40 lg:max-w-1/2 max-w-full mr-2 p-2 w-[500px] resize-none text-xs outline-none"
-          />
-        );
     case "Enable TLS certificate validation":
       return (
         <Checkbox
@@ -69,9 +73,9 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
       );
     default:
       return (
-        <ValueComponent
-          valueType={"STRING"}
-          onValueChange={(val) => {
+        <CustomInput
+          inputType={InputTypes.TEXT}
+          handleChange={(val) => {
             if (onValueChange) {
               onValueChange(val);
               return;
@@ -80,8 +84,8 @@ function HandleKeyOptions({ option, connectorActive, value, onValueChange }) {
           }}
           disabled={connectorActive}
           value={value ?? currentConnector[option.key_type]}
-          placeHolder={option.display_name}
-          length={500}
+          placeholder={option.display_name}
+          className="!w-[300px]"
         />
       );
   }

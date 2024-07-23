@@ -8,7 +8,7 @@ export const gcmMqlQueryBuilder = () => {
         {
           key: Key.QUERY,
           label: "MQL Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

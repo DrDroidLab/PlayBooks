@@ -1,4 +1,5 @@
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import { LabelPosition } from "../../types/inputs/labelPosition.ts";
 import { Key } from "../playbook/key.ts";
 
 export const sqlRawQueryBuilder = () => {
@@ -8,14 +9,15 @@ export const sqlRawQueryBuilder = () => {
         {
           key: Key.QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
           key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
-          type: InputTypes.TEXT_ROW,
+          type: InputTypes.TEXT,
+          labelPosition: LabelPosition.LEFT,
           default: 120,
         },
       ],

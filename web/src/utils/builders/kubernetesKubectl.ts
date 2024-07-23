@@ -9,7 +9,7 @@ export const kubernetesKubectlBuilder = (task: Task) => {
         {
           key: Key.COMMAND,
           label: "Kubectl Command",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

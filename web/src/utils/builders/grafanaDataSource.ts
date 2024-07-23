@@ -10,7 +10,7 @@ export const grafanaDataSourceBuilder = (options: any, task: Task) => {
         {
           key: Key.DATASOURCE_UID,
           label: "Data Source UID",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.datasource_uid,
@@ -27,7 +27,7 @@ export const grafanaDataSourceBuilder = (options: any, task: Task) => {
         {
           key: Key.PROMQL_EXPRESSION,
           label: "PromQL",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

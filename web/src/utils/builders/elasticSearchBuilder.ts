@@ -8,7 +8,7 @@ export const elasticSearchBuilder = (options: any) => {
         {
           key: Key.INDEX,
           label: "Index",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((op) => ({
             id: op,
             label: op,
@@ -19,14 +19,14 @@ export const elasticSearchBuilder = (options: any) => {
         {
           key: Key.LUCENE_QUERY,
           label: "Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
       [
         {
           key: Key.LIMIT,
           label: "Limit",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
         },
       ],
     ],
