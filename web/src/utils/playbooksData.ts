@@ -1,18 +1,15 @@
-import { taskTypes } from "../constants/index.ts";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { store } from "../store/index.ts";
-import * as Builders from "./builders/index.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 
 export const constructBuilder = (id?: string) => {
-  const [task, currentStepId] = getCurrentTask(id);
+  const [task] = getCurrentTask(id);
   const { supportedTaskTypes } = playbookSelector(store.getState());
   const source = task?.source ?? "";
   const taskType = task?.[source?.toLowerCase()].type;
   const type = supportedTaskTypes?.find(
     (e) => e.source === source && e.task_type === taskType,
   );
-  console.log("type", type);
 
   if (!task) return {};
 
@@ -20,6 +17,12 @@ export const constructBuilder = (id?: string) => {
     key: field.key_name,
     label: field.display_name,
     placeholder: field.description,
-    options: field.valid_values,
+    options: field.valid_values?.map((v) => ({
+      id: v[v.type.toLowerCase()],
+      label: v[v.type.toLowerCase()],
+    })),
+    inputType: field.form_field_type,
+    isOptional: field.is_optional,
+    defaultValue: field.default_value,
   }));
 };
