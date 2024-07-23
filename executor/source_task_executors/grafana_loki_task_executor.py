@@ -113,6 +113,6 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
             table = TableResult(raw_query=StringValue(value=f"Execute ```{query}```"),
                                 total_count=UInt64Value(value=len(result)),
                                 rows=table_rows)
-            return PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=table, source=self.source)
+            return PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, logs=table, source=self.source)
         except Exception as e:
             raise Exception(f"Error while executing Grafana task: {e}")

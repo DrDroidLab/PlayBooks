@@ -93,7 +93,7 @@ class AzureSourceManager(PlaybookSourceManager):
                 total_count=UInt64Value(value=len(table_rows)),
             )
 
-            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, table=result, source=self.source)
+            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.LOGS, logs=result, source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Azure task: {e}")
