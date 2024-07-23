@@ -11,9 +11,11 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
+from protos.ui_definition_pb2 import FormField
 
 logger = logging.getLogger(__name__)
 
@@ -37,14 +39,34 @@ class GcmSourceManager(PlaybookSourceManager):
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Execute MQL in GCM',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="query"),
+                              display_name=StringValue(value="MQL Expression"),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gcm.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.execute_filter_log_events,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from GCM',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="filter_query"),
+                              display_name=StringValue(value="Filter Query"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="order_by"),
+                              display_name=StringValue(value="Order By"),
+                              data_type=LiteralType.STRING,
+                              is_optional=True,
+                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value=""))),
+                    FormField(key_name=StringValue(value="page_size"),
+                              display_name=StringValue(value="Page Size"),
+                              data_type=LiteralType.LONG,
+                              is_optional=True,
+                              default_value=Literal(type=LiteralType.LONG, long=UInt64Value(value=2000))),
+                ]
             },
         }
 
