@@ -12,9 +12,11 @@ from executor.source_processors.aws_boto_3_api_processor import get_eks_api_inst
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
     BashCommandOutputResult
 from protos.playbooks.source_task_definitions.eks_task_pb2 import Eks
+from protos.ui_definition_pb2 import FormField
 
 
 class EksSourceManager(PlaybookSourceManager):
@@ -28,21 +30,63 @@ class EksSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Pods from EKS Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select EKS cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Eks.TaskType.GET_DEPLOYMENTS: {
                 'executor': self.get_deployments,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Deployments from EKS Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select EKS cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Eks.TaskType.GET_EVENTS: {
                 'executor': self.get_events,
                 'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Events from EKS Cluster',
-                'category': 'Deployment'
+                'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select EKS cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Eks.TaskType.GET_SERVICES: {
                 'executor': self.get_services,
@@ -50,6 +94,20 @@ class EksSourceManager(PlaybookSourceManager):
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Get Services from EKS Cluster',
                 'category': 'Deployment',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select EKS cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="namespace"),
+                              display_name=StringValue(value="Namespace"),
+                              description=StringValue(value='Select Namespace'),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Eks.TaskType.KUBECTL_COMMAND: {
                 'executor': self.execute_kubectl_command,
@@ -57,6 +115,19 @@ class EksSourceManager(PlaybookSourceManager):
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
                 'display_name': 'Execute Kubectl Command in EKS Cluster',
                 'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="cluster"),
+                              display_name=StringValue(value="Cluster"),
+                              description=StringValue(value='Select EKS cluster'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="command"),
+                              display_name=StringValue(value="Kubectl Command"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
