@@ -36,6 +36,8 @@ spec:
               value: {{ .Values.djangoDatabaseUsername }}
             - name: REDIS_URL
               value: {{ .Values.redisUrl }}
+            - name: EMAIL_PASSWORD_AUTH_ENABLED
+              value: {{ .Values.emailPasswordAuthEnabled }}
           ports:
             - containerPort: 8080
           command: ["/bin/sh","-c"]
