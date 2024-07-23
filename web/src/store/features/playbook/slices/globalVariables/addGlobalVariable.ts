@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { PlaybookUIState } from "../../../../../types";
+import { PlaybookUIState } from "../../../../../types/index.ts";
 
 export const addGlobalVariable = (
   state: PlaybookUIState,
