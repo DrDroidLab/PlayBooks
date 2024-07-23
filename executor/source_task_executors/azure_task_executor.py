@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 
@@ -51,7 +50,7 @@ class AzureSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(azure_connector.type, azure_connector.keys)
         return AzureApiProcessor(**generated_credentials)
 
-    def filter_log_events(self, time_range: TimeRange, global_variable_set: Dict, azure_task: Azure,
+    def filter_log_events(self, time_range: TimeRange, azure_task: Azure,
                           azure_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             tr_end_time = time_range.time_lt

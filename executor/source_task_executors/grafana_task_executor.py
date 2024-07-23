@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
@@ -50,8 +49,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return GrafanaApiProcessor(**generated_credentials)
 
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                        grafana_task: Grafana, grafana_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_promql_metric_execution(self, time_range: TimeRange, grafana_task: Grafana,
+                                        grafana_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not grafana_connector:
                 raise Exception("Task execution Failed:: No Grafana source found")
@@ -75,9 +74,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
                                                                   label_option.value.value)
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
@@ -126,8 +122,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing Grafana task: {e}")
 
-    def execute_prometheus_datasource_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                                       grafana_task: Grafana,
+    def execute_prometheus_datasource_metric_execution(self, time_range: TimeRange, grafana_task: Grafana,
                                                        grafana_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not grafana_connector:
@@ -147,10 +142,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
 
             datasource_uid = task.datasource_uid.value
             promql_metric_query = task.promql_expression.value
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 

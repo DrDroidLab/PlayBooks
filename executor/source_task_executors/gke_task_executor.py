@@ -1,8 +1,7 @@
+import kubernetes
 from datetime import datetime, timezone
 from operator import attrgetter
-from typing import Dict
 
-import kubernetes
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1ServiceList
 
@@ -144,8 +143,7 @@ class GkeSourceManager(PlaybookSourceManager):
             ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
             return KubectlApiProcessor(api_server=gke_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
 
-    def get_pods(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
-                 gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_pods(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
                 raise Exception("Task execution Failed:: No GKE source found")
@@ -199,7 +197,7 @@ class GkeSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get pods in gke: {e}")
 
-    def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
+    def get_deployments(self, time_range: TimeRange, gke_task: Gke,
                         gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
@@ -256,8 +254,7 @@ class GkeSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get deployments in gke: {e}")
 
-    def get_events(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
-                   gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_events(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
                 raise Exception("Task execution Failed:: No GKE source found")
@@ -313,8 +310,7 @@ class GkeSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get events in gke: {e}")
 
-    def get_services(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
-                     gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_services(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
                 raise Exception("Task execution Failed:: No GKE source found")
@@ -368,7 +364,7 @@ class GkeSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get services in gke: {e}")
 
-    def execute_kubectl_command(self, time_range: TimeRange, global_variable_set: Dict, gke_task: Gke,
+    def execute_kubectl_command(self, time_range: TimeRange, gke_task: Gke,
                                 gke_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gke_connector:
@@ -380,13 +376,7 @@ class GkeSourceManager(PlaybookSourceManager):
 
             command_str = gke_command.command.value
             commands = command_str.split('\n')
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    updated_commands = []
-                    for command in commands:
-                        command = command.replace(key, str(value))
-                        updated_commands.append(command)
-                    commands = updated_commands
+
             try:
                 outputs = {}
                 kubectl_client = self.get_connector_processor(gke_connector, native_connection=True, zone=zone,

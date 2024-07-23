@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 import pytz
 from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
@@ -97,7 +96,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         generated_credentials['client_type'] = kwargs.get('client_type')
         return AWSBoto3ApiProcessor(**generated_credentials)
 
-    def execute_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, cloudwatch_task: Cloudwatch,
+    def execute_metric_execution(self, time_range: TimeRange, cloudwatch_task: Cloudwatch,
                                  cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not cloudwatch_connector:
@@ -178,7 +177,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing Cloudwatch task: {e}")
 
-    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict, cloudwatch_task: Cloudwatch,
+    def execute_filter_log_events(self, time_range: TimeRange, cloudwatch_task: Cloudwatch,
                                   cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not cloudwatch_connector:

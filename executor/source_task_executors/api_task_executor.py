@@ -1,5 +1,4 @@
 import json
-from typing import Dict
 
 import requests
 from google.protobuf.struct_pb2 import Struct
@@ -67,7 +66,7 @@ class ApiSourceManager(PlaybookSourceManager):
             },
         }
 
-    def execute_http_request(self, time_range: TimeRange, global_variable_set: Dict, api_task: Api,
+    def execute_http_request(self, time_range: TimeRange, api_task: Api,
                              api_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
             http_request = api_task.http_request

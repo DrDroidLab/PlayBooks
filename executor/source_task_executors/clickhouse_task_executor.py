@@ -1,4 +1,3 @@
-from typing import Dict
 import threading
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
@@ -52,7 +51,7 @@ class ClickhouseSourceManager(PlaybookSourceManager):
         generated_credentials['database'] = kwargs.get('database', None)
         return ClickhouseDBProcessor(**generated_credentials)
 
-    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict, clickhouse_task: SqlDataFetch,
+    def execute_sql_query(self, time_range: TimeRange, clickhouse_task: SqlDataFetch,
                           clickhouse_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not clickhouse_connector:

@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 
 from connectors.utils import generate_credentials_dict
@@ -49,7 +47,7 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(es_connector.type, es_connector.keys)
         return ElasticSearchApiProcessor(**generated_credentials)
 
-    def execute_query_logs(self, time_range: TimeRange, global_variable_set: Dict, es_task: ElasticSearch,
+    def execute_query_logs(self, time_range: TimeRange, es_task: ElasticSearch,
                            es_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not es_connector:
@@ -66,9 +64,6 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No index found")
 
             lucene_query = lucene_query.strip()
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    lucene_query = lucene_query.replace(key, str(value))
 
             es_client = self.get_connector_processor(es_connector)
 

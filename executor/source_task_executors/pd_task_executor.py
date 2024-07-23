@@ -1,5 +1,4 @@
 import logging
-from typing import Dict
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
@@ -31,7 +30,7 @@ class PagerDutySourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(pagerduty_connector.type, pagerduty_connector.keys)
         return PdApiProcessor(**generated_credentials)
 
-    def execute_send_note(self, time_range: TimeRange, global_variable_set: Dict, pd_task: PagerDuty,
+    def execute_send_note(self, time_range: TimeRange, pd_task: PagerDuty,
                           pagerduty_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not pagerduty_connector:

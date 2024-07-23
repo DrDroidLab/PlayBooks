@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import StringValue
 from executor.playbook_source_manager import PlaybookSourceManager
 from protos.base_pb2 import Source, TimeRange
@@ -44,8 +42,8 @@ class DocumentationSourceManager(PlaybookSourceManager):
             },
         }
 
-    def execute_markdown(self, time_range: TimeRange, global_variable_set: Dict,
-                         doc_task: Documentation, doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
+    def execute_markdown(self, time_range: TimeRange, doc_task: Documentation,
+                         doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
             content_output = TextResult()
             if doc_task.type == Documentation.TaskType.MARKDOWN:
@@ -54,8 +52,8 @@ class DocumentationSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing API call task: {e}")
 
-    def execute_iframe(self, time_range: TimeRange, global_variable_set: Dict,
-                       doc_task: Documentation, doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
+    def execute_iframe(self, time_range: TimeRange, doc_task: Documentation,
+                       doc_connector_proto: ConnectorProto) -> PlaybookTaskResult:
         try:
             content_output = TextResult()
             if doc_task.type == Documentation.TaskType.IFRAME:

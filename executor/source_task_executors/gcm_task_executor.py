@@ -1,6 +1,6 @@
-import logging
 from datetime import datetime, timezone
-from typing import Dict
+
+import logging
 import re
 
 import pytz
@@ -72,7 +72,7 @@ class GcmSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(gcm_connector.type, gcm_connector.keys)
         return GcmApiProcessor(**generated_credentials)
 
-    def execute_mql_execution(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+    def execute_mql_execution(self, time_range: TimeRange, gcm_task: Gcm,
                               gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
@@ -86,9 +86,6 @@ class GcmSourceManager(PlaybookSourceManager):
             mql_task = gcm_task.mql_execution
             mql = mql_task.query.value
             mql = mql.strip()
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    mql = mql.replace(key, str(value))
 
             project_id = get_project_id(gcm_connector)
 
@@ -138,7 +135,7 @@ class GcmSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing GCM task: {e}")
 
-    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+    def execute_filter_log_events(self, time_range: TimeRange, gcm_task: Gcm,
                                   gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
@@ -151,9 +148,6 @@ class GcmSourceManager(PlaybookSourceManager):
             page_size = log_task.page_size.value if log_task.page_size else 2000
             page_token = log_task.page_token.value if log_task.page_token else None
             resource_names = [r.value for r in log_task.resource_names] if log_task.resource_names else None
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    filter_query = filter_query.replace(key, str(value))
 
             timestamp_gte_match = re.search(r'timestamp\s*>=\s*"([^"]+)"', filter_query)
             timestamp_gt_match = re.search(r'timestamp\s*>\s*"([^"]+)"', filter_query)

@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from typing import Dict
 
 import pytz
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
@@ -104,8 +103,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return NewRelicGraphQlConnector(**generated_credentials)
 
-    def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                                           nr_task: NewRelic,
+    def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                                            nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
@@ -171,9 +169,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing New Relic task: {e}")
 
-    def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange,
-                                                              global_variable_set: Dict,
-                                                              nr_task: NewRelic,
+    def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                                               nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
@@ -271,7 +267,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing New Relic task: {e}")
 
-    def execute_nrql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, nr_task: NewRelic,
+    def execute_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                       nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
@@ -289,10 +285,6 @@ class NewRelicSourceManager(PlaybookSourceManager):
             nrql_expression = task.nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
                 raise Exception("Invalid NRQL expression. TIMESERIES is missing in the NRQL expression")
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    nrql_expression = nrql_expression.replace(key, str(value))
 
             if 'limit max timeseries' in nrql_expression.lower():
                 if 'LIMIT MAX TIMESERIES' in nrql_expression:

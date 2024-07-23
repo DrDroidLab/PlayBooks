@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from operator import attrgetter
-from typing import Dict
 
 import kubernetes
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
@@ -154,8 +153,7 @@ class EksSourceManager(PlaybookSourceManager):
             ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
             return KubectlApiProcessor(api_server=eks_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
 
-    def get_pods(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
-                 eks_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_pods(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not eks_connector:
                 raise Exception("Task execution Failed:: No EKS source found")
@@ -210,7 +208,7 @@ class EksSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get pods in eks: {e}")
 
-    def get_deployments(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
+    def get_deployments(self, time_range: TimeRange, eks_task: Eks,
                         eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not eks_connector:
@@ -268,8 +266,7 @@ class EksSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get deployments in eks: {e}")
 
-    def get_events(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
-                   eks_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_events(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not eks_connector:
                 raise Exception("Task execution Failed:: No EKS source found")
@@ -326,8 +323,7 @@ class EksSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get events in eks: {e}")
 
-    def get_services(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
-                     eks_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_services(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not eks_connector:
                 raise Exception("Task execution Failed:: No EKS source found")
@@ -383,7 +379,7 @@ class EksSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Failed to get services in eks: {e}")
 
-    def execute_kubectl_command(self, time_range: TimeRange, global_variable_set: Dict, eks_task: Eks,
+    def execute_kubectl_command(self, time_range: TimeRange, eks_task: Eks,
                                 eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not eks_connector:
@@ -396,13 +392,6 @@ class EksSourceManager(PlaybookSourceManager):
 
             command_str = eks_command.command.value
             commands = command_str.split('\n')
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    updated_commands = []
-                    for command in commands:
-                        command = command.replace(key, str(value))
-                        updated_commands.append(command)
-                    commands = updated_commands
             try:
                 outputs = {}
                 kubectl_client = self.get_connector_processor(eks_connector, aws_region=aws_region,

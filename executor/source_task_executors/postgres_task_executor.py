@@ -1,4 +1,3 @@
-from typing import Dict
 import threading
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
@@ -53,7 +52,7 @@ class PostgresSourceManager(PlaybookSourceManager):
             generated_credentials['database'] = kwargs['database']
         return PostgresDBProcessor(**generated_credentials)
 
-    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict, pg_task: SqlDataFetch,
+    def execute_sql_query(self, time_range: TimeRange, pg_task: SqlDataFetch,
                           pg_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not pg_connector:
@@ -79,10 +78,6 @@ class PostgresSourceManager(PlaybookSourceManager):
 
             if query[-1] == ';':
                 query = query[:-1]
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    query = query.replace(key, str(value))
 
             count_query = f"SELECT COUNT(*) FROM ({query}) AS subquery"
             if order_by_column and 'order by' not in query.lower():

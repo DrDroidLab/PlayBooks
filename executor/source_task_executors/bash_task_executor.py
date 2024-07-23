@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
@@ -59,7 +57,7 @@ class BashSourceManager(PlaybookSourceManager):
             generated_credentials['remote_host'] = remote_server_str
         return RemoteServerProcessor(**generated_credentials)
 
-    def execute_command(self, time_range: TimeRange, global_variable_set: Dict, bash_task: Bash,
+    def execute_command(self, time_range: TimeRange, bash_task: Bash,
                         remote_server_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             bash_command: Bash.Command = bash_task.command

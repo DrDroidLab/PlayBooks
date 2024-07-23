@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 
@@ -50,8 +49,7 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_loki_connector.type, grafana_loki_connector.keys)
         return GrafanaLokiApiProcessor(**generated_credentials)
 
-    def execute_query_logs(self, time_range: TimeRange, global_variable_set: Dict,
-                           grafana_loki_task: GrafanaLoki,
+    def execute_query_logs(self, time_range: TimeRange, grafana_loki_task: GrafanaLoki,
                            grafana_loki_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not grafana_loki_connector:
@@ -75,10 +73,6 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
             query = task.query.value
 
             limit = task.limit.value if task.limit.value else 2000
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    query = query.replace(key, str(value))
 
             grafana_loki_api_processor = self.get_connector_processor(grafana_loki_connector)
 

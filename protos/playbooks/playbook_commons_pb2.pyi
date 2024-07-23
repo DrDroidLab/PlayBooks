@@ -11,6 +11,7 @@ import google.protobuf.message
 import google.protobuf.struct_pb2
 import google.protobuf.wrappers_pb2
 import protos.base_pb2
+import protos.ui_definition_pb2
 import sys
 import typing
 
@@ -436,6 +437,7 @@ class PlaybookSourceOptions(google.protobuf.message.Message):
         CATEGORY_FIELD_NUMBER: builtins.int
         SUPPORTED_MODEL_TYPES_FIELD_NUMBER: builtins.int
         RESULT_TYPE_FIELD_NUMBER: builtins.int
+        FORM_FIELDS_FIELD_NUMBER: builtins.int
         @property
         def display_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -445,6 +447,8 @@ class PlaybookSourceOptions(google.protobuf.message.Message):
         @property
         def supported_model_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap]: ...
         result_type: global___PlaybookTaskResultType.ValueType
+        @property
+        def form_fields(self) -> protos.ui_definition_pb2.FormField: ...
         def __init__(
             self,
             *,
@@ -453,9 +457,10 @@ class PlaybookSourceOptions(google.protobuf.message.Message):
             category: google.protobuf.wrappers_pb2.StringValue | None = ...,
             supported_model_types: collections.abc.Iterable[global___PlaybookSourceOptions.TaskTypeOption.SourceModelTypeMap] | None = ...,
             result_type: global___PlaybookTaskResultType.ValueType = ...,
+            form_fields: protos.ui_definition_pb2.FormField | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "task_type", b"task_type"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "result_type", b"result_type", "supported_model_types", b"supported_model_types", "task_type", b"task_type"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "form_fields", b"form_fields", "task_type", b"task_type"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["category", b"category", "display_name", b"display_name", "form_fields", b"form_fields", "result_type", b"result_type", "supported_model_types", b"supported_model_types", "task_type", b"task_type"]) -> None: ...
 
     SOURCE_FIELD_NUMBER: builtins.int
     DISPLAY_NAME_FIELD_NUMBER: builtins.int

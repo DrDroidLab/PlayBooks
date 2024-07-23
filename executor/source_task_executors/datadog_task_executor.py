@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue, UInt64Value
 
 from connectors.utils import generate_credentials_dict
@@ -72,7 +70,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             generated_credentials['dd_api_domain'] = 'datadoghq.com'
         return DatadogApiProcessor(**generated_credentials)
 
-    def execute_service_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, dd_task: Datadog,
+    def execute_service_metric_execution(self, time_range: TimeRange, dd_task: Datadog,
                                          datadog_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not datadog_connector:
@@ -140,7 +138,7 @@ class DatadogSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing Datadog task: {e}")
 
-    def execute_query_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, dd_task: Datadog,
+    def execute_query_metric_execution(self, time_range: TimeRange, dd_task: Datadog,
                                        datadog_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not datadog_connector:

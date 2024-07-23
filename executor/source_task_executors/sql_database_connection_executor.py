@@ -1,4 +1,3 @@
-from typing import Dict
 import threading
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
@@ -46,8 +45,8 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(sql_database_connector.type, sql_database_connector.keys)
         return DBConnectionStringProcessor(**generated_credentials)
 
-    def execute_sql_query(self, time_range: TimeRange, global_variable_set: Dict,
-                          sql_data_fetch_task: SqlDataFetch, sql_db_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_sql_query(self, time_range: TimeRange, sql_data_fetch_task: SqlDataFetch,
+                          sql_db_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not sql_db_connector:
                 raise Exception("Task execution Failed:: No SQL Database source found")
@@ -63,10 +62,6 @@ class SqlDatabaseConnectionSourceManager(PlaybookSourceManager):
 
             if query[-1] == ';':
                 query = query[:-1]
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    query = query.replace(key, str(value))
 
             count_query = f"SELECT COUNT(*) FROM ({query}) AS subquery"
             if order_by_column and 'order by' not in query.lower():

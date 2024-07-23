@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
 
@@ -40,7 +39,7 @@ class MimirSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return MimirApiProcessor(**generated_credentials)
 
-    def execute_promql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, mimir_task: PromQl,
+    def execute_promql_metric_execution(self, time_range: TimeRange, mimir_task: PromQl,
                                         mimir_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not mimir_connector:
@@ -59,9 +58,6 @@ class MimirSourceManager(PlaybookSourceManager):
 
             task = mimir_task.promql_metric_execution
             promql_metric_query = task.promql_expression.value
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    promql_metric_query = promql_metric_query.replace(key, str(value))
 
             mimir_api_processor = self.get_connector_processor(mimir_connector)
 

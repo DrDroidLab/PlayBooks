@@ -1,5 +1,3 @@
-from typing import Dict
-
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.utils import generate_credentials_dict
@@ -37,18 +35,12 @@ class KubernetesSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(kubernetes_connector.type, kubernetes_connector.keys)
         return KubectlApiProcessor(**generated_credentials)
 
-    def execute_command(self, time_range: TimeRange, global_variable_set: Dict,
-                        kubernetes_task: Kubectl, kubernetes_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_command(self, time_range: TimeRange, kubernetes_task: Kubectl,
+                        kubernetes_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             command_str = kubernetes_task.command.command.value
             commands = command_str.split('\n')
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    updated_commands = []
-                    for command in commands:
-                        command = command.replace(key, str(value))
-                        updated_commands.append(command)
-                    commands = updated_commands
+
             try:
                 outputs = {}
                 kubectl_client = self.get_connector_processor(kubernetes_connector)
