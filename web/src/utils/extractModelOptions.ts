@@ -1,7 +1,8 @@
 import { taskTypes } from "../constants/index.ts";
+import { Task } from "../types/task.ts";
 
-export default function extractModelOptions(assets, task) {
-  switch (`${task?.source} ${task?.taskType}`) {
+export default function extractModelOptions(assets: any, task: Task) {
+  switch (`${task?.source} ${task?.[task?.source?.toLowerCase()].type}`) {
     case taskTypes.CLOUDWATCH_LOG_GROUP:
       return {
         regions: assets.map((asset) => asset.region),
@@ -88,7 +89,21 @@ export default function extractModelOptions(assets, task) {
           clusters: asset.clusters,
         })),
       };
+    case taskTypes.EKS_KUBECTL_COMMAND:
+      return {
+        regions: assets.map((asset) => ({
+          region: asset.region,
+          clusters: asset.clusters,
+        })),
+      };
     case taskTypes.GKE_GET_DEPLOYMENTS:
+      return {
+        zones: assets.map((asset) => ({
+          zone: asset.zone,
+          clusters: asset.clusters,
+        })),
+      };
+    case taskTypes.GKE_KUBECTL_COMMAND:
       return {
         zones: assets.map((asset) => ({
           zone: asset.zone,
@@ -120,7 +135,7 @@ export default function extractModelOptions(assets, task) {
       return {
         ssh_servers: assets?.map((asset) => asset.name) ?? [],
       };
-    case taskTypes.ELASTIC_SEARCH_QUERY_INDEX:
+    case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return {
         indexes: assets?.map((asset) => asset.index) ?? [],
       };

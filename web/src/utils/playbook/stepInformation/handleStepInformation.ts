@@ -10,10 +10,12 @@ export type StepInformationType = {
 };
 
 export default function handleStepInformation(
-  stepId: string,
+  taskId: string,
 ): StepInformationType[] {
-  const [step] = getCurrentTask(stepId);
-  const type = `${step.source} ${step.taskType}`;
+  const [task] = getCurrentTask(taskId);
+  const source = task?.source ?? "";
+  const taskType = task?.[source?.toLowerCase()]?.type;
+  const type = `${source} ${taskType}`;
 
   switch (type) {
     case taskTypes.CLOUDWATCH_METRIC:
@@ -60,8 +62,14 @@ export default function handleStepInformation(
       return StepInformation.loki;
     case taskTypes.ELASTIC_SEARCH_QUERY_LOGS:
       return StepInformation.elasticSearch;
+    case taskTypes.GCM_MQL_EXECUTION:
+      return StepInformation.gcmMqlQuery;
+    case taskTypes.GCM_FILTER_LOG_EVENTS:
+      return StepInformation.gcmLogs;
     case taskTypes.DOCUMENTATION_IFRAME:
       return [];
+    case taskTypes.DOCUMENTATION_MARKDOWN:
+      return StepInformation.markdown;
 
     default:
       return [];

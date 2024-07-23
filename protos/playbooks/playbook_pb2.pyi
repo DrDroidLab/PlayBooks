@@ -22,9 +22,12 @@ import protos.playbooks.source_task_definitions.datadog_task_pb2
 import protos.playbooks.source_task_definitions.documentation_task_pb2
 import protos.playbooks.source_task_definitions.eks_task_pb2
 import protos.playbooks.source_task_definitions.elastic_search_task_pb2
+import protos.playbooks.source_task_definitions.email_task_pb2
+import protos.playbooks.source_task_definitions.gcm_task_pb2
 import protos.playbooks.source_task_definitions.gke_task_pb2
 import protos.playbooks.source_task_definitions.grafana_loki_task_pb2
 import protos.playbooks.source_task_definitions.grafana_task_pb2
+import protos.playbooks.source_task_definitions.kubectl_task_pb2
 import protos.playbooks.source_task_definitions.new_relic_task_pb2
 import protos.playbooks.source_task_definitions.promql_task_pb2
 import protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2
@@ -92,6 +95,9 @@ class PlaybookTask(google.protobuf.message.Message):
     GKE_FIELD_NUMBER: builtins.int
     ELASTIC_SEARCH_FIELD_NUMBER: builtins.int
     GRAFANA_LOKI_FIELD_NUMBER: builtins.int
+    KUBERNETES_FIELD_NUMBER: builtins.int
+    GCM_FIELD_NUMBER: builtins.int
+    SMTP_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     source: protos.base_pb2.Source.ValueType
@@ -142,6 +148,12 @@ class PlaybookTask(google.protobuf.message.Message):
     def elastic_search(self) -> protos.playbooks.source_task_definitions.elastic_search_task_pb2.ElasticSearch: ...
     @property
     def grafana_loki(self) -> protos.playbooks.source_task_definitions.grafana_loki_task_pb2.GrafanaLoki: ...
+    @property
+    def kubernetes(self) -> protos.playbooks.source_task_definitions.kubectl_task_pb2.Kubectl: ...
+    @property
+    def gcm(self) -> protos.playbooks.source_task_definitions.gcm_task_pb2.Gcm: ...
+    @property
+    def smtp(self) -> protos.playbooks.source_task_definitions.email_task_pb2.SMTP: ...
     def __init__(
         self,
         *,
@@ -171,10 +183,13 @@ class PlaybookTask(google.protobuf.message.Message):
         gke: protos.playbooks.source_task_definitions.gke_task_pb2.Gke | None = ...,
         elastic_search: protos.playbooks.source_task_definitions.elastic_search_task_pb2.ElasticSearch | None = ...,
         grafana_loki: protos.playbooks.source_task_definitions.grafana_loki_task_pb2.GrafanaLoki | None = ...,
+        kubernetes: protos.playbooks.source_task_definitions.kubectl_task_pb2.Kubectl | None = ...,
+        gcm: protos.playbooks.source_task_definitions.gcm_task_pb2.Gcm | None = ...,
+        smtp: protos.playbooks.source_task_definitions.email_task_pb2.SMTP | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "elastic_search", b"elastic_search", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_loki", b"grafana_loki", "grafana_mimir", b"grafana_mimir", "id", b"id", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "elastic_search", b"elastic_search", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_loki", b"grafana_loki", "grafana_mimir", b"grafana_mimir", "id", b"id", "interpreter_type", b"interpreter_type", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "source", b"source", "sql_database_connection", b"sql_database_connection", "task", b"task", "task_connector_sources", b"task_connector_sources"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation", "cloudwatch", "grafana", "new_relic", "datadog", "clickhouse", "postgres", "eks", "sql_database_connection", "api", "bash", "grafana_mimir", "azure", "gke", "elastic_search", "grafana_loki"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_loki", b"grafana_loki", "grafana_mimir", b"grafana_mimir", "id", b"id", "kubernetes", b"kubernetes", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "smtp", b"smtp", "sql_database_connection", b"sql_database_connection", "task", b"task"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "created_by", b"created_by", "datadog", b"datadog", "description", b"description", "documentation", b"documentation", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "global_variable_set", b"global_variable_set", "grafana", b"grafana", "grafana_loki", b"grafana_loki", "grafana_mimir", b"grafana_mimir", "id", b"id", "interpreter_type", b"interpreter_type", "kubernetes", b"kubernetes", "name", b"name", "new_relic", b"new_relic", "notes", b"notes", "postgres", b"postgres", "reference_id", b"reference_id", "smtp", b"smtp", "source", b"source", "sql_database_connection", b"sql_database_connection", "task", b"task", "task_connector_sources", b"task_connector_sources"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["task", b"task"]) -> typing_extensions.Literal["documentation", "cloudwatch", "grafana", "new_relic", "datadog", "clickhouse", "postgres", "eks", "sql_database_connection", "api", "bash", "grafana_mimir", "azure", "gke", "elastic_search", "grafana_loki", "kubernetes", "gcm", "smtp"] | None: ...
 
 global___PlaybookTask = PlaybookTask
 
@@ -186,6 +201,7 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
     TASK_FIELD_NUMBER: builtins.int
     TIMESERIES_FIELD_NUMBER: builtins.int
     TABLE_FIELD_NUMBER: builtins.int
+    LOGS_FIELD_NUMBER: builtins.int
     type: protos.playbooks.playbook_commons_pb2.PlaybookTaskResultType.ValueType
     @property
     def task(self) -> global___PlaybookTask: ...
@@ -193,6 +209,8 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
     def timeseries(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.TimeseriesResultRule: ...
     @property
     def table(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule: ...
+    @property
+    def logs(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule: ...
     def __init__(
         self,
         *,
@@ -200,10 +218,11 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
         task: global___PlaybookTask | None = ...,
         timeseries: protos.playbooks.playbook_task_result_evaluator_pb2.TimeseriesResultRule | None = ...,
         table: protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule | None = ...,
+        logs: protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["rule", b"rule"]) -> typing_extensions.Literal["timeseries", "table"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["rule", b"rule"]) -> typing_extensions.Literal["timeseries", "table", "logs"] | None: ...
 
 global___PlaybookTaskResultRule = PlaybookTaskResultRule
 

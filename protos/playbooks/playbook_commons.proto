@@ -20,6 +20,7 @@ enum PlaybookTaskResultType {
   API_RESPONSE = 3;
   BASH_COMMAND_OUTPUT = 4;
   TEXT = 5;
+  LOGS = 6;
 }
 
 message ExternalLink {
@@ -97,6 +98,7 @@ message PlaybookTaskResult {
     ApiResponseResult api_response = 103;
     BashCommandOutputResult bash_command_output = 104;
     TextResult text = 105;
+    TableResult logs = 106;
   }
 }
 

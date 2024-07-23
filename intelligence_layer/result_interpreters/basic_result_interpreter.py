@@ -26,14 +26,17 @@ class BasicResultInterpreter(ResultInterpreter):
         if result_type == PlaybookTaskResultType.TIMESERIES:
             try:
                 timeseries_result: TimeseriesResult = task_result.timeseries
-                file_key = generate_local_image_path()
                 metric_expression = timeseries_result.metric_expression.value
                 metric_expression = metric_expression.replace('`', '')
                 metric_name = timeseries_result.metric_name.value
                 metric_source = integrations_connector_type_display_name_map.get(task_result.source,
                                                                                  Source.Name(task_result.source))
+                current_epoch = current_epoch_timestamp()
+                uuid_str = uuid.uuid4().hex
+                img_file_title = f'{metric_source}_data_{str(current_epoch)}_{uuid_str}.png'
                 image_title = f'{metric_source}:{metric_expression}, {metric_name}'
-                object_url = generate_graph_for_timeseries_result(timeseries_result, file_key, image_title)
+                file_path = generate_local_image_path(image_name=img_file_title)
+                object_url = generate_graph_for_timeseries_result(timeseries_result, file_path, image_title)
                 if not object_url:
                     return Interpretation()
                 if metric_name:
@@ -46,12 +49,13 @@ class BasicResultInterpreter(ResultInterpreter):
                     interpreter_type=self.type,
                     description=StringValue(value=description),
                     image_url=StringValue(value=object_url),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    model_type = Interpretation.ModelType.PLAYBOOK_TASK,
+                    file_path = StringValue(value=file_path)
                 )
             except Exception as e:
                 logger.error(f'Error writing image: {e}')
                 raise e
-        elif result_type == PlaybookTaskResultType.TABLE:
+        elif result_type == PlaybookTaskResultType.TABLE or result_type == PlaybookTaskResultType.LOGS:
             try:
                 data_source = integrations_connector_type_display_name_map.get(task_result.source,
                                                                                Source.Name(task_result.source))

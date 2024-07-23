@@ -43,6 +43,7 @@ integrations_connector_type_display_name_map = {
     Source.MS_TEAMS: 'MS TEAMS',
     Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
+    Source.KUBERNETES: 'KUBERNETES',
     Source.SMTP: 'EMAIL SERVER',
 }
 
@@ -75,6 +76,7 @@ integrations_connector_type_category_map = {
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
+    Source.KUBERNETES: 'Cloud',
     Source.SMTP: 'Alert Channels',
 }
 
@@ -262,6 +264,38 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
+    Source.KUBERNETES: [
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+            SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
+            SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH
+        ],
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+            SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA
+        ],
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+            SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH
+        ],
+        [
+            SourceKeyType.KUBERNETES_CLUSTER_NAME,
+            SourceKeyType.KUBERNETES_CLUSTER_API_SERVER,
+            SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+        ],
+    ],
+    Source.GCM: [
+        [
+            SourceKeyType.GCM_PROJECT_ID,
+            SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
+        ]
+    ],
     Source.SMTP: [
         [
             SourceKeyType.SMTP_HOST,
@@ -293,7 +327,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AWS_SECRET_KEY: 'AWS Secret Key',
     SourceKeyType.AWS_REGION: 'AWS Region',
     SourceKeyType.GCM_PROJECT_ID: 'Project ID',
-    SourceKeyType.GCM_PRIVATE_KEY: 'Private Key',
+    SourceKeyType.GCM_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
     SourceKeyType.GCM_CLIENT_EMAIL: 'Client Email',
     SourceKeyType.GCM_TOKEN_URI: 'Token URI',
     SourceKeyType.CLICKHOUSE_INTERFACE: 'Interface',
@@ -335,6 +369,11 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.GRAFANA_LOKI_HOST: 'Host',
     SourceKeyType.GRAFANA_LOKI_PORT: 'Port',
     SourceKeyType.GRAFANA_LOKI_PROTOCOL: 'Protocol',
+    SourceKeyType.KUBERNETES_CLUSTER_NAME: 'Cluster Name',
+    SourceKeyType.KUBERNETES_CLUSTER_API_SERVER: 'API Server URL',
+    SourceKeyType.KUBERNETES_CLUSTER_TOKEN: 'Token',
+    SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: 'SSL Certificate Authority Data',
+    SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: 'SSL Certificate Authority Path',
     SourceKeyType.SMTP_HOST: 'Host',
     SourceKeyType.SMTP_PORT: 'Port',
     SourceKeyType.SMTP_USER: 'User',
@@ -446,10 +485,6 @@ class ConnectorKey(models.Model):
             self.key_md5 = md5(str(self.key).encode('utf-8')).hexdigest()
         super().save(**kwargs)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.connector_id = None
-
     @property
     def proto(self):
         key_value = self.key
@@ -469,7 +504,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,
                              SourceKeyType.CLICKHOUSE_USER, SourceKeyType.CLICKHOUSE_PASSWORD,
-                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
+                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
@@ -480,7 +515,10 @@ class ConnectorKey(models.Model):
                              SourceKeyType.AZURE_CLIENT_SECRET,
                              SourceKeyType.GKE_SERVICE_ACCOUNT_JSON,
                              SourceKeyType.ELASTIC_SEARCH_API_KEY_ID,
-                             SourceKeyType.ELASTIC_SEARCH_API_KEY, ]:
+                             SourceKeyType.ELASTIC_SEARCH_API_KEY,
+                             SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

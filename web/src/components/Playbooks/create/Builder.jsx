@@ -4,7 +4,6 @@ import AddDataDrawer from "../../common/Drawers/AddDataDrawer.jsx";
 import TemplatesDrawer from "../../common/Drawers/TemplatesDrawer.jsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import StepDetailsDrawer from "../../common/Drawers/StepDetailsDrawer.jsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
 
 function Builder({ isLog = false }) {
@@ -17,9 +16,6 @@ function Builder({ isLog = false }) {
         {!isLog && (
           <>
             <CustomButton onClick={toggleAddData}>Add Data</CustomButton>
-            <CustomButton onClick={toggleTemplates}>
-              Import from templates
-            </CustomButton>
           </>
         )}
         <GlobalVariables />
@@ -29,7 +25,6 @@ function Builder({ isLog = false }) {
       <div className="flex-[1] h-full">
         <CreateFlow />
       </div>
-      <StepDetailsDrawer />
     </div>
   );
 }

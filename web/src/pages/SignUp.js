@@ -286,21 +286,6 @@ function SignUp() {
                       justifyContent: "center",
                     }}>
                     <Typography variant="body2">
-                      Forgot password? &nbsp;
-                    </Typography>
-                    <Typography variant="body2">
-                      <LinkStyled to="/reset-password">Reset</LinkStyled>
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                    }}>
-                    <Typography variant="body2">
                       Already have an account? &nbsp;
                     </Typography>
                     <Typography variant="body2">
