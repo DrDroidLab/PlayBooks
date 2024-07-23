@@ -10,7 +10,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.api_task_pb2 import Api
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 method_proto_string_mapping = {
     Api.HttpRequest.Method.GET: "GET",
@@ -44,7 +44,9 @@ class ApiSourceManager(PlaybookSourceManager):
                                   Literal(type=LiteralType.STRING, string=StringValue(value="PUT")),
                                   Literal(type=LiteralType.STRING, string=StringValue(value="PATCH")),
                                   Literal(type=LiteralType.STRING, string=StringValue(value="DELETE"))
-                              ]),
+                              ],
+                              form_field_type=FormFieldType.DROPDOWN
+                              ),
                     FormField(key_name=StringValue(value="url"),
                               display_name=StringValue(value="URL"),
                               description=StringValue(value='Enter URL'),
