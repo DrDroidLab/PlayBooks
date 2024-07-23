@@ -42,7 +42,6 @@ class ClickhouseSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Timeout (in seconds)"),
                               description=StringValue(value='Enter Timeout (in seconds)'),
                               data_type=LiteralType.LONG,
-                              is_optional=True,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)))
                 ]
             },

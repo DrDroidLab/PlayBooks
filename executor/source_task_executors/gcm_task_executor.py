@@ -59,12 +59,10 @@ class GcmSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="order_by"),
                               display_name=StringValue(value="Order By"),
                               data_type=LiteralType.STRING,
-                              is_optional=True,
-                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value=""))),
+                              is_optional=True),
                     FormField(key_name=StringValue(value="page_size"),
                               display_name=StringValue(value="Page Size"),
                               data_type=LiteralType.LONG,
-                              is_optional=True,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
                 ]
             },

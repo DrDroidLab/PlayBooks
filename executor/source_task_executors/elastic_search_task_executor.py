@@ -40,7 +40,6 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="offset"),
                               display_name=StringValue(value="Enter Offset"),
                               data_type=LiteralType.LONG,
-                              is_optional=True,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=0))),
                 ]
             },

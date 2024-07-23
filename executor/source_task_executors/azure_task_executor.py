@@ -42,7 +42,6 @@ class AzureSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Timespan (hours)"),
                               description=StringValue(value='Enter Timespan (hours)'),
                               data_type=LiteralType.STRING,
-                              is_optional=True,
                               default_value=Literal(type=LiteralType.STRING, string=StringValue(value="1")))
                 ]
             },

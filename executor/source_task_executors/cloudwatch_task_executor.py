@@ -60,7 +60,6 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                               description=StringValue(value='Select Aggregation Function'),
                               data_type=LiteralType.STRING,
                               default_value=Literal(type=LiteralType.STRING, string=StringValue(value="Average")),
-                              is_optional=True,
                               valid_values=[Literal(type=LiteralType.STRING, string=StringValue(value="Average")),
                                             Literal(type=LiteralType.STRING, string=StringValue(value="Sum")),
                                             Literal(type=LiteralType.STRING, string=StringValue(value="SampleCount")),
