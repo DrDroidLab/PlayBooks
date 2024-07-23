@@ -1,5 +1,9 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { PlaybookUIState, StepRelation } from "../../../../../types/index.ts";
+import {
+  LogicalOperator,
+  PlaybookUIState,
+  StepRelation,
+} from "../../../../../types/index.ts";
 
 type AddRelationArgType = {
   source: string;
@@ -25,8 +29,11 @@ export const addRelation = (
     id: `edge-${source}-${target}`,
     child,
     parent,
-    condition: undefined,
-    ui_requirement: undefined,
+    condition: {
+      logical_operator: LogicalOperator.AND_LO,
+      rules: [],
+    },
+    ui_requirement: {},
   };
 
   currentPlaybook?.step_relations.push(newRelation);

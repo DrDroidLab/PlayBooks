@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
@@ -24,7 +24,6 @@ function AddCondition() {
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const {
-    playbookEdges,
     rules,
     condition,
     handleRule,
@@ -49,12 +48,6 @@ function AddCondition() {
       i,
     );
   };
-
-  useEffect(() => {
-    if (rules?.length === 0) {
-      handleRule("", "", 0);
-    }
-  }, [rules, handleRule, playbookEdges]);
 
   return (
     <div className="p-2">
@@ -91,7 +84,7 @@ function AddCondition() {
       </div>
 
       {rules?.map((condition, i) => (
-        <div className="mt-2 border p-1 rounded-md">
+        <div key={i} className="mt-2 border p-1 rounded-md">
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
@@ -121,15 +114,13 @@ function AddCondition() {
               />
             </div>
 
-            {i !== 0 && (
-              <div className="flex gap-2 flex-wrap">
-                <CustomButton
-                  className="!text-sm !w-fit"
-                  onClick={() => deleteCondition(i)}>
-                  <Delete fontSize="inherit" />
-                </CustomButton>
-              </div>
-            )}
+            <div className="flex gap-2 flex-wrap">
+              <CustomButton
+                className="!text-sm !w-fit"
+                onClick={() => deleteCondition(i)}>
+                <Delete fontSize="inherit" />
+              </CustomButton>
+            </div>
           </div>
         </div>
       ))}
