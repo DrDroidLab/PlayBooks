@@ -23,6 +23,7 @@ from executor.source_processors.pd_api_processor import PdApiProcessor
 from executor.source_processors.postgres_db_processor import PostgresDBProcessor
 from executor.source_processors.remote_server_processor import RemoteServerProcessor
 from executor.source_processors.slack_api_processor import SlackApiProcessor
+from executor.source_processors.smtp_api_processor import SmtpApiProcessor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
@@ -55,6 +56,7 @@ connector_type_api_processor_map = {
     Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
     Source.KUBERNETES: KubectlApiProcessor,
     Source.GCM: GcmApiProcessor,
+    Source.SMTP: SmtpApiProcessor
 }
 
 
@@ -277,7 +279,7 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.SMTP_PORT:
                 credentials_dict['port'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SMTP_USER:
-                credentials_dict['user'] = conn_key.key.value
+                credentials_dict['username'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SMTP_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
     else:
