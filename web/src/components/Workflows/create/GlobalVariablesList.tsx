@@ -15,7 +15,7 @@ function GlobalVariablesList({
 
   return (
     <>
-      <p className="text-xs font-medium">Global Variables in the Playbook</p>
+      <p className="text-xs font-medium">Variables in the Playbook</p>
       <div className="flex flex-wrap gap-2">
         {variables.map(([key, value]) => (
           <Tooltip title={value} key={key}>

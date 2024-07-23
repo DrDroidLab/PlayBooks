@@ -45,9 +45,21 @@ function BasicDetails() {
     switch (currentWorkflow?.workflowType) {
       case "api":
         handleGenerateCurl();
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
         return;
       case "pagerduty_incident":
         handleGenerateWebhook();
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
         return;
       default:
         return;
