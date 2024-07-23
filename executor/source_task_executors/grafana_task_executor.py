@@ -8,9 +8,11 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
+from protos.ui_definition_pb2 import FormField
 
 
 class GrafanaSourceManager(PlaybookSourceManager):
@@ -31,7 +33,15 @@ class GrafanaSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.GRAFANA_PROMETHEUS_DATASOURCE],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Query any of your Prometheus Data Sources from Grafana',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="datasource_uid"),
+                              display_name=StringValue(value="Datasource UID"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="promql_expression"),
+                              display_name=StringValue(value="PromQL"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
@@ -58,7 +68,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
             task = grafana_task.promql_metric_execution
 
             datasource_uid = task.datasource_uid.value
-            process_function = task.process_function.value
             promql_metric_query = task.promql_expression.value
             promql_label_option_values = task.promql_label_option_values
 
@@ -82,38 +91,36 @@ class GrafanaSourceManager(PlaybookSourceManager):
             if not response:
                 raise Exception("No data returned from Grafana")
 
-            if process_function == 'timeseries':
-                if 'data' in response and 'result' in response['data']:
-                    labeled_metric_timeseries_list = []
-                    for item in response['data']['result']:
-                        metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                        for value in item['values']:
-                            utc_timestamp = value[0]
-                            utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
-                            val = value[1]
-                            datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                                timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
-                            metric_datapoints.append(datapoint)
-                        item_metrics = item['metric']
-                        metric_label_values = []
-                        for key, value in item_metrics.items():
-                            metric_label_values.append(
-                                LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
-                        labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
-                            metric_label_values=metric_label_values, unit=StringValue(value=""),
-                            datapoints=metric_datapoints)
-                        labeled_metric_timeseries_list.append(labeled_metric_timeseries)
+            if 'data' in response and 'result' in response['data']:
+                labeled_metric_timeseries_list = []
+                for item in response['data']['result']:
+                    metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                    for value in item['values']:
+                        utc_timestamp = value[0]
+                        utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
+                        val = value[1]
+                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
+                        metric_datapoints.append(datapoint)
+                    item_metrics = item['metric']
+                    metric_label_values = []
+                    for key, value in item_metrics.items():
+                        metric_label_values.append(
+                            LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
+                    labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
+                        metric_label_values=metric_label_values, unit=StringValue(value=""),
+                        datapoints=metric_datapoints)
+                    labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
-                    timeseries_result = TimeseriesResult(
-                        metric_expression=StringValue(value=promql_metric_query),
-                        labeled_metric_timeseries=labeled_metric_timeseries_list
-                    )
+                timeseries_result = TimeseriesResult(
+                    metric_expression=StringValue(value=promql_metric_query),
+                    labeled_metric_timeseries=labeled_metric_timeseries_list
+                )
 
-                    task_result = PlaybookTaskResult(
-                        source=self.source,
-                        type=PlaybookTaskResultType.TIMESERIES,
-                        timeseries=timeseries_result)
-
+                task_result = PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.TIMESERIES,
+                    timeseries=timeseries_result)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Grafana task: {e}")
@@ -138,7 +145,6 @@ class GrafanaSourceManager(PlaybookSourceManager):
             task = grafana_task.prometheus_datasource_metric_execution
 
             datasource_uid = task.datasource_uid.value
-            process_function = task.process_function.value
             promql_metric_query = task.promql_expression.value
 
             if global_variable_set:
@@ -159,37 +165,36 @@ class GrafanaSourceManager(PlaybookSourceManager):
             if not response:
                 raise Exception("No data returned from Grafana")
 
-            if process_function == 'timeseries':
-                if 'data' in response and 'result' in response['data']:
-                    labeled_metric_timeseries_list = []
-                    for item in response['data']['result']:
-                        metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                        for value in item['values']:
-                            utc_timestamp = value[0]
-                            utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
-                            val = value[1]
-                            datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                                timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
-                            metric_datapoints.append(datapoint)
-                        item_metrics = item['metric']
-                        metric_label_values = []
-                        for key, value in item_metrics.items():
-                            metric_label_values.append(
-                                LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
-                        labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
-                            metric_label_values=metric_label_values, unit=StringValue(value=""),
-                            datapoints=metric_datapoints)
-                        labeled_metric_timeseries_list.append(labeled_metric_timeseries)
+            if 'data' in response and 'result' in response['data']:
+                labeled_metric_timeseries_list = []
+                for item in response['data']['result']:
+                    metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                    for value in item['values']:
+                        utc_timestamp = value[0]
+                        utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
+                        val = value[1]
+                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=float(val)))
+                        metric_datapoints.append(datapoint)
+                    item_metrics = item['metric']
+                    metric_label_values = []
+                    for key, value in item_metrics.items():
+                        metric_label_values.append(
+                            LabelValuePair(name=StringValue(value=key), value=StringValue(value=value)))
+                    labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(
+                        metric_label_values=metric_label_values, unit=StringValue(value=""),
+                        datapoints=metric_datapoints)
+                    labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
-                    timeseries_result = TimeseriesResult(
-                        metric_expression=StringValue(value=promql_metric_query),
-                        labeled_metric_timeseries=labeled_metric_timeseries_list
-                    )
+                timeseries_result = TimeseriesResult(
+                    metric_expression=StringValue(value=promql_metric_query),
+                    labeled_metric_timeseries=labeled_metric_timeseries_list
+                )
 
-                    task_result = PlaybookTaskResult(
-                        source=self.source,
-                        type=PlaybookTaskResultType.TIMESERIES,
-                        timeseries=timeseries_result)
+                task_result = PlaybookTaskResult(
+                    source=self.source,
+                    type=PlaybookTaskResultType.TIMESERIES,
+                    timeseries=timeseries_result)
 
             return task_result
         except Exception as e:
