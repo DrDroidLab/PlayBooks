@@ -1,5 +1,6 @@
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { store } from "../store/index.ts";
+import { FormFields } from "../types/inputs/formFields.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 
 export const constructBuilder = (id?: string) => {
@@ -13,7 +14,7 @@ export const constructBuilder = (id?: string) => {
 
   if (!task) return {};
 
-  return type.form_fields.map((field) => ({
+  return type.form_fields.map((field: FormFields) => ({
     key: field.key_name,
     label: field.display_name,
     placeholder: field.description,
