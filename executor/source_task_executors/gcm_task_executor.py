@@ -1,19 +1,21 @@
-import logging
 from datetime import datetime, timezone
-from typing import Dict
+
+import logging
 import re
 
 import pytz
-from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue, DoubleValue, UInt64Value, Int64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.gcm_api_processor import GcmApiProcessor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
+from protos.ui_definition_pb2 import FormField
 
 logger = logging.getLogger(__name__)
 
@@ -37,14 +39,32 @@ class GcmSourceManager(PlaybookSourceManager):
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Execute MQL in GCM',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="query"),
+                              display_name=StringValue(value="MQL Expression"),
+                              data_type=LiteralType.STRING),
+                ]
             },
             Gcm.TaskType.FILTER_LOG_EVENTS: {
                 'executor': self.execute_filter_log_events,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Logs from GCM',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="filter_query"),
+                              display_name=StringValue(value="Filter Query"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="order_by"),
+                              display_name=StringValue(value="Order By"),
+                              data_type=LiteralType.STRING,
+                              is_optional=True),
+                    FormField(key_name=StringValue(value="page_size"),
+                              display_name=StringValue(value="Page Size"),
+                              data_type=LiteralType.LONG,
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
+                ]
             },
         }
 
@@ -52,7 +72,7 @@ class GcmSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(gcm_connector.type, gcm_connector.keys)
         return GcmApiProcessor(**generated_credentials)
 
-    def execute_mql_execution(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+    def execute_mql_execution(self, time_range: TimeRange, gcm_task: Gcm,
                               gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
@@ -66,9 +86,6 @@ class GcmSourceManager(PlaybookSourceManager):
             mql_task = gcm_task.mql_execution
             mql = mql_task.query.value
             mql = mql.strip()
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    mql = mql.replace(key, str(value))
 
             project_id = get_project_id(gcm_connector)
 
@@ -118,7 +135,7 @@ class GcmSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing GCM task: {e}")
 
-    def execute_filter_log_events(self, time_range: TimeRange, global_variable_set: Dict, gcm_task: Gcm,
+    def execute_filter_log_events(self, time_range: TimeRange, gcm_task: Gcm,
                                   gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
@@ -131,9 +148,6 @@ class GcmSourceManager(PlaybookSourceManager):
             page_size = log_task.page_size.value if log_task.page_size else 2000
             page_token = log_task.page_token.value if log_task.page_token else None
             resource_names = [r.value for r in log_task.resource_names] if log_task.resource_names else None
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    filter_query = filter_query.replace(key, str(value))
 
             timestamp_gte_match = re.search(r'timestamp\s*>=\s*"([^"]+)"', filter_query)
             timestamp_gt_match = re.search(r'timestamp\s*>\s*"([^"]+)"', filter_query)

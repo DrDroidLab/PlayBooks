@@ -3,9 +3,21 @@ import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpret
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import TaskOutput from "./TaskOutput.tsx";
 import Interpretation from "../../common/Interpretation/index.tsx";
+import { Task } from "../../../types/index.ts";
 
-function HandleOutput({ id, showHeading = true }) {
-  const [task] = useCurrentTask(id);
+type HandleOutputPropTypes = {
+  id: string | undefined;
+  showHeading?: boolean;
+  taskFromExecution?: Task;
+};
+
+function HandleOutput({
+  id,
+  showHeading = true,
+  taskFromExecution = undefined,
+}: HandleOutputPropTypes) {
+  const [taskFromPlaybook] = useCurrentTask(id);
+  const task = taskFromExecution ?? taskFromPlaybook;
   const showOutput = task?.ui_requirement?.showOutput;
 
   if (!task) return;
@@ -30,7 +42,11 @@ function HandleOutput({ id, showHeading = true }) {
               !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
             } h-full bg-gray-50  flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
             <div className="w-full">
-              <TaskOutput showHeading={showHeading} id={task.id} />
+              <TaskOutput
+                showHeading={showHeading}
+                id={task.id}
+                taskFromExecution={taskFromExecution}
+              />
             </div>
             {Object.keys(output?.interpretation ?? {}).length > 0 &&
               !unsupportedInterpreterTypes.includes(

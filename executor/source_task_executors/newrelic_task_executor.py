@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from typing import Dict
 
 import pytz
 from google.protobuf.wrappers_pb2 import DoubleValue, StringValue
@@ -10,9 +9,11 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.new_relic_task_pb2 import NewRelic
+from protos.ui_definition_pb2 import FormField
 
 
 def get_nrql_expression_result_alias(nrql_expression):
@@ -34,21 +35,67 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_APPLICATION],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a New Relic golden metric',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="application_entity_name"),
+                              display_name=StringValue(value="Application"),
+                              description=StringValue(value="Select Application"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="golden_metric_name"),
+                              display_name=StringValue(value="Metric"),
+                              description=StringValue(value="Select Metric"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="golden_metric_unit"),
+                              display_name=StringValue(value="Unit"),
+                              description=StringValue(value="Enter Unit"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="golden_metric_nrql_expression"),
+                              display_name=StringValue(value="Selected Query"),
+                              data_type=LiteralType.STRING),
+                ]
             },
             NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
                 'executor': self.execute_entity_dashboard_widget_nrql_metric_execution,
                 'model_types': [SourceModelType.NEW_RELIC_ENTITY_DASHBOARD],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a metric from New Relic dashboard',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="dashboard_guid"),
+                              display_name=StringValue(value="Dashboard"),
+                              description=StringValue(value="Select Dashboard"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="page_guid"),
+                              display_name=StringValue(value="Page"),
+                              description=StringValue(value="Select Page"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="widget_title"),
+                              display_name=StringValue(value="Widget Title"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="widget_nrql_expression"),
+                              display_name=StringValue(value="Selected Query"),
+                              data_type=LiteralType.STRING),
+                ]
             },
             NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
                 'executor': self.execute_nrql_metric_execution,
                 'model_types': [],
                 'result_type': PlaybookTaskResultType.TIMESERIES,
                 'display_name': 'Fetch a custom NRQL query',
-                'category': 'Metrics'
+                'category': 'Metrics',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="metric_name"),
+                              display_name=StringValue(value="Metric Name"),
+                              description=StringValue(value="Enter Metric Name"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="unit"),
+                              display_name=StringValue(value="Unit"),
+                              description=StringValue(value="Enter Unit"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="nrql_expression"),
+                              display_name=StringValue(value="Selected Query"),
+                              data_type=LiteralType.STRING),
+                ]
             },
         }
 
@@ -56,14 +103,11 @@ class NewRelicSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return NewRelicGraphQlConnector(**generated_credentials)
 
-    def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, global_variable_set: Dict,
-                                                           nr_task: NewRelic,
+    def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                                            nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
                 raise Exception("Task execution Failed:: No New Relic source found")
-
-            task_result = PlaybookTaskResult()
 
             task = nr_task.entity_application_golden_metric_execution
             name = task.golden_metric_name.value
@@ -98,39 +142,34 @@ class NewRelicSourceManager(PlaybookSourceManager):
             results = []
             if response and 'results' in response:
                 results = response['results']
-            process_function = task.process_function.value
-            if process_function == 'timeseries':
-                metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                for item in results:
-                    utc_timestamp = item['beginTimeSeconds']
-                    utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
-                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
-                    val = item.get(result_alias)
-                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
-                    metric_datapoints.append(datapoint)
+            metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+            for item in results:
+                utc_timestamp = item['beginTimeSeconds']
+                utc_datetime = datetime.utcfromtimestamp(utc_timestamp)
+                utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                val = item.get(result_alias)
+                datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                    timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                metric_datapoints.append(datapoint)
 
-                labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(unit=StringValue(value=unit),
-                                                                                     datapoints=metric_datapoints)
+            labeled_metric_timeseries = TimeseriesResult.LabeledMetricTimeseries(unit=StringValue(value=unit),
+                                                                                 datapoints=metric_datapoints)
 
-                timeseries_result = TimeseriesResult(
-                    metric_expression=StringValue(value=nrql_expression),
-                    metric_name=StringValue(value=name),
-                    labeled_metric_timeseries=[labeled_metric_timeseries]
-                )
-                task_result = PlaybookTaskResult(
-                    type=PlaybookTaskResultType.TIMESERIES,
-                    timeseries=timeseries_result,
-                    source=self.source
-                )
-
+            timeseries_result = TimeseriesResult(
+                metric_expression=StringValue(value=nrql_expression),
+                metric_name=StringValue(value=name),
+                labeled_metric_timeseries=[labeled_metric_timeseries]
+            )
+            task_result = PlaybookTaskResult(
+                type=PlaybookTaskResultType.TIMESERIES,
+                timeseries=timeseries_result,
+                source=self.source
+            )
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing New Relic task: {e}")
 
-    def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange,
-                                                              global_variable_set: Dict,
-                                                              nr_task: NewRelic,
+    def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                                               nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
@@ -170,8 +209,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 facet_keys = response['metadata']['facets']
             if response and 'rawResponse' in response:
                 results = response['rawResponse']
-            process_function = task.process_function.value
-            if process_function == 'timeseries' and 'TIMESERIES' in nrql_expression:
+            if 'TIMESERIES' in nrql_expression:
                 labeled_metric_timeseries_list = []
                 metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
                 if facet_keys:
@@ -229,7 +267,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
         except Exception as e:
             raise Exception(f"Error while executing New Relic task: {e}")
 
-    def execute_nrql_metric_execution(self, time_range: TimeRange, global_variable_set: Dict, nr_task: NewRelic,
+    def execute_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
                                       nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
@@ -247,10 +285,6 @@ class NewRelicSourceManager(PlaybookSourceManager):
             nrql_expression = task.nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
                 raise Exception("Invalid NRQL expression. TIMESERIES is missing in the NRQL expression")
-
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    nrql_expression = nrql_expression.replace(key, str(value))
 
             if 'limit max timeseries' in nrql_expression.lower():
                 if 'LIMIT MAX TIMESERIES' in nrql_expression:
@@ -274,8 +308,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 facet_keys = response['metadata']['facets']
             if response and 'rawResponse' in response:
                 results = response['rawResponse']
-            process_function = task.process_function.value
-            if process_function == 'timeseries' and 'TIMESERIES' in nrql_expression:
+            if 'TIMESERIES' in nrql_expression:
                 labeled_metric_timeseries_list = []
                 metric_datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
                 if facet_keys:

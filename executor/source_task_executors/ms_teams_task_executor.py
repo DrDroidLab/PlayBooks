@@ -1,6 +1,4 @@
 import logging
-import os
-from typing import Dict
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
@@ -34,8 +32,7 @@ class MSTeamsSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(MSTeams_connector.type, MSTeams_connector.keys)
         return MSTeamsApiProcessor(**generated_credentials)
 
-    def execute_send_message_webhook(self, time_range: TimeRange, global_variable_set: Dict,
-                                     msteams_task: MSTeams,
+    def execute_send_message_webhook(self, time_range: TimeRange, msteams_task: MSTeams,
                                      ms_teams_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not ms_teams_connector:
