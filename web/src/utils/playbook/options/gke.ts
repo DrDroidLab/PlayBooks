@@ -8,7 +8,7 @@ export const gke = (key: KeyType, task: Task): any[] => {
     labelValue: "zone",
   });
   switch (key) {
-    case Key.REGION:
+    case Key.ZONE:
       return options;
     case Key.CLUSTER:
       return getCurrentAsset(
