@@ -22,8 +22,11 @@ export const handleActionsInjector = (): Types.WorkflowActionContractType => {
       return {
         ms_teams_connector_webhook_url: workflow?.ms_webhook,
       };
-    case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
-      return {};
+    case Types.WorkflowActionOptions.SMTP_EMAIL:
+      return {
+        to_email: workflow?.to_email,
+        subject: workflow?.subject,
+      };
     default:
       return {};
   }

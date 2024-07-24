@@ -29,6 +29,12 @@ export const notificationOptions = [
         type: "checkbox",
         group: "notification",
       },
+      {
+        id: NotificationOptionTypes.SMTP_EMAIL,
+        label: "Send an email",
+        type: "checkbox",
+        group: "notification",
+      },
     ],
   },
 ];
