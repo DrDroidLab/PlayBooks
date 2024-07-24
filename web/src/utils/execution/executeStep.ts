@@ -24,6 +24,13 @@ export async function executeStep(id?: string) {
     ),
   );
 
+  const globalVariableSet = {};
+  if (currentPlaybook?.global_variable_set) {
+    for (let key in currentPlaybook?.global_variable_set) {
+      globalVariableSet[key] = String(currentPlaybook?.global_variable_set[key]);
+    }
+  }
+
   if (!currentStepId) return;
   const stepData = {
     ...step,
@@ -33,7 +40,7 @@ export async function executeStep(id?: string) {
       ...e,
       id: checkId(e?.id ?? ""),
       ui_requirement: undefined,
-      global_variable_set: currentPlaybook?.global_variable_set,
+      global_variable_set: globalVariableSet,
     })),
   };
 
