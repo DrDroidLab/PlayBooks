@@ -374,9 +374,9 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.KUBERNETES_CLUSTER_TOKEN: 'Token',
     SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: 'SSL Certificate Authority Data',
     SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: 'SSL Certificate Authority Path',
-    SourceKeyType.SMTP_HOST: 'Host',
+    SourceKeyType.SMTP_HOST: 'SMTP Host',
     SourceKeyType.SMTP_PORT: 'Port',
-    SourceKeyType.SMTP_USER: 'User',
+    SourceKeyType.SMTP_USER: 'Email User',
     SourceKeyType.SMTP_PASSWORD: 'Password'
 }
 
