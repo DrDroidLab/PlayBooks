@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import { IconButton } from "rsuite";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import Toast from "../../Toast";
+import { Toast } from "../../Toast.jsx";
 import { useNavigate } from "react-router-dom";
 import {
   useLazySaveSiteUrlQuery,

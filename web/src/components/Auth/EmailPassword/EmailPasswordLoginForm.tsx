@@ -11,7 +11,7 @@ import { IconButton } from "rsuite";
 import { RemoveRedEyeRounded, VisibilityOffRounded } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../../store/features/auth/api/loginApi.ts";
-import Toast from "../../Toast.js";
+import { Toast } from "../../Toast.jsx";
 
 function EmailPasswordLoginForm() {
   const navigate = useNavigate();
