@@ -8,21 +8,21 @@ export const smtpBuilder = () => {
         {
           key: Key.TO,
           label: "To",
-          type: InputTypes.TEXT_ROW,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
           key: Key.SUBJECT,
           label: "Subject",
-          type: InputTypes.TEXT_ROW,
+          inputType: InputTypes.TEXT,
         },
       ],
       [
         {
           key: Key.BODY,
           label: "Body",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],
