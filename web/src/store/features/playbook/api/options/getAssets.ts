@@ -1,6 +1,6 @@
 import { GET_ASSETS } from "../../../../../constants/index.ts";
 import { updateCardById } from "../../../../../utils/execution/updateCardById.ts";
-import extractModelOptions from "../../../../../utils/extractModelOptions.ts";
+// import extractModelOptions from "../../../../../utils/extractOptions.ts";
 import getCurrentTask from "../../../../../utils/getCurrentTask.ts";
 import handleAssets from "../../../../../utils/handleAssets.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
@@ -29,10 +29,10 @@ export const getAssetApi = apiSlice.injectEndpoints({
           connector_type = connector_type.replace("_VPC", "");
 
         const assets = handleAssets(data, arg);
-        if (task) {
-          const modelOptions = extractModelOptions(assets, task);
-          updateCardById("ui_requirement.modelOptions", modelOptions, id);
-        }
+        // if (task) {
+        //   const modelOptions = extractModelOptions(assets, task);
+        //   updateCardById("ui_requirement.modelOptions", modelOptions, id);
+        // }
         return assets;
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {

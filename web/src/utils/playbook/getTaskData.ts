@@ -1,8 +1,13 @@
-import { Task } from "../../types/index.ts";
+import { Task, TaskDetails } from "../../types/index.ts";
+import { Sources } from "../../types/sources.ts";
 
 export const getTaskData = (task: Task) => {
   const source = task.source;
-  const taskType = task[source?.toLowerCase()]?.type;
+  const taskType = (
+    (task as any)[source?.toLowerCase() as Sources] as TaskDetails
+  ).type;
 
-  return task[source?.toLowerCase()][taskType?.toLowerCase()];
+  return ((task as any)[source?.toLowerCase() as Sources] as any)[
+    taskType?.toLowerCase()
+  ];
 };

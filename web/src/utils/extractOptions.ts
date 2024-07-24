@@ -1,16 +1,30 @@
 import { taskTypes } from "../constants/index.ts";
+import { Sources } from "../types/sources.ts";
 import { Task } from "../types/task.ts";
+import { TaskDetails } from "../types/taskDetails.ts";
+import { KeyType } from "./playbook/key.ts";
+import { taskTypeOptionMappings } from "./playbook/taskTypeOptionMappings.ts";
 
-export default function extractModelOptions(assets: any, task: Task) {
-  switch (`${task?.source} ${task?.[task?.source?.toLowerCase()].type}`) {
-    case taskTypes.CLOUDWATCH_LOG_GROUP:
-      return {
-        regions: assets.map((asset) => asset.region),
-      };
+export default function extractOptions(task: Task, key: KeyType) {
+  const source = task.source;
+  const taskType = (
+    (task as any)[source.toLowerCase() as Sources] as TaskDetails
+  ).type;
+
+  const optionsFunction = taskTypeOptionMappings[`${source} ${taskType}`];
+
+  if (optionsFunction) {
+    return optionsFunction(key, task);
+  }
+
+  return [];
+
+  switch (`${source} ${taskType}`) {
     case taskTypes.CLOUDWATCH_METRIC:
-      return {
-        namespaces: assets.map((asset) => asset.namespace),
-      };
+      return assets.map((asset: any) => ({
+        id: asset.namespace,
+        label: asset.namespace,
+      }));
     case taskTypes.DATADOG_SERVICE_METRIC_EXECUTION:
       return {
         services: assets.map((asset) => {
