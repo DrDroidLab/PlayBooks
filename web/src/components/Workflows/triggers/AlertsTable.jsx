@@ -10,10 +10,19 @@ import NoExistingTrigger from "./NoExistingTrigger";
 import { renderTimestamp } from "../../../utils/DateUtils";
 import SeeMoreText from "../../Playbooks/SeeMoreText";
 import { useGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
+import { useEffect } from "react";
 
 const AlertsTable = () => {
-  const { data: searchTriggerResult, isFetching } = useGetSearchTriggersQuery();
+  const {
+    data: searchTriggerResult,
+    isFetching,
+    refetch,
+  } = useGetSearchTriggersQuery();
   const data = searchTriggerResult?.alerts;
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (isFetching) {
     return <CircularProgress size={20} style={{ marginLeft: "10px" }} />;

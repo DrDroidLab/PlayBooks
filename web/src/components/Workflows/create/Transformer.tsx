@@ -32,7 +32,7 @@ function Transformer() {
       <Checkbox
         id={key}
         isChecked={currentWorkflow[key]}
-        label="Add a context transformer"
+        label="Add a custom transformer (pass variables to your playbook as a dictionary by transforming the trigger json payload)"
         onChange={handleTransformer}
         isSmall={true}
         disabled={disabled}

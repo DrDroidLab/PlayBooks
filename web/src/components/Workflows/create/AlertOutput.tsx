@@ -26,7 +26,7 @@ function AlertOutput() {
     <div className="my-2">
       <CodeAccordion
         code={code}
-        label="Sample slack message matching the filter"
+        label="Sample slack message matching your filter"
         language={LanguageTypes.JSON}
         disabled={true}
         defaultOpen={true}

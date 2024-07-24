@@ -23,7 +23,7 @@ export const postgresBuilder = () => {
         {
           key: Key.TIMEOUT,
           label: "Timeout (in seconds)",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           labelPosition: LabelPosition.LEFT,
           default: 120,
         },
