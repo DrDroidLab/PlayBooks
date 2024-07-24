@@ -27,7 +27,9 @@ export async function executeStep(id?: string) {
   const globalVariableSet = {};
   if (currentPlaybook?.global_variable_set) {
     for (let key in currentPlaybook?.global_variable_set) {
-      globalVariableSet[key] = String(currentPlaybook?.global_variable_set[key]);
+      globalVariableSet[key] = String(
+        currentPlaybook?.global_variable_set[key],
+      );
     }
   }
 
@@ -121,7 +123,7 @@ export async function executeStep(id?: string) {
         currentStepId,
       );
     }
-  } catch (e) {
+  } catch (e: any) {
     updateStepById("ui_requirement.showError", true, currentStepId);
     updateStepById("ui_requirement.outputError", e.message, currentStepId);
     console.error(e);

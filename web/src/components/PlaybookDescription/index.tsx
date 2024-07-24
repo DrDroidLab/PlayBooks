@@ -1,18 +1,19 @@
-import React from "react";
 import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  currentPlaybookSelector,
   playbookSelector,
   setPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
 
 function PlaybookDescription() {
   const dispatch = useDispatch();
-  const { description, isOnPlaybookPage } = useSelector(playbookSelector);
+  const { isOnPlaybookPage } = useSelector(playbookSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
   const isPrefetched = useIsPrefetched();
 
   if (!isOnPlaybookPage) return;
-  if (isPrefetched && !description) return;
+  if (isPrefetched && !currentPlaybook?.description) return;
 
   const handleDescription = (e) => {
     const value = e.target.value;
@@ -25,7 +26,7 @@ function PlaybookDescription() {
       placeholder={
         isPrefetched ? "Playbook Description goes here" : "+ Add Description..."
       }
-      value={description}
+      value={currentPlaybook?.description}
       onChange={handleDescription}
       disabled={isPrefetched !== "" ?? false}
     />
