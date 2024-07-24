@@ -44,6 +44,7 @@ integrations_connector_type_display_name_map = {
     Source.ELASTIC_SEARCH: 'ELASTIC SEARCH',
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
     Source.KUBERNETES: 'KUBERNETES',
+    Source.SMTP: 'EMAIL SERVER',
 }
 
 integrations_connector_type_category_map = {
@@ -76,6 +77,7 @@ integrations_connector_type_category_map = {
     Source.OPEN_AI: 'LLM Tools',
     Source.REMOTE_SERVER: 'Remote Server',
     Source.KUBERNETES: 'Cloud',
+    Source.SMTP: 'Alert Channels',
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -294,6 +296,14 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
         ]
     ],
+    Source.SMTP: [
+        [
+            SourceKeyType.SMTP_HOST,
+            SourceKeyType.SMTP_PORT,
+            SourceKeyType.SMTP_USER,
+            SourceKeyType.SMTP_PASSWORD,
+        ]
+    ]
 }
 
 integrations_connector_key_display_name_map = {
@@ -364,6 +374,10 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.KUBERNETES_CLUSTER_TOKEN: 'Token',
     SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA: 'SSL Certificate Authority Data',
     SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH: 'SSL Certificate Authority Path',
+    SourceKeyType.SMTP_HOST: 'SMTP Host',
+    SourceKeyType.SMTP_PORT: 'Port',
+    SourceKeyType.SMTP_USER: 'Email User',
+    SourceKeyType.SMTP_PASSWORD: 'Password'
 }
 
 
@@ -494,6 +508,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
+                             SourceKeyType.SMTP_PASSWORD,
                              SourceKeyType.OPEN_AI_API_KEY,
                              SourceKeyType.REMOTE_SERVER_PASSWORD,
                              SourceKeyType.REMOTE_SERVER_PEM,

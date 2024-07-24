@@ -3,6 +3,7 @@ import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { SOURCES } from "../../../../constants/index.ts";
 import HandleDocumentationOutputs from "../../outputs/HandleDocumentationOutputs.tsx";
 import PlayBookRunMetricGraph from "../../PlayBookRunMetricGraph.jsx";
+import HandleSmtpOutput from "../../outputs/HandleSmtpOutput.tsx";
 
 function HandleUnkownOutput({ taskId, error }) {
   const [task] = useCurrentTask(taskId);
@@ -10,6 +11,8 @@ function HandleUnkownOutput({ taskId, error }) {
   switch (task?.source) {
     case SOURCES.TEXT:
       return <HandleDocumentationOutputs taskId={taskId} />;
+    case SOURCES.SMTP:
+      return <HandleSmtpOutput />;
     default:
       return (
         <PlayBookRunMetricGraph

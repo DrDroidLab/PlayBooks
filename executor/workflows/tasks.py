@@ -13,6 +13,7 @@ from executor.crud.playbooks_crud import get_db_playbooks
 from executor.source_processors.lambda_function_processor import LambdaFunctionProcessor
 from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
+from executor.workflows.action.smtp_email_executor import generate_email_body
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
     update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log, \
     update_db_account_workflow_execution_metadata
@@ -61,6 +62,8 @@ def get_action_type_text(action):
         return "Teams"
     elif destination_type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
         return "Pagerduty"
+    elif destination_type == WorkflowActionProto.Type.SMTP_EMAIL:
+        return "Email"
     else:
         return "UNKNOWN"
 
@@ -265,6 +268,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                 w_action_dict['pagerduty_notes'] = {'incident_id': pd_incident_id}
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
+            elif w_action.type == WorkflowActionProto.Type.SMTP_EMAIL:
+                w_action_dict = proto_to_dict(w_action)
+                w_action_dict['smtp_email']['body'] = generate_email_body(execution_output)
+                updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                action_executor_facade.execute(updated_w_action, execution_output)
             else:
                 action_executor_facade.execute(w_action, execution_output)
     except Exception as exc:
@@ -316,6 +324,8 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         logger.info("Sending test message")
     elif message_type == WorkflowActionProto.Type.MS_TEAMS_MESSAGE_WEBHOOK:
         logger.info("Sending test MS Teams message")
+    elif message_type == WorkflowActionProto.Type.SMTP_EMAIL:
+        logger.info("Sending test email")
     else:
         logger.error(f"Invalid message type: {message_type}")
         return
