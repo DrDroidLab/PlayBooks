@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import Layout from "./Layout";
-import BaseLayout from "./BaseLayout";
+import Layout from "./Layout.jsx";
+import BaseLayout from "./BaseLayout.jsx";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth";
-import NotFound from "./pages/NotFound";
+import RequireAuth from "./components/RequireAuth.jsx";
+import NotFound from "./pages/NotFound/index.jsx";
 import posthog from "posthog-js";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,16 +18,18 @@ import Loading from "./components/common/Loading/index.tsx";
 import { isUnAuth } from "./utils/auth/unauthenticatedRoutes.ts";
 
 const Settings = React.lazy(() => import("./pages/Settings.tsx"));
-const Login = React.lazy(() => import("./pages/Login"));
+const Login = React.lazy(() => import("./pages/Login.jsx"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword.tsx"));
-const SignUp = React.lazy(() => import("./pages/SignUp"));
+const SignUp = React.lazy(() => import("./pages/SignUp.jsx"));
 const OAuthCallback = React.lazy(() => import("./pages/OAuthCallback.tsx"));
 const ConnectorPage = React.lazy(() =>
-  import("./components/Integration/connectors/ConnectorPage"),
+  import("./components/Integration/connectors/ConnectorPage.jsx"),
 );
-const Integrations = React.lazy(() => import("./components/Integration"));
-const Playbooks = React.lazy(() => import("./components/Playbooks"));
-const Workflows = React.lazy(() => import("./components/Workflows"));
+const Integrations = React.lazy(() =>
+  import("./components/Integration/index.jsx"),
+);
+const Playbooks = React.lazy(() => import("./components/Playbooks/index.jsx"));
+const Workflows = React.lazy(() => import("./components/Workflows/index.jsx"));
 const CreateWorkflow = React.lazy(() =>
   import("./components/Workflows/create/CreateWorkflow.jsx"),
 );
@@ -46,10 +48,14 @@ const PlaybookExecutions = React.lazy(() =>
 const PlaybookExecutionsList = React.lazy(() =>
   import("./components/Playbooks/executions/PlaybookExecutionsList.jsx"),
 );
-const Playground = React.lazy(() => import("./components/Playgrounds"));
-const InviteTeam = React.lazy(() => import("./components/InviteTeam"));
-const Support = React.lazy(() => import("./components/Support"));
-const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys"));
+const Playground = React.lazy(() =>
+  import("./components/Playgrounds/index.jsx"),
+);
+const InviteTeam = React.lazy(() =>
+  import("./components/InviteTeam/index.jsx"),
+);
+const Support = React.lazy(() => import("./components/Support/index.jsx"));
+const ApiTokens = React.lazy(() => import("./components/Apikeys/Apikeys.jsx"));
 const CreatePlaybook = React.lazy(() =>
   import("./components/Playbooks/create/index.jsx"),
 );

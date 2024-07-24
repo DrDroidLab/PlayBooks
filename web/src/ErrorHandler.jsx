@@ -1,7 +1,7 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Toast from './components/Toast';
-import useToggle from './hooks/useToggle';
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Toast } from "./components/Toast";
+import useToggle from "./hooks/useToggle";
 
 const ErrorPage = ({ error, children }) => {
   const { isOpen, toggle } = useToggle();
@@ -16,7 +16,7 @@ const ErrorPage = ({ error, children }) => {
         severity="error"
         message={error}
         handleClose={handleToastClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       />
     </>
   );
@@ -25,9 +25,9 @@ const ErrorPage = ({ error, children }) => {
 const ErrorHandler = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  switch (location?.state?.['errorStatusCode']) {
+  switch (location?.state?.["errorStatusCode"]) {
     case 404:
-      navigate('/PageNotFound');
+      navigate("/PageNotFound");
       break;
     case 500:
       return <ErrorPage error={location.state?.err} children={children} />;

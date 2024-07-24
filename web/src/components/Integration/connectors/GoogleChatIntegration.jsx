@@ -10,7 +10,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { useNavigate } from "react-router-dom";
-import Toast from "../../../components/Toast";
+import { Toast } from "../../../components/Toast.jsx";
 import useToggle from "../../../hooks/useToggle";
 
 import styles from "../../../css/createMonitor.module.css";
