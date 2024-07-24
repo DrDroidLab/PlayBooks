@@ -38,7 +38,7 @@ export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
         {
           key: Key.DASHBOARD_GUID,
           label: "Dashboard",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((e) => {
             return {
               id: e.dashboard_guid,
@@ -59,7 +59,7 @@ export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
         {
           key: Key.PAGE_GUID,
           label: "Page",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: pageOptions,
           handleChange: (id: string) => {
             const page = pageOptions?.find((op) => op.id === id);
@@ -71,7 +71,7 @@ export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
         {
           key: Key.WIDGET_NRQL_EXPRESSION,
           label: "Widget",
-          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: widgetOptions,
           handleChange: (id: string) => {
             const widget = widgetOptions?.find((op) => op.id === id)?.widget;
@@ -97,7 +97,7 @@ export const newRelicEntityDashboardBuilder = (options: any, task: Task) => {
         {
           key: Key.WIDGET_NRQL_EXPRESSION,
           label: "Selected Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
           disabled: true,
         },
       ],

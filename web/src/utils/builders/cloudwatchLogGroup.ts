@@ -10,7 +10,7 @@ export const cloudwatchLogGroupBuilder = (options: any, task: Task) => {
         {
           key: Key.REGION,
           label: "Region",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((region) => {
             return {
               id: region,
@@ -21,7 +21,7 @@ export const cloudwatchLogGroupBuilder = (options: any, task: Task) => {
         {
           key: Key.LOG_GROUP_NAME,
           label: "Log Group",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getCurrentAsset(task, Key.REGION, "region")?.log_groups?.map(
             (e) => {
               return {
@@ -36,7 +36,7 @@ export const cloudwatchLogGroupBuilder = (options: any, task: Task) => {
         {
           key: Key.FILTER_QUERY,
           label: "Log Filter Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

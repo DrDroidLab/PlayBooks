@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import SelectComponent from "../SelectComponent/index.jsx";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
@@ -17,6 +16,8 @@ import { extractSource } from "../../utils/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
@@ -79,11 +80,12 @@ function AddCondition() {
         <p className="text-xs text-violet-500 font-semibold">
           Select a global rule
         </p>
-        <SelectComponent
-          data={ruleOptions}
-          selected={condition?.logical_operator}
+        <CustomInput
+          inputType={InputTypes.DROPDOWN}
+          options={ruleOptions}
+          value={condition?.logical_operator ?? ""}
           placeholder={`Select Global Rule`}
-          onSelectionChange={handleGlobalRule}
+          handleChange={handleGlobalRule}
           error={undefined}
         />
       </div>
@@ -95,15 +97,16 @@ function AddCondition() {
           </p>
           <div className="flex flex-col gap-2 flex-wrap">
             <div className="flex items-center gap-1">
-              <SelectComponent
+              <CustomInput
+                inputType={InputTypes.DROPDOWN}
                 error={undefined}
-                data={taskTypeOptions?.map((task) => ({
+                options={taskTypeOptions?.map((task) => ({
                   id: task?.id,
                   label: handleTaskTypeLabels(task).label,
                 }))}
-                selected={condition?.task?.id}
+                value={condition?.task?.id ?? ""}
                 placeholder={`Select Task`}
-                onSelectionChange={(id: string) => handleTaskChange(id, i)}
+                handleChange={(id: string) => handleTaskChange(id, i)}
               />
             </div>
             <div className="flex flex-wrap gap-2">

@@ -8,7 +8,7 @@ export const mimirBuilder = () => {
         {
           key: Key.PROMQL_EXPRESSION,
           label: "PromQL",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
       ],
     ],

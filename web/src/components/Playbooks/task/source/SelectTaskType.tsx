@@ -6,8 +6,9 @@ import {
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
-import SelectComponent from "../../../SelectComponent";
 import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
+import CustomInput from "../../../Inputs/CustomInput.tsx";
 
 function SelectTaskType({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);
@@ -18,10 +19,15 @@ function SelectTaskType({ id }) {
   const taskType = task?.[task?.source?.toLowerCase()]?.type;
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();
-
   const taskTypes = currentConnector?.supported_task_type_options ?? [];
+  const options = taskTypes.map((type) => ({
+    id: type.task_type,
+    label: type.display_name,
+    type: type,
+  }));
 
-  function handleTaskTypeChange(id, val) {
+  function handleTaskTypeChange(id: string) {
+    const val = options.find((e) => e.id === id);
     const currentTaskType = currentConnector?.supported_task_type_options?.find(
       (e) => e.task_type === id,
     );
@@ -37,19 +43,13 @@ function SelectTaskType({ id }) {
 
   return (
     <div className="flex flex-col">
-      <p className="text-xs text-gray-500 font-bold">Task Type</p>
-      <SelectComponent
-        error={undefined}
-        data={taskTypes.map((type) => ({
-          id: type.task_type,
-          label: type.display_name,
-          type: type,
-        }))}
+      <CustomInput
+        label="Task Type"
+        options={options}
+        inputType={InputTypes.DROPDOWN}
+        value={taskType}
+        handleChange={handleTaskTypeChange}
         disabled={!!isPrefetched}
-        placeholder="Select Task Type"
-        onSelectionChange={handleTaskTypeChange}
-        selected={taskType}
-        searchable={true}
       />
     </div>
   );

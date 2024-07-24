@@ -8,20 +8,20 @@ export const gcmLogsBuilder = () => {
         {
           key: Key.FILTER_QUERY,
           label: "Filter Query",
-          type: InputTypes.MULTILINE,
+          inputType: InputTypes.MULTILINE,
         },
         {
           key: Key.ORDER_BY,
           label: "Order By",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           isOptional: true,
         },
         {
           key: Key.PAGE_SIZE,
           label: "Page Size",
-          type: InputTypes.TEXT,
+          inputType: InputTypes.TEXT,
           isOptional: true,
-          default: '2000'
+          default: "2000",
         },
       ],
     ],

@@ -4,11 +4,12 @@ import Overlay from "../Overlay";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
-  setPlaybookKey,
+  setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import ValueComponent from "../ValueComponent/index.jsx";
 import Toast from "../Toast.js";
 import useIsExisting from "../../hooks/useIsExisting.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
   const currentPlaybook = useSelector(currentPlaybookSelector);
@@ -23,8 +24,8 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
       setValidationError("Please enter a name");
       return;
     }
-    dispatch(setPlaybookKey({ key: "description", value: description }));
-    dispatch(setPlaybookKey({ key: "name", value: name }));
+    dispatch(setCurrentPlaybookKey({ key: "description", value: description }));
+    dispatch(setCurrentPlaybookKey({ key: "name", value: name }));
     saveCallback({
       pbName: name || currentPlaybook?.name,
       description,
@@ -60,13 +61,13 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
             </div>
             {!isExisting && !currentPlaybook?.name && (
               <div>
-                <label className="text-xs font-bold text-gray-500">Name</label>
-                <ValueComponent
-                  valueType={"STRING"}
-                  onValueChange={(val) => setName(val)}
+                <CustomInput
+                  inputType={InputTypes.TEXT}
+                  label="Name"
+                  handleChange={(val) => setName(val)}
                   value={name}
-                  placeHolder={"Enter Playbook name"}
-                  length={300}
+                  placeholder={"Enter Playbook name"}
+                  className="!w-[300px]"
                 />
               </div>
             )}

@@ -69,7 +69,6 @@ class Grafana(google.protobuf.message.Message):
         DASHBOARD_TITLE_FIELD_NUMBER: builtins.int
         PANEL_ID_FIELD_NUMBER: builtins.int
         PANEL_TITLE_FIELD_NUMBER: builtins.int
-        PROCESS_FUNCTION_FIELD_NUMBER: builtins.int
         PANEL_PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
         @property
         def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -86,8 +85,6 @@ class Grafana(google.protobuf.message.Message):
         @property
         def panel_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def process_function(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-        @property
         def panel_promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         def __init__(
             self,
@@ -99,11 +96,10 @@ class Grafana(google.protobuf.message.Message):
             dashboard_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
             panel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
             panel_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            process_function: google.protobuf.wrappers_pb2.StringValue | None = ...,
             panel_promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "process_function", b"process_function", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

@@ -65,7 +65,7 @@ export const cloudwatchMetricBuilder = (options: any, task: Task) => {
         {
           key: Key.NAMESPACE,
           label: "Namespace",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options?.map((namespace) => {
             return {
               id: namespace,
@@ -76,7 +76,7 @@ export const cloudwatchMetricBuilder = (options: any, task: Task) => {
         {
           key: Key.REGION,
           label: "Region",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getCurrentAsset(
             task,
             Key.NAMESPACE,
@@ -88,20 +88,20 @@ export const cloudwatchMetricBuilder = (options: any, task: Task) => {
         {
           key: Key.DIMENSION_NAME,
           label: "Dimension Name",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getDimensionNames(task),
         },
         {
           key: Key.DIMENSION_VALUE,
           label: "Dimension Value",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: getDimensionValues(task),
         },
         {
           key: Key.METRIC_NAME,
           label: "Metric",
           placeholder: "Add Metric",
-          type: InputTypes.TYPING_DROPDOWN_MULTIPLE,
+          inputType: InputTypes.TYPING_DROPDOWN_MULTIPLE,
           options: getMetrics(task),
         },
       ],

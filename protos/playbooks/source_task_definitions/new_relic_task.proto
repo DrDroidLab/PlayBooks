@@ -11,7 +11,6 @@ message NewRelic {
     google.protobuf.StringValue golden_metric_name = 3;
     google.protobuf.StringValue golden_metric_unit = 4;
     google.protobuf.StringValue golden_metric_nrql_expression = 5;
-    google.protobuf.StringValue process_function = 6;
   }
 
   message EntityDashboardWidgetNRQLMetricExecutionTask {
@@ -24,14 +23,12 @@ message NewRelic {
     google.protobuf.StringValue widget_type = 7;
     google.protobuf.StringValue widget_nrql_expression = 8;
     google.protobuf.StringValue unit = 9;
-    google.protobuf.StringValue process_function = 10;
   }
 
   message NRQLMetricExecutionTask {
     google.protobuf.StringValue metric_name = 1;
     google.protobuf.StringValue nrql_expression = 2;
     google.protobuf.StringValue unit = 3;
-    google.protobuf.StringValue process_function = 4;
   }
 
   enum TaskType {
