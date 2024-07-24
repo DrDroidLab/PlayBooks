@@ -57,7 +57,7 @@ export async function executeTask(id?: string) {
       updateCardById("ui_requirement.showError", true, id);
       updateCardById("ui_requirement.outputError", outputError, id);
     }
-  } catch (e) {
+  } catch (e: any) {
     updateCardById("ui_requirement.showError", true, id);
     updateCardById("ui_requirement.outputError", e.message, id);
     console.error(e);
