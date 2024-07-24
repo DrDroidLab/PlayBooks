@@ -1,6 +1,6 @@
 import Heading from "../components/Heading";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader";
-import TableSkeleton from "../components/Skeleton/TableLoader";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.jsx";
+import TableSkeleton from "../components/Skeleton/TableLoader.jsx";
 import { useGetConnectorListQuery } from "../store/features/integrations/api/index.ts";
 import { Add } from "@mui/icons-material";
 import ConnectorCard from "../components/Integration/ConnectorCard.tsx";

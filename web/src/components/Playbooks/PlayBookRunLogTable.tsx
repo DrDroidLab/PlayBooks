@@ -19,7 +19,14 @@ import Code from "../common/Code/index.tsx";
 import React from "react";
 import transformLogData from "../../utils/execution/transformLogData.ts";
 
-const DISPLAY_COLUMNS = ['@timestamp', 'timestamp', '@message', 'message', '@log', 'log'];
+const DISPLAY_COLUMNS = [
+  "@timestamp",
+  "timestamp",
+  "@message",
+  "message",
+  "@log",
+  "log",
+];
 
 const PlayBookRunLogTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);

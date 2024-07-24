@@ -21,5 +21,5 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: REACT_APP_POSTHOG_ENABLED
+            - name: VITE_REACT_APP_POSTHOG_ENABLED
               value: "{{ .Values.posthog }}"
