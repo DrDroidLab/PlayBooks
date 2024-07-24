@@ -5,8 +5,8 @@ import { List, ListItemButton, ListItemIcon } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import SlackConnectOverlay from "./SlackConnectOverlay";
-import useToggle from "./hooks/useToggle";
+import SlackConnectOverlay from "./SlackConnectOverlay.jsx";
+import useToggle from "./hooks/useToggle.js";
 import "../src/Layout.css";
 import {
   Layers,
