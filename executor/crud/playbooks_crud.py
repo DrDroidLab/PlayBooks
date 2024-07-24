@@ -217,13 +217,13 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
     task_dict.pop('reference_id', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
-        db_task, _ = PlayBookTask.objects.get_or_create(account=account,
-                                                        name=task.name.value,
-                                                        task_md5=task_md5,
-                                                        created_by=created_by,
-                                                        defaults={'task': task_dict,
-                                                                  'description': task.description.value,
-                                                                  'notes': task.notes.value})
+        db_task, _ = PlayBookTask.objects.update_or_create(account=account,
+                                                           name=task.name.value,
+                                                           task_md5=task_md5,
+                                                           created_by=created_by,
+                                                           defaults={'task': task_dict,
+                                                                     'description': task.description.value,
+                                                                     'notes': task.notes.value})
         return db_task, None
     except IntegrityError:
         db_task = PlayBookTask.objects.get(account=account, name=task.name.value, task_md5=task_md5,
