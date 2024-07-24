@@ -4,22 +4,22 @@ import { Key, KeyType } from "../key.ts";
 
 export const cloudwatchMetrics = (key: KeyType, task: Task): any[] => {
   switch (key) {
-    case Key.REGION:
+    case Key.NAMESPACE:
       return getCurrentAsset(task, undefined, undefined, {
-        idValue: "region",
-        labelValue: "region",
+        idValue: "namespace",
+        labelValue: "namespace",
       });
-    case Key.LOG_GROUP_NAME:
+    case Key.REGION:
       return getCurrentAsset(
         task,
-        Key.REGION,
-        "region",
+        Key.NAMESPACE,
+        "namespace",
         undefined,
-        "log_groups",
+        "region_dimension_map",
       ).map((e: any) => {
         return {
-          id: e,
-          label: e,
+          id: e.region,
+          label: e.region,
         };
       });
     default:

@@ -8,7 +8,7 @@ export const taskTypeOptionMappings = {
   [taskTypes.CLICKHOUSE_SQL_QUERY]: Options.cloudwatchLogs,
   [taskTypes.CLICKHOUSE_SQL_QUERY]: Options.cloudwatchLogs,
   [taskTypes.CLOUDWATCH_LOG_GROUP]: Options.cloudwatchLogs,
-  [taskTypes.CLOUDWATCH_METRIC]: Options.cloudwatchLogs,
+  [taskTypes.CLOUDWATCH_METRIC]: Options.cloudwatchMetrics,
   [taskTypes.DATADOG_QUERY_METRIC_EXECUTION]: Options.cloudwatchLogs,
   [taskTypes.DATADOG_QUERY_METRIC_EXECUTION]: Options.cloudwatchLogs,
   [taskTypes.DATADOG_SERVICE_METRIC_EXECUTION]: Options.cloudwatchLogs,
