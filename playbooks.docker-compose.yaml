@@ -194,7 +194,7 @@ services:
       dockerfile: Dockerfile
     image: web
     environment:
-      - REACT_APP_POSTHOG_ENABLED=true
+      - VITE_REACT_APP_POSTHOG_ENABLED=true
     ports:
       - "80:80"
     depends_on:
