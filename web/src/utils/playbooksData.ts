@@ -3,9 +3,10 @@ import { store } from "../store/index.ts";
 import { FormFields } from "../types/inputs/formFields.ts";
 import { Sources } from "../types/sources.ts";
 import { TaskDetails } from "../types/taskDetails.ts";
-import extractOptions from "./extractOptions.ts";
+import extractOptions from "./playbook/extractOptions.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 import { KeyType } from "./playbook/key.ts";
+import extractHandleChange from "./playbook/extractHandleChange.ts";
 
 export const constructBuilder = (id?: string) => {
   const [task] = getCurrentTask(id);
@@ -29,5 +30,7 @@ export const constructBuilder = (id?: string) => {
     inputType: field.form_field_type,
     isOptional: field.is_optional,
     default: field.default_value?.[field.default_value.type.toLowerCase()],
+    handleChange: (val: string) =>
+      extractHandleChange(task, field.key_name as KeyType, val),
   }));
 };

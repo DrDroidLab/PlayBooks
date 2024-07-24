@@ -1,7 +1,7 @@
 import { store } from "../store/index.ts";
 import { setKey } from "../store/features/integrations/integrationsSlice.ts";
 
-export default function handleDefaultValues(data) {
+export default function handleDefaultValues(data: any) {
   const keyType = data.key_type;
   switch (keyType) {
     case "SSL_VERIFY":

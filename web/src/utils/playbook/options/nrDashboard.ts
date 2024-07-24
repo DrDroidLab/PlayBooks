@@ -30,7 +30,7 @@ export const nrDashboard = (key: KeyType, task: Task): any[] => {
         "dashboard_guid",
         undefined,
         "pages",
-      )?.[0].widgets?.map((e: any) => {
+      )?.[0]?.widgets?.map((e: any) => {
         return {
           id: e.widget_id,
           label: e.widget_title || e.widget_nrql_expression,
