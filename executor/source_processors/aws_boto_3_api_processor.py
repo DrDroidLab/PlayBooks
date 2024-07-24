@@ -32,9 +32,9 @@ def get_eks_token(cluster_name: str, aws_access_key: str, aws_secret_key: str, r
     return token
 
 
-def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn, cluster_name, aws_session_token=None,
+def get_eks_api_instance(aws_access_key, aws_secret_key, region, k8_role_arn, cluster_name, aws_session_token=None,
                          client='api'):
-    aws_client = AWSBoto3ApiProcessor('eks', aws_region, aws_access_key, aws_secret_key, aws_session_token)
+    aws_client = AWSBoto3ApiProcessor('eks', region, aws_access_key, aws_secret_key, aws_session_token)
     eks_details = aws_client.eks_describe_cluster(cluster_name)
 
     fp = tempfile.NamedTemporaryFile(delete=False)
@@ -44,7 +44,7 @@ def get_eks_api_instance(aws_access_key, aws_secret_key, aws_region, k8_role_arn
     fp.close()
 
     # Token for the EKS cluster
-    token = get_eks_token(cluster_name, aws_access_key, aws_secret_key, aws_region, k8_role_arn, aws_session_token)
+    token = get_eks_token(cluster_name, aws_access_key, aws_secret_key, region, k8_role_arn, aws_session_token)
     if not token:
         logger.error(f"Error occurred while fetching token for EKS cluster: {cluster_name}")
         return None

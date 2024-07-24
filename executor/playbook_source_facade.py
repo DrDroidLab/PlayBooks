@@ -100,6 +100,17 @@ class PlaybookSourceFacade:
             logger.error(f'Error while executing task: {str(e)}')
             return PlaybookTaskResult(error=StringValue(value=str(e)))
 
+    def test_source_connection(self, source_connection: ConnectorProto):
+        source = source_connection.type
+        if source not in self._map:
+            raise ValueError(f'No executor found for source: {source}')
+        manager = self._map[source]
+        try:
+            return manager.test_connector_processor(source_connection)
+        except Exception as e:
+            logger.error(f'Error while testing source connection: {str(e)}')
+            return False
+
 
 playbook_source_facade = PlaybookSourceFacade()
 playbook_source_facade.register(Source.CLOUDWATCH, CloudwatchSourceManager())

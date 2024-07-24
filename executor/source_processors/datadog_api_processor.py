@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 class DatadogApiProcessor(Processor):
-    def __init__(self, dd_app_key, dd_api_key, dd_api_domain=None, dd_connector_type=None):
+    def __init__(self, dd_app_key, dd_api_key, dd_api_domain=None, dd_connector_type=Source.DATADOG):
         self.__dd_app_key = dd_app_key
         self.__dd_api_key = dd_api_key
         self.dd_api_domain = dd_api_domain

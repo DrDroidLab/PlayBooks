@@ -132,11 +132,8 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, eks_connector, **kwargs):
         generated_credentials = generate_credentials_dict(eks_connector.type, eks_connector.keys)
-        generated_credentials['aws_region'] = kwargs.get('aws_region')
-        for key in eks_connector.keys:
-            if key.key_type == SourceKeyType.EKS_ROLE_ARN:
-                generated_credentials['k8_role_arn'] = key.key.value
-                break
+        if 'aws_region' not in kwargs:
+            generated_credentials['region'] = kwargs.get('aws_region')
         if 'k8_role_arn' not in generated_credentials:
             raise Exception("EKS Role ARN not found in EKS connector keys")
         generated_credentials['cluster_name'] = kwargs.get('cluster_name')
