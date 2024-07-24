@@ -352,7 +352,4 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
-
-  // SMTP Models
-  SMTP_EMAIL = 1702;
 }
