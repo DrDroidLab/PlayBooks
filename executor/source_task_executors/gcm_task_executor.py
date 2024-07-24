@@ -15,7 +15,7 @@ from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,8 @@ class GcmSourceManager(PlaybookSourceManager):
                 'form_fields': [
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="MQL Expression"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE),
                 ]
             },
             Gcm.TaskType.FILTER_LOG_EVENTS: {
@@ -55,15 +56,18 @@ class GcmSourceManager(PlaybookSourceManager):
                 'form_fields': [
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Filter Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE),
                     FormField(key_name=StringValue(value="order_by"),
                               display_name=StringValue(value="Order By"),
                               data_type=LiteralType.STRING,
-                              is_optional=True),
+                              is_optional=True,
+                              form_field_type=FormFieldType.TEXT),
                     FormField(key_name=StringValue(value="page_size"),
                               display_name=StringValue(value="Page Size"),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000)),
+                              form_field_type=FormFieldType.MULTILINE),
                 ]
             },
         }

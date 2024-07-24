@@ -12,7 +12,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.promql_task_pb2 import PromQl
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class MimirSourceManager(PlaybookSourceManager):
@@ -30,7 +30,8 @@ class MimirSourceManager(PlaybookSourceManager):
                 'form_fields': [
                     FormField(key_name=StringValue(value="promql_expression"),
                               display_name=StringValue(value="PromQL"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE),
                 ]
             },
         }

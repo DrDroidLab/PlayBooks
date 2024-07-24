@@ -15,7 +15,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
     BashCommandOutputResult
 from protos.playbooks.source_task_definitions.gke_task_pb2 import Gke
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class GkeSourceManager(PlaybookSourceManager):
@@ -34,15 +34,18 @@ class GkeSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="zone"),
                               display_name=StringValue(value="Zone"),
                               description=StringValue(value='Select GKE Zone'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
                               description=StringValue(value='Select GKE Cluster'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
                               display_name=StringValue(value="Namespace"),
                               description=StringValue(value='Select Namespace'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
             Gke.TaskType.GET_DEPLOYMENTS: {
@@ -55,15 +58,18 @@ class GkeSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="zone"),
                               display_name=StringValue(value="Zone"),
                               description=StringValue(value='Select GKE Zone'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
                               description=StringValue(value='Select GKE Cluster'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
                               display_name=StringValue(value="Namespace"),
                               description=StringValue(value='Select Namespace'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
             Gke.TaskType.GET_EVENTS: {
@@ -76,15 +82,18 @@ class GkeSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="zone"),
                               display_name=StringValue(value="Zone"),
                               description=StringValue(value='Select GKE Zone'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
                               description=StringValue(value='Select GKE Cluster'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
                               display_name=StringValue(value="Namespace"),
                               description=StringValue(value='Select Namespace'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
             Gke.TaskType.GET_SERVICES: {
@@ -97,15 +106,18 @@ class GkeSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="zone"),
                               display_name=StringValue(value="Zone"),
                               description=StringValue(value='Select GKE Zone'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
                               description=StringValue(value='Select GKE Cluster'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
                               display_name=StringValue(value="Namespace"),
                               description=StringValue(value='Select Namespace'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
             Gke.TaskType.KUBECTL_COMMAND: {
@@ -118,14 +130,17 @@ class GkeSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="zone"),
                               display_name=StringValue(value="Zone"),
                               description=StringValue(value='Select GKE Zone'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
                               description=StringValue(value='Select GKE Cluster'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="command"),
                               display_name=StringValue(value="Kubectl Command"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
         }
