@@ -6,7 +6,7 @@ import {
   updateGlobalVariable,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import AddVariableOverlay from "./AddVariableOverlay.jsx";
-import { CloseRounded } from "@mui/icons-material";
+import { Add, CloseRounded } from "@mui/icons-material";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
@@ -38,7 +38,9 @@ function GlobalVariables() {
       className={`w-[330px] my-0 text-sm p-1 border rounded min-h-[100px] bg-white`}>
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
         {!isPrefetched && (
-          <CustomButton onClick={openOverlay}>+ Add Variable</CustomButton>
+          <CustomButton onClick={openOverlay}>
+            <Add fontSize="small" /> Variable
+          </CustomButton>
         )}
         {globalVariables?.length > 0 &&
           `(${globalVariables?.length} variable${

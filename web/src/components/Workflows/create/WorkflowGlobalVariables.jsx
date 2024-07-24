@@ -27,7 +27,7 @@ function WorkflowGlobalVariables() {
   return (
     <div className="text-sm border p-2 rounded">
       <div style={{ paddingLeft: 0 }} className="flex items-center gap-2 p-1">
-        <CustomButton onClick={openOverlay}>+ Add Variable</CustomButton>
+        <CustomButton onClick={openOverlay}>+ Variable</CustomButton>
         {currentWorkflow?.globalVariables?.length > 0 &&
           `(${currentWorkflow?.globalVariables?.length} variable${
             currentWorkflow?.globalVariables?.length > 1 ? "s" : ""

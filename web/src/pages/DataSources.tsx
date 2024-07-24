@@ -68,7 +68,7 @@ function AddNewDataSource() {
       to={"/data-sources/add"}
       className="flex gap-1 text-center justify-center w-fit items-center text-sm bg-white hover:bg-violet-500 text-violet-500 hover:text-white rounded p-1 border border-violet-500 shrink-0 font-medium transition-all">
       <Add fontSize="inherit" />
-      <span>Add a new Integration</span>
+      <span>New Integration</span>
     </Link>
   );
 }

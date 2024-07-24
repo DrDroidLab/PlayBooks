@@ -52,7 +52,7 @@ function AddNotesAndLinks({ id }) {
       ) : (
         <>
           <Add fontSize="small" />
-          <p>Add Notes and Links</p>
+          <p>Notes and Links</p>
         </>
       )}
     </CustomButton>

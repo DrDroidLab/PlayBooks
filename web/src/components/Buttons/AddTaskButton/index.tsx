@@ -4,9 +4,13 @@ import { Add } from "@mui/icons-material";
 import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
+type AddTaskButtonProps = {
+  id: string;
+};
+
 const addDataId = DrawerTypes.ADD_DATA;
 
-function AddTaskButton({ id }) {
+function AddTaskButton({ id }: AddTaskButtonProps) {
   const { toggle: toggleAddData, addAdditionalData } =
     useDrawerState(addDataId);
 
@@ -28,7 +32,7 @@ function AddTaskButton({ id }) {
   return (
     <CustomButton onClick={handleAddTask}>
       <Add fontSize="small" />
-      <p>Add Task</p>
+      <p>Task</p>
     </CustomButton>
   );
 }
