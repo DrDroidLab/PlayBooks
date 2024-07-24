@@ -7,9 +7,9 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_processors.aws_boto_3_api_processor import get_eks_api_instance
+from executor.source_processors.eks_api_processor import EKSApiProcessor
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
-from protos.base_pb2 import Source, TimeRange, SourceModelType, SourceKeyType
+from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
@@ -134,19 +134,21 @@ class EksSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(eks_connector.type, eks_connector.keys)
         if 'region' in kwargs:
             generated_credentials['region'] = kwargs.get('region')
-        if 'k8_role_arn' not in generated_credentials:
-            raise Exception("EKS Role ARN not found in EKS connector keys")
-        generated_credentials['cluster_name'] = kwargs.get('cluster_name')
-        generated_credentials['client'] = kwargs.get('client', 'api')
 
-        if 'native_connection' not in kwargs or not kwargs['native_connection']:
-            return get_eks_api_instance(**generated_credentials)
+        api_processor = EKSApiProcessor(**generated_credentials)
+
+        if 'cluster_name' in kwargs and kwargs['cluster_name']:
+            client = kwargs.get('client', 'api')
+            if 'native_connection' not in kwargs or not kwargs['native_connection']:
+                return api_processor.eks_get_api_instance(cluster_name=kwargs['cluster_name'], client=client)
+            else:
+                instance = api_processor.eks_get_api_instance(cluster_name=kwargs['cluster_name'], client=client)
+                eks_host = instance.api_client.configuration.host
+                token = instance.api_client.configuration.api_key.get('authorization')
+                ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
+                return KubectlApiProcessor(api_server=eks_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
         else:
-            instance = get_eks_api_instance(**generated_credentials)
-            eks_host = instance.api_client.configuration.host
-            token = instance.api_client.configuration.api_key.get('authorization')
-            ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
-            return KubectlApiProcessor(api_server=eks_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
+            return api_processor
 
     def get_pods(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:

@@ -58,7 +58,7 @@ class PlaybookSourceManager:
     def test_connector_processor(self, connector: ConnectorProto, **kwargs):
         processor: Processor = self.get_connector_processor(connector, **kwargs)
         if isinstance(processor, NoOpProcessor):
-            return True
+            raise Exception("No manager found for source")
         try:
             return processor.test_connection()
         except Exception as e:

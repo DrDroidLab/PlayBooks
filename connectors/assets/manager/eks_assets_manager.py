@@ -5,12 +5,13 @@ from google.protobuf.wrappers_pb2 import UInt64Value, StringValue
 from kubernetes.client import V1NamespaceList
 
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
-from executor.source_processors.aws_boto_3_api_processor import get_eks_api_instance
+from connectors.utils import generate_credentials_dict
+from executor.source_processors.eks_api_processor import EKSApiProcessor
 from protos.connectors.assets.eks_asset_pb2 import EksClusterAssetOptions, EksClusterAssetModel, EksAssetModel, \
     EksAssets, RegionCluster, Cluster, Command, Namespace
 from protos.connectors.assets.asset_pb2 import AccountConnectorAssetsModelFilters, AccountConnectorAssets, \
     ConnectorModelTypeOptions
-from protos.base_pb2 import Source, SourceKeyType, SourceModelType as SourceModelType
+from protos.base_pb2 import Source, SourceModelType as SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 
 logger = logging.getLogger(__name__)
@@ -63,31 +64,17 @@ class EKSAssetManager(ConnectorAssetManager):
                     region_cluster_filters[fr.region.value] = [cluster.name.value for cluster in fr.clusters]
             eks_cluster_assets = eks_cluster_assets.filter(model_uid__in=regions)
         eks_asset_protos = []
-
-        aws_session_token = None
-        aws_access_key = None
-        aws_secret_key = None
-        eks_role_arn = None
-        for key in connector.keys:
-            if key.key_type == SourceKeyType.AWS_ACCESS_KEY:
-                aws_access_key = key.key.value
-            elif key.key_type == SourceKeyType.AWS_SECRET_KEY:
-                aws_secret_key = key.key.value
-            elif key.key_type == SourceKeyType.EKS_ROLE_ARN:
-                eks_role_arn = key.key.value
-        if not aws_access_key or not aws_secret_key or not eks_role_arn:
-            raise Exception(
-                "EKS AWS access key, secret key, eks role arn not found for ""account: {}".format(connector.account.id))
-
+        connector_credentials = generate_credentials_dict(connector.type, connector.keys)
         for asset in eks_cluster_assets:
             region_name = asset.model_uid
             filter_clusters = region_cluster_filters.get(region_name, asset.metadata.get('clusters', [])) if \
                 region_cluster_filters else asset.metadata.get('clusters', [])
             region_clusters = []
+            connector_credentials['region'] = region_name
             for c in filter_clusters:
                 try:
-                    eks_api_instance = get_eks_api_instance(aws_access_key, aws_secret_key, region_name,
-                                                            eks_role_arn, c, aws_session_token)
+                    eks_processor = EKSApiProcessor(**connector_credentials)
+                    eks_api_instance = eks_processor.eks_get_api_instance(c)
                     api_response: V1NamespaceList = eks_api_instance.list_namespace(pretty='pretty')
                 except Exception as e:
                     logger.error("Error while fetching namespaces for cluster: {} in region: {} - {}".format(c,

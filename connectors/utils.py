@@ -70,7 +70,16 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 credentials_dict['dd_api_domain'] = conn_key.key.value
             credentials_dict['dd_connector_type'] = connector_type
-    elif connector_type == Source.CLOUDWATCH or connector_type == Source.EKS:
+    elif connector_type == Source.CLOUDWATCH:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
+                credentials_dict['aws_access_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
+                credentials_dict['aws_secret_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AWS_REGION:
+                credentials_dict['region'] = conn_key.key.value
+        credentials_dict['client_type'] = 'cloudwatch'
+    elif connector_type == Source.EKS:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
@@ -80,9 +89,6 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['region'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.EKS_ROLE_ARN:
                 credentials_dict['k8_role_arn'] = conn_key.key.value
-            elif conn_key.key_type == SourceKeyType.AWS_ASSUMED_ROLE_ARN:
-                credentials_dict['assumed_role_arn'] = conn_key.key.value
-        credentials_dict['client_type'] = 'eks' if connector_type == Source.EKS else 'cloudwatch'
     elif connector_type == Source.GRAFANA:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.GRAFANA_API_KEY:

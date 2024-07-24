@@ -1,67 +1,11 @@
-import base64
 import logging
-import tempfile
-from datetime import datetime, timedelta
 
 import boto3
-import kubernetes
-from awscli.customizations.eks.get_token import TokenGenerator, TOKEN_EXPIRATION_MINS, STSClientFactory
 
 from executor.source_processors.processor import Processor
 from utils.time_utils import current_milli_time
 
 logger = logging.getLogger(__name__)
-
-
-def get_expiration_time():
-    token_expiration = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINS)
-    return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-
-def get_eks_token(cluster_name: str, aws_access_key: str, aws_secret_key: str, region: str,
-                  role_arn: str = None, aws_session_token=None) -> dict:
-    aws_session = boto3.Session(
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key,
-        region_name=region,
-        aws_session_token=aws_session_token
-    )
-    client_factory = STSClientFactory(aws_session._session)
-    sts_client = client_factory.get_sts_client(role_arn=role_arn)
-    token = TokenGenerator(sts_client).get_token(cluster_name)
-    return token
-
-
-def get_eks_api_instance(aws_access_key, aws_secret_key, region, k8_role_arn, cluster_name, aws_session_token=None,
-                         client='api'):
-    aws_client = AWSBoto3ApiProcessor('eks', region, aws_access_key, aws_secret_key, aws_session_token)
-    eks_details = aws_client.eks_describe_cluster(cluster_name)
-
-    fp = tempfile.NamedTemporaryFile(delete=False)
-    ca_filename = fp.name
-    cert_bs = base64.urlsafe_b64decode(eks_details['certificateAuthority']['data'].encode('utf-8'))
-    fp.write(cert_bs)
-    fp.close()
-
-    # Token for the EKS cluster
-    token = get_eks_token(cluster_name, aws_access_key, aws_secret_key, region, k8_role_arn, aws_session_token)
-    if not token:
-        logger.error(f"Error occurred while fetching token for EKS cluster: {cluster_name}")
-        return None
-
-    # Kubernetes client config
-    conf = kubernetes.client.Configuration()
-    conf.host = eks_details['endpoint']
-    conf.api_key['authorization'] = token
-    conf.api_key_prefix['authorization'] = 'Bearer'
-    conf.ssl_ca_cert = ca_filename
-    with kubernetes.client.ApiClient(conf) as api_client:
-        if client == 'api':
-            api_instance = kubernetes.client.CoreV1Api(api_client)
-            return api_instance
-        elif client == 'app':
-            app_instance = kubernetes.client.AppsV1Api(api_client)
-            return app_instance
 
 
 class AWSBoto3ApiProcessor(Processor):
@@ -84,11 +28,7 @@ class AWSBoto3ApiProcessor(Processor):
 
     def test_connection(self):
         try:
-            if self.client_type == 'eks':
-                clusters = self.eks_list_clusters()
-                print("Connection to Amazon EKS successful.")
-                return True
-            elif self.client_type == 'cloudwatch':
+            if self.client_type == 'cloudwatch':
                 client = self.get_connection()
                 response = client.list_metrics()
                 print("Connection to Amazon CloudWatch successful.")
@@ -186,22 +126,4 @@ class AWSBoto3ApiProcessor(Processor):
             return None
         except Exception as e:
             logger.error(f"Exception occurred while fetching logs for log_group: {log_group} with error: {e}")
-            raise e
-
-    def eks_list_clusters(self):
-        try:
-            client = self.get_connection()
-            clusters = client.list_clusters()['clusters']
-            return clusters
-        except Exception as e:
-            logger.error(f"Exception occurred while fetching EKS clusters with error: {e}")
-            raise e
-
-    def eks_describe_cluster(self, cluster_name):
-        try:
-            client = self.get_connection()
-            cluster_details = client.describe_cluster(name=cluster_name)['cluster']
-            return cluster_details
-        except Exception as e:
-            logger.error(f"Exception occurred while fetching EKS clusters with error: {e}")
             raise e

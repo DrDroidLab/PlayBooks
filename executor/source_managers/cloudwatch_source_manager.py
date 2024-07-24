@@ -95,6 +95,14 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             generated_credentials['region'] = kwargs.get('region')
         return AWSBoto3ApiProcessor(**generated_credentials)
 
+    def test_connector_processor(self, connector: ConnectorProto, **kwargs):
+        cw_processor = self.get_connector_processor(connector, client_type='cloudwatch')
+        cw_logs_processor = self.get_connector_processor(connector, client_type='logs')
+        try:
+            return cw_processor.test_connection() and cw_logs_processor.test_connection()
+        except Exception as e:
+            raise e
+
     def execute_metric_execution(self, time_range: TimeRange, cloudwatch_task: Cloudwatch,
                                  cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
