@@ -7,18 +7,10 @@ import extractOptions from "./playbook/extractOptions.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 import { KeyType } from "./playbook/key.ts";
 import extractHandleChange from "./playbook/extractHandleChange.ts";
+import { Task } from "../types/task.ts";
 
-export const constructBuilder = (id?: string) => {
-  const [task] = getCurrentTask(id);
-  if (!task) return [];
-  const { supportedTaskTypes } = playbookSelector(store.getState());
-  const source: Sources = task.source.toLowerCase() as Sources;
-  const taskType = ((task as any)[source] as TaskDetails).type;
-  const type = supportedTaskTypes?.find(
-    (e: any) => e.source === source.toUpperCase() && e.task_type === taskType,
-  );
-
-  return type.form_fields.map((field: FormFields) => ({
+const fieldToInput = (field: FormFields, task: Task) => {
+  return {
     key: field.key_name,
     label: field.display_name,
     placeholder: field.description,
@@ -32,5 +24,19 @@ export const constructBuilder = (id?: string) => {
     default: field.default_value?.[field.default_value.type.toLowerCase()],
     handleChange: (val: string) =>
       extractHandleChange(task, field.key_name as KeyType, val),
-  }));
+    compositeFields: field.composite_fields?.map((f) => fieldToInput(f, task)),
+  };
+};
+
+export const constructBuilder = (id?: string) => {
+  const [task] = getCurrentTask(id);
+  if (!task) return [];
+  const { supportedTaskTypes } = playbookSelector(store.getState());
+  const source: Sources = task.source.toLowerCase() as Sources;
+  const taskType = ((task as any)[source] as TaskDetails).type;
+  const type = supportedTaskTypes?.find(
+    (e: any) => e.source === source.toUpperCase() && e.task_type === taskType,
+  );
+
+  return type.form_fields.map((field: FormFields) => fieldToInput(field, task));
 };

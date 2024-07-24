@@ -8,4 +8,5 @@ export type FormFields = {
   form_field_type: InputType;
   is_optional?: boolean;
   default_value?: any;
+  composite_fields?: FormFields[];
 };
