@@ -34,6 +34,7 @@ class _FormFieldTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     DROPDOWN: _FormFieldType.ValueType  # 5
     TYPING_DROPDOWN: _FormFieldType.ValueType  # 6
     TYPING_DROPDOWN_MULTIPLE: _FormFieldType.ValueType  # 7
+    WYSIWYG: _FormFieldType.ValueType  # 8
 
 class FormFieldType(_FormFieldType, metaclass=_FormFieldTypeEnumTypeWrapper): ...
 
@@ -45,6 +46,7 @@ IFRAME_RENDER: FormFieldType.ValueType  # 4
 DROPDOWN: FormFieldType.ValueType  # 5
 TYPING_DROPDOWN: FormFieldType.ValueType  # 6
 TYPING_DROPDOWN_MULTIPLE: FormFieldType.ValueType  # 7
+WYSIWYG: FormFieldType.ValueType  # 8
 global___FormFieldType = FormFieldType
 
 @typing_extensions.final
