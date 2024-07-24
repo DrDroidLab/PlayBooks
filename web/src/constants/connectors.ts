@@ -22,4 +22,5 @@ export const connectors = {
   MS_TEAMS: "MS_TEAMS",
   GRAFANA_LOKI: "GRAFANA_LOKI",
   ELASTIC_SEARCH: "ELASTIC_SEARCH",
+  SMTP: "SMTP",
 };

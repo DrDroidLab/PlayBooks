@@ -10,6 +10,7 @@ from executor.source_task_executors.bash_task_executor import BashSourceManager
 from executor.source_task_executors.documentation_task_executor import DocumentationSourceManager
 from executor.source_task_executors.elastic_search_task_executor import ElasticSearchSourceManager
 from executor.source_task_executors.gcm_task_executor import GcmSourceManager
+from executor.source_task_executors.email_task_executor import SMTPSourceManager
 from executor.source_task_executors.gke_task_executor import GkeSourceManager
 from executor.source_task_executors.grafana_loki_task_executor import GrafanaLokiSourceManager
 from executor.source_task_executors.grafana_task_executor import GrafanaSourceManager
@@ -122,5 +123,6 @@ playbook_source_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceManage
 playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
 playbook_source_facade.register(Source.KUBERNETES, KubernetesSourceManager())
+playbook_source_facade.register(Source.SMTP, SMTPSourceManager())
 
 playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())
