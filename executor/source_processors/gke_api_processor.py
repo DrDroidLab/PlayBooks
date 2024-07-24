@@ -80,23 +80,18 @@ class GkeApiProcessor(Processor):
             parent = f'projects/{self.__project_id}/locations/-'
             request = service.projects().locations().clusters().list(parent=parent)
 
-            while request is not None:
-                response = request.execute()
-                clusters = response.get('clusters', [])
-                for cluster in clusters:
-                    clusters_list.append({
-                        'name': cluster['name'],
-                        'location': cluster['location'],
-                        'status': cluster['status']
-                    })
-
-                # Check if there's a next page
-                if 'nextPageToken' in response:
-                    request = service.projects().locations().clusters().list(parent=parent,
-                                                                             pageToken=response['nextPageToken'])
-                else:
-                    request = None
-            return len(clusters_list) > 0
+            response = request.execute()
+            clusters = response.get('clusters', [])
+            for cluster in clusters:
+                clusters_list.append({
+                    'name': cluster['name'],
+                    'location': cluster['location'],
+                    'status': cluster['status']
+                })
+            if len(clusters_list) > 0:
+                return True
+            else:
+                raise Exception("Failed to connect with GKE. No clusters found")
         except Exception as e:
             logger.error(f"Exception occurred while fetching grafana data sources with error: {e}")
             raise e

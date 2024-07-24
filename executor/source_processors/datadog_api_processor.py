@@ -90,15 +90,7 @@ class DatadogApiProcessor(Processor):
                 api_instance = AuthenticationApi(api_client)
                 response: AuthenticationValidationResponse = api_instance.validate()
                 if not response.get('valid', False):
-                    return False
-                if self.dd_connector_type and self.dd_connector_type == Source.DATADOG:
-                    try:
-                        api_instance = MonitorsApi(api_client)
-                        monitor_response = api_instance.list_monitors()
-                        if monitor_response is None:
-                            return False
-                    except Exception as e:
-                        raise e
+                    raise Exception("Datadog API connection is not valid. Check API Key")
                 return True
         except ApiException as e:
             logger.error("Exception when calling AuthenticationApi->validate: %s\n" % e)

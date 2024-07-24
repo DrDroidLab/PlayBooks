@@ -218,7 +218,9 @@ def connectors_test_connection(request_message: CreateConnectorRequest) -> Union
         return CreateConnectorResponse(success=BoolValue(value=False),
                                        message=Message(title='Missing Required Connector Keys',
                                                        description='Please provide all required keys'))
-    connection_state = playbook_source_facade.test_source_connection(connector)
+    connection_state, err = playbook_source_facade.test_source_connection(connector)
+    if err is not None:
+        return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
     if connection_state:
         return CreateConnectorResponse(success=BoolValue(value=connection_state),
                                        message=Message(title='Source Connection Successful'))

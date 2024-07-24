@@ -49,8 +49,7 @@ class KubectlApiProcessor(Processor):
                 print("Command Output:", stdout)
                 return True
             else:
-                print("Error executing command:", stderr)
-                return False
+                raise Exception(f"Failed to connect with kubernetes cluster. Error: {stderr}")
         except Exception as e:
             logger.error(f"Exception occurred while executing kubectl command with error: {e}")
             raise e

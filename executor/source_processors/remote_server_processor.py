@@ -82,16 +82,19 @@ class RemoteServerProcessor(Processor):
                 try:
                     stdin, stdout, stderr = client.exec_command(command)
                     output = stdout.read().decode('utf-8')
-                    return True if output.strip() == "Connection successful" else False
+                    if output.strip() == "Connection successful":
+                        return True
+                    else:
+                        raise Exception("Connection failed")
                 except paramiko.AuthenticationException as e:
                     logger.error(f"Authentication error: {str(e)}")
-                    return False
+                    raise e
                 except paramiko.SSHException as e:
                     logger.error(f"SSH connection error: {str(e)}")
-                    return False
+                    raise e
                 except Exception as e:
                     logger.error(f"Error: {str(e)}")
-                    return False
+                    raise e
                 finally:
                     client.close()
             else:
@@ -101,10 +104,10 @@ class RemoteServerProcessor(Processor):
                     return True if result.stdout.strip() == "Connection successful" else False
                 except subprocess.CalledProcessError as e:
                     logger.error(f"Error executing command{command}: {e}")
-                    return False
+                    raise e
         except Exception as e:
             logger.error(f"Exception occurred while creating remote connection with error: {e}")
-            return False
+            raise e
 
     def execute_command(self, command):
         try:

@@ -34,7 +34,8 @@ class ClickhouseDBProcessor(Processor):
             client.close()
             if result:
                 return True
-            return False
+            else:
+                raise Exception("Clickhouse Connection Error:: Failed to fetch result from clickhouse")
         except Exception as e:
             logger.error(f"Exception occurred while testing clickhouse connection with error: {e}")
             raise e

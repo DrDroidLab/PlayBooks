@@ -103,13 +103,13 @@ class PlaybookSourceFacade:
     def test_source_connection(self, source_connection: ConnectorProto):
         source = source_connection.type
         if source not in self._map:
-            raise ValueError(f'No executor found for source: {source}')
+            return False, f'No executor found for source: {source}'
         manager = self._map[source]
         try:
-            return manager.test_connector_processor(source_connection)
+            return manager.test_connector_processor(source_connection), None
         except Exception as e:
             logger.error(f'Error while testing source connection: {str(e)}')
-            return False
+            return False, str(e)
 
 
 playbook_source_facade = PlaybookSourceFacade()

@@ -57,7 +57,12 @@ class PlaybookSourceManager:
 
     def test_connector_processor(self, connector: ConnectorProto, **kwargs):
         processor: Processor = self.get_connector_processor(connector, **kwargs)
-        return processor.test_connection()
+        if isinstance(processor, NoOpProcessor):
+            return True
+        try:
+            return processor.test_connection()
+        except Exception as e:
+            raise e
 
     def get_task_type_callable_map(self):
         return self.task_type_callable_map

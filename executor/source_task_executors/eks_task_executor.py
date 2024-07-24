@@ -132,14 +132,12 @@ class EksSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, eks_connector, **kwargs):
         generated_credentials = generate_credentials_dict(eks_connector.type, eks_connector.keys)
-        if 'aws_region' not in kwargs:
-            generated_credentials['region'] = kwargs.get('aws_region')
+        if 'region' in kwargs:
+            generated_credentials['region'] = kwargs.get('region')
         if 'k8_role_arn' not in generated_credentials:
             raise Exception("EKS Role ARN not found in EKS connector keys")
         generated_credentials['cluster_name'] = kwargs.get('cluster_name')
         generated_credentials['client'] = kwargs.get('client', 'api')
-        if 'regions' in generated_credentials:
-            generated_credentials.pop('regions', None)
 
         if 'native_connection' not in kwargs or not kwargs['native_connection']:
             return get_eks_api_instance(**generated_credentials)
@@ -156,14 +154,14 @@ class EksSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No EKS source found")
 
             eks_command = eks_task.get_pods
-            aws_region = eks_command.region.value
+            region = eks_command.region.value
             cluster_name = eks_command.cluster.value
             namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
 
-            eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
-                                                            cluster_name=cluster_name, client='api')
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
             table_rows: [TableResult.TableRow] = []
             api_response: V1PodList = eks_api_instance.list_namespaced_pod(namespace, pretty='pretty')
             api_response_dict = api_response.to_dict()
@@ -196,7 +194,7 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Pods from {aws_region}, {cluster_name}, {namespace}'),
+            table = TableResult(raw_query=StringValue(value=f'Get Pods from {region}, {cluster_name}, {namespace}'),
                                 rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
@@ -212,14 +210,14 @@ class EksSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No EKS source found")
 
             eks_command = eks_task.get_deployments
-            aws_region = eks_command.region.value
+            region = eks_command.region.value
             cluster_name = eks_command.cluster.value
             namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
 
-            eks_app_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
-                                                            cluster_name=cluster_name, client='app')
+            eks_app_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='app')
             table_rows: [TableResult.TableRow] = []
             api_response: V1DeploymentList = eks_app_instance.list_namespaced_deployment(namespace)
             api_response_dict = api_response.to_dict()
@@ -254,7 +252,7 @@ class EksSourceManager(PlaybookSourceManager):
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
             table = TableResult(
-                raw_query=StringValue(value=f'Get Deployments from {aws_region}, {cluster_name}, {namespace}'),
+                raw_query=StringValue(value=f'Get Deployments from {region}, {cluster_name}, {namespace}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
@@ -269,15 +267,15 @@ class EksSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No EKS source found")
 
             eks_command = eks_task.get_events
-            aws_region = eks_command.region.value
+            region = eks_command.region.value
             cluster_name = eks_command.cluster.value
             namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
 
             table_rows: [TableResult.TableRow] = []
-            eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
-                                                            cluster_name=cluster_name, client='api')
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
             api_response: CoreV1EventList = eks_api_instance.list_namespaced_event(namespace)
             sorted_events = sorted(api_response.items, key=attrgetter('metadata.creation_timestamp'))
             for event in sorted_events:
@@ -311,7 +309,7 @@ class EksSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table = TableResult(
-                raw_query=StringValue(value=f'Get Events from {aws_region}, {cluster_name}, {namespace}'),
+                raw_query=StringValue(value=f'Get Events from {region}, {cluster_name}, {namespace}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
@@ -326,13 +324,13 @@ class EksSourceManager(PlaybookSourceManager):
                 raise Exception("Task execution Failed:: No EKS source found")
 
             eks_command = eks_task.get_services
-            aws_region = eks_command.region.value
+            region = eks_command.region.value
             cluster_name = eks_command.cluster.value
             namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
-            eks_api_instance = self.get_connector_processor(eks_connector, aws_region=aws_region,
-                                                            cluster_name=cluster_name, client='api')
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
 
             table_rows: [TableResult.TableRow] = []
             services: V1ServiceList = eks_api_instance.list_namespaced_service(namespace)
@@ -367,7 +365,7 @@ class EksSourceManager(PlaybookSourceManager):
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
             table = TableResult(
-                raw_query=StringValue(value=f'Get Services from {aws_region}, {cluster_name}, {namespace}'),
+                raw_query=StringValue(value=f'Get Services from {region}, {cluster_name}, {namespace}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
@@ -384,16 +382,15 @@ class EksSourceManager(PlaybookSourceManager):
 
             eks_command = eks_task.kubectl_command
 
-            aws_region = eks_command.region.value
+            region = eks_command.region.value
             cluster_name = eks_command.cluster.value
 
             command_str = eks_command.command.value
             commands = command_str.split('\n')
             try:
                 outputs = {}
-                kubectl_client = self.get_connector_processor(eks_connector, aws_region=aws_region,
-                                                              cluster_name=cluster_name, client='api',
-                                                              native_connection=True)
+                kubectl_client = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                              client='api', native_connection=True)
                 for command in commands:
                     command_to_execute = command
                     output = kubectl_client.execute_command(command_to_execute)
