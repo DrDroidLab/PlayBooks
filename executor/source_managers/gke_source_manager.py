@@ -7,7 +7,7 @@ from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1Se
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_processors.gke_api_processor import GkeApiProcessor, get_gke_api_instance
+from executor.source_processors.gke_api_processor import GkeApiProcessor
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
@@ -132,12 +132,13 @@ class GkeSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, gke_connector, **kwargs):
         generated_credentials = generate_credentials_dict(gke_connector.type, gke_connector.keys)
+        api_processor = GkeApiProcessor(**generated_credentials)
         if 'native_connection' not in kwargs or not kwargs['native_connection']:
-            return GkeApiProcessor(**generated_credentials)
+            return api_processor
         else:
             zone = kwargs.get('zone')
             cluster_name = kwargs.get('cluster_name')
-            instance = get_gke_api_instance(**generated_credentials, zone=zone, cluster_name=cluster_name)
+            instance = api_processor.get_api_instance(zone, cluster_name)
             gke_host = instance.api_client.configuration.host
             token = instance.api_client.configuration.api_key.get('authorization')
             ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert

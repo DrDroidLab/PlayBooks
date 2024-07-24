@@ -25,42 +25,6 @@ def get_gke_credentials(service_account_json_str):
     return credentials
 
 
-def get_gke_api_instance(project_id, service_account_json, zone, cluster_name, client='api'):
-    try:
-        credentials = get_gke_credentials(service_account_json)
-        cluster_url = f"https://container.googleapis.com/v1/projects/{project_id}/locations/{zone}/clusters/{cluster_name}"
-        authed_session = AuthorizedSession(credentials)
-        response = authed_session.request('GET', cluster_url)
-        cluster_data = response.json()
-
-        endpoint = cluster_data['endpoint']
-        ca_certificate = cluster_data['masterAuth']['clusterCaCertificate']
-
-        fp = tempfile.NamedTemporaryFile(delete=False)
-        ca_filename = fp.name
-        ca_cert_bytes = base64.b64decode(ca_certificate)
-        fp.write(ca_cert_bytes)
-        fp.close()
-
-        # Kubernetes client config
-        conf = kubernetes.client.Configuration()
-        conf.host = f"https://{endpoint}"
-        conf.api_key['authorization'] = credentials.token
-        conf.api_key_prefix['authorization'] = 'Bearer'
-        conf.ssl_ca_cert = ca_filename
-        conf.verify_ssl = True
-        with kubernetes.client.ApiClient(conf) as api_client:
-            if client == 'api':
-                api_instance = kubernetes.client.CoreV1Api(api_client)
-                return api_instance
-            elif client == 'app':
-                app_instance = kubernetes.client.AppsV1Api(api_client)
-                return app_instance
-    except Exception as e:
-        logger.error(f"Exception occurred while configuring kubernetes client with error: {e}")
-        raise e
-
-
 class GkeApiProcessor(Processor):
     client = None
 
@@ -96,6 +60,41 @@ class GkeApiProcessor(Processor):
             logger.error(f"Exception occurred while fetching grafana data sources with error: {e}")
             raise e
 
+    def get_api_instance(self, zone, cluster_name, client='api'):
+        try:
+            credentials = get_gke_credentials(self.__service_account_json)
+            cluster_url = f"https://container.googleapis.com/v1/projects/{self.__project_id}/locations/{zone}/clusters/{cluster_name}"
+            authed_session = AuthorizedSession(credentials)
+            response = authed_session.request('GET', cluster_url)
+            cluster_data = response.json()
+
+            endpoint = cluster_data['endpoint']
+            ca_certificate = cluster_data['masterAuth']['clusterCaCertificate']
+
+            fp = tempfile.NamedTemporaryFile(delete=False)
+            ca_filename = fp.name
+            ca_cert_bytes = base64.b64decode(ca_certificate)
+            fp.write(ca_cert_bytes)
+            fp.close()
+
+            # Kubernetes client config
+            conf = kubernetes.client.Configuration()
+            conf.host = f"https://{endpoint}"
+            conf.api_key['authorization'] = credentials.token
+            conf.api_key_prefix['authorization'] = 'Bearer'
+            conf.ssl_ca_cert = ca_filename
+            conf.verify_ssl = True
+            with kubernetes.client.ApiClient(conf) as api_client:
+                if client == 'api':
+                    api_instance = kubernetes.client.CoreV1Api(api_client)
+                    return api_instance
+                elif client == 'app':
+                    app_instance = kubernetes.client.AppsV1Api(api_client)
+                    return app_instance
+        except Exception as e:
+            logger.error(f"Exception occurred while configuring kubernetes client with error: {e}")
+            raise e
+
     def list_clusters(self):
         # Load service account credentials from JSON file
         credentials = get_gke_credentials(self.__service_account_json)
@@ -126,12 +125,12 @@ class GkeApiProcessor(Processor):
         return clusters_list
 
     def list_namespaces(self, zone, cluster_name):
-        api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)
+        api_client = self.get_api_instance(zone, cluster_name)
         namespaces = api_client.list_namespace()
         return namespaces
 
     def list_pods(self, zone, cluster_name, namespace=None):
-        api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)
+        api_client = self.get_api_instance(zone, cluster_name)
         if namespace:
             pods = api_client.list_namespaced_pod(namespace, pretty='pretty')
         else:
@@ -139,17 +138,16 @@ class GkeApiProcessor(Processor):
         return pods
 
     def list_deployments(self, zone, cluster_name, namespace):
-        api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name,
-                                          client='app')
+        api_client = self.get_api_instance(zone, cluster_name, client='app')
         deployments = api_client.list_namespaced_deployment(namespace)
         return deployments
 
     def list_services(self, zone, cluster_name, namespace):
-        api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)
+        api_client = self.get_api_instance(zone, cluster_name)
         services = api_client.list_namespaced_service(namespace)
         return services
 
     def list_events(self, zone, cluster_name, namespace='kube-system'):
-        api_client = get_gke_api_instance(self.__project_id, self.__service_account_json, zone, cluster_name)
+        api_client = self.get_api_instance(zone, cluster_name)
         events = api_client.list_namespaced_event(namespace)
         return events

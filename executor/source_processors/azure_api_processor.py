@@ -59,7 +59,10 @@ class AzureApiProcessor:
             az_workspaces = []
             for workspace in workspaces:
                 az_workspaces.append(workspace.as_dict())
-            return len(az_workspaces) > 0
+            if len(az_workspaces) > 0:
+                return True
+            else:
+                raise Exception("Azure Connection Error:: No Workspaces Found")
         except Exception as e:
             raise e
 

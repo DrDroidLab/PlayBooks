@@ -31,12 +31,16 @@ class AWSBoto3ApiProcessor(Processor):
             if self.client_type == 'cloudwatch':
                 client = self.get_connection()
                 response = client.list_metrics()
-                print("Connection to Amazon CloudWatch successful.")
-                return True
+                if response:
+                    return True
+                else:
+                    raise Exception("No metrics found in the cloudwatch connection")
             elif self.client_type == 'logs':
                 log_groups = self.logs_describe_log_groups()
-                print("Connection to Amazon CloudWatch Logs successful.")
-                return True
+                if log_groups:
+                    return True
+                else:
+                    raise Exception("No log groups found in the logs connection")
         except Exception as e:
             logger.error(f"Exception occurred while testing cloudwatch connection with error: {e}")
             raise e
