@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Heading from "../../Heading";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  playbookSelector,
   resetState,
   setPlaybookKey,
   resetExecutions,
@@ -23,7 +22,6 @@ import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook
 function CreatePlaybook() {
   const { openDrawer, permanentView } = usePermanentDrawerState();
   const { playbook_id: id } = useParams();
-  const playbook = useSelector(playbookSelector);
   const dispatch = useDispatch();
   const playbookDataRef = useRef(null);
   const [searchParams] = useSearchParams();
@@ -75,12 +73,7 @@ function CreatePlaybook() {
   return (
     <div className="h-screen overflow-hidden">
       <Heading
-        heading={
-          playbook
-            ? `${playbook.isEditing ? "Editing" : ""} Playbook` +
-              (playbook.name ? " - " + playbook.name : "")
-            : "Untitled Playbook"
-        }
+        heading={"Untitled Playbook"}
         onTimeRangeChangeCb={false}
         onRefreshCb={false}
         customTimeRange={true}
@@ -106,7 +99,6 @@ function CreatePlaybook() {
         </main>
         <PermenantDrawer />
       </div>
-      {/* <ConditionDrawer /> */}
     </div>
   );
 }
