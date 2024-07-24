@@ -34,6 +34,13 @@ export const handleActionsExtractor = (
         channel: {},
         trigger: {},
       };
+    case Types.WorkflowActionOptions.SMTP_EMAIL:
+      return {
+        channel: {},
+        trigger: {},
+        to_email: workflowAction.to_email,
+        subject: workflowAction.subject,
+      };
     default:
       return { channel: {}, trigger: {} };
   }

@@ -4,9 +4,9 @@ import Overlay from "../Overlay";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
-  setPlaybookKey,
+  setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import Toast from "../Toast.js";
+import { Toast } from "../Toast.jsx";
 import useIsExisting from "../../hooks/useIsExisting.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
@@ -24,8 +24,8 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
       setValidationError("Please enter a name");
       return;
     }
-    dispatch(setPlaybookKey({ key: "description", value: description }));
-    dispatch(setPlaybookKey({ key: "name", value: name }));
+    dispatch(setCurrentPlaybookKey({ key: "description", value: description }));
+    dispatch(setCurrentPlaybookKey({ key: "name", value: name }));
     saveCallback({
       pbName: name || currentPlaybook?.name,
       description,

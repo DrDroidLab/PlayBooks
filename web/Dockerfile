@@ -28,7 +28,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Copy the env template to the build directory
-COPY env.template.js /usr/share/nginx/html
+COPY env.template.ts /usr/share/nginx/html
 
 # Create a script to substitute environment variables and start nginx
 COPY docker-entrypoint.sh /docker-entrypoint.sh
