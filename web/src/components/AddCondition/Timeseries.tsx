@@ -1,10 +1,8 @@
 import React from "react";
-import SelectComponent from "../SelectComponent";
 import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
-import ValueComponent from "../ValueComponent/index.jsx";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { timeseriesOptions } from "../../utils/conditionals/typeOptions/timeseries.ts";
 import HandleTypes from "./HandleTypes.tsx";
@@ -13,6 +11,8 @@ import {
   ResultTypeType,
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
 
 function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const { id } = useSelector(additionalStateSelector);
@@ -26,18 +26,16 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
   };
 
   return (
-    <>
-      <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={timeseriesOptions}
-          selected={rule.type}
-          placeholder={`Select Type`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.type`)
-          }
-        />
-      </div>
+    <div className="flex flex-wrap gap-2">
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={timeseriesOptions}
+        value={rule.type}
+        placeholder={`Select Type`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.type`)
+        }
+      />
 
       <HandleTypes
         condition={condition}
@@ -45,47 +43,39 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
         rule={rule}
       />
 
-      <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={functionOptions(
-            (task?.ui_requirement?.resultType as ResultTypeType) ??
-              ResultTypeTypes.OTHERS,
-          )}
-          selected={rule.function}
-          placeholder={`Select Function`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.function`)
-          }
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={functionOptions(
+          (task?.ui_requirement?.resultType as ResultTypeType) ??
+            ResultTypeTypes.OTHERS,
+        )}
+        value={rule.function}
+        placeholder={`Select Function`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.function`)
+        }
+      />
 
-      <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={operationOptions}
-          selected={rule.operator}
-          placeholder={`Select Operator`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${resultType?.toLowerCase()}.operator`)
-          }
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        options={operationOptions}
+        value={rule.operator}
+        placeholder={`Select Operator`}
+        handleChange={(id: string) =>
+          handleChange(id, `${resultType?.toLowerCase()}.operator`)
+        }
+      />
 
-      <div className="flex items-center gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) =>
-            handleChange(val, `${resultType?.toLowerCase()}.threshold`)
-          }
-          value={rule.threshold}
-          valueOptions={[]}
-          placeHolder={"Enter Value of condition"}
-          length={200}
-        />
-      </div>
-    </>
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        handleChange={(val: string) =>
+          handleChange(val, `${resultType?.toLowerCase()}.threshold`)
+        }
+        value={rule.threshold}
+        placeholder={"Enter Value of condition"}
+        className="!w-[200px]"
+      />
+    </div>
   );
 }
 

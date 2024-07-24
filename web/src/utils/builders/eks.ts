@@ -11,14 +11,14 @@ export const eksBuilder = (options: any, task: Task) => {
         {
           key: Key.REGION,
           label: "Region",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options:
             options?.map((x) => ({ id: x.region, label: x.region })) ?? [],
         },
         {
           key: Key.CLUSTER,
           label: "Cluster",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options: options
             ?.find((e) => e.region === getTaskData(task)?.[Key.REGION])
             ?.clusters?.map((x) => ({ id: x.name, label: x.name })),
@@ -26,7 +26,7 @@ export const eksBuilder = (options: any, task: Task) => {
         {
           key: Key.NAMESPACE,
           label: "Namespace",
-          type: InputTypes.TYPING_DROPDOWN,
+          inputType: InputTypes.TYPING_DROPDOWN,
           options:
             getCurrentAsset(task, Key.REGION, "region")?.clusters?.length > 0
               ? getCurrentAsset(

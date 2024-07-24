@@ -3,25 +3,16 @@ import React from "react";
 import rehypeSanitize from "rehype-sanitize";
 
 type WsyisygInputTypes = {
-  label: string;
   value: string;
   handleChange: any;
+  label?: string;
   error?: string;
   disabled?: boolean;
 };
 
-function Wysiwyg({
-  label,
-  value,
-  handleChange,
-  disabled,
-  error,
-}: WsyisygInputTypes) {
+function Wysiwyg({ value, handleChange, disabled, error }: WsyisygInputTypes) {
   return (
     <div data-color-mode="light">
-      <p className="mt-2 text-sm text-gray-500">
-        <b>{label}</b>
-      </p>
       {disabled ? (
         <>
           <MDEditor.Markdown

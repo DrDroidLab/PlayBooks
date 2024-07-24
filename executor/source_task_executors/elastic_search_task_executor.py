@@ -1,14 +1,14 @@
-from typing import Dict
-
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.elastic_search_api_processor import ElasticSearchApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.elastic_search_task_pb2 import ElasticSearch
+from protos.ui_definition_pb2 import FormField
 
 
 class ElasticSearchSourceManager(PlaybookSourceManager):
@@ -22,7 +22,24 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
                 'model_types': [SourceModelType.ELASTIC_SEARCH_INDEX],
                 'result_type': PlaybookTaskResultType.LOGS,
                 'display_name': 'Query Logs from an ElasticSearch Index',
-                'category': 'Logs'
+                'category': 'Logs',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="index"),
+                              display_name=StringValue(value="Index"),
+                              description=StringValue(value='Select Index'),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="lucene_query"),
+                              display_name=StringValue(value="Lucene Query"),
+                              data_type=LiteralType.STRING),
+                    FormField(key_name=StringValue(value="limit"),
+                              display_name=StringValue(value="Enter Limit"),
+                              data_type=LiteralType.LONG,
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
+                    FormField(key_name=StringValue(value="offset"),
+                              display_name=StringValue(value="Enter Offset"),
+                              data_type=LiteralType.LONG,
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=0))),
+                ]
             },
         }
 
@@ -30,7 +47,7 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
         generated_credentials = generate_credentials_dict(es_connector.type, es_connector.keys)
         return ElasticSearchApiProcessor(**generated_credentials)
 
-    def execute_query_logs(self, time_range: TimeRange, global_variable_set: Dict, es_task: ElasticSearch,
+    def execute_query_logs(self, time_range: TimeRange, es_task: ElasticSearch,
                            es_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not es_connector:
@@ -41,15 +58,12 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
             lucene_query = query_logs.lucene_query.value
             limit = query_logs.limit.value if query_logs.limit.value else 2000
             offset = query_logs.offset.value if query_logs.offset.value else 0
-            sort_desc = query_logs.sort_desc.value
+            sort_desc = query_logs.sort_desc.value if query_logs.sort_desc.value else ""
             timestamp_field = query_logs.timestamp_field.value if query_logs.timestamp_field.value else ""
             if not index:
                 raise Exception("Task execution Failed:: No index found")
 
             lucene_query = lucene_query.strip()
-            if global_variable_set:
-                for key, value in global_variable_set.items():
-                    lucene_query = lucene_query.replace(key, str(value))
 
             es_client = self.get_connector_processor(es_connector)
 

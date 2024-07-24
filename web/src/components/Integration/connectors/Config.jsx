@@ -1,7 +1,6 @@
 import styles from "./index.module.css";
 import SlackManifestGenerator from "./SlackManifestGenerator.jsx";
 import HandleKeyOptions from "./HandleKeyOptions.jsx";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import {
   connectorSelector,
   setKey,
@@ -10,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { cardsData } from "../../../utils/cardsData.js";
 import ConfigButtons from "./ConfigButtons.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 function Config({ connector }) {
   const { id } = useParams();
@@ -44,15 +45,15 @@ function Config({ connector }) {
           <div
             className={`${styles["eventTypeSelectionSection"]} flex items-center`}>
             <div className={styles["content"]}>Name</div>
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val) => {
+            <CustomInput
+              inputType={InputTypes.TEXT}
+              handleChange={(val) => {
                 dispatch(setKey({ key: "name", value: val }));
               }}
               disabled={connectorActive}
               value={currentConnector.name}
-              placeHolder={"Enter connector name"}
-              length={500}
+              placeholder={"Enter connector name"}
+              className="!w-[300px]"
             />
           </div>
           {keyOptions?.map((option, i) => (

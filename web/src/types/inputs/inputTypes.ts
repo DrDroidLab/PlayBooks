@@ -1,6 +1,5 @@
 export const InputTypes = {
   TEXT: "TEXT",
-  TEXT_ROW: "TEXT_ROW",
   MULTILINE: "MULTILINE",
   BUTTON: "BUTTON",
   IFRAME_RENDER: "IFRAME_RENDER",

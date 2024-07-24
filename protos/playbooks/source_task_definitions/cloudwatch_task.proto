@@ -15,7 +15,6 @@ message Cloudwatch {
     google.protobuf.StringValue metric_name = 3;
     repeated Dimension dimensions = 4;
     google.protobuf.StringValue statistic = 5;
-    google.protobuf.StringValue process_function = 6;
   }
 
   message FilterLogEvents {
