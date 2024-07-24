@@ -12,7 +12,7 @@ from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class CloudwatchSourceManager(PlaybookSourceManager):
@@ -31,11 +31,13 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="namespace"),
                               display_name=StringValue(value="Namespace"),
                               description=StringValue(value='Select Namespace'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="region"),
                               display_name=StringValue(value="Region"),
                               description=StringValue(value='Select Region'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="dimensions"),
                               display_name=StringValue(value="Dimension Name"),
                               description=StringValue(value='Select Dimension Name'),
@@ -49,11 +51,13 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                                             display_name=StringValue(value="Dimension Value"),
                                             description=StringValue(value='Select Dimension Value'),
                                             data_type=LiteralType.STRING)
-                              ]),
+                              ],
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="metric_name"),
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value='Add Metric'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_MULTIPLE),
                     FormField(key_name=StringValue(value="statistic"),
                               display_name=StringValue(value="Metric Aggregation"),
                               description=StringValue(value='Select Aggregation Function'),
@@ -63,7 +67,8 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                                             Literal(type=LiteralType.STRING, string=StringValue(value="Sum")),
                                             Literal(type=LiteralType.STRING, string=StringValue(value="SampleCount")),
                                             Literal(type=LiteralType.STRING, string=StringValue(value="Maximum")),
-                                            Literal(type=LiteralType.STRING, string=StringValue(value="Minimum"))]),
+                                            Literal(type=LiteralType.STRING, string=StringValue(value="Minimum"))],
+                              form_field_type=FormFieldType.DROPDOWN),
                 ]
             },
             Cloudwatch.TaskType.FILTER_LOG_EVENTS: {
@@ -76,14 +81,17 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="region"),
                               display_name=StringValue(value="Region"),
                               description=StringValue(value='Select Region'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="log_group_name"),
                               display_name=StringValue(value="Log Group"),
                               description=StringValue(value='Select Log Group'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Filter Query"),
-                              data_type=LiteralType.STRING)
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE)
                 ]
             },
         }

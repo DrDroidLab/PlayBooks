@@ -10,7 +10,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, BashCommandOutputResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.bash_task_pb2 import Bash
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class BashSourceManager(PlaybookSourceManager):
@@ -29,10 +29,12 @@ class BashSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="remote_server"),
                               display_name=StringValue(value="Remote Server"),
                               description=StringValue(value='Select Remote Server'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="command"),
                               display_name=StringValue(value="Command"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE),
                 ]
             },
         }

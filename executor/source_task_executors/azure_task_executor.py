@@ -34,7 +34,7 @@ class AzureSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Azure Workspace ID"),
                               description=StringValue(value='Select Workspace ID'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT),
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Log Filter Query"),
                               data_type=LiteralType.STRING,

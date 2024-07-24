@@ -10,7 +10,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2 import SqlDataFetch
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class TimeoutException(Exception):
@@ -33,15 +33,18 @@ class ClickhouseSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="database"),
                               display_name=StringValue(value="Database"),
                               description=StringValue(value='Select Database'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE),
                     FormField(key_name=StringValue(value="timeout"),
                               display_name=StringValue(value="Timeout (in seconds)"),
                               description=StringValue(value='Enter Timeout (in seconds)'),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)))
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)),
+                              form_field_type=FormFieldType.TEXT)
                 ]
             },
         }
