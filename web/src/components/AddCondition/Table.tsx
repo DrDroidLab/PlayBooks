@@ -1,12 +1,12 @@
 import React from "react";
-import SelectComponent from "../SelectComponent";
-import ValueComponent from "../ValueComponent";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
 import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
+import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import CustomInput from "../Inputs/CustomInput.tsx";
 
 function Table({ condition, conditionIndex, rule }) {
   const { id } = useSelector(additionalStateSelector);
@@ -23,18 +23,17 @@ function Table({ condition, conditionIndex, rule }) {
     : rule.string_value_threshold;
 
   return (
-    <>
-      <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={tableOptions}
-          selected={rule.type}
-          placeholder={`Select Type`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${condition.type?.toLowerCase()}.type`)
-          }
-        />
-      </div>
+    <div className="flex flex-wrap gap-2">
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        error={undefined}
+        options={tableOptions}
+        value={rule.type}
+        placeholder={`Select Type`}
+        handleChange={(id: string) =>
+          handleChange(id, `${condition.type?.toLowerCase()}.type`)
+        }
+      />
 
       <HandleTypes
         condition={condition}
@@ -42,54 +41,49 @@ function Table({ condition, conditionIndex, rule }) {
         conditionIndex={conditionIndex}
       />
 
-      <div className="flex items-center gap-1">
-        <SelectComponent
-          error={undefined}
-          data={
-            checkIfNumeric
-              ? operationOptions
-              : operationOptions.filter((e) => e.id === "EQUAL_O")
-          }
-          selected={rule.operator}
-          placeholder={`Select Operator`}
-          onSelectionChange={(id: string) =>
-            handleChange(id, `${condition.type?.toLowerCase()}.operator`)
-          }
-        />
-      </div>
+      <CustomInput
+        inputType={InputTypes.DROPDOWN}
+        error={undefined}
+        options={
+          checkIfNumeric
+            ? operationOptions
+            : operationOptions.filter((e) => e.id === "EQUAL_O")
+        }
+        value={rule.operator}
+        placeholder={`Select Operator`}
+        handleChange={(id: string) =>
+          handleChange(id, `${condition.type?.toLowerCase()}.operator`)
+        }
+      />
 
-      <div className="flex flex-col gap-1">
-        <ValueComponent
-          error={undefined}
-          valueType={"STRING"}
-          onValueChange={(val: string) => {
-            if (checkIfNumeric) {
-              handleChange(
-                undefined,
-                `${condition.type?.toLowerCase()}.string_value_threshold`,
-              );
-              handleChange(
-                val,
-                `${condition.type?.toLowerCase()}.numeric_value_threshold`,
-              );
-            } else {
-              handleChange(
-                undefined,
-                `${condition.type?.toLowerCase()}.numeric_value_threshold`,
-              );
-              handleChange(
-                val,
-                `${condition.type?.toLowerCase()}.string_value_threshold`,
-              );
-            }
-          }}
-          value={threshold}
-          valueOptions={[]}
-          placeHolder={"Enter threshold of condition"}
-          length={200}
-        />
-      </div>
-    </>
+      <CustomInput
+        inputType={InputTypes.TEXT}
+        handleChange={(val: string) => {
+          if (checkIfNumeric) {
+            handleChange(
+              undefined,
+              `${condition.type?.toLowerCase()}.string_value_threshold`,
+            );
+            handleChange(
+              val,
+              `${condition.type?.toLowerCase()}.numeric_value_threshold`,
+            );
+          } else {
+            handleChange(
+              undefined,
+              `${condition.type?.toLowerCase()}.numeric_value_threshold`,
+            );
+            handleChange(
+              val,
+              `${condition.type?.toLowerCase()}.string_value_threshold`,
+            );
+          }
+        }}
+        value={threshold}
+        placeholder={"Enter threshold of condition"}
+        className="!w-[200px]"
+      />
+    </div>
   );
 }
 

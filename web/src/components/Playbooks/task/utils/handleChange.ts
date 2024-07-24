@@ -45,7 +45,6 @@ function handleChangeInput(
 
   switch (type) {
     case InputTypes.TEXT:
-    case InputTypes.TEXT_ROW:
     case InputTypes.MULTILINE:
     case InputTypes.DROPDOWN:
     case InputTypes.WYISWYG:

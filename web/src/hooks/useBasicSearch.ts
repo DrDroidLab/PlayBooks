@@ -7,14 +7,14 @@ function useBasicSearch(list: any[], searchKeys: string[]) {
   const debouncedQuery = useDebounce(query, 0);
 
   const isEmpty = list?.length === 0;
-  const notFound = filteredList?.length === 0;
+  const notFound = filteredList?.length === 0 && list.length !== 0;
 
-  const setValue = (e) => {
+  const setValue = (e: any) => {
     if (!e) {
       setQuery("");
       return;
     }
-    const val = e.target.value;
+    const val = typeof e === "string" ? e : e.target.value;
     setQuery(val);
   };
 

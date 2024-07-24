@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
-import HandleInputRender from "../../Inputs/HandleInputRender.tsx";
 import handleChangeInput from "./utils/handleChange.ts";
 import { useDispatch } from "react-redux";
 import { duplicateTask } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
 
 export default function OptionRender({ data, removeErrors, id }) {
   const [task, currentTaskId] = useCurrentTask(id);
@@ -49,11 +49,11 @@ export default function OptionRender({ data, removeErrors, id }) {
     : false;
 
   return (
-    <HandleInputRender
+    <CustomInput
       {...data}
       error={error}
       handleChange={handleChangeInput(
-        data.type,
+        data.inputType,
         key,
         currentTaskId!,
         removeErrors,

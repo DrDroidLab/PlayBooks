@@ -8,9 +8,10 @@ import {
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CloseRounded } from "@mui/icons-material";
-import ValueComponent from "../../ValueComponent/index.jsx";
 import Toast from "../../Toast.js";
 import CustomButton from "../CustomButton/index.tsx";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 const AddVariableOverlay = ({ isOpen, close }) => {
   const [name, setName] = useState("");
@@ -51,19 +52,17 @@ const AddVariableOverlay = ({ isOpen, close }) => {
             </div>
           </div>
           <div className={styles.variable}>
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val) => setName(val)}
+            <CustomInput
+              inputType={InputTypes.TEXT}
+              handleChange={(val) => setName(val)}
               value={name}
-              placeHolder={"Enter variable name"}
-              length={100}
+              placeholder={"Enter variable name"}
             />
-            <ValueComponent
-              valueType={"STRING"}
-              onValueChange={(val) => setValue(val)}
+            <CustomInput
+              inputType={InputTypes.TEXT}
+              handleChange={(val) => setValue(val)}
               value={value}
-              placeHolder={"Enter variable value"}
-              length={100}
+              placeholder={"Enter variable value"}
             />
           </div>
           <div className="flex items-center gap-2 mt-10">
