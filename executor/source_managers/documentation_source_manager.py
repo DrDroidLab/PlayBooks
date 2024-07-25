@@ -40,7 +40,7 @@ class DocumentationSourceManager(PlaybookSourceManager):
                               description=StringValue(value='Enter IFrame URL'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TEXT),
-                    FormField(key_name=StringValue(value=""),
+                    FormField(key_name=StringValue(value="iframe_url"),
                               display_name=StringValue(value="IFrame Render"),
                               form_field_type=FormFieldType.IFRAME_RENDER),
                 ]
