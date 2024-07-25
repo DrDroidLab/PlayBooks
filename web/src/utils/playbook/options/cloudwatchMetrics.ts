@@ -4,6 +4,7 @@ import { Key, KeyType } from "../key.ts";
 import {
   getDimensionNames,
   getDimensionValues,
+  getMetrics,
 } from "../optionHandlers/index.ts";
 
 export const cloudwatchMetrics = (
@@ -34,6 +35,8 @@ export const cloudwatchMetrics = (
       return getDimensionNames(task);
     case Key.DIMENSION_VALUE:
       return getDimensionValues(task, index);
+    case Key.METRIC_NAME:
+      return getMetrics(task);
     default:
       return [];
   }
