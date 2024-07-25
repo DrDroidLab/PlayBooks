@@ -6,9 +6,33 @@ from executor.source_processors.no_op_processor import NoOpProcessor
 from executor.source_processors.processor import Processor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
 from protos.playbooks.playbook_pb2 import PlaybookTask
+from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
+
+
+def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField], source_type_task_def: Dict) -> Dict:
+    all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
+    all_string_array_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING_ARRAY]
+    all_composite_fields = {}
+    for ff in form_fields:
+        if ff.is_composite:
+            all_composite_fields[ff.key_name.value] = ff.composite_fields
+    for gk, gv in global_variable_set.items():
+        for tk, tv in source_type_task_def.items():
+            if tk in all_string_fields:
+                source_type_task_def[tk] = tv.replace(gk, gv)
+            elif tk in all_string_array_fields:
+                source_type_task_def[tk] = [item.replace(gk, gv) for item in tv]
+            elif tk in all_composite_fields:
+                composite_fields = all_composite_fields[tk]
+                for item in source_type_task_def[tk]:
+                    for cf in composite_fields:
+                        if cf.data_type == LiteralType.STRING:
+                            item[cf.key_name.value] = item[cf.key_name.value].replace(gk, gv)
+    return source_type_task_def
 
 
 class PlaybookSourceManager:
@@ -33,7 +57,12 @@ class PlaybookSourceManager:
 
     def test_connector_processor(self, connector: ConnectorProto, **kwargs):
         processor: Processor = self.get_connector_processor(connector, **kwargs)
-        return processor.test_connection()
+        if isinstance(processor, NoOpProcessor):
+            raise Exception("No manager found for source")
+        try:
+            return processor.test_connection()
+        except Exception as e:
+            raise e
 
     def get_task_type_callable_map(self):
         return self.task_type_callable_map
@@ -73,8 +102,16 @@ class PlaybookSourceManager:
             task_type = source_task_proto.type
             if task_type in self.task_type_callable_map:
                 try:
-                    return self.task_type_callable_map[task_type]['executor'](time_range, global_variable_set,
-                                                                              source_task_proto, source_connector_proto)
+                    task_type_name = self.task_proto.TaskType.Name(task_type).lower()
+                    source_type_task_def = source_task.get(task_type_name, {})
+                    form_fields = self.task_type_callable_map[task_type]['form_fields']
+                    resolved_source_type_task_def = resolve_global_variables(global_variable_set, form_fields,
+                                                                             source_type_task_def)
+                    source_task[task_type_name] = resolved_source_type_task_def
+                    resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
+                    return self.task_type_callable_map[task_type]['executor'](time_range,
+                                                                              resolved_task_def_proto,
+                                                                              source_connector_proto)
                 except Exception as e:
                     raise Exception(f"Error while executing task for source: {source_str} with error: {e}")
             else:

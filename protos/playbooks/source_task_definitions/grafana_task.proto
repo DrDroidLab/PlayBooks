@@ -18,8 +18,7 @@ message Grafana {
     google.protobuf.StringValue dashboard_title = 5;
     google.protobuf.StringValue panel_id = 6;
     google.protobuf.StringValue panel_title = 7;
-    google.protobuf.StringValue process_function = 8;
-    google.protobuf.StringValue panel_promql_expression = 9;
+    google.protobuf.StringValue panel_promql_expression = 8;
   }
 
   enum TaskType {

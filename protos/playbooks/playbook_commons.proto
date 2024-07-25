@@ -2,6 +2,7 @@ syntax = "proto3";
 package protos.playbooks;
 
 import "protos/base.proto";
+import "protos/ui_definition.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
 
@@ -119,6 +120,7 @@ message PlaybookSourceOptions {
     google.protobuf.StringValue category = 3;
     repeated SourceModelTypeMap supported_model_types = 4;
     PlaybookTaskResultType result_type = 5;
+    repeated FormField form_fields = 6;
   }
 
   Source source = 1;

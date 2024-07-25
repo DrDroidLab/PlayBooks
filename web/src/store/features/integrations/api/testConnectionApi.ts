@@ -21,7 +21,7 @@ export const testConnectionApi = apiSlice.injectEndpoints({
           dispatch(setTestConnectorData(undefined));
           const { data } = await queryFulfilled;
           dispatch(setTestConnectorData(data));
-        } catch (error) {
+        } catch (error: any) {
           // Handle any errors
           console.log(error);
           dispatch(setTestConnectorData({ error: error?.error }));

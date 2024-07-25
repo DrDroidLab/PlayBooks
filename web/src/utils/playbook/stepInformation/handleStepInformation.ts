@@ -44,7 +44,7 @@ export default function handleStepInformation(
     case taskTypes.EKS_GET_SERVICES:
       return StepInformation.eks;
     case taskTypes.EKS_KUBECTL_COMMAND:
-        return StepInformation.kubectl;
+      return StepInformation.kubectl;
     case taskTypes.GKE_GET_DEPLOYMENTS:
     case taskTypes.GKE_GET_EVENTS:
     case taskTypes.GKE_GET_PODS:
@@ -76,6 +76,8 @@ export default function handleStepInformation(
       return [];
     case taskTypes.DOCUMENTATION_MARKDOWN:
       return StepInformation.markdown;
+    case taskTypes.SMTP_SEND_EMAIL:
+      return StepInformation.smtp;
 
     default:
       return [];

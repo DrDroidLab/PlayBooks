@@ -29,7 +29,7 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_DB
-              value: "db"
+              value: {{ .Values.djangoDatabaseName }}
             - name: POSTGRES_PASSWORD
               value: {{ .Values.djangoDatabasePassword }}
             - name: POSTGRES_USER

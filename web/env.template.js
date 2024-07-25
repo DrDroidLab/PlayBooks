@@ -1,3 +1,0 @@
-window._env_ = {
-    REACT_APP_POSTHOG_ENABLED: "$REACT_APP_POSTHOG_ENABLED"
-};

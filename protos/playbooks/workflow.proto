@@ -21,6 +21,7 @@ import "protos/playbooks/workflow_actions/slack_message.proto";
 import "protos/playbooks/workflow_actions/slack_thread_reply.proto";
 import "protos/playbooks/workflow_actions/pd_notes.proto";
 import "protos/playbooks/workflow_actions/ms_teams_message_webhook.proto";
+import "protos/playbooks/workflow_actions/smtp_email.proto";
 import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
 
 enum WorkflowExecutionStatusType {
@@ -88,6 +89,7 @@ message WorkflowAction {
     SLACK_THREAD_REPLY = 3;
     MS_TEAMS_MESSAGE_WEBHOOK = 4;
     PAGERDUTY_NOTES = 5;
+    SMTP_EMAIL = 6;
   }
   Type type = 1;
   Source source = 2;
@@ -98,6 +100,7 @@ message WorkflowAction {
     SlackThreadReplyWorkflowAction slack_thread_reply = 103;
     MSTeamsMessageWebhookWorkflowAction ms_teams_message_webhook = 104;
     PagerdutyNotesWorkflowAction pagerduty_notes = 105;
+    SMTPEmailWorkflowAction smtp_email = 106;
   }
 }
 

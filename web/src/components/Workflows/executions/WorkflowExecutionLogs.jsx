@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../../Heading.js";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
-import TableSkeleton from "../../Skeleton/TableLoader.js";
+import Heading from "../../Heading.jsx";
+import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
+import TableSkeleton from "../../Skeleton/TableLoader.jsx";
 import { ChevronLeft } from "@mui/icons-material";
 import { useGetWorkflowExecutionLogsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
 import ExecutionsTable from "../../Playbooks/executions/ExecutionsTable.jsx";
