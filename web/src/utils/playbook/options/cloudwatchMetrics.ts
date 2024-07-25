@@ -6,7 +6,11 @@ import {
   getDimensionValues,
 } from "../optionHandlers/index.ts";
 
-export const cloudwatchMetrics = (key: KeyType, task: Task): any[] => {
+export const cloudwatchMetrics = (
+  key: KeyType,
+  task: Task,
+  index: number = 0,
+): any[] => {
   switch (key) {
     case Key.NAMESPACE:
       return getCurrentAsset(task, undefined, undefined, {
@@ -29,7 +33,7 @@ export const cloudwatchMetrics = (key: KeyType, task: Task): any[] => {
     case Key.DIMENSION_NAME:
       return getDimensionNames(task);
     case Key.DIMENSION_VALUE:
-      return getDimensionValues(task);
+      return getDimensionValues(task, index);
     default:
       return [];
   }

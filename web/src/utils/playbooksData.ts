@@ -23,7 +23,7 @@ const fieldToInput = (field: FormFields, task: Task) => {
       field.valid_values?.map((v) => ({
         id: v[v.type.toLowerCase()],
         label: v[v.type.toLowerCase()],
-      })) ?? extractOptions(task, field.key_name as KeyType),
+      })) ?? extractOptions(field.key_name as KeyType, task),
     inputType: field.form_field_type,
     isOptional: field.is_optional,
     default: field.default_value?.[field.default_value.type.toLowerCase()],

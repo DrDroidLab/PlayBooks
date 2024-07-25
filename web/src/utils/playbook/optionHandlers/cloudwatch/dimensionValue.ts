@@ -3,7 +3,7 @@ import { getCurrentAsset } from "../../getCurrentAsset.ts";
 import { getTaskData } from "../../getTaskData.ts";
 import { Key } from "../../key.ts";
 
-export const getDimensionValues = (task: Task) => {
+export const getDimensionValues = (task: Task, index: number) => {
   const data = getTaskData(task);
   const currentAsset = getCurrentAsset(
     task,
@@ -16,7 +16,7 @@ export const getDimensionValues = (task: Task) => {
     currentAsset?.find((el) => el.region === data.region)?.dimensions ?? {};
   const list: any = [];
   const dimension = Object.values(dimensions)?.find(
-    (el: any) => el.name === data.dimensions?.[0]?.name,
+    (el: any) => el.name === data.dimensions?.[index]?.name,
   );
   for (let val of (dimension as any)?.values ?? []) {
     list.push({
