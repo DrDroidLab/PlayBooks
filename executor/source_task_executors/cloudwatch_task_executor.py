@@ -46,13 +46,15 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                                   FormField(key_name=StringValue(value="name"),
                                             display_name=StringValue(value="Dimension Name"),
                                             description=StringValue(value='Select Dimension Name'),
-                                            data_type=LiteralType.STRING),
+                                            data_type=LiteralType.STRING,
+                                            form_field_type=FormFieldType.TYPING_DROPDOWN),
                                   FormField(key_name=StringValue(value="value"),
                                             display_name=StringValue(value="Dimension Value"),
                                             description=StringValue(value='Select Dimension Value'),
-                                            data_type=LiteralType.STRING)
+                                            data_type=LiteralType.STRING,
+                                            form_field_type=FormFieldType.TYPING_DROPDOWN)
                               ],
-                              form_field_type=FormFieldType.TYPING_DROPDOWN),
+                              form_field_type=FormFieldType.COMPOSITE),
                     FormField(key_name=StringValue(value="metric_name"),
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value='Add Metric'),

@@ -14,6 +14,7 @@ enum FormFieldType {
   TYPING_DROPDOWN = 6;
   TYPING_DROPDOWN_MULTIPLE = 7;
   WYSIWYG = 8;
+  COMPOSITE = 9;
 }
 
 message FormField {
