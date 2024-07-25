@@ -1,4 +1,5 @@
 import base64
+import json
 import logging
 import subprocess
 import tempfile
@@ -26,7 +27,7 @@ class KubectlApiProcessor(Processor):
             self.__ca_cert = ca_filename
 
     def test_connection(self):
-        command = "kubectl get namespaces"
+        command = "kubectl version --output=json"
         if 'kubectl' in command:
             command = command.replace('kubectl', '')
         if self.__ca_cert:
@@ -40,17 +41,23 @@ class KubectlApiProcessor(Processor):
             kubectl_command = [
                                   "kubectl",
                                   f"--server={self.__api_server}",
-                                  f"--token={self.__token}"
+                                  f"--token={self.__token}",
+                                  f"--insecure-skip-tls-verify=true"
                               ] + command.split()
         try:
             process = subprocess.Popen(kubectl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             stdout, stderr = process.communicate()
             if process.returncode == 0:
-                print("Command Output:", stdout)
-                return True
+                kube_version = json.loads(stdout)
+                if 'serverVersion' in kube_version:
+                    return True
+                elif stderr:
+                    raise Exception(f"Failed to connect with kubernetes cluster. Error: {stderr}")
+                else:
+                    raise Exception("Failed to connect with kubernetes cluster. No server version information found in "
+                                    "command: kubectl version --output=json")
             else:
-                print("Error executing command:", stderr)
-                return False
+                raise Exception(f"Failed to connect with kubernetes cluster. Error: {stderr}")
         except Exception as e:
             logger.error(f"Exception occurred while executing kubectl command with error: {e}")
             raise e

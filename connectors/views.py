@@ -5,9 +5,11 @@ from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import UInt64Value, StringValue, BoolValue
 
 from django.http import HttpResponse, JsonResponse
+
+from executor.playbook_source_facade import playbook_source_facade
 from utils.uri_utils import build_absolute_uri
 
-from connectors.models import Site, ConnectorMetadataModelStore
+from connectors.models import Site, ConnectorMetadataModelStore, integrations_connector_type_connector_keys_map
 
 from accounts.models import get_request_account, Account, User, get_request_user
 from executor.utils.playbooks_builder_utils import playbooks_builder_get_connector_sources_options
@@ -15,7 +17,7 @@ from connectors.crud.connectors_crud import get_db_account_connectors, update_or
     get_db_account_connector_connected_playbooks
 from connectors.crud.connectors_update_processor import connector_update_processor
 from connectors.models import Connector
-from connectors.utils import test_connection_connector, get_all_available_connectors, get_all_request_connectors, \
+from connectors.utils import get_all_available_connectors, get_all_request_connectors, \
     get_connector_keys_options
 from playbooks.utils.decorators import api_blocked, web_api
 from playbooks.utils.meta import get_meta
@@ -24,7 +26,7 @@ from playbooks.utils.timerange import DateTimeRange, filter_dtr, to_dtr
 from protos.base_pb2 import Message, Meta, Page, TimeRange, SourceKeyType
 from protos.connectors.api_pb2 import CreateConnectorRequest, CreateConnectorResponse, GetConnectorsListRequest, \
     GetConnectorsListResponse, GetSlackAlertTriggerOptionsRequest, GetSlackAlertTriggerOptionsResponse, \
-        GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
+    GetSlackAlertsRequest, GetSlackAlertsResponse, GetSlackAppManifestRequest, GetSlackAppManifestResponse, \
     UpdateConnectorRequest, UpdateConnectorResponse, GetConnectorKeysOptionsRequest, \
     GetConnectorKeysOptionsResponse, GetConnectorKeysRequest, GetConnectorKeysResponse, \
     GetConnectorPlaybookSourceOptionsRequest, GetConnectorPlaybookSourceOptionsResponse, GetConnectedPlaybooksRequest, \
@@ -62,7 +64,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
 
     connector_metadata_models = []
-    if connector.type == Source.REMOTE_SERVER:
+    if connector.type == Source.BASH:
         for key in connector_keys:
             if key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
                 ssh_servers = key.key.value
@@ -75,7 +77,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                             title='Invalid Remote Server Host. Please provide in the format user@host'))
                     connector_metadata_models.append(
                         {'model_type': SourceModelType.SSH_SERVER, 'model_uid': ssh_server, 'is_active': True,
-                         'connector_type': Source.REMOTE_SERVER})
+                         'connector_type': Source.BASH})
                 break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
     for c in connector_metadata_models:
@@ -111,7 +113,8 @@ def connectors_get(request_message: GetConnectorRequest) -> Union[GetConnectorRe
 def connectors_list(request_message: GetConnectorsListRequest) -> Union[GetConnectorsListResponse, HttpResponse]:
     account: Account = get_request_account()
     if request_message.connector_type:
-        all_active_connectors = get_db_account_connectors(account, is_active=True, connector_type=request_message.connector_type)
+        all_active_connectors = get_db_account_connectors(account, is_active=True,
+                                                          connector_type=request_message.connector_type)
         all_active_connector_protos = list(x.proto for x in all_active_connectors)
     else:
         all_active_connectors = get_db_account_connectors(account, is_active=True)
@@ -201,14 +204,32 @@ def connectors_test_connection(request_message: CreateConnectorRequest) -> Union
                                            message=Message(title='Connector not found'))
         db_connector = db_connectors.first()
         connector = db_connector.unmasked_proto
-        connector_keys = connector.keys
     elif request_message.connector_keys:
         connector_keys = request_message.connector_keys
+        connector.keys.extend(connector_keys)
     else:
         return CreateConnectorResponse(success=BoolValue(value=False),
                                        message=Message(title='Connector keys not found'))
-    connection_state, message = test_connection_connector(connector, connector_keys)
-    return CreateConnectorResponse(success=BoolValue(value=connection_state), message=Message(title=message))
+    all_keys_found = False
+    all_ck_types = [ck.key_type for ck in connector.keys]
+    required_key_types = integrations_connector_type_connector_keys_map.get(connector.type, [])
+    for rkt in required_key_types:
+        if sorted(rkt) == sorted(list(set(all_ck_types))):
+            all_keys_found = True
+            break
+    if not all_keys_found:
+        return CreateConnectorResponse(success=BoolValue(value=False),
+                                       message=Message(title='Missing Required Connector Keys',
+                                                       description='Please provide all required keys'))
+    connection_state, err = playbook_source_facade.test_source_connection(connector)
+    if err is not None:
+        return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
+    if connection_state:
+        return CreateConnectorResponse(success=BoolValue(value=connection_state),
+                                       message=Message(title='Source Connection Successful'))
+    else:
+        return CreateConnectorResponse(success=BoolValue(value=connection_state),
+                                       message=Message(title='Source Connection Failed'))
 
 
 @web_api(GetConnectorPlaybookSourceOptionsRequest)
@@ -269,6 +290,7 @@ def slack_alert_trigger_options_get(request_message: GetSlackAlertTriggerOptions
 
     return GetSlackAlertTriggerOptionsResponse(
         alert_ops_options=AlertOpsOptions(comm_options=CommAlertOpsOptions(workspaces=comm_workspaces)))
+
 
 @web_api(GetSlackAlertsRequest)
 def slack_alerts_search(request_message: GetSlackAlertsRequest) -> \
@@ -339,7 +361,7 @@ def save_site_url(request_message: GetSlackAppManifestRequest) -> \
 @web_api(GetSlackAppManifestRequest)
 def get_site_url(request_message) -> JsonResponse:
     url = build_absolute_uri(None, "", "", True)
-   
+
     return JsonResponse({"url": url}, status=200)
 
 

@@ -12,6 +12,8 @@ import CustomEdge from "./CustomEdge.jsx";
 import useDimensions from "../../../hooks/useDimensions.ts";
 import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
 import StepNode from "./nodes/StepNode.tsx";
+import handleEdgesDelete from "./utils/handleEdgesDelete.ts";
+import handleConnection from "./utils/handleConnection.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -53,6 +55,8 @@ const CreateFlow = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onEdgesDelete={handleEdgesDelete}
+        onConnect={handleConnection}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         minZoom={-Infinity}

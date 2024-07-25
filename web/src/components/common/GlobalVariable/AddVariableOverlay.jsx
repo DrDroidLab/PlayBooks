@@ -8,7 +8,7 @@ import {
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CloseRounded } from "@mui/icons-material";
-import Toast from "../../Toast.js";
+import { Toast } from "../../Toast.jsx";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";

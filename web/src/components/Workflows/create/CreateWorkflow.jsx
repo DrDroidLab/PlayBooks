@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import Heading from "../../Heading.js";
+import Heading from "../../Heading.jsx";
 import BasicDetails from "./BasicDetails.jsx";
 import ScheduleDetails from "./ScheduleDetails.jsx";
 import NotificationDetails from "./NotificationDetails.jsx";

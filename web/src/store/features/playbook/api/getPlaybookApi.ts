@@ -2,7 +2,7 @@ import { GET_PLAYBOOKS } from "../../../../constants/index.ts";
 import { Playbook } from "../../../../types/index.ts";
 import playbookToState from "../../../../utils/parser/playbook/playbookToState.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setPlaybookDataBeta } from "../playbookSlice.ts";
+import { setPlaybookData } from "../playbookSlice.ts";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,7 +21,7 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setPlaybookDataBeta(data));
+          dispatch(setPlaybookData(data));
         } catch (error) {
           console.log(error);
         }

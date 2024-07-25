@@ -4,6 +4,7 @@ import { currentWorkflowSelector } from "../../../store/features/workflow/workfl
 import SlackMessage from "./notifications/SlackMessage.tsx";
 import { NotificationOptionTypes } from "../../../utils/notificationOptionTypes.ts";
 import MsWebhook from "./notifications/MsWebhook.tsx";
+import SmtpEmail from "./notifications/SmtpEmail.tsx";
 
 function HandleNotificationOption() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -13,6 +14,8 @@ function HandleNotificationOption() {
       return <SlackMessage />;
     case NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK:
       return <MsWebhook />;
+    case NotificationOptionTypes.SMTP_EMAIL:
+      return <SmtpEmail />;
     default:
       return;
   }

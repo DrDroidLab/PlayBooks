@@ -6,8 +6,8 @@ export const connectorsWithoutAssets = [
   connectors.SLACK,
   connectors.OPENAI,
   connectors.SQL_DATABASE_CONNECTION,
-  connectors.REMOTE_SERVER,
   connectors.POSTGRES,
   connectors.MS_TEAMS,
   connectors.GRAFANA_LOKI,
+  connectors.SMTP,
 ];
