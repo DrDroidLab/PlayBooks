@@ -6,14 +6,14 @@ import {
   TableRow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { renderTimestamp } from "../../utils/DateUtils";
+import { renderTimestamp } from "../../utils/DateUtils.js";
 import { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { Link, useNavigate } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingPlaybook";
+import NoExistingPlaybook from "./NoExistingPlaybook.jsx";
 import styles from "./playbooks.module.css";
-import useToggle from "../../hooks/useToggle";
-import PlaybookActionOverlay from "./PlaybookActionOverlay";
+import useToggle from "../../hooks/useToggle.js";
+import PlaybookActionOverlay from "./PlaybookActionOverlay.jsx";
 import { ContentCopy } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../store/features/playbook/playbookSlice.ts";

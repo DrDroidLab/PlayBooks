@@ -1,5 +1,5 @@
-import CreateFlow from "./CreateFlow";
-import GlobalVariables from "../../common/GlobalVariable";
+import CreateFlow from "./CreateFlow.jsx";
+import GlobalVariables from "../../common/GlobalVariable/index.jsx";
 import AddDataDrawer from "../../common/Drawers/AddDataDrawer.jsx";
 import TemplatesDrawer from "../../common/Drawers/TemplatesDrawer.jsx";
 import useDrawerState from "../../../hooks/useDrawerState.ts";

@@ -1,6 +1,6 @@
 import React from "react";
-import SuspenseLoader from "../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../Skeleton/TableLoader.jsx";
+import SuspenseLoader from "../Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../Skeleton/TableLoader.js";
 import TabContent from "../TabsComponent/TabContent";
 import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
 import styles from "./index.module.css";

@@ -1,6 +1,6 @@
-import Heading from "../components/Heading";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../components/Skeleton/TableLoader.jsx";
+import Heading from "../components/Heading.tsx";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../components/Skeleton/TableLoader.js";
 import { useGetConnectorListQuery } from "../store/features/integrations/api/index.ts";
 import { Add } from "@mui/icons-material";
 import ConnectorCard from "../components/Integration/ConnectorCard.tsx";
@@ -22,7 +22,6 @@ function DataSources() {
       <Heading
         heading={"Integrations"}
         subHeading={"View and manage your integrations"}
-        children={<></>}
       />
       <main className="p-2">
         <div className="flex items-stretch gap-2">

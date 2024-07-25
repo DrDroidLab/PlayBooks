@@ -108,7 +108,7 @@ const ApiTokens = () => {
 
   return (
     <>
-      <Heading heading={"API keys"}></Heading>
+      <Heading heading={"API keys"} />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center justify-between">
           <button

@@ -1,5 +1,3 @@
-import { Grid } from "@mui/material";
-import React from "react";
 import { HomeRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
@@ -8,13 +6,7 @@ import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 import TimeRangeSelector from "./common/TimeRangeSelector/index.tsx";
 import HeadingTitle from "./HeadingTitle.tsx";
 
-const renderChildren = (children) => {
-  return React.Children.map(children, (child) => {
-    return <Grid item>{child}</Grid>;
-  });
-};
-
-const Heading = ({ subHeading = "", heading, children }) => {
+const Heading = ({ subHeading = "", heading }) => {
   const navigate = useNavigate();
   const [isOnPlaybookPage] = usePlaybookKey("isOnPlaybookPage");
 
@@ -51,7 +43,6 @@ const Heading = ({ subHeading = "", heading, children }) => {
         </div>
         <div className="flex gap-2 items-stretch">
           <HeadingPlaybookButtons />
-          {renderChildren(children)}
           {isOnPlaybookPage && <TimeRangeSelector />}
         </div>
       </div>

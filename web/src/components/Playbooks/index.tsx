@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
-import Heading from "../Heading";
-import SuspenseLoader from "../Skeleton/SuspenseLoader";
-import TableSkeleton from "../Skeleton/TableLoader";
+import Heading from "../Heading.tsx";
+import SuspenseLoader from "../Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../Skeleton/TableLoader.js";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api/index.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import PaginatedTable from "../PaginatedTable.tsx";
-import PlaybookTable from "./PlayBookTable.jsx";
+import PlaybookTable from "./PlayBookTable.js";
 import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const Playbooks = () => {
@@ -25,11 +25,7 @@ const Playbooks = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Playbooks"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Playbooks"} />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center gap-2">
           <CustomButton onClick={handleCreatePlaybook}>
