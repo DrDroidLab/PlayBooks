@@ -27,6 +27,7 @@ export type HandleInputRenderType = {
   length?: number;
   className?: string;
   compositeFields?: HandleInputRenderType[];
+  key?: string;
 };
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -79,7 +80,7 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       return <Wysiwyg handleChange={props.handleChange!} {...props} />;
 
     case InputTypes.COMPOSITE:
-      return <CompositeField {...props} />;
+      return <CompositeField handleChange={props.handleChange} {...props} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

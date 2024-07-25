@@ -43,6 +43,17 @@ function handleChangeInput(
     removeErrors(key);
   };
 
+  const handleCompositeChange = (value: string) => {
+    const valArr = JSON.parse(value);
+    if (handleChange) {
+      handleChange(valArr);
+    } else {
+      updateCardById(key, valArr, currentTaskId);
+    }
+
+    removeErrors(key);
+  };
+
   switch (type) {
     case InputTypes.TEXT:
     case InputTypes.MULTILINE:
@@ -53,6 +64,8 @@ function handleChangeInput(
       return handleTypingDropdownChange;
     case InputTypes.TYPING_DROPDOWN_MULTIPLE:
       return handleTypingDropdownMultipleChange;
+    case InputTypes.COMPOSITE:
+      return handleCompositeChange;
     default:
       return () => null;
   }

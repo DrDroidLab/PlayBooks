@@ -17,8 +17,8 @@ export default function extractHandleChange(
   const changeFunction = taskTypeChangeMapping[`${source} ${taskType}`];
 
   if (changeFunction) {
-    return changeFunction(task, key, value);
+    return changeFunction(key, task, value);
   }
 
-  return [];
+  return undefined;
 }

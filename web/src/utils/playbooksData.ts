@@ -10,6 +10,11 @@ import extractHandleChange from "./playbook/extractHandleChange.ts";
 import { Task } from "../types/task.ts";
 
 const fieldToInput = (field: FormFields, task: Task) => {
+  const handleChangeFunction = extractHandleChange(
+    task,
+    field.key_name as KeyType,
+    "",
+  );
   return {
     key: field.key_name,
     label: field.display_name,
@@ -22,8 +27,7 @@ const fieldToInput = (field: FormFields, task: Task) => {
     inputType: field.form_field_type,
     isOptional: field.is_optional,
     default: field.default_value?.[field.default_value.type.toLowerCase()],
-    handleChange: (val: string) =>
-      extractHandleChange(task, field.key_name as KeyType, val),
+    handleChange: handleChangeFunction,
     compositeFields: field.composite_fields?.map((f) => fieldToInput(f, task)),
   };
 };
