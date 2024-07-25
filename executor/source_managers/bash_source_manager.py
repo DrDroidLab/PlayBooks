@@ -1,10 +1,9 @@
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.crud.connector_asset_model_crud import get_db_connector_metadata_models
-from connectors.crud.connectors_crud import get_db_connectors
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_processors.remote_server_processor import RemoteServerProcessor
+from executor.source_processors.bash_processor import BashProcessor
 from protos.base_pb2 import TimeRange, Source, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
@@ -37,25 +36,14 @@ class BashSourceManager(PlaybookSourceManager):
             },
         }
 
-    def get_active_connectors(self, account_id, connector_id: int = None) -> [ConnectorProto]:
-        db_connectors = get_db_connectors(account_id=account_id, connector_type=Source.REMOTE_SERVER, is_active=True)
-        if connector_id:
-            db_connectors = db_connectors.filter(id=connector_id)
-        connector_protos: [ConnectorProto] = []
-        for dbc in db_connectors:
-            if self.validate_connector(dbc.unmasked_proto):
-                connector_protos.append(dbc.unmasked_proto)
-        return connector_protos
-
-    def get_connector_processor(self, remote_server_connector, **kwargs):
+    def get_connector_processor(self, bash_connector, **kwargs):
         generated_credentials = {}
-        if remote_server_connector:
-            generated_credentials = generate_credentials_dict(remote_server_connector.type,
-                                                              remote_server_connector.keys)
+        if bash_connector:
+            generated_credentials = generate_credentials_dict(bash_connector.type, bash_connector.keys)
         if 'remote_server_str' in kwargs:
             remote_server_str = kwargs.get('remote_server_str')
             generated_credentials['remote_host'] = remote_server_str
-        return RemoteServerProcessor(**generated_credentials)
+        return BashProcessor(**generated_credentials)
 
     def execute_command(self, time_range: TimeRange, bash_task: Bash,
                         remote_server_connector: ConnectorProto) -> PlaybookTaskResult:

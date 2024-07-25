@@ -35,7 +35,10 @@ class ElasticSearchApiProcessor(Processor):
             connection = self.get_connection()
             indices = connection.indices.get_alias()
             connection.close()
-            return len(list(indices.keys())) >= 0
+            if len(list(indices.keys())) > 0:
+                return True
+            else:
+                raise Exception("Elasticsearch Connection Error:: No indices found in elasticsearch")
         except Exception as e:
             logger.error(f"Exception occurred while fetching elasticsearch indices with error: {e}")
             raise e

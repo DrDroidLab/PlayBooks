@@ -90,11 +90,18 @@ class CloudwatchSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, cloudwatch_connector, **kwargs):
         generated_credentials = generate_credentials_dict(cloudwatch_connector.type, cloudwatch_connector.keys)
-        if 'regions' in generated_credentials:
-            generated_credentials.pop('regions', None)
-        generated_credentials['region'] = kwargs.get('region')
-        generated_credentials['client_type'] = kwargs.get('client_type')
+        generated_credentials['client_type'] = kwargs.get('client_type', 'cloudwatch')
+        if 'region' in kwargs:
+            generated_credentials['region'] = kwargs.get('region')
         return AWSBoto3ApiProcessor(**generated_credentials)
+
+    def test_connector_processor(self, connector: ConnectorProto, **kwargs):
+        cw_processor = self.get_connector_processor(connector, client_type='cloudwatch')
+        cw_logs_processor = self.get_connector_processor(connector, client_type='logs')
+        try:
+            return cw_processor.test_connection() and cw_logs_processor.test_connection()
+        except Exception as e:
+            raise e
 
     def execute_metric_execution(self, time_range: TimeRange, cloudwatch_task: Cloudwatch,
                                  cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
@@ -124,8 +131,8 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             for td in task_dimensions:
                 dimensions.append({'Name': td.name.value, 'Value': td.value.value})
 
-            cloudwatch_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
-                                                                      client_type='cloudwatch')
+            cloudwatch_boto3_processor = self.get_connector_processor(cloudwatch_connector, client_type='cloudwatch',
+                                                                      region=region)
 
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Region -> {}, Namespace -> {}, Metric -> {}, Start_Time "
@@ -192,8 +199,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             log_group = task.log_group_name.value
             query_pattern = task.filter_query.value
 
-            logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, region=region,
-                                                                client_type='logs')
+            logs_boto3_processor = self.get_connector_processor(cloudwatch_connector, client_type='logs', region=region)
             print(
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Region -> {}, Log_Group -> {}, Query -> "
                 "{}, Start_Time -> {}, End_Time -> {}".format("Cloudwatch_Logs", cloudwatch_connector.account_id.value,

@@ -36,7 +36,7 @@ integrations_connector_type_display_name_map = {
     Source.EKS: 'EKS KUBERNETES',
     Source.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
     Source.OPEN_AI: 'OPEN AI',
-    Source.REMOTE_SERVER: 'REMOTE SERVER',
+    Source.BASH: 'REMOTE SERVER',
     Source.GRAFANA_MIMIR: 'GRAFANA MIMIR',
     Source.AZURE: 'AZURE',
     Source.GKE: 'GKE KUBERNETES',
@@ -75,7 +75,7 @@ integrations_connector_type_category_map = {
     Source.POSTGRES: 'Database',
     Source.SQL_DATABASE_CONNECTION: 'Database',
     Source.OPEN_AI: 'LLM Tools',
-    Source.REMOTE_SERVER: 'Remote Server',
+    Source.BASH: 'Remote Server',
     Source.KUBERNETES: 'Cloud',
     Source.SMTP: 'Alert Channels',
 }
@@ -191,7 +191,7 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.X_SCOPE_ORG_ID
         ]
     ],
-    Source.REMOTE_SERVER: [
+    Source.BASH: [
         [
             SourceKeyType.REMOTE_SERVER_HOST,
             SourceKeyType.REMOTE_SERVER_PEM,

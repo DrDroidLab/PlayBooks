@@ -52,7 +52,10 @@ class NewRelicGraphQlConnector(Processor):
                 output = result.get('actor', {}).get('account', {})
                 if output:
                     return True
-            return False
+                else:
+                    raise Exception("Failed to connect with NewRelic GQL API Server")
+            else:
+                raise Exception("Failed to connect with NewRelic GQL API Server")
         except Exception as e:
             raise e
 
