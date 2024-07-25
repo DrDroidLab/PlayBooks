@@ -28,6 +28,8 @@ export type HandleInputRenderType = {
   className?: string;
   compositeFields?: HandleInputRenderType[];
   key?: string;
+  isOptional?: boolean;
+  default?: string;
 };
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {

@@ -8,8 +8,10 @@ import getCurrentTask from "./getCurrentTask.ts";
 import { KeyType } from "./playbook/key.ts";
 import extractHandleChange from "./playbook/extractHandleChange.ts";
 import { Task } from "../types/task.ts";
+import { HandleInputRenderType } from "../components/Inputs/HandleInputRender.tsx";
+import handleInputType from "./playbook/handleInputType.ts";
 
-const fieldToInput = (field: FormFields, task: Task) => {
+const fieldToInput = (field: FormFields, task: Task): HandleInputRenderType => {
   const handleChangeFunction = extractHandleChange(
     task,
     field.key_name as KeyType,
@@ -25,10 +27,12 @@ const fieldToInput = (field: FormFields, task: Task) => {
         label: v[v.type.toLowerCase()],
       })) ?? extractOptions(field.key_name as KeyType, task),
     inputType: field.form_field_type,
+    type: handleInputType(field.data_type),
     isOptional: field.is_optional,
     default: field.default_value?.[field.default_value.type.toLowerCase()],
     handleChange: handleChangeFunction,
     compositeFields: field.composite_fields?.map((f) => fieldToInput(f, task)),
+    value: undefined,
   };
 };
 
