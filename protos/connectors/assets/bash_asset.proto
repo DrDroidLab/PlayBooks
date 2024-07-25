@@ -1,0 +1,28 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+message BashSshServerAssetModel {
+  google.protobuf.StringValue name = 1;
+}
+
+message BashSshServerAssetOptions {
+  repeated string ssh_servers = 1;
+}
+
+message BashAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    BashSshServerAssetModel ssh_server = 5;
+  }
+}
+
+message BashAssets {
+  repeated BashAssetModel assets = 1;
+}

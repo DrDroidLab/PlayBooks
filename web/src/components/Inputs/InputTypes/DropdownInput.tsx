@@ -18,6 +18,7 @@ function DropdownInput({
   options,
   value,
   disabled,
+  error,
   ...props
 }: DropdownInputType) {
   const { dropdownRef, handleSelect, isOpen, toggle } =
@@ -32,8 +33,10 @@ function DropdownInput({
         toggle={toggle}
         value={selectedValue}
         showIcon={true}
-        inputDisabled={true}
+        inputDisabed={true}
+        isOpen={isOpen}
         disabled={disabled}
+        error={!!error}
         className={`!min-w-[100px] pointer-events-none`}
       />
 

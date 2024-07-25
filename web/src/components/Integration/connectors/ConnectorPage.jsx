@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircularProgress, Tab, Tabs } from "@mui/material";
-import Heading from "../../Heading.js";
+import Heading from "../../Heading.jsx";
 import styles from "./index.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

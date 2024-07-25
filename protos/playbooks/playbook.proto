@@ -25,6 +25,7 @@ import "protos/playbooks/source_task_definitions/elastic_search_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
 import "protos/playbooks/source_task_definitions/kubectl_task.proto";
 import "protos/playbooks/source_task_definitions/gcm_task.proto";
+import "protos/playbooks/source_task_definitions/email_task.proto";
 
 
 // Playbook Task Protos
@@ -63,6 +64,7 @@ message PlaybookTask {
     GrafanaLoki grafana_loki = 116;
     Kubectl kubernetes = 117;
     Gcm gcm = 118;
+    SMTP smtp = 119;
   }
 }
 

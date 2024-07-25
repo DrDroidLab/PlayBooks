@@ -80,6 +80,8 @@ export const constructBuilder = (id?: string) => {
       return Builders.gcmMqlQueryBuilder();
     case taskTypes.GCM_FILTER_LOG_EVENTS:
       return Builders.gcmLogsBuilder();
+    case taskTypes.SMTP_SEND_EMAIL:
+      return Builders.smtpBuilder();
     default:
       break;
   }

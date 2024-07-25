@@ -1,0 +1,22 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message SMTP {
+  message SendEmail {
+    google.protobuf.StringValue to = 1;
+    google.protobuf.StringValue subject = 2;
+    google.protobuf.StringValue body = 3;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SEND_EMAIL = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SendEmail send_email = 2;
+  }
+}

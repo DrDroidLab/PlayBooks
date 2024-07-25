@@ -8,7 +8,6 @@ message PromQl {
   message PromQlMetricExecution {
     google.protobuf.StringValue datasource_uid = 1;
     google.protobuf.StringValue promql_expression = 2;
-    google.protobuf.StringValue process_function = 3;
   }
 
   enum TaskType {

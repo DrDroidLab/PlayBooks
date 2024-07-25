@@ -4,7 +4,7 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import { addGlobalVariable } from "../../../store/features/workflow/workflowSlice.ts";
 import Overlay from "../../Overlay";
 import { Close } from "@mui/icons-material";
-import Toast from "../../Toast";
+import { Toast } from "../../Toast";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
