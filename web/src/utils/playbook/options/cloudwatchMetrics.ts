@@ -1,6 +1,10 @@
 import { Task } from "../../../types/index.ts";
 import { getCurrentAsset } from "../getCurrentAsset.ts";
 import { Key, KeyType } from "../key.ts";
+import {
+  getDimensionNames,
+  getDimensionValues,
+} from "../optionHandlers/index.ts";
 
 export const cloudwatchMetrics = (key: KeyType, task: Task): any[] => {
   switch (key) {
@@ -22,6 +26,10 @@ export const cloudwatchMetrics = (key: KeyType, task: Task): any[] => {
           label: e.region,
         };
       });
+    case Key.DIMENSION_NAME:
+      return getDimensionNames(task);
+    case Key.DIMENSION_VALUE:
+      return getDimensionValues(task);
     default:
       return [];
   }
