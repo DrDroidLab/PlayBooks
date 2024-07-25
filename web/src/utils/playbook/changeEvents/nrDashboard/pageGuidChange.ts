@@ -22,6 +22,7 @@ export const pageGuidChange = (task: Task, value: string) => {
   });
 
   const page = pageOptions?.find((op: any) => op.id === value);
+  if (!page) return page;
   updateCardById(`${taskKey}.${Key.PAGE_GUID}`, value, task.id);
   updateCardById(`${taskKey}.${Key.PAGE_NAME}`, page?.label, task.id);
 };

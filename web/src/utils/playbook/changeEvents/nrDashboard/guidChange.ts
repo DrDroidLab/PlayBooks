@@ -14,6 +14,7 @@ export const guidChange = (task: Task, value: string) => {
   });
 
   const dashboard = options?.find((op: any) => op.id === value);
+  if (!dashboard) return;
   updateCardById(`${taskKey}.${Key.DASHBOARD_GUID}`, value, task.id);
   updateCardById(
     `${taskKey}.${Key.DASHBOARD_NAME}`,
