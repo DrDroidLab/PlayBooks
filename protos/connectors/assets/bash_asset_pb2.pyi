@@ -19,7 +19,7 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
-class SshServerAssetModel(google.protobuf.message.Message):
+class BashSshServerAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     NAME_FIELD_NUMBER: builtins.int
@@ -33,10 +33,10 @@ class SshServerAssetModel(google.protobuf.message.Message):
     def HasField(self, field_name: typing_extensions.Literal["name", b"name"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["name", b"name"]) -> None: ...
 
-global___SshServerAssetModel = SshServerAssetModel
+global___BashSshServerAssetModel = BashSshServerAssetModel
 
 @typing_extensions.final
-class SshServerAssetOptions(google.protobuf.message.Message):
+class BashSshServerAssetOptions(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     SSH_SERVERS_FIELD_NUMBER: builtins.int
@@ -49,10 +49,10 @@ class SshServerAssetOptions(google.protobuf.message.Message):
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["ssh_servers", b"ssh_servers"]) -> None: ...
 
-global___SshServerAssetOptions = SshServerAssetOptions
+global___BashSshServerAssetOptions = BashSshServerAssetOptions
 
 @typing_extensions.final
-class RemoteServerAssetModel(google.protobuf.message.Message):
+class BashAssetModel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ID_FIELD_NUMBER: builtins.int
@@ -66,7 +66,7 @@ class RemoteServerAssetModel(google.protobuf.message.Message):
     type: protos.base_pb2.SourceModelType.ValueType
     last_updated: builtins.int
     @property
-    def ssh_server(self) -> global___SshServerAssetModel: ...
+    def ssh_server(self) -> global___BashSshServerAssetModel: ...
     def __init__(
         self,
         *,
@@ -74,26 +74,26 @@ class RemoteServerAssetModel(google.protobuf.message.Message):
         connector_type: protos.base_pb2.Source.ValueType = ...,
         type: protos.base_pb2.SourceModelType.ValueType = ...,
         last_updated: builtins.int = ...,
-        ssh_server: global___SshServerAssetModel | None = ...,
+        ssh_server: global___BashSshServerAssetModel | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["asset", b"asset", "id", b"id", "ssh_server", b"ssh_server"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["asset", b"asset", "connector_type", b"connector_type", "id", b"id", "last_updated", b"last_updated", "ssh_server", b"ssh_server", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["asset", b"asset"]) -> typing_extensions.Literal["ssh_server"] | None: ...
 
-global___RemoteServerAssetModel = RemoteServerAssetModel
+global___BashAssetModel = BashAssetModel
 
 @typing_extensions.final
-class RemoteServerAssets(google.protobuf.message.Message):
+class BashAssets(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     ASSETS_FIELD_NUMBER: builtins.int
     @property
-    def assets(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___RemoteServerAssetModel]: ...
+    def assets(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___BashAssetModel]: ...
     def __init__(
         self,
         *,
-        assets: collections.abc.Iterable[global___RemoteServerAssetModel] | None = ...,
+        assets: collections.abc.Iterable[global___BashAssetModel] | None = ...,
     ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["assets", b"assets"]) -> None: ...
 
-global___RemoteServerAssets = RemoteServerAssets
+global___BashAssets = BashAssets

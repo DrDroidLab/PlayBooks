@@ -5,11 +5,12 @@ from protos.base_pb2 import Source, SourceModelType
 
 class EksSourceMetadataExtractor(SourceMetadataExtractor):
 
-    def __init__(self, aws_access_key, aws_secret_key, region, account_id=None, connector_id=None):
+    def __init__(self, aws_access_key, aws_secret_key, region, k8_role_arn, account_id=None, connector_id=None):
         self.__region = region
         self.__aws_access_key = aws_access_key
         self.__aws_secret_key = aws_secret_key
         self.__aws_session_token = None
+        self.__k8_role_arn = k8_role_arn
         super().__init__(account_id, connector_id, Source.EKS)
 
     def extract_clusters(self, save_to_db=False):

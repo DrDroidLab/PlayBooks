@@ -9,7 +9,7 @@ from executor.source_processors.processor import Processor
 logger = logging.getLogger(__name__)
 
 
-class RemoteServerProcessor(Processor):
+class BashProcessor(Processor):
     client = None
 
     def __init__(self, remote_host=None, remote_password=None, remote_pem=None):

@@ -76,7 +76,6 @@ class DatadogSourceManager(PlaybookSourceManager):
             if not datadog_connector:
                 raise Exception("Task execution Failed:: No Datadog source found")
 
-            task_result = PlaybookTaskResult()
             task = dd_task.service_metric_execution
             service_name = task.service_name.value
             env_name = task.environment_name.value
@@ -100,40 +99,39 @@ class DatadogSourceManager(PlaybookSourceManager):
                 raise Exception("No data returned from Datadog")
 
             process_function = task.process_function.value
-            if process_function == 'timeseries':
-                labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
+            labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
 
-                for itr, item in enumerate(results.series.value):
-                    group_tags = item.group_tags.value
-                    metric_labels: [LabelValuePair] = []
-                    if item.unit:
-                        unit = item.unit[0].name
-                    else:
-                        unit = ''
-                    for gt in group_tags:
-                        metric_labels.append(
-                            LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
+            for itr, item in enumerate(results.series.value):
+                group_tags = item.group_tags.value
+                metric_labels: [LabelValuePair] = []
+                if item.unit:
+                    unit = item.unit[0].name
+                else:
+                    unit = ''
+                for gt in group_tags:
+                    metric_labels.append(
+                        LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
-                    times = results.times.value
-                    values = results.values.value[itr].value
-                    datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                    for it, val in enumerate(values):
-                        datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
-                                                                                             value=DoubleValue(
-                                                                                                 value=val)))
+                times = results.times.value
+                values = results.values.value[itr].value
+                datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                for it, val in enumerate(values):
+                    datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                         value=DoubleValue(
+                                                                                             value=val)))
 
-                    labeled_metric_timeseries.append(
-                        TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
-                                                                 unit=StringValue(value=unit), datapoints=datapoints))
+                labeled_metric_timeseries.append(
+                    TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                             unit=StringValue(value=unit), datapoints=datapoints))
 
-                timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric),
-                                                     metric_name=StringValue(value=service_name),
-                                                     labeled_metric_timeseries=labeled_metric_timeseries)
+            timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric),
+                                                 metric_name=StringValue(value=service_name),
+                                                 labeled_metric_timeseries=labeled_metric_timeseries)
 
-                task_result = PlaybookTaskResult(
-                    type=PlaybookTaskResultType.TIMESERIES,
-                    timeseries=timeseries_result,
-                    source=self.source)
+            task_result = PlaybookTaskResult(
+                type=PlaybookTaskResultType.TIMESERIES,
+                timeseries=timeseries_result,
+                source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Datadog task: {e}")
@@ -143,8 +141,6 @@ class DatadogSourceManager(PlaybookSourceManager):
         try:
             if not datadog_connector:
                 raise Exception("Task execution Failed:: No Datadog source found")
-
-            task_result = PlaybookTaskResult()
 
             task = dd_task.query_metric_execution
             queries = task.queries
@@ -176,42 +172,40 @@ class DatadogSourceManager(PlaybookSourceManager):
             if not results:
                 raise Exception("No data returned from Datadog")
 
-            process_function = task.process_function.value
-            if process_function == 'timeseries':
-                labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
+            labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
 
-                for itr, item in enumerate(results.series.value):
-                    group_tags = item.group_tags.value
-                    metric_labels: [LabelValuePair] = []
-                    if item.unit:
-                        unit = item.unit[0].name
-                    else:
-                        unit = ''
-                    for gt in group_tags:
-                        metric_labels.append(
-                            LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
+            for itr, item in enumerate(results.series.value):
+                group_tags = item.group_tags.value
+                metric_labels: [LabelValuePair] = []
+                if item.unit:
+                    unit = item.unit[0].name
+                else:
+                    unit = ''
+                for gt in group_tags:
+                    metric_labels.append(
+                        LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
-                    times = results.times.value
-                    values = results.values.value[itr].value
-                    datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
-                    for it, val in enumerate(values):
-                        datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
-                                                                                             value=DoubleValue(
-                                                                                                 value=val)))
+                times = results.times.value
+                values = results.values.value[itr].value
+                datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                for it, val in enumerate(values):
+                    datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                         value=DoubleValue(
+                                                                                             value=val)))
 
-                    labeled_metric_timeseries.append(
-                        TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
-                                                                 unit=StringValue(value=unit), datapoints=datapoints))
+                labeled_metric_timeseries.append(
+                    TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                             unit=StringValue(value=unit), datapoints=datapoints))
 
-                list_of_queries = ",".join(queries)
-                timeseries_result = TimeseriesResult(metric_expression=StringValue(value=list_of_queries),
-                                                     metric_name=StringValue(value=""),
-                                                     labeled_metric_timeseries=labeled_metric_timeseries)
+            list_of_queries = ",".join(queries)
+            timeseries_result = TimeseriesResult(metric_expression=StringValue(value=list_of_queries),
+                                                 metric_name=StringValue(value=""),
+                                                 labeled_metric_timeseries=labeled_metric_timeseries)
 
-                task_result = PlaybookTaskResult(
-                    type=PlaybookTaskResultType.TIMESERIES,
-                    timeseries=timeseries_result,
-                    source=self.source)
+            task_result = PlaybookTaskResult(
+                type=PlaybookTaskResultType.TIMESERIES,
+                timeseries=timeseries_result,
+                source=self.source)
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing Datadog task: {e}")

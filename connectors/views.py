@@ -63,7 +63,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                 return CreateConnectorResponse(success=BoolValue(value=False), message=Message(title=err))
 
     connector_metadata_models = []
-    if connector.type == Source.REMOTE_SERVER:
+    if connector.type == Source.BASH:
         for key in connector_keys:
             if key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
                 ssh_servers = key.key.value
@@ -76,7 +76,7 @@ def connectors_create(request_message: CreateConnectorRequest) -> Union[CreateCo
                             title='Invalid Remote Server Host. Please provide in the format user@host'))
                     connector_metadata_models.append(
                         {'model_type': SourceModelType.SSH_SERVER, 'model_uid': ssh_server, 'is_active': True,
-                         'connector_type': Source.REMOTE_SERVER})
+                         'connector_type': Source.BASH})
                 break
     db_connector, err = update_or_create_connector(account, created_by, connector, connector_keys)
     for c in connector_metadata_models:

@@ -78,7 +78,6 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['aws_secret_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AWS_REGION:
                 credentials_dict['region'] = conn_key.key.value
-        credentials_dict['client_type'] = 'cloudwatch'
     elif connector_type == Source.EKS:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
@@ -148,7 +147,7 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.SLACK_BOT_AUTH_TOKEN:
                 credentials_dict['bot_auth_token'] = conn_key.key.value
-    elif connector_type == Source.REMOTE_SERVER:
+    elif connector_type == Source.BASH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
                 ssh_servers = conn_key.key.value
