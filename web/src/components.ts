@@ -6,7 +6,7 @@ export const components = {
   [PageKeys.RESET_PASSWORD]: "./pages/ResetPassword.tsx",
   [PageKeys.OAUTH_CALLBACK]: "./pages/OAuthCallback.tsx",
   [PageKeys.PLAYBOOKS_CREATE]: "./components/Playbooks/create/index.jsx",
-  [PageKeys.PLAYBOOK_VIEW]: "./components/Playbooks/index.jsx",
+  [PageKeys.PLAYBOOK_VIEW]: "./components/Playbooks/create/index.jsx",
   [PageKeys.PLAYBOOK_LOGS]: "./components/Playbooks/logs/index.jsx",
   [PageKeys.PLAYBOOK_EDIT]: "./components/Playbooks/create/index.jsx",
   [PageKeys.HOME]: "./components/Playbooks/index.jsx",
