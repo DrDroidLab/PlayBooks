@@ -20,3 +20,4 @@ export * from "./gcmLogs.ts";
 export * from "./gcmMqlQuery.ts";
 export * from "./markdown.ts";
 export * from "./kubectl.ts";
+export * from "./smtp.ts";

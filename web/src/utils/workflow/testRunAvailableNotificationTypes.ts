@@ -4,4 +4,5 @@ export const testRunAvailableNotificationTypes = [
   NotificationOptionTypes.THREAD_REPLY,
   NotificationOptionTypes.SLACK_MESSAGE,
   NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
+  NotificationOptionTypes.SMTP_EMAIL,
 ];

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import CustomButton from "../../common/CustomButton/index.tsx";
-import Toast from "../../Toast.js";
-import Loading from "../../common/Loading/index.tsx";
+import { useState } from "react";
 import { useRedirectUriMutation } from "../../../store/features/auth/api/redirectUriApi.ts";
+import Loading from "../../common/Loading/index.tsx";
+import CustomButton from "../../common/CustomButton/index.tsx";
+import { Toast } from "../../Toast.jsx";
 
 function OctaSignIn() {
   const [getRedirectUri, { isLoading }] = useRedirectUriMutation();
@@ -20,12 +20,12 @@ function OctaSignIn() {
     setToastOpen(false);
   };
 
-  const handleOcta = async (e) => {
+  const handleOcta = async (e: any) => {
     e.preventDefault();
     try {
       const data = await getRedirectUri("okta").unwrap();
       window.open(data.redirect_uri, "_self");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       if (!err?.response) {
         handleOpenToast("No Server Response", "error");

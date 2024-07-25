@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useCurrentStep from "../../hooks/useCurrentStep.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
@@ -18,13 +18,13 @@ import { currentPlaybookSelector } from "../../store/features/playbook/playbookS
 import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const {
-    playbookEdges,
     rules,
     condition,
     handleRule,
@@ -34,6 +34,7 @@ function AddCondition() {
   } = useEdgeConditions(id);
   const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
+  const isPrefetched = useIsPrefetched();
 
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
@@ -49,12 +50,6 @@ function AddCondition() {
       i,
     );
   };
-
-  useEffect(() => {
-    if (rules?.length === 0) {
-      handleRule("", "", 0);
-    }
-  }, [rules, handleRule, playbookEdges]);
 
   return (
     <div className="p-2">
@@ -87,11 +82,12 @@ function AddCondition() {
           placeholder={`Select Global Rule`}
           handleChange={handleGlobalRule}
           error={undefined}
+          disabled={!!isPrefetched}
         />
       </div>
 
       {rules?.map((condition, i) => (
-        <div className="mt-2 border p-1 rounded-md">
+        <div key={i} className="mt-2 border p-1 rounded-md">
           <p className="text-xs text-violet-500 font-semibold">
             Condition-{i + 1}
           </p>
@@ -107,6 +103,7 @@ function AddCondition() {
                 value={condition?.task?.id ?? ""}
                 placeholder={`Select Task`}
                 handleChange={(id: string) => handleTaskChange(id, i)}
+                disabled={!!isPrefetched}
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -121,7 +118,7 @@ function AddCondition() {
               />
             </div>
 
-            {i !== 0 && (
+            {!isPrefetched && (
               <div className="flex gap-2 flex-wrap">
                 <CustomButton
                   className="!text-sm !w-fit"
@@ -134,11 +131,15 @@ function AddCondition() {
         </div>
       ))}
 
-      <CustomButton className="!text-sm !w-fit my-2" onClick={addNewRule}>
-        <Add fontSize="inherit" /> Add
-      </CustomButton>
+      {!isPrefetched && (
+        <>
+          <CustomButton className="!text-sm !w-fit my-2" onClick={addNewRule}>
+            <Add fontSize="inherit" /> Add
+          </CustomButton>
 
-      <SavePlaybookButton shouldNavigate={false} />
+          <SavePlaybookButton shouldNavigate={false} />
+        </>
+      )}
     </div>
   );
 }

@@ -7,25 +7,6 @@ from connectors.models import integrations_connector_type_display_name_map, \
     integrations_connector_type_connector_keys_map, integrations_connector_type_category_map, \
     integrations_connector_key_display_name_map
 from connectors.tasks import populate_connector_metadata
-from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
-from executor.source_processors.azure_api_processor import AzureApiProcessor
-from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
-from executor.source_processors.datadog_api_processor import DatadogApiProcessor
-from executor.source_processors.db_connection_string_processor import DBConnectionStringProcessor
-from executor.source_processors.elastic_search_api_processor import ElasticSearchApiProcessor
-from executor.source_processors.gke_api_processor import GkeApiProcessor
-from executor.source_processors.grafana_api_processor import GrafanaApiProcessor
-from executor.source_processors.grafana_loki_api_processor import GrafanaLokiApiProcessor
-from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
-from executor.source_processors.mimir_api_processor import MimirApiProcessor
-from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
-from executor.source_processors.pd_api_processor import PdApiProcessor
-from executor.source_processors.postgres_db_processor import PostgresDBProcessor
-from executor.source_processors.remote_server_processor import RemoteServerProcessor
-from executor.source_processors.slack_api_processor import SlackApiProcessor
-from executor.source_processors.vpc_api_processor import VpcApiProcessor
-from executor.source_processors.ms_teams_api_processor import MSTeamsApiProcessor
-from executor.source_processors.gcm_api_processor import GcmApiProcessor
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
 from management.models import TaskRun, PeriodicTaskStatus
 from protos.base_pb2 import SourceKeyType, Source
@@ -33,29 +14,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto, Connect
 from utils.time_utils import current_datetime
 
 logger = logging.getLogger(__name__)
-
-connector_type_api_processor_map = {
-    Source.CLOUDWATCH: AWSBoto3ApiProcessor,
-    Source.EKS: AWSBoto3ApiProcessor,
-    Source.CLICKHOUSE: ClickhouseDBProcessor,
-    Source.DATADOG: DatadogApiProcessor,
-    Source.GRAFANA: GrafanaApiProcessor,
-    Source.NEW_RELIC: NewRelicGraphQlConnector,
-    Source.POSTGRES: PostgresDBProcessor,
-    Source.GRAFANA_VPC: VpcApiProcessor,
-    Source.SLACK: SlackApiProcessor,
-    Source.SQL_DATABASE_CONNECTION: DBConnectionStringProcessor,
-    Source.GRAFANA_MIMIR: MimirApiProcessor,
-    Source.AZURE: AzureApiProcessor,
-    Source.GKE: GkeApiProcessor,
-    Source.REMOTE_SERVER: RemoteServerProcessor,
-    Source.MS_TEAMS: MSTeamsApiProcessor,
-    Source.PAGER_DUTY: PdApiProcessor,
-    Source.ELASTIC_SEARCH: ElasticSearchApiProcessor,
-    Source.GRAFANA_LOKI: GrafanaLokiApiProcessor,
-    Source.KUBERNETES: KubectlApiProcessor,
-    Source.GCM: GcmApiProcessor,
-}
 
 
 def get_all_request_connectors():
@@ -112,16 +70,24 @@ def generate_credentials_dict(connector_type, connector_keys):
             elif conn_key.key_type == SourceKeyType.DATADOG_API_DOMAIN:
                 credentials_dict['dd_api_domain'] = conn_key.key.value
             credentials_dict['dd_connector_type'] = connector_type
-    elif connector_type == Source.CLOUDWATCH or connector_type == Source.EKS:
+    elif connector_type == Source.CLOUDWATCH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
                 credentials_dict['aws_access_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
                 credentials_dict['aws_secret_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AWS_REGION:
-                regions = credentials_dict.get('regions', [])
-                regions.append(conn_key.key.value)
-                credentials_dict['regions'] = regions
+                credentials_dict['region'] = conn_key.key.value
+    elif connector_type == Source.EKS:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.AWS_ACCESS_KEY:
+                credentials_dict['aws_access_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AWS_SECRET_KEY:
+                credentials_dict['aws_secret_key'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.AWS_REGION:
+                credentials_dict['region'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.EKS_ROLE_ARN:
+                credentials_dict['k8_role_arn'] = conn_key.key.value
     elif connector_type == Source.GRAFANA:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.GRAFANA_API_KEY:
@@ -138,6 +104,7 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['agent_proxy_api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.AGENT_PROXY_HOST:
                 credentials_dict['agent_proxy_host'] = conn_key.key.value
+            credentials_dict['parent_source'] = Source.GRAFANA_VPC
     elif connector_type == Source.GRAFANA_MIMIR:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.MIMIR_HOST:
@@ -180,7 +147,7 @@ def generate_credentials_dict(connector_type, connector_keys):
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.SLACK_BOT_AUTH_TOKEN:
                 credentials_dict['bot_auth_token'] = conn_key.key.value
-    elif connector_type == Source.REMOTE_SERVER:
+    elif connector_type == Source.BASH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.REMOTE_SERVER_HOST:
                 ssh_servers = conn_key.key.value
@@ -270,6 +237,16 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['project_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.GCM_SERVICE_ACCOUNT_JSON:
                 credentials_dict['service_account_json'] = conn_key.key.value
+    elif connector_type == Source.SMTP:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.SMTP_HOST:
+                credentials_dict['host'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_PORT:
+                credentials_dict['port'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_USER:
+                credentials_dict['username'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.SMTP_PASSWORD:
+                credentials_dict['password'] = conn_key.key.value
     else:
         return None
     return credentials_dict
@@ -302,65 +279,3 @@ def trigger_connector_metadata_fetch(account: Account, connector: ConnectorProto
     else:
         logger.error(f'Invalid Credentials for Connector: {connector_id}')
     return
-
-
-def test_connection_connector(connector_proto: ConnectorProto, connector_keys: [SourceKeyType]) -> (bool, str):
-    if not connector_proto.type:
-        return False, 'Received invalid Connector Config'
-
-    connector_type: Source = connector_proto.type
-    all_ck_types = [ck.key_type for ck in connector_keys]
-    required_key_types = integrations_connector_type_connector_keys_map.get(connector_type)
-    all_keys_found = False
-    for rkt in required_key_types:
-        if sorted(rkt) == sorted(list(set(all_ck_types))):
-            all_keys_found = True
-            break
-    if not all_keys_found:
-        return False, f'Missing Required Connector Keys for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
-    credentials_dict = generate_credentials_dict(connector_type, connector_keys)
-    try:
-        api_processor = connector_type_api_processor_map.get(connector_type)
-        if not api_processor:
-            return True, 'Source Test Connection Not Implemented'
-        connection_state = False
-        if connector_type == Source.CLOUDWATCH:
-            for region in credentials_dict.get('regions', []):
-                updated_credentials_dict = credentials_dict.copy()
-                updated_credentials_dict.pop('regions', None)
-                updated_credentials_dict['client_type'] = 'cloudwatch'
-                updated_credentials_dict['region'] = region
-                connection_state = api_processor(**updated_credentials_dict).test_connection()
-                if not connection_state:
-                    break
-        elif connector_type == Source.EKS:
-            for region in credentials_dict.get('regions', []):
-                updated_credentials_dict = credentials_dict.copy()
-                updated_credentials_dict.pop('regions', None)
-                updated_credentials_dict['client_type'] = 'eks'
-                updated_credentials_dict['region'] = region
-                connection_state = api_processor(**updated_credentials_dict).test_connection()
-                if not connection_state:
-                    break
-        elif connector_type == Source.DATADOG:
-            credentials_dict['dd_connector_type'] = Source.DATADOG
-            connection_state = api_processor(**credentials_dict).test_connection()
-        elif connector_type == Source.GRAFANA_VPC:
-            grafana_health_check_path = 'api/datasources'
-            response = api_processor(**credentials_dict).v1_api_grafana(grafana_health_check_path)
-            if response:
-                connection_state = True
-            else:
-                connection_state = False
-        else:
-            connection_state = api_processor(**credentials_dict).test_connection()
-        if not connection_state:
-            return False, f'Error testing connection for Connector Type: ' \
-                          f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))}'
-    except Exception as e:
-        logger.error(f'Error testing connection for Connector Type: {str(e)}')
-        return False, f'Error testing connection for Connector Type: ' \
-                      f'{integrations_connector_type_display_name_map.get(connector_type, Source.Name(connector_type))} ' \
-                      f'with error: {str(e)}'
-    return True, 'Source Connection Successful'

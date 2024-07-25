@@ -7,6 +7,7 @@ import Checkbox from "../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function GrepExistence({
   condition,
@@ -16,6 +17,7 @@ function GrepExistence({
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
     handleCondition(`${keyValue}.${type}`, val, conditionIndex);
@@ -29,6 +31,7 @@ function GrepExistence({
         handleChange={(val: string) => handleChange(val, `pattern`)}
         placeholder={"Enter pattern to evaluate"}
         className="!w-[200px]"
+        disabled={!!isPrefetched}
       />
       <Checkbox
         id="case_sensitive"
@@ -43,6 +46,7 @@ function GrepExistence({
         }}
         label="Pattern is Case Sensitive"
         isSmall={true}
+        disabled={!!isPrefetched}
       />
     </div>
   );

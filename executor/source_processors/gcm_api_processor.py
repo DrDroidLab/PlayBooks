@@ -33,7 +33,10 @@ class GcmApiProcessor(Processor):
             service = build('monitoring', 'v3', credentials=self.__credentials)
             request = service.projects().metricDescriptors().list(name=f"projects/{self.__project_id}")
             response = request.execute()
-            return len(response.get('metricDescriptors', [])) > 0
+            if len(response.get('metricDescriptors', [])) > 0:
+                return True
+            else:
+                raise Exception("Failed to connect with GCM. No metric descriptors found")
         except Exception as e:
             logger.error(f"Exception occurred while testing connection: {e}")
             raise e
