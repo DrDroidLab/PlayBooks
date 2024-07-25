@@ -1,44 +1,44 @@
-import kubernetes
 from datetime import datetime, timezone
 from operator import attrgetter
 
+import kubernetes
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value
 from kubernetes.client import V1PodList, V1DeploymentList, CoreV1EventList, V1ServiceList
 
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
-from executor.source_processors.gke_api_processor import GkeApiProcessor, get_gke_api_instance
+from executor.source_processors.eks_api_processor import EKSApiProcessor
 from executor.source_processors.kubectl_api_processor import KubectlApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType, \
     BashCommandOutputResult
-from protos.playbooks.source_task_definitions.gke_task_pb2 import Gke
+from protos.playbooks.source_task_definitions.eks_task_pb2 import Eks
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
-class GkeSourceManager(PlaybookSourceManager):
+class EksSourceManager(PlaybookSourceManager):
 
     def __init__(self):
-        self.source = Source.GKE
-        self.task_proto = Gke
+        self.source = Source.EKS
+        self.task_proto = Eks
         self.task_type_callable_map = {
-            Gke.TaskType.GET_PODS: {
+            Eks.TaskType.GET_PODS: {
                 'executor': self.get_pods,
-                'model_types': [SourceModelType.GKE_CLUSTER],
+                'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Pods from GKE Cluster',
+                'display_name': 'Get Pods from EKS Cluster',
                 'category': 'Deployment',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="zone"),
-                              display_name=StringValue(value="Zone"),
-                              description=StringValue(value='Select GKE Zone'),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
-                              description=StringValue(value='Select GKE Cluster'),
+                              description=StringValue(value='Select EKS cluster'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
@@ -48,21 +48,21 @@ class GkeSourceManager(PlaybookSourceManager):
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
-            Gke.TaskType.GET_DEPLOYMENTS: {
+            Eks.TaskType.GET_DEPLOYMENTS: {
                 'executor': self.get_deployments,
-                'model_types': [SourceModelType.GKE_CLUSTER],
+                'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Deployments from GKE Cluster',
+                'display_name': 'Get Deployments from EKS Cluster',
                 'category': 'Deployment',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="zone"),
-                              display_name=StringValue(value="Zone"),
-                              description=StringValue(value='Select GKE Zone'),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
-                              description=StringValue(value='Select GKE Cluster'),
+                              description=StringValue(value='Select EKS cluster'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
@@ -72,21 +72,21 @@ class GkeSourceManager(PlaybookSourceManager):
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
-            Gke.TaskType.GET_EVENTS: {
+            Eks.TaskType.GET_EVENTS: {
                 'executor': self.get_events,
-                'model_types': [SourceModelType.GKE_CLUSTER],
+                'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Events from GKE Cluster',
+                'display_name': 'Get Events from EKS Cluster',
                 'category': 'Deployment',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="zone"),
-                              display_name=StringValue(value="Zone"),
-                              description=StringValue(value='Select GKE Zone'),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
-                              description=StringValue(value='Select GKE Cluster'),
+                              description=StringValue(value='Select EKS cluster'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
@@ -96,21 +96,21 @@ class GkeSourceManager(PlaybookSourceManager):
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
-            Gke.TaskType.GET_SERVICES: {
+            Eks.TaskType.GET_SERVICES: {
                 'executor': self.get_services,
-                'model_types': [SourceModelType.GKE_CLUSTER],
+                'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.TABLE,
-                'display_name': 'Get Services from GKE Cluster',
+                'display_name': 'Get Services from EKS Cluster',
                 'category': 'Deployment',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="zone"),
-                              display_name=StringValue(value="Zone"),
-                              description=StringValue(value='Select GKE Zone'),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
-                              description=StringValue(value='Select GKE Cluster'),
+                              description=StringValue(value='Select EKS cluster'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="namespace"),
@@ -120,21 +120,21 @@ class GkeSourceManager(PlaybookSourceManager):
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                 ]
             },
-            Gke.TaskType.KUBECTL_COMMAND: {
+            Eks.TaskType.KUBECTL_COMMAND: {
                 'executor': self.execute_kubectl_command,
-                'model_types': [SourceModelType.GKE_CLUSTER],
+                'model_types': [SourceModelType.EKS_CLUSTER],
                 'result_type': PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
-                'display_name': 'Execute Kubectl Command in GKE Cluster',
+                'display_name': 'Execute Kubectl Command in EKS Cluster',
                 'category': 'Actions',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="zone"),
-                              display_name=StringValue(value="Zone"),
-                              description=StringValue(value='Select GKE Zone'),
+                    FormField(key_name=StringValue(value="region"),
+                              display_name=StringValue(value="Region"),
+                              description=StringValue(value='Select AWS region'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="cluster"),
                               display_name=StringValue(value="Cluster"),
-                              description=StringValue(value='Select GKE Cluster'),
+                              description=StringValue(value='Select EKS cluster'),
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="command"),
@@ -145,34 +145,42 @@ class GkeSourceManager(PlaybookSourceManager):
             },
         }
 
-    def get_connector_processor(self, gke_connector, **kwargs):
-        generated_credentials = generate_credentials_dict(gke_connector.type, gke_connector.keys)
-        if 'native_connection' not in kwargs or not kwargs['native_connection']:
-            return GkeApiProcessor(**generated_credentials)
+    def get_connector_processor(self, eks_connector, **kwargs):
+        generated_credentials = generate_credentials_dict(eks_connector.type, eks_connector.keys)
+        if 'region' in kwargs:
+            generated_credentials['region'] = kwargs.get('region')
+
+        api_processor = EKSApiProcessor(**generated_credentials)
+
+        if 'cluster_name' in kwargs and kwargs['cluster_name']:
+            client = kwargs.get('client', 'api')
+            if 'native_connection' not in kwargs or not kwargs['native_connection']:
+                return api_processor.eks_get_api_instance(cluster_name=kwargs['cluster_name'], client=client)
+            else:
+                instance = api_processor.eks_get_api_instance(cluster_name=kwargs['cluster_name'], client=client)
+                eks_host = instance.api_client.configuration.host
+                token = instance.api_client.configuration.api_key.get('authorization')
+                ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
+                return KubectlApiProcessor(api_server=eks_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
         else:
-            zone = kwargs.get('zone')
-            cluster_name = kwargs.get('cluster_name')
-            instance = get_gke_api_instance(**generated_credentials, zone=zone, cluster_name=cluster_name)
-            gke_host = instance.api_client.configuration.host
-            token = instance.api_client.configuration.api_key.get('authorization')
-            ssl_ca_cert_path = instance.api_client.configuration.ssl_ca_cert
-            return KubectlApiProcessor(api_server=gke_host, token=token, ssl_ca_cert_path=ssl_ca_cert_path)
+            return api_processor
 
-    def get_pods(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_pods(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            if not gke_connector:
-                raise Exception("Task execution Failed:: No GKE source found")
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
 
-            gke_command = gke_task.get_pods
-            zone = gke_command.zone.value
-            cluster_name = gke_command.cluster.value
-            namespace = gke_command.namespace.value
+            eks_command = eks_task.get_pods
+            region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
 
-            gke_connector = self.get_connector_processor(gke_connector)
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
             table_rows: [TableResult.TableRow] = []
-            api_response: V1PodList = gke_connector.list_pods(zone, cluster_name, namespace)
+            api_response: V1PodList = eks_api_instance.list_namespaced_pod(namespace, pretty='pretty')
             api_response_dict = api_response.to_dict()
             items = api_response_dict['items']
             for item in items:
@@ -203,31 +211,32 @@ class GkeSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Pods from {zone}, {cluster_name}, {namespace}'),
+            table = TableResult(raw_query=StringValue(value=f'Get Pods from {region}, {cluster_name}, {namespace}'),
                                 rows=table_rows,
                                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get pods in gke: {e}")
+            raise Exception(f"Failed to get pods in eks: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get pods in gke: {e}")
+            raise Exception(f"Failed to get pods in eks: {e}")
 
-    def get_deployments(self, time_range: TimeRange, gke_task: Gke,
-                        gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_deployments(self, time_range: TimeRange, eks_task: Eks,
+                        eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            if not gke_connector:
-                raise Exception("Task execution Failed:: No GKE source found")
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
 
-            gke_command = gke_task.get_deployments
-            zone = gke_command.zone.value
-            cluster_name = gke_command.cluster.value
-            namespace = gke_command.namespace.value
+            eks_command = eks_task.get_deployments
+            region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
-            gke_connector = self.get_connector_processor(gke_connector)
 
+            eks_app_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='app')
             table_rows: [TableResult.TableRow] = []
-            api_response: V1DeploymentList = gke_connector.list_deployments(zone, cluster_name, namespace)
+            api_response: V1DeploymentList = eks_app_instance.list_namespaced_deployment(namespace)
             api_response_dict = api_response.to_dict()
             items = api_response_dict['items']
             for item in items:
@@ -260,31 +269,31 @@ class GkeSourceManager(PlaybookSourceManager):
 
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[4].value.value.split()[0]))
             table = TableResult(
-                raw_query=StringValue(value=f'Get Deployments from {zone}, {cluster_name}, {namespace}'),
+                raw_query=StringValue(value=f'Get Deployments from {region}, {cluster_name}, {namespace}'),
                 rows=table_rows,
                 total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get deployments in gke: {e}")
+            raise Exception(f"Failed to get deployments in eks: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get deployments in gke: {e}")
+            raise Exception(f"Failed to get deployments in eks: {e}")
 
-    def get_events(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_events(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            if not gke_connector:
-                raise Exception("Task execution Failed:: No GKE source found")
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
 
-            gke_command = gke_task.get_events
-            zone = gke_command.zone.value
-            cluster_name = gke_command.cluster.value
-            namespace = gke_command.namespace.value
+            eks_command = eks_task.get_events
+            region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
 
             table_rows: [TableResult.TableRow] = []
-            gke_connector = self.get_connector_processor(gke_connector)
-
-            api_response: CoreV1EventList = gke_connector.list_events(zone, cluster_name, namespace)
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
+            api_response: CoreV1EventList = eks_api_instance.list_namespaced_event(namespace)
             sorted_events = sorted(api_response.items, key=attrgetter('metadata.creation_timestamp'))
             for event in sorted_events:
                 table_columns = []
@@ -316,30 +325,32 @@ class GkeSourceManager(PlaybookSourceManager):
                 table_columns.append(
                     TableResult.TableColumn(name=StringValue(value='MESSAGE'), value=StringValue(value=message)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
-            table = TableResult(raw_query=StringValue(value=f'Get Events from {zone}, {cluster_name}, {namespace}'),
-                                rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Events from {region}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get events in gke: {e}")
+            raise Exception(f"Failed to get events in eks: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get events in gke: {e}")
+            raise Exception(f"Failed to get events in eks: {e}")
 
-    def get_services(self, time_range: TimeRange, gke_task: Gke, gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def get_services(self, time_range: TimeRange, eks_task: Eks, eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            if not gke_connector:
-                raise Exception("Task execution Failed:: No GKE source found")
+            if not eks_connector:
+                raise Exception("Task execution Failed:: No EKS source found")
 
-            gke_command = gke_task.get_services
-            zone = gke_command.zone.value
-            cluster_name = gke_command.cluster.value
-            namespace = gke_command.namespace.value
+            eks_command = eks_task.get_services
+            region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+            namespace = eks_command.namespace.value
 
             current_time = datetime.now(timezone.utc)
-            gke_connector = self.get_connector_processor(gke_connector)
+            eks_api_instance = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                            client='api')
 
             table_rows: [TableResult.TableRow] = []
-            services: V1ServiceList = gke_connector.list_services(zone, cluster_name, namespace)
+            services: V1ServiceList = eks_api_instance.list_namespaced_service(namespace)
             for service in services.items:
                 table_columns = []
                 name = service.metadata.name
@@ -370,32 +381,33 @@ class GkeSourceManager(PlaybookSourceManager):
                     TableResult.TableColumn(name=StringValue(value='AGE'), value=StringValue(value=age_str)))
                 table_rows.append(TableResult.TableRow(columns=table_columns))
             table_rows = sorted(table_rows, key=lambda x: float(x.columns[5].value.value.split()[0]))
-            table = TableResult(raw_query=StringValue(value=f'Get Services from {zone}, {cluster_name}, {namespace}'),
-                                rows=table_rows,
-                                total_count=UInt64Value(value=len(table_rows)))
+            table = TableResult(
+                raw_query=StringValue(value=f'Get Services from {region}, {cluster_name}, {namespace}'),
+                rows=table_rows,
+                total_count=UInt64Value(value=len(table_rows)))
             return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TABLE, table=table)
         except kubernetes.client.rest.ApiException as e:
-            raise Exception(f"Failed to get services in gke: {e}")
+            raise Exception(f"Failed to get services in eks: {e}")
         except Exception as e:
-            raise Exception(f"Failed to get services in gke: {e}")
+            raise Exception(f"Failed to get services in eks: {e}")
 
-    def execute_kubectl_command(self, time_range: TimeRange, gke_task: Gke,
-                                gke_connector: ConnectorProto) -> PlaybookTaskResult:
+    def execute_kubectl_command(self, time_range: TimeRange, eks_task: Eks,
+                                eks_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
-            if not gke_connector:
+            if not eks_connector:
                 raise Exception("Task execution Failed:: No EKS source found")
 
-            gke_command = gke_task.kubectl_command
-            zone = gke_command.zone.value
-            cluster_name = gke_command.cluster.value
+            eks_command = eks_task.kubectl_command
 
-            command_str = gke_command.command.value
+            region = eks_command.region.value
+            cluster_name = eks_command.cluster.value
+
+            command_str = eks_command.command.value
             commands = command_str.split('\n')
-
             try:
                 outputs = {}
-                kubectl_client = self.get_connector_processor(gke_connector, native_connection=True, zone=zone,
-                                                              cluster_name=cluster_name)
+                kubectl_client = self.get_connector_processor(eks_connector, region=region, cluster_name=cluster_name,
+                                                              client='api', native_connection=True)
                 for command in commands:
                     command_to_execute = command
                     output = kubectl_client.execute_command(command_to_execute)
@@ -417,6 +429,6 @@ class GkeSourceManager(PlaybookSourceManager):
                     )
                 )
             except Exception as e:
-                raise Exception(f"Error while executing GKE kubectl task: {e}")
+                raise Exception(f"Error while executing EKS kubectl task: {e}")
         except Exception as e:
-            raise Exception(f"Error while executing GKE kubectl task: {e}")
+            raise Exception(f"Error while executing EKS kubectl task: {e}")

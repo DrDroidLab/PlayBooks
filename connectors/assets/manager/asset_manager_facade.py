@@ -13,7 +13,7 @@ from connectors.assets.manager.grafana_asset_manager import GrafanaAssetManager
 from connectors.assets.manager.mimir_assets_manager import MimirAssetManager
 from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
-from connectors.assets.manager.remote_server_assets_manager import RemoteServetAssetManager
+from connectors.assets.manager.bash_assets_manager import BashAssetManager
 from connectors.assets.manager.slack_assets_manager import SlackAssetManager
 from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto
@@ -61,7 +61,7 @@ asset_manager_facade.register(Source.GRAFANA, GrafanaAssetManager())
 asset_manager_facade.register(Source.NEW_RELIC, NewRelicAssetManager())
 asset_manager_facade.register(Source.POSTGRES, PostgresAssetManager())
 asset_manager_facade.register(Source.SLACK, SlackAssetManager())
-asset_manager_facade.register(Source.REMOTE_SERVER, RemoteServetAssetManager())
+asset_manager_facade.register(Source.BASH, BashAssetManager())
 asset_manager_facade.register(Source.GRAFANA_MIMIR, MimirAssetManager())
 asset_manager_facade.register(Source.AZURE, AzureAssetManager())
 asset_manager_facade.register(Source.GKE, GkeAssetManager())

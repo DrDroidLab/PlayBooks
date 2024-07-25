@@ -1,5 +1,4 @@
 import logging
-from typing import Dict
 
 from google.protobuf.wrappers_pb2 import StringValue
 
@@ -13,7 +12,6 @@ from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTa
 
 from protos.playbooks.source_task_definitions.email_task_pb2 import SMTP
 from protos.ui_definition_pb2 import FormField
-from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -49,14 +47,9 @@ class SMTPSourceManager(PlaybookSourceManager):
 
     def get_connector_processor(self, smtp_connector, **kwargs):
         generated_credentials = generate_credentials_dict(smtp_connector.type, smtp_connector.keys)
-        username = generated_credentials.pop('user', None)
-        if username is not None:
-            generated_credentials['username'] = username
-
         return SmtpApiProcessor(**generated_credentials)
 
-    def execute_send_email(self, time_range: TimeRange,
-                           smtp_task: SMTP,
+    def execute_send_email(self, time_range: TimeRange, smtp_task: SMTP,
                            smtp_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not smtp_connector:
