@@ -6,11 +6,13 @@ import { bashCommandOutputOptions } from "../../utils/conditionals/typeOptions/i
 import HandleTypes from "./HandleTypes.tsx";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 function BashCommandOutput({ rule, condition, conditionIndex }) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string | undefined, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -26,6 +28,7 @@ function BashCommandOutput({ rule, condition, conditionIndex }) {
           value={rule.type}
           placeholder={`Select Type`}
           handleChange={(id: string) => handleChange(id, `${keyValue}.type`)}
+          disabled={!!isPrefetched}
         />
       </div>
 
