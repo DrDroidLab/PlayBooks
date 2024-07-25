@@ -12,7 +12,7 @@ import CompositeField from "./InputTypes/CompositeField.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
-  value: string;
+  value: any;
   type?: HTMLInputTypeAttribute;
   label?: string;
   handleChange?: (val: string) => void;

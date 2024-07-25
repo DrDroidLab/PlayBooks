@@ -8,21 +8,14 @@ import { KeyType } from "../../../utils/playbook/key";
 
 function CompositeField(props: Omit<HandleInputRenderType, "inputType">) {
   if (!props.compositeFields) return null;
-  const [data, setData] = useState(() => {
-    if (!props.compositeFields) return [];
-    const emptyFormData = props.compositeFields.reduce((val, field) => {
-      if (!field.key) return val;
-      val[field.key] = "";
-      return val;
-    }, {});
-    return [emptyFormData];
-  });
-
   const emptyFormData = props.compositeFields.reduce((val, field) => {
     if (!field.key) return val;
     val[field.key] = "";
     return val;
   }, {});
+  const [data, setData] = useState(() =>
+    props.value ? (props.value as any[]) : [emptyFormData],
+  );
 
   const addData = () => {
     setData([...data, emptyFormData]);
