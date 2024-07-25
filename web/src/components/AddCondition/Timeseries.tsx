@@ -13,6 +13,7 @@ import {
 } from "../../utils/conditionals/resultTypeOptions.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const { id } = useSelector(additionalStateSelector);
@@ -20,6 +21,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
   const { handleCondition } = useEdgeConditions(id);
   const task = tasks?.find((e) => e.id === condition?.task?.id);
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -30,6 +32,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
       <CustomInput
         inputType={InputTypes.DROPDOWN}
         options={timeseriesOptions}
+        disabled={!!isPrefetched}
         value={rule.type}
         placeholder={`Select Type`}
         handleChange={(id: string) =>
@@ -45,6 +48,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <CustomInput
         inputType={InputTypes.DROPDOWN}
+        disabled={!!isPrefetched}
         options={functionOptions(
           (task?.ui_requirement?.resultType as ResultTypeType) ??
             ResultTypeTypes.OTHERS,
@@ -58,6 +62,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <CustomInput
         inputType={InputTypes.DROPDOWN}
+        disabled={!!isPrefetched}
         options={operationOptions}
         value={rule.operator}
         placeholder={`Select Operator`}
@@ -68,6 +73,7 @@ function Timeseries({ condition, conditionIndex, rule, resultType }) {
 
       <CustomInput
         inputType={InputTypes.TEXT}
+        disabled={!!isPrefetched}
         handleChange={(val: string) =>
           handleChange(val, `${resultType?.toLowerCase()}.threshold`)
         }

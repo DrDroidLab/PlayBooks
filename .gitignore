@@ -166,5 +166,6 @@ start_celery.sh
 start_server.sh
 start_celery_beat.sh
 web/nginx.local.conf
+web/.env
 
 dev_scripts
