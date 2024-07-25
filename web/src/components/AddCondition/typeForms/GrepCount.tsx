@@ -8,11 +8,13 @@ import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addCondit
 import { operationOptions } from "../../../utils/conditionals/operationOptions.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
     handleCondition(`${keyValue}.${type}`, val, conditionIndex);
@@ -26,6 +28,7 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
         handleChange={(val: string) => handleChange(val, `pattern`)}
         placeholder={"Enter pattern to evaluate"}
         className="!w-[200px]"
+        disabled={!!isPrefetched}
       />
 
       <Checkbox
@@ -41,6 +44,7 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
         }}
         label="Pattern is Case Sensitive"
         isSmall={true}
+        disabled={!!isPrefetched}
       />
 
       <CustomInput
@@ -50,6 +54,7 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
         value={rule.operator}
         handleChange={(id: string) => handleChange(id, `operator`)}
         placeholder={`Select Operator`}
+        disabled={!!isPrefetched}
       />
 
       <CustomInput
@@ -58,6 +63,7 @@ function GrepCount({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
         handleChange={(val: string) => handleChange(val, `threshold`)}
         placeholder={"Enter threshold"}
         className="!w-[200px]"
+        disabled={!!isPrefetched}
       />
     </div>
   );
