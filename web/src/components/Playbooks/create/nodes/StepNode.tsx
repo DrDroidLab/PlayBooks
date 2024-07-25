@@ -10,7 +10,7 @@ import StepTitle from "../../steps/StepTitle.tsx";
 import StepButtons from "../../steps/StepButtons.tsx";
 import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
-import useHasChildren from "../../../../hooks/useHasChildren.ts";
+// import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
 import MarkdownOutput from "../../card/MarkdownOutput.tsx";
 
@@ -19,7 +19,7 @@ function StepNode({ data }) {
   const tasks = currentPlaybook?.ui_requirement?.tasks;
   const step: Step = data.step;
   const isPrefetched = useIsPrefetched();
-  const hasChildren = useHasChildren(step?.id);
+  // const hasChildren = useHasChildren(step?.id);
   const stepRef = useStepDimensions(step?.id);
 
   const showPopup = (step?.external_links?.length ?? 0) > 0 || step.notes;
@@ -50,13 +50,13 @@ function StepNode({ data }) {
           />
         )}
 
-        {hasChildren && (
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
-          />
-        )}
+        {/* {hasChildren && ( */}
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          className="!bg-white !w-5 !h-5 absolute !bottom-0 !transform !-translate-x-1/2 !translate-y-1/2 !border-violet-500 !border-2"
+        />
+        {/* )} */}
 
         {!isPrefetched && (
           <NodeToolbar isVisible={true} position={Position.Bottom}>

@@ -7,6 +7,7 @@ import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addCondit
 import Checkbox from "../../common/Checkbox/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function ColumnValue({
   condition,
@@ -16,6 +17,7 @@ function ColumnValue({
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition, edgeIndex } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
     handleCondition(`${keyValue}.${type}`, val, conditionIndex);
@@ -30,6 +32,7 @@ function ColumnValue({
           handleChange={(val: string) => handleChange(val, "column_name")}
           placeholder={"Enter column name"}
           className="!w-[200px]"
+          disabled={!!isPrefetched}
         />
         <Checkbox
           id="isNumeric"
@@ -42,6 +45,7 @@ function ColumnValue({
               conditionIndex,
             );
           }}
+          disabled={!!isPrefetched}
           label="Is Numeric"
           isSmall={true}
         />

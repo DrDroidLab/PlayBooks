@@ -19,6 +19,10 @@ export const getEdges = () => {
       type: MarkerType.ArrowClosed,
     },
     type: "custom",
+    targetHandle: `node-${(relation.child as Step).id}`,
+    sourceHandle: `${
+      isStep(relation.parent) ? `node-${relation.parent?.id}` : relation.parent
+    }`,
   }));
 
   return stepEdges;
