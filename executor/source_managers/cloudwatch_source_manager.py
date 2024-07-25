@@ -39,7 +39,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                               data_type=LiteralType.STRING,
                               form_field_type=FormFieldType.TYPING_DROPDOWN),
                     FormField(key_name=StringValue(value="dimensions"),
-                              display_name=StringValue(value="Dimension Name"),
+                              display_name=StringValue(value="Dimensions"),
                               description=StringValue(value='Select Dimension Name'),
                               is_composite=True,
                               composite_fields=[
