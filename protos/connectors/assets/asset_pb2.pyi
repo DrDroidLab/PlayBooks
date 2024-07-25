@@ -9,6 +9,7 @@ import google.protobuf.internal.containers
 import google.protobuf.message
 import protos.base_pb2
 import protos.connectors.assets.azure_asset_pb2
+import protos.connectors.assets.bash_asset_pb2
 import protos.connectors.assets.clickhouse_asset_pb2
 import protos.connectors.assets.cloudwatch_asset_pb2
 import protos.connectors.assets.datadog_asset_pb2
@@ -19,7 +20,6 @@ import protos.connectors.assets.gke_asset_pb2
 import protos.connectors.assets.grafana_asset_pb2
 import protos.connectors.assets.newrelic_asset_pb2
 import protos.connectors.assets.postgres_asset_pb2
-import protos.connectors.assets.remote_server_asset_pb2
 import protos.connectors.assets.slack_asset_pb2
 import protos.connectors.connector_pb2
 import sys
@@ -74,7 +74,7 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     @property
     def eks_cluster_model_options(self) -> protos.connectors.assets.eks_asset_pb2.EksClusterAssetOptions: ...
     @property
-    def ssh_server_model_options(self) -> protos.connectors.assets.remote_server_asset_pb2.SshServerAssetOptions: ...
+    def ssh_server_model_options(self) -> protos.connectors.assets.bash_asset_pb2.BashSshServerAssetOptions: ...
     @property
     def azure_workspace_model_options(self) -> protos.connectors.assets.azure_asset_pb2.AzureWorkspaceAssetOptions: ...
     @property
@@ -99,7 +99,7 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
         datadog_service_model_options: protos.connectors.assets.datadog_asset_pb2.DatadogServiceAssetOptions | None = ...,
         postgres_database_model_options: protos.connectors.assets.postgres_asset_pb2.PostgresDatabaseAssetOptions | None = ...,
         eks_cluster_model_options: protos.connectors.assets.eks_asset_pb2.EksClusterAssetOptions | None = ...,
-        ssh_server_model_options: protos.connectors.assets.remote_server_asset_pb2.SshServerAssetOptions | None = ...,
+        ssh_server_model_options: protos.connectors.assets.bash_asset_pb2.BashSshServerAssetOptions | None = ...,
         azure_workspace_model_options: protos.connectors.assets.azure_asset_pb2.AzureWorkspaceAssetOptions | None = ...,
         grafana_prometheus_datasource_model_options: protos.connectors.assets.grafana_asset_pb2.GrafanaDatasourceAssetOptions | None = ...,
         gke_cluster_model_options: protos.connectors.assets.gke_asset_pb2.GkeClusterAssetOptions | None = ...,
@@ -177,7 +177,7 @@ class AccountConnectorAssetsModelFilters(google.protobuf.message.Message):
     @property
     def eks_cluster_model_filters(self) -> protos.connectors.assets.eks_asset_pb2.EksClusterAssetOptions: ...
     @property
-    def ssh_server_model_filters(self) -> protos.connectors.assets.remote_server_asset_pb2.SshServerAssetOptions: ...
+    def ssh_server_model_filters(self) -> protos.connectors.assets.bash_asset_pb2.BashSshServerAssetOptions: ...
     @property
     def azure_workspace_model_filters(self) -> protos.connectors.assets.azure_asset_pb2.AzureWorkspaceAssetOptions: ...
     @property
@@ -201,7 +201,7 @@ class AccountConnectorAssetsModelFilters(google.protobuf.message.Message):
         datadog_service_model_filters: protos.connectors.assets.datadog_asset_pb2.DatadogServiceAssetOptions | None = ...,
         postgres_database_model_filters: protos.connectors.assets.postgres_asset_pb2.PostgresDatabaseAssetOptions | None = ...,
         eks_cluster_model_filters: protos.connectors.assets.eks_asset_pb2.EksClusterAssetOptions | None = ...,
-        ssh_server_model_filters: protos.connectors.assets.remote_server_asset_pb2.SshServerAssetOptions | None = ...,
+        ssh_server_model_filters: protos.connectors.assets.bash_asset_pb2.BashSshServerAssetOptions | None = ...,
         azure_workspace_model_filters: protos.connectors.assets.azure_asset_pb2.AzureWorkspaceAssetOptions | None = ...,
         grafana_prometheus_datasource_model_filters: protos.connectors.assets.grafana_asset_pb2.GrafanaDatasourceAssetOptions | None = ...,
         gke_cluster_model_filters: protos.connectors.assets.gke_asset_pb2.GkeClusterAssetOptions | None = ...,
@@ -227,7 +227,7 @@ class AccountConnectorAssets(google.protobuf.message.Message):
     DATADOG_FIELD_NUMBER: builtins.int
     POSTGRES_FIELD_NUMBER: builtins.int
     EKS_FIELD_NUMBER: builtins.int
-    REMOTE_SERVER_FIELD_NUMBER: builtins.int
+    BASH_FIELD_NUMBER: builtins.int
     AZURE_FIELD_NUMBER: builtins.int
     GKE_FIELD_NUMBER: builtins.int
     ELASTIC_SEARCH_FIELD_NUMBER: builtins.int
@@ -251,7 +251,7 @@ class AccountConnectorAssets(google.protobuf.message.Message):
     @property
     def eks(self) -> protos.connectors.assets.eks_asset_pb2.EksAssets: ...
     @property
-    def remote_server(self) -> protos.connectors.assets.remote_server_asset_pb2.RemoteServerAssets: ...
+    def bash(self) -> protos.connectors.assets.bash_asset_pb2.BashAssets: ...
     @property
     def azure(self) -> protos.connectors.assets.azure_asset_pb2.AzureAssets: ...
     @property
@@ -272,14 +272,14 @@ class AccountConnectorAssets(google.protobuf.message.Message):
         datadog: protos.connectors.assets.datadog_asset_pb2.DatadogAssets | None = ...,
         postgres: protos.connectors.assets.postgres_asset_pb2.PostgresAssets | None = ...,
         eks: protos.connectors.assets.eks_asset_pb2.EksAssets | None = ...,
-        remote_server: protos.connectors.assets.remote_server_asset_pb2.RemoteServerAssets | None = ...,
+        bash: protos.connectors.assets.bash_asset_pb2.BashAssets | None = ...,
         azure: protos.connectors.assets.azure_asset_pb2.AzureAssets | None = ...,
         gke: protos.connectors.assets.gke_asset_pb2.GkeAssets | None = ...,
         elastic_search: protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchAssets | None = ...,
         gcm: protos.connectors.assets.gcm_asset_pb2.GcmAssets | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "remote_server", b"remote_server", "slack", b"slack"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "remote_server", b"remote_server", "slack", b"slack"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["assets", b"assets"]) -> typing_extensions.Literal["cloudwatch", "grafana", "clickhouse", "slack", "new_relic", "datadog", "postgres", "eks", "remote_server", "azure", "gke", "elastic_search", "gcm"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["assets", b"assets"]) -> typing_extensions.Literal["cloudwatch", "grafana", "clickhouse", "slack", "new_relic", "datadog", "postgres", "eks", "bash", "azure", "gke", "elastic_search", "gcm"] | None: ...
 
 global___AccountConnectorAssets = AccountConnectorAssets

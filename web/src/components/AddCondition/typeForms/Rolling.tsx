@@ -5,11 +5,13 @@ import { additionalStateSelector } from "../../../store/features/drawers/drawers
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
 
 function Rolling({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
     handleCondition(`${keyValue}.${type}`, val, conditionIndex);
@@ -23,6 +25,7 @@ function Rolling({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
         handleChange={(val: string) => handleChange(val, "window")}
         placeholder={"Enter window size"}
         className="!w-[200px]"
+        disabled={!!isPrefetched}
       />
     </div>
   );

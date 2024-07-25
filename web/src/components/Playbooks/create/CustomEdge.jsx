@@ -6,8 +6,9 @@ import { Tooltip } from "@mui/material";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import handleEdgeColor from "../../../utils/playbook/handleEdgeColor.ts";
+import { Add } from "@mui/icons-material";
 
-const foreignObjectSize = 60;
+const foreignObjectSize = 200;
 
 const CustomEdge = ({
   id,
@@ -76,16 +77,29 @@ const CustomEdge = ({
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}>
         <div className={`flex items-center justify-center w-full h-full`}>
-          {rules?.length > 0 && (
+          {rules?.length > 0 ? (
             <CustomButton
               className={`${
                 additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
               } w-10 h-10 items-center !text-xl p-0 justify-center font-normal`}
               onClick={handleAddConditionClick}>
-              <Tooltip title="Condition">
+              <Tooltip title="View Condition">
                 <>{`{ }`}</>
               </Tooltip>
             </CustomButton>
+          ) : (
+            <>
+              <div className="w-full h-full rounded-full step-information" />
+              <CustomButton
+                className={`${
+                  additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
+                } w-10 h-10 rounded-full items-center p-0 justify-center font-normal step-notes absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+                onClick={handleAddConditionClick}>
+                <Tooltip title="Add Condition">
+                  <Add fontSize="small" />
+                </Tooltip>
+              </CustomButton>
+            </>
           )}
         </div>
       </foreignObject>

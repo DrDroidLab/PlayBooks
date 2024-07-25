@@ -7,6 +7,7 @@ type InitialStateType = {
   email?: string | null;
   user?: any;
   lastLogin?: string | null;
+  providers: string[];
 };
 
 const initialState: InitialStateType = {
@@ -15,6 +16,7 @@ const initialState: InitialStateType = {
   email: localStorage.getItem("email"),
   user: undefined,
   lastLogin: localStorage.getItem("lastLogin"),
+  providers: [],
 };
 
 const authSlice = createSlice({
@@ -38,10 +40,13 @@ const authSlice = createSlice({
     setLastLogin: (state, { payload }) => {
       state.lastLogin = payload;
     },
+    setProviders: (state, { payload }) => {
+      state.providers = payload;
+    },
   },
 });
 
-export const { setCredentials, logOut, setLastLogin, setUser } =
+export const { setCredentials, logOut, setLastLogin, setUser, setProviders } =
   authSlice.actions;
 
 export default authSlice.reducer;

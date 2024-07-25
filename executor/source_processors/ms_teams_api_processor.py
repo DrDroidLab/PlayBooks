@@ -32,9 +32,11 @@ class MSTeamsApiProcessor(Processor):
             result = requests.post(self.__webhook_url, json={"text": "Test message"})
             if result.json() == 1:
                 return True
+            else:
+                raise Exception(f"Error in sending message to MSTeams with error: {result.text}")
         except Exception as e:
             logger.error(f"Error posting MSTeams message: {e}")
-            return False
+            raise e
 
     def files_upload(self, file_path):
         try:

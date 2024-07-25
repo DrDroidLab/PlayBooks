@@ -41,7 +41,7 @@ function SiteSection() {
       dispatch(
         showSnackbar({ message: "Site URL has been updated", type: "success" }),
       );
-    } catch (e) {
+    } catch (e: any) {
       setError(e.message);
     }
   };

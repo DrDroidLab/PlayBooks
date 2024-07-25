@@ -1,12 +1,10 @@
 import uuid
 from typing import Union
 
-import docker
 import requests
 from allauth.account.models import EmailConfirmationHMAC, EmailConfirmation, EmailAddress
 from django.conf import settings
 from django.http import HttpResponse, HttpRequest, Http404, JsonResponse
-from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue, UInt64Value
@@ -24,16 +22,15 @@ from protos.accounts.account_pb2 import User as UserProto, SSOProvider
 from protos.base_pb2 import Message
 from protos.accounts.api_pb2 import GetAccountApiTokensRequest, GetAccountApiTokensResponse, \
     CreateAccountApiTokenRequest, CreateAccountApiTokenResponse, DeleteAccountApiTokenRequest, \
-    DeleteAccountApiTokenResponse, GetUserRequest, GetUserResponse, GetVersionInfoResponse, \
-    ResetPasswordRequest, ResetPasswordResponse, ResetPasswordConfirmRequest, ResetPasswordConfirmResponse, \
-    GetCurrentAccountUsersResponse, InviteUsersResponse, InviteUsersRequest, OktaAuthResponse, \
-    OktaAuthData
+    DeleteAccountApiTokenResponse, GetUserRequest, GetUserResponse, ResetPasswordRequest, ResetPasswordResponse, \
+    ResetPasswordConfirmRequest, ResetPasswordConfirmResponse, GetCurrentAccountUsersResponse, InviteUsersResponse, \
+    InviteUsersRequest, OktaAuthResponse, OktaAuthData
 
 from playbooks.threadlocal import get_current_request
 from playbooks.utils.decorators import web_api, auth_web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from utils.cryptography_utils import generate_code_verifier, generate_code_challenge, generate_uuid_with_timestamp
+from utils.cryptography_utils import generate_code_verifier, generate_code_challenge
 from utils.proto_utils import proto_to_dict
 from utils.uri_utils import build_absolute_uri
 
@@ -101,6 +98,7 @@ def get_user(request_message: GetUserRequest) -> Union[GetUserResponse, HttpResp
     user = request.user
     return GetUserResponse(user=user.proto)
 
+
 @auth_web_api(ResetPasswordRequest)
 def reset_password(request_message: ResetPasswordRequest) -> Union[ResetPasswordResponse, HttpResponse]:
     email = request_message.email
@@ -162,9 +160,11 @@ def invite_users(request_message: InviteUsersRequest) -> Union[InviteUsersRespon
 @csrf_exempt
 @api_view(['GET'])
 def get_login_providers(request_message: HttpRequest) -> JsonResponse:
-    active_providers = []
+    active_providers = ["EMAIL"]
     if settings.OKTA_CLIENT_ID and settings.OKTA_DOMAIN:
         active_providers.append(SSOProvider.Name(SSOProvider.OKTA))
+    if not settings.EMAIL_PASSWORD_AUTH_ENABLED and len(active_providers) > 1:
+        active_providers.remove("EMAIL")
     return JsonResponse({'active_providers': active_providers}, status=200)
 
 
@@ -251,7 +251,7 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
         return JsonResponse({'success': False, 'message': 'Failed to get token from okta oauth server'}, status=500)
 
     response = requests.get(f'{domain}/oauth2/v1/userinfo', headers={'Accept': 'application/json',
-                                                                             'Authorization': f'Bearer {response.json()["access_token"]}'})
+                                                                     'Authorization': f'Bearer {response.json()["access_token"]}'})
 
     email = response.json()['email']
     first_name = response.json()['given_name']

@@ -7,10 +7,12 @@ import { tableOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
+import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
 
 function Table({ condition, conditionIndex, rule }) {
   const { id } = useSelector(additionalStateSelector);
   const { handleCondition } = useEdgeConditions(id);
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string | undefined, type: string) => {
     handleCondition(type, val, conditionIndex);
@@ -33,6 +35,7 @@ function Table({ condition, conditionIndex, rule }) {
         handleChange={(id: string) =>
           handleChange(id, `${condition.type?.toLowerCase()}.type`)
         }
+        disabled={!!isPrefetched}
       />
 
       <HandleTypes
@@ -54,10 +57,12 @@ function Table({ condition, conditionIndex, rule }) {
         handleChange={(id: string) =>
           handleChange(id, `${condition.type?.toLowerCase()}.operator`)
         }
+        disabled={!!isPrefetched}
       />
 
       <CustomInput
         inputType={InputTypes.TEXT}
+        disabled={!!isPrefetched}
         handleChange={(val: string) => {
           if (checkIfNumeric) {
             handleChange(

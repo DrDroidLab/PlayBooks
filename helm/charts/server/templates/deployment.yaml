@@ -29,13 +29,15 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_DB
-              value: "db"
+              value: {{ .Values.djangoDatabaseName }}
             - name: POSTGRES_PASSWORD
               value: {{ .Values.djangoDatabasePassword }}
             - name: POSTGRES_USER
               value: {{ .Values.djangoDatabaseUsername }}
             - name: REDIS_URL
               value: {{ .Values.redisUrl }}
+            - name: EMAIL_PASSWORD_AUTH_ENABLED
+              value: {{ .Values.emailPasswordAuthEnabled }}
           ports:
             - containerPort: 8080
           command: ["/bin/sh","-c"]

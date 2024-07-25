@@ -11,6 +11,7 @@ const handleImageSrc = (
       if (task_type === SOURCES.IFRAME) {
         return cardsData.find((e) => e.enum === SOURCES.IFRAME)?.url;
       }
+      break;
     // eslint-disable-next-line no-fallthrough
     default:
       return (

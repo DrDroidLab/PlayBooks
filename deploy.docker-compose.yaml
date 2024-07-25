@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:11
     environment:
-      - "POSTGRES_DB=db"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
     ports:
       - "5432:5432"
     volumes:
@@ -30,11 +30,11 @@ services:
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_DB=db"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
-      - "POSTGRES_HOST=db"
-      - "POSTGRES_PORT=5432"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     depends_on:
       - db
       - redis
@@ -49,12 +49,14 @@ services:
       - 8080:8080
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     depends_on:
       - db
       - redis
@@ -68,12 +70,14 @@ services:
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     depends_on:
       - db
       - redis
@@ -87,12 +91,14 @@ services:
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - "CELERY_QUEUE=workflow_scheduler"
     depends_on:
       - db
@@ -107,12 +113,14 @@ services:
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - "CELERY_QUEUE=workflow_executor"
     depends_on:
       - db
@@ -127,12 +135,14 @@ services:
     command: ./start-celery-worker.sh
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - "CELERY_QUEUE=workflow_action_execution"
     depends_on:
       - db
@@ -147,12 +157,14 @@ services:
     command: ./start-celery-beat.sh
     environment:
       - "DJANGO_DEBUG=True"
-      - "POSTGRES_HOST=db"
       - "CELERY_BROKER_URL=redis://redis:6379/0"
       - "CELERY_RESULT_BACKEND=redis://redis:6379/0"
       - "REDIS_URL=redis://redis:6379/0"
-      - "POSTGRES_USER=user"
-      - "POSTGRES_PASSWORD=pass"
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     depends_on:
       - db
       - redis
@@ -164,7 +176,7 @@ services:
     image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
     platform: linux/amd64
     environment:
-      - REACT_APP_POSTHOG_ENABLED=true
+      - VITE_REACT_APP_POSTHOG_ENABLED=true
     ports:
       - "80:80"
     depends_on:
