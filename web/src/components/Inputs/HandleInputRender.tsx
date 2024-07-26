@@ -33,7 +33,7 @@ export type HandleInputRenderType = {
   default?: string;
   format?: string;
   disabledDate?: (date: Date) => boolean;
-};
+} & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
   switch (inputType) {
