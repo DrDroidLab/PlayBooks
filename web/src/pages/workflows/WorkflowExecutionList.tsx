@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Heading from "../components/Heading.js";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
-import TableSkeleton from "../components/Skeleton/TableLoader.js";
-import ExecutionsTable from "../components/Workflows/executions/ExecutionsTable.jsx";
-import Search from "../components/common/Search/index.tsx";
-import useSearch from "../hooks/useSearch.ts";
-import PaginatedTable from "../components/PaginatedTable.tsx";
-import usePaginationComponent from "../hooks/usePaginationComponent.ts";
+import Heading from "../../components/Heading.js";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../../components/Skeleton/TableLoader.js";
+import ExecutionsTable from "../../components/Workflows/executions/ExecutionsTable.jsx";
+import Search from "../../components/common/Search/index.tsx";
+import useSearch from "../../hooks/useSearch.ts";
+import PaginatedTable from "../../components/PaginatedTable.tsx";
+import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const context = "WORKFLOW_EXECUTION";
 

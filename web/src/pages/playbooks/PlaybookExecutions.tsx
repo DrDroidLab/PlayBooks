@@ -1,11 +1,11 @@
-import Search from "../components/common/Search";
-import Heading from "../components/Heading";
-import PaginatedTable from "../components/PaginatedTable";
-import ExecutionsTable from "../components/Playbooks/executions/ExecutionsTable";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader";
-import TableSkeleton from "../components/Skeleton/TableLoader";
-import usePaginationComponent from "../hooks/usePaginationComponent";
-import useSearch from "../hooks/useSearch";
+import Search from "../../components/common/Search";
+import Heading from "../../components/Heading";
+import PaginatedTable from "../../components/PaginatedTable";
+import ExecutionsTable from "../../components/Playbooks/executions/ExecutionsTable";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
+import TableSkeleton from "../../components/Skeleton/TableLoader";
+import usePaginationComponent from "../../hooks/usePaginationComponent";
+import useSearch from "../../hooks/useSearch";
 
 const context = "PLAYBOOK_EXECUTION";
 

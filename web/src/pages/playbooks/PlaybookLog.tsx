@@ -1,18 +1,18 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useLazyGetPlaybookExecutionQuery } from "../store/features/playbook/api";
+import { useLazyGetPlaybookExecutionQuery } from "../../store/features/playbook/api";
 import { useEffect } from "react";
 import {
   resetTimeRange,
   updateCustomTimeRange,
-} from "../store/features/timeRange/timeRangeSlice";
+} from "../../store/features/timeRange/timeRangeSlice";
 import {
   setPlaybookData,
   resetState,
-} from "../store/features/playbook/playbookSlice";
-import Loading from "../components/common/Loading";
-import Heading from "../components/Heading";
-import Builder from "../components/Playbooks/create/Builder";
+} from "../../store/features/playbook/playbookSlice";
+import Loading from "../../components/common/Loading";
+import Heading from "../../components/Heading";
+import Builder from "../../components/Playbooks/create/Builder";
 
 function PlaybookLog() {
   const { playbook_run_id } = useParams();

@@ -1,11 +1,11 @@
 import "../css/SignUp.css";
 import { CircularProgress } from "@mui/material";
-import SocialSignIn from "../components/Auth/SocialSignIn/index.tsx";
-import SignupAdditionalData from "../components/Auth/AdditonalData/SignupAdditionalData.tsx";
-import EmailPasswordSignupForm from "../components/Auth/EmailPassword/EmailPasswordSignupForm.tsx";
-import { AuthProviders } from "../components/Auth/utils/AuthProviders.ts";
-import { useGetLoginProvidersQuery } from "../store/features/auth/api/getLoginProvidersApi.ts";
-import NoProviders from "../components/Auth/Common/NoProviders.tsx";
+import SocialSignIn from "../../components/Auth/SocialSignIn/index.tsx";
+import SignupAdditionalData from "../../components/Auth/AdditonalData/SignupAdditionalData.tsx";
+import EmailPasswordSignupForm from "../../components/Auth/EmailPassword/EmailPasswordSignupForm.tsx";
+import { AuthProviders } from "../../components/Auth/utils/AuthProviders.ts";
+import { useGetLoginProvidersQuery } from "../../store/features/auth/api/getLoginProvidersApi.ts";
+import NoProviders from "../../components/Auth/Common/NoProviders.tsx";
 
 function SignUp() {
   const { data, isLoading } = useGetLoginProvidersQuery();

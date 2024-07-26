@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../components/Heading.js";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
-import TableSkeleton from "../components/Skeleton/TableLoader.js";
+import Heading from "../../components/Heading.js";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../../components/Skeleton/TableLoader.js";
 import { ChevronLeft } from "@mui/icons-material";
-import { useGetWorkflowExecutionLogsQuery } from "../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
-import ExecutionsTable from "../components/Playbooks/executions/ExecutionsTable.js";
+import { useGetWorkflowExecutionLogsQuery } from "../../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
+import ExecutionsTable from "../../components/Playbooks/executions/ExecutionsTable.js";
 
 const WorkflowExecutionLogs = () => {
   const { workflow_run_id: workflowRunId } = useParams();

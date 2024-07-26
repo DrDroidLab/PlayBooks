@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { useGetPlaybooksQuery } from "../store/features/playbook/api";
-import usePaginationComponent from "../hooks/usePaginationComponent";
-import CustomButton from "../components/common/CustomButton";
+import { useGetPlaybooksQuery } from "../../store/features/playbook/api";
+import usePaginationComponent from "../../hooks/usePaginationComponent";
+import CustomButton from "../../components/common/CustomButton";
 import { Add } from "@mui/icons-material";
-import Heading from "../components/Heading";
-import PaginatedTable from "../components/PaginatedTable";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader";
-import TableSkeleton from "../components/Skeleton/TableLoader";
-import PlaybookTable from "../components/Playbooks/PlayBookTable";
+import Heading from "../../components/Heading";
+import PaginatedTable from "../../components/PaginatedTable";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
+import TableSkeleton from "../../components/Skeleton/TableLoader";
+import PlaybookTable from "../../components/Playbooks/PlayBookTable";
 
 const Playbooks = () => {
   const navigate = useNavigate();

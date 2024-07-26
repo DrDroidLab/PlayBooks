@@ -1,26 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import Heading from "../components/Heading.js";
-import BasicDetails from "../components/Workflows/create/BasicDetails.jsx";
-import ScheduleDetails from "../components/Workflows/create/ScheduleDetails.jsx";
-import NotificationDetails from "../components/Workflows/create/NotificationDetails.jsx";
-import { useCreateWorkflowMutation } from "../store/features/workflow/api/index.ts";
+import Heading from "../../components/Heading.js";
+import BasicDetails from "../../components/Workflows/create/BasicDetails.jsx";
+import ScheduleDetails from "../../components/Workflows/create/ScheduleDetails.jsx";
+import NotificationDetails from "../../components/Workflows/create/NotificationDetails.jsx";
+import { useCreateWorkflowMutation } from "../../store/features/workflow/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   currentWorkflowSelector,
   resetWorkflowState,
-} from "../store/features/workflow/workflowSlice.ts";
+} from "../../store/features/workflow/workflowSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { showSnackbar } from "../store/features/snackbar/snackbarSlice.ts";
-import { useLazyGetWorkflowQuery } from "../store/features/workflow/api/getWorkflowApi.ts";
-import Loading from "../components/common/Loading/index.tsx";
-import { useUpdateWorkflowMutation } from "../store/features/workflow/api/updateWorkflowApi.ts";
-import { useLazyTestWorkflowNotificationQuery } from "../store/features/workflow/api/testWorkflowNotificationApi.ts";
-import { stateToWorkflow } from "../utils/parser/workflow/stateToWorkflow.ts";
-import { validate } from "../components/Workflows/create/utils/validation.ts";
-import CustomButton from "../components/common/CustomButton/index.tsx";
-import { testRunAvailableNotificationTypes } from "../utils/workflow/testRunAvailableNotificationTypes.ts";
+import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
+import { useLazyGetWorkflowQuery } from "../../store/features/workflow/api/getWorkflowApi.ts";
+import Loading from "../../components/common/Loading/index.tsx";
+import { useUpdateWorkflowMutation } from "../../store/features/workflow/api/updateWorkflowApi.ts";
+import { useLazyTestWorkflowNotificationQuery } from "../../store/features/workflow/api/testWorkflowNotificationApi.ts";
+import { stateToWorkflow } from "../../utils/parser/workflow/stateToWorkflow.ts";
+import { validate } from "../../components/Workflows/create/utils/validation.ts";
+import CustomButton from "../../components/common/CustomButton/index.tsx";
+import { testRunAvailableNotificationTypes } from "../../utils/workflow/testRunAvailableNotificationTypes.ts";
 
 function CreateWorkflow() {
   const { id: workflowId } = useParams();

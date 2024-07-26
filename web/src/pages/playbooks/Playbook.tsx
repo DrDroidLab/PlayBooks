@@ -1,26 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import usePermanentDrawerState from "../hooks/usePermanentDrawerState";
+import usePermanentDrawerState from "../../hooks/usePermanentDrawerState";
 import { useParams, useSearchParams } from "react-router-dom";
-import useIsPrefetched from "../hooks/useIsPrefetched";
+import useIsPrefetched from "../../hooks/useIsPrefetched";
 import {
   useLazyGetPlaybookQuery,
   usePlaybookBuilderOptionsQuery,
-} from "../store/features/playbook/api";
+} from "../../store/features/playbook/api";
 import {
   resetExecutions,
   resetState,
   setPlaybookKey,
-} from "../store/features/playbook/playbookSlice";
-import { resetDrawerState } from "../store/features/drawers/drawersSlice";
-import { resetTimeRange } from "../store/features/timeRange/timeRangeSlice";
-import { Playbook as PlaybookType } from "../types";
-import { PermanentDrawerTypes } from "../store/features/drawers/permanentDrawerTypes";
-import Loading from "../components/common/Loading";
-import Heading from "../components/Heading";
-import Builder from "../components/Playbooks/create/Builder";
-import CustomButton from "../components/common/CustomButton";
-import PermenantDrawer from "../components/common/PermenantDrawer";
+} from "../../store/features/playbook/playbookSlice";
+import { resetDrawerState } from "../../store/features/drawers/drawersSlice";
+import { resetTimeRange } from "../../store/features/timeRange/timeRangeSlice";
+import { Playbook as PlaybookType } from "../../types";
+import { PermanentDrawerTypes } from "../../store/features/drawers/permanentDrawerTypes";
+import Loading from "../../components/common/Loading";
+import Heading from "../../components/Heading";
+import Builder from "../../components/Playbooks/create/Builder";
+import CustomButton from "../../components/common/CustomButton";
+import PermenantDrawer from "../../components/common/PermenantDrawer";
 
 function Playbook() {
   const { openDrawer, permanentView } = usePermanentDrawerState();

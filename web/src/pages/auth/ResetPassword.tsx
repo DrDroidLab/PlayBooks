@@ -1,5 +1,5 @@
 import React from "react";
-import CustomButton from "../components/common/CustomButton/index.tsx";
+import CustomButton from "../../components/common/CustomButton/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeftRounded } from "@mui/icons-material";
 

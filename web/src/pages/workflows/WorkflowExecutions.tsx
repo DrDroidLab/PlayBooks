@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../components/Heading";
+import Heading from "../../components/Heading.tsx";
 import { useEffect } from "react";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader.tsx";
-import TableSkeleton from "../components/Skeleton/TableLoader.tsx";
-import ExecutionsTable from "../components/Workflows/executions/ExecutionsTable.jsx";
-import { useLazyGetWorkflowQuery } from "../store/features/workflow/api/getWorkflowApi.ts";
-import Loading from "../components/common/Loading/index.tsx";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.tsx";
+import TableSkeleton from "../../components/Skeleton/TableLoader.tsx";
+import ExecutionsTable from "../../components/Workflows/executions/ExecutionsTable.jsx";
+import { useLazyGetWorkflowQuery } from "../../store/features/workflow/api/getWorkflowApi.ts";
+import Loading from "../../components/common/Loading/index.tsx";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../store/features/workflow/workflowSlice.ts";
-import { useGetWorkflowExecutionsQuery } from "../store/features/workflow/api/getWorkflowExecutionsApi.ts";
+import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
+import { useGetWorkflowExecutionsQuery } from "../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
-import PaginatedTable from "../components/PaginatedTable.tsx";
-import usePaginationComponent from "../hooks/usePaginationComponent.ts";
+import PaginatedTable from "../../components/PaginatedTable.tsx";
+import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
