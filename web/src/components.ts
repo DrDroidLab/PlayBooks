@@ -10,12 +10,12 @@ export const components = {
   [PageKeys.PLAYBOOK_LOGS]: "./pages/PlaybookLog",
   [PageKeys.PLAYBOOK_EDIT]: "./pages/Playbook",
   [PageKeys.HOME]: "./pages/Playbooks",
-  [PageKeys.SETTINGS]: "./pages/Settings.tsx",
+  [PageKeys.SETTINGS]: "./pages/Settings",
   [PageKeys.PLAYBOOKS]: "./pages/Playbooks",
   [PageKeys.PLAYBOOK_EXECUTIONS_LIST]: "./pages/PlaybookExecutions",
   [PageKeys.PLAYBOOK_EXECUTIONS]:
     "./components/Playbooks/executions/PlaybookExecutions",
-  [PageKeys.WORKFLOWS_CREATE]: "./components/Workflows/create/CreateWorkflow",
+  [PageKeys.WORKFLOWS_CREATE]: "./pages/CreateWorkflow",
   [PageKeys.WORKFLOWS]: "./components/Workflows/index",
   [PageKeys.WORKFLOW_VIEW]: "./components/Workflows/create/CreateWorkflow",
   [PageKeys.WORKFLOW_EXECUTIONS]:

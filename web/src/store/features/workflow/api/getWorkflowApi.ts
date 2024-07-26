@@ -5,7 +5,7 @@ import { setWorkflowKey } from "../workflowSlice.ts";
 
 export const getWorkflowApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getWorkflow: builder.query<any, { limit: number; offset: number }>({
+    getWorkflow: builder.query<any, string>({
       query: (workflowId) => ({
         url: GET_WORKFLOWS,
         method: "POST",
