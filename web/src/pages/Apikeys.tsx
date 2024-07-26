@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { MaskCharacter } from "../../utils/Apikeys.js";
+import { MaskCharacter } from "../utils/Apikeys.js";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
-import TableSkeleton from "../Skeleton/TableLoader.jsx";
-import SuspenseLoader from "../Skeleton/SuspenseLoader.jsx";
-import Heading from "../Heading.jsx";
-import NoAPIKeys from "./NoAPIKeys.jsx";
+import TableSkeleton from "../components/Skeleton/TableLoader.js";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
+import Heading from "../components/Heading";
+import NoAPIKeys from "../components/Apikeys/NoAPIKeys";
 import dayjs from "dayjs";
 import {
   useGenerateAPIKeyMutation,
   useGetAPIKeyQuery,
-} from "../../store/features/APIKeys/api/index.ts";
+} from "../store/features/APIKeys/api";
 import { CircularProgress } from "@mui/material";
 
 const columns = [
@@ -86,7 +86,7 @@ const ApiTokens = () => {
     useGenerateAPIKeyMutation();
 
   useEffect(() => {
-    if (!isLoading) refetch({ limit: pageSize, offset: pageSize * page });
+    if (!isLoading) refetch();
   }, [page, pageSize]);
 
   useEffect(() => {
@@ -132,7 +132,6 @@ const ApiTokens = () => {
                   },
                 }}
                 disableColumnMenu
-                sortable={false}
                 pagination
                 paginationMode="server"
                 rowCount={data?.meta?.total_count}
@@ -141,10 +140,12 @@ const ApiTokens = () => {
                 rowsPerPageOptions={[10, 20, 50]}
                 onPageChange={handlePageChange}
                 rows={data?.account_api_tokens}
-                columns={columns.map((column) => ({
-                  ...column,
-                  sortable: false,
-                }))}
+                columns={
+                  columns.map((column) => ({
+                    ...column,
+                    sortable: false,
+                  })) as any
+                }
                 getRowId={(params) => params?.key}
                 disableSelectionOnClick
               />

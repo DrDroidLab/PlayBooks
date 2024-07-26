@@ -12,9 +12,7 @@ export const components = {
   [PageKeys.HOME]: "./pages/playbooks",
   [PageKeys.PLAYBOOKS]: "./pages/playbooks/Playbooks",
   [PageKeys.PLAYBOOK_EXECUTIONS_LIST]: "./pages/playbooks/PlaybookExecutions",
-  [PageKeys.SETTINGS]: "./pages/Settings",
-  [PageKeys.PLAYBOOK_EXECUTIONS]:
-    "./components/Playbooks/executions/PlaybookExecutions",
+  [PageKeys.PLAYBOOK_EXECUTIONS]: "./pages/playbooks/PlaybookExecutions",
   [PageKeys.WORKFLOWS_CREATE]: "./pages/workflows/CreateWorkflow",
   [PageKeys.WORKFLOWS]: "./pages/workflows",
   [PageKeys.WORKFLOW_VIEW]: "./pages/workflows/CreateWorkflow",
@@ -27,8 +25,9 @@ export const components = {
   [PageKeys.INTEGRATIONS_ADD]: "./pages/integrations/AddIntegration",
   [PageKeys.CONNECTOR_PAGE]: "./pages/integrations/ConnectorPage",
   [PageKeys.CONNECTOR_PAGE_ID]: "./pages/integrations/ConnectorPage",
-  [PageKeys.API_TOKENS]: "./components/Apikeys/Apikeys",
+  [PageKeys.API_TOKENS]: "./pages/Apikeys",
   [PageKeys.INVITE_TEAM]: "./components/InviteTeam/index",
-  [PageKeys.SUPPORT]: "./components/Support/index",
-  [PageKeys.NOT_FOUND]: "./pages/NotFound/index",
+  [PageKeys.SUPPORT]: "./pages/Support",
+  [PageKeys.NOT_FOUND]: "./pages/NotFound",
+  [PageKeys.SETTINGS]: "./pages/Settings",
 };

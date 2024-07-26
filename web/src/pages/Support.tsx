@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "../Heading";
+import Heading from "../components/Heading";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -7,16 +7,12 @@ import { Button, Card, CardContent, Typography } from "@mui/material";
 
 const Support = () => {
   const openIntercom = () => {
-    window.Intercom("showNewMessage");
+    (window as any).Intercom("showNewMessage");
   };
 
   return (
     <div>
-      <Heading
-        heading={"Support"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Support"} />
 
       {/* Row with Three Cards */}
       <div

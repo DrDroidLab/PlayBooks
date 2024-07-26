@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Heading from "../Heading";
-import useToggle from "../../hooks/useToggle";
-import SuspenseLoader from "../Skeleton/SuspenseLoader";
-import TableSkeleton from "../Skeleton/TableLoader";
-import InviteUserOverlay from "./InviteUserOverlay";
-import UserTable from "./UserTable";
+import Heading from "../../components/Heading";
+import useToggle from "../../hooks/useToggle.js";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
+import TableSkeleton from "../../components/Skeleton/TableLoader";
+import InviteUserOverlay from "./InviteUserOverlay.js";
+import UserTable from "./UserTable.js";
 import { useGetAccountUsersQuery } from "../../store/features/auth/api/index.ts";
 import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
 
@@ -20,11 +20,7 @@ const InviteTeam = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Invite Team"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Invite Team"} />
       <div
         style={{
           display: "flex",
@@ -51,14 +47,7 @@ const InviteTeam = () => {
           }}>
           Active Users
         </h1>
-        <UserTable
-          renderTable={UserTable}
-          data={data?.users ?? []}
-          total={total ?? data?.users?.length}
-          tableContainerStyles={
-            data?.length ? {} : { maxHeight: "35vh", minHeight: "35vh" }
-          }
-        />
+        <UserTable data={data?.users ?? []} loading={isLoading} />
       </SuspenseLoader>
       <InviteUserOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </div>
