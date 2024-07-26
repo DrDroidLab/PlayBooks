@@ -135,3 +135,13 @@ td {
     stroke-dashoffset: -20;
   }
 }
+
+.rs-input-group {
+  border: none !important;
+  border-color: transparent !important;
+  outline: none !important;
+}
+
+.rs-input-group:hover {
+  border: none !important;
+}

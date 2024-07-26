@@ -8,6 +8,7 @@ import TypingDropdownInput from "./InputTypes/TypingDropdownInput.tsx";
 import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInput.tsx";
 import DropdownInput from "./InputTypes/DropdownInput.tsx";
 import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
+import DateInput from "./InputTypes/Date.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -25,6 +26,8 @@ export type HandleInputRenderType = {
   searchable?: boolean;
   length?: number;
   className?: string;
+  format?: string;
+  disabledDate?: (date: Date) => boolean;
 };
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -75,6 +78,9 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
 
     case InputTypes.WYISWYG:
       return <Wysiwyg handleChange={props.handleChange!} {...props} />;
+
+    case InputTypes.DATE:
+      return <DateInput handleChange={props.handleChange!} {...props} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }
