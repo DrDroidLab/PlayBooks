@@ -8,6 +8,7 @@ export const InputTypes = {
   TYPING_DROPDOWN_MULTIPLE: "TYPING_DROPDOWN_MULTIPLE",
   WYISWYG: "WYSIWYG",
   COMPOSITE: "COMPOSITE",
+  DATE: "DATE",
 } as const;
 
 export type InputType = (typeof InputTypes)[keyof typeof InputTypes];

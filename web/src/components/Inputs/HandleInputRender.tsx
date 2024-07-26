@@ -9,6 +9,7 @@ import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInpu
 import DropdownInput from "./InputTypes/DropdownInput.tsx";
 import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 import CompositeField from "./InputTypes/CompositeField.tsx";
+import DateInput from "./InputTypes/Date.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -30,6 +31,8 @@ export type HandleInputRenderType = {
   key?: string;
   isOptional?: boolean;
   default?: string;
+  format?: string;
+  disabledDate?: (date: Date) => boolean;
 };
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -83,6 +86,8 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
 
     case InputTypes.COMPOSITE:
       return <CompositeField handleChange={props.handleChange} {...props} />;
+    case InputTypes.DATE:
+      return <DateInput handleChange={props.handleChange!} {...props} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

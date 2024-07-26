@@ -59,6 +59,7 @@ function handleChangeInput(
     case InputTypes.MULTILINE:
     case InputTypes.DROPDOWN:
     case InputTypes.WYISWYG:
+    case InputTypes.DATE:
       return handleChangeFunction;
     case InputTypes.TYPING_DROPDOWN:
       return handleTypingDropdownChange;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
   playbookSelector,
-  setPlaybookKey,
+  setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
 
 function PlaybookDescription() {
@@ -15,9 +15,9 @@ function PlaybookDescription() {
   if (!isOnPlaybookPage) return;
   if (isPrefetched && !currentPlaybook?.description) return;
 
-  const handleDescription = (e) => {
+  const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    dispatch(setPlaybookKey({ key: "description", value: value }));
+    dispatch(setCurrentPlaybookKey({ key: "description", value }));
   };
 
   return (
