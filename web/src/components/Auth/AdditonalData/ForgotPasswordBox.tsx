@@ -1,21 +1,13 @@
-import { Box, Typography } from "@mui/material";
-import React from "react";
-import { LinkStyled } from "./LinkStyled.tsx";
+import { Link } from "react-router-dom";
 
 function ForgotPasswordBox() {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        justifyContent: "center",
-      }}>
-      <Typography variant="body2">Forgot password? &nbsp;</Typography>
-      <Typography variant="body2">
-        <LinkStyled to="/reset-password">Reset</LinkStyled>
-      </Typography>
-    </Box>
+    <div className="flex items-center gap-1 text-sm justify-center">
+      Forgot password?
+      <Link className="text-violet-500 hover:underline" to="/reset-password">
+        Reset
+      </Link>
+    </div>
   );
 }
 

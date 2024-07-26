@@ -1,5 +1,4 @@
 import Layout from "./Layout.jsx";
-import BaseLayout from "./BaseLayout";
 import { Route, Routes } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth.jsx";
 import "nprogress/nprogress.css";
@@ -22,7 +21,7 @@ const App = () => {
 
   return (
     <Routes>
-      <Route element={<BaseLayout />}>{generateUnauthRoutes()}</Route>
+      {generateUnauthRoutes()}
 
       <Route element={<RequireAuth />}>{generateNoLayoutRoutes()}</Route>
 
