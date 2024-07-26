@@ -7,13 +7,12 @@ export const components = {
   [PageKeys.OAUTH_CALLBACK]: "./pages/OAuthCallback",
   [PageKeys.PLAYBOOKS_CREATE]: "./pages/Playbook",
   [PageKeys.PLAYBOOK_VIEW]: "./pages/Playbook",
-  [PageKeys.PLAYBOOK_LOGS]: "./components/Playbooks/logs/index",
+  [PageKeys.PLAYBOOK_LOGS]: "./pages/PlaybookLog",
   [PageKeys.PLAYBOOK_EDIT]: "./pages/Playbook",
-  [PageKeys.HOME]: "./components/Playbooks/index",
+  [PageKeys.HOME]: "./pages/Playbooks",
   [PageKeys.SETTINGS]: "./pages/Settings.tsx",
   [PageKeys.PLAYBOOKS]: "./pages/Playbooks",
-  [PageKeys.PLAYBOOK_EXECUTIONS_LIST]:
-    "./components/Playbooks/executions/PlaybookExecutionsList",
+  [PageKeys.PLAYBOOK_EXECUTIONS_LIST]: "./pages/PlaybookExecutions",
   [PageKeys.PLAYBOOK_EXECUTIONS]:
     "./components/Playbooks/executions/PlaybookExecutions",
   [PageKeys.WORKFLOWS_CREATE]: "./components/Workflows/create/CreateWorkflow",
