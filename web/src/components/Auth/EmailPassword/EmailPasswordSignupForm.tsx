@@ -1,15 +1,5 @@
-import { RemoveRedEyeRounded, VisibilityOffRounded } from "@mui/icons-material";
-import {
-  Box,
-  CircularProgress,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
-import React, { useState } from "react";
-import { IconButton } from "rsuite";
+import { CircularProgress } from "@mui/material";
+import { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Toast } from "../../Toast.jsx";
 import { useNavigate } from "react-router-dom";
@@ -17,24 +7,23 @@ import {
   useLazySaveSiteUrlQuery,
   useSignupMutation,
 } from "../../../store/features/auth/api/index.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import ShowPasswordIcon from "./ShowPasswordIcon.tsx";
 
 function EmailPasswordSignupForm() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
-  const [triggerSignup] = useSignupMutation();
+  const [triggerSignup, { isLoading }] = useSignupMutation();
   const [triggerSiteUrlSave] = useLazySaveSiteUrlQuery();
 
-  const handleCloseToast = () => {
-    setError("");
-  };
-
-  const handleClickShowPassword = () => {
+  const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+  const handleCloseToast = () => {
+    setError("");
   };
 
   const [email, setEmail] = useState("");
@@ -89,93 +78,63 @@ function EmailPasswordSignupForm() {
 
   return (
     <div>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          margin: "15px",
-        }}>
-        <p style={{ fontWeight: "400", color: "grey" }}>Create account</p>
-      </Box>
-      <form className="signup-form" onSubmit={handleSubmit}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>First name</InputLabel>
-              <OutlinedInput
-                style={{ marginBottom: "15px" }}
-                required
-                autoFocus
-                id="firstname"
-                label="First name"
-                sx={{ display: "flex", mb: 4 }}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Last name</InputLabel>
-              <OutlinedInput
-                style={{ marginBottom: "15px" }}
-                required
-                id="lastname"
-                label="Last name"
-                sx={{ display: "flex", mb: 4 }}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-2 my-2">
+          <div className="flex gap-2">
+            <CustomInput
+              inputType={InputTypes.TEXT}
+              disabled={isLoading}
+              value={firstName}
+              handleChange={setFirstName}
+              placeholder="Enter First Name"
+              className="!w-full"
+              containerClassName="!w-full"
+            />
+            <CustomInput
+              inputType={InputTypes.TEXT}
+              disabled={isLoading}
+              value={lastName}
+              handleChange={setLastName}
+              placeholder="Enter Last Name"
+              className="!w-full"
+              containerClassName="!w-full"
+            />
+          </div>
 
-        <FormControl fullWidth>
-          <InputLabel>Email</InputLabel>
-          <OutlinedInput
-            style={{ marginBottom: "15px" }}
-            required
-            type="email"
-            id="email"
-            label="Email"
-            sx={{ display: "flex", mb: 4 }}
-            onChange={(e) => setEmail(e.target.value)}
+          <CustomInput
+            inputType={InputTypes.TEXT}
+            disabled={isLoading}
+            value={email}
+            handleChange={setEmail}
+            placeholder="Enter Email"
+            className="!w-full"
+            containerClassName="!w-full"
           />
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel>Password</InputLabel>
-          <OutlinedInput
-            style={{ marginBottom: "15px" }}
-            required
-            id="password"
-            label="Password"
-            sx={{ display: "flex", mb: 4 }}
-            onChange={(e) => setPassword(e.target.value)}
-            inputProps={{ minLength: 8 }}
+
+          <CustomInput
+            inputType={InputTypes.TEXT}
+            disabled={isLoading}
             type={showPassword ? "text" : "password"}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  edge="end"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  aria-label="toggle password visibility">
-                  {showPassword ? (
-                    <RemoveRedEyeRounded />
-                  ) : (
-                    <VisibilityOffRounded />
-                  )}
-                </IconButton>
-              </InputAdornment>
+            value={password}
+            handleChange={setPassword}
+            placeholder="Enter Password"
+            className="!w-full border-none"
+            containerClassName={`!w-full border rounded p-1`}
+            suffix={
+              password && (
+                <ShowPasswordIcon
+                  togglePasswordVisibility={togglePasswordVisibility}
+                />
+              )
             }
           />
-        </FormControl>
+        </div>
 
         <CustomButton
-          className="!bg-violet-500 !text-white !text-base w-full !justify-center hover:!bg-transparent hover:!text-violet-500 p-3 font-normal"
+          className="!bg-violet-500 !text-white !text-sm w-full !justify-center hover:!bg-transparent hover:!text-violet-500 p-2 font-normal"
           onClick={handleSubmit}>
           {btnLoading ? (
-            <CircularProgress style={{ color: "white" }} />
+            <CircularProgress style={{ color: "inherit !important" }} />
           ) : (
             "Sign up"
           )}

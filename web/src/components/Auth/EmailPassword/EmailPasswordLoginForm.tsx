@@ -80,7 +80,7 @@ function EmailPasswordLoginForm() {
   };
 
   return (
-    <form className="signup-form" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2 my-2">
         <CustomInput
           inputType={InputTypes.TEXT}
@@ -105,9 +105,11 @@ function EmailPasswordLoginForm() {
           }`}
           error={errors.password}
           suffix={
-            <ShowPasswordIcon
-              togglePasswordVisibility={togglePasswordVisibility}
-            />
+            password && (
+              <ShowPasswordIcon
+                togglePasswordVisibility={togglePasswordVisibility}
+              />
+            )
           }
         />
       </div>
