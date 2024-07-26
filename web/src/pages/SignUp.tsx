@@ -12,7 +12,7 @@ function SignUp() {
 
   return (
     <main className="bg-gray-50 w-screen h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-1 bg-white shadow-md p-4 rounded-xl w-3/12">
+      <div className="flex flex-col items-center justify-center gap-1 bg-white shadow-md p-6 rounded-xl w-full m-2 md:w-1/2 xl:w-3/12">
         <img
           src="/logo/drdroid-logo-full.png"
           alt="DrDroid Logo"
