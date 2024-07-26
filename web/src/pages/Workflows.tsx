@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
-import Heading from "../Heading";
-import SuspenseLoader from "../Skeleton/SuspenseLoader";
-import TableSkeleton from "../Skeleton/TableLoader";
-import { useGetWorkflowsQuery } from "../../store/features/workflow/api/getWorkflowsApi.ts";
-import WorkflowTable from "./WorkflowTable.jsx";
-import CustomButton from "../common/CustomButton/index.tsx";
+import Heading from "../components/Heading.tsx";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.tsx";
+import TableSkeleton from "../components/Skeleton/TableLoader.tsx";
+import { useGetWorkflowsQuery } from "../store/features/workflow/api/getWorkflowsApi.ts";
+import WorkflowTable from "../components/Workflows/WorkflowTable.jsx";
+import CustomButton from "../components/common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import PaginatedTable from "../PaginatedTable.tsx";
-import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
+import PaginatedTable from "../components/PaginatedTable.tsx";
+import usePaginationComponent from "../hooks/usePaginationComponent.ts";
 
 const Workflows = () => {
   const navigate = useNavigate();
@@ -25,11 +25,7 @@ const Workflows = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Workflows"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Workflows"} />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center justify-between">
           <CustomButton onClick={handleCreateWorkflow}>

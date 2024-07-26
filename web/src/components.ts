@@ -16,14 +16,11 @@ export const components = {
   [PageKeys.PLAYBOOK_EXECUTIONS]:
     "./components/Playbooks/executions/PlaybookExecutions",
   [PageKeys.WORKFLOWS_CREATE]: "./pages/CreateWorkflow",
-  [PageKeys.WORKFLOWS]: "./components/Workflows/index",
-  [PageKeys.WORKFLOW_VIEW]: "./components/Workflows/create/CreateWorkflow",
-  [PageKeys.WORKFLOW_EXECUTIONS]:
-    "./components/Workflows/executions/WorkflowExecutions",
-  [PageKeys.WORKFLOW_EXECUTIONS_LIST]:
-    "./components/Workflows/executions/WorkflowExecutionList",
-  [PageKeys.WORKFLOW_EXECUTION_LOGS]:
-    "./components/Workflows/executions/WorkflowExecutionLogs",
+  [PageKeys.WORKFLOWS]: "./pages/Workflows",
+  [PageKeys.WORKFLOW_VIEW]: "./pages/CreateWorkflow",
+  [PageKeys.WORKFLOW_EXECUTIONS]: "./pages/WorkflowExecutions",
+  [PageKeys.WORKFLOW_EXECUTIONS_LIST]: "./pages/WorkflowExecutionList",
+  [PageKeys.WORKFLOW_EXECUTION_LOGS]: "./pages/WorkflowExecutionLogs",
   [PageKeys.PLAYGROUND]: "./components/Playgrounds/index",
   [PageKeys.INTEGRATIONS_ADD]: "./components/Integration/index",
   [PageKeys.DATA_SOURCES]: "./pages/DataSources.tsx",

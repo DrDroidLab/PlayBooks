@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../../Heading";
+import Heading from "../components/Heading";
 import { useEffect } from "react";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader";
-import TableSkeleton from "../../Skeleton/TableLoader";
-import ExecutionsTable from "./ExecutionsTable.jsx";
-import { useLazyGetWorkflowQuery } from "../../../store/features/workflow/api/getWorkflowApi.ts";
-import Loading from "../../common/Loading/index.tsx";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.tsx";
+import TableSkeleton from "../components/Skeleton/TableLoader.tsx";
+import ExecutionsTable from "../components/Workflows/executions/ExecutionsTable.jsx";
+import { useLazyGetWorkflowQuery } from "../store/features/workflow/api/getWorkflowApi.ts";
+import Loading from "../components/common/Loading/index.tsx";
 import { useSelector } from "react-redux";
-import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
-import { useGetWorkflowExecutionsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
+import { currentWorkflowSelector } from "../store/features/workflow/workflowSlice.ts";
+import { useGetWorkflowExecutionsQuery } from "../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
-import PaginatedTable from "../../PaginatedTable.tsx";
-import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
+import PaginatedTable from "../components/PaginatedTable.tsx";
+import usePaginationComponent from "../hooks/usePaginationComponent.ts";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
   const navigate = useNavigate();
   const { data, isFetching, refetch } = useGetWorkflowExecutionsQuery({
-    workflowId,
+    workflowId: workflowId ?? "",
   });
   usePaginationComponent(refetch);
   const [triggerGetWorkflow, { isLoading: workflowLoading }] =
@@ -39,11 +39,7 @@ const WorkflowExecutions = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Workflow Executions-" + currentWorkflow.name}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Workflow Executions-" + currentWorkflow.name} />
       <button
         onClick={() => navigate(-1)}
         className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">

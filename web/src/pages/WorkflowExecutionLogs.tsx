@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../../Heading.jsx";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../../Skeleton/TableLoader.jsx";
+import Heading from "../components/Heading.js";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../components/Skeleton/TableLoader.js";
 import { ChevronLeft } from "@mui/icons-material";
-import { useGetWorkflowExecutionLogsQuery } from "../../../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
-import ExecutionsTable from "../../Playbooks/executions/ExecutionsTable.jsx";
+import { useGetWorkflowExecutionLogsQuery } from "../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
+import ExecutionsTable from "../components/Playbooks/executions/ExecutionsTable.js";
 
 const WorkflowExecutionLogs = () => {
   const { workflow_run_id: workflowRunId } = useParams();
   const navigate = useNavigate();
   const { data, isFetching } = useGetWorkflowExecutionLogsQuery({
-    workflowRunId,
+    workflowRunId: workflowRunId ?? "",
   });
 
   const playbooksList =
@@ -28,11 +28,7 @@ const WorkflowExecutionLogs = () => {
 
   return (
     <div>
-      <Heading
-        heading={workflowRunId + " Executions"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={workflowRunId + " Executions"} />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center justify-between">
           <button
@@ -51,12 +47,6 @@ const WorkflowExecutionLogs = () => {
                 created_at: execution.created_at,
                 created_by: execution.created_by,
               })) ?? []
-            }
-            total={total}
-            tableContainerStyles={
-              playbooksList?.length
-                ? {}
-                : { maxHeight: "35vh", minHeight: "35vh" }
             }
           />
         </SuspenseLoader>

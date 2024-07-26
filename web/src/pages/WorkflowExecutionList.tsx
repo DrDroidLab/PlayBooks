@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Heading from "../../Heading.jsx";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../../Skeleton/TableLoader.jsx";
-import ExecutionsTable from "./ExecutionsTable.jsx";
-import Search from "../../common/Search/index.tsx";
-import useSearch from "../../../hooks/useSearch.ts";
-import PaginatedTable from "../../PaginatedTable.tsx";
-import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
+import Heading from "../components/Heading.js";
+import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../components/Skeleton/TableLoader.js";
+import ExecutionsTable from "../components/Workflows/executions/ExecutionsTable.jsx";
+import Search from "../components/common/Search/index.tsx";
+import useSearch from "../hooks/useSearch.ts";
+import PaginatedTable from "../components/PaginatedTable.tsx";
+import usePaginationComponent from "../hooks/usePaginationComponent.ts";
 
 const context = "WORKFLOW_EXECUTION";
 
@@ -18,11 +18,7 @@ const WorkflowExecutionList = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Workflow Executions"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Workflow Executions"} />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <Search context={context} />
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
