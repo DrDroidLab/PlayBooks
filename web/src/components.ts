@@ -26,7 +26,7 @@ export const components = {
   [PageKeys.CONNECTOR_PAGE]: "./pages/integrations/ConnectorPage",
   [PageKeys.CONNECTOR_PAGE_ID]: "./pages/integrations/ConnectorPage",
   [PageKeys.API_TOKENS]: "./pages/Apikeys",
-  [PageKeys.INVITE_TEAM]: "./components/InviteTeam/index",
+  [PageKeys.INVITE_TEAM]: "./pages/InviteTeam",
   [PageKeys.SUPPORT]: "./pages/Support",
   [PageKeys.NOT_FOUND]: "./pages/NotFound",
   [PageKeys.SETTINGS]: "./pages/Settings",
