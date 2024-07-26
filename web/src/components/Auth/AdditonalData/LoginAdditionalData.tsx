@@ -11,7 +11,7 @@ function LoginAdditionalData() {
   return (
     <div className="my-2">
       <ForgotPasswordBox />
-      <div className="flex items-center gap-1 text-sm justify-center">
+      <div className="flex items-center gap-1 text-xs justify-center">
         Don't have an account?
         <Link className="text-violet-500 hover:underline" to="/signup">
           Sign up
