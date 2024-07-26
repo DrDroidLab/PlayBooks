@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircularProgress, Tab, Tabs } from "@mui/material";
-import Heading from "../../Heading.jsx";
+import Heading from "../../components/Heading.js";
 import styles from "./index.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,19 +8,19 @@ import {
   connectorSelector,
   resetIntegrationState,
   setCurrentConnector,
-} from "../../../store/features/integrations/integrationsSlice.ts";
+} from "../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
-import Config from "./Config.jsx";
-import TabPanel from "./TabPanel.jsx";
-import Assets from "./Assets.jsx";
-import { connectorsWithoutAssets } from "../../../utils/connectorsWithoutAssets.ts";
-import { unsupportedConnectors } from "../../../utils/unsupportedConnectors.ts";
+import Config from "../../components/Integration/connectors/Config.jsx";
+import TabPanel from "../../components/Integration/connectors/TabPanel.jsx";
+import Assets from "../../components/Integration/connectors/Assets.jsx";
+import { connectorsWithoutAssets } from "../../utils/connectorsWithoutAssets.ts";
+import { unsupportedConnectors } from "../../utils/unsupportedConnectors.ts";
 import {
   useGetConnectorKeyOptionsQuery,
   useLazyGetConnectorKeysQuery,
-} from "../../../store/features/integrations/api/index.ts";
+} from "../../store/features/integrations/api/index.ts";
 import { ChevronLeft } from "@mui/icons-material";
-import GoogleChatIntegration from "./GoogleChatIntegration.jsx";
+import GoogleChatIntegration from "../../components/Integration/connectors/GoogleChatIntegration.jsx";
 
 function ConnectorPageBeta() {
   const { id, connectorEnum } = useParams();
@@ -30,7 +30,7 @@ function ConnectorPageBeta() {
   const currentConnector = useSelector(connectorSelector);
   const [selectedTab, setSelectedTab] = useState(0);
   const { data: connector, isFetching: optionsLoading } =
-    useGetConnectorKeyOptionsQuery(connectorEnum);
+    useGetConnectorKeyOptionsQuery(connectorEnum ?? "");
   const [triggerGetKeys, { isFetching: keysLoading }] =
     useLazyGetConnectorKeysQuery();
 
@@ -52,7 +52,7 @@ function ConnectorPageBeta() {
   };
 
   const containsAssets = !connectorsWithoutAssets.includes(
-    connectorEnum.toUpperCase(),
+    connectorEnum?.toUpperCase() ?? "",
   );
 
   const isActive = currentConnector?.is_active;
@@ -84,8 +84,6 @@ function ConnectorPageBeta() {
         heading={`${
           connector?.display_name ?? currentConnector?.type
         } Integration Setup`}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
       />
 
       <button

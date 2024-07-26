@@ -1,24 +1,20 @@
-import Heading from "../Heading.jsx";
+import Heading from "../../components/Heading.js";
 import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
-import BasicSearch from "../common/BasicSearch/index.tsx";
+import BasicSearch from "../../components/common/BasicSearch/index.tsx";
 import useBasicSearch from "../../hooks/useBasicSearch.ts";
-import IntegrationCard from "../common/IntegrationCard/index.jsx";
-import GroupedIntegrations from "./GroupedIntegrations.tsx";
+import IntegrationCard from "../../components/common/IntegrationCard/index.jsx";
+import GroupedIntegrations from "../../components/Integration/GroupedIntegrations.tsx";
 
-function Integrations() {
+function AddIntegration() {
   const { data: integrations } = useGetConnectorListQuery();
   const { query, setValue, filteredList, notFound } = useBasicSearch(
-    integrations?.integrations?.allAvailableConnectors,
+    integrations?.integrations?.allAvailableConnectors ?? [],
     ["title", "desc"],
   );
 
   return (
     <>
-      <Heading
-        heading={"Add an Integration"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Add an Integration"} />
       <div className="m-4">
         <BasicSearch query={query} setValue={setValue} />
       </div>
@@ -40,4 +36,4 @@ function Integrations() {
   );
 }
 
-export default Integrations;
+export default AddIntegration;

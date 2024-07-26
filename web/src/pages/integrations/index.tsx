@@ -1,13 +1,12 @@
-import Heading from "../components/Heading.tsx";
-import SuspenseLoader from "../components/Skeleton/SuspenseLoader.js";
-import TableSkeleton from "../components/Skeleton/TableLoader.js";
-import { useGetConnectorListQuery } from "../store/features/integrations/api/index.ts";
+import Heading from "../../components/Heading.tsx";
+import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../../components/Skeleton/TableLoader.js";
+import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
 import { Add } from "@mui/icons-material";
-import ConnectorCard from "../components/Integration/ConnectorCard.tsx";
+import ConnectorCard from "../../components/Integration/ConnectorCard.tsx";
 import { Link } from "react-router-dom";
-import BasicSearch from "../components/common/BasicSearch/index.tsx";
-import useBasicSearch from "../hooks/useBasicSearch.ts";
-import React from "react";
+import BasicSearch from "../../components/common/BasicSearch/index.tsx";
+import useBasicSearch from "../../hooks/useBasicSearch.ts";
 
 function DataSources() {
   const { data: integrations, isFetching } = useGetConnectorListQuery();

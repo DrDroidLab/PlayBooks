@@ -23,12 +23,10 @@ export const components = {
     "./pages/workflows/WorkflowExecutionList",
   [PageKeys.WORKFLOW_EXECUTION_LOGS]: "./pages/workflows/WorkflowExecutionLogs",
   [PageKeys.PLAYGROUND]: "./components/Playgrounds/index",
-  [PageKeys.INTEGRATIONS_ADD]: "./components/Integration/index",
-  [PageKeys.DATA_SOURCES]: "./pages/DataSources.tsx",
-  [PageKeys.CONNECTOR_PAGE]:
-    "./components/Integration/connectors/ConnectorPage",
-  [PageKeys.CONNECTOR_PAGE_ID]:
-    "./components/Integration/connectors/ConnectorPage",
+  [PageKeys.DATA_SOURCES]: "./pages/integrations",
+  [PageKeys.INTEGRATIONS_ADD]: "./pages/integrations/AddIntegration",
+  [PageKeys.CONNECTOR_PAGE]: "./pages/integrations/ConnectorPage",
+  [PageKeys.CONNECTOR_PAGE_ID]: "./pages/integrations/ConnectorPage",
   [PageKeys.API_TOKENS]: "./components/Apikeys/Apikeys",
   [PageKeys.INVITE_TEAM]: "./components/InviteTeam/index",
   [PageKeys.SUPPORT]: "./components/Support/index",
