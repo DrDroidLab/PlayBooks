@@ -14,53 +14,27 @@ function SignUp() {
   const { data, isLoading } = useGetLoginProvidersQuery();
 
   return (
-    <div className="container">
-      <BlankLayoutWrapper className="half-width">
-        <Box
-          className="app-content"
-          sx={{
-            minHeight: "100vh",
-            overflowX: "hidden",
-            position: "relative",
-            backgroundColor: "#F4F5FA",
-          }}>
-          <Box className="content-center">
-            <Card sx={{ zIndex: 1 }}>
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    margin: "25px",
-                  }}>
-                  <img
-                    src={"/logo/drdroid-logo-full.png"}
-                    width="200px"
-                    alt="Your logo"
-                  />
-                </Box>
+    <main className="bg-gray-50 w-screen h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-1 bg-white shadow-md p-4 rounded-xl w-3/12">
+        <img
+          src="/logo/drdroid-logo-full.png"
+          alt="DrDroid Logo"
+          className="w-64 max-w-xs"
+        />
 
-                <NoProviders />
+        <NoProviders />
 
-                {isLoading && (
-                  <div className="flex items-center justify-center">
-                    <CircularProgress size={20} color="primary" />
-                  </div>
-                )}
+        {isLoading && (
+          <div className="flex items-center justify-center">
+            <CircularProgress size={20} color="primary" />
+          </div>
+        )}
 
-                {data?.includes(AuthProviders.EMAIL) && (
-                  <EmailPasswordSignupForm />
-                )}
-                <SocialSignIn />
-                <SignupAdditionalData />
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-      </BlankLayoutWrapper>
-    </div>
+        {data?.includes(AuthProviders.EMAIL) && <EmailPasswordSignupForm />}
+        <SocialSignIn />
+        <SignupAdditionalData />
+      </div>
+    </main>
   );
 }
 

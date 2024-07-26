@@ -18,9 +18,11 @@ function ResetPassword() {
           alt="DrDroid Logo"
           className="w-64 max-w-xs"
         />
-        <p>Ask your administrator to reset your password.</p>
+        <p className="text-sm">
+          Ask your administrator to reset your password.
+        </p>
         <CustomButton
-          className="!bg-violet-500 !text-white !text-base w-full !justify-center hover:!bg-transparent hover:!text-violet-500 p-3 font-normal"
+          className="!bg-violet-500 !text-white !text-sm w-full !justify-center hover:!bg-transparent hover:!text-violet-500 p-2 font-normal"
           onClick={goToLogin}>
           <ChevronLeftRounded /> Back to Login
         </CustomButton>

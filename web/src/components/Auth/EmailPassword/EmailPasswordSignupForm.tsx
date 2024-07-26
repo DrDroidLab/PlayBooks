@@ -77,11 +77,12 @@ function EmailPasswordSignupForm() {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 my-2">
           <div className="flex gap-2">
             <CustomInput
+              id="firstname"
               inputType={InputTypes.TEXT}
               disabled={isLoading}
               value={firstName}
@@ -91,6 +92,7 @@ function EmailPasswordSignupForm() {
               containerClassName="!w-full"
             />
             <CustomInput
+              id="lastname"
               inputType={InputTypes.TEXT}
               disabled={isLoading}
               value={lastName}

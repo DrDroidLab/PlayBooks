@@ -13,53 +13,27 @@ function Login() {
   const { data, isLoading } = useGetLoginProvidersQuery();
 
   return (
-    <>
-      <BlankLayoutWrapper className="layout-wrapper">
-        <Box
-          className="app-content"
-          sx={{
-            minHeight: "100vh",
-            overflowX: "hidden",
-            position: "relative",
-            backgroundColor: "#F4F5FA",
-          }}>
-          <Box className="content-center">
-            <Card sx={{ zIndex: 1 }}>
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    margin: "30px",
-                  }}>
-                  <img
-                    src={"/logo/drdroid-logo-full.png"}
-                    width={200}
-                    alt="DrDroid Logo"
-                  />
-                </Box>
+    <main className="bg-gray-50 w-screen h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-1 bg-white shadow-md p-6 rounded-xl w-3/12">
+        <img
+          src="/logo/drdroid-logo-full.png"
+          alt="DrDroid Logo"
+          className="w-64 max-w-xs"
+        />
 
-                {isLoading && (
-                  <div className="flex items-center justify-center">
-                    <CircularProgress size={20} color="primary" />
-                  </div>
-                )}
+        {isLoading && (
+          <div className="flex items-center justify-center">
+            <CircularProgress size={20} color="primary" />
+          </div>
+        )}
 
-                <NoProviders />
+        <NoProviders />
 
-                {data?.includes(AuthProviders.EMAIL) && (
-                  <EmailPasswordLoginForm />
-                )}
-                <SocialSignIn />
-                <LoginAdditionalData />
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-      </BlankLayoutWrapper>
-    </>
+        {data?.includes(AuthProviders.EMAIL) && <EmailPasswordLoginForm />}
+        <SocialSignIn />
+        <LoginAdditionalData />
+      </div>
+    </main>
   );
 }
 

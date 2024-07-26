@@ -80,8 +80,8 @@ function EmailPasswordLoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-2 my-2">
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex flex-col gap-2 my-2 w-full">
         <CustomInput
           inputType={InputTypes.TEXT}
           disabled={isLoading}
