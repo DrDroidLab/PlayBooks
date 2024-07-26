@@ -1,6 +1,4 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DatePicker } from "rsuite";
 import {
   timeRangeSelector,
   updateProperty,
@@ -8,6 +6,8 @@ import {
 import CustomButton from "../CustomButton/index.tsx";
 import { isAfter, isBefore } from "rsuite/esm/internals/utils/date/index";
 import useDatePicker from "../../../hooks/useDatePicker.ts";
+import CustomInput from "../../Inputs/CustomInput.tsx";
+import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 
 const nowKey = "now";
 
@@ -56,14 +56,15 @@ function Picker({ type, label }) {
     <div ref={pickerRef}>
       <p className="font-medium text-xs">{label}</p>
       <div className="flex">
-        <DatePicker
+        <CustomInput
+          inputType={InputTypes.DATE}
           format="dd/MM/yyyy hh:mm:ss aa"
-          onChangeCalendarDate={setTime}
-          showMeridian
-          shouldDisableDate={disabledDate}
+          handleChange={(val: string) =>
+            setTime(new Date(parseInt(val, 10) * 1000))
+          }
+          disabledDate={disabledDate}
           value={typeof timeRange[key] === "string" ? null : timeRange[key]}
           className="!text-violet-500 !w-full"
-          menuClassName="!z-[90] text-violet-500 bg-violet-500"
         />
         {type === PickerType.TO && (
           <CustomButton

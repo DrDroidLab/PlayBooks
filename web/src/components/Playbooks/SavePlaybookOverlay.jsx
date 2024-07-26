@@ -26,10 +26,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
     }
     dispatch(setCurrentPlaybookKey({ key: "description", value: description }));
     dispatch(setCurrentPlaybookKey({ key: "name", value: name }));
-    saveCallback({
-      pbName: name || currentPlaybook?.name,
-      description,
-    });
+    saveCallback();
     close();
   };
 
@@ -38,13 +35,19 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
     setDescription(val);
   };
 
+  const handleClose = () => {
+    dispatch(setCurrentPlaybookKey({ key: "description", value: description }));
+    dispatch(setCurrentPlaybookKey({ key: "name", value: name }));
+    close();
+  };
+
   useEffect(() => {
     setName(currentPlaybook?.name);
   }, [currentPlaybook?.name]);
 
   return (
     <div style={{ zIndex: "200" }}>
-      <Overlay close={close} visible={isOpen}>
+      <Overlay close={handleClose} visible={isOpen}>
         <div className={styles["dashboardSaveOverlay"]}>
           <div
             style={!isExisting ? { gap: "10px" } : {}}
@@ -88,7 +91,7 @@ const SavePlaybookOverlay = ({ isOpen, close, saveCallback }) => {
             )}
           </div>
           <div className={styles["actions"]}>
-            <button className={styles["submitButton"]} onClick={() => close()}>
+            <button className={styles["submitButton"]} onClick={handleClose}>
               Cancel
             </button>
 

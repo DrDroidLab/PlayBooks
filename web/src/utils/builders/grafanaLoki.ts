@@ -25,13 +25,13 @@ export const grafanaLokiBuilder = () => {
         {
           key: Key.START_TIME,
           label: "Start time",
-          inputType: InputTypes.TEXT,
+          inputType: InputTypes.DATE,
           default: rangeSelector(store.getState()).time_geq,
         },
         {
           key: Key.END_TIME,
           label: "End time",
-          inputType: InputTypes.TEXT,
+          inputType: InputTypes.DATE,
           default: rangeSelector(store.getState()).time_lt,
         },
       ],
