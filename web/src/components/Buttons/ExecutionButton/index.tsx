@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { useUpdateExecutionStatusMutation } from "../../../store/features/playbook/api/executions/updateExecutionStatusApi.ts";
-import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
+import { ExecutionStatus } from "../../../types/playbooks/ExecutionStatus.ts";
 
 function ExecutionButton() {
   const navigate = useNavigate();

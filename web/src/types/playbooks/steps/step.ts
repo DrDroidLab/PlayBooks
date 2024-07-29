@@ -1,5 +1,5 @@
+import { Task } from "../tasks/task.ts";
 import { ExternalLink } from "./externalLink.ts";
-import { Task } from "./task.ts";
 
 type StepUIRequirements = {
   isOpen: boolean;

@@ -6,7 +6,7 @@ import {
   setPlaybookData,
 } from "../../playbookSlice.ts";
 import { store } from "../../../../index.ts";
-import { Playbook } from "../../../../../types/playbook.ts";
+import { Playbook } from "../../../../../types/playbooks/playbook.ts";
 import executionToState from "../../../../../utils/parser/playbook/executionToState.ts";
 import truncateArrayBeforeElement from "../../../../../utils/truncateArrayBeforeElement.ts";
 import constructDfs from "../../../../../utils/playbook/constructDfs.ts";

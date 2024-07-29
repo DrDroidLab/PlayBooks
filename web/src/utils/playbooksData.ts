@@ -1,13 +1,12 @@
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { store } from "../store/index.ts";
 import { FormFields } from "../types/inputs/formFields.ts";
-import { Sources } from "../types/sources.ts";
-import { TaskDetails } from "../types/taskDetails.ts";
+import { Sources } from "../types/playbooks/sources.ts";
 import extractOptions from "./playbook/extractOptions.ts";
 import getCurrentTask from "./getCurrentTask.ts";
 import { KeyType } from "./playbook/key.ts";
 import extractHandleChange from "./playbook/extractHandleChange.ts";
-import { Task } from "../types/task.ts";
+import { Task } from "../types";
 import { HandleInputRenderType } from "../components/Inputs/HandleInputRender.tsx";
 import handleInputType from "./playbook/handleInputType.ts";
 
@@ -41,7 +40,7 @@ export const constructBuilder = (id?: string) => {
   if (!task) return [];
   const { supportedTaskTypes } = playbookSelector(store.getState());
   const source: Sources = task.source.toLowerCase() as Sources;
-  const taskType = ((task as any)[source] as TaskDetails).type;
+  const taskType = (task as any)[source].type;
   const type = supportedTaskTypes?.find(
     (e: any) => e.source === source.toUpperCase() && e.task_type === taskType,
   );

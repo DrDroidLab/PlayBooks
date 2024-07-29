@@ -1,5 +1,5 @@
 import { Task, TaskDetails } from "../../types/index.ts";
-import { Sources } from "../../types/sources.ts";
+import { Sources } from "../../types/playbooks/sources.ts";
 
 export const getTaskData = (task: Task) => {
   const source = task.source;

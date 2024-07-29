@@ -1,4 +1,4 @@
-import { Step } from "./step.ts";
+import { Step } from "./steps/step.ts";
 
 export enum LogicalOperator {
   AND_LO = "AND_LO",

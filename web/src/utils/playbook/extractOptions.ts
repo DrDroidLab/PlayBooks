@@ -1,6 +1,5 @@
-import { Sources } from "../../types/sources.ts";
-import { Task } from "../../types/task.ts";
-import { TaskDetails } from "../../types/taskDetails.ts";
+import { Sources } from "../../types/playbooks/sources.ts";
+import { Task } from "../../types";
 import getCurrentTask from "../getCurrentTask.ts";
 import { KeyType } from "./key.ts";
 import { taskTypeOptionMappings } from "./taskTypeOptionMappings.ts";
@@ -13,9 +12,7 @@ export default function extractOptions(
   const [task] = getCurrentTask(taskFromArg?.id);
   if (!task) return [];
   const source = task.source;
-  const taskType = (
-    (task as any)[source.toLowerCase() as Sources] as TaskDetails
-  ).type;
+  const taskType = (task as any)[source.toLowerCase() as Sources].type;
 
   const optionsFunction = taskTypeOptionMappings[`${source} ${taskType}`];
 

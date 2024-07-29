@@ -1,4 +1,4 @@
-import { Sources } from "./sources.ts";
+import { Sources } from "./playbooks/sources.ts";
 import {
   Documentation,
   Cloudwatch,

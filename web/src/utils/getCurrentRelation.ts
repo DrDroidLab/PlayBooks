@@ -1,6 +1,9 @@
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
 import { store } from "../store/index.ts";
-import { StepRelation, StepRelationContract } from "../types/stepRelations.ts";
+import {
+  StepRelation,
+  StepRelationContract,
+} from "../types/playbooks/stepRelations.ts";
 
 function getCurrentRelation(
   id: string,

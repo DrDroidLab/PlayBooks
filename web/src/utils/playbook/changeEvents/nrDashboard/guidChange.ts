@@ -1,4 +1,4 @@
-import { Task } from "../../../../types/task.ts";
+import { Task } from "../../../../types";
 import { updateCardById } from "../../../execution/updateCardById.ts";
 import { getCurrentAsset } from "../../getCurrentAsset.ts";
 import { Key } from "../../key.ts";
