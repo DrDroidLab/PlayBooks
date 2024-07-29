@@ -1,16 +1,15 @@
-import styles from "./index.module.css";
 import IntegrationCard from "../common/IntegrationCard";
 
-const TabContent = (props) => {
+const TabContent = (props: any) => {
   const { id, title, cards } = props;
 
   return (
-    <div className={styles["content"]} key={id}>
-      <div className={styles["segmentTitle"]}>
-        <h1>{title}</h1>
-        <hr></hr>
+    <div className="font-light text-base max-w-full" key={id}>
+      <div className="flex items-center mx-5 max-w-full gap-2">
+        <h1 className="text-gray-400 text-sm shrink-0">{title}</h1>
+        <hr className="border-t-gray-200 flex-1" />
       </div>
-      <div style={{ marginTop: "1rem" }}>
+      <div className="mt-4">
         <div className="flex flex-wrap">
           {cards?.map((card, index) => (
             <IntegrationCard key={index} data={card} />
