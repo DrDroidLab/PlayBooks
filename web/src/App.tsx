@@ -1,15 +1,15 @@
-import Layout from "./Layout.jsx";
+import Layout from "./Layout";
 import { Route, Routes } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth.jsx";
+import RequireAuth from "./components/RequireAuth";
 import "nprogress/nprogress.css";
-import { useGetUserQuery } from "./store/features/auth/api/getUserApi.ts";
-import Loading from "./components/common/Loading/index.tsx";
+import { useGetUserQuery } from "./store/features/auth/api";
+import Loading from "./components/common/Loading";
 import {
   generateNoLayoutRoutes,
   generateOtherRoutes,
   generateUnauthRoutes,
-} from "./generateRoutes.tsx";
-import useDefaultPage from "./hooks/useDefaultPage.ts";
+} from "./generateRoutes";
+import useDefaultPage from "./hooks/useDefaultPage";
 
 const App = () => {
   useDefaultPage();

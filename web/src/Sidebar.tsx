@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { React, useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { List, ListItemButton, ListItemIcon } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import SlackConnectOverlay from "./SlackConnectOverlay.jsx";
+import SlackConnectOverlay from "./components/SlackConnectOverlay.js";
 import useToggle from "./hooks/useToggle.js";
 import "../src/Layout.css";
 import {
@@ -24,7 +24,7 @@ function Sidebar() {
   const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
 
-  const { data } = useFetchVersionInfoQuery({});
+  const { data } = useFetchVersionInfoQuery();
 
   const signOut = async () => {
     await triggerLogout();
@@ -181,7 +181,7 @@ function Sidebar() {
           </p>
         </NavLink>
 
-        <NavLink>
+        <NavLink to={"#"}>
           <ListItemButton
             sx={{
               padding: 0,
