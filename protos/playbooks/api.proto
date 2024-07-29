@@ -47,6 +47,13 @@ message RunPlaybookTaskResponseV3 {
   PlaybookTaskExecutionLog playbook_task_execution_log = 4;
 }
 
+message RunBulkPlaybookTaskResponse {
+  Meta meta = 1;
+  google.protobuf.BoolValue success = 2;
+  Message message = 3;
+  repeated PlaybookTaskExecutionLog playbook_task_execution_logs = 4;
+}
+
 message RunPlaybookStepRequest {
   Meta meta = 1;
   DeprecatedPlaybookStepDefinition playbook_step = 2;

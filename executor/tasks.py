@@ -81,23 +81,72 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                     global_variable_set = {}
             else:
                 global_variable_set_proto.update(global_variable_set)
-            try:
-                task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
-                                                                                      global_variable_set,
-                                                                                      task_proto)
-                task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
-                                                                                 task_result)
-                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
-                                                                       interpretation=task_interpretation,
-                                                                       execution_global_variable_set=global_variable_set_proto)
-                task_interpretations.append(task_interpretation)
-            except Exception as exc:
-                logger.error(f"Error occurred while running task: {exc}")
-                playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
-                                                                       result=PlaybookTaskResult(
-                                                                           error=StringValue(value=str(exc))),
-                                                                       execution_global_variable_set=global_variable_set_proto)
-            pte_logs.append(playbook_task_execution_log)
+            if task_proto.execution_configuration.is_bulk_execution and task_proto.execution_configuration.is_bulk_execution.value:
+
+                bulk_task_var = task_proto.execution_configuration.bulk_execution_var_field.value if task_proto.execution_configuration.HasField(
+                    'bulk_execution_var_field') else None
+                if not bulk_task_var:
+                    task_result = PlaybookTaskResult(error=StringValue(value="Bulk execution variable not found"))
+                    pte_logs.append(PlaybookTaskExecutionLog(task=task_proto,
+                                                             result=task_result,
+                                                             execution_global_variable_set=global_variable_set_proto))
+                    continue
+
+                if bulk_task_var not in global_variable_set:
+                    task_result = PlaybookTaskResult(
+                        error=StringValue(value="Bulk execution variable not found in global variables"))
+                    pte_logs.append(PlaybookTaskExecutionLog(task=task_proto,
+                                                             result=task_result,
+                                                             execution_global_variable_set=global_variable_set_proto))
+                    continue
+
+                bulk_execution_var_values = global_variable_set[bulk_task_var].split(',')
+                if not bulk_execution_var_values:
+                    task_result = PlaybookTaskResult(
+                        error=StringValue(value="Bulk execution variable values not found in global variables"))
+                    pte_logs.append(PlaybookTaskExecutionLog(task=task_proto,
+                                                             result=task_result,
+                                                             execution_global_variable_set=global_variable_set_proto))
+                    continue
+
+                for bev in bulk_execution_var_values:
+                    global_variable_set[bulk_task_var] = bev
+                    try:
+                        task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set,
+                                                                          task_proto)
+                        task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
+                                                                                         task_result)
+                        task_interpretations.append(task_interpretation)
+                        execution_global_variable_set_proto = dict_to_proto(global_variable_set, Struct)
+                        playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
+                                                                               interpretation=task_interpretation,
+                                                                               execution_global_variable_set=execution_global_variable_set_proto)
+                        pte_logs.append(playbook_task_execution_log)
+                    except Exception as exc:
+                        logger.error(f"Error occurred while running task: {exc}")
+                        playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
+                                                                               result=PlaybookTaskResult(
+                                                                                   error=StringValue(value=str(exc))),
+                                                                               execution_global_variable_set=global_variable_set_proto)
+                        pte_logs.append(playbook_task_execution_log)
+            else:
+                try:
+                    task_result: PlaybookTaskResult = playbook_source_facade.execute_task(account.id, tr,
+                                                                                          global_variable_set,
+                                                                                          task_proto)
+                    task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
+                                                                                     task_result)
+                    playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
+                                                                           interpretation=task_interpretation,
+                                                                           execution_global_variable_set=global_variable_set_proto)
+                    task_interpretations.append(task_interpretation)
+                except Exception as exc:
+                    logger.error(f"Error occurred while running task: {exc}")
+                    playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
+                                                                           result=PlaybookTaskResult(
+                                                                               error=StringValue(value=str(exc))),
+                                                                           execution_global_variable_set=global_variable_set_proto)
+                pte_logs.append(playbook_task_execution_log)
         step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
 
         relation_execution_logs = []
