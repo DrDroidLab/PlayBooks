@@ -208,8 +208,6 @@ class PlayBookStep(models.Model):
             task_proto: PlaybookTaskProto = stm.playbook_task_definition.proto
             playbook_task_execution_config = stm.playbook_task_execution_config
             if playbook_task_execution_config:
-                playbook_task_execution_config = playbook_task_execution_config.first().get(
-                    'playbook_task_execution_config', {})
                 playbook_task_execution_config_proto = dict_to_proto(playbook_task_execution_config,
                                                                      PlaybookTaskProto.ExecutionConfiguration)
                 task_proto.execution_configuration.CopyFrom(playbook_task_execution_config_proto)
