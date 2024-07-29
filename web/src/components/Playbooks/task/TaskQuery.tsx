@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
-import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
+import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.js";
 import AddSource from "./AddSource.tsx";
 import TaskBlock from "./TaskBlock.tsx";
 

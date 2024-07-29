@@ -5,7 +5,7 @@ import {
   Task,
   TaskType,
 } from "../../../../../types/index.ts";
-import generateUUIDWithoutHyphens from "../../../../../utils/generateUUIDWithoutHyphens.ts";
+import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens.ts";
 import { v4 as uuidv4 } from "uuid";
 
 const emptyStep: Step = {

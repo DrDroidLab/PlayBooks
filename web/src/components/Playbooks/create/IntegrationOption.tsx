@@ -1,4 +1,4 @@
-import { cardsData } from "../../../utils/cardsData";
+import { cardsData } from "../../../utils/common/cardsData.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createTaskWithSource,
@@ -6,7 +6,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
-import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
+import { unsupportedBuilderOptions } from "../../../utils/playbook/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
@@ -29,8 +29,14 @@ function IntegrationOption({ option }) {
       case SOURCES.TEXT:
         if (option.task_type === SOURCES.IFRAME) {
           return cardsData.find((e) => e.enum === SOURCES.IFRAME)?.url;
+        } else {
+          return (
+            cardsData.find(
+              (e) => e.enum === option?.source?.replace("_VPC", ""),
+            )?.url ??
+            cardsData.find((e) => option?.model_type?.includes(e.enum))?.url
+          );
         }
-        break;
       default:
         return (
           cardsData.find((e) => e.enum === option?.source?.replace("_VPC", ""))

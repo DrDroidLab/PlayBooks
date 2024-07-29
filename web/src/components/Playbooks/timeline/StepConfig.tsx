@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { renderTimestamp } from "../../../utils/DateUtils.js";
+import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
 import useVisibility from "../../../hooks/common/useVisibility.ts";
 import useScrollIntoView from "../../../hooks/playbooks/useScrollIntoView.ts";
 import usePlaybookKey from "../../../hooks/playbooks/usePlaybookKey";

@@ -8,7 +8,7 @@ import {
 import { store } from "../../../../index.ts";
 import { Playbook } from "../../../../../types/playbooks/playbook.ts";
 import executionToState from "../../../../../utils/parser/playbook/executionToState.ts";
-import truncateArrayBeforeElement from "../../../../../utils/truncateArrayBeforeElement.ts";
+import truncateArrayBeforeElement from "../../../../../utils/common/truncateArrayBeforeElement.ts";
 import constructDfs from "../../../../../utils/playbook/constructDfs.ts";
 
 export const getPlaybookExecutionApi = apiSlice.injectEndpoints({

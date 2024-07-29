@@ -9,10 +9,10 @@ import {
   setCurrentConnector,
 } from "../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
-import Config from "../../components/Integration/connectors/Config.jsx";
-import TabPanel from "../../components/Integration/connectors/TabPanel.jsx";
-import Assets from "../../components/Integration/connectors/Assets.jsx";
-import { connectorsWithoutAssets } from "../../utils/connectorsWithoutAssets.ts";
+import Config from "../../components/Integration/connectors/Config.js";
+import TabPanel from "../../components/Integration/connectors/TabPanel.js";
+import Assets from "../../components/Integration/connectors/Assets.js";
+import { connectorsWithoutAssets } from "../../utils/integrations/connectorsWithoutAssets.ts";
 import {
   useGetConnectorKeyOptionsQuery,
   useLazyGetConnectorKeysQuery,

@@ -6,14 +6,13 @@ import {
   TableRow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { renderTimestamp } from "../../utils/DateUtils.js";
+import { renderTimestamp } from "../../utils/common/dateUtils.ts";
 import { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { Link, useNavigate } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingPlaybook.jsx";
+import NoExistingPlaybook from "./NoExistingPlaybook.js";
 import styles from "./playbooks.module.css";
 import useToggle from "../../hooks/common/useToggle.js";
-import PlaybookActionOverlay from "./PlaybookActionOverlay.jsx";
 import { ContentCopy } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../store/features/playbook/playbookSlice.ts";
@@ -21,6 +20,7 @@ import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index
 import Loading from "../common/Loading/index.tsx";
 import { COPY_LOADING_DELAY } from "../../constants/index.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
+import PlaybookActionOverlay from "./PlaybookActionOverlay.tsx";
 
 const PlaybookTable = ({ data, refreshTable }) => {
   const navigate = useNavigate();

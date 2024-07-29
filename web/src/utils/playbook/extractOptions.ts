@@ -1,6 +1,6 @@
 import { Sources } from "../../types/playbooks/sources.ts";
 import { Task } from "../../types";
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "./task/getCurrentTask.ts";
 import { KeyType } from "./key.ts";
 import { taskTypeOptionMappings } from "./taskTypeOptionMappings.ts";
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import fetchGraphData from "../../utils/graph/fetchGraphData.ts";
 import { useSelector } from "react-redux";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
-import { calculateData } from "../../utils/calculateData.ts";
+import { calculateData } from "../../utils/graph/calculateData.ts";
 import { ReactFlowInstance } from "reactflow";
 import usePermanentDrawerState from "../common/usePermanentDrawerState.ts";
 

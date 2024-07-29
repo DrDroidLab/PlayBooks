@@ -1,4 +1,4 @@
-import { GlobalVariableSet } from "./globalVariableSet.ts";
+import { GlobalVariableSet } from "../globalVariableSet.ts";
 import { TaskConnectorSource } from "./taskConnectorSources.ts";
 import { TaskDetails } from "./taskDetails.ts";
 

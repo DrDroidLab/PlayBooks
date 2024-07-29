@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import styles from "./styles.module.css";
-import capitalizeFirstLetter from "../../../utils/capitalize";
+import capitalizeFirstLetter from "../../../utils/common/capitalize";
 
 function IntegrationCard({ data }) {
   const handleClick = () => {};

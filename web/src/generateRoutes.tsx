@@ -1,9 +1,9 @@
 import { createElement, lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import { components } from "./components";
-import { unAuthPages } from "./utils/unAuthPages";
+import { unAuthPages } from "./utils/pages/unAuthPages";
 import { PageKeys } from "./pageKeys";
-import { noLayoutPages } from "./utils/noLayoutPages";
+import { noLayoutPages } from "./utils/pages/noLayoutPages";
 import { routes } from "./routes";
 import Loading from "./components/common/Loading";
 

@@ -1,7 +1,7 @@
 import { Task } from "../../../types/index.ts";
 import { getCurrentAsset } from "../getCurrentAsset.ts";
-import { getTaskData } from "../getTaskData.ts";
 import { Key, KeyType } from "../key.ts";
+import { getTaskData } from "../task/getTaskData.ts";
 
 export const datadogService = (key: KeyType, task: Task): any[] => {
   const assets = task.ui_requirement.assets;

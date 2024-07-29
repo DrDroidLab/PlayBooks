@@ -8,18 +8,12 @@ import {
 } from "../../../store/features/playbook/api/index.ts";
 import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
 import { useNavigate } from "react-router-dom";
-import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSavingValidations.ts";
 import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 import stateToPlaybook from "../../../utils/parser/playbook/stateToPlaybook.ts";
 import useIsExisting from "../../../hooks/playbooks/useIsExisting.ts";
+import handlePlaybookSavingValidations from "../../../utils/playbook/handlePlaybookSavingValidations.ts";
 
-type SavePlaybookButtonPropTypes = {
-  shouldNavigate?: boolean;
-};
-
-function SavePlaybookButton({
-  shouldNavigate = true,
-}: SavePlaybookButtonPropTypes) {
+function SavePlaybookButton() {
   const navigate = useNavigate();
   const { closeDrawer } = usePermanentDrawerState();
   const isExisting = useIsExisting();

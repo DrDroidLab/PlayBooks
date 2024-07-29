@@ -6,7 +6,7 @@ import useDrawerState from "../../../hooks/common/useDrawerState";
 
 type CustomDrawerPropTypes = {
   id: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   src?: string;
   openFrom?: "right" | "left";
   addtionalStyles?: string;

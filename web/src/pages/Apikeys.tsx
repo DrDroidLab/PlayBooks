@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
-import { MaskCharacter } from "../utils/Apikeys.js";
+import { useEffect, useState } from "react";
+import maskCharacter from "../utils/common/maskCharacter.js";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
@@ -22,8 +22,8 @@ const columns = [
     field: "key",
     headerName: "Token",
     flex: 1,
-    valueGetter: (params) => {
-      const masked = MaskCharacter(String(params?.value), "*", 4);
+    valueGetter: (params: any) => {
+      const masked = maskCharacter(String(params?.value), "*", 4);
       return masked;
     },
   },

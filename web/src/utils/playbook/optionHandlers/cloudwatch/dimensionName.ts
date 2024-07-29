@@ -1,7 +1,7 @@
 import { Task } from "../../../../types/index.ts";
 import { getCurrentAsset } from "../../getCurrentAsset.ts";
-import { getTaskData } from "../../getTaskData.ts";
 import { Key } from "../../key.ts";
+import { getTaskData } from "../../task/getTaskData.ts";
 
 export const getDimensionNames = (task: Task) => {
   const data = getTaskData(task);

@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingExecution.jsx";
-import { renderTimestamp } from "../../../utils/DateUtils.js";
-import handleToolLogos from "../../../utils/handleToolLogos.ts";
+import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
+import handleToolLogos from "../../../utils/playbook/handleToolLogos.ts";
 
 const ExecutionsTable = ({ data }) => {
   return (

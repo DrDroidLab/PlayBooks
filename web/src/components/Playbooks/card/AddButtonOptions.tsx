@@ -3,7 +3,7 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
-import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import generateUUIDWithoutHyphens from "../../../utils/common/generateUUIDWithoutHyphens.ts";
 import {
   addStep,
   playbookSelector,

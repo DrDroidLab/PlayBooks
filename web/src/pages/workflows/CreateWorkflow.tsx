@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import Heading from "../../components/Heading.js";
-import BasicDetails from "../../components/Workflows/create/BasicDetails.jsx";
-import ScheduleDetails from "../../components/Workflows/create/ScheduleDetails.jsx";
-import NotificationDetails from "../../components/Workflows/create/NotificationDetails.jsx";
+import BasicDetails from "../../components/Workflows/create/BasicDetails.js";
+import ScheduleDetails from "../../components/Workflows/create/ScheduleDetails.js";
+import NotificationDetails from "../../components/Workflows/create/NotificationDetails.js";
 import { useCreateWorkflowMutation } from "../../store/features/workflow/api/index.ts";
 import { CircularProgress } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";

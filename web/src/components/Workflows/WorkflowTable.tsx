@@ -11,8 +11,8 @@ import NoExistingPlaybook from "./NoExistingWorkflow.js";
 import { Delete, Edit, History } from "@mui/icons-material";
 import WorkflowActionOverlay from "./WorkflowActionOverlay.js";
 import { useState } from "react";
-import { renderTimestamp } from "../../utils/DateUtils.js";
-import { handleStatus } from "../../utils/handleStatus.tsx";
+import { renderTimestamp } from "../../utils/common/dateUtils.ts";
+import { handleStatus } from "../../utils/common/handleStatus.tsx";
 import useToggle from "../../hooks/common/useToggle.ts";
 
 const WorkflowTable = ({ data, refreshTable }) => {

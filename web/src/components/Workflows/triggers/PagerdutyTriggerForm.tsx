@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { handleTriggerInput } from "../utils/handleInputs.ts";
-import CopyCode from "../../common/CopyCode/index.jsx";
+import CopyCode from "../../common/CopyCode/index.js";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 

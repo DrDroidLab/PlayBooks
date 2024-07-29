@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask";
-import getNestedValue from "../../../utils/getNestedValue.ts";
+import getNestedValue from "../../../utils/common/getNestedValue.ts";
 import handleChangeInput from "./utils/handleChange.ts";
 import { useDispatch } from "react-redux";
 import { duplicateTask } from "../../../store/features/playbook/playbookSlice.ts";

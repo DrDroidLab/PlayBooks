@@ -11,7 +11,7 @@ import {
   ResultTypeType,
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions.ts";
-import { extractSource } from "../../utils/extractData.ts";
+import { extractSource } from "../../utils/playbook/extractData.ts";
 import SavePlaybookButton from "../Buttons/SavePlaybookButton/index.tsx";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";

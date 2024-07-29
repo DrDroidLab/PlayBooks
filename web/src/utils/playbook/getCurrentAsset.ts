@@ -1,6 +1,6 @@
 import { Task } from "../../types/index.ts";
-import { getTaskData } from "./getTaskData.ts";
 import { KeyType } from "./key.ts";
+import { getTaskData } from "./task/getTaskData.ts";
 
 type GetCurrentAssetOptions = {
   idValue: string;

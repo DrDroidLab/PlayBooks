@@ -14,7 +14,7 @@ import {
 
 import { ArrowRightRounded } from "@mui/icons-material";
 import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
-import { isDate, renderTimestamp } from "../../utils/DateUtils.js";
+import { isDate, renderTimestamp } from "../../utils/common/dateUtils.ts";
 import Code from "../common/Code/index.tsx";
 import React from "react";
 import transformLogData from "../../utils/execution/transformLogData.ts";

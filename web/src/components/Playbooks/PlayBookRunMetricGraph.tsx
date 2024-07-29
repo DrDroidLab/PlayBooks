@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 import { getTSLabel } from "./utils";
 import SeeMoreText from "./SeeMoreText";
 import dayjs from "dayjs";
-import { renderTimestamp } from "../../utils/DateUtils";
+import { renderTimestamp } from "../../utils/common/dateUtils";
 import useKeyPressed from "../../hooks/common/useKeyPressed";
 
 const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {

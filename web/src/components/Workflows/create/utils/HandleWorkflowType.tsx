@@ -1,7 +1,7 @@
 import { currentWorkflowSelector } from "../../../../store/features/workflow/workflowSlice.ts";
 import { useSelector } from "react-redux";
 import SlackTriggerForm from "../../triggers/SlackTriggerForm.tsx";
-import CopyCode from "../../../common/CopyCode/index.jsx";
+import CopyCode from "../../../common/CopyCode/index.js";
 import { WorkflowEntryPointOptions } from "../../../../utils/workflow/types/entryPoint.ts";
 import PagerdutyTriggerForm from "../../triggers/PagerdutyTriggerForm.js";
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useDropdownContext } from "../../contexts/DropdownContext.tsx";
-import { findClosestPopup } from "../../utils/findClosestPopup.ts";
+import { findClosestPopup } from "../../utils/common/findClosestPopup.ts";
 
 const useDatePicker = () => {
   const pickerRef = useRef(null);

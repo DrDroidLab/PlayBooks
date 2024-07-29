@@ -1,4 +1,4 @@
-import { cardsData } from "../../../utils/cardsData.ts";
+import { cardsData } from "../../../utils/common/cardsData.ts";
 import TaskButtons from "./TaskButtons.tsx";
 import HandleTaskIcon from "./HandleTaskIcon.tsx";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";

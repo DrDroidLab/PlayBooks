@@ -18,7 +18,9 @@ export default function useCurrentTask(id?: string): UseCurrentTaskReturnType {
   const tasks: Task[] = currentPlaybook?.ui_requirement.tasks ?? [];
 
   const currentId = id ?? currentVisibleTask;
-  const task: Task | undefined = tasks?.find((task) => task.id === currentId);
+  const task: Task | undefined = tasks?.find(
+    (task: Task) => task.id === currentId,
+  );
   const source = task?.source ?? "";
   const taskType = task?.[source?.toLowerCase()]?.type ?? "";
   const taskData = task?.[source.toLowerCase()]?.[taskType.toLowerCase()];

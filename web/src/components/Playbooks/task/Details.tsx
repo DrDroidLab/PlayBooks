@@ -2,11 +2,11 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setErrors } from "../../../store/features/playbook/playbookSlice.ts";
-import { constructBuilder } from "../../../utils/playbooksData.ts";
-import { deepEqual } from "../../../utils/deepEqual.ts";
+import { constructBuilder } from "../../../utils/playbook/constructBuilder.ts";
+import { deepEqual } from "../../../utils/common/deepEqual.ts";
 import OptionRender from "./OptionRender.tsx";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
-import getNestedValue from "../../../utils/getNestedValue.ts";
+import getNestedValue from "../../../utils/common/getNestedValue.ts";
 
 function Details({ id }) {
   const data: any = constructBuilder(id);

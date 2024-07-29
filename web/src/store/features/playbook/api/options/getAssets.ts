@@ -1,6 +1,6 @@
 import { GET_ASSETS } from "../../../../../constants/index.ts";
 import { updateCardById } from "../../../../../utils/execution/updateCardById.ts";
-import getCurrentTask from "../../../../../utils/getCurrentTask.ts";
+import getCurrentTask from "../../../../../utils/playbook/task/getCurrentTask.ts";
 import handleAssets from "../../../../../utils/handleAssets.ts";
 import { apiSlice } from "../../../../app/apiSlice.ts";
 import { setAssets } from "../../playbookSlice.ts";
