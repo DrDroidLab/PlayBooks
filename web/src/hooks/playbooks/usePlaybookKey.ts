@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   setPlaybookKey,
-} from "../store/features/playbook/playbookSlice.ts";
+} from "../../store/features/playbook/playbookSlice";
 
 function usePlaybookKey(key: string) {
   const dispatch = useDispatch();

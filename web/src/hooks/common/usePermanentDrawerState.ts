@@ -5,9 +5,9 @@ import {
   permanentViewSelector,
   setAdditionalState,
   additionalStateSelector,
-} from "../store/features/drawers/drawersSlice.ts";
-import { PermanentDrawerTypes } from "../store/features/drawers/permanentDrawerTypes.ts";
-import { setCurrentVisibleTask } from "../store/features/playbook/playbookSlice.ts";
+} from "../../store/features/drawers/drawersSlice.ts";
+import { PermanentDrawerTypes } from "../../store/features/drawers/permanentDrawerTypes.ts";
+import { setCurrentVisibleTask } from "../../store/features/playbook/playbookSlice.ts";
 
 type DrawerState = {
   isOpen: boolean;

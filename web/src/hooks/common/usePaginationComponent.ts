@@ -3,7 +3,7 @@ import {
   PaginationKeys,
   paginationSelector,
   resetPagination,
-} from "../store/features/pagination/paginationSlice.ts";
+} from "../../store/features/pagination/paginationSlice.ts";
 import { useEffect } from "react";
 
 function usePaginationComponent(refetch: () => void) {

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { currentPlaybookSelector } from "../store/features/playbook/playbookSlice.ts";
+import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 
 export default function useIsExisting() {
   const currentPlaybook = useSelector(currentPlaybookSelector);

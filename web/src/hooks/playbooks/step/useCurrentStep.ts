@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
   playbookSelector,
-} from "../store/features/playbook/playbookSlice.ts";
-import { Step } from "../types/step.ts";
+} from "../../../store/features/playbook/playbookSlice";
+import { Step } from "../../../types";
 
 export default function useCurrentStep(
   id?: string,

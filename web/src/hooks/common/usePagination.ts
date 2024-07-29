@@ -4,7 +4,7 @@ import {
   PaginationKeys,
   paginationSelector,
   setPaginationKey,
-} from "../store/features/pagination/paginationSlice.ts";
+} from "../../store/features/pagination/paginationSlice.ts";
 
 interface UsePaginationResult {
   page: number;

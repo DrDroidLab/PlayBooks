@@ -3,7 +3,7 @@ import {
   fakeLoadingSelector,
   startFakeLoading,
   stopFakeLoading,
-} from "../store/features/fakeLoading/fakeLoadingSlice.ts";
+} from "../../store/features/fakeLoading/fakeLoadingSlice";
 
 const FAKE_LOADING_DELAY = 500;
 
