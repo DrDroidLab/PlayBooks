@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import handleChangeInput from "./utils/handleChange.ts";
 import { useDispatch } from "react-redux";
 import { duplicateTask } from "../../../store/features/playbook/playbookSlice.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 
 export default function OptionRender({ data, removeErrors, id }) {

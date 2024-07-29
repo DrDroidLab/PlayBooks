@@ -1,7 +1,7 @@
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 type AddTaskButtonProps = {

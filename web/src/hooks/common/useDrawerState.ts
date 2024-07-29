@@ -5,7 +5,7 @@ import {
   openDrawer,
   toggleDrawer,
   setAdditionalState,
-} from "../store/features/drawers/drawersSlice.ts";
+} from "../../store/features/drawers/drawersSlice.ts";
 
 type DrawerState = {
   isOpen: boolean;

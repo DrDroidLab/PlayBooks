@@ -12,7 +12,7 @@ import { currentWorkflowSelector } from "../../store/features/workflow/workflowS
 import { useGetWorkflowExecutionsQuery } from "../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
 import PaginatedTable from "../../components/PaginatedTable.tsx";
-import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();

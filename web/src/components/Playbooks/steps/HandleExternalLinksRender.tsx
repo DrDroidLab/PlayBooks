@@ -6,7 +6,7 @@ import {
 } from "../../../store/features/playbook/playbookSlice.ts";
 import ExternalLinks from "./ExternalLinks.jsx";
 import useCurrentStep from "../../../hooks/useCurrentStep.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 function HandleExternalLinksRender({ id }) {
   const dispatch = useDispatch();

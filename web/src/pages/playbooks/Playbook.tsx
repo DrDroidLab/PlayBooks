@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import usePermanentDrawerState from "../../hooks/usePermanentDrawerState";
+import usePermanentDrawerState from "../../hooks/common/usePermanentDrawerState";
 import { useParams, useSearchParams } from "react-router-dom";
-import useIsPrefetched from "../../hooks/useIsPrefetched";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched";
 import {
   useLazyGetPlaybookQuery,
   usePlaybookBuilderOptionsQuery,

@@ -2,9 +2,9 @@ import { HomeRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import HeadingPlaybookButtons from "./Buttons/HeadingPlaybookButton/index.tsx";
 import PlaybookDescription from "./PlaybookDescription/index.tsx";
-import usePlaybookKey from "../hooks/usePlaybookKey.ts";
 import TimeRangeSelector from "./common/TimeRangeSelector/index.tsx";
 import HeadingTitle from "./HeadingTitle.tsx";
+import usePlaybookKey from "../hooks/playbooks/usePlaybookKey";
 
 const Heading = ({ subHeading = "", heading }) => {
   const navigate = useNavigate();

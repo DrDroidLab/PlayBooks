@@ -8,7 +8,7 @@ import WorkflowTable from "../../components/Workflows/WorkflowTable.jsx";
 import CustomButton from "../../components/common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import PaginatedTable from "../../components/PaginatedTable.tsx";
-import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 
 const Workflows = () => {
   const navigate = useNavigate();

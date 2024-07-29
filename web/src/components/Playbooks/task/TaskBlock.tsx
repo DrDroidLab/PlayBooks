@@ -5,7 +5,7 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import Details from "./Details.tsx";
 import HandleOutput from "./HandleOutput.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 const TaskBlock = ({ id }) => {
   const [task, currentStepId] = useCurrentTask(id);

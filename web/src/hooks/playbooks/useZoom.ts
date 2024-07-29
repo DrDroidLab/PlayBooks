@@ -1,4 +1,4 @@
-import usePlaybookKey from "./usePlaybookKey.ts";
+import usePlaybookKey from "./usePlaybookKey";
 
 function useZoom() {
   const [zoom, setZoom] = usePlaybookKey("zoomLevel");

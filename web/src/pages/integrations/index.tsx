@@ -6,7 +6,7 @@ import { Add } from "@mui/icons-material";
 import ConnectorCard from "../../components/Integration/ConnectorCard.tsx";
 import { Link } from "react-router-dom";
 import BasicSearch from "../../components/common/BasicSearch/index.tsx";
-import useBasicSearch from "../../hooks/useBasicSearch.ts";
+import useBasicSearch from "../../hooks/common/useBasicSearch";
 
 function DataSources() {
   const { data: integrations, isFetching } = useGetConnectorListQuery();

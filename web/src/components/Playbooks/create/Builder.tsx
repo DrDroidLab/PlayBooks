@@ -2,7 +2,7 @@ import CreateFlow from "./CreateFlow.jsx";
 import GlobalVariables from "../../common/GlobalVariable/index.jsx";
 import AddDataDrawer from "../../common/Drawers/AddDataDrawer.jsx";
 import TemplatesDrawer from "../../common/Drawers/TemplatesDrawer.jsx";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 

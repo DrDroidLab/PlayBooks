@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { testDataSelector } from "../store/features/integrations/integrationsSlice.ts";
+import { testDataSelector } from "../../store/features/integrations/integrationsSlice.ts";
 
 function useTestData() {
   const testData = useSelector(testDataSelector);

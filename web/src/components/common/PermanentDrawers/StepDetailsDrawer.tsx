@@ -6,7 +6,7 @@ import updateStepById from "../../../utils/playbook/step/updateStepById.ts";
 import Step from "../../Playbooks/steps/Step.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 function StepDetailsDrawer() {
   const [step, currentStepId] = useCurrentStep();

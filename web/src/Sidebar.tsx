@@ -6,7 +6,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import SlackConnectOverlay from "./components/SlackConnectOverlay.js";
-import useToggle from "./hooks/useToggle.js";
+import useToggle from "./hooks/common/useToggle.js";
 import "../src/Layout.css";
 import {
   Layers,

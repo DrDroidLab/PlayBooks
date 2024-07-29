@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../../../store/features/playbook/playbookSlice.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import { Delete } from "@mui/icons-material";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";

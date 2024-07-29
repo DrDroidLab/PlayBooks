@@ -1,13 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
-import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
+import useEdgeConditions from "../../../hooks/playbooks/useEdgeConditions.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 function GrepExistence({
   condition,

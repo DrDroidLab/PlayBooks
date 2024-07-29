@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useGetPlaybooksQuery } from "../../store/features/playbook/api";
-import usePaginationComponent from "../../hooks/usePaginationComponent";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 import CustomButton from "../../components/common/CustomButton";
 import { Add } from "@mui/icons-material";
 import Heading from "../../components/Heading";

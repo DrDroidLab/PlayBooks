@@ -1,10 +1,9 @@
-import React from "react";
-import useCurrentStep from "../../hooks/useCurrentStep.ts";
+import useCurrentStep from "../../hooks/playbooks/step/useCurrentStep.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
 import { Add, Delete, ErrorOutlineRounded } from "@mui/icons-material";
-import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
+import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import handleTaskTypeOptions from "../../utils/conditionals/handleTaskTypeOptions.ts";
 import HandleResultTypeForm from "./HandleResultTypeForm.tsx";
@@ -18,7 +17,7 @@ import { currentPlaybookSelector } from "../../store/features/playbook/playbookS
 import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);

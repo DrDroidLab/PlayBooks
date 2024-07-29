@@ -1,14 +1,14 @@
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import {
   playbookSelector,
   setCurrentVisibleStep,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 const stepDetailsId = PermanentDrawerTypes.STEP_DETAILS;
 

@@ -6,12 +6,12 @@ import { playbookSelector } from "../../../../store/features/playbook/playbookSl
 import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
-import useDrawerState from "../../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
 import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import React from "react";
 import CustomButton from "../../../common/CustomButton/index.tsx";
 import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.jsx";
-import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 

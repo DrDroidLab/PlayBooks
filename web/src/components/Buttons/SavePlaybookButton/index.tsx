@@ -9,9 +9,9 @@ import {
 import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
 import { useNavigate } from "react-router-dom";
 import handlePlaybookSavingValidations from "../../../utils/handlePlaybookSavingValidations.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 import stateToPlaybook from "../../../utils/parser/playbook/stateToPlaybook.ts";
-import useIsExisting from "../../../hooks/useIsExisting.ts";
+import useIsExisting from "../../../hooks/playbooks/useIsExisting.ts";
 
 type SavePlaybookButtonPropTypes = {
   shouldNavigate?: boolean;

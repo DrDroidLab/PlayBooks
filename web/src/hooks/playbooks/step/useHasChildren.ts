@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { currentPlaybookSelector } from "../store/features/playbook/playbookSlice.ts";
-import { StepRelation, StepRelationContract } from "../types/index.ts";
+import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { StepRelation, StepRelationContract } from "../../../types/index.ts";
 import useCurrentStep from "./useCurrentStep.ts";
 
 function useHasChildren(id: string) {

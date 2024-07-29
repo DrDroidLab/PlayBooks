@@ -8,11 +8,11 @@ import {
   addStep,
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import useZoom from "../../../hooks/useZoom.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useZoom from "../../../hooks/playbooks/useZoom.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 

@@ -1,9 +1,9 @@
 import Heading from "../../components/Heading.js";
 import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
 import BasicSearch from "../../components/common/BasicSearch/index.tsx";
-import useBasicSearch from "../../hooks/useBasicSearch.ts";
 import IntegrationCard from "../../components/common/IntegrationCard/index.jsx";
 import GroupedIntegrations from "../../components/Integration/GroupedIntegrations.tsx";
+import useBasicSearch from "../../hooks/common/useBasicSearch";
 
 function AddIntegration() {
   const { data: integrations } = useGetConnectorListQuery();

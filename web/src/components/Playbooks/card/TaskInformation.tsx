@@ -4,7 +4,7 @@ import handleStepInformation from "../../../utils/playbook/stepInformation/handl
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 type TaskInformationPropTypes = {
   taskId: string | undefined;

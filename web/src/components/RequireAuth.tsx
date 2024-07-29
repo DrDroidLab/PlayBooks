@@ -6,7 +6,7 @@ import {
 } from "../store/features/auth/authSlice.ts";
 import FakeLoading from "./common/Loading/FakeLoading.tsx";
 import RecieveUpdatesModal from "./Modals/RecieveUpdatesModal/index.tsx";
-import useToggle from "../hooks/useToggle.js";
+import useToggle from "../hooks/common/useToggle.js";
 
 const RequireAuth = () => {
   const accessToken = useSelector(selectAccessToken);

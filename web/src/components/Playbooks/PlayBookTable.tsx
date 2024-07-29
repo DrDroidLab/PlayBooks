@@ -12,7 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { Link, useNavigate } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingPlaybook.jsx";
 import styles from "./playbooks.module.css";
-import useToggle from "../../hooks/useToggle.js";
+import useToggle from "../../hooks/common/useToggle.js";
 import PlaybookActionOverlay from "./PlaybookActionOverlay.jsx";
 import { ContentCopy } from "@mui/icons-material";
 import { useDispatch } from "react-redux";

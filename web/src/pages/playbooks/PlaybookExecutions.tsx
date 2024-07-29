@@ -4,8 +4,8 @@ import PaginatedTable from "../../components/PaginatedTable";
 import ExecutionsTable from "../../components/Playbooks/executions/ExecutionsTable";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
 import TableSkeleton from "../../components/Skeleton/TableLoader";
-import usePaginationComponent from "../../hooks/usePaginationComponent";
-import useSearch from "../../hooks/useSearch";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent";
+import useSearch from "../../hooks/common/useSearch";
 
 const context = "PLAYBOOK_EXECUTION";
 

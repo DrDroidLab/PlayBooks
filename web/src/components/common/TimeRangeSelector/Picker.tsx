@@ -5,7 +5,7 @@ import {
 } from "../../../store/features/timeRange/timeRangeSlice.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import { isAfter, isBefore } from "rsuite/esm/internals/utils/date/index";
-import useDatePicker from "../../../hooks/useDatePicker.ts";
+import useDatePicker from "../../../hooks/common/useDatePicker.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 

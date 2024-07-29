@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Heading from "../../components/Heading";
-import useToggle from "../../hooks/useToggle.js";
+import useToggle from "../../hooks/common/useToggle.js";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
 import TableSkeleton from "../../components/Skeleton/TableLoader";
 import InviteUserOverlay from "./InviteUserOverlay.js";
 import UserTable from "./UserTable.js";
 import { useGetAccountUsersQuery } from "../../store/features/auth/api/index.ts";
-import usePaginationComponent from "../../hooks/usePaginationComponent.ts";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 
 const InviteTeam = () => {
   const { isOpen: isActionOpen, toggle } = useToggle();

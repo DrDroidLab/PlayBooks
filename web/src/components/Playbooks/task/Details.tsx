@@ -4,9 +4,8 @@ import { useDispatch } from "react-redux";
 import { setErrors } from "../../../store/features/playbook/playbookSlice.ts";
 import { constructBuilder } from "../../../utils/playbooksData.ts";
 import { deepEqual } from "../../../utils/deepEqual.ts";
-import React from "react";
 import OptionRender from "./OptionRender.tsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 
 function Details({ id }) {

@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const useToggle = (initialState = false) => {
   const [isOpen, setIsOpen] = useState(initialState);
-  const toggle = newVal => {
-    typeof newVal === 'boolean' ? setIsOpen(newVal) : setIsOpen(!isOpen);
+  const toggle = (newVal?: boolean) => {
+    typeof newVal === "boolean" ? setIsOpen(newVal) : setIsOpen(!isOpen);
   };
   return { isOpen, toggle };
 };

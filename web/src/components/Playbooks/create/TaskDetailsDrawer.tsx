@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import React from "react";
 import Task from "../task/Task.tsx";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 

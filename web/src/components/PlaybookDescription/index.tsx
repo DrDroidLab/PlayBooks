@@ -1,4 +1,4 @@
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
