@@ -55,26 +55,22 @@ export async function executeTask(id?: string) {
       ? res?.playbook_task_execution_logs
       : [res?.playbook_task_execution_log];
 
+    const list: any = [];
+
     outputs.forEach((output) => {
       const outputError = output?.result?.error;
 
       updateCardById("ui_requirement.showOutput", true, id);
-      updateCardById(
-        "ui_requirement.outputs",
-        [
-          ...(task.ui_requirement.outputs ?? []),
-          {
-            data: { ...output?.result, timestamp: output?.timestamp },
-            interpretation: output?.interpretation,
-          },
-        ],
-        id,
-      );
+      list.push({
+        data: { ...output?.result, timestamp: output?.timestamp },
+        error: outputError ? outputError : undefined,
+        interpretation: output?.interpretation,
+      });
       if (outputError) {
         updateCardById("ui_requirement.showError", true, id);
-        updateCardById("ui_requirement.outputError", outputError, id);
       }
     });
+    updateCardById("ui_requirement.outputs", list, id);
   } catch (e: any) {
     updateCardById("ui_requirement.showError", true, id);
     updateCardById("ui_requirement.outputError", e.message, id);
