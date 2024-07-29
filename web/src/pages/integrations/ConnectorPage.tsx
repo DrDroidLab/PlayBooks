@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import Heading from "../../components/Heading.js";
-import styles from "./index.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -93,10 +92,7 @@ function ConnectorPageBeta() {
       </button>
 
       {isActive && (
-        <Tabs
-          value={selectedTab}
-          onChange={handleTabChange}
-          className={styles["tab-section"]}>
+        <Tabs className="mx-2" value={selectedTab} onChange={handleTabChange}>
           <Tab label="Config" id="tab-0" aria-controls="tabpanel-0" />
           {containsAssets && (
             <Tab label="Assets" id="tab-1" aria-controls="tabpanel-1" />
@@ -104,18 +100,12 @@ function ConnectorPageBeta() {
         </Tabs>
       )}
 
-      <TabPanel
-        value={selectedTab}
-        index={0}
-        className={styles["config-section"]}>
+      <TabPanel value={selectedTab} index={0}>
         <Config connector={connector} />
       </TabPanel>
 
       {isActive && containsAssets && (
-        <TabPanel
-          value={selectedTab}
-          index={1}
-          className={styles["config-section"]}>
+        <TabPanel value={selectedTab} index={1}>
           <Assets connector={connector} id={id} />
         </TabPanel>
       )}
