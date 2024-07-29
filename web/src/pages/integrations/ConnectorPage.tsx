@@ -88,7 +88,12 @@ function ConnectorPageBeta() {
       </button>
 
       {isActive && (
-        <Tabs className="mx-2" value={selectedTab} onChange={handleTabChange}>
+        <Tabs
+          className="mx-2 !text-violet-500"
+          TabIndicatorProps={{ className: "!bg-violet-500" }}
+          textColor="inherit"
+          value={selectedTab}
+          onChange={handleTabChange}>
           <Tab label="Config" id="tab-0" aria-controls="tabpanel-0" />
           {containsAssets && (
             <Tab label="Assets" id="tab-1" aria-controls="tabpanel-1" />
