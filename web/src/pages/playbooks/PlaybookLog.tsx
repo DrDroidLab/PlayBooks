@@ -33,7 +33,6 @@ function PlaybookLog() {
       dispatch(setPlaybookData(playbook));
       dispatch(
         updateCustomTimeRange({
-          value: "Custom",
           startTime: timeRange.time_geq,
           endTime: timeRange.time_geq,
         }),
