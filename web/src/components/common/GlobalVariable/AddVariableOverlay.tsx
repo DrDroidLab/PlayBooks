@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import Overlay from "../../Overlay/index.jsx";
+import Overlay from "../../Overlay/index.js";
 import {
   addGlobalVariable,
   currentPlaybookSelector,

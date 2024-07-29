@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
 import { useUpdateConnectorMutation } from "../../../store/features/integrations/api/index.ts";
-import Overlay from "../../Overlay/index.jsx";
+import Overlay from "../../Overlay/index.js";
 import { CloseRounded } from "@mui/icons-material";
 import HandleKeyOptions from "./HandleKeyOptions.js";
 import { useNavigate } from "react-router-dom";

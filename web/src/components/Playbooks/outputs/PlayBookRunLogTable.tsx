@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 
 import { ArrowRightRounded } from "@mui/icons-material";
-import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
-import { isDate, renderTimestamp } from "../../utils/common/dateUtils.ts";
-import Code from "../common/Code/index.tsx";
+import SeeMoreTextWithoutModal from "../../common/SeeMoreTextWithoutModal/index.tsx";
+import { isDate, renderTimestamp } from "../../../utils/common/dateUtils.ts";
+import Code from "../../common/Code/index.tsx";
 import React from "react";
-import transformLogData from "../../utils/execution/transformLogData.ts";
+import transformLogData from "../../../utils/execution/transformLogData.ts";
 
 const DISPLAY_COLUMNS = [
   "@timestamp",

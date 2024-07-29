@@ -12,8 +12,8 @@ import {
   DialogActions,
 } from "@mui/material";
 
-import SeeMoreTextWithoutModal from "../common/SeeMoreTextWithoutModal/index.tsx";
-import { isDate, renderTimestamp } from "../../utils/common/dateUtils.ts";
+import SeeMoreTextWithoutModal from "../../common/SeeMoreTextWithoutModal/index.tsx";
+import { isDate, renderTimestamp } from "../../../utils/common/dateUtils.ts";
 
 const PlayBookRunDataTable = ({ title, result, timestamp, showHeading }) => {
   const [showTable, setShowTable] = useState(false);

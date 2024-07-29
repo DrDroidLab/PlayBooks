@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useDeletePlaybookMutation } from "../../store/features/playbook/api/index.ts";
-import Overlay from "../Overlay/index.jsx";
+import Overlay from "../Overlay/index.js";
 import styles from "./index.module.css";
 import { CircularProgress } from "@mui/material";
 

@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Heading from "../../Heading.jsx";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../../Skeleton/TableLoader.jsx";
-import ExecutionsTable from "./ExecutionsTable.jsx";
+import Heading from "../../Heading.js";
+import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../../Skeleton/TableLoader.js";
+import ExecutionsTable from "./ExecutionsTable.js";
 import Search from "../../common/Search/index.tsx";
-import useSearch from "../../../hooks/useSearch.ts";
 import PaginatedTable from "../../PaginatedTable.tsx";
-import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
+import useSearch from "../../../hooks/common/useSearch.ts";
+import usePaginationComponent from "../../../hooks/common/usePaginationComponent.ts";
 
 const context = "PLAYBOOK_EXECUTION";
 
@@ -19,11 +19,7 @@ const PlaybookExecutionsList = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Playbook Executions"}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Playbook Executions"} />
 
       <main className="flex flex-col gap-4 p-2 pt-4">
         <Search context={context} />

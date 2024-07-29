@@ -5,7 +5,7 @@ export const getPlaybookExecutionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPlaybookExecutions: builder.query<
       any,
-      { limit: number; offset: number; playbookId: string }
+      { limit?: number; offset?: number; playbookId: string }
     >({
       query: ({ limit, offset, playbookId }) => ({
         url: GET_PLAYBOOK_EXECUTIONS,

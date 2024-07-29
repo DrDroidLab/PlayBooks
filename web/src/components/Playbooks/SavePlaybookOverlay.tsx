@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
-import Overlay from "../Overlay/index.jsx";
+import Overlay from "../Overlay/index.js";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,

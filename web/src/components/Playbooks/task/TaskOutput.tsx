@@ -1,9 +1,9 @@
-import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.js";
-import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput.js";
-import PlaybookBashActionOutput from "../PlaybookBashActionOutput.js";
+import PlayBookRunMetricGraph from "../outputs/PlayBookRunMetricGraph.js";
+import PlaybookAPIActionOutput from "../outputs/PlaybookAPIActionOutput.js";
+import PlaybookBashActionOutput from "../outputs/PlaybookBashActionOutput.js";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
-import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
-import PlayBookRunDataTable from "../PlayBookRunDataTable.js";
+import PlayBookRunLogTable from "../outputs/PlayBookRunLogTable.tsx";
+import PlayBookRunDataTable from "../outputs/PlayBookRunDataTable.js";
 import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 

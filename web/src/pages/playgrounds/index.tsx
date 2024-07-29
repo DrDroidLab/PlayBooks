@@ -1,5 +1,3 @@
-import React from "react";
-
 function Playgrounds() {
   return (
     <div className="p-2">

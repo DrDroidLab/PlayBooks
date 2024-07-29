@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import Overlay from "../../Overlay/index.jsx";
+import Overlay from "../../Overlay/index.js";
 import styles from "./overlay.module.css";
 import { CircularProgress } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";

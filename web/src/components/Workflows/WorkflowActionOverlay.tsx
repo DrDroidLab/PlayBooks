@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import Overlay from "../Overlay/index.jsx";
+import Overlay from "../Overlay/index.js";
 import { CircularProgress } from "@mui/material";
 import { useDeleteWorkflowMutation } from "../../store/features/workflow/api/deleteWorkflowApi.ts";
 

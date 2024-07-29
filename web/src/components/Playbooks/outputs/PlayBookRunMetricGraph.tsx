@@ -1,11 +1,11 @@
 import ReactECharts from "echarts-for-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./index.module.css";
-import { getTSLabel } from "./utils";
-import SeeMoreText from "./SeeMoreText";
+import { getTSLabel } from "../utils";
+import SeeMoreText from "../SeeMoreText";
 import dayjs from "dayjs";
-import { renderTimestamp } from "../../utils/common/dateUtils";
-import useKeyPressed from "../../hooks/common/useKeyPressed";
+import { renderTimestamp } from "../../../utils/common/dateUtils";
+import useKeyPressed from "../../../hooks/common/useKeyPressed";
 
 const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const [chartOptions, setChartOptions] = useState({});
@@ -156,12 +156,12 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   return (
     <div className={styles["graph-box"]}>
       <div className={styles["graph-title"]}>
-        <SeeMoreText text={title} />
+        <SeeMoreText title={""} text={title} />
       </div>
       {!showGraph && (
         <div className={styles["graph-error"]}>
           {error ? (
-            <SeeMoreText truncSize={150} text={error} />
+            <SeeMoreText title={""} truncSize={150} text={error} />
           ) : (
             "No data available"
           )}

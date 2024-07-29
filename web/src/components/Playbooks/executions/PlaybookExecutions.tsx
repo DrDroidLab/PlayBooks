@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
-import Heading from "../../Heading.jsx";
+import Heading from "../../Heading.js";
 import { useEffect } from "react";
-import SuspenseLoader from "../../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../../Skeleton/TableLoader.jsx";
-import ExecutionsTable from "./ExecutionsTable.jsx";
+import SuspenseLoader from "../../Skeleton/SuspenseLoader.js";
+import TableSkeleton from "../../Skeleton/TableLoader.js";
+import ExecutionsTable from "./ExecutionsTable.js";
 import Loading from "../../common/Loading/index.tsx";
 import { useSelector } from "react-redux";
 import { ChevronLeft } from "@mui/icons-material";
@@ -12,13 +12,13 @@ import { useGetPlaybookExecutionsQuery } from "../../../store/features/playbook/
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../../store/features/playbook/api/getPlaybookApi.ts";
 import PaginatedTable from "../../PaginatedTable.tsx";
-import usePaginationComponent from "../../../hooks/usePaginationComponent.ts";
+import usePaginationComponent from "../../../hooks/common/usePaginationComponent.ts";
 
 const PlaybookExecutions = () => {
   const { id: playbookId } = useParams();
   const navigate = useNavigate();
   const { data, isFetching, refetch } = useGetPlaybookExecutionsQuery({
-    playbookId,
+    playbookId: playbookId ?? "",
   });
   const [triggerGetPlaybook, { isLoading: workflowLoading }] =
     useLazyGetPlaybookQuery();
@@ -39,11 +39,7 @@ const PlaybookExecutions = () => {
 
   return (
     <div>
-      <Heading
-        heading={"Playbook Executions-" + currentPlaybook.name}
-        onTimeRangeChangeCb={false}
-        onRefreshCb={false}
-      />
+      <Heading heading={"Playbook Executions-" + currentPlaybook?.name} />
       <button
         onClick={() => navigate(-1)}
         className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">

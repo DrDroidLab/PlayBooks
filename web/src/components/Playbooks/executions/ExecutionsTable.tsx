@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingExecution.jsx";
+import NoExistingPlaybook from "./NoExistingExecution.js";
 import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
 import handleToolLogos from "../../../utils/playbook/handleToolLogos.ts";
 

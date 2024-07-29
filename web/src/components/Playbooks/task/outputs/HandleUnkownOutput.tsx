@@ -1,6 +1,6 @@
 import { SOURCES } from "../../../../constants/index.ts";
 import HandleDocumentationOutputs from "../../outputs/HandleDocumentationOutputs.tsx";
-import PlayBookRunMetricGraph from "../../PlayBookRunMetricGraph.js";
+import PlayBookRunMetricGraph from "../../outputs/PlayBookRunMetricGraph.js";
 import HandleSmtpOutput from "../../outputs/HandleSmtpOutput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 

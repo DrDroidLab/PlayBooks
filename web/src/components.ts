@@ -20,7 +20,7 @@ export const components = {
   [PageKeys.WORKFLOW_EXECUTIONS_LIST]:
     "./pages/workflows/WorkflowExecutionList",
   [PageKeys.WORKFLOW_EXECUTION_LOGS]: "./pages/workflows/WorkflowExecutionLogs",
-  [PageKeys.PLAYGROUND]: "./components/Playgrounds/index",
+  [PageKeys.PLAYGROUND]: "./pages/playgrounds",
   [PageKeys.DATA_SOURCES]: "./pages/integrations",
   [PageKeys.INTEGRATIONS_ADD]: "./pages/integrations/AddIntegration",
   [PageKeys.CONNECTOR_PAGE]: "./pages/integrations/ConnectorPage",

@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 
 const Overlay = (props) => {
   const { children, visible, close } = props;
-  const overlayRef = useRef(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

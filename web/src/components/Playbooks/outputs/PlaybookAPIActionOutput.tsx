@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import RadioOptions from "../common/RadioOptions/index.tsx";
+import RadioOptions from "../../common/RadioOptions/index.tsx";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import CopyCode from "../common/CopyCode";
+import CopyCode from "../../common/CopyCode/index.tsx";
 
 const options = [
   {
