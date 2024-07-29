@@ -45,26 +45,39 @@ class PlayBookTask(models.Model):
     task_connector_source = models.ManyToManyField(Connector, through='PlayBookStepTaskConnectorMapping',
                                                    related_name='task_source')
 
+    configuration = models.JSONField(null=True, blank=True)
+
     class Meta:
         unique_together = [['account', 'name', 'task_md5', 'created_by']]
 
     @property
     def proto(self) -> PlaybookTaskProto:
+        config_proto = PlaybookTaskProto.Configuration()
+        if self.configuration:
+            config_proto = dict_to_proto(self.configuration, PlaybookTaskProto.Configuration)
+
         playbook_task = dict_to_proto(self.task, PlaybookTaskProto)
         playbook_task.id.value = self.id
         playbook_task.name.value = self.name
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
-        playbook_task.created_by.value = self.created_by if self.created_by else ''
+        playbook_taskplaybook_task.configuration.CopyFrom(
+            config_proto).created_by.value = self.created_by if self.created_by else ''
+
         return playbook_task
 
     def proto_with_connector_source(self, playbook_id, playbook_step_id) -> PlaybookTaskProto:
+        config_proto = PlaybookTaskProto.Configuration()
+        if self.configuration:
+            config_proto = dict_to_proto(self.configuration, PlaybookTaskProto.Configuration)
         playbook_task = dict_to_proto(self.task, PlaybookTaskProto)
         playbook_task.id.value = self.id
         playbook_task.name.value = self.name
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
         playbook_task.created_by.value = self.created_by if self.created_by else ''
+        playbook_task.configuration.CopyFrom(config_proto)
+
         all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
             account=self.account, playbook_id=playbook_id, playbook_step_id=playbook_step_id, playbook_task=self,
             is_active=True
