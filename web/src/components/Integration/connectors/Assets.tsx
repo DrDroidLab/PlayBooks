@@ -1,16 +1,15 @@
-import { connectors } from "../../../constants/connectors.ts";
-import { ClickhouseAssets } from "./assets/ClickhouseAssets.jsx";
-import TableSkeleton from "../../Skeleton/TableLoader.tsx";
-import { CloudwatchAssets } from "./assets/CloudwatchAssets.jsx";
-import { DataDogAssets } from "./assets/DatadogAssets.jsx";
-import { GrafanaAssets } from "./assets/GrafanaAssets.jsx";
-import { NewRelicAssets } from "./assets/NewRelicAssests.jsx";
-import { PostgresAssets } from "./assets/PostgresAssets.jsx";
-import { useGetConnectorAssetsQuery } from "../../../store/features/integrations/api/index.ts";
-import { EksClusterAssets } from "./assets/EksClusterAssets.jsx";
-import { AzureAssets } from "./assets/AzureAssets.jsx";
-import { GkeAssets } from "./assets/GkeAssets.jsx";
-import { ElasticSearchAssets } from "./assets/ElasticSearch.jsx";
+import { connectors } from "../../../constants/connectors";
+import { ClickhouseAssets } from "./assets/ClickhouseAssets";
+import TableSkeleton from "../../Skeleton/TableLoader";
+import { CloudwatchAssets } from "./assets/CloudwatchAssets";
+import { DataDogAssets } from "./assets/DatadogAssets";
+import { NewRelicAssets } from "./assets/NewRelicAssests";
+import { PostgresAssets } from "./assets/PostgresAssets";
+import { useGetConnectorAssetsQuery } from "../../../store/features/integrations/api";
+import { EksClusterAssets } from "./assets/EksClusterAssets";
+import { AzureAssets } from "./assets/AzureAssets";
+import { GkeAssets } from "./assets/GkeAssets";
+import { ElasticSearchAssets } from "./assets/ElasticSearch";
 
 function Assets({ connector, id }) {
   const { data, isFetching, error } = useGetConnectorAssetsQuery(id);
@@ -37,10 +36,6 @@ function Assets({ connector, id }) {
 
     case connectors.DATADOG:
       return <DataDogAssets assets={assets} />;
-
-    case connectors.GRAFANA_VPC:
-    case connectors.GRAFANA:
-      return <GrafanaAssets assets={assets} />;
 
     case connectors.AZURE:
       return <AzureAssets assets={assets} />;

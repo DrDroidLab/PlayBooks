@@ -65,7 +65,7 @@ export const DataDogAssets = ({ assets }) => {
                       </AccordionSummary>
                       <AccordionDetails>
                         <List>
-                          {metric[1].map((metric_name) => (
+                          {(metric as any)?.[1]?.map((metric_name) => (
                             <ListItem>
                               <ListItemText primary={metric_name} />
                             </ListItem>

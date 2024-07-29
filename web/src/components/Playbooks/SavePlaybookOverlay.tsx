@@ -6,7 +6,7 @@ import {
   currentPlaybookSelector,
   setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import { Toast } from "../Toast.jsx";
+import { Toast } from "../Toast.tsx";
 import useIsExisting from "../../hooks/playbooks/useIsExisting.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";

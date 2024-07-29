@@ -1,9 +1,7 @@
-import React from "react";
-
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-export const Toast = (props) => {
+export const Toast = (props: any) => {
   const {
     open,
     severity,
@@ -13,10 +11,7 @@ export const Toast = (props) => {
     autoHideDuration = 3000,
   } = props;
 
-  const handleCloseToast = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  const handleCloseToast = () => {
     handleClose();
   };
 

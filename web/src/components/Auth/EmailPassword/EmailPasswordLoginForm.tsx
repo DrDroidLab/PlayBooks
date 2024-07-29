@@ -3,7 +3,7 @@ import { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../../store/features/auth/api/loginApi.ts";
-import { Toast } from "../../Toast.jsx";
+import { Toast } from "../../Toast.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import ShowPasswordIcon from "./ShowPasswordIcon.tsx";

@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { useState } from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import { Toast } from "../../Toast.jsx";
+import { Toast } from "../../Toast.tsx";
 import { useNavigate } from "react-router-dom";
 import {
   useLazySaveSiteUrlQuery,
