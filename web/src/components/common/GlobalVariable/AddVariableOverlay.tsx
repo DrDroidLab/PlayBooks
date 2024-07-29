@@ -63,6 +63,9 @@ const AddVariableOverlay = ({ isOpen, close }) => {
               placeholder={"Enter variable value"}
             />
           </div>
+          <p className="text-xs mt-2 text-gray-500 italic">
+            To enter a bulk variable, just enter the value as a CSV
+          </p>
           <div className="flex items-center gap-2 mt-10">
             <CustomButton onClick={() => close()}>Cancel</CustomButton>
             <CustomButton onClick={handleSubmit}>Add</CustomButton>
