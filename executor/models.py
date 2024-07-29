@@ -45,38 +45,25 @@ class PlayBookTask(models.Model):
     task_connector_source = models.ManyToManyField(Connector, through='PlayBookStepTaskConnectorMapping',
                                                    related_name='task_source')
 
-    configuration = models.JSONField(null=True, blank=True)
-
     class Meta:
         unique_together = [['account', 'name', 'task_md5', 'created_by']]
 
     @property
     def proto(self) -> PlaybookTaskProto:
-        config_proto = PlaybookTaskProto.Configuration()
-        if self.configuration:
-            config_proto = dict_to_proto(self.configuration, PlaybookTaskProto.Configuration)
-
         playbook_task = dict_to_proto(self.task, PlaybookTaskProto)
         playbook_task.id.value = self.id
         playbook_task.name.value = self.name
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
-        playbook_taskplaybook_task.configuration.CopyFrom(
-            config_proto).created_by.value = self.created_by if self.created_by else ''
-
         return playbook_task
 
     def proto_with_connector_source(self, playbook_id, playbook_step_id) -> PlaybookTaskProto:
-        config_proto = PlaybookTaskProto.Configuration()
-        if self.configuration:
-            config_proto = dict_to_proto(self.configuration, PlaybookTaskProto.Configuration)
         playbook_task = dict_to_proto(self.task, PlaybookTaskProto)
         playbook_task.id.value = self.id
         playbook_task.name.value = self.name
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
         playbook_task.created_by.value = self.created_by if self.created_by else ''
-        playbook_task.configuration.CopyFrom(config_proto)
 
         all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
             account=self.account, playbook_id=playbook_id, playbook_step_id=playbook_step_id, playbook_task=self,
@@ -214,8 +201,19 @@ class PlayBookStep(models.Model):
         )
 
     def playbook_specific_proto(self, playbook_id) -> PlaybookStepProto:
-        all_tasks = self.tasks.all().order_by('playbooksteptaskdefinitionmapping__id')
-        tasks = [pbt.proto for pbt in all_tasks]
+        all_step_task_mappings = PlayBookStepTaskDefinitionMapping.objects.filter(account=self.account,
+                                                                                  playbook_step=self)
+        tasks = []
+        for stm in all_step_task_mappings:
+            task_proto: PlaybookTaskProto = stm.playbook_task_definition.proto
+            playbook_task_execution_config = stm.playbook_task_execution_config
+            if playbook_task_execution_config:
+                playbook_task_execution_config = playbook_task_execution_config.first().get(
+                    'playbook_task_execution_config', {})
+                playbook_task_execution_config_proto = dict_to_proto(playbook_task_execution_config,
+                                                                     PlaybookTaskProto.ExecutionConfiguration)
+                task_proto.execution_configuration.CopyFrom(playbook_task_execution_config_proto)
+            tasks.append(task_proto)
 
         all_active_relations = PlayBookStepRelation.objects.filter(account=self.account, playbook_id=playbook_id,
                                                                    parent=self, is_active=True)
@@ -362,6 +360,7 @@ class PlayBookStepTaskDefinitionMapping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     playbook_task_definition = models.ForeignKey(PlayBookTask, on_delete=models.CASCADE, db_index=True)
+    playbook_task_execution_config = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
 
 

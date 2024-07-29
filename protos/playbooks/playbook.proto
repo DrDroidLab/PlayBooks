@@ -36,8 +36,8 @@ message PlaybookTask {
     google.protobuf.StringValue name = 3;
   }
 
-  message Configuration {
-    google.protobuf.BoolValue is_bulk_task = 1;
+  message ExecutionConfiguration {
+    google.protobuf.BoolValue is_bulk_execution = 1;
   }
 
   google.protobuf.UInt64Value id = 1;
@@ -50,7 +50,7 @@ message PlaybookTask {
   google.protobuf.Struct global_variable_set = 8;
   InterpreterType interpreter_type = 9;
   repeated PlaybookTaskConnectorSource task_connector_sources = 10;
-  Configuration configuration = 11;
+  ExecutionConfiguration execution_configuration = 11;
   oneof task {
     Documentation documentation = 101;
     Cloudwatch cloudwatch = 102;
