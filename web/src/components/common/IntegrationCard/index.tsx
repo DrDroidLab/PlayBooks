@@ -1,6 +1,6 @@
-import { Button } from "@mui/material";
 import styles from "./styles.module.css";
 import capitalizeFirstLetter from "../../../utils/common/capitalize";
+import CustomButton from "../CustomButton";
 
 function IntegrationCard({ data }) {
   const handleClick = () => {};
@@ -36,12 +36,11 @@ function IntegrationCard({ data }) {
         }
         target={data?.status === "request" ? "_blank" : "_self"}
         rel="noreferrer">
-        <Button
-          type="link"
-          className={styles.buttonStyle}
+        <CustomButton
+          className="w-full rounded-none rounded-b !text-base justify-center border-none !bg-gray-100 py-2 hover:!bg-violet-500"
           onClick={handleClick}>
           {capitalizeFirstLetter(data.buttonText.toLowerCase())}
-        </Button>
+        </CustomButton>
       </a>
     </div>
   );

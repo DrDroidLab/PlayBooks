@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
+import { GlobalSnackbar } from "./components/common/GlobalSnackbar";
 import { ReactFlowProvider } from "reactflow";
 import "highlight.js/styles/github.min.css";
 import "rsuite/DatePicker/styles/index.css";

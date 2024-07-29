@@ -26,6 +26,7 @@ function ExternalLinks({ links, setLinks }) {
 
   const handleEdit = () => {
     const temp = structuredClone(links);
+    if (!currentIndex) return;
     temp[currentIndex] = {
       url: formData.url.trim(),
       name: formData.name.trim(),

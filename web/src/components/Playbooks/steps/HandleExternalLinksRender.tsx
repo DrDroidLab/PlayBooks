@@ -2,10 +2,10 @@ import { useDispatch } from "react-redux";
 import {
   addExternalLinks,
   toggleExternalLinkVisibility,
-} from "../../../store/features/playbook/playbookSlice.ts";
-import ExternalLinks from "./ExternalLinks.jsx";
-import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
-import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
+} from "../../../store/features/playbook/playbookSlice";
+import ExternalLinks from "./ExternalLinks";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep";
 
 function HandleExternalLinksRender({ id }) {
   const dispatch = useDispatch();

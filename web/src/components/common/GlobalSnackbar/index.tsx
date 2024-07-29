@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Snackbar from "@mui/material/Snackbar";
 import {
@@ -6,7 +5,7 @@ import {
   snackbarSelector,
 } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { Alert } from "@mui/material";
-import SeeMoreText from "../../Playbooks/SeeMoreText";
+import SeeMoreText from "../../Playbooks/SeeMoreText.tsx";
 
 export function GlobalSnackbar() {
   const { open, message, type } = useSelector(snackbarSelector);
@@ -24,7 +23,7 @@ export function GlobalSnackbar() {
       onClose={handleClose}
       message={message}>
       <Alert variant="filled" onClose={handleClose} severity={type}>
-        <SeeMoreText text={message} />
+        <SeeMoreText title={""} text={message} />
       </Alert>
     </Snackbar>
   );
