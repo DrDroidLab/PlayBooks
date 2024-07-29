@@ -42,16 +42,14 @@ const AddVariableOverlay = ({ isOpen, close }) => {
   };
 
   return (
-    <div style={{ zIndex: "200" }}>
-      <Overlay close={close} visible={isOpen}>
-        <div className={styles["dashboardSaveOverlay"]}>
-          <div className={styles["dashboardSaveOverlay__content"]}>
-            <div className={styles.title}>
-              Add a new variable
-              <CloseRounded onClick={() => close()} />
-            </div>
+    <Overlay close={close} visible={isOpen}>
+      <div className="z-[200] bg-white max-w-sm rounded m-2">
+        <div className={"p-4"}>
+          <div className={styles.title}>
+            Add a new variable
+            <CloseRounded onClick={() => close()} />
           </div>
-          <div className={styles.variable}>
+          <div className="flex flex-wrap gap-2 mt-4">
             <CustomInput
               inputType={InputTypes.TEXT}
               handleChange={(val) => setName(val)}
@@ -70,15 +68,15 @@ const AddVariableOverlay = ({ isOpen, close }) => {
             <CustomButton onClick={handleSubmit}>Add</CustomButton>
           </div>
         </div>
-        <Toast
-          open={validationError}
-          severity="error"
-          message={validationError}
-          handleClose={() => setValidationError("")}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        />
-      </Overlay>
-    </div>
+      </div>
+      <Toast
+        open={validationError}
+        severity="error"
+        message={validationError}
+        handleClose={() => setValidationError("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      />
+    </Overlay>
   );
 };
 

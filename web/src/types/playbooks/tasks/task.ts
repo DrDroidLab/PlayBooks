@@ -1,6 +1,7 @@
 import { GlobalVariableSet } from "../globalVariableSet.ts";
 import { TaskConnectorSource } from "./taskConnectorSources.ts";
 import { TaskDetails } from "./taskDetails.ts";
+import { TaskExecutionConfiguration } from "./taskExecutionConfiguration.ts";
 
 type TaskUIRequirement = {
   isOpen: boolean;
@@ -35,5 +36,6 @@ export type Task = {
   global_variable_set?: GlobalVariableSet;
   interpreter_type: string;
   task_connector_sources: TaskConnectorSource[];
+  execution_configuration: TaskExecutionConfiguration;
   ui_requirement: TaskUIRequirement;
 } & Partial<TaskDetails>;
