@@ -1,4 +1,3 @@
-import "../css/SignUp.css";
 import { CircularProgress } from "@mui/material";
 import SocialSignIn from "../../components/Auth/SocialSignIn/index.tsx";
 import SignupAdditionalData from "../../components/Auth/AdditonalData/SignupAdditionalData.tsx";

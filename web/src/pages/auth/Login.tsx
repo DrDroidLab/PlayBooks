@@ -1,4 +1,3 @@
-import "../css/Login.css";
 import { CircularProgress } from "@mui/material";
 import EmailPasswordLoginForm from "../../components/Auth/EmailPassword/EmailPasswordLoginForm.tsx";
 import LoginAdditionalData from "../../components/Auth/AdditonalData/LoginAdditionalData.tsx";
