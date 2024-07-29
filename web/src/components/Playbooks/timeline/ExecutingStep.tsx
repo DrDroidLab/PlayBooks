@@ -1,6 +1,5 @@
 import { CircularProgress } from "@mui/material";
-import React from "react";
-import useExecutionStack from "../../../hooks/useExecutionStack.ts";
+import useExecutionStack from "../../../hooks/playbooks/useExecutionStack";
 
 function ExecutingStep() {
   const { executingStep } = useExecutionStack();
@@ -12,7 +11,7 @@ function ExecutingStep() {
       <h2 className="text-violet-500 text-sm font-bold">Step</h2>
       <div className="flex gap-2 items-center flex-wrap">
         <h1 className="font-semibold text-lg line-clamp-3">
-          {executingStep.description}
+          {executingStep?.description}
         </h1>
       </div>
       <div className="flex items-center gap-2 mt-3">

@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
-import IntegrationOption from "./IntegrationOption.jsx";
+import IntegrationOption from "./IntegrationOption";
 
 function IntegrationsList() {
   const { data, isLoading } = usePlaybookBuilderOptionsQuery();

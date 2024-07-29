@@ -1,12 +1,11 @@
 import { CircularProgress } from "@mui/material";
 import { updateCardById } from "../../../utils/execution/updateCardById.ts";
 import { useEffect, useRef } from "react";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import React from "react";
 import Task from "../task/Task.tsx";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function TaskDetailsDrawer() {
   const [task, currentTaskId] = useCurrentTask();

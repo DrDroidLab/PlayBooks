@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import updateStepById from "../../utils/playbook/step/updateStepById.ts";
-import useCurrentStep from "../useCurrentStep.ts";
+import useCurrentStep from "./useCurrentStep";
+import updateStepById from "../../../utils/playbook/step/updateStepById";
 
 function useStepDimensions(stepId: string) {
   const stepRef = useRef<HTMLDivElement>(null);

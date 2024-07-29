@@ -1,5 +1,5 @@
 import { SOURCES } from "../constants/index.ts";
-import { cardsData } from "./cardsData";
+import { cardsData } from "./cardsData.ts";
 
 const handleImageSrc = (
   source: string,

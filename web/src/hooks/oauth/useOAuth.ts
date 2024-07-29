@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { showSnackbar } from "../store/features/snackbar/snackbarSlice.ts";
+import { showSnackbar } from "../../store/features/snackbar/snackbarSlice.ts";
 import { useEffect } from "react";
-import useOkta from "./oauth/useOkta.ts";
+import useOkta from "./useOkta.ts";
 
 const OAuthTypes = {
   OKTA: "okta",

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./styles.module.css";
-// import ValueComponent from '../ValueComponent';
 import { useDispatch, useSelector } from "react-redux";
 import Overlay from "../../Overlay/index.jsx";
 import {
   addGlobalVariable,
-  playbookSelector,
+  currentPlaybookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import { CloseRounded } from "@mui/icons-material";
 import { Toast } from "../../Toast.jsx";
@@ -18,7 +17,8 @@ const AddVariableOverlay = ({ isOpen, close }) => {
   const [value, setValue] = useState("");
   const [validationError, setValidationError] = useState("");
   const dispatch = useDispatch();
-  const { globalVariables } = useSelector(playbookSelector);
+  const currentPlaybook = useSelector(currentPlaybookSelector);
+  const globalVariables = currentPlaybook?.global_variable_set ?? {};
 
   const resetState = () => {
     setName("");
@@ -32,7 +32,7 @@ const AddVariableOverlay = ({ isOpen, close }) => {
       return;
     }
     const nameVal = !name.startsWith("$") ? `$${name}` : name;
-    if (globalVariables?.find((e) => e.name === nameVal)) {
+    if (Object.keys(globalVariables)?.find((e) => e === nameVal)) {
       setValidationError("A variable with this name already exists");
       return;
     }

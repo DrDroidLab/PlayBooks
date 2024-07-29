@@ -7,11 +7,11 @@ import {
 } from "../utils/handleInputs.ts";
 import { CircularProgress } from "@mui/material";
 import { RefreshRounded } from "@mui/icons-material";
-import AlertsDrawer from "../../common/Drawers/AlertsDrawer.jsx";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import AlertsDrawer from "../../common/Drawers/AlertsDrawer.js";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 
 function SlackTriggerForm() {
   const { data: options, isFetching, refetch } = useGetTriggerOptionsQuery();

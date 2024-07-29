@@ -2,11 +2,11 @@ import { useGetPlaybookExecutionQuery } from "../../store/features/playbook/api/
 import { useDispatch } from "react-redux";
 import { showTaskConfig } from "../../store/features/playbook/playbookSlice.ts";
 import Loading from "../common/Loading/index.tsx";
-import ExecutingStep from "./timeline/ExecutingStep.jsx";
+import ExecutingStep from "./timeline/ExecutingStep.js";
 import StepConfig from "./timeline/StepConfig.tsx";
 import ExecuteNextStep from "./timeline/ExecuteNextStep.tsx";
-import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.jsx";
-import useExecutionStack from "../../hooks/useExecutionStack.ts";
+import ExecutionNavigateButtons from "./timeline/ExecutionNavigateButtons.js";
+import useExecutionStack from "../../hooks/playbooks/useExecutionStack.ts";
 
 function Timeline() {
   const { isLoading, refetch } = useGetPlaybookExecutionQuery();
@@ -37,10 +37,10 @@ function Timeline() {
         ))}
       </div>
 
-      <ExecutingStep handleShowConfig={handleShowConfig} />
+      <ExecutingStep />
 
       {showNextStepExecution && !executingStep && (
-        <ExecuteNextStep stepId={nextStep.id} refetch={refetch} />
+        <ExecuteNextStep stepId={nextStep?.id} refetch={refetch} />
       )}
 
       <ExecutionNavigateButtons steps={steps} />

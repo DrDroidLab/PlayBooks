@@ -1,7 +1,7 @@
 import hljs from "highlight.js/lib/core";
 import yaml from "highlight.js/lib/languages/yaml";
 import curl from "highlight.js/lib/languages/bash";
-import CustomDrawer from "../CustomDrawer/index.jsx";
+import CustomDrawer from "../CustomDrawer";
 import CopyCode from "../CopyCode/index.jsx";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 

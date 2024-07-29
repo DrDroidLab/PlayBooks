@@ -5,9 +5,9 @@ import {
   deleteVariable,
   updateGlobalVariable,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import AddVariableOverlay from "./AddVariableOverlay.jsx";
+import AddVariableOverlay from "./AddVariableOverlay.js";
 import { Add, CloseRounded } from "@mui/icons-material";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";

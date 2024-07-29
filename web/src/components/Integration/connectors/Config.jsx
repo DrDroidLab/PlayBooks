@@ -7,7 +7,7 @@ import {
 } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { cardsData } from "../../../utils/cardsData.js";
+import { cardsData } from "../../../utils/cardsData";
 import ConfigButtons from "./ConfigButtons.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";

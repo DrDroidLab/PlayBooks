@@ -1,21 +1,18 @@
 import ReactECharts from "echarts-for-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./index.module.css";
-
 import { getTSLabel } from "./utils";
-
 import SeeMoreText from "./SeeMoreText";
-
 import dayjs from "dayjs";
-import useKeyPressed from "../../hooks/useKeyPressed";
 import { renderTimestamp } from "../../utils/DateUtils";
+import useKeyPressed from "../../hooks/common/useKeyPressed";
 
 const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
   const [chartOptions, setChartOptions] = useState({});
   const [showGraph, setShowGraph] = useState(false);
   const [selectedLegends, setSelectedLegends] = useState({});
   const keyPressed = useKeyPressed();
-  const chart = useRef(null);
+  const chart = useRef<ReactECharts>(null);
 
   let tsData = useMemo(() => {
     return result?.timeseries?.labeled_metric_timeseries;
@@ -25,7 +22,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
     ? result?.timeseries?.labeled_metric_timeseries[0]?.unit
     : null;
 
-  chart.current?.resize();
+  (chart.current as any)?.resize();
 
   const handleLegendClick = (params) => {
     let newSelectedLegends = selectedLegends;
@@ -58,7 +55,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       }
     }
 
-    setChartOptions((prev) => {
+    setChartOptions((prev: any) => {
       return {
         ...prev,
         legend: {
@@ -87,7 +84,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
           getTSLabel(x?.metric_label_values ?? []),
       );
 
-      let data = [];
+      let data: any = [];
       for (let j = 0; j < sortedTSData.length; j++) {
         data.push({
           ts: sortedTSData[j].datapoints.map((ts) => {
@@ -97,7 +94,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
         });
       }
 
-      let series = [];
+      let series: any = [];
       for (let i = 0; i < data.length; i++) {
         series.push({
           name: tsLabels[i],
@@ -148,7 +145,7 @@ const PlayBookRunMetricGraph = ({ title, result, timestamp, error }) => {
       setChartOptions({});
       setShowGraph(false);
     }
-    chart.current?.resize();
+    (chart.current as any)?.resize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tsData]);
 

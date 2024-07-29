@@ -4,7 +4,7 @@ import Heading from "../../components/Heading.tsx";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.tsx";
 import TableSkeleton from "../../components/Skeleton/TableLoader.tsx";
 import { useGetWorkflowsQuery } from "../../store/features/workflow/api/getWorkflowsApi.ts";
-import WorkflowTable from "../../components/Workflows/WorkflowTable.jsx";
+import WorkflowTable from "../../components/Workflows/WorkflowTable.js";
 import CustomButton from "../../components/common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import PaginatedTable from "../../components/PaginatedTable.tsx";

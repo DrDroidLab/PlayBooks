@@ -7,13 +7,13 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingWorkflow.jsx";
+import NoExistingPlaybook from "./NoExistingWorkflow.js";
 import { Delete, Edit, History } from "@mui/icons-material";
-import WorkflowActionOverlay from "./WorkflowActionOverlay.jsx";
+import WorkflowActionOverlay from "./WorkflowActionOverlay.js";
 import { useState } from "react";
-import useToggle from "../../hooks/useToggle.js";
 import { renderTimestamp } from "../../utils/DateUtils.js";
 import { handleStatus } from "../../utils/handleStatus.tsx";
+import useToggle from "../../hooks/common/useToggle.ts";
 
 const WorkflowTable = ({ data, refreshTable }) => {
   const navigate = useNavigate();

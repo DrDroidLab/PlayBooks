@@ -6,11 +6,11 @@ import { deleteTask } from "../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import { Delete } from "@mui/icons-material";
 import RunButton from "../../Buttons/RunButton/index.tsx";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
 import React from "react";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import TaskQuery from "./TaskQuery.tsx";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 function Task({ id }) {
   const [task, currentTaskId] = useCurrentTask(id);

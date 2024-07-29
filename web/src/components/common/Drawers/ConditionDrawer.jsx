@@ -1,5 +1,5 @@
 import React from "react";
-import CustomDrawer from "../CustomDrawer/index.jsx";
+import CustomDrawer from "../CustomDrawer";
 import { useDispatch } from "react-redux";
 import { setCurrentStepId } from "../../../store/features/playbook/playbookSlice.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";

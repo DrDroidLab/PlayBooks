@@ -1,8 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CloseRounded } from "@mui/icons-material";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState";
+
+type CustomDrawerPropTypes = {
+  id: string;
+  children: React.ReactNode;
+  src?: string;
+  openFrom?: "right" | "left";
+  addtionalStyles?: string;
+  showOverlay?: boolean;
+  startFrom?: string;
+  OnClose?: () => void;
+};
 
 const CustomDrawer = ({
   id,
@@ -13,9 +24,9 @@ const CustomDrawer = ({
   showOverlay = true,
   startFrom = "0",
   OnClose,
-}) => {
+}: CustomDrawerPropTypes) => {
   const { isOpen, closeDrawer } = useDrawerState(id);
-  const drawerRef = useRef(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
   const drawerVariants = {
     open: { x: 0 },
     closed: { x: `${(openFrom === "right" ? 1 : -1) * 100}%` },

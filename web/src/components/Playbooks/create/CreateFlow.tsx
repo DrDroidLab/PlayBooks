@@ -4,16 +4,17 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
+  BackgroundVariant,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useEffect } from "react";
 import { useReactFlow } from "reactflow";
-import CustomEdge from "./CustomEdge.jsx";
-import useDimensions from "../../../hooks/useDimensions.ts";
-import useGraphDimensions from "../../../hooks/useGraphDimensions.ts";
+import CustomEdge from "./CustomEdge.js";
 import StepNode from "./nodes/StepNode.tsx";
 import handleEdgesDelete from "./utils/handleEdgesDelete.ts";
 import handleConnection from "./utils/handleConnection.ts";
+import useDimensions from "../../../hooks/playbooks/useDimensions.ts";
+import useGraphDimensions from "../../../hooks/playbooks/useGraphDimensions.ts";
 
 const fitViewOptions = {
   maxZoom: 0.75,
@@ -58,7 +59,7 @@ const CreateFlow = () => {
         onEdgesDelete={handleEdgesDelete}
         onConnect={handleConnection}
         nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
+        edgeTypes={edgeTypes as any}
         minZoom={-Infinity}
         maxZoom={1}
         zoomOnScroll={true}
@@ -68,7 +69,7 @@ const CreateFlow = () => {
         edgesUpdatable={false}
         className="bg-gray-50">
         <Controls />
-        <Background variant="dots" gap={12} size={1} />
+        <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
     </div>
   );

@@ -3,8 +3,8 @@ import InfoRender from "./InfoRender.tsx";
 import handleStepInformation from "../../../utils/playbook/stepInformation/handleStepInformation.ts";
 import getNestedValue from "../../../utils/getNestedValue.ts";
 import DeleteTaskButton from "../../Buttons/DeleteTaskButton/index.tsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 type TaskInformationPropTypes = {
   taskId: string | undefined;

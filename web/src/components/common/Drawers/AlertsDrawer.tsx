@@ -1,8 +1,8 @@
 import React from "react";
-import CustomDrawer from "../CustomDrawer";
+import CustomDrawer from "../CustomDrawer/index.tsx";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import AlertsTable from "../../Workflows/triggers/AlertsTable";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import AlertsTable from "../../Workflows/triggers/AlertsTable.js";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 
 const id = DrawerTypes.ALERTS;
 

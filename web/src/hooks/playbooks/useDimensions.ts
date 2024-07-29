@@ -5,10 +5,13 @@ type Dimensions = {
   height: number | undefined;
 };
 
-type DimensionsReturnType = [React.RefObject<HTMLElement>, Dimensions];
+type DimensionsReturnType = [
+  React.RefObject<HTMLDivElement> | undefined,
+  Dimensions,
+];
 
 function useDimensions(): DimensionsReturnType {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const width: number | undefined = ref.current?.clientWidth;
   const height: number | undefined = ref.current?.clientHeight;

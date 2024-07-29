@@ -1,5 +1,5 @@
 import React from "react";
-import CustomDrawer from "../CustomDrawer/index.jsx";
+import CustomDrawer from "../CustomDrawer";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import { drawersSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";

@@ -7,13 +7,14 @@ import {
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
+import usePlaybookKey from "../../../hooks/playbooks/usePlaybookKey.ts";
 
 function ExecutionNavigateButtons({ steps }) {
   const { currentVisibleStepOnTimeline } = useSelector(playbookSelector);
   const showNextStepLogButton =
-    currentVisibleStepOnTimeline !== steps.length - 1;
-  const showPreviousStepLogButton = currentVisibleStepOnTimeline !== 0;
+    parseInt(currentVisibleStepOnTimeline ?? "", 10) !== steps.length - 1;
+  const showPreviousStepLogButton =
+    parseInt(currentVisibleStepOnTimeline ?? "", 10) !== 0;
   const [, setShouldScroll] = usePlaybookKey("shouldScroll");
 
   const handleNextStepClick = () => {

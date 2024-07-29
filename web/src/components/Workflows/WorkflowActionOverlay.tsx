@@ -37,7 +37,6 @@ const WorkflowActionOverlay = ({
               </button>
               <button
                 className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
-                sx={{ marginLeft: "5px" }}
                 onClick={handleSuccess}>
                 Yes
               </button>

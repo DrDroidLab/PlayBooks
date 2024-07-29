@@ -1,12 +1,11 @@
-import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.jsx";
+import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.js";
 import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput.jsx";
 import PlaybookBashActionOutput from "../PlaybookBashActionOutput.jsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import React from "react";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
 import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
 import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
 import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",

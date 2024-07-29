@@ -1,16 +1,16 @@
-import { addConditionToEdgeByIndex } from "../utils/conditionals/addConditionToEdgeByIndex.ts";
-import { ruleOptions } from "../utils/conditionals/ruleOptions.ts";
+import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addRule,
   currentPlaybookSelector,
   setCurrentPlaybookKey,
-} from "../store/features/playbook/playbookSlice.ts";
+} from "../../store/features/playbook/playbookSlice.ts";
 import {
   LogicalOperator,
   StepRelation,
   StepRelationContract,
-} from "../types/stepRelations.ts";
+} from "../../types";
 
 const playbookKey = "step_relations";
 

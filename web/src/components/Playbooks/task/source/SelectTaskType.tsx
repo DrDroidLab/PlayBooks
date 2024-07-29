@@ -1,14 +1,13 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   updateTaskType,
 } from "../../../../store/features/playbook/playbookSlice.ts";
-import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
+import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function SelectTaskType({ id }) {
   const { connectorOptions } = useSelector(playbookSelector);

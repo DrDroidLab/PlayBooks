@@ -2,9 +2,9 @@ import MDEditor from "@uiw/react-md-editor";
 import { addNotes } from "../../../store/features/playbook/playbookSlice.ts";
 import rehypeSanitize from "rehype-sanitize";
 import { useDispatch } from "react-redux";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import useIsExisting from "../../../hooks/useIsExisting.ts";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useIsExisting from "../../../hooks/playbooks/useIsExisting.ts";
 
 function Notes({ id }) {
   const [step] = useCurrentStep(id);
@@ -39,9 +39,9 @@ function Notes({ id }) {
             step?.notes && (
               <MDEditor.Markdown
                 source={step.notes}
-                height={200}
                 style={{
                   whiteSpace: "pre-wrap",
+                  height: "200px",
                   maxHeight: "400px",
                   overflow: "scroll",
                   border: "1px solid black",
@@ -54,7 +54,7 @@ function Notes({ id }) {
           ) : (
             <>
               <MDEditor
-                value={step.notes}
+                value={step?.notes}
                 onChange={(val) => {
                   dispatch(addNotes({ notes: val, id }));
                 }}

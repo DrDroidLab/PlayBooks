@@ -7,10 +7,10 @@ import {
   searchSelector,
   setSelected,
   clear,
-} from "../store/features/search/searchSlice.ts";
+} from "../../store/features/search/searchSlice.ts";
 import { useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useSearchQuery } from "../store/features/search/api/searchApi.ts";
+import { useSearchQuery } from "../../store/features/search/api/searchApi.ts";
 
 interface Option {
   label: string;

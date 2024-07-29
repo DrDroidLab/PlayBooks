@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
   playbookSelector,
-} from "../store/features/playbook/playbookSlice.ts";
-import { Task } from "../types/task.ts";
+} from "../../../store/features/playbook/playbookSlice";
+import { Task } from "../../../types";
 
 type UseCurrentTaskReturnType = [
   Task | undefined,

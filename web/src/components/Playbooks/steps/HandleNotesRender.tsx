@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toggleNotesVisibility } from "../../../store/features/playbook/playbookSlice.ts";
-import Notes from "./Notes.jsx";
+import Notes from "./Notes.js";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 function HandleNotesRender({ id }) {
   const dispatch = useDispatch();

@@ -1,4 +1,3 @@
-import React from "react";
 import { cardsData } from "../../../utils/cardsData";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,11 +8,11 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 function IntegrationOption({ option }) {
   const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
@@ -31,7 +30,7 @@ function IntegrationOption({ option }) {
         if (option.task_type === SOURCES.IFRAME) {
           return cardsData.find((e) => e.enum === SOURCES.IFRAME)?.url;
         }
-      // eslint-disable-next-line no-fallthrough
+        break;
       default:
         return (
           cardsData.find((e) => e.enum === option?.source?.replace("_VPC", ""))

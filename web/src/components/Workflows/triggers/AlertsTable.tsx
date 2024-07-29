@@ -6,9 +6,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import NoExistingTrigger from "./NoExistingTrigger";
-import { renderTimestamp } from "../../../utils/DateUtils";
-import SeeMoreText from "../../Playbooks/SeeMoreText";
+import NoExistingTrigger from "./NoExistingTrigger.tsx";
+import { renderTimestamp } from "../../../utils/DateUtils.js";
+import SeeMoreText from "../../Playbooks/SeeMoreText.jsx";
 import { useGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 import { useEffect } from "react";
 

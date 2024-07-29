@@ -1,5 +1,5 @@
 import React from "react";
-import useSearch from "../../../hooks/useSearch.ts";
+import useSearch from "../../../hooks/common/useSearch";
 import { useDispatch } from "react-redux";
 import { addSelected } from "../../../store/features/search/searchSlice.ts";
 import { highlightMatch } from "../../../utils/search/highlightMatch.tsx";

@@ -8,11 +8,11 @@ import AddButtonOptions from "../../card/AddButtonOptions.tsx";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import StepTitle from "../../steps/StepTitle.tsx";
 import StepButtons from "../../steps/StepButtons.tsx";
-import useStepDimensions from "../../../../hooks/step/useStepDimensions.ts";
 import handleStepBorderColor from "../../../../utils/playbook/handleStepBorderColor.ts";
 // import useHasChildren from "../../../../hooks/useHasChildren.ts";
 import ExternalLinksList from "../../../common/ExternalLinksList/index.tsx";
 import MarkdownOutput from "../../card/MarkdownOutput.tsx";
+import useStepDimensions from "../../../../hooks/playbooks/step/useStepDimensions.ts";
 
 function StepNode({ data }) {
   const currentPlaybook = useSelector(currentPlaybookSelector);

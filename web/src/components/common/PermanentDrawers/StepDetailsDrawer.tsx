@@ -1,12 +1,11 @@
 import { CircularProgress } from "@mui/material";
 import { useEffect, useRef } from "react";
-import React from "react";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import updateStepById from "../../../utils/playbook/step/updateStepById.ts";
 import Step from "../../Playbooks/steps/Step.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 function StepDetailsDrawer() {
   const [step, currentStepId] = useCurrentStep();

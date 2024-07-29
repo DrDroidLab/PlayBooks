@@ -6,7 +6,7 @@ import { useGenerateManifestMutation } from "../../../store/features/integration
 import { CircularProgress } from "@mui/material";
 import "highlight.js/styles/default.css";
 import CopyCodeDrawer from "../../common/Drawers/CopyCodeDrawer.jsx";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 
 const id = DrawerTypes.COPY_CODE;

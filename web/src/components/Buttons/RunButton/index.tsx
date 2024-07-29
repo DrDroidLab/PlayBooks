@@ -3,8 +3,8 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
 import { CircularProgress, Tooltip } from "@mui/material";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import { executeTask } from "../../../utils/execution/executeTask.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 type RunButtonProps = {
   id: string;

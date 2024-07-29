@@ -1,6 +1,6 @@
 import { ALL_CONNECTORS } from "../../../../constants/index.ts";
 import { connectors } from "../../../../constants/connectors.ts";
-import { cardsData } from "../../../../utils/cardsData.js";
+import { cardsData } from "../../../../utils/cardsData";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import {
   setAgentProxy,

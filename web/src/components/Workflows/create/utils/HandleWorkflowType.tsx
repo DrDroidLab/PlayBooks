@@ -1,10 +1,9 @@
-import React from "react";
 import { currentWorkflowSelector } from "../../../../store/features/workflow/workflowSlice.ts";
 import { useSelector } from "react-redux";
-import SlackTriggerForm from "../../triggers/SlackTriggerForm";
+import SlackTriggerForm from "../../triggers/SlackTriggerForm.tsx";
 import CopyCode from "../../../common/CopyCode/index.jsx";
 import { WorkflowEntryPointOptions } from "../../../../utils/workflow/types/entryPoint.ts";
-import PagerdutyTriggerForm from "../../triggers/PagerdutyTriggerForm.jsx";
+import PagerdutyTriggerForm from "../../triggers/PagerdutyTriggerForm.js";
 
 function HandleWorkflowType() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -27,8 +26,7 @@ function HandleWorkflowType() {
                 className="underline text-violet-500"
                 href="https://curlconverter.com/"
                 target="_blank"
-                rel="noreferrer"
-              >
+                rel="noreferrer">
                 https://curlconverter.com/
               </a>
               .

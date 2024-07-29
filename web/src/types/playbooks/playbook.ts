@@ -2,7 +2,7 @@ import { ExecutionStatus } from "./ExecutionStatus.ts";
 import { GlobalVariableSet } from "./globalVariableSet.ts";
 import { Step } from "./steps/step.ts";
 import { StepRelation, StepRelationContract } from "./stepRelations.ts";
-import { Task } from "../task.ts";
+import { Task } from "./tasks/task.ts";
 
 type PlaybookUIRequirement = {
   tasks: Task[];
@@ -36,4 +36,5 @@ export type PlaybookUIState = {
   zoomLevel?: any;
   connectorOptions?: any;
   supportedTaskTypes?: any;
+  connectorOptionsMap?: any;
 };

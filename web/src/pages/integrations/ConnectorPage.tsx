@@ -13,13 +13,11 @@ import Config from "../../components/Integration/connectors/Config.jsx";
 import TabPanel from "../../components/Integration/connectors/TabPanel.jsx";
 import Assets from "../../components/Integration/connectors/Assets.jsx";
 import { connectorsWithoutAssets } from "../../utils/connectorsWithoutAssets.ts";
-import { unsupportedConnectors } from "../../utils/unsupportedConnectors.ts";
 import {
   useGetConnectorKeyOptionsQuery,
   useLazyGetConnectorKeysQuery,
 } from "../../store/features/integrations/api/index.ts";
 import { ChevronLeft } from "@mui/icons-material";
-import GoogleChatIntegration from "../../components/Integration/connectors/GoogleChatIntegration.jsx";
 
 function ConnectorPageBeta() {
   const { id, connectorEnum } = useParams();
@@ -57,8 +55,6 @@ function ConnectorPageBeta() {
   const isActive = currentConnector?.is_active;
 
   switch (id) {
-    case unsupportedConnectors.GOOGLE_CHAT:
-      return <GoogleChatIntegration />;
     default:
       break;
   }

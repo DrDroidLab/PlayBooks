@@ -1,6 +1,5 @@
-import React from "react";
 import { Launch } from "@mui/icons-material";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep";
 
 function ExternalLinksList({ id }) {
   const [step] = useCurrentStep(id);

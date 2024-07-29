@@ -1,9 +1,8 @@
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import { unsupportedConnctorTypeOptions } from "../../../utils/unsupportedConnctorTypeOptions.ts";
-import React from "react";
 import SelectSource from "./source/SelectSource.tsx";
 import SelectTaskType from "./source/SelectTaskType.tsx";
 import SelectConnectorOption from "./source/SelectConnectorOption.tsx";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function AddSource({ id }) {
   const [task, currentTaskId] = useCurrentTask(id);

@@ -1,12 +1,12 @@
 import React from "react";
 import { getBezierPath, getMarkerEnd } from "reactflow";
 import CustomButton from "../../common/CustomButton/index.tsx";
-import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
 import { Tooltip } from "@mui/material";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import handleEdgeColor from "../../../utils/playbook/handleEdgeColor.ts";
 import { Add } from "@mui/icons-material";
+import useEdgeConditions from "../../../hooks/playbooks/useEdgeConditions.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 const foreignObjectSize = 200;
 

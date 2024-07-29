@@ -2,10 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   playbookSelector,
   popFromExecutionStack,
-} from "../store/features/playbook/playbookSlice.ts";
-import { useGetPlaybookExecutionQuery } from "../store/features/playbook/api/index.ts";
+} from "../../store/features/playbook/playbookSlice.ts";
+import { useGetPlaybookExecutionQuery } from "../../store/features/playbook/api/index.ts";
 import { useEffect } from "react";
-import { Step } from "../types/index.ts";
+import { Step } from "../../types";
 
 function useExecutionStack() {
   const { executionStack, executionId, currentPlaybook } =
