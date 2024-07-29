@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import NoExistingTrigger from "./NoExistingTrigger.tsx";
 import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
-import SeeMoreText from "../../Playbooks/SeeMoreText.jsx";
+import SeeMoreText from "../../Playbooks/SeeMoreText";
 import { useGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 import { useEffect } from "react";
 
@@ -49,6 +49,7 @@ const AlertsTable = () => {
               }}>
               <TableCell component="td" scope="row">
                 <SeeMoreText
+                  title={""}
                   text={item.alert_title || item.alert_text || "N/A"}
                 />
               </TableCell>

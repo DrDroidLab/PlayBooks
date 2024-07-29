@@ -6,7 +6,7 @@ import {
   snackbarSelector,
 } from "../../../store/features/snackbar/snackbarSlice.ts";
 import { Alert } from "@mui/material";
-import SeeMoreText from "../../Playbooks/SeeMoreText.jsx";
+import SeeMoreText from "../../Playbooks/SeeMoreText";
 
 export function GlobalSnackbar() {
   const { open, message, type } = useSelector(snackbarSelector);

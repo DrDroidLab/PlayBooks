@@ -1,7 +1,7 @@
 import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
-import { unsupportedRunners } from "../../../utils/unsupportedRunners.ts";
+import { unsupportedRunners } from "../../../utils/playbook/unsupportedRunners.ts";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { executeTask } from "../../../utils/execution/executeTask.ts";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";

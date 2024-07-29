@@ -1,4 +1,4 @@
-import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
+import { unsupportedInterpreterTypes } from "../../../utils/playbook/unsupportedInterpreterTypes.ts";
 import TaskOutput from "./TaskOutput.tsx";
 import Interpretation from "../../common/Interpretation/index.tsx";
 import { Task } from "../../../types/index.ts";

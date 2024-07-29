@@ -6,7 +6,7 @@ import {
   useCreatePlaybookMutation,
   useUpdatePlaybookMutation,
 } from "../../../store/features/playbook/api/index.ts";
-import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.jsx";
+import SavePlaybookOverlay from "../../Playbooks/SavePlaybookOverlay.js";
 import { useNavigate } from "react-router-dom";
 import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 import stateToPlaybook from "../../../utils/parser/playbook/stateToPlaybook.ts";

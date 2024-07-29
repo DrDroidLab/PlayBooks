@@ -1,4 +1,4 @@
-import { unsupportedConnctorTypeOptions } from "../../../utils/unsupportedConnctorTypeOptions.ts";
+import { unsupportedConnctorTypeOptions } from "../../../utils/playbook/unsupportedConnctorTypeOptions.ts";
 import SelectSource from "./source/SelectSource.tsx";
 import SelectTaskType from "./source/SelectTaskType.tsx";
 import SelectConnectorOption from "./source/SelectConnectorOption.tsx";
