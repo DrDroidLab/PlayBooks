@@ -8,6 +8,7 @@ import getCurrentTask from "../playbook/task/getCurrentTask.ts";
 import { executionTaskExecute } from "../../store/features/playbook/api/executions/executionTaskExecuteApi.ts";
 import checkId from "../common/checkId.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
+import { executionBulkTaskExecute } from "../../store/features/playbook/api/executions/executionBulkTaskExecuteApi.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
@@ -18,6 +19,7 @@ export async function executeTask(id?: string) {
     updateCardById("ui_requirement.showError", true, id);
     return;
   }
+  const isBulk = task.execution_configuration.is_bulk_execution;
 
   const stepId = task.ui_requirement.stepId;
   updateStepById("ui_requirement.outputLoading", true, stepId);
@@ -33,30 +35,46 @@ export async function executeTask(id?: string) {
   try {
     const res = await store
       .dispatch(
-        executionTaskExecute.initiate({
-          ...task,
-          id: checkId(task.id!),
-          ui_requirement: undefined,
-          global_variable_set: currentPlaybook?.global_variable_set,
-        }),
+        isBulk
+          ? executionBulkTaskExecute.initiate({
+              ...task,
+              id: checkId(task.id!),
+              ui_requirement: undefined,
+              global_variable_set: currentPlaybook?.global_variable_set,
+            })
+          : executionTaskExecute.initiate({
+              ...task,
+              id: checkId(task.id!),
+              ui_requirement: undefined,
+              global_variable_set: currentPlaybook?.global_variable_set,
+            }),
       )
       .unwrap();
-    const output = res?.playbook_task_execution_log;
-    const outputError = output?.result?.error;
 
-    updateCardById("ui_requirement.showOutput", true, id);
-    updateCardById(
-      "ui_requirement.output",
-      {
-        data: { ...output?.result, timestamp: output?.timestamp },
-        interpretation: output?.interpretation,
-      },
-      id,
-    );
-    if (outputError) {
-      updateCardById("ui_requirement.showError", true, id);
-      updateCardById("ui_requirement.outputError", outputError, id);
-    }
+    const outputs = isBulk
+      ? res?.playbook_task_execution_logs
+      : [res?.playbook_task_execution_log];
+
+    outputs.forEach((output) => {
+      const outputError = output?.result?.error;
+
+      updateCardById("ui_requirement.showOutput", true, id);
+      updateCardById(
+        "ui_requirement.outputs",
+        [
+          ...(task.ui_requirement.outputs ?? []),
+          {
+            data: { ...output?.result, timestamp: output?.timestamp },
+            interpretation: output?.interpretation,
+          },
+        ],
+        id,
+      );
+      if (outputError) {
+        updateCardById("ui_requirement.showError", true, id);
+        updateCardById("ui_requirement.outputError", outputError, id);
+      }
+    });
   } catch (e: any) {
     updateCardById("ui_requirement.showError", true, id);
     updateCardById("ui_requirement.outputError", e.message, id);
