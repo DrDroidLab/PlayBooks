@@ -49,8 +49,8 @@ class BasicResultInterpreter(ResultInterpreter):
                     interpreter_type=self.type,
                     description=StringValue(value=description),
                     image_url=StringValue(value=object_url),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK,
-                    file_path = StringValue(value=file_path)
+                    model_type=Interpretation.ModelType.PLAYBOOK_TASK,
+                    file_path=StringValue(value=file_path)
                 )
             except Exception as e:
                 logger.error(f'Error writing image: {e}')
@@ -69,11 +69,11 @@ class BasicResultInterpreter(ResultInterpreter):
                 return Interpretation(
                     type=Interpretation.Type.CSV_FILE,
                     interpreter_type=self.type,
-                    title = StringValue(value=csv_file_title),
+                    title=StringValue(value=csv_file_title),
                     description=StringValue(value=description),
                     file_path=StringValue(value=csv_file_path),
                     object_url=StringValue(value=object_url),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    model_type=Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error interpreting data fetch task result: {e}')
@@ -87,8 +87,8 @@ class BasicResultInterpreter(ResultInterpreter):
                     type=Interpretation.Type.JSON,
                     interpreter_type=self.type,
                     description=StringValue(value=description),
-                    summary = StringValue(value=summary),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    summary=StringValue(value=summary),
+                    model_type=Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error interpreting API task result: {e}')
@@ -108,7 +108,7 @@ class BasicResultInterpreter(ResultInterpreter):
                     interpreter_type=self.type,
                     description=StringValue(value=description),
                     summary=StringValue(value=summary),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    model_type=Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error interpreting bash command task result: {e}')
@@ -120,7 +120,7 @@ class BasicResultInterpreter(ResultInterpreter):
                     type=Interpretation.Type.TEXT,
                     interpreter_type=self.type,
                     description=StringValue(value=text_output.output.value),
-                    model_type = Interpretation.ModelType.PLAYBOOK_TASK
+                    model_type=Interpretation.ModelType.PLAYBOOK_TASK
                 )
             except Exception as e:
                 logger.error(f'Error interpreting text task type: {e}')
