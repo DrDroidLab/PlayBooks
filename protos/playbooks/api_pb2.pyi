@@ -162,6 +162,35 @@ class RunPlaybookTaskResponseV3(google.protobuf.message.Message):
 global___RunPlaybookTaskResponseV3 = RunPlaybookTaskResponseV3
 
 @typing_extensions.final
+class RunBulkPlaybookTaskResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    META_FIELD_NUMBER: builtins.int
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    PLAYBOOK_TASK_EXECUTION_LOGS_FIELD_NUMBER: builtins.int
+    @property
+    def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def playbook_task_execution_logs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_pb2.PlaybookTaskExecutionLog]: ...
+    def __init__(
+        self,
+        *,
+        meta: protos.base_pb2.Meta | None = ...,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        playbook_task_execution_logs: collections.abc.Iterable[protos.playbooks.playbook_pb2.PlaybookTaskExecutionLog] | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "meta", b"meta", "playbook_task_execution_logs", b"playbook_task_execution_logs", "success", b"success"]) -> None: ...
+
+global___RunBulkPlaybookTaskResponse = RunBulkPlaybookTaskResponse
+
+@typing_extensions.final
 class RunPlaybookStepRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
