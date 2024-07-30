@@ -3,16 +3,16 @@ import CustomButton from "../../common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
-import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import generateUUIDWithoutHyphens from "../../../utils/common/generateUUIDWithoutHyphens.ts";
 import {
   addStep,
   playbookSelector,
 } from "../../../store/features/playbook/playbookSlice.ts";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
-import useZoom from "../../../hooks/useZoom.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useZoom from "../../../hooks/playbooks/useZoom.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 const addDataId = DrawerTypes.ADD_DATA;
 

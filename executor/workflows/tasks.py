@@ -130,7 +130,7 @@ def workflow_scheduler():
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
                 time_range = proto_to_dict(wf_execution_proto.time_range)
                 execution_global_variable_set = None
-                if execution_configuration and execution_configuration.global_variable_set is not None:
+                if execution_configuration and execution_configuration.global_variable_set is not None and execution_configuration.global_variable_set.items():
                     execution_global_variable_set = proto_to_dict(
                         execution_configuration.global_variable_set) if execution_configuration.global_variable_set else {}
                     if event_context and isinstance(event_context, dict):

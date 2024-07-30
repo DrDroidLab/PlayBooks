@@ -4,7 +4,7 @@ import { useCreateConnectorMutation } from "../../../store/features/integrations
 import { useSelector } from "react-redux";
 import { connectorSelector } from "../../../store/features/integrations/integrationsSlice.ts";
 import { useNavigate } from "react-router-dom";
-import ConnectorUpdateOverlay from "../../Integration/connectors/ConnectorUpdateOverlay";
+import ConnectorUpdateOverlay from "../../Integration/connectors/ConnectorUpdateOverlay.tsx";
 
 function UpdateConnectorButton({ id, connector }) {
   const navigate = useNavigate();

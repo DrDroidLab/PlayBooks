@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import HandlePermanentDrawerData from "./HandlePermanentDrawerData.tsx";
 import { motion } from "framer-motion";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import { ChevronRightRounded } from "@mui/icons-material";
 import CustomButton from "../CustomButton/index.tsx";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState";
 
 function PermenantDrawer({ addtionalStyles = "" }) {
   const { isOpen, closeDrawer } = usePermanentDrawerState();

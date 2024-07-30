@@ -4,14 +4,15 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const testWorkflowNotificationApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    testWorkflowNotification: builder.query<any, any>({
+    testWorkflowNotification: builder.query<any, void>({
       query: () => ({
         url: TEST_WORKFLOW_NOTIFICATION,
         body: stateToWorkflow(),
         method: "POST",
-      })
+      }),
     }),
   }),
 });
 
-export const { useLazyTestWorkflowNotificationQuery } = testWorkflowNotificationApi;
+export const { useLazyTestWorkflowNotificationQuery } =
+  testWorkflowNotificationApi;

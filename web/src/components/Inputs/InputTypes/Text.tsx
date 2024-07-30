@@ -9,7 +9,7 @@ type TextInputTypes = {
   disabled?: boolean;
   className?: string;
   type?: HTMLInputTypeAttribute;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 function Text({
   label,

@@ -10,7 +10,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.grafana_loki_task_pb2 import GrafanaLoki
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class GrafanaLokiSourceManager(PlaybookSourceManager):
@@ -28,19 +28,23 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                 'form_fields': [
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="limit"),
                               display_name=StringValue(value="Limit"),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=10))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=10)),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="start_time"),
                               display_name=StringValue(value="Start Time"),
                               data_type=LiteralType.LONG,
-                              is_date_time_field=True),
+                              is_date_time_field=True,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="end_time"),
                               display_name=StringValue(value="End Time"),
                               data_type=LiteralType.LONG,
-                              is_date_time_field=True),
+                              is_date_time_field=True,
+                              form_field_type=FormFieldType.TEXT_FT),
                 ]
             }
         }

@@ -2,7 +2,6 @@ import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import { useStartExecutionMutation } from "../../../store/features/playbook/api/index.ts";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +11,7 @@ import {
   playbookSelector,
   setPlaybookKey,
 } from "../../../store/features/playbook/playbookSlice.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 type RunStepButtonProps = {
   id: string;

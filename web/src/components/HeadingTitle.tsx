@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import useIsPrefetched from "../hooks/useIsPrefetched.ts";
-import usePlaybookKey from "../hooks/usePlaybookKey.ts";
+import useIsPrefetched from "../hooks/playbooks/useIsPrefetched.ts";
+import usePlaybookKey from "../hooks/playbooks/usePlaybookKey";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,

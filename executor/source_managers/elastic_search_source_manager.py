@@ -8,7 +8,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.elastic_search_task_pb2 import ElasticSearch
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class ElasticSearchSourceManager(PlaybookSourceManager):
@@ -27,18 +27,22 @@ class ElasticSearchSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="index"),
                               display_name=StringValue(value="Index"),
                               description=StringValue(value='Select Index'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="lucene_query"),
                               display_name=StringValue(value="Lucene Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="limit"),
                               display_name=StringValue(value="Enter Limit"),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000)),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="offset"),
                               display_name=StringValue(value="Enter Offset"),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=0))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=0)),
+                              form_field_type=FormFieldType.TEXT_FT),
                 ]
             },
         }

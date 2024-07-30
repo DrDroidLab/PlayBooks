@@ -1,7 +1,7 @@
 import {
   StepRelation,
   StepRelationContract,
-} from "../../types/stepRelations.ts";
+} from "../../types/playbooks/stepRelations.ts";
 import { RelationStates, RelationStateType } from "./RelationStates.ts";
 import { StepStates } from "./StepStates.ts";
 
@@ -12,17 +12,16 @@ function handleStepRelationState(
   const evaluationResult =
     relation.ui_requirement?.evaluation?.evaluation_result;
 
-  switch(evaluationResult) {
+  switch (evaluationResult) {
     case true:
       state = RelationStates.SUCCESS;
       break;
     case false:
-    state = RelationStates.ERROR;
-    break;
-    default: 
-    state = RelationStates.DEFAULT;
+      state = RelationStates.ERROR;
+      break;
+    default:
+      state = RelationStates.DEFAULT;
   }
-
 
   return state;
 }

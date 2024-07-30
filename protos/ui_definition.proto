@@ -4,6 +4,20 @@ import "protos/literal.proto";
 
 package protos;
 
+enum FormFieldType {
+  UNKNOWN_FT = 0;
+  TEXT_FT = 1;
+  MULTILINE_FT = 2;
+  BUTTON_FT = 3;
+  IFRAME_RENDER_FT = 4;
+  DROPDOWN_FT = 5;
+  TYPING_DROPDOWN_FT = 6;
+  TYPING_DROPDOWN_MULTIPLE_FT = 7;
+  WYSIWYG_FT = 8;
+  COMPOSITE_FT = 9;
+  STRING_ARRAY_FT = 10;
+}
+
 message FormField {
   google.protobuf.StringValue key_name = 1;
   google.protobuf.StringValue display_name = 2;
@@ -16,4 +30,5 @@ message FormField {
   repeated FormField composite_fields = 9;
   google.protobuf.UInt64Value max_length_allowed = 10;
   bool is_date_time_field = 11;
+  FormFieldType form_field_type = 12;
 }

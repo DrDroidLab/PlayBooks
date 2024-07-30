@@ -1,8 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
-import { LinkStyled } from "./LinkStyled.tsx";
 import { useGetLoginProvidersQuery } from "../../../store/features/auth/api/getLoginProvidersApi.ts";
 import { AuthProviders } from "../utils/AuthProviders.ts";
+import { Link } from "react-router-dom";
 
 function SignupAdditionalData() {
   const { data } = useGetLoginProvidersQuery();
@@ -10,66 +9,36 @@ function SignupAdditionalData() {
 
   return (
     <div className="my-2">
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          color: "grey",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-        <Typography variant="body2">
-          By signing up, you are agreeing to our&nbsp;
-        </Typography>
-        <Typography variant="body2">
-          <LinkStyled
-            target="_blank"
-            to="https://docs.drdroid.io/docs/terms-of-use">
-            terms
-          </LinkStyled>
-          <span>&nbsp;and&nbsp;</span>
-        </Typography>
-        <Typography variant="body2">
-          <LinkStyled
-            target="_blank"
-            to="https://docs.drdroid.io/docs/privacy-policy">
-            privacy policy
-          </LinkStyled>
-          <span>.</span>
-        </Typography>
-      </Box>
-
+      <div className="text-xs text-center">
+        By signing up, you are agreeing to our{" "}
+        <Link
+          className="text-violet-500 hover:underline"
+          target="_blank"
+          to="https://docs.drdroid.io/docs/terms-of-use">
+          terms
+        </Link>
+        <span> and </span>
+        <Link
+          className="text-violet-500 hover:underline"
+          target="_blank"
+          to="https://docs.drdroid.io/docs/privacy-policy">
+          privacy policy
+        </Link>
+        <span>.</span>
+      </div>
       <br />
-
       {emailEnabled && (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-            justifyContent: "center",
-          }}>
-          <Typography variant="body2">
-            Already have an account? &nbsp;
-          </Typography>
-          <Typography variant="body2">
-            <LinkStyled to="/login">Sign in</LinkStyled>
-          </Typography>
-        </Box>
+        <div className="text-xs text-center">
+          Already have an account?{" "}
+          <Link className="text-violet-500 hover:underline" to="/login">
+            Sign in
+          </Link>
+        </div>
       )}
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          color: "grey",
-        }}>
-        <Typography variant="body2">
-          Optimised for desktop usage only
-        </Typography>
-      </Box>
+      <p className="text-xs text-center mt-1 text-gray-600">
+        Optimised for desktop usage only
+      </p>
     </div>
   );
 }

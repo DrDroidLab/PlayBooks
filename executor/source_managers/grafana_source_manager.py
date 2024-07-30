@@ -11,7 +11,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class GrafanaSourceManager(PlaybookSourceManager):
@@ -72,10 +72,12 @@ class GrafanaSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="datasource_uid"),
                               display_name=StringValue(value="Data Source UID"),
                               description=StringValue(value="Select Data Source UID "),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="promql_expression"),
                               display_name=StringValue(value="PromQL"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }
