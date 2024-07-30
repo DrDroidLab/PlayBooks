@@ -39,6 +39,7 @@ function handleChangeInput(
     case InputTypes.TYPING_DROPDOWN_MULTIPLE:
       return handleChangeFunction;
     case InputTypes.COMPOSITE:
+    case InputTypes.STRING_ARRAY:
       return handleCompositeChange;
     default:
       return () => null;
