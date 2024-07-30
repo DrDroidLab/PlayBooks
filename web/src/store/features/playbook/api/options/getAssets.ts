@@ -20,7 +20,7 @@ export const getAssetApi = apiSlice.injectEndpoints({
         };
       },
       transformResponse: (response: any, _, arg) => {
-        const [task, id] = getCurrentTask(arg);
+        const [task] = getCurrentTask(arg);
         const data = response?.assets;
         if (data?.length === 0) return [];
         let connector_type = task?.source;
