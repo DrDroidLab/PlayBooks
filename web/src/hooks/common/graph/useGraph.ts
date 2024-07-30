@@ -10,9 +10,7 @@ const useGraph = (result: any) => {
   const [selectedLegends, setSelectedLegends] = useState({});
   const chartRef = useRef<ReactECharts>(null);
 
-  let tsData = useMemo(() => {
-    return result?.timeseries?.labeled_metric_timeseries;
-  }, [result]);
+  let tsData = result?.timeseries?.labeled_metric_timeseries;
 
   useEffect(() => {
     if (tsData && tsData.length > 0 && tsData[0].datapoints) {

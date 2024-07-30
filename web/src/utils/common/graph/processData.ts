@@ -11,11 +11,17 @@ export const processData = (tsData: any, result: any) => {
     );
   }
 
-  let tsLabels = sortedTSData.map(
-    (x: any) =>
+  let tsLabels = sortedTSData.map((x: any) => {
+    const offsetSeconds = x?.metric_label_values?.find(
+      (e) => e.name === "offset_seconds",
+    );
+    const seconds = parseInt(offsetSeconds?.value ?? "0", 10);
+    const labelAppendValue = seconds === 0 ? "Current" : "Previous";
+    return `${
       result?.timeseries?.metric_expression ??
-      getTSLabel(x?.metric_label_values ?? []),
-  );
+      getTSLabel(x?.metric_label_values ?? [])
+    } - ${labelAppendValue}`;
+  });
 
   let data: any[] = [];
   for (let j = 0; j < sortedTSData.length; j++) {
