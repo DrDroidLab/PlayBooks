@@ -1,9 +1,8 @@
-import React from "react";
 import CustomButton from "../../../common/CustomButton/index.tsx";
 import { RefreshRounded } from "@mui/icons-material";
 import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
-import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.js";
+import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 

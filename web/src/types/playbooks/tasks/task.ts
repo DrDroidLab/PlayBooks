@@ -25,6 +25,7 @@ type TaskUIRequirement = {
   showExternalLinks?: boolean;
   resultType?: string;
   requiresFormula?: boolean;
+  timeseries_offset_id?: string;
 };
 
 export type Task = {
