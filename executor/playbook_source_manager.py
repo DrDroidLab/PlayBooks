@@ -118,7 +118,8 @@ class PlaybookSourceManager:
                     resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
                     return self.task_type_callable_map[task_type]['executor'](time_range,
                                                                               resolved_task_def_proto,
-                                                                              source_connector_proto)
+                                                                              source_connector_proto,
+                                                                              task.execution_configuration)
                 except Exception as e:
                     raise Exception(f"Error while executing task for source: {source_str} with error: {e}")
             else:
