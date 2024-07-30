@@ -10,7 +10,7 @@ import {
 } from "./utils";
 import getNestedValue from "../../../../../utils/common/getNestedValue";
 
-const key = "execution_configuration.timeseries_offset";
+const key = "execution_configuration.timeseries_offset.0";
 const ui_key = "ui_requirement.timeseries_offset_id";
 
 type TimeseriesOffestSelectionProps = {
