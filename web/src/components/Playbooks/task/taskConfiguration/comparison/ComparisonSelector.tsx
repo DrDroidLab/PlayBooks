@@ -1,10 +1,10 @@
 import useCurrentTask from "../../../../../hooks/playbooks/task/useCurrentTask";
 import useIsPrefetched from "../../../../../hooks/playbooks/useIsPrefetched";
+import getNestedValue from "../../../../../utils/common/getNestedValue";
 import { updateCardById } from "../../../../../utils/execution/updateCardById";
 import Checkbox from "../../../../common/Checkbox";
 import TimeseriesOffestSelection from "./TimeseriesOffestSelection";
-
-const key = "use_comparison";
+import { CHECKBOX_KEY, DROPDOWN_KEY, TIMESERIES_OFFSET_ARR_KEY } from "./utils";
 
 type ComparisonSelectorProps = {
   id: string;
@@ -12,11 +12,16 @@ type ComparisonSelectorProps = {
 
 function ComparisonSelector({ id }: ComparisonSelectorProps) {
   const [task] = useCurrentTask(id);
-  const isChecked = task?.ui_requirement?.[key];
+  const isChecked = getNestedValue(task, CHECKBOX_KEY);
   const isPrefetched = useIsPrefetched();
 
   const handleChange = () => {
-    updateCardById(`ui_requirement.${key}`, !isChecked, id);
+    const value = !isChecked;
+    updateCardById(CHECKBOX_KEY, value, id);
+    if (!value) {
+      updateCardById(DROPDOWN_KEY, null, id);
+      updateCardById(TIMESERIES_OFFSET_ARR_KEY, undefined, id);
+    }
   };
 
   return (

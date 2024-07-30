@@ -5,13 +5,12 @@ import CustomInput from "../../../../Inputs/CustomInput";
 import { InputTypes } from "../../../../../types";
 import {
   CUSTOM_KEY,
+  DROPDOWN_KEY,
   extractTimeFromHours,
+  TIMESERIES_OFFSET_KEY,
   timeseriesOffsetOptions,
 } from "./utils";
 import getNestedValue from "../../../../../utils/common/getNestedValue";
-
-const key = "execution_configuration.timeseries_offset.0";
-const ui_key = "ui_requirement.timeseries_offset_id";
 
 type TimeseriesOffestSelectionProps = {
   id: string;
@@ -19,12 +18,12 @@ type TimeseriesOffestSelectionProps = {
 
 function TimeseriesOffestSelection({ id }: TimeseriesOffestSelectionProps) {
   const [task] = useCurrentTask(id);
-  const ui_value = getNestedValue(task, ui_key);
-  const value = getNestedValue(task, key);
+  const ui_value = getNestedValue(task, DROPDOWN_KEY);
+  const value = getNestedValue(task, TIMESERIES_OFFSET_KEY);
   const isPrefetched = useIsPrefetched();
 
   const handleChange = (optionId: string) => {
-    updateCardById(ui_key, optionId, id);
+    updateCardById(DROPDOWN_KEY, optionId, id);
     if (optionId !== CUSTOM_KEY) {
       const hours = optionId.split("-")[1];
       handleTimerangeChange(extractTimeFromHours(hours));
@@ -34,7 +33,7 @@ function TimeseriesOffestSelection({ id }: TimeseriesOffestSelectionProps) {
   };
 
   const handleTimerangeChange = (value: string) => {
-    updateCardById(key, value, id);
+    updateCardById(TIMESERIES_OFFSET_KEY, value, id);
   };
 
   return (
