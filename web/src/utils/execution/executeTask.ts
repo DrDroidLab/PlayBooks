@@ -65,6 +65,7 @@ export async function executeTask(id?: string) {
         data: { ...output?.result, timestamp: output?.timestamp },
         error: outputError ? outputError : undefined,
         interpretation: output?.interpretation,
+        execution_global_variable_set: output?.execution_global_variable_set,
       });
       if (outputError) {
         updateCardById("ui_requirement.showError", true, id);
