@@ -1,4 +1,4 @@
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "./task/getCurrentTask.ts";
 
 function handleTaskBorderColor(taskId: string) {
   const [task] = getCurrentTask(taskId);

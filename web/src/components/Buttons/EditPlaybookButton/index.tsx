@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { EditRounded } from "@mui/icons-material";
-import useFakeLoading from "../../../hooks/useFakeLoading.ts";
+import useFakeLoading from "../../../hooks/common/useFakeLoading.ts";
 
 function EditPlaybookButton() {
   const playbook = useSelector(currentPlaybookSelector);

@@ -2,9 +2,9 @@ import React from "react";
 import { Delete } from "@mui/icons-material";
 import { deleteStep } from "../../../store/features/playbook/playbookSlice.ts";
 import { useDispatch } from "react-redux";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 function DeleteStepButton({ id }) {
   const [step, currentStepId] = useCurrentStep(id);

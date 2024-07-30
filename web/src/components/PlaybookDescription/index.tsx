@@ -1,4 +1,4 @@
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   currentPlaybookSelector,
@@ -24,7 +24,7 @@ function PlaybookDescription() {
     <input
       className="font-normal text-xs p-1 w-[350px] rounded border border-transparent hover:border-gray-300 transition-all"
       placeholder={
-        isPrefetched ? "Playbook Description goes here" : "+ Add Description..."
+        isPrefetched ? "Playbook Description goes here" : "+ Description..."
       }
       value={currentPlaybook?.description}
       onChange={handleDescription}

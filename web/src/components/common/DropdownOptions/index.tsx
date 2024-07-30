@@ -1,7 +1,7 @@
 import React from "react";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/index.ts";
-import useBasicSearch from "../../../hooks/useBasicSearch.ts";
+import useBasicSearch from "../../../hooks/common/useBasicSearch";
 
 type DropdownOptionsPropTypes = {
   options: any[];

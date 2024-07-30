@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import capitalizeFirstLetter from "../../../utils/capitalize";
+import capitalizeFirstLetter from "../../../utils/common/capitalize";
 import { RootState } from "../..";
 
 type InitialStateType = {

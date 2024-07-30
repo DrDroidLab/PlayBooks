@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import useTestData from "../../hooks/useTestData.ts";
+import useTestData from "../../hooks/integrations/useTestData.ts";
 import { useDispatch } from "react-redux";
 import { setTestConnectorData } from "../../store/features/integrations/integrationsSlice.ts";
 

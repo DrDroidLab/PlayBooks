@@ -1,9 +1,8 @@
-import React from "react";
-import { unsupportedInterpreterTypes } from "../../../utils/unsupportedInterpreterTypes.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import { unsupportedInterpreterTypes } from "../../../utils/playbook/unsupportedInterpreterTypes.ts";
 import TaskOutput from "./TaskOutput.tsx";
 import Interpretation from "../../common/Interpretation/index.tsx";
 import { Task } from "../../../types/index.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 type HandleOutputPropTypes = {
   id: string | undefined;

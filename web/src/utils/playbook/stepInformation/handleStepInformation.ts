@@ -1,5 +1,5 @@
 import { taskTypes } from "../../../constants/index.ts";
-import getCurrentTask from "../../getCurrentTask.ts";
+import getCurrentTask from "../task/getCurrentTask.ts";
 import * as StepInformation from "./index.ts";
 import { InfoType } from "./InfoTypes.ts";
 

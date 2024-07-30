@@ -3,7 +3,7 @@ import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentD
 import { useSelector } from "react-redux";
 import { permanentViewSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import AddCondition from "../../AddCondition/index.tsx";
-import Timeline from "../../Playbooks/Timeline.jsx";
+import Timeline from "../../Playbooks/Timeline.js";
 import TaskDetailsDrawer from "../../Playbooks/create/TaskDetailsDrawer.tsx";
 import StepDetailsDrawer from "../PermanentDrawers/StepDetailsDrawer.tsx";
 

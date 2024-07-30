@@ -4,9 +4,9 @@ import {
   currentPlaybookSelector,
   popFromExecutionStack,
 } from "../../store/features/playbook/playbookSlice.ts";
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "../playbook/task/getCurrentTask.ts";
 import { executionTaskExecute } from "../../store/features/playbook/api/executions/executionTaskExecuteApi.ts";
-import checkId from "../checkId.ts";
+import checkId from "../common/checkId.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
 
 export async function executeTask(id?: string) {

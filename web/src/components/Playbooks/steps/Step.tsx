@@ -1,10 +1,9 @@
-import React from "react";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import HandleExternalLinksRender from "./HandleExternalLinksRender.tsx";
 import StepDetailsButtons from "./StepDetailsButtons.tsx";
 import { Task } from "../../../types/index.ts";
 import HandleOutput from "../task/HandleOutput.tsx";
 import HandleNotesRender from "./HandleNotesRender.tsx";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 type StepProps = {
   id: string;
