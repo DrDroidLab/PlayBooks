@@ -29,7 +29,7 @@ function ComparisonSelector({ id }: ComparisonSelectorProps) {
       <Checkbox
         id="use_comparison"
         isChecked={isChecked ?? false}
-        label="Use Comparison"
+        label="Also add from a previous window"
         onChange={handleChange}
         isSmall={true}
         disabled={!!isPrefetched}
