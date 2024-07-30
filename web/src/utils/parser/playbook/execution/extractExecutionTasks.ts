@@ -14,10 +14,13 @@ function extractExecutionTasks(
     if (taskInPlaybook) {
       taskInPlaybook.ui_requirement = {
         ...taskInPlaybook.ui_requirement,
-        output: {
-          data: { ...log.result, timestamp: log.timestamp },
-          interpretation: log.interpretation,
-        },
+        outputs: [
+          {
+            data: { ...log.result, timestamp: log.timestamp },
+            execution_global_variable_set: log.execution_global_variable_set,
+            interpretation: log.interpretation,
+          },
+        ],
         showOutput: true,
         showError: log?.result?.error !== undefined,
         outputError: log?.result?.error,
