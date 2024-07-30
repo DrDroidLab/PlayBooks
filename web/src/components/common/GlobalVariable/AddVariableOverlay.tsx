@@ -64,7 +64,7 @@ const AddVariableOverlay = ({ isOpen, close }) => {
             />
           </div>
           <p className="text-xs mt-2 text-gray-500 italic">
-            To enter a bulk variable, just enter the value as a CSV
+            To enter an array variable, just enter the values with commas
           </p>
           <div className="flex items-center gap-2 mt-10">
             <CustomButton onClick={() => close()}>Cancel</CustomButton>
