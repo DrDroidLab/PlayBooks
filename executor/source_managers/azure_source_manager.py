@@ -34,17 +34,17 @@ class AzureSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Azure Workspace ID"),
                               description=StringValue(value='Select Workspace ID'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TYPING_DROPDOWN),
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Log Filter Query"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="timespan"),
                               display_name=StringValue(value="Timespan (hours)"),
                               description=StringValue(value='Enter Timespan (hours)'),
                               data_type=LiteralType.STRING,
                               default_value=Literal(type=LiteralType.STRING, string=StringValue(value="1")),
-                              form_field_type=FormFieldType.TEXT)
+                              form_field_type=FormFieldType.TEXT_FT)
                 ]
             },
         }

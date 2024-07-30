@@ -1,7 +1,9 @@
 import { GlobalVariableSet } from "../globalVariableSet.ts";
-import { TaskConnectorSource } from "./taskConnectorSources.ts";
-import { TaskDetails } from "./taskDetails.ts";
-import { TaskExecutionConfiguration } from "./taskExecutionConfiguration.ts";
+import {
+  TaskConnectorSource,
+  TaskDetails,
+  TaskExecutionConfiguration,
+} from "./";
 
 type TaskUIRequirement = {
   isOpen: boolean;

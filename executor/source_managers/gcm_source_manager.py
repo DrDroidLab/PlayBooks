@@ -44,7 +44,7 @@ class GcmSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="MQL Expression"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
             Gcm.TaskType.FILTER_LOG_EVENTS: {
@@ -57,17 +57,17 @@ class GcmSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Filter Query"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="order_by"),
                               display_name=StringValue(value="Order By"),
                               data_type=LiteralType.STRING,
                               is_optional=True,
-                              form_field_type=FormFieldType.TEXT),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="page_size"),
                               display_name=StringValue(value="Page Size"),
                               data_type=LiteralType.LONG,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=2000)),
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }

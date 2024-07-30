@@ -3,18 +3,14 @@ import { Task } from "../../types";
 import { KeyType } from "./key.ts";
 import { taskTypeChangeMapping } from "./taskTypeChangeMapping.ts";
 
-export default function extractHandleChange(
-  task: Task,
-  key: KeyType,
-  value: string,
-) {
+export default function extractHandleChange(task: Task, key: KeyType) {
   const source = task.source;
   const taskType = (task as any)[source.toLowerCase() as Sources].type;
 
   const changeFunction = taskTypeChangeMapping[`${source} ${taskType}`];
 
   if (changeFunction) {
-    return changeFunction(key, task, value);
+    return changeFunction(key, task);
   }
 
   return undefined;

@@ -17,7 +17,7 @@ export const getMetrics = (task: Task) => {
     regions?.dimensions?.find((el: any) => el.name === dimension.name),
   );
   return dimensions?.flatMap((d: any) =>
-    d.metrics?.map((metric: any) => ({
+    d?.metrics?.map((metric: any) => ({
       id: metric,
       label: metric,
     })),

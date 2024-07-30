@@ -27,7 +27,7 @@ class KubernetesSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="command"),
                               display_name=StringValue(value="Kubectl Command"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }

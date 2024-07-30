@@ -25,7 +25,7 @@ class DocumentationSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Content"),
                               description=StringValue(value='Please enter Markdown text'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.WYSIWYG),
+                              form_field_type=FormFieldType.WYSIWYG_FT),
                 ]
             },
             Documentation.TaskType.IFRAME: {
@@ -39,10 +39,10 @@ class DocumentationSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="IFrame URL"),
                               description=StringValue(value='Enter IFrame URL'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="iframe_url"),
                               display_name=StringValue(value="IFrame Render"),
-                              form_field_type=FormFieldType.IFRAME_RENDER),
+                              form_field_type=FormFieldType.IFRAME_RENDER_FT),
                 ]
             },
         }

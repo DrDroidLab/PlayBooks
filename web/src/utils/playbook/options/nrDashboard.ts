@@ -16,7 +16,7 @@ export const nrDashboard = (key: KeyType, task: Task): any[] => {
         Key.DASHBOARD_GUID,
         "dashboard_guid",
         undefined,
-        "page_options",
+        "pages",
       ).map((e: any) => {
         return {
           id: e.page_guid,

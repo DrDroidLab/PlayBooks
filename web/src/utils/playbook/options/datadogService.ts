@@ -5,7 +5,7 @@ import { getTaskData } from "../task/getTaskData.ts";
 
 export const datadogService = (key: KeyType, task: Task): any[] => {
   const assets = task.ui_requirement.assets;
-  const options = assets.map((asset: any) => {
+  const options = assets?.map((asset: any) => {
     const metricFamilies = asset.metrics?.map(
       (metric: any) => metric.metric_family,
     );

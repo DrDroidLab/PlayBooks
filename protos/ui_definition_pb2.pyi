@@ -27,28 +27,30 @@ class _FormFieldType:
 class _FormFieldTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_FormFieldType.ValueType], builtins.type):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     UNKNOWN_FT: _FormFieldType.ValueType  # 0
-    TEXT: _FormFieldType.ValueType  # 1
-    MULTILINE: _FormFieldType.ValueType  # 2
-    BUTTON: _FormFieldType.ValueType  # 3
-    IFRAME_RENDER: _FormFieldType.ValueType  # 4
-    DROPDOWN: _FormFieldType.ValueType  # 5
-    TYPING_DROPDOWN: _FormFieldType.ValueType  # 6
-    TYPING_DROPDOWN_MULTIPLE: _FormFieldType.ValueType  # 7
-    WYSIWYG: _FormFieldType.ValueType  # 8
-    COMPOSITE: _FormFieldType.ValueType  # 9
+    TEXT_FT: _FormFieldType.ValueType  # 1
+    MULTILINE_FT: _FormFieldType.ValueType  # 2
+    BUTTON_FT: _FormFieldType.ValueType  # 3
+    IFRAME_RENDER_FT: _FormFieldType.ValueType  # 4
+    DROPDOWN_FT: _FormFieldType.ValueType  # 5
+    TYPING_DROPDOWN_FT: _FormFieldType.ValueType  # 6
+    TYPING_DROPDOWN_MULTIPLE_FT: _FormFieldType.ValueType  # 7
+    WYSIWYG_FT: _FormFieldType.ValueType  # 8
+    COMPOSITE_FT: _FormFieldType.ValueType  # 9
+    STRING_ARRAY_FT: _FormFieldType.ValueType  # 10
 
 class FormFieldType(_FormFieldType, metaclass=_FormFieldTypeEnumTypeWrapper): ...
 
 UNKNOWN_FT: FormFieldType.ValueType  # 0
-TEXT: FormFieldType.ValueType  # 1
-MULTILINE: FormFieldType.ValueType  # 2
-BUTTON: FormFieldType.ValueType  # 3
-IFRAME_RENDER: FormFieldType.ValueType  # 4
-DROPDOWN: FormFieldType.ValueType  # 5
-TYPING_DROPDOWN: FormFieldType.ValueType  # 6
-TYPING_DROPDOWN_MULTIPLE: FormFieldType.ValueType  # 7
-WYSIWYG: FormFieldType.ValueType  # 8
-COMPOSITE: FormFieldType.ValueType  # 9
+TEXT_FT: FormFieldType.ValueType  # 1
+MULTILINE_FT: FormFieldType.ValueType  # 2
+BUTTON_FT: FormFieldType.ValueType  # 3
+IFRAME_RENDER_FT: FormFieldType.ValueType  # 4
+DROPDOWN_FT: FormFieldType.ValueType  # 5
+TYPING_DROPDOWN_FT: FormFieldType.ValueType  # 6
+TYPING_DROPDOWN_MULTIPLE_FT: FormFieldType.ValueType  # 7
+WYSIWYG_FT: FormFieldType.ValueType  # 8
+COMPOSITE_FT: FormFieldType.ValueType  # 9
+STRING_ARRAY_FT: FormFieldType.ValueType  # 10
 global___FormFieldType = FormFieldType
 
 @typing_extensions.final

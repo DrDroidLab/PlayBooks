@@ -34,17 +34,17 @@ class PostgresSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Database"),
                               description=StringValue(value='Enter Database'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT),
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="Query"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="timeout"),
                               display_name=StringValue(value="Timeout (in seconds)"),
                               description=StringValue(value='Enter Timeout (in seconds)'),
                               data_type=LiteralType.LONG,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)),
-                              form_field_type=FormFieldType.TEXT)
+                              form_field_type=FormFieldType.TEXT_FT)
                 ]
             },
         }

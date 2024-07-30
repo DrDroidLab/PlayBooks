@@ -29,11 +29,11 @@ class BashSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Remote Server"),
                               description=StringValue(value='Select Remote Server'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TYPING_DROPDOWN),
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="command"),
                               display_name=StringValue(value="Command"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }
