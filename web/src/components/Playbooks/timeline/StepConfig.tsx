@@ -67,9 +67,9 @@ function StepConfig({ step, index }: StepConfigPropTypes) {
         <div className="flex flex-col mr-2">
           <h2 className="text-violet-500 text-sm font-bold">Executed At</h2>
           <p className="text-gray-500 italic text-sm">
-            {stepTasks?.[0]?.ui_requirement?.output?.data?.timestamp &&
+            {stepTasks?.[0]?.ui_requirement?.outputs?.[0]?.data?.timestamp &&
               renderTimestamp(
-                stepTasks?.[0]?.ui_requirement?.output?.data?.timestamp,
+                stepTasks?.[0]?.ui_requirement?.outputs?.[0]?.data?.timestamp,
               )}
           </p>
         </div>
