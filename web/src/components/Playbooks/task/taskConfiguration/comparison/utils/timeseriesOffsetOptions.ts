@@ -3,14 +3,14 @@ import { CUSTOM_KEY } from "./constants";
 export const timeseriesOffsetOptions = [
   {
     id: "now-24",
-    label: "Last 1 day",
+    label: "1 day ago",
   },
   {
     id: "now-168",
-    label: "Last 7 days",
+    label: "7 days ago",
   },
   {
     id: CUSTOM_KEY,
-    label: "Custom",
+    label: "Custom Window",
   },
 ];
