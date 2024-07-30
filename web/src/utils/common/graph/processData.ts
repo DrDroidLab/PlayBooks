@@ -1,4 +1,5 @@
 import { getTSLabel } from "../../../components/Playbooks/utils";
+import { timeAgo } from "../timeAgo";
 
 export const processData = (tsData: any, result: any) => {
   let sortedTSData = JSON.parse(JSON.stringify(tsData));
@@ -16,7 +17,7 @@ export const processData = (tsData: any, result: any) => {
       (e) => e.name === "offset_seconds",
     );
     const seconds = parseInt(offsetSeconds?.value ?? "0", 10);
-    const labelAppendValue = seconds === 0 ? "Current" : "Previous";
+    const labelAppendValue = seconds === 0 ? "Current" : timeAgo(seconds);
     return `${
       result?.timeseries?.metric_expression ??
       getTSLabel(x?.metric_label_values ?? [])
