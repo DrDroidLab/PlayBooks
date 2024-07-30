@@ -23,9 +23,9 @@ export const widgetNRQLExpressionChange = (task: Task) => {
   });
 
   const handleChange = (value: any) => {
+    updateCardById(`${taskKey}.${Key.WIDGET_ID}`, value, task.id);
     const widget = widgetOptions?.find((op: any) => op.id === value)?.widget;
     if (!widget) return;
-    updateCardById(`${taskKey}.${Key.WIDGET_ID}`, widget.widget_id, task.id);
     updateCardById(
       `${taskKey}.${Key.WIDGET_TITLE}`,
       widget.widget_title,
