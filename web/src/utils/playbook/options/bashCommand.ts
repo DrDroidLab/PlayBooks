@@ -4,7 +4,7 @@ import { Key, KeyType } from "../key.ts";
 
 export const bashCommand = (key: KeyType, task: Task): any[] => {
   switch (key) {
-    case Key.DATASOURCE_UID:
+    case Key.REMOTE_SERVER:
       return getCurrentAsset(task, undefined, undefined, {
         idValue: "name",
         labelValue: "name",

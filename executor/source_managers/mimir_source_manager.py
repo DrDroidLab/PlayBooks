@@ -31,7 +31,7 @@ class MimirSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="promql_expression"),
                               display_name=StringValue(value="PromQL"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.MULTILINE),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }

@@ -7,7 +7,6 @@ import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import { Delete } from "@mui/icons-material";
 import RunButton from "../../Buttons/RunButton/index.tsx";
 import SavePlaybookButton from "../../Buttons/SavePlaybookButton/index.tsx";
-import React from "react";
 import TaskQuery from "./TaskQuery.tsx";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
@@ -52,7 +51,7 @@ function Task({ id }) {
         )}
         {!isPrefetched && (
           <div className="flex mt-2">
-            <SavePlaybookButton shouldNavigate={false} />
+            <SavePlaybookButton />
           </div>
         )}
       </div>

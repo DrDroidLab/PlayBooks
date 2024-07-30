@@ -1,21 +1,21 @@
-import { Sources } from "./playbooks/sources.ts";
 import {
-  Documentation,
-  Cloudwatch,
-  Grafana,
-  Datadog,
+  Azure,
+  Bash,
   Clickhouse,
+  Cloudwatch,
+  Datadog,
+  Documentation,
+  Eks,
+  ElasticSearch,
+  Gke,
+  Grafana,
+  GrafanaMimir,
   NewRelic,
   Postgres,
-  Eks,
   SqlDatabaseConnection,
   Api,
-  Bash,
-  GrafanaMimir,
-  Azure,
-  Gke,
-  ElasticSearch,
-} from "./taskTypes/index.ts";
+} from "../../taskTypes";
+import { Sources } from "../sources";
 
 type TaskDetailsMapping = {
   [Sources.Documentation]: Documentation;

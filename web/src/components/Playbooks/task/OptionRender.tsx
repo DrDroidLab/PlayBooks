@@ -58,7 +58,6 @@ export default function OptionRender({ data, removeErrors, id }) {
         currentTaskId!,
         removeErrors,
         data.handleChange,
-        data.handleKeyChange,
       )}
       handleAddClick={handleAddClick}
       value={value ?? data.value}

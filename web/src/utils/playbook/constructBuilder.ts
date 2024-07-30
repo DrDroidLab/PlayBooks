@@ -14,7 +14,6 @@ const fieldToInput = (field: FormFields, task: Task): HandleInputRenderType => {
   const handleChangeFunction = extractHandleChange(
     task,
     field.key_name as KeyType,
-    "",
   );
   return {
     key: field.key_name,
