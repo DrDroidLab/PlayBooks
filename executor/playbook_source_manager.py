@@ -1,5 +1,7 @@
 from typing import Dict
 
+from google.protobuf.struct_pb2 import Struct
+
 from connectors.crud.connectors_crud import get_db_connectors
 from connectors.models import integrations_connector_type_connector_keys_map
 from executor.source_processors.no_op_processor import NoOpProcessor
@@ -13,24 +15,31 @@ from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 
-def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField], source_type_task_def: Dict) -> Dict:
+def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField],
+                             source_type_task_def: Dict) -> (Dict, Dict):
     all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
     all_string_array_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING_ARRAY]
     all_composite_fields = {}
     for ff in form_fields:
         if ff.is_composite:
             all_composite_fields[ff.key_name.value] = ff.composite_fields
+
+    task_local_variable_map = {}
     for gk, gv in global_variable_set.items():
         for tk, tv in source_type_task_def.items():
             if tk in all_string_fields:
                 if gv is None:
                     raise Exception(f"Global variable {gk} is None")
                 source_type_task_def[tk] = tv.replace(gk, gv)
+                if gk in tv:
+                    task_local_variable_map[gk] = gv
             elif tk in all_string_array_fields:
                 for item in source_type_task_def[tk]:
                     if gv is None:
                         raise Exception(f"Global variable {gk} is None")
                     source_type_task_def[tk] = item.replace(gk, gv)
+                if gk in tv:
+                    task_local_variable_map[gk] = gv
             elif tk in all_composite_fields:
                 composite_fields = all_composite_fields[tk]
                 for item in source_type_task_def[tk]:
@@ -39,7 +48,9 @@ def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField]
                             if gv is None:
                                 raise Exception(f"Global variable {gk} is None")
                             item[cf.key_name.value] = item[cf.key_name.value].replace(gk, gv)
-    return source_type_task_def
+                if gk in tv:
+                    task_local_variable_map[gk] = gv
+    return source_type_task_def, task_local_variable_map
 
 
 class PlaybookSourceManager:
@@ -112,13 +123,18 @@ class PlaybookSourceManager:
                     task_type_name = self.task_proto.TaskType.Name(task_type).lower()
                     source_type_task_def = source_task.get(task_type_name, {})
                     form_fields = self.task_type_callable_map[task_type]['form_fields']
-                    resolved_source_type_task_def = resolve_global_variables(global_variable_set, form_fields,
-                                                                             source_type_task_def)
+                    resolved_source_type_task_def, task_local_variable_map = resolve_global_variables(
+                        global_variable_set, form_fields,
+                        source_type_task_def)
                     source_task[task_type_name] = resolved_source_type_task_def
                     resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
-                    return self.task_type_callable_map[task_type]['executor'](time_range,
-                                                                              resolved_task_def_proto,
-                                                                              source_connector_proto)
+                    playbook_task_result: PlaybookTaskResult = self.task_type_callable_map[task_type]['executor'](
+                        time_range,
+                        resolved_task_def_proto,
+                        source_connector_proto)
+                    playbook_task_result.task_local_variable_set.CopyFrom(
+                        dict_to_proto(task_local_variable_map, Struct))
+                    return playbook_task_result
                 except Exception as e:
                     raise Exception(f"Error while executing task for source: {source_str} with error: {e}")
             else:

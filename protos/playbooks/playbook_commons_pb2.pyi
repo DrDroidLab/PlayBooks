@@ -346,6 +346,7 @@ class PlaybookTaskResult(google.protobuf.message.Message):
     ERROR_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     SOURCE_FIELD_NUMBER: builtins.int
+    TASK_LOCAL_VARIABLE_SET_FIELD_NUMBER: builtins.int
     TIMESERIES_FIELD_NUMBER: builtins.int
     TABLE_FIELD_NUMBER: builtins.int
     API_RESPONSE_FIELD_NUMBER: builtins.int
@@ -356,6 +357,8 @@ class PlaybookTaskResult(google.protobuf.message.Message):
     def error(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     type: global___PlaybookTaskResultType.ValueType
     source: protos.base_pb2.Source.ValueType
+    @property
+    def task_local_variable_set(self) -> google.protobuf.struct_pb2.Struct: ...
     @property
     def timeseries(self) -> global___TimeseriesResult: ...
     @property
@@ -374,6 +377,7 @@ class PlaybookTaskResult(google.protobuf.message.Message):
         error: google.protobuf.wrappers_pb2.StringValue | None = ...,
         type: global___PlaybookTaskResultType.ValueType = ...,
         source: protos.base_pb2.Source.ValueType = ...,
+        task_local_variable_set: google.protobuf.struct_pb2.Struct | None = ...,
         timeseries: global___TimeseriesResult | None = ...,
         table: global___TableResult | None = ...,
         api_response: global___ApiResponseResult | None = ...,
@@ -381,8 +385,8 @@ class PlaybookTaskResult(google.protobuf.message.Message):
         text: global___TextResult | None = ...,
         logs: global___TableResult | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "logs", b"logs", "result", b"result", "table", b"table", "text", b"text", "timeseries", b"timeseries"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "logs", b"logs", "result", b"result", "source", b"source", "table", b"table", "text", b"text", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "logs", b"logs", "result", b"result", "table", b"table", "task_local_variable_set", b"task_local_variable_set", "text", b"text", "timeseries", b"timeseries"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api_response", b"api_response", "bash_command_output", b"bash_command_output", "error", b"error", "logs", b"logs", "result", b"result", "source", b"source", "table", b"table", "task_local_variable_set", b"task_local_variable_set", "text", b"text", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
     def WhichOneof(self, oneof_group: typing_extensions.Literal["result", b"result"]) -> typing_extensions.Literal["timeseries", "table", "api_response", "bash_command_output", "text", "logs"] | None: ...
 
 global___PlaybookTaskResult = PlaybookTaskResult

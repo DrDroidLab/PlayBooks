@@ -93,6 +93,7 @@ message PlaybookTaskResult {
   google.protobuf.StringValue error = 1;
   PlaybookTaskResultType type = 2;
   Source source = 3;
+  google.protobuf.Struct task_local_variable_set = 4;
   oneof result {
     TimeseriesResult timeseries = 101;
     TableResult table = 102;

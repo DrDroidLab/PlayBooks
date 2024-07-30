@@ -188,16 +188,15 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
         try:
             task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
-            execution_global_variable_set_proto = dict_to_proto(global_variable_set, Struct)
             playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                    interpretation=interpretation,
-                                                                   execution_global_variable_set=execution_global_variable_set_proto)
+                                                                   execution_global_variable_set=task.global_variable_set)
             pte_logs.append(playbook_task_execution_log)
         except Exception as e:
             playbook_task_execution_log = PlaybookTaskExecutionLog(task=task,
                                                                    result=PlaybookTaskResult(
                                                                        error=StringValue(value=str(e))),
-                                                                   execution_global_variable_set=execution_global_variable_set_proto)
+                                                                   execution_global_variable_set=task.global_variable_set)
             pte_logs.append(playbook_task_execution_log)
 
     return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
