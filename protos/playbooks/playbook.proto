@@ -26,6 +26,7 @@ import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
 import "protos/playbooks/source_task_definitions/kubectl_task.proto";
 import "protos/playbooks/source_task_definitions/gcm_task.proto";
 import "protos/playbooks/source_task_definitions/email_task.proto";
+import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
 
 
 // Playbook Task Protos
@@ -39,6 +40,8 @@ message PlaybookTask {
   message ExecutionConfiguration {
     google.protobuf.BoolValue is_bulk_execution = 1;
     google.protobuf.StringValue bulk_execution_var_field = 2;
+
+    Lambda.Function result_transformer_lambda_function = 4;
   }
 
   google.protobuf.UInt64Value id = 1;
