@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
 import json from "highlight.js/lib/languages/json";
@@ -12,6 +12,7 @@ import { useTestTransformerMutation } from "../../../store/features/workflow/api
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import CodeAccordion from "../../common/CodeAccordion/index.tsx";
 import { LanguageTypes } from "../../common/CodeAccordion/types/index.ts";
+import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
@@ -26,6 +27,15 @@ function HandleTransformer() {
   const [triggerTestTransformer, { isLoading, data }] =
     useTestTransformerMutation();
   const outputRef = useRef<HTMLDivElement>(null);
+  const [triggerSearch, { data: alertData }] = useLazyGetSearchTriggersQuery();
+
+  useEffect(() => {
+    triggerSearch(1, false);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkflow]);
+
+  const sampleInputSlackMessage = alertData?.alerts?.[0]?.alert_json;
 
   const testCode = async () => {
     if (isLoading) return;
@@ -59,9 +69,14 @@ function HandleTransformer() {
       />
 
       <CodeAccordion
-        code={exampleInput}
-        label="Test your transformer function against a sample trigger json payload"
+        code={sampleInputSlackMessage ?? exampleInput}
+        label={
+          sampleInputSlackMessage
+            ? "Test your transformer function against a sample slack message"
+            : "Test your transformer function against a sample json payload"
+        }
         language={LanguageTypes.JSON}
+        className="max-h-[150px] !overflow-y-auto"
         onValueChange={setExampleInput}>
         {data && (
           <CodeAccordion
