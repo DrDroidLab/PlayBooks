@@ -1,3 +1,4 @@
+import { injectTimeRangeIdFromSeconds } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils";
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
@@ -26,11 +27,28 @@ function playbookToState(playbook: Playbook): Playbook {
         return {
           ...e,
           reference_id: uuidv4(),
+          execution_configuration: {
+            ...e.execution_configuration,
+            timeseries_offset: [
+              (
+                parseInt(
+                  e.execution_configuration?.timeseries_offset?.[0] ?? "0",
+                  10,
+                ) / 3600
+              ).toString(),
+            ],
+          },
           ui_requirement: {
             stepId: step.id,
             resultType: supportedType.result_type,
             isOpen: false,
             model_type: supportedType.supported_model_types?.[0]?.model_type,
+            timeseries_offset_id: injectTimeRangeIdFromSeconds(
+              e?.execution_configuration?.timeseries_offset?.[0] ?? "",
+            ),
+            use_comparison:
+              e?.execution_configuration?.timeseries_offset &&
+              (e?.execution_configuration?.timeseries_offset?.length ?? 0) > 0,
           },
         };
       })
