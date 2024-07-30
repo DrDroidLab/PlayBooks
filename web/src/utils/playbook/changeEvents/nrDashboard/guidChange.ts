@@ -14,12 +14,12 @@ export const guidChange = (task: Task) => {
   });
 
   const handleChange = (value: string) => {
+    updateCardById(`${taskKey}.${Key.DASHBOARD_GUID}`, value, task.id);
     const dashboard = options?.find((op: any) => op.id === value);
     if (!dashboard) return;
-    updateCardById(`${taskKey}.${Key.DASHBOARD_GUID}`, value, task.id);
     updateCardById(
       `${taskKey}.${Key.DASHBOARD_NAME}`,
-      dashboard.dashboard_name,
+      dashboard.label,
       task.id,
     );
   };

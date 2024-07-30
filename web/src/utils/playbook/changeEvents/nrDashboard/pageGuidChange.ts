@@ -13,7 +13,7 @@ export const pageGuidChange = (task: Task) => {
     Key.DASHBOARD_GUID,
     "dashboard_guid",
     undefined,
-    "page_options",
+    "pages",
   ).map((e: any) => {
     return {
       id: e.page_guid,
@@ -22,9 +22,9 @@ export const pageGuidChange = (task: Task) => {
   });
 
   const handleChange = (value: any) => {
-    const page = pageOptions?.find((op: any) => op.id === value);
-    if (!page) return page;
     updateCardById(`${taskKey}.${Key.PAGE_GUID}`, value, task.id);
+    const page = pageOptions?.find((op: any) => op.id === value);
+    if (!page) return;
     updateCardById(`${taskKey}.${Key.PAGE_NAME}`, page?.label, task.id);
   };
 
