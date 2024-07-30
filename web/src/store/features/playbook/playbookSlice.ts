@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as Actions from "./slices/index.ts";
 import { initialState } from "./initialState.ts";
+export * from "./selectors";
 
 const playbookSlice = createSlice({
   name: "playbook",
@@ -81,5 +82,3 @@ export const {
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;
-
-export * from "./selectors/index.ts";

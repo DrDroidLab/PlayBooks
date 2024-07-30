@@ -1,5 +1,3 @@
-import React from "react";
-
 function TabsComponent({ options, handleSelect, selectedId, ...props }) {
   return (
     <div className="flex items-center mt-2 overflow-hidden w-fit">

@@ -1,8 +1,8 @@
 import { store } from "../../../store/index.ts";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import removeKeyFromObject from "../../removeKeys.ts";
+import removeKeyFromObject from "../../common/removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
-import checkId from "../../checkId.ts";
+import checkId from "../../common/checkId.ts";
 
 function stateToPlaybook(): Playbook | null {
   const currentPlaybook = currentPlaybookSelector(store.getState());

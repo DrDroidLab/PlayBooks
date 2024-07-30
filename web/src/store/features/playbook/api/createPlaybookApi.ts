@@ -1,5 +1,5 @@
 import { CREATE_PLAYBOOK } from "../../../../constants/index.ts";
-import { Playbook } from "../../../../types/playbook.ts";
+import { Playbook } from "../../../../types/playbooks/playbook.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const createPlaybookApi = apiSlice.injectEndpoints({

@@ -3,7 +3,7 @@ import {
   currentPlaybookSelector,
   setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
-import setNestedValue from "../setNestedValue.ts";
+import setNestedValue from "../common/setNestedValue.ts";
 
 const playbookKey = "step_relations";
 

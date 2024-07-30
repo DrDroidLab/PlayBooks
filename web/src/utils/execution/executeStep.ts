@@ -9,7 +9,7 @@ import {
 } from "../../store/features/playbook/playbookSlice.ts";
 import getCurrentStep from "../playbook/step/getCurrentStep.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
-import checkId from "../checkId.ts";
+import checkId from "../common/checkId.ts";
 import { Task } from "../../types/index.ts";
 import { updateCardById } from "./updateCardById.ts";
 

@@ -6,7 +6,7 @@ import { setPlaybookData } from "../playbookSlice.ts";
 
 export const getPlaybookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPlaybook: builder.query<Playbook, { playbookId: number }>({
+    getPlaybook: builder.query<Playbook, { playbookId: number | string }>({
       query: ({ playbookId }) => ({
         url: GET_PLAYBOOKS,
         body: {

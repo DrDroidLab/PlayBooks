@@ -3,17 +3,17 @@ import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import { playbookSelector } from "../../../../store/features/playbook/playbookSlice.ts";
-import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
-import useDrawerState from "../../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
 import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import React from "react";
 import CustomButton from "../../../common/CustomButton/index.tsx";
-import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.jsx";
-import useIsPrefetched from "../../../../hooks/useIsPrefetched.ts";
+import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.js";
+import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
+import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 

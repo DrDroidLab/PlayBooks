@@ -5,7 +5,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TextResult
 from protos.playbooks.source_task_definitions.documentation_task_pb2 import Documentation
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class DocumentationSourceManager(PlaybookSourceManager):
@@ -24,7 +24,8 @@ class DocumentationSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="content"),
                               display_name=StringValue(value="Content"),
                               description=StringValue(value='Please enter Markdown text'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.WYSIWYG_FT),
                 ]
             },
             Documentation.TaskType.IFRAME: {
@@ -37,7 +38,11 @@ class DocumentationSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="iframe_url"),
                               display_name=StringValue(value="IFrame URL"),
                               description=StringValue(value='Enter IFrame URL'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
+                    FormField(key_name=StringValue(value="iframe_url"),
+                              display_name=StringValue(value="IFrame Render"),
+                              form_field_type=FormFieldType.IFRAME_RENDER_FT),
                 ]
             },
         }

@@ -4,7 +4,7 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const createWorkflowApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createWorkflow: builder.mutation<any, any>({
+    createWorkflow: builder.mutation<any, void>({
       query: () => ({
         url: CREATE_WORKFLOW,
         body: stateToWorkflow(),

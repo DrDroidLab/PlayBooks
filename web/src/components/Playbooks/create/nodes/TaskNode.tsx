@@ -1,5 +1,3 @@
-import React from "react";
-import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import TaskTitle from "../../card/TaskTitle.tsx";
 import handleTaskBorderColor from "../../../../utils/playbook/handleTaskBorderColor.ts";
 import TaskInformation from "../../card/TaskInformation.tsx";
@@ -9,7 +7,8 @@ import {
 } from "../../../../store/features/playbook/playbookSlice.ts";
 import { PermanentDrawerTypes } from "../../../../store/features/drawers/permanentDrawerTypes.ts";
 import { useDispatch, useSelector } from "react-redux";
-import usePermanentDrawerState from "../../../../hooks/usePermanentDrawerState.ts";
+import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
+import usePermanentDrawerState from "../../../../hooks/common/usePermanentDrawerState.ts";
 
 const taskDetailsId = PermanentDrawerTypes.TASK_DETAILS;
 

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { handleInput } from "../utils/handleInputs.ts";
 import { generateSummaryUnsupportedNotifications } from "../../../utils/workflow/generateSummaryUnsupportedNotifications.ts";
-import { NotificationOptionTypes } from "../../../utils/notificationOptionTypes.ts";
+import { NotificationOptionTypes } from "../../../utils/workflow/notificationOptionTypes.ts";
 
 const radioOptions = [
   {

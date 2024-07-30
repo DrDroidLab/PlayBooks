@@ -1,5 +1,5 @@
 import React from "react";
-import { GlobalVariableSet } from "../../../types/globalVariableSet.ts";
+import { GlobalVariableSet } from "../../../types/playbooks/globalVariableSet.ts";
 import { Tooltip } from "@mui/material";
 
 type GlobalVariablesListPropTypes = {

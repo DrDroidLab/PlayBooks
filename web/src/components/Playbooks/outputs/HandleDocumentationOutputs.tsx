@@ -1,9 +1,8 @@
-import React from "react";
 import { taskTypes } from "../../../constants/taskTypes.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 import MarkdownOutput from "../card/MarkdownOutput.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function HandleDocumentationOutputs({ taskId }) {
   const [task] = useCurrentTask(taskId);

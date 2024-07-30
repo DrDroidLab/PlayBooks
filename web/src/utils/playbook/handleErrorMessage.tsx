@@ -1,5 +1,5 @@
 import React from "react";
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "./task/getCurrentTask.ts";
 
 function handleErrorMessage(taskId: string): React.ReactNode | undefined {
   const [task] = getCurrentTask(taskId);

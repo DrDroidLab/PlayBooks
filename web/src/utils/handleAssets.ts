@@ -1,4 +1,4 @@
-import getCurrentTask from "./getCurrentTask.ts";
+import getCurrentTask from "./playbook/task/getCurrentTask.ts";
 
 export default function handleAssets(data, id: string) {
   const [task] = getCurrentTask(id);

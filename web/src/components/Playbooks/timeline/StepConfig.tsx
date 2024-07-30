@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { renderTimestamp } from "../../../utils/DateUtils.js";
-import useVisibility from "../../../hooks/useVisibility.ts";
-import useScrollIntoView from "../../../hooks/useScrollIntoView.ts";
-import usePlaybookKey from "../../../hooks/usePlaybookKey.ts";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
+import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
+import useVisibility from "../../../hooks/common/useVisibility.ts";
+import useScrollIntoView from "../../../hooks/playbooks/useScrollIntoView.ts";
+import usePlaybookKey from "../../../hooks/playbooks/usePlaybookKey";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState";
 import HandleOutput from "../task/HandleOutput.tsx";
 import { Step, Task } from "../../../types/index.ts";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
