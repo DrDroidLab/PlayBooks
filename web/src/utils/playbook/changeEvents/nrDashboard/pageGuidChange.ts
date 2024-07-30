@@ -3,7 +3,7 @@ import { updateCardById } from "../../../execution/updateCardById.ts";
 import { getCurrentAsset } from "../../getCurrentAsset.ts";
 import { Key } from "../../key.ts";
 
-export const pageGuidChange = (task: Task, value: string) => {
+export const pageGuidChange = (task: Task) => {
   const source = task.source;
   const taskType = (task as any)[source.toLowerCase()]?.type;
   const taskKey = `${[source.toLowerCase()]}.${taskType.toLowerCase()}`;
@@ -21,8 +21,12 @@ export const pageGuidChange = (task: Task, value: string) => {
     };
   });
 
-  const page = pageOptions?.find((op: any) => op.id === value);
-  if (!page) return page;
-  updateCardById(`${taskKey}.${Key.PAGE_GUID}`, value, task.id);
-  updateCardById(`${taskKey}.${Key.PAGE_NAME}`, page?.label, task.id);
+  const handleChange = (value: any) => {
+    const page = pageOptions?.find((op: any) => op.id === value);
+    if (!page) return page;
+    updateCardById(`${taskKey}.${Key.PAGE_GUID}`, value, task.id);
+    updateCardById(`${taskKey}.${Key.PAGE_NAME}`, page?.label, task.id);
+  };
+
+  return handleChange;
 };

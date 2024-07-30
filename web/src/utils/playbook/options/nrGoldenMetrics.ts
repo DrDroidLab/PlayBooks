@@ -8,12 +8,12 @@ export const nrGoldenMetrics = (key: KeyType, task: Task): any[] => {
     labelValue: "application_name",
   });
   switch (key) {
-    case Key.APPLICATION_NAME:
+    case Key.APPLICATION_ENTITY_NAME:
       return options;
     case Key.GOLDEN_METRIC_NAME:
       return getCurrentAsset(
         task,
-        Key.APPLICATION_NAME,
+        Key.APPLICATION_ENTITY_NAME,
         "application_name",
         undefined,
         "golden_metrics",
