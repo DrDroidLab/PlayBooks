@@ -5,10 +5,15 @@ import { currentPlaybookSelector } from "../../../../store/features/playbook/sel
 import { isCSV } from "../../../../utils/common/isCSV";
 import { updateCardById } from "../../../../utils/execution/updateCardById";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask";
+import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched";
 
 const key = "execution_configuration.bulk_execution_var_field";
 
-function ExecutionVarFieldSelection({ id }) {
+type ExecutionVarFieldSelectionProps = {
+  id?: string;
+};
+
+function ExecutionVarFieldSelection({ id }: ExecutionVarFieldSelectionProps) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const [task] = useCurrentTask(id);
   const value = task?.execution_configuration?.bulk_execution_var_field;
@@ -25,6 +30,7 @@ function ExecutionVarFieldSelection({ id }) {
     },
     [],
   );
+  const isPrefetched = useIsPrefetched();
 
   const handleChange = (optionId: string) => {
     updateCardById(key, optionId, id);
@@ -38,6 +44,7 @@ function ExecutionVarFieldSelection({ id }) {
         value={value}
         handleChange={handleChange}
         placeholder="Select a bulk variable"
+        disabled={!!isPrefetched}
       />
     </div>
   );

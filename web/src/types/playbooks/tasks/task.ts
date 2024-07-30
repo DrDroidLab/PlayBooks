@@ -1,5 +1,9 @@
 import { GlobalVariableSet } from "../globalVariableSet.ts";
-import { TaskConnectorSource, TaskDetails } from "./";
+import {
+  TaskConnectorSource,
+  TaskDetails,
+  TaskExecutionConfiguration,
+} from "./";
 
 type TaskUIRequirement = {
   isOpen: boolean;
@@ -11,7 +15,7 @@ type TaskUIRequirement = {
   outputError?: boolean;
   errors?: any;
   showOutput?: boolean;
-  output?: any;
+  outputs?: any;
   userEnteredDescription?: boolean;
   assetsLoading?: boolean;
   model_type?: string;

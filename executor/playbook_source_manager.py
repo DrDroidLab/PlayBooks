@@ -23,14 +23,21 @@ def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField]
     for gk, gv in global_variable_set.items():
         for tk, tv in source_type_task_def.items():
             if tk in all_string_fields:
+                if gv is None:
+                    raise Exception(f"Global variable {gk} is None")
                 source_type_task_def[tk] = tv.replace(gk, gv)
             elif tk in all_string_array_fields:
-                source_type_task_def[tk] = [item.replace(gk, gv) for item in tv]
+                for item in source_type_task_def[tk]:
+                    if gv is None:
+                        raise Exception(f"Global variable {gk} is None")
+                    source_type_task_def[tk] = item.replace(gk, gv)
             elif tk in all_composite_fields:
                 composite_fields = all_composite_fields[tk]
                 for item in source_type_task_def[tk]:
                     for cf in composite_fields:
                         if cf.data_type == LiteralType.STRING:
+                            if gv is None:
+                                raise Exception(f"Global variable {gk} is None")
                             item[cf.key_name.value] = item[cf.key_name.value].replace(gk, gv)
     return source_type_task_def
 

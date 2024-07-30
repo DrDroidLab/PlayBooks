@@ -155,7 +155,7 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
     return db_playbook, None
 
 
-def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, dict, str):
+def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (PlayBookStep, dict, dict, str):
     try:
         tasks: [PlayBookTask] = step.tasks
         db_tasks = []
@@ -165,7 +165,7 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
         for task in tasks:
             db_task, err = get_or_create_db_task(account, created_by, task)
             task_ref_id_db_id_map[task.reference_id.value] = db_task.id
-            db_task_id_execution_config_map[db_task.id] = task.execution_configuration
+            db_task_id_execution_config_map[db_task.id] = proto_to_dict(task.execution_configuration)
             if not db_task or err:
                 return None, None, None, f"Failed to create task: {task.name.value} for " \
                                          f"playbook step {step.name.value} with error {err}"
@@ -202,7 +202,7 @@ def create_db_step(account: Account, created_by, step: PlaybookStepProto) -> (Pl
             except Exception as e:
                 logger.error(f"Failed to create playbook step task definition mapping for task {db_task.name} "
                              f"with error {e}")
-                return None, None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
+                return None, None, None, f"Failed to create playbook step task definition mapping for task {db_task.name}"
         return db_step, task_connectors_map, task_ref_id_db_id_map, None
     except Exception as e:
         return None, None, None, f"Failed to create playbook step with error: {e}"
@@ -219,7 +219,7 @@ def get_or_create_db_task(account: Account, created_by, task: PlaybookTaskProto)
     task_dict.pop('interpreter_type', None)
     task_dict.pop('task_connector_sources', None)
     task_dict.pop('reference_id', None)
-    task_dict.pop('configuration', None)
+    task_dict.pop('execution_configuration', None)
     task_md5 = md5(str(task_dict).encode('utf-8')).hexdigest()
     try:
         db_task, _ = PlayBookTask.objects.update_or_create(account=account,

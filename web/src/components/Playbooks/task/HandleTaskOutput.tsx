@@ -9,19 +9,16 @@ function HandleTaskOutput({ showHeading, task, output }) {
         !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
       } h-full bg-gray-50  flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
       <div className="w-full">
-        {output.execution_global_variable_set && (
-          <p className="text-xs my-1 flex items-center">
-            <span className="bg-violet-100 rounded p-1">
-              {Object.keys(output.execution_global_variable_set)?.[0]}
-            </span>{" "}
-            :{" "}
-            {
-              output.execution_global_variable_set?.[
-                Object.keys(output.execution_global_variable_set)?.[0]
-              ]
-            }
-          </p>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(output?.execution_global_variable_set ?? {}).map(
+            ([key, value]) => (
+              <p className="text-xs my-1 flex items-center border-r pr-2">
+                <span className="bg-violet-100 rounded p-1">{key}</span> :{" "}
+                {value as string}
+              </p>
+            ),
+          )}
+        </div>
         <TaskOutput
           showHeading={showHeading}
           id={task.id}

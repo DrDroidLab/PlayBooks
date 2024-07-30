@@ -12,12 +12,19 @@ function extractExecutionTasks(
       (task) => task.id === log.task?.id,
     );
     if (taskInPlaybook) {
+      if (taskInPlaybook.ui_requirement) {
+        taskInPlaybook.ui_requirement.outputs = [];
+      }
       taskInPlaybook.ui_requirement = {
         ...taskInPlaybook.ui_requirement,
-        output: {
-          data: { ...log.result, timestamp: log.timestamp },
-          interpretation: log.interpretation,
-        },
+        outputs: [
+          ...(taskInPlaybook.ui_requirement?.outputs ?? []),
+          {
+            data: { ...log.result, timestamp: log.timestamp },
+            execution_global_variable_set: log.execution_global_variable_set,
+            interpretation: log.interpretation,
+          },
+        ],
         showOutput: true,
         showError: log?.result?.error !== undefined,
         outputError: log?.result?.error,
@@ -29,10 +36,12 @@ function extractExecutionTasks(
       const newTask = {
         ...log.task,
         ui_requirement: {
-          output: {
-            data: log.result,
-            interpretation: log.interpretation,
-          },
+          outputs: [
+            {
+              data: log.result,
+              interpretation: log.interpretation,
+            },
+          ],
           showOutput: true,
           showError: log?.result?.error !== undefined,
           outputError: log?.result?.error,
