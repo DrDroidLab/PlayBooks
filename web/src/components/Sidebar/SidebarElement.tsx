@@ -13,8 +13,10 @@ function SidebarElement({ to, label, icon }: SidebarElementProps) {
 
   return (
     <NavLink className={activeStyle} to={to}>
-      <ListItemIcon>{icon}</ListItemIcon>
-      <p className="text-sm">{label}</p>
+      <div className={`flex gap-3 items-center`}>
+        <div className="text-gray-500">{icon}</div>
+        <p className="text-sm">{label}</p>
+      </div>
     </NavLink>
   );
 }

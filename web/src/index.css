@@ -37,14 +37,18 @@ img {
   color: #9553fe !important;
 }
 
-.activeNavLink .Mui-selected,
-.activeNavLink .Mui-selected:hover {
-  background-color: #9553fe;
+.activeNavLink {
+  background-color: #9553fe !important; /* Active background color */
+  color: white !important; /* Active text color, !important to override MUI styles */
 }
 
-.activeNavLink .Mui-selected,
-.activeNavLink .Mui-selected .MuiListItemIcon-root {
-  color: #ffffff;
+.activeNavLink .MuiListItemIcon-root,
+.activeNavLink .MuiSvgIcon-root {
+  color: white !important; /* Ensure icon color also changes, if needed */
+}
+
+.logo:hover {
+  background-color: transparent !important;
 }
 
 .wmde-markdown ol {
@@ -162,4 +166,11 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.sidebar1 a {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  transition: all 0.2s;
 }
