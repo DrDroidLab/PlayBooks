@@ -70,6 +70,7 @@ class Grafana(google.protobuf.message.Message):
         PANEL_ID_FIELD_NUMBER: builtins.int
         PANEL_TITLE_FIELD_NUMBER: builtins.int
         PANEL_PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -86,6 +87,8 @@ class Grafana(google.protobuf.message.Message):
         def panel_title(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def panel_promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
@@ -97,9 +100,10 @@ class Grafana(google.protobuf.message.Message):
             panel_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
             panel_title: google.protobuf.wrappers_pb2.StringValue | None = ...,
             panel_promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dashboard_title", b"dashboard_title", "dashboard_uid", b"dashboard_uid", "datasource_uid", b"datasource_uid", "panel_id", b"panel_id", "panel_promql_expression", b"panel_promql_expression", "panel_title", b"panel_title", "promql_expression", b"promql_expression", "promql_label_option_values", b"promql_label_option_values", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

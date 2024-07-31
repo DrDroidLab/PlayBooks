@@ -29,10 +29,10 @@ function playbookToState(playbook: Playbook): Playbook {
           reference_id: uuidv4(),
           execution_configuration: {
             ...e.execution_configuration,
-            timeseries_offset: [
+            timeseries_offsets: [
               (
                 parseInt(
-                  e.execution_configuration?.timeseries_offset?.[0] ?? "0",
+                  e.execution_configuration?.timeseries_offsets?.[0] ?? "0",
                   10,
                 ) / 3600
               ).toString(),
@@ -44,11 +44,11 @@ function playbookToState(playbook: Playbook): Playbook {
             isOpen: false,
             model_type: supportedType.supported_model_types?.[0]?.model_type,
             timeseries_offset_id: injectTimeRangeIdFromSeconds(
-              e?.execution_configuration?.timeseries_offset?.[0] ?? "",
+              e?.execution_configuration?.timeseries_offsets?.[0] ?? "",
             ),
             use_comparison:
-              e?.execution_configuration?.timeseries_offset &&
-              (e?.execution_configuration?.timeseries_offset?.length ?? 0) > 0,
+              e?.execution_configuration?.timeseries_offsets &&
+              (e?.execution_configuration?.timeseries_offsets?.length ?? 0) > 0,
           },
         };
       })

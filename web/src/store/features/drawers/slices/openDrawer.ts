@@ -1,9 +1,9 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { InitialStateType, PermanentDrawerTypesKeys } from "../initialState";
+import { InitialStateType, DrawerTypesKeys } from "../initialState";
 
 export const openDrawer = (
   state: InitialStateType,
-  { payload }: PayloadAction<PermanentDrawerTypesKeys>,
+  { payload }: PayloadAction<DrawerTypesKeys>,
 ) => {
   state[payload] = true;
 };

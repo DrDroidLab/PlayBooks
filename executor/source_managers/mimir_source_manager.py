@@ -11,7 +11,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.promql_task_pb2 import PromQl
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -42,8 +41,7 @@ class MimirSourceManager(PlaybookSourceManager):
         return MimirApiProcessor(**generated_credentials)
 
     def execute_promql_metric_execution(self, time_range: TimeRange, mimir_task: PromQl,
-                                        mimir_connector: ConnectorProto,
-                                        execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                        mimir_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not mimir_connector:
                 raise Exception("Task execution Failed:: No Mimir source found")
@@ -57,10 +55,9 @@ class MimirSourceManager(PlaybookSourceManager):
             start_time = evaluation_time.isoformat() + "Z"
             period = '300s'
 
-            task_result = PlaybookTaskResult()
-
             task = mimir_task.promql_metric_execution
             promql_metric_query = task.promql_expression.value
+            timeseries_offsets = task.timeseries_offsets
 
             mimir_api_processor = self.get_connector_processor(mimir_connector)
 
@@ -101,8 +98,8 @@ class MimirSourceManager(PlaybookSourceManager):
                 process_response(response)
 
             # Process offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = (datetime.utcfromtimestamp(tr_start_time) - timedelta(
                         seconds=offset)).isoformat() + "Z"

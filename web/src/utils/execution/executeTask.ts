@@ -45,12 +45,12 @@ export async function executeTask(id?: string) {
               execution_configuration: task.execution_configuration
                 ? {
                     ...task.execution_configuration,
-                    timeseries_offset: task?.execution_configuration
-                      ?.timeseries_offset?.[0]
+                    timeseries_offsets: task?.execution_configuration
+                      ?.timeseries_offsets?.[0]
                       ? [
                           extractTimeFromHours(
                             task?.execution_configuration
-                              ?.timeseries_offset?.[0],
+                              ?.timeseries_offsets?.[0],
                           ),
                         ]
                       : undefined,
@@ -65,12 +65,12 @@ export async function executeTask(id?: string) {
               execution_configuration: task.execution_configuration
                 ? {
                     ...task.execution_configuration,
-                    timeseries_offset: task?.execution_configuration
-                      ?.timeseries_offset?.[0]
+                    timeseries_offsets: task?.execution_configuration
+                      ?.timeseries_offsets?.[0]
                       ? [
                           extractTimeFromHours(
                             task?.execution_configuration
-                              ?.timeseries_offset?.[0],
+                              ?.timeseries_offsets?.[0],
                           ),
                         ]
                       : undefined,

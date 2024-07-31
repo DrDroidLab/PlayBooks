@@ -43,15 +43,19 @@ class Gcm(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         QUERY_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def query(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
             query: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["query", b"query"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["query", b"query"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["query", b"query", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     @typing_extensions.final
     class FilterLogEvents(google.protobuf.message.Message):

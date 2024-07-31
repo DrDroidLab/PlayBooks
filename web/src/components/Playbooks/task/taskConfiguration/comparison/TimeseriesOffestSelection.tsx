@@ -6,7 +6,6 @@ import { InputTypes } from "../../../../../types";
 import {
   CUSTOM_KEY,
   DROPDOWN_KEY,
-  extractTimeFromHours,
   TIMESERIES_OFFSET_KEY,
   timeseriesOffsetOptions,
 } from "./utils";

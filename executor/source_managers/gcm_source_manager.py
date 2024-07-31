@@ -14,7 +14,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.gcm_task_pb2 import Gcm
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -27,7 +26,6 @@ def get_project_id(gcm_connector: ConnectorProto) -> str:
     if 'project_id' not in generated_credentials:
         raise Exception("GCM project ID not configured for GCM connector")
     return generated_credentials['project_id']
-
 
 
 class GcmSourceManager(PlaybookSourceManager):
@@ -79,8 +77,7 @@ class GcmSourceManager(PlaybookSourceManager):
         return GcmApiProcessor(**generated_credentials)
 
     def execute_mql_execution(self, time_range: TimeRange, gcm_task: Gcm,
-                              gcm_connector: ConnectorProto,
-                              execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                              gcm_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
@@ -90,6 +87,7 @@ class GcmSourceManager(PlaybookSourceManager):
 
             mql_task = gcm_task.mql_execution
             mql = mql_task.query.value.strip()
+            timeseries_offsets = mql_task.timeseries_offsets
 
             if "| within " in mql:
                 mql = mql.split("| within ")[0].strip()
@@ -98,9 +96,8 @@ class GcmSourceManager(PlaybookSourceManager):
 
             # List of time ranges to process (current + offsets)
             time_ranges_to_process = [time_range]
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     time_ranges_to_process.append(TimeRange(
                         time_geq=time_range.time_geq - offset,

@@ -76,7 +76,7 @@ class PlaybookTask(google.protobuf.message.Message):
 
         IS_BULK_EXECUTION_FIELD_NUMBER: builtins.int
         BULK_EXECUTION_VAR_FIELD_FIELD_NUMBER: builtins.int
-        TIMESERIES_OFFSET_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         IS_RESULT_TRANSFORMER_ENABLED_FIELD_NUMBER: builtins.int
         RESULT_TRANSFORMER_LAMBDA_FUNCTION_FIELD_NUMBER: builtins.int
         @property
@@ -84,7 +84,7 @@ class PlaybookTask(google.protobuf.message.Message):
         @property
         def bulk_execution_var_field(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
-        def timeseries_offset(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.wrappers_pb2.Int64Value]: ...
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         @property
         def is_result_transformer_enabled(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
         @property
@@ -94,12 +94,12 @@ class PlaybookTask(google.protobuf.message.Message):
             *,
             is_bulk_execution: google.protobuf.wrappers_pb2.BoolValue | None = ...,
             bulk_execution_var_field: google.protobuf.wrappers_pb2.StringValue | None = ...,
-            timeseries_offset: collections.abc.Iterable[google.protobuf.wrappers_pb2.Int64Value] | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
             is_result_transformer_enabled: google.protobuf.wrappers_pb2.BoolValue | None = ...,
             result_transformer_lambda_function: protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "is_result_transformer_enabled", b"is_result_transformer_enabled", "result_transformer_lambda_function", b"result_transformer_lambda_function"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "is_result_transformer_enabled", b"is_result_transformer_enabled", "result_transformer_lambda_function", b"result_transformer_lambda_function", "timeseries_offset", b"timeseries_offset"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "is_result_transformer_enabled", b"is_result_transformer_enabled", "result_transformer_lambda_function", b"result_transformer_lambda_function", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     ID_FIELD_NUMBER: builtins.int
     SOURCE_FIELD_NUMBER: builtins.int
