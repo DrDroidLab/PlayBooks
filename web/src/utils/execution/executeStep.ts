@@ -12,6 +12,7 @@ import updateStepById from "../playbook/step/updateStepById.ts";
 import checkId from "../common/checkId.ts";
 import { Task } from "../../types/index.ts";
 import { updateCardById } from "./updateCardById.ts";
+import { extractTimeFromHours } from "../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
 
 export async function executeStep(id?: string) {
   const { executionId, currentPlaybook } = playbookSelector(store.getState());
@@ -43,6 +44,19 @@ export async function executeStep(id?: string) {
       id: checkId(e?.id ?? ""),
       ui_requirement: undefined,
       global_variable_set: globalVariableSet,
+      execution_configuration: e?.execution_configuration
+        ? {
+            ...e.execution_configuration,
+            timeseries_offsets: e?.execution_configuration
+              ?.timeseries_offsets?.[0]
+              ? [
+                  extractTimeFromHours(
+                    e?.execution_configuration?.timeseries_offsets?.[0],
+                  ),
+                ]
+              : undefined,
+          }
+        : {},
     })),
   };
 

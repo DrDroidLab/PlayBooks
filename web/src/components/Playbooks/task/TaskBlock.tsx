@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../utils/fetchAssetModelOptions.ts";
-import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import Details from "./Details.tsx";
 import HandleOutput from "./HandleOutput.tsx";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
-import BulkTaskSelector from "./taskConfiguration/BulkTaskSelector.tsx";
+import TaskConfiguration from "./taskConfiguration";
 
 const TaskBlock = ({ id }) => {
   const [task, currentStepId] = useCurrentTask(id);
@@ -49,8 +48,7 @@ const TaskBlock = ({ id }) => {
       )}
       {showConfig && task && <Details id={id} />}
 
-      <BulkTaskSelector id={id} />
-
+      <TaskConfiguration id={id} />
       <HandleOutput id={id} />
     </div>
   );

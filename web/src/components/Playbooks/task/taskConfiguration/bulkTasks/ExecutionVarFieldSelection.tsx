@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
-import { InputTypes } from "../../../../types/inputs";
-import CustomInput from "../../../Inputs/CustomInput";
-import { currentPlaybookSelector } from "../../../../store/features/playbook/selectors";
-import { isCSV } from "../../../../utils/common/isCSV";
-import { updateCardById } from "../../../../utils/execution/updateCardById";
-import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask";
-import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched";
+import { InputTypes } from "../../../../../types/inputs";
+import CustomInput from "../../../../Inputs/CustomInput";
+import { currentPlaybookSelector } from "../../../../../store/features/playbook/selectors";
+import { isCSV } from "../../../../../utils/common/isCSV";
+import { updateCardById } from "../../../../../utils/execution/updateCardById";
+import useCurrentTask from "../../../../../hooks/playbooks/task/useCurrentTask";
+import useIsPrefetched from "../../../../../hooks/playbooks/useIsPrefetched";
 
 const key = "execution_configuration.bulk_execution_var_field";
 

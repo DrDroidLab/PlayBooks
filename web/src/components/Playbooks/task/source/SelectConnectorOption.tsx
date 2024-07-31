@@ -8,7 +8,7 @@ import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playb
 import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
 import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import CustomButton from "../../../common/CustomButton/index.tsx";
-import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.js";
+import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
