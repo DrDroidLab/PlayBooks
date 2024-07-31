@@ -99,7 +99,7 @@ class MimirSourceManager(PlaybookSourceManager):
 
             # Process offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = (datetime.utcfromtimestamp(tr_start_time) - timedelta(
                         seconds=offset)).isoformat() + "Z"

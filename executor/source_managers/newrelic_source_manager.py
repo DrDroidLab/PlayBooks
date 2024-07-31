@@ -169,7 +169,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
 
             # Process offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
@@ -283,7 +283,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
 
             # Process offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
@@ -401,7 +401,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
 
             # Process offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
