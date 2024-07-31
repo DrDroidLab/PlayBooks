@@ -2,9 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ConnectorCard from '../../components/Integration/ConnectorCard';
+import { IntegrationStatus } from '../../store/features/integrations/types/integrationStatus';
 
 let connector = {
-    id: 39,
+    id: "39",
     url: "/integrations/sql-db-connection-logo.svg",
     title: "SQL DATABASE CONNECTION",
     enum: "SQL_DATABASE_CONNECTION",
@@ -13,6 +14,9 @@ let connector = {
     buttonType: "link",
     buttonLink: "/integrations/sql_database_connection",
     docs: "https://docs.drdroid.io/docs/sql-databases",
+    imgUrl: "",
+    buttonText: "",
+    status: IntegrationStatus.ACTIVE
   };
 
 test('renders the correct content', (
