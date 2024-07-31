@@ -30,4 +30,5 @@ export const components = {
   [PageKeys.SUPPORT]: "./pages/Support",
   [PageKeys.NOT_FOUND]: "./pages/NotFound",
   [PageKeys.SETTINGS]: "./pages/Settings",
+  [PageKeys.DYNAMIC_ALERTS]: "./pages/dynamicAlerts",
 };

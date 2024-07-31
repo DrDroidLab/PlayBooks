@@ -4,6 +4,7 @@ import {
   LayersRounded,
   SlowMotionVideoRounded,
   TerminalRounded,
+  TipsAndUpdatesRounded,
 } from "@mui/icons-material";
 import { routes } from "../../../routes";
 
@@ -37,5 +38,10 @@ export const elements = [
     to: routes.DATA_SOURCES,
     label: "Integrations",
     icon: <DataThresholdingRounded />,
+  },
+  {
+    to: routes.DYNAMIC_ALERTS,
+    label: "Dynamic Alerts",
+    icon: <TipsAndUpdatesRounded />,
   },
 ];
