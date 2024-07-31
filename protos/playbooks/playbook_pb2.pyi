@@ -76,11 +76,14 @@ class PlaybookTask(google.protobuf.message.Message):
 
         IS_BULK_EXECUTION_FIELD_NUMBER: builtins.int
         BULK_EXECUTION_VAR_FIELD_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         RESULT_TRANSFORMER_LAMBDA_FUNCTION_FIELD_NUMBER: builtins.int
         @property
         def is_bulk_execution(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
         @property
         def bulk_execution_var_field(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         @property
         def result_transformer_lambda_function(self) -> protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function: ...
         def __init__(
@@ -88,10 +91,11 @@ class PlaybookTask(google.protobuf.message.Message):
             *,
             is_bulk_execution: google.protobuf.wrappers_pb2.BoolValue | None = ...,
             bulk_execution_var_field: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
             result_transformer_lambda_function: protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "result_transformer_lambda_function", b"result_transformer_lambda_function"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "result_transformer_lambda_function", b"result_transformer_lambda_function"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "result_transformer_lambda_function", b"result_transformer_lambda_function", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     ID_FIELD_NUMBER: builtins.int
     SOURCE_FIELD_NUMBER: builtins.int

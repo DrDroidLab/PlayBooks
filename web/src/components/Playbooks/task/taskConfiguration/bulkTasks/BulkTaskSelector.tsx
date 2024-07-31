@@ -1,7 +1,7 @@
-import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask";
-import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched";
-import { updateCardById } from "../../../../utils/execution/updateCardById";
-import Checkbox from "../../../common/Checkbox";
+import useCurrentTask from "../../../../../hooks/playbooks/task/useCurrentTask";
+import useIsPrefetched from "../../../../../hooks/playbooks/useIsPrefetched";
+import { updateCardById } from "../../../../../utils/execution/updateCardById";
+import Checkbox from "../../../../common/Checkbox";
 import ExecutionVarFieldSelection from "./ExecutionVarFieldSelection";
 
 const key = "is_bulk_execution";
