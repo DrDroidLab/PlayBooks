@@ -47,11 +47,11 @@ export async function executeStep(id?: string) {
       execution_configuration: e?.execution_configuration
         ? {
             ...e.execution_configuration,
-            timeseries_offset: e?.execution_configuration
-              ?.timeseries_offset?.[0]
+            timeseries_offsets: e?.execution_configuration
+              ?.timeseries_offsets?.[0]
               ? [
                   extractTimeFromHours(
-                    e?.execution_configuration?.timeseries_offset?.[0],
+                    e?.execution_configuration?.timeseries_offsets?.[0],
                   ),
                 ]
               : undefined,

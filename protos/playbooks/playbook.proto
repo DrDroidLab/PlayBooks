@@ -41,8 +41,9 @@ message PlaybookTask {
     google.protobuf.BoolValue is_bulk_execution = 1;
     google.protobuf.StringValue bulk_execution_var_field = 2;
 
+    repeated uint32 timeseries_offsets = 3;
+
     Lambda.Function result_transformer_lambda_function = 4;
-    repeated google.protobuf.Int64Value timeseries_offset = 3;
   }
 
   google.protobuf.UInt64Value id = 1;

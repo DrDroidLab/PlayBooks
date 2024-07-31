@@ -12,6 +12,8 @@ export const datadogService = (key: KeyType, task: Task): any[] => {
     const uniqueFamilies = [...new Set(metricFamilies)];
     return {
       name: asset.service_name,
+      id: asset.service_name,
+      label: asset.service_name,
       metric_families: uniqueFamilies,
     };
   });
@@ -20,7 +22,7 @@ export const datadogService = (key: KeyType, task: Task): any[] => {
       return options;
     case Key.METRIC_FAMILY:
       return options
-        ?.find((e: any) => e.name === getTaskData(task)?.datadogService)
+        ?.find((e: any) => e.name === getTaskData(task)?.[Key.SERVICE_NAME])
         ?.metric_families?.map((x: any) => ({ id: x, label: x }));
     case Key.ENVIRONMENT_NAME:
       return getCurrentAsset(
@@ -44,7 +46,7 @@ export const datadogService = (key: KeyType, task: Task): any[] => {
         "metrics",
       )
         .filter(
-          (e) => e.metric_family === getTaskData(task).datadogMetricFamily,
+          (e) => e.metric_family === getTaskData(task)?.[Key.METRIC_FAMILY],
         )
         ?.map((e) => {
           return {

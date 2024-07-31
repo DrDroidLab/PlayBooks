@@ -8,7 +8,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.datadog_task_pb2 import Datadog
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -71,7 +70,6 @@ class DatadogSourceManager(PlaybookSourceManager):
             },
         }
 
-
     def get_connector_processor(self, datadog_connector, **kwargs):
         generated_credentials = generate_credentials_dict(datadog_connector.type, datadog_connector.keys)
         if 'dd_api_domain' not in generated_credentials:
@@ -79,8 +77,7 @@ class DatadogSourceManager(PlaybookSourceManager):
         return DatadogApiProcessor(**generated_credentials)
 
     def execute_service_metric_execution(self, time_range: TimeRange, dd_task: Datadog,
-                                         datadog_connector: ConnectorProto,
-                                         execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                         datadog_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not datadog_connector:
                 raise Exception("Task execution Failed:: No Datadog source found")
@@ -89,6 +86,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             service_name = task.service_name.value
             env_name = task.environment_name.value
             metric = task.metric.value
+            timeseries_offsets = task.timeseries_offsets
             query_tags = f"service:{service_name},env:{env_name}"
             metric_query = f'avg:{metric}{{{query_tags}}}'
             specific_metric = {"queries": [
@@ -138,10 +136,8 @@ class DatadogSourceManager(PlaybookSourceManager):
                                                              unit=StringValue(value=unit), datapoints=datapoints))
 
             # Get offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = TimeRange(
                         time_geq=time_range.time_geq - offset,
@@ -195,8 +191,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             raise Exception(f"Error while executing Datadog task: {e}")
 
     def execute_query_metric_execution(self, time_range: TimeRange, dd_task: Datadog,
-                                       datadog_connector: ConnectorProto,
-                                       execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                       datadog_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not datadog_connector:
                 raise Exception("Task execution Failed:: No Datadog source found")
@@ -204,6 +199,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             task = dd_task.query_metric_execution
             queries = task.queries
             formula = task.formula.value
+            timeseries_offsets = task.timeseries_offsets
 
             queries_list = [
                 {
@@ -262,10 +258,8 @@ class DatadogSourceManager(PlaybookSourceManager):
                                                              unit=StringValue(value=unit), datapoints=datapoints))
 
             # Get offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = TimeRange(
                         time_geq=time_range.time_geq - offset,

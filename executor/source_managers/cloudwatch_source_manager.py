@@ -11,7 +11,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, LabelValuePair, PlaybookTaskResult, \
     PlaybookTaskResultType, TableResult
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.cloudwatch_task_pb2 import Cloudwatch
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -115,8 +114,7 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             raise e
 
     def execute_metric_execution(self, time_range: TimeRange, cloudwatch_task: Cloudwatch,
-                                 cloudwatch_connector: ConnectorProto,
-                                 execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                 cloudwatch_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not cloudwatch_connector:
                 raise Exception("Task execution Failed:: No Cloudwatch source found")
@@ -126,8 +124,10 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             region = task.region.value
             metric_name = task.metric_name.value
             namespace = task.namespace.value
+            timeseries_offsets = task.timeseries_offsets
             statistic = ['Average']
             requested_statistic = 'Average'
+
             if task.statistic and task.statistic.value in ['Average', 'Sum', 'SampleCount', 'Maximum', 'Minimum']:
                 statistic = [task.statistic.value]
                 requested_statistic = task.statistic.value
@@ -137,8 +137,6 @@ class CloudwatchSourceManager(PlaybookSourceManager):
                                                                       region=region)
 
             labeled_metric_timeseries = []
-
-            print(f"Execution Configuration: {execution_configuration}")
 
             # Always get current time values
             start_time = datetime.utcfromtimestamp(time_range.time_geq)
@@ -175,10 +173,8 @@ class CloudwatchSourceManager(PlaybookSourceManager):
             )
 
             # Get offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     # Use offset directly as seconds
                     adjusted_start_time = start_time - timedelta(seconds=offset)

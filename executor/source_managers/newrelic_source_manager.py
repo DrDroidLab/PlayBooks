@@ -12,7 +12,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.new_relic_task_pb2 import NewRelic
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -116,8 +115,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
         return NewRelicGraphQlConnector(**generated_credentials)
 
     def execute_entity_application_golden_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
-                                                           nr_connector: ConnectorProto,
-                                                           execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                                           nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
                 raise Exception("Task execution Failed:: No New Relic source found")
@@ -125,6 +123,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
             task = nr_task.entity_application_golden_metric_execution
             name = task.golden_metric_name.value
             unit = task.golden_metric_unit.value
+            timeseries_offsets = task.timeseries_offsets
 
             nrql_expression = task.golden_metric_nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
@@ -169,8 +168,8 @@ class NewRelicSourceManager(PlaybookSourceManager):
             ]
 
             # Process offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
@@ -223,13 +222,10 @@ class NewRelicSourceManager(PlaybookSourceManager):
             raise Exception(f"Error while executing New Relic task: {e}")
 
     def execute_entity_dashboard_widget_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
-                                                              nr_connector: ConnectorProto,
-                                                              execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                                              nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
                 raise Exception("Task execution Failed:: No New Relic source found")
-
-            task_result = PlaybookTaskResult()
 
             task = nr_task.entity_dashboard_widget_nrql_metric_execution
             metric_name = task.widget_title.value
@@ -237,6 +233,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 unit = task.unit.value
             else:
                 unit = ''
+            timeseries_offsets = task.timeseries_offsets
 
             nrql_expression = task.widget_nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
@@ -285,8 +282,8 @@ class NewRelicSourceManager(PlaybookSourceManager):
                                                                  datapoints=metric_datapoints))
 
             # Process offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
@@ -346,13 +343,10 @@ class NewRelicSourceManager(PlaybookSourceManager):
             raise Exception(f"Error while executing New Relic task: {e}")
 
     def execute_nrql_metric_execution(self, time_range: TimeRange, nr_task: NewRelic,
-                                      nr_connector: ConnectorProto,
-                                      execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                      nr_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not nr_connector:
                 raise Exception("Task execution Failed:: No New Relic source found")
-
-            task_result = PlaybookTaskResult()
 
             task = nr_task.nrql_metric_execution
             metric_name = task.metric_name.value
@@ -360,6 +354,7 @@ class NewRelicSourceManager(PlaybookSourceManager):
                 unit = task.unit.value
             else:
                 unit = ''
+            timeseries_offsets = task.timeseries_offsets
 
             nrql_expression = task.nrql_expression.value
             if 'timeseries' not in nrql_expression.lower():
@@ -405,8 +400,8 @@ class NewRelicSourceManager(PlaybookSourceManager):
             ]
 
             # Process offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = time_range.time_geq - offset
                     adjusted_end_time = time_range.time_lt - offset
