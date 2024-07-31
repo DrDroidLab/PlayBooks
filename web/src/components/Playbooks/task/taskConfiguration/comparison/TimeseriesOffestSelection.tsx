@@ -26,7 +26,7 @@ function TimeseriesOffestSelection({ id }: TimeseriesOffestSelectionProps) {
     updateCardById(DROPDOWN_KEY, optionId, id);
     if (optionId !== CUSTOM_KEY) {
       const hours = optionId.split("-")[1];
-      handleTimerangeChange(extractTimeFromHours(hours));
+      handleTimerangeChange(hours);
     } else {
       handleTimerangeChange("");
     }
