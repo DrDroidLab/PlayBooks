@@ -3,10 +3,10 @@ import CustomButton from "../../components/common/CustomButton";
 import Heading from "../../components/Heading";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
 import PaginatedTable from "../../components/PaginatedTable";
-import PlaybookTable from "../../components/Playbooks/PlayBookTable";
 import TableSkeleton from "../../components/Skeleton/TableLoader";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
+import DynamicAlertsTable from "../../components/DynamicAlerts/Table";
 
 function DynamicAlerts() {
   const navigate = useNavigate();
@@ -25,7 +25,11 @@ function DynamicAlerts() {
           </CustomButton>
         </div>
         <SuspenseLoader loading={false} loader={<TableSkeleton />}>
-          <PaginatedTable renderTable={PlaybookTable} data={[]} total={0} />
+          <PaginatedTable
+            renderTable={DynamicAlertsTable}
+            data={[]}
+            total={0}
+          />
         </SuspenseLoader>
       </main>
     </div>
