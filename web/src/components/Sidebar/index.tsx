@@ -21,7 +21,7 @@ function Sidebar() {
   };
 
   return (
-    <div className="sidebar1 w-full flex items-center justify-between flex-col pb-2">
+    <div className="sidebar w-full flex items-center justify-between flex-col pb-2">
       <div className="flex w-full flex-col gap-0">
         <HeadElement />
 
