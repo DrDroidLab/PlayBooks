@@ -21,7 +21,11 @@ export const Toast = (props: any) => {
       autoHideDuration={autoHideDuration}
       onClose={handleCloseToast}
       anchorOrigin={anchorOrigin}>
-      <MuiAlert variant="filled" onClose={handleCloseToast} severity={severity}>
+      <MuiAlert
+        className="!text-xs"
+        variant="filled"
+        onClose={handleCloseToast}
+        severity={severity}>
         {message}
       </MuiAlert>
     </Snackbar>

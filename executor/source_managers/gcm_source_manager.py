@@ -82,59 +82,81 @@ class GcmSourceManager(PlaybookSourceManager):
             if not gcm_connector:
                 raise Exception("Task execution Failed:: No GCM source found")
 
-            tr_end_time = time_range.time_lt
-            end_time = datetime.utcfromtimestamp(tr_end_time).strftime("d'%Y/%m/%d %H:%M'")
-            tr_start_time = time_range.time_geq
-            start_time = datetime.utcfromtimestamp(tr_start_time).strftime("d'%Y/%m/%d %H:%M'")
+            project_id = get_project_id(gcm_connector)
+            gcm_api_processor = self.get_connector_processor(gcm_connector)
 
             mql_task = gcm_task.mql_execution
-            mql = mql_task.query.value
-            mql = mql.strip()
-
-            project_id = get_project_id(gcm_connector)
-
-            print(
-                "Playbook Task Downstream Request: Type -> {}, Account -> {}, Project -> {}, Query -> {}, Start_Time "
-                "-> {}, End_Time -> {}".format(
-                    "RUN_MQL_QUERY", gcm_connector.account_id.value, project_id, mql,
-                    start_time, end_time), flush=True)
+            mql = mql_task.query.value.strip()
+            timeseries_offsets = mql_task.timeseries_offsets
 
             if "| within " in mql:
                 mql = mql.split("| within ")[0].strip()
 
-            query_with_time = f"""
-            {mql} | within {start_time}, {end_time}
-            """
+            labeled_metric_timeseries = []
 
-            gcm_api_processor = self.get_connector_processor(gcm_connector)
-            response = gcm_api_processor.execute_mql(query_with_time, project_id)
+            # List of time ranges to process (current + offsets)
+            time_ranges_to_process = [time_range]
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
+                for offset in offsets:
+                    time_ranges_to_process.append(TimeRange(
+                        time_geq=time_range.time_geq - offset,
+                        time_lt=time_range.time_lt - offset
+                    ))
 
-            if not response:
-                raise Exception("No data returned from GCM")
+            for idx, tr in enumerate(time_ranges_to_process):
+                tr_end_time = tr.time_lt
+                end_time = datetime.utcfromtimestamp(tr_end_time).strftime("d'%Y/%m/%d %H:%M'")
+                tr_start_time = tr.time_geq
+                start_time = datetime.utcfromtimestamp(tr_start_time).strftime("d'%Y/%m/%d %H:%M'")
 
-            metric_datapoints = []
-            for item in response:
-                for point in item['pointData']:
-                    utc_timestamp = point['timeInterval']['endTime'].rstrip('Z')
-                    utc_datetime = datetime.fromisoformat(utc_timestamp)
-                    utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
-                    val = point['values'][0]['doubleValue']
-                    datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
-                        timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
-                    metric_datapoints.append(datapoint)
+                query_with_time = f"{mql} | within {start_time}, {end_time}"
 
-            labeled_metric_timeseries = [TimeseriesResult.LabeledMetricTimeseries(
-                metric_label_values=[
-                    LabelValuePair(name=StringValue(value='query'), value=StringValue(value=mql))
-                ],
-                datapoints=metric_datapoints
-            )]
-            timeseries_result = TimeseriesResult(metric_name=StringValue(value=mql),
-                                                 metric_expression=StringValue(value=project_id),
-                                                 labeled_metric_timeseries=labeled_metric_timeseries)
+                offset = 0 if idx == 0 else time_range.time_geq - tr.time_geq
 
-            task_result = PlaybookTaskResult(type=PlaybookTaskResultType.TIMESERIES, timeseries=timeseries_result,
-                                             source=self.source)
+                print(
+                    f"Playbook Task Downstream Request: Type -> RUN_MQL_QUERY, Account -> {gcm_connector.account_id.value}, "
+                    f"Project -> {project_id}, Query -> {query_with_time}, Start_Time -> {start_time}, End_Time -> {end_time}, "
+                    f"Offset -> {offset}",
+                    flush=True
+                )
+
+                response = gcm_api_processor.execute_mql(query_with_time, project_id)
+
+                if not response:
+                    print(f"No data returned from GCM for offset {offset} seconds")
+                    continue
+
+                metric_datapoints = []
+                for item in response:
+                    for point in item['pointData']:
+                        utc_timestamp = point['timeInterval']['endTime'].rstrip('Z')
+                        utc_datetime = datetime.fromisoformat(utc_timestamp)
+                        utc_datetime = utc_datetime.replace(tzinfo=pytz.UTC)
+                        val = point['values'][0]['doubleValue']
+                        datapoint = TimeseriesResult.LabeledMetricTimeseries.Datapoint(
+                            timestamp=int(utc_datetime.timestamp() * 1000), value=DoubleValue(value=val))
+                        metric_datapoints.append(datapoint)
+
+                labeled_metric_timeseries.append(TimeseriesResult.LabeledMetricTimeseries(
+                    metric_label_values=[
+                        LabelValuePair(name=StringValue(value='query'), value=StringValue(value=mql)),
+                        LabelValuePair(name=StringValue(value='offset_seconds'), value=StringValue(value=str(offset)))
+                    ],
+                    datapoints=metric_datapoints
+                ))
+
+            timeseries_result = TimeseriesResult(
+                metric_name=StringValue(value=mql),
+                metric_expression=StringValue(value=project_id),
+                labeled_metric_timeseries=labeled_metric_timeseries
+            )
+
+            task_result = PlaybookTaskResult(
+                type=PlaybookTaskResultType.TIMESERIES,
+                timeseries=timeseries_result,
+                source=self.source
+            )
             return task_result
         except Exception as e:
             raise Exception(f"Error while executing GCM task: {e}")

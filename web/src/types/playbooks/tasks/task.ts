@@ -1,5 +1,9 @@
 import { GlobalVariableSet } from "../globalVariableSet.ts";
-import { TaskConnectorSource, TaskDetails } from "./";
+import {
+  TaskConnectorSource,
+  TaskDetails,
+  TaskExecutionConfiguration,
+} from "./";
 
 type TaskUIRequirement = {
   isOpen: boolean;
@@ -11,7 +15,7 @@ type TaskUIRequirement = {
   outputError?: boolean;
   errors?: any;
   showOutput?: boolean;
-  output?: any;
+  outputs?: any;
   userEnteredDescription?: boolean;
   assetsLoading?: boolean;
   model_type?: string;
@@ -21,6 +25,8 @@ type TaskUIRequirement = {
   showExternalLinks?: boolean;
   resultType?: string;
   requiresFormula?: boolean;
+  timeseries_offset_id?: string;
+  use_comparison?: boolean;
 };
 
 export type Task = {
@@ -34,5 +40,6 @@ export type Task = {
   global_variable_set?: GlobalVariableSet;
   interpreter_type: string;
   task_connector_sources: TaskConnectorSource[];
+  execution_configuration: TaskExecutionConfiguration;
   ui_requirement: TaskUIRequirement;
 } & Partial<TaskDetails>;

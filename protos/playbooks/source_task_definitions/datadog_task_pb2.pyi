@@ -46,6 +46,7 @@ class Datadog(google.protobuf.message.Message):
         ENVIRONMENT_NAME_FIELD_NUMBER: builtins.int
         METRIC_FAMILY_FIELD_NUMBER: builtins.int
         METRIC_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def service_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -54,6 +55,8 @@ class Datadog(google.protobuf.message.Message):
         def metric_family(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def metric(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
@@ -61,9 +64,10 @@ class Datadog(google.protobuf.message.Message):
             environment_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             metric_family: google.protobuf.wrappers_pb2.StringValue | None = ...,
             metric: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "service_name", b"service_name"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "service_name", b"service_name"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["environment_name", b"environment_name", "metric", b"metric", "metric_family", b"metric_family", "service_name", b"service_name", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     @typing_extensions.final
     class QueryMetricExecutionTask(google.protobuf.message.Message):
@@ -71,18 +75,22 @@ class Datadog(google.protobuf.message.Message):
 
         QUERIES_FIELD_NUMBER: builtins.int
         FORMULA_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def queries(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
         @property
         def formula(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
             queries: collections.abc.Iterable[builtins.str] | None = ...,
             formula: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["formula", b"formula"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["formula", b"formula", "queries", b"queries"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["formula", b"formula", "queries", b"queries", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     SERVICE_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

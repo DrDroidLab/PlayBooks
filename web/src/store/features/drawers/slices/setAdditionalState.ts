@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { InitialStateType, PermanentDrawerTypesKeys } from "../initialState";
+import { InitialStateType } from "../initialState";
 
 export const setAdditionalState = (
   state: InitialStateType,

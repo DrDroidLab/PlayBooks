@@ -1,9 +1,11 @@
 import { DrawerTypes } from "./drawerTypes";
 import { PermanentDrawerTypes } from "./permanentDrawerTypes";
 
-type DrawerTypesKeys = keyof typeof DrawerTypes;
+export type NormalDrawerTypesKeys =
+  (typeof DrawerTypes)[keyof typeof DrawerTypes];
 export type PermanentDrawerTypesKeys =
   (typeof PermanentDrawerTypes)[keyof typeof PermanentDrawerTypes];
+export type DrawerTypesKeys = PermanentDrawerTypesKeys | NormalDrawerTypesKeys;
 
 export type InitialStateType = {
   [key in DrawerTypesKeys]?: boolean;

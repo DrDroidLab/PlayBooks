@@ -42,16 +42,14 @@ const AddVariableOverlay = ({ isOpen, close }) => {
   };
 
   return (
-    <div style={{ zIndex: "200" }}>
-      <Overlay close={close} visible={isOpen}>
-        <div className={styles["dashboardSaveOverlay"]}>
-          <div className={styles["dashboardSaveOverlay__content"]}>
-            <div className={styles.title}>
-              Add a new variable
-              <CloseRounded onClick={() => close()} />
-            </div>
+    <Overlay close={close} visible={isOpen}>
+      <div className="z-[200] bg-white max-w-sm rounded m-2">
+        <div className={"p-4"}>
+          <div className={styles.title}>
+            Add a new variable
+            <CloseRounded onClick={() => close()} />
           </div>
-          <div className={styles.variable}>
+          <div className="flex flex-wrap gap-2 mt-4">
             <CustomInput
               inputType={InputTypes.TEXT}
               handleChange={(val) => setName(val)}
@@ -65,20 +63,23 @@ const AddVariableOverlay = ({ isOpen, close }) => {
               placeholder={"Enter variable value"}
             />
           </div>
+          <p className="text-xs mt-2 text-gray-500 italic">
+            To enter an array variable, just enter the values with commas
+          </p>
           <div className="flex items-center gap-2 mt-10">
             <CustomButton onClick={() => close()}>Cancel</CustomButton>
             <CustomButton onClick={handleSubmit}>Add</CustomButton>
           </div>
         </div>
-        <Toast
-          open={validationError}
-          severity="error"
-          message={validationError}
-          handleClose={() => setValidationError("")}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        />
-      </Overlay>
-    </div>
+      </div>
+      <Toast
+        open={validationError}
+        severity="error"
+        message={validationError}
+        handleClose={() => setValidationError("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      />
+    </Overlay>
   );
 };
 
