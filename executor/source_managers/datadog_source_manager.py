@@ -10,7 +10,7 @@ from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, Timeseries
     PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.datadog_task_pb2 import Datadog
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class DatadogSourceManager(PlaybookSourceManager):
@@ -29,19 +29,23 @@ class DatadogSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="service_name"),
                               display_name=StringValue(value="Service"),
                               description=StringValue(value='Select Service'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="environment_name"),
                               display_name=StringValue(value="Environment"),
                               description=StringValue(value='Select Environment'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="metric_family"),
                               display_name=StringValue(value="Metric Family"),
                               description=StringValue(value='Select Metric Family'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="metric"),
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value='Select Metric'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_MULTIPLE_FT),
                 ]
             },
             Datadog.TaskType.QUERY_METRIC_EXECUTION: {
@@ -55,12 +59,14 @@ class DatadogSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Queries"),
                               description=StringValue(value='Enter Queries'),
                               data_type=LiteralType.STRING_ARRAY,
-                              max_length_allowed=UInt64Value(value=2)),
+                              max_length_allowed=UInt64Value(value=2),
+                              form_field_type=FormFieldType.STRING_ARRAY_FT),
                     FormField(key_name=StringValue(value="formula"),
                               display_name=StringValue(value="Formula"),
                               description=StringValue(value='Select Formula'),
                               data_type=LiteralType.STRING,
-                              is_optional=True),
+                              is_optional=True,
+                              form_field_type=FormFieldType.TEXT_FT),
                 ]
             },
         }

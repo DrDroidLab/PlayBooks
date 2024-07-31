@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
-import useSearch from "../../../hooks/useSearch.ts";
+import useSearch from "../../../hooks/common/useSearch.ts";
 import SearchForm from "./SearchForm.tsx";
 import SearchDropdown from "./SearchDropdown.tsx";
 import SearchChip from "./SearchChip.tsx";

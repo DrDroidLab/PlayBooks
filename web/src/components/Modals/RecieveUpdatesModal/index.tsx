@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Overlay from "../../Overlay";
+import Overlay from "../../Overlay/index.tsx";
 import { CloseRounded } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import posthog from "posthog-js";

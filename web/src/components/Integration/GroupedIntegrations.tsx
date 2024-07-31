@@ -1,8 +1,7 @@
-import React from "react";
-import SuspenseLoader from "../Skeleton/SuspenseLoader.jsx";
-import TableSkeleton from "../Skeleton/TableLoader.jsx";
+import SuspenseLoader from "../Skeleton/SuspenseLoader";
+import TableSkeleton from "../Skeleton/TableLoader";
 import TabContent from "../TabsComponent/TabContent";
-import { useGetConnectorListQuery } from "../../store/features/integrations/api/index.ts";
+import { useGetConnectorListQuery } from "../../store/features/integrations/api";
 import styles from "./index.module.css";
 
 function GroupedIntegrations() {

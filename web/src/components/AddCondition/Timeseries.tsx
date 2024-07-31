@@ -1,6 +1,6 @@
 import React from "react";
 import { functionOptions } from "../../utils/conditionals/functionOptions.ts";
-import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
+import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { useSelector } from "react-redux";
 import { operationOptions } from "../../utils/conditionals/operationOptions.ts";
@@ -13,7 +13,7 @@ import {
 } from "../../utils/conditionals/resultTypeOptions.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 
 function Timeseries({ condition, conditionIndex, rule, resultType }) {
   const { id } = useSelector(additionalStateSelector);

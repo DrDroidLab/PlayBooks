@@ -5,7 +5,7 @@ import {
   updateProperty,
 } from "../features/timeRange/timeRangeSlice.ts";
 import { showSnackbar } from "../features/snackbar/snackbarSlice.ts";
-import { CustomError, ErrorType } from "../../utils/Error.ts";
+import { CustomError, ErrorType } from "../../utils/common/Error.ts";
 import { refreshToken } from "./refreshTokenService.ts";
 import { logOut } from "../features/auth/authSlice.ts";
 import { isUnAuth } from "../../utils/auth/unauthenticatedRoutes.ts";

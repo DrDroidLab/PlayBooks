@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.jsx";
-import React from "react";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
+import AddDataSourcesDrawer from "../../common/Drawers/AddDataSourcesDrawer.js";
 import AddSource from "./AddSource.tsx";
 import TaskBlock from "./TaskBlock.tsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
 
 function TaskQuery({ id }) {
   const [task] = useCurrentTask(id);

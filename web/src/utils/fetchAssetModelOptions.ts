@@ -1,8 +1,8 @@
 import { store } from "../store/index.ts";
 import { getAssets } from "../store/features/playbook/api/index.ts";
 import { playbookSelector } from "../store/features/playbook/playbookSlice.ts";
-import getCurrentTask from "./getCurrentTask.ts";
-import { connectorsWithoutAssets } from "./connectorsWithoutAssets.ts";
+import getCurrentTask from "./playbook/task/getCurrentTask.ts";
+import { connectorsWithoutAssets } from "./integrations/connectorsWithoutAssets.ts";
 
 export const fetchData = async (val: any = undefined) => {
   const { currentVisibleTask } = playbookSelector(store.getState());

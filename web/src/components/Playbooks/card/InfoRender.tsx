@@ -3,9 +3,9 @@ import { StepInformationType } from "../../../utils/playbook/stepInformation/han
 import { InfoTypes } from "../../../utils/playbook/stepInformation/InfoTypes.ts";
 import Text from "./info/Text.tsx";
 import Chips from "./info/Chips.tsx";
-import getNestedValue from "../../../utils/getNestedValue.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import getNestedValue from "../../../utils/common/getNestedValue.ts";
 import MarkdownOutput from "./MarkdownOutput.tsx";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 type InfoRenderPropTypes = {
   taskId: string;

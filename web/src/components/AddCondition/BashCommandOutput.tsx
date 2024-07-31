@@ -1,12 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
-import useEdgeConditions from "../../hooks/useEdgeConditions.ts";
+import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions.ts";
 import { bashCommandOutputOptions } from "../../utils/conditionals/typeOptions/index.ts";
 import HandleTypes from "./HandleTypes.tsx";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 
 function BashCommandOutput({ rule, condition, conditionIndex }) {
   const { id } = useSelector(additionalStateSelector);

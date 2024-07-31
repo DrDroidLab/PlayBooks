@@ -28,6 +28,7 @@ import protos.playbooks.source_task_definitions.gke_task_pb2
 import protos.playbooks.source_task_definitions.grafana_loki_task_pb2
 import protos.playbooks.source_task_definitions.grafana_task_pb2
 import protos.playbooks.source_task_definitions.kubectl_task_pb2
+import protos.playbooks.source_task_definitions.lambda_function_task_pb2
 import protos.playbooks.source_task_definitions.new_relic_task_pb2
 import protos.playbooks.source_task_definitions.promql_task_pb2
 import protos.playbooks.source_task_definitions.sql_data_fetch_task_pb2
@@ -76,21 +77,25 @@ class PlaybookTask(google.protobuf.message.Message):
         IS_BULK_EXECUTION_FIELD_NUMBER: builtins.int
         BULK_EXECUTION_VAR_FIELD_FIELD_NUMBER: builtins.int
         TIMESERIES_OFFSET_FIELD_NUMBER: builtins.int
+        RESULT_TRANSFORMER_LAMBDA_FUNCTION_FIELD_NUMBER: builtins.int
         @property
         def is_bulk_execution(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
         @property
         def bulk_execution_var_field(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def timeseries_offset(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[google.protobuf.wrappers_pb2.Int64Value]: ...
+        @property
+        def result_transformer_lambda_function(self) -> protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function: ...
         def __init__(
             self,
             *,
             is_bulk_execution: google.protobuf.wrappers_pb2.BoolValue | None = ...,
             bulk_execution_var_field: google.protobuf.wrappers_pb2.StringValue | None = ...,
             timeseries_offset: collections.abc.Iterable[google.protobuf.wrappers_pb2.Int64Value] | None = ...,
+            result_transformer_lambda_function: protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "timeseries_offset", b"timeseries_offset"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "result_transformer_lambda_function", b"result_transformer_lambda_function"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["bulk_execution_var_field", b"bulk_execution_var_field", "is_bulk_execution", b"is_bulk_execution", "result_transformer_lambda_function", b"result_transformer_lambda_function", "timeseries_offset", b"timeseries_offset"]) -> None: ...
 
     ID_FIELD_NUMBER: builtins.int
     SOURCE_FIELD_NUMBER: builtins.int

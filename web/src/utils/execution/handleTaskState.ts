@@ -1,4 +1,4 @@
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "../playbook/task/getCurrentTask.ts";
 import handleErrorMessage from "../playbook/handleErrorMessage.tsx";
 import { StepStateType, StepStates } from "./StepStates.ts";
 

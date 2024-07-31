@@ -4,8 +4,9 @@ import React from "react";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import Details from "./Details.tsx";
 import HandleOutput from "./HandleOutput.tsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
+import BulkTaskSelector from "./taskConfiguration/BulkTaskSelector.tsx";
 
 const TaskBlock = ({ id }) => {
   const [task, currentStepId] = useCurrentTask(id);
@@ -47,6 +48,8 @@ const TaskBlock = ({ id }) => {
         </CustomButton>
       )}
       {showConfig && task && <Details id={id} />}
+
+      <BulkTaskSelector id={id} />
 
       <HandleOutput id={id} />
     </div>

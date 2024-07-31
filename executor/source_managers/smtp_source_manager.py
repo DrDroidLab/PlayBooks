@@ -11,7 +11,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
 
 from protos.playbooks.source_task_definitions.email_task_pb2 import SMTP
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +32,18 @@ class SMTPSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="to"),
                               display_name=StringValue(value="To"),
                               description=StringValue(value='Enter To'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="subject"),
                               display_name=StringValue(value="Subject"),
                               description=StringValue(value='Enter Subject'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="body"),
                               display_name=StringValue(value="Body"),
                               description=StringValue(value='Enter Body'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }
