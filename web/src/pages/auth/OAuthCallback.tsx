@@ -1,6 +1,5 @@
 import { CircularProgress } from "@mui/material";
-import React from "react";
-import useOAuth from "../../hooks/useOAuth.ts";
+import useOAuth from "../../hooks/oauth/useOAuth";
 
 function OAuthCallback() {
   useOAuth();
