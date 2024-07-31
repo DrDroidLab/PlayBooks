@@ -1,6 +1,6 @@
 import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
-import { store } from "../../../store/index.ts";
-import { Task } from "../types/task.ts";
+import { store } from "../../../store";
+import { Task } from "../../../types";
 
 function getCurrentTask(id?: string): [Task | undefined, string | undefined] {
   const { currentPlaybook, currentVisibleTask } = playbookSelector(

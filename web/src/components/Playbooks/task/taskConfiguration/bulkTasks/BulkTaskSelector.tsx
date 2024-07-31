@@ -24,7 +24,7 @@ function BulkTaskSelector({ id }: BulkTaskSelectorProps) {
       <Checkbox
         id="is_bulk_execution"
         isChecked={isChecked ?? false}
-        label="Is Bulk Execution"
+        label="Run multiple times"
         onChange={handleChange}
         isSmall={true}
         disabled={!!isPrefetched}
