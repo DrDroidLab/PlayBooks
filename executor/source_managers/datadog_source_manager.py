@@ -137,7 +137,7 @@ class DatadogSourceManager(PlaybookSourceManager):
 
             # Get offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = TimeRange(
                         time_geq=time_range.time_geq - offset,
@@ -259,7 +259,7 @@ class DatadogSourceManager(PlaybookSourceManager):
 
             # Get offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     adjusted_start_time = TimeRange(
                         time_geq=time_range.time_geq - offset,

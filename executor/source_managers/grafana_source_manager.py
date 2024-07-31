@@ -145,7 +145,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
 
             # Get offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     offset_end_time = current_end_time - timedelta(seconds=offset)
                     offset_start_time = current_start_time - timedelta(seconds=offset)
@@ -251,7 +251,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
 
             # Get offset values if specified
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     offset_end_time = current_end_time - timedelta(seconds=offset)
                     offset_start_time = current_start_time - timedelta(seconds=offset)

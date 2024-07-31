@@ -115,7 +115,8 @@ class PlaybookSourceManager:
                     # Update timeseries tasks with timeseries_offsets
                     if self.task_type_callable_map[task_type]['result_type'] == PlaybookTaskResultType.TIMESERIES and \
                             task.execution_configuration and task.execution_configuration.timeseries_offsets:
-                        source_type_task_def['timeseries_offsets'] = task.execution_configuration.timeseries_offsets
+                        source_type_task_def['timeseries_offsets'] = list(
+                            task.execution_configuration.timeseries_offsets)
 
                     form_fields = self.task_type_callable_map[task_type]['form_fields']
                     resolved_source_type_task_def = resolve_global_variables(global_variable_set, form_fields,

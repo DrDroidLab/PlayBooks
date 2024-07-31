@@ -97,7 +97,7 @@ class GcmSourceManager(PlaybookSourceManager):
             # List of time ranges to process (current + offsets)
             time_ranges_to_process = [time_range]
             if timeseries_offsets:
-                offsets = [offset.value for offset in timeseries_offsets]
+                offsets = [offset for offset in timeseries_offsets]
                 for offset in offsets:
                     time_ranges_to_process.append(TimeRange(
                         time_geq=time_range.time_geq - offset,
