@@ -149,7 +149,7 @@ class PlaybookSourceManager:
 
                     # Execute task
                     playbook_task_result: PlaybookTaskResult = self.task_type_callable_map[task_type]['executor'](
-                        time_range, resolved_task_def_proto, source_connector_proto)
+                        time_range, resolved_task_def_proto, source_connector_proto, task.execution_configuration)
 
                     # Set task local variables in playbook_task_result to be stored in database
                     task_local_variable_map_proto = dict_to_proto(task_local_variable_map,

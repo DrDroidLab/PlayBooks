@@ -9,6 +9,7 @@ import { executionTaskExecute } from "../../store/features/playbook/api/executio
 import checkId from "../common/checkId.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
 import { executionBulkTaskExecute } from "../../store/features/playbook/api/executions/executionBulkTaskExecuteApi.ts";
+import { extractTimeFromHours } from "../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
@@ -41,12 +42,40 @@ export async function executeTask(id?: string) {
               id: checkId(task.id!),
               ui_requirement: undefined,
               global_variable_set: currentPlaybook?.global_variable_set,
+              execution_configuration: task.execution_configuration
+                ? {
+                    ...task.execution_configuration,
+                    timeseries_offset: task?.execution_configuration
+                      ?.timeseries_offset?.[0]
+                      ? [
+                          extractTimeFromHours(
+                            task?.execution_configuration
+                              ?.timeseries_offset?.[0],
+                          ),
+                        ]
+                      : undefined,
+                  }
+                : {},
             })
           : executionTaskExecute.initiate({
               ...task,
               id: checkId(task.id!),
               ui_requirement: undefined,
               global_variable_set: currentPlaybook?.global_variable_set,
+              execution_configuration: task.execution_configuration
+                ? {
+                    ...task.execution_configuration,
+                    timeseries_offset: task?.execution_configuration
+                      ?.timeseries_offset?.[0]
+                      ? [
+                          extractTimeFromHours(
+                            task?.execution_configuration
+                              ?.timeseries_offset?.[0],
+                          ),
+                        ]
+                      : undefined,
+                  }
+                : {},
             }),
       )
       .unwrap();
