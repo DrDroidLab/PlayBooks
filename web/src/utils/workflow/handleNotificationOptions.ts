@@ -1,8 +1,8 @@
 import { store } from "../../store/index.ts";
 import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
-import { NotificationOptionTypes } from "../notificationOptionTypes.ts";
+import { NotificationOptionTypes } from "./notificationOptionTypes.ts";
 
-function handleNotificationOptions() {
+function handleNotificationOptions(): any[] {
   const currentWorkflow = currentWorkflowSelector(store.getState());
 
   switch (currentWorkflow.workflowType) {
@@ -26,6 +26,8 @@ function handleNotificationOptions() {
         NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
         NotificationOptionTypes.SMTP_EMAIL,
       ];
+    default:
+      return [];
   }
 }
 

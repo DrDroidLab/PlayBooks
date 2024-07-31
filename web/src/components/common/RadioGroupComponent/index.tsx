@@ -1,6 +1,6 @@
 import React from "react";
 import RadioComponent from "../RadioComponent/index.tsx"; // Adjust the path as needed
-import { randomString } from "../../../utils/utils.js";
+import { randomString } from "../../../utils/common/randomString.js";
 
 interface RadioGroupProps {
   label?: string;

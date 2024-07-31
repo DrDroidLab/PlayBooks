@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useDropdown from "../../../hooks/useDropdown.ts";
+import useDropdown from "../../../hooks/common/useDropdown.ts";
 import DropdownOptions from "../DropdownOptions/index.tsx";
 import DropdownTitle from "../DropdownTitle/index.tsx";
 

@@ -4,7 +4,7 @@ import { setConnector, setKey } from "../integrationsSlice.ts";
 
 export const getConnectorKeysApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getConnectorKeys: builder.query<any, number>({
+    getConnectorKeys: builder.query<any, string>({
       query: (id) => ({
         url: GET_CONNECTOR_KEYS,
         method: "POST",

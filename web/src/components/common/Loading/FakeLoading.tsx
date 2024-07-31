@@ -1,5 +1,4 @@
-import React from "react";
-import useFakeLoading from "../../../hooks/useFakeLoading.ts";
+import useFakeLoading from "../../../hooks/common/useFakeLoading.ts";
 import Loading from "./index.tsx";
 
 function FakeLoading() {

@@ -1,5 +1,5 @@
 import { GET_CONNECTOR_OPTIONS } from "../../../../constants/index.ts";
-import handleDefaultValues from "../../../../utils/handleDefaultValues.ts";
+import handleDefaultValues from "../../../../utils/integrations/handleDefaultValues.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setKeysOptions } from "../integrationsSlice.ts";
 

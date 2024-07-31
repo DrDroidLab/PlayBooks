@@ -13,7 +13,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.new_relic_task_pb2 import NewRelic
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 def get_nrql_expression_result_alias(nrql_expression):
@@ -40,18 +40,22 @@ class NewRelicSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="application_entity_name"),
                               display_name=StringValue(value="Application"),
                               description=StringValue(value="Select Application"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="golden_metric_name"),
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value="Select Metric"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="golden_metric_unit"),
                               display_name=StringValue(value="Unit"),
                               description=StringValue(value="Enter Unit"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="golden_metric_nrql_expression"),
                               display_name=StringValue(value="Selected Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
             NewRelic.TaskType.ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION: {
@@ -64,17 +68,21 @@ class NewRelicSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="dashboard_guid"),
                               display_name=StringValue(value="Dashboard"),
                               description=StringValue(value="Select Dashboard"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="page_guid"),
                               display_name=StringValue(value="Page"),
                               description=StringValue(value="Select Page"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="widget_title"),
                               display_name=StringValue(value="Widget Title"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="widget_nrql_expression"),
                               display_name=StringValue(value="Selected Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
             NewRelic.TaskType.NRQL_METRIC_EXECUTION: {
@@ -87,14 +95,17 @@ class NewRelicSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="metric_name"),
                               display_name=StringValue(value="Metric Name"),
                               description=StringValue(value="Enter Metric Name"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="unit"),
                               display_name=StringValue(value="Unit"),
                               description=StringValue(value="Enter Unit"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="nrql_expression"),
                               display_name=StringValue(value="Selected Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
         }

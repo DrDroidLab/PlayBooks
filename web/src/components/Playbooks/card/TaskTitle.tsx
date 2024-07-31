@@ -1,8 +1,7 @@
-import React from "react";
-import { cardsData } from "../../../utils/cardsData.js";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import { cardsData } from "../../../utils/common/cardsData.ts";
 import TaskButtons from "./TaskButtons.tsx";
 import HandleTaskIcon from "./HandleTaskIcon.tsx";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function TaskTitle({ taskId }) {
   const [task] = useCurrentTask(taskId);

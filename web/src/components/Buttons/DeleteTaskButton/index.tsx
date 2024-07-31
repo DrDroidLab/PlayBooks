@@ -1,9 +1,8 @@
-import React from "react";
 import { Delete } from "@mui/icons-material";
 import { deleteTask } from "../../../store/features/playbook/playbookSlice.ts";
 import { useDispatch } from "react-redux";
-import usePermanentDrawerState from "../../../hooks/usePermanentDrawerState.ts";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
+import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
 
 function DeleteTaskButton({ taskId }) {
   const [task] = useCurrentTask(taskId);

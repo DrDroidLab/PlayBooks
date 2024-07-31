@@ -1,11 +1,10 @@
-import React from "react";
-import useEdgeConditions from "../../../hooks/useEdgeConditions.ts";
+import useEdgeConditions from "../../../hooks/playbooks/useEdgeConditions.ts";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
-import useIsPrefetched from "../../../hooks/useIsPrefetched.ts";
+import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 
 function Rolling({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
