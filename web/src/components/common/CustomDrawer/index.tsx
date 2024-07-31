@@ -3,9 +3,10 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CloseRounded } from "@mui/icons-material";
 import useDrawerState from "../../../hooks/common/useDrawerState";
+import { DrawerTypesKeys } from "../../../store/features/drawers/initialState";
 
 type CustomDrawerPropTypes = {
-  id: string;
+  id: DrawerTypesKeys;
   children?: React.ReactNode;
   src?: string;
   openFrom?: "right" | "left";

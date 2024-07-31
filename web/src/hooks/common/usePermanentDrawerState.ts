@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   setPermanentView,
-  PermanentDrawerTypesKeys,
   permanentViewSelector,
   setAdditionalState,
   additionalStateSelector,
 } from "../../store/features/drawers/drawersSlice.ts";
 import { PermanentDrawerTypes } from "../../store/features/drawers/permanentDrawerTypes.ts";
 import { setCurrentVisibleTask } from "../../store/features/playbook/playbookSlice.ts";
+import { PermanentDrawerTypesKeys } from "../../store/features/drawers/initialState.ts";
 
 type DrawerState = {
   isOpen: boolean;

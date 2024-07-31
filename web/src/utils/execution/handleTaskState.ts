@@ -15,8 +15,7 @@ function handleTaskState(taskId: string, log?: any) {
   const isLoading = task.ui_requirement.outputLoading;
   const hasError =
     !isLoading &&
-    task.ui_requirement.showError &&
-    (task.ui_requirement.outputError ||
+    (task.ui_requirement.showError ||
       Object.keys(task.ui_requirement?.errors ?? {}).length > 0);
 
   const errorMessage: React.ReactNode = handleErrorMessage(taskId);
@@ -26,7 +25,10 @@ function handleTaskState(taskId: string, log?: any) {
     !hasError &&
     !task.ui_requirement.outputLoading &&
     task.ui_requirement.showOutput &&
-    !task.ui_requirement?.output?.result?.error;
+    (task.ui_requirement?.outputs?.length ?? 0) > 0 &&
+    (task.ui_requirement?.outputs as any[]).every((output: any) => {
+      return output?.error === undefined;
+    });
 
   let state: StepStateType = StepStates.DEFAULT;
 

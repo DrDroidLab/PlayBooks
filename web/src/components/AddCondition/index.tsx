@@ -136,7 +136,7 @@ function AddCondition() {
             <Add fontSize="inherit" /> Add
           </CustomButton>
 
-          <SavePlaybookButton shouldNavigate={false} />
+          <SavePlaybookButton />
         </>
       )}
     </div>

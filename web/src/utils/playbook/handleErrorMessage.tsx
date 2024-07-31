@@ -3,8 +3,11 @@ import getCurrentTask from "./task/getCurrentTask.ts";
 
 function handleErrorMessage(taskId: string): React.ReactNode | undefined {
   const [task] = getCurrentTask(taskId);
-  if (task?.ui_requirement.outputError) {
-    return <p>{task?.ui_requirement.outputError}</p>;
+  const output = task?.ui_requirement?.outputs?.find((output: any) => {
+    return output?.error !== undefined;
+  });
+  if (output?.error) {
+    return <p>{output?.error}</p>;
   }
 
   const errorKeys = Object.keys(task?.ui_requirement.errors ?? {});
