@@ -94,6 +94,7 @@ message PlaybookTaskResult {
   PlaybookTaskResultType type = 2;
   Source source = 3;
   google.protobuf.Struct task_local_variable_set = 4;
+  google.protobuf.Struct result_transformer_lambda_function_variable_set = 5;
   oneof result {
     TimeseriesResult timeseries = 101;
     TableResult table = 102;
