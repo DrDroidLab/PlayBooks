@@ -43,7 +43,7 @@ function ExecutionVarFieldSelection({ id }: ExecutionVarFieldSelectionProps) {
         options={variableOptions}
         value={value}
         handleChange={handleChange}
-        placeholder="Select a bulk variable"
+        placeholder="Select an array variable"
         disabled={!!isPrefetched}
       />
     </div>
