@@ -4,7 +4,7 @@ import removeKeyFromObject from "../../removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import checkId from "../../checkId.ts";
 
-function stateToPlaybook() {
+function stateToPlaybook(): Playbook | null {
   const currentPlaybook = currentPlaybookSelector(store.getState());
   if (!currentPlaybook) return null;
   const playbookTasks = currentPlaybook.ui_requirement.tasks;

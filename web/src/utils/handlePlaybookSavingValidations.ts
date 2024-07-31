@@ -20,6 +20,9 @@ export default function handlePlaybookSavingValidations() {
   }
 
   steps?.forEach((step: Step) => {
+    if (step.tasks.length === 0) {
+      error = "You cannot save a step with no tasks";
+    }
     step.tasks?.forEach((taskId: Task | string) => {
       let task: Task | undefined =
         typeof taskId === "string"
