@@ -10,7 +10,6 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
-from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.grafana_task_pb2 import Grafana
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
@@ -88,8 +87,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
         return GrafanaApiProcessor(**generated_credentials)
 
     def execute_promql_metric_execution(self, time_range: TimeRange, grafana_task: Grafana,
-                                        grafana_connector: ConnectorProto,
-                                        execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                        grafana_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not grafana_connector:
                 raise Exception("Task execution Failed:: No Grafana source found")
@@ -98,6 +96,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
             datasource_uid = task.datasource_uid.value
             promql_metric_query = task.promql_expression.value
             promql_label_option_values = task.promql_label_option_values
+            timeseries_offsets = task.timeseries_offsets
 
             for label_option in promql_label_option_values:
                 promql_metric_query = promql_metric_query.replace(label_option.name.value,
@@ -145,9 +144,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
                     labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
             # Get offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     offset_end_time = current_end_time - timedelta(seconds=offset)
                     offset_start_time = current_start_time - timedelta(seconds=offset)
@@ -200,8 +198,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
             raise Exception(f"Error while executing Grafana task: {e}")
 
     def execute_prometheus_datasource_metric_execution(self, time_range: TimeRange, grafana_task: Grafana,
-                                                       grafana_connector: ConnectorProto,
-                                                       execution_configuration: PlaybookTask.ExecutionConfiguration = None) -> PlaybookTaskResult:
+                                                       grafana_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not grafana_connector:
                 raise Exception("Task execution Failed:: No Grafana source found")
@@ -209,6 +206,7 @@ class GrafanaSourceManager(PlaybookSourceManager):
             task = grafana_task.prometheus_datasource_metric_execution
             datasource_uid = task.datasource_uid.value
             promql_metric_query = task.promql_expression.value
+            timeseries_offsets = task.timeseries_offsets
 
             grafana_api_processor = self.get_connector_processor(grafana_connector)
 
@@ -252,9 +250,8 @@ class GrafanaSourceManager(PlaybookSourceManager):
                     labeled_metric_timeseries_list.append(labeled_metric_timeseries)
 
             # Get offset values if specified
-            if execution_configuration and execution_configuration.timeseries_offset:
-                print(f"Timeseries Offset: {execution_configuration.timeseries_offset}")
-                offsets = [offset.value for offset in execution_configuration.timeseries_offset]
+            if timeseries_offsets:
+                offsets = [offset.value for offset in timeseries_offsets]
                 for offset in offsets:
                     offset_end_time = current_end_time - timedelta(seconds=offset)
                     offset_start_time = current_start_time - timedelta(seconds=offset)

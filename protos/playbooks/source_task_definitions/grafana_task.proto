@@ -19,6 +19,7 @@ message Grafana {
     google.protobuf.StringValue panel_id = 6;
     google.protobuf.StringValue panel_title = 7;
     google.protobuf.StringValue panel_promql_expression = 8;
+    repeated uint32 timeseries_offsets = 9;
   }
 
   enum TaskType {

@@ -7,7 +7,7 @@ from executor.source_processors.processor import Processor
 from protos.base_pb2 import TimeRange, Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType
-from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult
+from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
@@ -111,6 +111,12 @@ class PlaybookSourceManager:
                 try:
                     task_type_name = self.task_proto.TaskType.Name(task_type).lower()
                     source_type_task_def = source_task.get(task_type_name, {})
+
+                    # Update timeseries tasks with timeseries_offsets
+                    if self.task_type_callable_map[task_type]['result_type'] == PlaybookTaskResultType.TIMESERIES and \
+                            task.execution_configuration and task.execution_configuration.timeseries_offsets:
+                        source_type_task_def['timeseries_offsets'] = task.execution_configuration.timeseries_offsets
+
                     form_fields = self.task_type_callable_map[task_type]['form_fields']
                     resolved_source_type_task_def = resolve_global_variables(global_variable_set, form_fields,
                                                                              source_type_task_def)
@@ -118,8 +124,7 @@ class PlaybookSourceManager:
                     resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
                     return self.task_type_callable_map[task_type]['executor'](time_range,
                                                                               resolved_task_def_proto,
-                                                                              source_connector_proto,
-                                                                              task.execution_configuration)
+                                                                              source_connector_proto)
                 except Exception as e:
                     raise Exception(f"Error while executing task for source: {source_str} with error: {e}")
             else:
