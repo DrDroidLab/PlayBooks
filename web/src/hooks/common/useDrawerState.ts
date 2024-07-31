@@ -6,6 +6,10 @@ import {
   toggleDrawer,
   setAdditionalState,
 } from "../../store/features/drawers/drawersSlice.ts";
+import {
+  DrawerTypesKeys,
+  PermanentDrawerTypesKeys,
+} from "../../store/features/drawers/initialState.ts";
 
 type DrawerState = {
   isOpen: boolean;
@@ -15,11 +19,11 @@ type DrawerState = {
   addAdditionalData: (data: any) => void;
 };
 
-function useDrawerState(id: string): DrawerState {
+function useDrawerState(id: DrawerTypesKeys): DrawerState {
   const drawers = useSelector(drawersSelector);
   const dispatch = useDispatch();
 
-  const isOpen = drawers[id];
+  const isOpen = drawers[id] ?? false;
 
   const openDrawerFunction = () => {
     dispatch(openDrawer(id));
@@ -30,7 +34,7 @@ function useDrawerState(id: string): DrawerState {
   };
 
   const toggle = () => {
-    dispatch(toggleDrawer(id));
+    dispatch(toggleDrawer(id as PermanentDrawerTypesKeys));
   };
 
   const addAdditionalData = (data: any) => {
