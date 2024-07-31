@@ -8,7 +8,7 @@ import useKeyPressed from "../../../hooks/common/useKeyPressed";
 interface Props {
   title: string;
   result: any;
-  timestamp: number;
+  timestamp?: number;
   error: string;
 }
 
