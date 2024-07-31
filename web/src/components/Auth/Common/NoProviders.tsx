@@ -1,4 +1,3 @@
-import React from "react";
 import { useGetLoginProvidersQuery } from "../../../store/features/auth/api/index.ts";
 
 function NoProviders() {

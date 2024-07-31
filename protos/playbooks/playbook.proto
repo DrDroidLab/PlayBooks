@@ -26,6 +26,7 @@ import "protos/playbooks/source_task_definitions/grafana_loki_task.proto";
 import "protos/playbooks/source_task_definitions/kubectl_task.proto";
 import "protos/playbooks/source_task_definitions/gcm_task.proto";
 import "protos/playbooks/source_task_definitions/email_task.proto";
+import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
 
 
 // Playbook Task Protos
@@ -35,6 +36,14 @@ message PlaybookTask {
     Source source = 2;
     google.protobuf.StringValue name = 3;
   }
+
+  message ExecutionConfiguration {
+    google.protobuf.BoolValue is_bulk_execution = 1;
+    google.protobuf.StringValue bulk_execution_var_field = 2;
+
+    Lambda.Function result_transformer_lambda_function = 4;
+  }
+
   google.protobuf.UInt64Value id = 1;
   Source source = 2;
   google.protobuf.StringValue reference_id = 3;
@@ -45,6 +54,7 @@ message PlaybookTask {
   google.protobuf.Struct global_variable_set = 8;
   InterpreterType interpreter_type = 9;
   repeated PlaybookTaskConnectorSource task_connector_sources = 10;
+  ExecutionConfiguration execution_configuration = 11;
   oneof task {
     Documentation documentation = 101;
     Cloudwatch cloudwatch = 102;

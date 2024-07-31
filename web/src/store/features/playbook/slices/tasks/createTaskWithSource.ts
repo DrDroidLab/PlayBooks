@@ -48,6 +48,10 @@ export const createTaskWithSource = (
       },
     },
     description: payload.description,
+    execution_configuration: {
+      is_bulk_execution: false,
+      bulk_execution_var_field: "",
+    },
   };
 
   if (existingStepId) {

@@ -7,7 +7,6 @@ import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
 import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
 import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
-import React from "react";
 import CustomButton from "../../../common/CustomButton/index.tsx";
 import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.js";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";

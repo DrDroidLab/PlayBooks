@@ -1,8 +1,6 @@
-import { unsupportedInterpreterTypes } from "../../../utils/playbook/unsupportedInterpreterTypes.ts";
-import TaskOutput from "./TaskOutput.tsx";
-import Interpretation from "../../common/Interpretation/index.tsx";
 import { Task } from "../../../types/index.ts";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
+import HandleTaskOutput from "./HandleTaskOutput.tsx";
 
 type HandleOutputPropTypes = {
   id: string | undefined;
@@ -20,7 +18,7 @@ function HandleOutput({
   const showOutput = task?.ui_requirement?.showOutput;
 
   if (!task) return;
-  const output = task.ui_requirement.output;
+  const outputs = task.ui_requirement.outputs;
 
   return (
     <div>
@@ -36,26 +34,14 @@ function HandleOutput({
             </p>
           )}
 
-          <div
-            className={`${
-              !showHeading ? "max-h-full" : "max-h-[500px] overflow-hidden"
-            } h-full bg-gray-50  flex flex-col items-stretch mr-0 justify-between lg:flex-row w-full gap-2 max-w-full`}>
-            <div className="w-full">
-              <TaskOutput
-                showHeading={showHeading}
-                id={task.id}
-                taskFromExecution={taskFromExecution}
-              />
-            </div>
-            {Object.keys(output?.interpretation ?? {}).length > 0 &&
-              !unsupportedInterpreterTypes.includes(
-                output?.interpretation?.interpreter_type,
-              ) && (
-                <div className="lg:w-2/5 w-full h-full">
-                  <Interpretation {...output.interpretation} />
-                </div>
-              )}
-          </div>
+          {outputs?.map((output: any, index: number) => (
+            <HandleTaskOutput
+              key={index}
+              showHeading={showHeading}
+              task={task}
+              output={output}
+            />
+          ))}
         </>
       )}
     </div>
