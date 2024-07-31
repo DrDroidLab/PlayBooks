@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
+// import Sidebar from "./Sidebar";
 import "./Layout.css";
 import CustomContainer from "./components/CustomContainer";
+import Sidebar from "./components/Sidebar";
 
 function Layout() {
   return (
