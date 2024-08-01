@@ -4,7 +4,7 @@ from hashlib import md5
 from django.db import transaction as dj_transaction
 
 from accounts.models import Account
-from executor.crud.playbooks_crud import get_db_playbooks
+from executor.crud.playbooks_crud import get_db_playbooks, update_or_create_db_playbook
 from executor.workflows.models import Workflow, WorkflowEntryPoint, WorkflowAction, WorkflowEntryPointMapping, \
     WorkflowActionMapping, WorkflowPlayBookMapping
 
@@ -61,8 +61,17 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     playbooks: [Playbook] = workflow_proto.playbooks
     playbook_ids = [pb.id.value for pb in playbooks]
     db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids, is_active=True)
-    if db_playbooks.count() != len(playbook_ids):
+    if update_mode and db_playbooks.count() != len(playbook_ids):
         return None, 'Invalid Playbooks in Workflow Config'
+    else:
+        try:
+            db_playbooks = []
+            for pb in db_playbooks:
+                saved_pb = update_or_create_db_playbook(account, created_by, pb)
+                db_playbooks.append(saved_pb)
+        except Exception as e:
+            logger.error(f'Error Saving Workflow Playbooks: {str(e)}')
+            return None, 'Error Saving Workflow Playbooks'
     try:
         db_workflows = get_db_workflows(account, workflow_name=name, created_by=created_by)
         if not update_mode and db_workflows.exists():
@@ -105,7 +114,8 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
                                                                             'description': description,
                                                                             'schedule_type': wf_schedule_type,
                                                                             'schedule': wf_schedule,
-                                                                            'configuration': wf_configuration
+                                                                            'configuration': wf_configuration,
+                                                                            'type': WorkflowProto.Type.STANDARD if not workflow_proto.type else workflow_proto.type,
                                                                         })
             for pb in db_playbooks:
                 WorkflowPlayBookMapping.objects.update_or_create(account=account, workflow=db_workflow, playbook=pb,

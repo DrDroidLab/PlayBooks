@@ -60,6 +60,7 @@ class Workflow(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    type = models.IntegerField(choices=generate_choices(WorkflowProto.Type), db_index=True)
 
     is_active = models.BooleanField(default=True)
     created_by = models.TextField(null=True, blank=True)

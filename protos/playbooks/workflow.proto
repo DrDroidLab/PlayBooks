@@ -105,19 +105,26 @@ message WorkflowAction {
 }
 
 message Workflow {
+  enum Type {
+    UNKNOWN = 0;
+    STANDARD = 1;
+    DYNAMIC_ALERT = 2;
+  }
+
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue name = 2;
   google.protobuf.StringValue description = 3;
-  google.protobuf.StringValue created_by = 4;
-  sfixed64 created_at = 5;
-  google.protobuf.BoolValue is_active = 6;
-  WorkflowSchedule schedule = 7;
-  repeated Playbook playbooks = 8;
-  repeated WorkflowEntryPoint entry_points = 9;
-  repeated WorkflowAction actions = 10;
-  sfixed64 last_execution_time = 11;
-  WorkflowExecutionStatusType last_execution_status = 12;
-  WorkflowConfiguration configuration = 13;
+  Type type = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  google.protobuf.BoolValue is_active = 7;
+  WorkflowSchedule schedule = 8;
+  repeated Playbook playbooks = 9;
+  repeated WorkflowEntryPoint entry_points = 10;
+  repeated WorkflowAction actions = 11;
+  sfixed64 last_execution_time = 12;
+  WorkflowExecutionStatusType last_execution_status = 13;
+  WorkflowConfiguration configuration = 14;
 }
 
 

@@ -284,9 +284,25 @@ global___WorkflowAction = WorkflowAction
 class Workflow(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    class _Type:
+        ValueType = typing.NewType("ValueType", builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _TypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[Workflow._Type.ValueType], builtins.type):  # noqa: F821
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        UNKNOWN: Workflow._Type.ValueType  # 0
+        STANDARD: Workflow._Type.ValueType  # 1
+        DYNAMIC_ALERT: Workflow._Type.ValueType  # 2
+
+    class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
+    UNKNOWN: Workflow.Type.ValueType  # 0
+    STANDARD: Workflow.Type.ValueType  # 1
+    DYNAMIC_ALERT: Workflow.Type.ValueType  # 2
+
     ID_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
     CREATED_BY_FIELD_NUMBER: builtins.int
     CREATED_AT_FIELD_NUMBER: builtins.int
     IS_ACTIVE_FIELD_NUMBER: builtins.int
@@ -303,6 +319,7 @@ class Workflow(google.protobuf.message.Message):
     def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    type: global___Workflow.Type.ValueType
     @property
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     created_at: builtins.int
@@ -326,6 +343,7 @@ class Workflow(google.protobuf.message.Message):
         id: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        type: global___Workflow.Type.ValueType = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: builtins.int = ...,
         is_active: google.protobuf.wrappers_pb2.BoolValue | None = ...,
@@ -338,7 +356,7 @@ class Workflow(google.protobuf.message.Message):
         configuration: global___WorkflowConfiguration | None = ...,
     ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["configuration", b"configuration", "created_by", b"created_by", "description", b"description", "id", b"id", "is_active", b"is_active", "name", b"name", "schedule", b"schedule"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["actions", b"actions", "configuration", b"configuration", "created_at", b"created_at", "created_by", b"created_by", "description", b"description", "entry_points", b"entry_points", "id", b"id", "is_active", b"is_active", "last_execution_status", b"last_execution_status", "last_execution_time", b"last_execution_time", "name", b"name", "playbooks", b"playbooks", "schedule", b"schedule"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["actions", b"actions", "configuration", b"configuration", "created_at", b"created_at", "created_by", b"created_by", "description", b"description", "entry_points", b"entry_points", "id", b"id", "is_active", b"is_active", "last_execution_status", b"last_execution_status", "last_execution_time", b"last_execution_time", "name", b"name", "playbooks", b"playbooks", "schedule", b"schedule", "type", b"type"]) -> None: ...
 
 global___Workflow = Workflow
 
