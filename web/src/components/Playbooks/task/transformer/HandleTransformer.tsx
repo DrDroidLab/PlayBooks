@@ -13,7 +13,7 @@ import CustomButton from "../../../common/CustomButton";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
-const key = "code";
+const key = "transformer_code";
 const exampleInputKey = "ui_requirement.example_input";
 
 function HandleResultTransformer({ id }) {

@@ -3,6 +3,10 @@ import { playbookSelector } from "../../../store/features/playbook/playbookSlice
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import { v4 as uuidv4 } from "uuid";
+import {
+  defaultCodeTransformer,
+  exampleInputTransformer,
+} from "../../common/transformerDefaults.ts";
 
 function playbookToState(playbook: Playbook): Playbook {
   const { supportedTaskTypes } = playbookSelector(store.getState());
@@ -27,6 +31,7 @@ function playbookToState(playbook: Playbook): Playbook {
         return {
           ...e,
           reference_id: uuidv4(),
+          transformer_code: e.transformer_code ?? defaultCodeTransformer,
           execution_configuration: {
             ...e.execution_configuration,
             timeseries_offsets: [
@@ -49,6 +54,7 @@ function playbookToState(playbook: Playbook): Playbook {
             use_comparison:
               e?.execution_configuration?.timeseries_offsets &&
               (e?.execution_configuration?.timeseries_offsets?.length ?? 0) > 0,
+            example_input: exampleInputTransformer,
           },
         };
       })
