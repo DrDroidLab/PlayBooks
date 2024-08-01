@@ -1,5 +1,5 @@
 import { KeyboardArrowDownRounded } from "@mui/icons-material";
-import React, { ChangeEventHandler } from "react";
+import { ChangeEventHandler } from "react";
 
 type DropdownTitleProps = {
   label?: string;

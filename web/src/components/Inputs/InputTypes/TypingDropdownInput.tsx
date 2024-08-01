@@ -1,4 +1,3 @@
-import React from "react";
 import TypingDropdown from "../../common/TypingDropdown/index.tsx";
 
 type TypingDropdownInputType = {

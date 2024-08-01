@@ -11,6 +11,7 @@ import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 import CompositeField from "./InputTypes/CompositeField.tsx";
 import DateInput from "./InputTypes/Date.tsx";
 import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
+import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMultipleSelectionInput.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -34,6 +35,7 @@ export type HandleInputRenderType = {
   default?: string;
   format?: string;
   disabledDate?: (date: Date) => boolean;
+  typingContainerClassname?: string;
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -83,6 +85,13 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       return <DateInput handleChange={props.handleChange!} {...props} />;
     case InputTypes.STRING_ARRAY:
       return <StringArrayInput handleChange={props.handleChange!} {...props} />;
+    case InputTypes.TYPING_DROPDOWN_MULTIPLE_SELECTION:
+      return (
+        <TypingDropdownMultipleSelectionInput
+          handleChange={props.handleChange!}
+          {...props}
+        />
+      );
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }
