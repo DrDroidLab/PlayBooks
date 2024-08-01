@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
-import { playbookSelector } from "../../../../store/features/playbook/playbookSlice.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
 import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
@@ -13,6 +12,7 @@ import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
+import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
 
@@ -30,7 +30,7 @@ const RefreshButton = ({ refetch, loading }) => {
 };
 
 function SelectConnectorOptionDynamicAlerts({ id: taskId }) {
-  const { connectorOptions } = useSelector(playbookSelector);
+  const { connectorOptions } = useSelector(commonKeySelector);
   const [task, currentTaskId] = useCurrentTask(taskId);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
   const { toggle } = useDrawerState(id);

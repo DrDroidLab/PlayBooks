@@ -1,15 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  updateSource,
-} from "../../../../store/features/playbook/playbookSlice.ts";
+import { updateSource } from "../../../../store/features/playbook/playbookSlice.ts";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
+import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
 function SelectSource({ id }) {
-  const { connectorOptions } = useSelector(playbookSelector);
+  const { connectorOptions } = useSelector(commonKeySelector);
   const [task, currentStepId] = useCurrentTask(id);
   const dispatch = useDispatch();
   const isPrefetched = useIsPrefetched();

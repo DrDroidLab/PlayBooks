@@ -1,11 +1,11 @@
 import { injectTimeRangeIdFromSeconds } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils";
-import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { commonKeySelector } from "../../../store/features/common/commonSlice.ts";
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import { v4 as uuidv4 } from "uuid";
 
 function playbookToState(playbook: Playbook): Playbook {
-  const { supportedTaskTypes } = playbookSelector(store.getState());
+  const { supportedTaskTypes } = commonKeySelector(store.getState());
   const tasks: Task[] = [];
   const steps = playbook?.steps?.map((e: Step, i: number) => ({
     ...e,

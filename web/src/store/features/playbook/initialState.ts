@@ -40,5 +40,4 @@ export const initialState: PlaybookUIState = {
   isOnPlaybookPage: false,
   executionStack: [],
   zoomLevel: 0.75,
-  connectorOptions: [],
 };

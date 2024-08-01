@@ -9,6 +9,7 @@ import extractHandleChange from "./extractHandleChange.ts";
 import { Task } from "../../types/index.ts";
 import { HandleInputRenderType } from "../../components/Inputs/HandleInputRender.tsx";
 import handleInputType from "./handleInputType.ts";
+import { commonKeySelector } from "../../store/features/common/commonSlice.ts";
 
 const fieldToInput = (field: FormFields, task: Task): HandleInputRenderType => {
   const handleChangeFunction = extractHandleChange(
@@ -37,7 +38,7 @@ const fieldToInput = (field: FormFields, task: Task): HandleInputRenderType => {
 export const constructBuilder = (id?: string) => {
   const [task] = getCurrentTask(id);
   if (!task) return [];
-  const { supportedTaskTypes } = playbookSelector(store.getState());
+  const { supportedTaskTypes } = commonKeySelector(store.getState());
   const source: Sources = task.source.toLowerCase() as Sources;
   const taskType = (task as any)[source].type;
   const type = supportedTaskTypes?.find(

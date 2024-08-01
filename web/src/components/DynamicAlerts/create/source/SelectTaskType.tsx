@@ -1,16 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  updateTaskType,
-} from "../../../../store/features/playbook/playbookSlice.ts";
+import { updateTaskType } from "../../../../store/features/playbook/playbookSlice.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
+import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
 function SelectTaskTypeDynamicAlerts({ id }) {
-  const { connectorOptions } = useSelector(playbookSelector);
+  const { connectorOptions } = useSelector(commonKeySelector);
   const [task, currentId] = useCurrentTask(id);
   const currentConnector = connectorOptions?.find(
     (e) => e.id === task?.source,
