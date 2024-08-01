@@ -26,8 +26,8 @@ function Sidebar() {
         <HeadElement />
 
         <List sx={{ padding: 0 }}>
-          {elements.map((element) => (
-            <SidebarElement {...element} />
+          {elements.map((element, index) => (
+            <SidebarElement key={index} {...element} />
           ))}
         </List>
       </div>
