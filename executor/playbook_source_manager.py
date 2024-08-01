@@ -17,7 +17,7 @@ from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 
-def resolve_global_variables(global_variable_set: Dict, form_fields: [FormField],
+def resolve_global_variables(form_fields: [FormField], global_variable_set: Struct,
                              source_type_task_def: Dict) -> (Dict, Dict):
     all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
     all_string_array_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING_ARRAY]
@@ -107,7 +107,7 @@ class PlaybookSourceManager:
         transformer_result = {f"${k}" if not k.startswith("$") else k: v for k, v in transformer_result.items()}
         return transformer_result
 
-    def execute_task(self, account_id, time_range: TimeRange, global_variable_set: Dict,
+    def execute_task(self, account_id, time_range: TimeRange, global_variable_set: Struct,
                      task: PlaybookTask) -> PlaybookTaskResult:
         try:
             source_connector_proto = None
@@ -150,8 +150,7 @@ class PlaybookSourceManager:
 
                     # Resolve global variables in source_type_task_def
                     resolved_source_type_task_def, task_local_variable_map = resolve_global_variables(
-                        global_variable_set, form_fields,
-                        source_type_task_def)
+                        form_fields, global_variable_set, source_type_task_def)
                     source_task[task_type_name] = resolved_source_type_task_def
                     resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
 

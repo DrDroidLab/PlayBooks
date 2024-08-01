@@ -124,17 +124,18 @@ def task_run_v3(request_message: RunPlaybookTaskRequestV3) -> Union[RunPlaybookT
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
 
     task: PlaybookTask = request_message.playbook_task
-    global_variable_set = {}
+    global_variable_set = Struct()
     if request_message.global_variable_set:
-        global_variable_set = proto_to_dict(request_message.global_variable_set)
+        global_variable_set = request_message.global_variable_set
     elif task.global_variable_set:
-        global_variable_set = proto_to_dict(task.global_variable_set)
+        global_variable_set = task.global_variable_set
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
     try:
         task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
         interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
         playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
-                                                               interpretation=interpretation)
+                                                               interpretation=interpretation,
+                                                               execution_global_variable_set=global_variable_set)
     except Exception as e:
         playbook_task_execution_log = PlaybookTaskExecutionLog(task=task,
                                                                result=PlaybookTaskResult(
@@ -153,11 +154,14 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
         time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
 
     task: PlaybookTask = request_message.playbook_task
-    global_variable_set = {}
+    global_variable_set = Struct()
     if request_message.global_variable_set:
-        global_variable_set = proto_to_dict(request_message.global_variable_set)
+        global_variable_set = request_message.global_variable_set
     elif task.global_variable_set:
-        global_variable_set = proto_to_dict(task.global_variable_set)
+        global_variable_set = task.global_variable_set
+
+    execution_global_variable_set = Struct()
+    execution_global_variable_set.CopyFrom(global_variable_set)
     interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
 
     if not task.execution_configuration.is_bulk_execution or not task.execution_configuration.is_bulk_execution.value:
@@ -171,12 +175,12 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
         return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                            message=Message(title="Invalid Request",
                                                            description="Bulk execution variable not found"))
-    if bulk_task_var not in global_variable_set:
+    if bulk_task_var not in execution_global_variable_set:
         return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                            message=Message(title="Invalid Request",
                                                            description="Bulk execution variable not found in global variables"))
 
-    bulk_execution_var_values = global_variable_set[bulk_task_var].split(',')
+    bulk_execution_var_values = execution_global_variable_set[bulk_task_var].split(',')
     if not bulk_execution_var_values:
         return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                            message=Message(title="Invalid Request",
@@ -184,9 +188,10 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
 
     pte_logs: [PlaybookTaskExecutionLog] = []
     for bev in bulk_execution_var_values:
-        global_variable_set[bulk_task_var] = bev
+        execution_global_variable_set[bulk_task_var] = bev
         try:
-            task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
+            task_result = playbook_source_facade.execute_task(account.id, time_range, execution_global_variable_set,
+                                                              task)
             interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
             playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
                                                                    interpretation=interpretation,

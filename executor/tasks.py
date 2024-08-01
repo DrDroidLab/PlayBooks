@@ -80,6 +80,9 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                 else:
                     global_variable_set = Struct()
 
+            execution_global_variable_set = Struct()
+            execution_global_variable_set.CopyFrom(global_variable_set)
+
             is_bulk_execution = False
             bulk_execution_var_values = ['Single Execution']
             bulk_task_var = None
@@ -102,7 +105,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                              execution_global_variable_set=global_variable_set))
                     continue
 
-                bulk_execution_var_values = global_variable_set[bulk_task_var].split(',')
+                bulk_execution_var_values = execution_global_variable_set[bulk_task_var].split(',')
                 if not bulk_execution_var_values:
                     task_result = PlaybookTaskResult(
                         error=StringValue(value="Bulk execution variable values not found in global variables"))
@@ -111,12 +114,10 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                              execution_global_variable_set=global_variable_set))
                     continue
             for bev in bulk_execution_var_values:
-                global_variable_set_dict = proto_to_dict(global_variable_set)
                 if is_bulk_execution and bulk_task_var:
-                    global_variable_set_dict[bulk_task_var] = bev
+                    execution_global_variable_set[bulk_task_var] = bev
                 try:
-                    task_result = playbook_source_facade.execute_task(account.id, tr, global_variable_set_dict,
-                                                                      task_proto)
+                    task_result = playbook_source_facade.execute_task(account.id, tr, execution_global_variable_set, task_proto)
                     task_interpretation: InterpretationProto = task_result_interpret(interpreter_type, task_proto,
                                                                                      task_result)
                     task_interpretations.append(task_interpretation)
