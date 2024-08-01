@@ -13,6 +13,7 @@ import google.protobuf.wrappers_pb2
 import protos.base_pb2
 import protos.playbooks.intelligence_layer.interpreter_pb2
 import protos.playbooks.playbook_commons_pb2
+import protos.playbooks.playbook_step_result_evaluator_pb2
 import protos.playbooks.playbook_task_result_evaluator_pb2
 import protos.playbooks.source_task_definitions.api_task_pb2
 import protos.playbooks.source_task_definitions.azure_task_pb2
@@ -312,18 +313,22 @@ class PlaybookStepResultCondition(google.protobuf.message.Message):
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    RULES_FIELD_NUMBER: builtins.int
     LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
+    RULES_FIELD_NUMBER: builtins.int
+    STEP_RULES_FIELD_NUMBER: builtins.int
+    logical_operator: protos.base_pb2.LogicalOperator.ValueType
     @property
     def rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
-    logical_operator: protos.base_pb2.LogicalOperator.ValueType
+    @property
+    def step_rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule]: ...
     def __init__(
         self,
         *,
-        rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
         logical_operator: protos.base_pb2.LogicalOperator.ValueType = ...,
+        rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
+        step_rules: collections.abc.Iterable[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules", "step_rules", b"step_rules"]) -> None: ...
 
 global___PlaybookStepResultCondition = PlaybookStepResultCondition
 

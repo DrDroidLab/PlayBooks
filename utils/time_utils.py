@@ -56,7 +56,8 @@ def calculate_cron_times(rule, start_time=None, end_time=None):
         current_time = next_cron
     return cron_times
 
-def epoch_to_string(time):
-    human_readable_time = datetime.fromtimestamp(time)
+
+def epoch_to_string(input_time):
+    human_readable_time = datetime.fromtimestamp(input_time)
     formatted_time = human_readable_time.strftime('%Y-%m-%d %H:%M:%S')
     return formatted_time

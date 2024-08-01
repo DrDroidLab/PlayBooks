@@ -1,13 +1,22 @@
 from typing import Dict
 
-from executor.task_result_conditional_evaluators.table_result_evaluator import LogsResultEvaluator, TableResultEvaluator
-from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
-from executor.task_result_conditional_evaluators.timeseries_result_evaluator import TimeseriesResultEvaluator
-from executor.task_result_conditional_evaluators.bash_command_result_evaluator import BashCommandOutputResultEvaluator
+from executor.playbook_result_conditional_evaluators.step_result_evaluators.compare_time_with_cron_evaluator import \
+    CompareTimeWithCronEvaluator
+from executor.playbook_result_conditional_evaluators.step_result_evaluators.step_result_evaluator import \
+    StepResultEvaluator
+from executor.playbook_result_conditional_evaluators.task_result_evalutors.table_result_evaluator import \
+    LogsResultEvaluator, TableResultEvaluator
+from executor.playbook_result_conditional_evaluators.task_result_evalutors.task_result_evaluator import \
+    TaskResultEvaluator
+from executor.playbook_result_conditional_evaluators.task_result_evalutors.timeseries_result_evaluator import \
+    TimeseriesResultEvaluator
+from executor.playbook_result_conditional_evaluators.task_result_evalutors.bash_command_result_evaluator import \
+    BashCommandOutputResultEvaluator
 from protos.base_pb2 import LogicalOperator
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookStepResultCondition, PlaybookTaskResultRule, \
     PlaybookTaskExecutionLog
+from protos.playbooks.playbook_step_result_evaluator_pb2 import PlaybookStepResultRule
 
 
 class StepConditionEvaluator:
@@ -15,8 +24,13 @@ class StepConditionEvaluator:
     def __init__(self):
         self._map = {}
 
-    def register(self, result_type: PlaybookTaskResultType, task_result_evaluator: TaskResultEvaluator):
+    def register_task_result_evaluator(self, result_type: PlaybookTaskResultType,
+                                       task_result_evaluator: TaskResultEvaluator):
         self._map[result_type] = task_result_evaluator
+
+    def register_step_result_evaluator(self, step_rule_type: PlaybookStepResultRule.Type,
+                                       step_result_evaluator: StepResultEvaluator):
+        self._map[step_rule_type] = step_result_evaluator
 
     def evaluate(self, condition: PlaybookStepResultCondition,
                  playbook_task_execution_log: [PlaybookTaskExecutionLog]) -> (bool, Dict):
@@ -36,6 +50,15 @@ class StepConditionEvaluator:
                 evaluation, evaluation_result = task_result_evaluator.evaluate(r, task_result)
                 all_evaluations.append(evaluation)
                 all_evaluation_results.append(evaluation_result)
+
+        step_rules: [PlaybookTaskResultRule] = condition.step_rules
+        for sr in step_rules:
+            step_result_evaluator = self._map.get(sr.type)
+            if not step_result_evaluator:
+                raise ValueError(f"Step result type {PlaybookStepResultRule.Type.Name(sr.type)} not supported")
+            evaluation = step_result_evaluator.evaluate(sr, playbook_task_execution_log)
+            all_evaluations.append(evaluation)
+
         logical_operator = condition.logical_operator
         if logical_operator == LogicalOperator.AND_LO:
             return all(all_evaluations), {'evaluation_results': all_evaluation_results}
@@ -57,7 +80,11 @@ class StepConditionEvaluator:
 
 
 step_condition_evaluator = StepConditionEvaluator()
-step_condition_evaluator.register(PlaybookTaskResultType.TIMESERIES, TimeseriesResultEvaluator())
-step_condition_evaluator.register(PlaybookTaskResultType.TABLE, TableResultEvaluator())
-step_condition_evaluator.register(PlaybookTaskResultType.LOGS, LogsResultEvaluator())
-step_condition_evaluator.register(PlaybookTaskResultType.BASH_COMMAND_OUTPUT, BashCommandOutputResultEvaluator())
+step_condition_evaluator.register_task_result_evaluator(PlaybookTaskResultType.TIMESERIES, TimeseriesResultEvaluator())
+step_condition_evaluator.register_task_result_evaluator(PlaybookTaskResultType.TABLE, TableResultEvaluator())
+step_condition_evaluator.register_task_result_evaluator(PlaybookTaskResultType.LOGS, LogsResultEvaluator())
+step_condition_evaluator.register_task_result_evaluator(PlaybookTaskResultType.BASH_COMMAND_OUTPUT,
+                                                        BashCommandOutputResultEvaluator())
+
+step_condition_evaluator.register_step_result_evaluator(PlaybookStepResultRule.Type.COMPARE_TIME_WITH_CRON,
+                                                        CompareTimeWithCronEvaluator())

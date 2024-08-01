@@ -1,8 +1,8 @@
 import logging
 from typing import Dict
 
-from executor.task_result_conditional_evaluators.task_result_evaluator import TaskResultEvaluator
-from executor.task_result_conditional_evaluators.utils import numeric_function_result_operator_threshold, \
+from executor.playbook_result_conditional_evaluators.task_result_evalutors.task_result_evaluator import TaskResultEvaluator
+from executor.playbook_result_conditional_evaluators.utils import numeric_function_result_operator_threshold, \
     string_function_result_operator_threshold
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, BashCommandOutputResult
 from protos.playbooks.playbook_pb2 import PlaybookTaskResultRule

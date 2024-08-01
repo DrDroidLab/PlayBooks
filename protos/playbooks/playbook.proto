@@ -8,6 +8,7 @@ import "protos/playbooks/playbook_commons.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 
 import "protos/playbooks/playbook_task_result_evaluator.proto";
+import "protos/playbooks/playbook_step_result_evaluator.proto";
 
 import "protos/playbooks/source_task_definitions/cloudwatch_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_task.proto";
@@ -104,8 +105,9 @@ message PlaybookTaskExecutionLog {
 
 // Playbook Step Protos
 message PlaybookStepResultCondition {
-  repeated PlaybookTaskResultRule rules = 1;
-  LogicalOperator logical_operator = 2;
+  LogicalOperator logical_operator = 1;
+  repeated PlaybookTaskResultRule rules = 2;
+  repeated PlaybookStepResultRule step_rules = 3;
 }
 
 message PlaybookStep {

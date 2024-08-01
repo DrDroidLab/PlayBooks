@@ -11,7 +11,7 @@ from executor.crud.playbook_execution_crud import get_db_playbook_execution, upd
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.models import PlayBook, PlayBookExecution
 from executor.playbook_source_facade import playbook_source_facade
-from executor.task_result_conditional_evaluators.step_condition_evaluator import step_condition_evaluator
+from executor.playbook_result_conditional_evaluators.step_condition_evaluator import step_condition_evaluator
 from executor.utils.playbook_step_utils import get_playbook_steps_graph_view, get_playbook_steps_id_def_map
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
