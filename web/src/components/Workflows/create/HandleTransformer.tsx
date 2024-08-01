@@ -38,16 +38,25 @@ function HandleTransformer() {
 
   const testCode = async () => {
     if (isLoading) return;
-    await triggerTestTransformer().unwrap();
-    dispatch(
-      showSnackbar({
-        message: "Test connection successful",
-        type: "success",
-      }),
-    );
-    outputRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    try {
+      await triggerTestTransformer().unwrap();
+      dispatch(
+        showSnackbar({
+          message: "Test connection successful",
+          type: "success",
+        }),
+      );
+      outputRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+    } catch (e: any) {
+      dispatch(
+        showSnackbar({
+          message: e.message ?? "There was an error testing the transformer",
+          type: "error",
+        }),
+      );
+    }
   };
 
   const setCode = (value: string) => {
