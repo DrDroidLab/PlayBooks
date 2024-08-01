@@ -63,7 +63,10 @@ class BasicResultInterpreter(ResultInterpreter):
                 uuid_str = uuid.uuid4().hex
                 csv_file_title = f'{data_source}_data_{str(current_epoch)}_{uuid_str}.csv'
                 csv_file_path = generate_local_csv_path(file_name=csv_file_title)
-                table_result: TableResult = task_result.table
+                if result_type == PlaybookTaskResultType.TABLE:
+                    table_result: TableResult = task_result.table
+                if result_type == PlaybookTaskResultType.LOGS:
+                    table_result: TableResult = task_result.logs
                 object_url = generate_csv_for_table_result(table_result, csv_file_path, csv_file_title)
                 description = f'{table_result.raw_query.value} from {data_source}. Total rows: {str(table_result.total_count.value)}'
                 return Interpretation(
