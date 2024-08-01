@@ -7,20 +7,18 @@ import { noLayoutPages } from "./utils/pages/noLayoutPages";
 import { routes } from "./routes";
 import Loading from "./components/common/Loading";
 
-const LazyComponent = ({ path }) => (
-  <Suspense fallback={<Loading />}>
-    {createElement(lazy(() => import(/* @vite-ignore */ path)))}
-  </Suspense>
+const LazyComponent = ({ importFn }) => (
+  <Suspense fallback={<Loading />}>{createElement(lazy(importFn))}</Suspense>
 );
 
 export const generateUnauthRoutes = () => {
   return Object.entries(components)
     .filter(([pageKey]) => unAuthPages.includes(pageKey as PageKeys))
-    .map(([pageKey, path]) => (
+    .map(([pageKey, importFn]) => (
       <Route
         key={pageKey}
         path={routes[pageKey]}
-        element={<LazyComponent path={path} />}
+        element={<LazyComponent importFn={importFn} />}
       />
     ));
 };
@@ -28,11 +26,11 @@ export const generateUnauthRoutes = () => {
 export const generateNoLayoutRoutes = () => {
   return Object.entries(components)
     .filter(([pageKey]) => noLayoutPages.includes(pageKey as PageKeys))
-    .map(([pageKey, path]) => (
+    .map(([pageKey, importFn]) => (
       <Route
         key={pageKey}
         path={routes[pageKey]}
-        element={<LazyComponent path={path} />}
+        element={<LazyComponent importFn={importFn} />}
       />
     ));
 };
@@ -44,11 +42,11 @@ export const generateOtherRoutes = () => {
         !noLayoutPages.includes(pageKey as PageKeys) &&
         !unAuthPages.includes(pageKey as PageKeys),
     )
-    .map(([pageKey, path]) => (
+    .map(([pageKey, importFn]) => (
       <Route
         key={pageKey}
         path={routes[pageKey]}
-        element={<LazyComponent path={path} />}
+        element={<LazyComponent importFn={importFn} />}
       />
     ));
 };
