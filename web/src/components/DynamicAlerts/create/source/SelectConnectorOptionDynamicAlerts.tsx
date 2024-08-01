@@ -1,17 +1,13 @@
 import { useSelector } from "react-redux";
 import { RefreshRounded } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
-import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import { DrawerTypes } from "../../../../store/features/drawers/drawerTypes.ts";
 import { usePlaybookBuilderOptionsQuery } from "../../../../store/features/playbook/api/index.ts";
 import useDrawerState from "../../../../hooks/common/useDrawerState.ts";
-import { fetchData } from "../../../../utils/fetchAssetModelOptions.ts";
 import CustomButton from "../../../common/CustomButton/index.tsx";
-import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer";
-import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
+import AddDataSourcesDrawer from "../../../common/Drawers/AddDataSourcesDrawer.tsx";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
-import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
 const id = DrawerTypes.ADD_DATA_SOURCES;
@@ -29,23 +25,16 @@ const RefreshButton = ({ refetch, loading }) => {
   );
 };
 
-function SelectConnectorOptionDynamicAlerts({ id: taskId }) {
+function SelectConnectorOptionDynamicAlerts() {
   const { connectorOptions } = useSelector(commonKeySelector);
-  const [task, currentTaskId] = useCurrentTask(taskId);
   const { isFetching, refetch } = usePlaybookBuilderOptionsQuery();
   const { toggle } = useDrawerState(id);
-  const isPrefetched = useIsPrefetched();
 
-  function handleConnectorOptionChange(id: string) {
-    updateCardById("task_connector_sources.0.id", id, currentTaskId);
-    if (!isPrefetched) fetchData({ id: currentTaskId });
-  }
+  function handleConnectorOptionChange(id: string) {}
 
   const currentConnectorOptions =
-    connectorOptions?.find((e) => e.id === task?.source)?.connector
-      ?.connector_options ?? [];
-
-  const loading = isFetching || task?.ui_requirement?.assetsLoading;
+    connectorOptions?.find((e) => e.id === "")?.connector?.connector_options ??
+    [];
 
   return (
     <div className="relative flex flex-col">
@@ -60,10 +49,9 @@ function SelectConnectorOptionDynamicAlerts({ id: taskId }) {
                 option: option,
               }))}
               inputType={InputTypes.DROPDOWN}
-              value={task?.task_connector_sources?.[0]?.id ?? ""}
+              value={""}
               handleChange={handleConnectorOptionChange}
-              disabled={!!isPrefetched}
-              suffix={<RefreshButton refetch={refetch} loading={loading} />}
+              suffix={<RefreshButton refetch={refetch} loading={isFetching} />}
             />
           </div>
         ) : (

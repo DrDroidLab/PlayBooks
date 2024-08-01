@@ -1,22 +1,20 @@
 import { unsupportedConnctorTypeOptions } from "../../../utils/playbook/unsupportedConnctorTypeOptions";
-import SelectConnectorOptionDynamicAlerts from "./source/SelectConnectorOption";
-import SelectSourceDynamicAlerts from "./source/SelectSource";
-import SelectTaskTypeDynamicAlerts from "./source/SelectTaskType";
+import SelectConnectorOptionDynamicAlerts from "./source/SelectConnectorOptionDynamicAlerts";
+import SelectSourceDynamicAlerts from "./source/SelectSourceDynamicAlerts";
+import SelectTaskTypeDynamicAlerts from "./source/SelectTaskTypeDynamicAlerts";
 
 function AddSource() {
   return (
     <div className="flex flex-col gap-2">
-      <div className="relative flex mt-2 gap-2">
-        <div className="flex items-center gap-2">
-          {/* <SelectSourceDynamicAlerts id={currentTaskId} /> */}
-          {/* <SelectTaskTypeDynamicAlerts id={currentTaskId} /> */}
-        </div>
+      <div className="relative items-center flex gap-2">
+        <SelectSourceDynamicAlerts />
+        <SelectTaskTypeDynamicAlerts />
       </div>
-      {/* {!unsupportedConnctorTypeOptions.includes(task?.type ?? "") && (
+      {!unsupportedConnctorTypeOptions.includes("") && (
         <div className="flex gap-2 items-center">
-          <SelectConnectorOptionDynamicAlerts id={currentTaskId} />
+          <SelectConnectorOptionDynamicAlerts />
         </div>
-      )} */}
+      )}
     </div>
   );
 }

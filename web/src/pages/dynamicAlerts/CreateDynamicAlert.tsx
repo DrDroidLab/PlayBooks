@@ -1,3 +1,4 @@
+import AddMetric from "../../components/DynamicAlerts/create/AddMetric";
 import Heading from "../../components/Heading";
 import CustomInput from "../../components/Inputs/CustomInput";
 import { usePlaybookBuilderOptionsQuery } from "../../store/features/playbook/api";
@@ -16,6 +17,7 @@ function CreateDynamicAlert() {
           value={""}
           className="!w-[200px]"
         />
+        <AddMetric />
       </div>
     </div>
   );
