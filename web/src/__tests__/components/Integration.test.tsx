@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { render } from '../testUtils';
 import '@testing-library/jest-dom';
 import ConnectorCard from '../../components/Integration/ConnectorCard';
 import { IntegrationStatus } from '../../store/features/integrations/types/integrationStatus';

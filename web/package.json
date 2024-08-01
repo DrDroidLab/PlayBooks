@@ -58,6 +58,7 @@
     "babel-loader": "^9.1.2",
     "compress-create-react-app": "^1.4.5",
     "compression-webpack-plugin": "^11.1.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^13.1.2",
