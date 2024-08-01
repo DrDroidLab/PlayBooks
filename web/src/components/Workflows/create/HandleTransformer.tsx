@@ -31,7 +31,6 @@ function HandleTransformer() {
 
   useEffect(() => {
     triggerSearch(1, false);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWorkflow]);
 
@@ -59,6 +58,12 @@ function HandleTransformer() {
     dispatch(setCurrentWorkflowKey({ key: exampleInputKey, value }));
   };
 
+  useEffect(() => {
+    if (sampleInputSlackMessage) {
+      setExampleInput(JSON.stringify(sampleInputSlackMessage, null, 2));
+    }
+  }, [sampleInputSlackMessage]);
+
   return (
     <div className="my-2 flex flex-col gap-2">
       <CodeAccordion
@@ -69,14 +74,13 @@ function HandleTransformer() {
       />
 
       <CodeAccordion
-        code={sampleInputSlackMessage ?? exampleInput}
+        code={exampleInput}
         label={
           sampleInputSlackMessage
             ? "Test your transformer function against a sample slack message"
             : "Test your transformer function against a sample json payload"
         }
         language={LanguageTypes.JSON}
-        className="max-h-[150px] !overflow-y-auto"
         onValueChange={setExampleInput}>
         {data && (
           <CodeAccordion
