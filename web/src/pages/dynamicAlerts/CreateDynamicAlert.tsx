@@ -1,4 +1,7 @@
+import CustomButton from "../../components/common/CustomButton";
+import AddCondition from "../../components/DynamicAlerts/create/AddCondition";
 import AddMetric from "../../components/DynamicAlerts/create/AddMetric";
+import AddNotification from "../../components/DynamicAlerts/create/AddNotification";
 import Heading from "../../components/Heading";
 import CustomInput from "../../components/Inputs/CustomInput";
 import { usePlaybookBuilderOptionsQuery } from "../../store/features/playbook/api";
@@ -6,6 +9,8 @@ import { InputTypes } from "../../types";
 
 function CreateDynamicAlert() {
   usePlaybookBuilderOptionsQuery();
+
+  const handleSave = () => {};
 
   return (
     <div>
@@ -18,6 +23,14 @@ function CreateDynamicAlert() {
           className="!w-[200px]"
         />
         <AddMetric />
+        <hr />
+        <AddCondition />
+        <hr />
+        <AddNotification />
+
+        <CustomButton className="w-fit" onClick={handleSave}>
+          Save
+        </CustomButton>
       </div>
     </div>
   );
