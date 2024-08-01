@@ -104,6 +104,7 @@ class PlaybookSourceManager:
         transformer_result = lambda_function_processor.execute(result_dict)
         if not isinstance(transformer_result, Dict):
             raise ValueError("Result transformer should return a dictionary")
+        transformer_result = {f"${k}" if not k.startswith("$") else k: v for k, v in transformer_result.items()}
         return transformer_result
 
     def execute_task(self, account_id, time_range: TimeRange, global_variable_set: Dict,
@@ -164,9 +165,8 @@ class PlaybookSourceManager:
                     playbook_task_result.task_local_variable_set.CopyFrom(task_local_variable_map_proto)
 
                     # Apply result transformer
-                    result_transformer_lambda_function_variable_set_proto = Struct()
                     if task.execution_configuration.is_result_transformer_enabled.value:
-                        lambda_function = task.execution_configuration.result_transformer_lambda_function.value
+                        lambda_function = task.execution_configuration.result_transformer_lambda_function
                         result_transformer_lambda_function_variable_set = self.apply_result_transformer(
                             playbook_task_result, lambda_function)
                         result_transformer_lambda_function_variable_set_proto = dict_to_proto(

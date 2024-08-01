@@ -15,7 +15,7 @@ from google.protobuf.struct_pb2 import Struct
 from accounts.models import Account, get_request_account, get_request_user, get_api_token_user
 from connectors.crud.connectors_crud import get_db_account_connectors
 from executor.crud.playbook_execution_crud import create_playbook_execution, get_db_playbook_execution, \
-    update_db_account_playbook_execution_status
+    update_db_account_playbook_execution_status, update_db_account_playbook_execution_global_variable_set
 from executor.crud.deprecated_playbooks_crud import deprecated_update_or_create_db_playbook
 from executor.crud.deprecated_playbooks_update_processor import deprecated_playbooks_update_processor
 from executor.crud.playbooks_update_processor import playbooks_update_processor
@@ -281,7 +281,7 @@ def step_run_v3(request_message: RunPlaybookStepRequestV3) -> Union[RunPlaybookS
 
     step = request_message.playbook_step
     try:
-        step_execution_log = execute_playbook_step_impl(time_range, account, step)
+        step_execution_log, global_variable_set = execute_playbook_step_impl(time_range, account, step)
         return RunPlaybookStepResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                          step_execution_log=step_execution_log)
     except Exception as e:
@@ -366,11 +366,14 @@ def playbook_run_v2(request_message: RunPlaybookRequestV2) -> Union[RunPlaybookR
             logger.error(e)
 
     try:
-        step_execution_logs = execute_playbook_impl(time_range, account, playbook)
+        step_execution_logs, execution_global_variable_set = execute_playbook_impl(time_range, account, playbook)
         playbook_execution = PlaybookExecution(playbook=playbook, time_range=time_range,
                                                step_execution_logs=step_execution_logs)
         if db_playbook and db_playbook_execution:
             store_step_execution_logs(account, db_playbook, db_playbook_execution, step_execution_logs)
+
+            update_db_account_playbook_execution_global_variable_set(account, db_playbook_execution.id,
+                                                                     proto_to_dict(execution_global_variable_set))
             update_db_account_playbook_execution_status(account, db_playbook_execution.id,
                                                         PlaybookExecutionStatusType.FINISHED)
         return RunPlaybookResponseV2(meta=get_meta(tr=time_range), success=BoolValue(value=True),
@@ -876,8 +879,11 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
         else:
             time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
     try:
-        step_execution_log = execute_playbook_step_impl(time_range, account, playbook_step)
+        step_execution_log, execution_global_variable_set = execute_playbook_step_impl(time_range, account,
+                                                                                       playbook_step)
         store_step_execution_logs(account, playbook, playbook_execution, [step_execution_log], user.email, time_range)
+        update_db_account_playbook_execution_global_variable_set(account, playbook_execution.id,
+                                                                 proto_to_dict(execution_global_variable_set))
     except Exception as e:
         logger.error(e)
         return PlaybookExecutionStepExecuteResponse(success=BoolValue(value=False),
