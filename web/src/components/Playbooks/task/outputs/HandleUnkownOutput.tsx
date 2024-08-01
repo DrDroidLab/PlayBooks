@@ -20,7 +20,7 @@ function HandleUnkownOutput({ taskId, error }) {
             error ? "Error from Source" : "No data available for this step"
           }
           result={null}
-          timestamp={null}
+          timestamp={undefined}
         />
       );
   }

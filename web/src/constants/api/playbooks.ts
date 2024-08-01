@@ -3,6 +3,7 @@ export const GET_PLAYBOOKS = "/pb/get/v2";
 export const UPDATE_PLAYBOOK = "/pb/update/v2";
 export const CREATE_PLAYBOOK = "/pb/create/v2";
 export const EXECUTE_TASK = "/executor/task/run/v3";
+export const EXECUTE_BULK_TASK = "/executor/bulk_task/run";
 export const EXECUTE_STEP = "/executor/step/run/v3";
 export const EXECUTE_PLAYBOOK = "/executor/playbook/run/v2";
 export const GET_CONNECTORS = "/connectors/playbooks/builder/sources/options";

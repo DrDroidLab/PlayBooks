@@ -3,6 +3,7 @@ import { currentPlaybookSelector } from "../../../store/features/playbook/playbo
 import removeKeyFromObject from "../../common/removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import checkId from "../../common/checkId.ts";
+import { extractTimeFromHours } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
 
 function stateToPlaybook(): Playbook | null {
   const currentPlaybook = currentPlaybookSelector(store.getState());
@@ -18,14 +19,30 @@ function stateToPlaybook(): Playbook | null {
   playbook.steps = playbook?.steps?.map((step: Step) => ({
     ...step,
     id: checkId(step.id),
-    tasks: step.tasks?.map((taskId: Task | string) => ({
-      ...tasks.find(
+    tasks: step.tasks?.map((taskId: Task | string) => {
+      const task = tasks.find(
         (task) => task.id === (typeof taskId === "string" ? taskId : taskId.id),
-      ),
-      id: checkId(
-        (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
-      ),
-    })),
+      );
+      return {
+        ...task,
+        execution_configuration: task.execution_configuration
+          ? {
+              ...task.execution_configuration,
+              timeseries_offsets: task?.execution_configuration
+                ?.timeseries_offsets?.[0]
+                ? [
+                    extractTimeFromHours(
+                      task?.execution_configuration?.timeseries_offsets?.[0],
+                    ),
+                  ]
+                : undefined,
+            }
+          : {},
+        id: checkId(
+          (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
+        ),
+      };
+    }),
   }));
 
   playbook.step_relations = playbook.step_relations?.map((relation) => ({

@@ -7,6 +7,7 @@ import "google/protobuf/timestamp.proto";
 message Gcm {
   message MqlExecution {
     google.protobuf.StringValue query = 1;
+    repeated uint32 timeseries_offsets = 2;
   }
 
   message FilterLogEvents {

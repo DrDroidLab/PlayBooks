@@ -5,7 +5,6 @@ import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
 import PlayBookRunLogTable from "../outputs/PlayBookRunLogTable.tsx";
 import PlayBookRunDataTable from "../outputs/PlayBookRunDataTable.js";
 import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
-import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 
 const OutputTypes = {
   API_RESPONSE: "API_RESPONSE",
@@ -15,12 +14,7 @@ const OutputTypes = {
   LOGS: "LOGS",
 };
 
-const TaskOutput = ({ id, showHeading, taskFromExecution }) => {
-  const [taskFromPlaybook] = useCurrentTask(id);
-  const task = taskFromExecution ?? taskFromPlaybook;
-  const output = task?.ui_requirement.output?.data;
-  const error = task?.ui_requirement?.outputError;
-
+const TaskOutput = ({ id, showHeading, task, output, error }) => {
   switch (output?.type) {
     case OutputTypes.API_RESPONSE:
       return <PlaybookAPIActionOutput output={output.api_response} />;
