@@ -23,7 +23,7 @@ function TypingDropdownMultipleSelectionInput(
       handleChange={props.handleChange}
       value={props.value as string[]}
       options={props.options ?? []}>
-      <TypingDropdownMultipleSelection {...props} />;
+      <TypingDropdownMultipleSelection {...props} />
     </TypingDropdownMultipleProvider>
   );
 }
