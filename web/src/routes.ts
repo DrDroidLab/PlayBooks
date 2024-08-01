@@ -27,6 +27,7 @@ export const routes = {
   [PageKeys.CONNECTOR_PAGE_ID]: "/data-sources/:connectorEnum/:id",
   [PageKeys.API_TOKENS]: "/settings/api-keys",
   [PageKeys.DYNAMIC_ALERTS]: "/dynamic-alerts",
+  [PageKeys.CREATE_DYNAMIC_ALERTS]: "/dynamic-alerts/create",
   [PageKeys.INVITE_TEAM]: "/settings/invite-team",
   [PageKeys.SUPPORT]: "/support",
   [PageKeys.NOT_FOUND]: "*",

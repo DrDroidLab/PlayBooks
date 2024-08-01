@@ -11,6 +11,7 @@ import drawersSlice from "./features/drawers/drawersSlice.ts";
 import fakeLoadingSlice from "./features/fakeLoading/fakeLoadingSlice.ts";
 import searchSlice from "./features/search/searchSlice.ts";
 import paginationSlice from "./features/pagination/paginationSlice.ts";
+import commonSlice from "./features/common/commonSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     fakeLoading: fakeLoadingSlice,
     search: searchSlice,
     pagination: paginationSlice,
+    common: commonSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

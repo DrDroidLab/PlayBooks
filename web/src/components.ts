@@ -38,4 +38,6 @@ export const components = {
   [PageKeys.NOT_FOUND]: () => import("./pages/NotFound"),
   [PageKeys.SETTINGS]: () => import("./pages/Settings"),
   [PageKeys.DYNAMIC_ALERTS]: () => import("./pages/dynamicAlerts"),
+  [PageKeys.CREATE_DYNAMIC_ALERTS]: () =>
+    import("./pages/dynamicAlerts/CreateDynamicAlert"),
 };

@@ -12,7 +12,7 @@ function DynamicAlerts() {
   const navigate = useNavigate();
 
   const handleCreateDynamicAlert = () => {
-    navigate(routes.DYNAMIC_ALERTS);
+    navigate(routes.CREATE_DYNAMIC_ALERTS);
   };
 
   return (
