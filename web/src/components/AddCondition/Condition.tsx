@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import { currentPlaybookSelector } from "../../store/features/playbook/selectors";
 import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions";
 import { additionalStateSelector } from "../../store/features/drawers/selectors";
-import StepConditions from "./StepConditions";
 
 type ConditionProps = {
   i: number;
@@ -82,8 +81,6 @@ function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
           </div>
         )}
       </div>
-
-      <StepConditions />
     </div>
   );
 }

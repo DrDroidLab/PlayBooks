@@ -3,6 +3,7 @@ import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addRule,
+  addStepRule,
   currentPlaybookSelector,
   setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
@@ -23,6 +24,7 @@ function useEdgeConditions(id: string) {
   const conditions = edge?.condition?.rules ?? [];
   const condition = relation?.condition;
   const rules = condition?.rules ?? [];
+  const step_rules = condition?.step_rules ?? [];
   const globalRule = edge?.condition?.logical_operator ?? ruleOptions[0].id;
   const dispatch = useDispatch();
 
@@ -39,6 +41,11 @@ function useEdgeConditions(id: string) {
 
   const addNewRule = () => {
     dispatch(addRule({ id: relation?.id }));
+  };
+
+  const addNewStepRule = () => {
+    if (!relation?.id) return;
+    dispatch(addStepRule({ id: relation?.id }));
   };
 
   const deleteCondition = (conditionIndex: number) => {
@@ -69,6 +76,14 @@ function useEdgeConditions(id: string) {
     }
   };
 
+  const handleStepRule = (key: string, value: string, ruleIndex: number) => {
+    if (rules.length === 0) {
+      addNewStepRule();
+    } else {
+      addConditionToEdgeByIndex(key, value, edgeIndex, ruleIndex);
+    }
+  };
+
   const handleGlobalRule = (value: string) => {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
@@ -85,8 +100,11 @@ function useEdgeConditions(id: string) {
     globalRule,
     condition,
     rules,
+    step_rules,
     handleCondition,
     handleRule,
+    handleStepRule,
+    addNewStepRule,
     addNewRule,
     deleteCondition,
     handleGlobalRule,

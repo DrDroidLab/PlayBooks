@@ -1,9 +1,14 @@
+import { OperatorOptionType } from "../../utils/conditionals/types/operatorOptionTypes.ts";
 import { Step } from "./steps/step.ts";
 
 export enum LogicalOperator {
   AND_LO = "AND_LO",
   OR_LO = "OR_LO",
   NOT_LO = "NOT_LO",
+}
+
+export enum StepRuleTypes {
+  COMPARE_TIME_WITH_CRON = "compare_time_with_cron",
 }
 
 enum RuleType {
@@ -31,8 +36,21 @@ export type ConditionRule = {
   [key in RuleType]?: any;
 };
 
+export type StepRuleType = {
+  [key in StepRuleTypes]: {
+    operator: OperatorOptionType;
+    rule: string;
+    within_seconds: number;
+  };
+};
+
+export type StepRule = {
+  type: StepRuleTypes;
+} & StepRuleType;
+
 type StepCondition = {
   rules: ConditionRule[];
+  step_rules: StepRule[];
   logical_operator: LogicalOperator;
 };
 

@@ -12,11 +12,18 @@ import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 import Condition from "./Condition.tsx";
+import StepConditions from "./StepConditions.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
-  const { rules, condition, addNewRule, handleGlobalRule } =
-    useEdgeConditions(id);
+  const {
+    rules,
+    step_rules,
+    condition,
+    addNewRule,
+    handleGlobalRule,
+    addNewStepRule,
+  } = useEdgeConditions(id);
   const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
   const isPrefetched = useIsPrefetched();
@@ -70,6 +77,22 @@ function AddCondition() {
       {!isPrefetched && (
         <>
           <CustomButton className="!text-sm !w-fit my-2" onClick={addNewRule}>
+            <Add fontSize="inherit" /> Add
+          </CustomButton>
+
+          <SavePlaybookButton />
+        </>
+      )}
+
+      {step_rules?.map((rule, i) => (
+        <StepConditions rule={rule} ruleIndex={i} id={id} />
+      ))}
+
+      {!isPrefetched && (
+        <>
+          <CustomButton
+            className="!text-sm !w-fit my-2"
+            onClick={addNewStepRule}>
             <Add fontSize="inherit" /> Add
           </CustomButton>
 
