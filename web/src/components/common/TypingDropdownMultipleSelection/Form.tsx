@@ -8,18 +8,26 @@ type FormPropTypes = {
 };
 
 function Form({ placeholder, ...props }: FormPropTypes) {
-  const { toggle, handleValueChange, handleStringChange, value } =
-    useTypingDropdownMultipleContext();
+  const {
+    toggle,
+    handleValueChange,
+    handleStringChange,
+    value,
+    setValue,
+    handleKeyDown,
+  } = useTypingDropdownMultipleContext();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleValueChange(value);
+    setValue("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <CustomInput
         {...props}
+        onKeyDown={handleKeyDown}
         onClick={toggle}
         value={value}
         handleChange={handleStringChange}

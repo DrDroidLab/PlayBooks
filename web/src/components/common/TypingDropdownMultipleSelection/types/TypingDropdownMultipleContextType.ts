@@ -14,4 +14,6 @@ export type TypingDropdownMultipleContextType = {
   ) => void;
   isOpen: boolean;
   toggle: () => void;
+  setValue: (val: string) => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };

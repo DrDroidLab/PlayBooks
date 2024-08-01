@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  KeyboardEvent,
+} from "react";
 import useDropdown from "../../../../hooks/common/useDropdown";
 import {
   TypingDropdownMultipleContextType,
@@ -33,6 +39,7 @@ export const TypingDropdownMultipleProvider = ({
   };
 
   function handleValueChange(val: string) {
+    if (!val.trim() || values.includes(val)) return;
     const newValues = [...values, val];
     setValues(newValues);
     handleChange(JSON.stringify(newValues));
@@ -49,6 +56,14 @@ export const TypingDropdownMultipleProvider = ({
     setFilteredOptions(filtered!);
   }, [value, options]);
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      if (value.trim().length === 0 && values.length > 0) {
+        handleDelete(values.length - 1);
+      }
+    }
+  };
+
   return (
     <TypingDropdownMultipleContext.Provider
       value={{
@@ -62,6 +77,8 @@ export const TypingDropdownMultipleProvider = ({
         handleSelect,
         isOpen,
         toggle,
+        setValue,
+        handleKeyDown,
       }}>
       {children}
     </TypingDropdownMultipleContext.Provider>
