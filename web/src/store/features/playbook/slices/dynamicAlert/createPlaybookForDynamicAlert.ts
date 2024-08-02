@@ -4,6 +4,7 @@ import {
   Step,
   StepRelationContract,
   Task,
+  TaskType,
 } from "../../../../../types";
 import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens";
 import { v4 as uuidv4 } from "uuid";
@@ -14,6 +15,24 @@ const emptyTask: Task = {
   interpreter_type: "BASIC_I",
   task_connector_sources: [],
   source: "",
+  ui_requirement: {
+    isOpen: false,
+    stepId: "",
+  },
+};
+
+const notificationTask: Task = {
+  execution_configuration: {},
+  interpreter_type: "BASIC_I",
+  task_connector_sources: [],
+  source: "",
+  slack: {
+    type: TaskType.Slack,
+    send_message: {
+      text: "",
+      channel: "",
+    },
+  },
   ui_requirement: {
     isOpen: false,
     stepId: "",
@@ -32,6 +51,7 @@ const emptyStep: Step = {
 export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
   const stepId = generateUUIDWithoutHyphens();
   const taskId = generateUUIDWithoutHyphens();
+  const notificationTaskId = generateUUIDWithoutHyphens();
   const notificationStepId = generateUUIDWithoutHyphens();
   const stepRefId = uuidv4();
   const notificationStepRefId = uuidv4();
@@ -57,11 +77,14 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     step_relations: [relation],
     steps: [
       { ...emptyStep, id: stepId, tasks: [taskId] },
-      { ...emptyStep, id: notificationStepId },
+      { ...emptyStep, id: notificationStepId, tasks: [notificationTask] },
     ],
     ui_requirement: {
       isExisting: false,
-      tasks: [{ ...emptyTask, id: taskId }],
+      tasks: [
+        { ...emptyTask, id: taskId },
+        { ...notificationTask, id: notificationTaskId },
+      ],
     },
   };
 

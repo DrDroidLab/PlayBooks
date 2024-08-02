@@ -18,6 +18,7 @@ function TaskNode({ taskId }) {
   const { toggle, openDrawer, permanentView, addAdditionalData } =
     usePermanentDrawerState();
   const { currentVisibleTask } = useSelector(playbookSelector);
+  console.log("sdvisdv", task);
 
   const handleNoAction = (e) => {
     e.preventDefault();

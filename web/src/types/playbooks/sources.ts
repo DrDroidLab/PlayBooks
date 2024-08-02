@@ -14,4 +14,5 @@ export enum Sources {
   Azure = "azure",
   Gke = "gke",
   ElasticSearch = "elastic_search",
+  Slack = "slack",
 }
