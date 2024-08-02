@@ -131,6 +131,7 @@ def create_workflow_execution_util(account: Account, workflow: Workflow, schedul
     time_range = TimeRange(time_geq=int(latest_scheduled_at.timestamp()) - 3600,
                            time_lt=int(latest_scheduled_at.timestamp()))
     workflow_execution = create_workflow_execution(account, time_range, workflow.id.value, workflow_run_uuid,
-                                                   scheduled_at, expiry_at, keep_alive, triggered_by,
-                                                   execution_metadata, proto_to_dict(workflow.configuration))
+                                                   scheduled_at, latest_scheduled_at, expiry_at, keep_alive,
+                                                   triggered_by, execution_metadata,
+                                                   proto_to_dict(workflow.configuration))
     return workflow_execution, ''

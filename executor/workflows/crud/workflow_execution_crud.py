@@ -76,8 +76,8 @@ def get_db_workflow_execution_logs(account: Account, workflow_execution_id):
 
 
 def create_workflow_execution(account: Account, time_range: TimeRange, workflow_id, workflow_run_id,
-                              scheduled_at, expiry_at=None, keep_alive=False, created_by=None, metadata=None,
-                              execution_configuration=None):
+                              scheduled_at, latest_scheduled_at, expiry_at=None, keep_alive=False, created_by=None,
+                              metadata=None, execution_configuration=None):
     try:
         if not expiry_at and not keep_alive:
             raise Exception("Expiry time is required for non-keep alive workflows")
@@ -96,7 +96,7 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
             execution_configuration=execution_configuration,
             keep_alive=keep_alive,
             total_executions=0,
-            latest_scheduled_at=scheduled_at
+            latest_scheduled_at=latest_scheduled_at
         )
         return workflow_execution
     except Exception as e:
@@ -151,14 +151,13 @@ def update_db_account_workflow_execution_latest_scheduled_at(account: Account, w
     return False
 
 
-def create_workflow_execution_log(account_id, workflow_id, workflow_execution_id, playbook_execution_id, scheduled_at):
+def create_workflow_execution_log(account_id, workflow_id, workflow_execution_id, playbook_execution_id):
     try:
         WorkflowExecutionLog.objects.create(
             account_id=account_id,
             workflow_id=workflow_id,
             workflow_execution_id=workflow_execution_id,
             playbook_execution_id=playbook_execution_id,
-            scheduled_at=scheduled_at
         )
     except Exception as e:
         logger.error(f"Failed to bulk create workflow execution logs with error: {e}")

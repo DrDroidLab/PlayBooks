@@ -106,7 +106,7 @@ def workflow_scheduler():
 
         wfe_expiry_at = wf_execution.expiry_at if wf_execution.expiry_at else 0
         wfe_keep_alive = wf_execution.keep_alive.value if wf_execution.keep_alive else False
-        if wfe_keep_alive and wfe_expiry_at:
+        if not wfe_keep_alive and wfe_expiry_at:
             expiry_at = datetime.fromtimestamp(float(wf_execution.expiry_at))
             expiry_at = expiry_at.replace(tzinfo=timezone.utc)
             if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
@@ -127,7 +127,6 @@ def workflow_scheduler():
             try:
                 uuid_str = uuid.uuid4().hex
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
-                time_range = proto_to_dict(wf_execution.time_range)
                 if execution_configuration.global_variable_set.items():
                     execution_global_variable_set.update(execution_configuration.global_variable_set)
 
@@ -139,6 +138,8 @@ def workflow_scheduler():
                                                                proto_to_dict(execution_global_variable_set))
 
                 workflow_execution_configuration = proto_to_dict(execution_configuration)
+                time_range = proto_to_dict(wf_execution.time_range)
+
                 saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id,
                                                 wf_execution.id.value, pb_id, playbook_execution.id, time_range,
                                                 workflow_execution_configuration)
