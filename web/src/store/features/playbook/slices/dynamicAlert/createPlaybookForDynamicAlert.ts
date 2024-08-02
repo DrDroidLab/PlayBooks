@@ -3,21 +3,34 @@ import {
   PlaybookUIState,
   Step,
   StepRelationContract,
+  Task,
 } from "../../../../../types";
 import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens";
 import { v4 as uuidv4 } from "uuid";
+
+const emptyTask: Task = {
+  execution_configuration: {},
+  interpreter_type: "BASIC_I",
+  task_connector_sources: [],
+  source: "",
+  ui_requirement: {
+    isOpen: false,
+    stepId: "",
+  },
+};
 
 const emptyStep: Step = {
   id: "",
   tasks: [],
   ui_requirement: {
-    isOpen: true,
+    isOpen: false,
     showError: false,
   },
 };
 
 export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
   const stepId = generateUUIDWithoutHyphens();
+  const taskId = generateUUIDWithoutHyphens();
   const notificationStepId = generateUUIDWithoutHyphens();
   const stepRefId = uuidv4();
   const notificationStepRefId = uuidv4();
@@ -41,12 +54,12 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     global_variable_set: {},
     step_relations: [relation],
     steps: [
-      { ...emptyStep, id: stepId },
+      { ...emptyStep, id: stepId, tasks: [taskId] },
       { ...emptyStep, id: notificationStepId },
     ],
     ui_requirement: {
       isExisting: false,
-      tasks: [],
+      tasks: [{ ...emptyTask, id: taskId }],
     },
   };
 };

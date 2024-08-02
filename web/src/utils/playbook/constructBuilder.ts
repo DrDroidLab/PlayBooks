@@ -37,13 +37,16 @@ const fieldToInput = (field: FormFields, task: Task): HandleInputRenderType => {
 
 export const constructBuilder = (id?: string) => {
   const [task] = getCurrentTask(id);
-  if (!task) return [];
+  if (!task || !task.source) return [];
   const { supportedTaskTypes } = commonKeySelector(store.getState());
   const source: Sources = task.source.toLowerCase() as Sources;
   const taskType = (task as any)[source].type;
+  if (!taskType) return [];
   const type = supportedTaskTypes?.find(
     (e: any) => e.source === source.toUpperCase() && e.task_type === taskType,
   );
+
+  if (!type) return [];
 
   return type.form_fields.map((field: FormFields) => fieldToInput(field, task));
 };
