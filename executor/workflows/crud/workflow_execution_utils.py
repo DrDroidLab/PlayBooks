@@ -130,6 +130,9 @@ def create_workflow_execution_util(account: Account, workflow: Workflow, schedul
         return False, f"Error in calculating next workflow execution: {e} for workflow: {workflow.id}"
     time_range = TimeRange(time_geq=int(latest_scheduled_at.timestamp()) - 3600,
                            time_lt=int(latest_scheduled_at.timestamp()))
+    if schedule.type != WorkflowSchedule.Type.ONE_OFF and not expiry_at and not keep_alive:
+        return False, f"Expiry time is required for non-keep alive workflows"
+
     workflow_execution = create_workflow_execution(account, time_range, workflow.id.value, workflow_run_uuid,
                                                    scheduled_at, latest_scheduled_at, expiry_at, keep_alive,
                                                    triggered_by, execution_metadata,

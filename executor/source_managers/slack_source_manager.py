@@ -64,8 +64,8 @@ class SlackSourceManager(PlaybookSourceManager):
             send_message_task: Slack.SendMessage = slack_task.send_message
             channel = send_message_task.channel.value
             text = send_message_task.text.value
-            blocks = proto_to_dict(send_message_task.blocks)
-            file_uploads = proto_to_dict(send_message_task.file_uploads)
+            blocks = proto_to_dict(send_message_task.blocks) if send_message_task.blocks else None
+            file_uploads = proto_to_dict(send_message_task.file_uploads) if send_message_task.file_uploads else []
             if not channel:
                 raise Exception("Task execution Failed:: No Slack channel found")
 
