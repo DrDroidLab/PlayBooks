@@ -3,7 +3,7 @@ import * as Actions from "./slices/index.ts";
 import { initialState } from "./initialState.ts";
 export * from "./selectors";
 
-const playbookSlice = createSlice({
+export const playbookSlice = createSlice({
   name: "playbook",
   initialState: initialState,
   reducers: {

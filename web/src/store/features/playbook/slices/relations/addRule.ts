@@ -3,7 +3,7 @@ import { PlaybookUIState } from "../../../../../types/index.ts";
 
 export const addRule = (
   state: PlaybookUIState,
-  { payload }: PayloadAction<any>,
+  { payload }: PayloadAction<{ id: string }>,
 ) => {
   const { id } = payload;
   const relation = state.currentPlaybook?.step_relations.find(

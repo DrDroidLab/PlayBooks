@@ -18,9 +18,15 @@ type ConditionProps = {
   i: number;
   condition: ConditionRule;
   taskTypeOptions: Task[];
+  showDelete?: boolean;
 };
 
-function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
+function Condition({
+  i,
+  condition,
+  taskTypeOptions,
+  showDelete = true,
+}: ConditionProps) {
   const { id } = useSelector(additionalStateSelector);
   const isPrefetched = useIsPrefetched();
   const currentPlaybook = useSelector(currentPlaybookSelector);
@@ -71,7 +77,9 @@ function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
           />
         </div>
 
-        <DeleteRuleButton ruleType={RuleType.RULE} ruleIndex={i} />
+        {showDelete && (
+          <DeleteRuleButton ruleType={RuleType.RULE} ruleIndex={i} />
+        )}
       </div>
     </div>
   );

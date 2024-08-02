@@ -7,6 +7,7 @@ import {
 } from "../../../../../types";
 import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens";
 import { v4 as uuidv4 } from "uuid";
+import { playbookSlice } from "../../playbookSlice";
 
 const emptyTask: Task = {
   execution_configuration: {},
@@ -34,9 +35,10 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
   const notificationStepId = generateUUIDWithoutHyphens();
   const stepRefId = uuidv4();
   const notificationStepRefId = uuidv4();
+  const relationId = `edge-${stepRefId}-${notificationStepId}`;
 
   const relation: StepRelationContract = {
-    id: "",
+    id: relationId,
     child: {
       reference_id: notificationStepRefId,
     },
@@ -62,4 +64,13 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
       tasks: [{ ...emptyTask, id: taskId }],
     },
   };
+
+  playbookSlice.caseReducers.addRule(state, {
+    payload: { id: relationId },
+    type: "",
+  });
+  playbookSlice.caseReducers.addStepRule(state, {
+    payload: { id: relationId },
+    type: "",
+  });
 };

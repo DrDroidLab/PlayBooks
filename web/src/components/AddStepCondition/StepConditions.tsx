@@ -6,17 +6,23 @@ import { RuleType } from "../common/Conditions/types";
 type StepConditionsPropTypes = {
   rule: StepRule;
   ruleIndex: number;
+  showDelete?: boolean;
 };
 
-function StepConditions(props: StepConditionsPropTypes) {
+function StepConditions({
+  showDelete = true,
+  ...props
+}: StepConditionsPropTypes) {
   return (
     <div className="mt-2 border p-1 rounded-md flex flex-col gap-2">
       <p className="text-xs text-violet-500 font-semibold">Step Condition</p>
       <ConditionInputs {...props} />
-      <DeleteRuleButton
-        ruleType={RuleType.STEP_RULE}
-        ruleIndex={props.ruleIndex}
-      />
+      {showDelete && (
+        <DeleteRuleButton
+          ruleType={RuleType.STEP_RULE}
+          ruleIndex={props.ruleIndex}
+        />
+      )}
     </div>
   );
 }
