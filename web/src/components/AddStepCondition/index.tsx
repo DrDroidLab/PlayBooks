@@ -12,7 +12,7 @@ function AddStepCondition() {
   const isPrefetched = useIsPrefetched();
 
   return (
-    <div className="p-2">
+    <>
       <h1 className="text-violet-500 font-semibold text-xs flex justify-between my-2">
         <span>Add Step Condition</span>
       </h1>
@@ -29,7 +29,7 @@ function AddStepCondition() {
           </CustomButton>
         </>
       )}
-    </div>
+    </>
   );
 }
 

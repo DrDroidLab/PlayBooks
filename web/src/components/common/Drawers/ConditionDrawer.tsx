@@ -5,12 +5,12 @@ import CommonConditionTop from "../Conditions/CommonConditionTop.tsx";
 
 function ConditionDrawer() {
   return (
-    <>
+    <div className="p-2">
       <CommonConditionTop />
       <AddCondition />
       <AddStepCondition />
       <CommonConditionBottom />
-    </>
+    </div>
   );
 }
 

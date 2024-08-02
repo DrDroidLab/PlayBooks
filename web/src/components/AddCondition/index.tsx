@@ -19,7 +19,7 @@ function AddCondition() {
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
 
   return (
-    <div className="p-2">
+    <>
       <h1 className="text-violet-500 font-semibold text-xs flex justify-between my-2">
         <span>Add Condition</span>
       </h1>
@@ -41,7 +41,7 @@ function AddCondition() {
           </CustomButton>
         </>
       )}
-    </div>
+    </>
   );
 }
 

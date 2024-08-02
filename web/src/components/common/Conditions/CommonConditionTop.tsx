@@ -3,7 +3,7 @@ import ParentStepNotConfigured from "./ParentStepNotConfigured";
 
 function CommonConditionTop() {
   return (
-    <div className="m-2">
+    <div className="flex flex-col gap-2 mt-2">
       <ParentStepNotConfigured />
       <GlobalRule />
     </div>

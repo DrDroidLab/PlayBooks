@@ -14,7 +14,7 @@ function ParentStepNotConfigured() {
   if (taskTypeOptions.length > 0) return;
 
   return (
-    <div className="bg-red-50 p-2 flex items-center gap-1 my-1 rounded flex-wrap">
+    <div className="bg-red-50 p-2 flex items-center gap-1 rounded flex-wrap">
       <ErrorOutlineRounded color="error" component={"svg"} fontSize="inherit" />
       <p className="text-xs">You have not configured the parent step yet.</p>
     </div>
