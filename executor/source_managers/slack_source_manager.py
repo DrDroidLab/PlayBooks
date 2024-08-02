@@ -1,13 +1,17 @@
 import logging
 import os
 
+from google.protobuf.wrappers_pb2 import StringValue, Int64Value
+
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from protos.base_pb2 import Source, TimeRange, SourceModelType
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
+from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType
-from protos.playbooks.source_task_definitions.slack_task_pb2 import Slack as SlackTaskProto
+from protos.playbooks.source_task_definitions.slack_task_pb2 import Slack
+from protos.ui_definition_pb2 import FormField, FormFieldType
 from utils.proto_utils import proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -17,39 +21,51 @@ class SlackSourceManager(PlaybookSourceManager):
 
     def __init__(self):
         self.source = Source.SLACK
-        self.task_proto = SlackTaskProto
+        self.task_proto = Slack
         self.task_type_callable_map = {
-            SlackTaskProto.TaskType.SEND_MESSAGE: {
+            Slack.TaskType.SEND_MESSAGE: {
                 'executor': self.execute_send_message,
                 'model_types': [SourceModelType.SLACK_CHANNEL],
-                'result_type': PlaybookTaskResultType.UNKNOWN,
+                'result_type': PlaybookTaskResultType.TEXT,
                 'display_name': 'Send a message to slack channel',
-                'category': 'Actions'
+                'category': 'Actions',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="channel"),
+                              display_name=StringValue(value="Channel"),
+                              description=StringValue(value="Select Slack Channel"),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
+                    FormField(key_name=StringValue(value="text"),
+                              display_name=StringValue(value="Message"),
+                              description=StringValue(value='Enter Message'),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
+                ]
             },
-            SlackTaskProto.TaskType.SEND_THREAD_REPLY: {
-                'executor': self.execute_send_thread_reply,
-                'model_types': [SourceModelType.SLACK_CHANNEL],
-                'result_type': PlaybookTaskResultType.UNKNOWN,
-                'display_name': 'Send a reply to a thread in slack channel',
-                'category': 'Actions'
-            },
+            # SlackTaskProto.TaskType.SEND_THREAD_REPLY: {
+            #     'executor': self.execute_send_thread_reply,
+            #     'model_types': [SourceModelType.SLACK_CHANNEL],
+            #     'result_type': PlaybookTaskResultType.TEXT,
+            #     'display_name': 'Send a reply to a thread in slack channel',
+            #     'category': 'Actions'
+            # },
         }
 
     def get_connector_processor(self, grafana_connector, **kwargs):
         generated_credentials = generate_credentials_dict(grafana_connector.type, grafana_connector.keys)
         return SlackApiProcessor(**generated_credentials)
 
-    def execute_send_message(self, time_range: TimeRange, slack_task: SlackTaskProto,
+    def execute_send_message(self, time_range: TimeRange, slack_task: Slack,
                              slack_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not slack_connector:
                 raise Exception("Task execution Failed:: No Postgres source found")
 
-            send_message_task: SlackTaskProto.SendMessage = slack_task.send_message
+            send_message_task: Slack.SendMessage = slack_task.send_message
             channel = send_message_task.channel.value
             text = send_message_task.text.value
-            blocks = proto_to_dict(send_message_task.blocks)
-            file_uploads = proto_to_dict(send_message_task.file_uploads)
+            blocks = proto_to_dict(send_message_task.blocks) if send_message_task.blocks else None
+            file_uploads = proto_to_dict(send_message_task.file_uploads) if send_message_task.file_uploads else []
             if not channel:
                 raise Exception("Task execution Failed:: No Slack channel found")
 
@@ -75,17 +91,17 @@ class SlackSourceManager(PlaybookSourceManager):
                 except Exception as e:
                     logger.error(f"Error uploading file to slack: {e}")
                     continue
-            return PlaybookTaskResult(source=self.source)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TEXT)
         except Exception as e:
             raise Exception(f"Error while executing Postgres task: {e}")
 
-    def execute_send_thread_reply(self, time_range: TimeRange, slack_task: SlackTaskProto,
+    def execute_send_thread_reply(self, time_range: TimeRange, slack_task: Slack,
                                   slack_connector: ConnectorProto) -> PlaybookTaskResult:
         try:
             if not slack_connector:
                 raise Exception("Task execution Failed:: No Postgres source found")
 
-            send_message_task: SlackTaskProto.SendThreadReply = slack_task.send_message
+            send_message_task: Slack.SendThreadReply = slack_task.send_message
             channel = send_message_task.channel.value
             thread_ts = send_message_task.thread_ts.value
             text = send_message_task.text.value
@@ -117,6 +133,6 @@ class SlackSourceManager(PlaybookSourceManager):
                 except Exception as e:
                     logger.error(f"Error uploading file to slack: {e}")
                     continue
-            return PlaybookTaskResult(source=self.source)
+            return PlaybookTaskResult(source=self.source, type=PlaybookTaskResultType.TEXT)
         except Exception as e:
             raise Exception(f"Error while executing Postgres task: {e}")

@@ -79,9 +79,6 @@ def create_workflow_execution(account: Account, time_range: TimeRange, workflow_
                               scheduled_at, latest_scheduled_at, expiry_at=None, keep_alive=False, created_by=None,
                               metadata=None, execution_configuration=None):
     try:
-        if not expiry_at and not keep_alive:
-            raise Exception("Expiry time is required for non-keep alive workflows")
-
         workflow_execution = WorkflowExecution.objects.create(
             account=account,
             workflow_id=workflow_id,
