@@ -124,10 +124,8 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         uuid_str = uuid.uuid4().hex
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
         workflow: Workflow = account_workflow.proto_partial
-        schedule = workflow.schedule
-        schedule_type = account_workflow.schedule_type
-        workflow_config = proto_to_dict(workflow.configuration)
 
+        workflow_config = proto_to_dict(workflow.configuration)
         requested_config = proto_to_dict(request_message.workflow_configuration)
         if requested_config:
             for key, value in requested_config.items():
@@ -139,9 +137,10 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
                     workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
-        execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
-                                                                  current_time_utc, workflow_run_uuid, user.email, None,
-                                                                  workflow_config_proto)
+        workflow.configuration.CopyFrom(workflow_config_proto)
+
+        execution_scheduled, err = create_workflow_execution_util(account, workflow, current_time_utc,
+                                                                  workflow_run_uuid, user.email, None)
         if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Failed to Schedule Workflow Execution",
@@ -272,8 +271,6 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         uuid_str = uuid.uuid4().hex
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
         workflow: Workflow = account_workflow.proto_partial
-        schedule = workflow.schedule
-        schedule_type = account_workflow.schedule_type
         workflow_config = proto_to_dict(workflow.configuration)
 
         requested_config = proto_to_dict(request_message.workflow_configuration)
@@ -287,9 +284,10 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                     workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
-        execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
-                                                                  schedule, current_time_utc, workflow_run_uuid,
-                                                                  user.email, None, workflow_config_proto)
+        workflow.configuration.CopyFrom(workflow_config_proto)
+
+        execution_scheduled, err = create_workflow_execution_util(account, workflow, current_time_utc,
+                                                                  workflow_run_uuid, user.email, None)
         if err:
             return HttpResponse(json.dumps(
                 {'success': False, 'error_message': f'Failed to schedule workflow execution'}),

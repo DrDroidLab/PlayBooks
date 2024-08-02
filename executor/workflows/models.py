@@ -217,14 +217,19 @@ class WorkflowExecution(models.Model):
 
     metadata = models.JSONField(null=True, blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
     scheduled_at = models.DateTimeField(db_index=True)
     expiry_at = models.DateTimeField(blank=True, null=True, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    keep_alive = models.BooleanField(default=False)
+
     started_at = models.DateTimeField(blank=True, null=True, db_index=True)
     finished_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    latest_scheduled_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    total_executions = models.IntegerField(default=0)
 
     time_range = models.JSONField(null=True, blank=True)
-    workflow_execution_configuration = models.JSONField(null=True, blank=True)
+    execution_configuration = models.JSONField(null=True, blank=True)
     created_by = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -233,8 +238,8 @@ class WorkflowExecution(models.Model):
     @property
     def proto_max(self) -> WorkflowExecutionProto:
         execution_configuration = WorkflowConfigurationProto()
-        if self.workflow_execution_configuration:
-            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+        if self.execution_configuration:
+            execution_configuration = dict_to_proto(self.execution_configuration, WorkflowConfigurationProto)
 
         metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
         if self.metadata:
@@ -259,14 +264,19 @@ class WorkflowExecution(models.Model):
             workflow_logs=wf_logs,
             execution_configuration=execution_configuration,
             metadata=metadata,
-            time_range=time_range_proto
+            time_range=time_range_proto,
+            keep_alive=BoolValue(value=self.keep_alive) if self.keep_alive else BoolValue(value=False),
+            latest_scheduled_at=int(
+                self.latest_scheduled_at.replace(tzinfo=timezone.utc).timestamp()) if self.latest_scheduled_at else 0,
+            total_executions=UInt64Value(value=self.total_executions)
+
         )
 
     @property
     def proto(self) -> WorkflowExecutionProto:
         execution_configuration = WorkflowConfigurationProto()
-        if self.workflow_execution_configuration:
-            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+        if self.execution_configuration:
+            execution_configuration = dict_to_proto(self.execution_configuration, WorkflowConfigurationProto)
 
         metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
         if self.metadata:
@@ -291,14 +301,18 @@ class WorkflowExecution(models.Model):
             workflow_logs=wf_logs,
             execution_configuration=execution_configuration,
             metadata=metadata,
-            time_range=time_range_proto
+            time_range=time_range_proto,
+            keep_alive=BoolValue(value=self.keep_alive) if self.keep_alive else BoolValue(value=False),
+            latest_scheduled_at=int(
+                self.latest_scheduled_at.replace(tzinfo=timezone.utc).timestamp()) if self.latest_scheduled_at else 0,
+            total_executions=UInt64Value(value=self.total_executions)
         )
 
     @property
     def proto_partial(self) -> WorkflowExecutionProto:
         execution_configuration = WorkflowConfigurationProto()
-        if self.workflow_execution_configuration:
-            execution_configuration = dict_to_proto(self.workflow_execution_configuration, WorkflowConfigurationProto)
+        if self.execution_configuration:
+            execution_configuration = dict_to_proto(self.execution_configuration, WorkflowConfigurationProto)
 
         metadata = WorkflowExecutionProto.WorkflowExecutionMetadata()
         if self.metadata:
@@ -320,7 +334,11 @@ class WorkflowExecution(models.Model):
             created_by=StringValue(value=self.created_by) if self.created_by else None,
             execution_configuration=execution_configuration,
             metadata=metadata,
-            time_range=time_range_proto
+            time_range=time_range_proto,
+            keep_alive=BoolValue(value=self.keep_alive) if self.keep_alive else BoolValue(value=False),
+            latest_scheduled_at=int(
+                self.latest_scheduled_at.replace(tzinfo=timezone.utc).timestamp()) if self.latest_scheduled_at else 0,
+            total_executions=UInt64Value(value=self.total_executions)
         )
 
 
@@ -337,12 +355,13 @@ class WorkflowExecutionLog(models.Model):
         return WorkflowExecutionLogProto(
             id=UInt64Value(value=self.id),
             playbook_execution=playbook_execution_proto,
-            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
         )
 
     @property
     def proto_partial(self) -> WorkflowExecutionLogProto:
         return WorkflowExecutionLogProto(
             id=UInt64Value(value=self.id),
-            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp())
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
+            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()) if self.scheduled_at else 0
         )

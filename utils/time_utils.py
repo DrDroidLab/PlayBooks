@@ -26,35 +26,28 @@ def current_datetime(timezone=pytz.utc):
     return datetime.now(timezone)
 
 
-def calculate_interval_times(interval_in_seconds, start_time=None, end_time=None):
+def calculate_next_interval_time(interval_in_seconds, start_time=None, latest_time=None):
     if start_time is None:
         start_time = current_datetime()
 
-    if end_time is None:
-        end_time = start_time + timedelta(days=1)
-
-    interval_times = []
-    current_time = start_time
-    while current_time <= end_time:
-        interval_times.append(current_time)
-        current_time = current_time + timedelta(seconds=interval_in_seconds)
-    return interval_times
+    if not latest_time:
+        return start_time
+    next_interval_time = start_time + timedelta(seconds=interval_in_seconds)
+    return next_interval_time
 
 
-def calculate_cron_times(rule, start_time=None, end_time=None):
+def calculate_next_cron_time(rule, start_time=None, latest_time=None):
     if start_time is None:
         start_time = current_datetime()
-    if end_time is None:
-        end_time = start_time + timedelta(days=1)
+
     cron = croniter.croniter(rule, start_time)
-
-    cron_times = []
-    current_time = start_time
-    while current_time <= end_time:
-        cron_times.append(current_time)
-        next_cron = cron.get_next(datetime)
-        current_time = next_cron
-    return cron_times
+    if not latest_time:
+        next_cron_time = cron.get_next(datetime)
+    else:
+        next_cron_time = start_time
+        while next_cron_time < latest_time:
+            next_cron_time = cron.get_next(datetime)
+    return next_cron_time
 
 
 def epoch_to_string(input_time):

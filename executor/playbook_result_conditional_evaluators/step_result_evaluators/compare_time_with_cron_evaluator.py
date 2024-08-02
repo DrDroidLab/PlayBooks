@@ -3,7 +3,7 @@ from executor.playbook_result_conditional_evaluators.step_result_evaluators.step
 from protos.base_pb2 import Operator
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionLog
 from protos.playbooks.playbook_step_result_evaluator_pb2 import PlaybookStepResultRule, CompareTimeWithCronRule
-from utils.time_utils import calculate_cron_times, current_datetime
+from utils.time_utils import calculate_next_cron_time, current_datetime
 
 
 class CompareTimeWithCronEvaluator(StepResultEvaluator):
@@ -18,7 +18,7 @@ class CompareTimeWithCronEvaluator(StepResultEvaluator):
         timezone = compare_with_cron_rule.timezone.value
         within_seconds = compare_with_cron_rule.within_seconds
 
-        cron_schedules = calculate_cron_times(cron_rule)
+        cron_schedules = calculate_next_cron_time(cron_rule)
         if not cron_schedules or len(cron_schedules) == 0:
             return False
 

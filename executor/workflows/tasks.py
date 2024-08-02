@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta, datetime, timezone
 import uuid
+from struct import Struct
 
 from celery import shared_task
 from django.conf import settings
@@ -15,15 +16,15 @@ from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.action.smtp_email_executor import generate_email_body
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log, \
-    update_db_account_workflow_execution_metadata
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
+from executor.workflows.crud.workflow_execution_utils import get_next_workflow_execution, WorkflowExpiredException
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from intelligence_layer.result_interpreters.result_interpreter_facade import playbook_step_execution_result_interpret
 from management.crud.task_crud import get_or_create_task
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
-from protos.playbooks.playbook_pb2 import PlaybookExecution
+from protos.playbooks.playbook_pb2 import PlaybookExecution, Playbook
 from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from utils.time_utils import current_datetime, current_epoch_timestamp, epoch_to_string
 from protos.base_pb2 import TimeRange, SourceKeyType
@@ -31,7 +32,7 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation a
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, \
     WorkflowExecution as WorkflowExecutionProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowEntryPoint as WorkflowEntryPointProto
+    WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowConfiguration
 from protos.base_pb2 import Source
 from google.protobuf.wrappers_pb2 import StringValue
 
@@ -72,85 +73,81 @@ def get_action_type_text(action):
 def workflow_scheduler():
     current_time_utc = current_datetime()
     current_time = int(current_time_utc.timestamp())
-    all_scheduled_wf_executions = get_workflow_executions(status=WorkflowExecutionStatusType.WORKFLOW_SCHEDULED)
-    for wf_execution in all_scheduled_wf_executions:
-        wf_execution_proto: WorkflowExecutionProto = wf_execution.proto_partial
-        workflow_id = wf_execution_proto.workflow.id.value
-        execution_configuration: WorkflowConfigurationProto = wf_execution_proto.execution_configuration
-        execution_metadata: WorkflowExecutionProto.WorkflowExecutionMetadata = wf_execution_proto.metadata
-        event_context = None
-        if execution_metadata and execution_metadata is not None:
-            if execution_metadata.type in [WorkflowExecutionProto.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
-                                           WorkflowExecutionProto.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT]:
-                event = execution_metadata.event
-                if event and execution_configuration.transformer_lambda_function and 'transformer_lambda_function' in wf_execution.workflow_execution_configuration.keys():
-                    event_dict = proto_to_dict(event)
-                    transformer_lambda_function_proto: Lambda.Function = execution_configuration.transformer_lambda_function
-                    lambda_function_processor = LambdaFunctionProcessor(
-                        transformer_lambda_function_proto.definition.value,
-                        transformer_lambda_function_proto.requirements)
-                    event_context = lambda_function_processor.execute(event_dict)
-                    if event_context and isinstance(event_context, dict):
-                        workflow_execution_metadata = proto_to_dict(execution_metadata)
-                        workflow_execution_metadata['event_context'] = event_context
-                        update_db_account_workflow_execution_metadata(wf_execution.account, wf_execution.id,
-                                                                      workflow_execution_metadata)
-        logger.info(f"Scheduling workflow execution:: workflow_execution_id: {wf_execution.id}, workflow_id: "
+
+    all_scheduled_running_wf_executions = get_workflow_executions(
+        status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED, WorkflowExecutionStatusType.WORKFLOW_RUNNING]
+    )
+
+    for db_wfe in all_scheduled_running_wf_executions:
+        account = db_wfe.account
+        wf_execution: WorkflowExecutionProto = db_wfe.proto_max
+
+        workflow_id = wf_execution.workflow.id.value
+        logger.info(f"Scheduling Execution:: workflow_run_id: {wf_execution.workflow_run_id.value}, workflow_id: "
                     f"{workflow_id} at {current_time}")
-        account = wf_execution.account
-        if wf_execution_proto.status == WorkflowExecutionStatusType.WORKFLOW_CANCELLED:
-            logger.info(f"Workflow execution cancelled for workflow_execution_id: {wf_execution.id}, workflow_id: "
-                        f"{workflow_id} at {current_time}")
-            continue
 
-        scheduled_at = datetime.fromtimestamp(float(wf_execution_proto.scheduled_at))
-        scheduled_at = scheduled_at.replace(tzinfo=timezone.utc)
-        if current_time_utc < scheduled_at:
-            logger.info(
-                f"Workflow execution not scheduled yet for workflow_execution_id: {wf_execution_proto.id.value}, "
-                f"workflow_id: {workflow_id} at {current_time}")
-            continue
-
-        expiry_at = datetime.fromtimestamp(float(wf_execution_proto.expiry_at))
-        expiry_at = expiry_at.replace(tzinfo=timezone.utc)
-        if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
-            logger.info(f"Workflow execution expired for workflow_execution_id: {wf_execution_proto.id.value}, "
+        if wf_execution.status in [WorkflowExecutionStatusType.WORKFLOW_CANCELLED,
+                                   WorkflowExecutionStatusType.WORKFLOW_FAILED,
+                                   WorkflowExecutionStatusType.WORKFLOW_FINISHED]:
+            logger.info(f"Execution terminated for workflow_run_id: {wf_execution.workflow_run_id.value}, "
                         f"workflow_id: {workflow_id} at {current_time}")
-            update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
-                                                        WorkflowExecutionStatusType.WORKFLOW_FINISHED)
             continue
 
-        update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
+        scheduled_at = datetime.fromtimestamp(float(wf_execution.scheduled_at))
+        scheduled_at = scheduled_at.replace(tzinfo=timezone.utc)
+
+        latest_scheduled_at = datetime.fromtimestamp(float(wf_execution.latest_scheduled_at))
+        latest_scheduled_at = latest_scheduled_at.replace(tzinfo=timezone.utc)
+        if current_time_utc < latest_scheduled_at:
+            logger.info(
+                f"Execution not yet scheduled for workflow_run_id: {wf_execution.workflow_run_id.value}, "
+                f"workflow_id: {workflow_id} at {current_time_utc}")
+            continue
+
+        wfe_expiry_at = wf_execution.expiry_at if wf_execution.expiry_at else 0
+        wfe_keep_alive = wf_execution.keep_alive.value if wf_execution.keep_alive else False
+        if wfe_keep_alive and wfe_expiry_at:
+            expiry_at = datetime.fromtimestamp(float(wf_execution.expiry_at))
+            expiry_at = expiry_at.replace(tzinfo=timezone.utc)
+            if current_time_utc > expiry_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL)):
+                logger.info(f"Execution expired for workflow_run_id: {wf_execution.workflow_run_id.value}, "
+                            f"workflow_id: {workflow_id} at {current_time}")
+                update_db_account_workflow_execution_status(account, wf_execution.id.value,
+                                                            WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+                continue
+
+        update_db_account_workflow_execution_status(account, wf_execution.id.value,
                                                     WorkflowExecutionStatusType.WORKFLOW_RUNNING)
-        all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
+        all_pbs: [Playbook] = wf_execution.workflow.playbooks
+        execution_configuration: WorkflowConfiguration = wf_execution.execution_configuration
+        execution_metadata: WorkflowExecutionProto.WorkflowExecutionMetadata = wf_execution.metadata
         for pb in all_pbs:
-            pb_id = pb.id
-            default_global_variable_set = pb.global_variable_set if pb.global_variable_set else {}
+            pb_id = pb.id.value
+            execution_global_variable_set = pb.global_variable_set
             try:
                 uuid_str = uuid.uuid4().hex
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
-                time_range = proto_to_dict(wf_execution_proto.time_range)
-                execution_global_variable_set = default_global_variable_set
-                if execution_configuration and \
-                        execution_configuration.global_variable_set is not None and \
-                        execution_configuration.global_variable_set.items():
-                    execution_global_variable_set.update(proto_to_dict(execution_configuration.global_variable_set))
-                if event_context and isinstance(event_context, dict):
-                    event_context = {f"${k}" if not k.startswith("$") else k: v for k, v in event_context.items()}
-                    execution_global_variable_set.update(event_context)
-                playbook_execution = create_playbook_execution(account, wf_execution_proto.time_range, pb_id,
-                                                               playbook_run_uuid, wf_execution_proto.created_by.value,
-                                                               execution_global_variable_set)
+                time_range = proto_to_dict(wf_execution.time_range)
+                if execution_configuration.global_variable_set.items():
+                    execution_global_variable_set.update(execution_configuration.global_variable_set)
+
+                if execution_metadata.event_context.items():
+                    execution_global_variable_set.update(execution_metadata.event_context)
+
+                playbook_execution = create_playbook_execution(account, wf_execution.time_range, pb_id,
+                                                               playbook_run_uuid, wf_execution.created_by.value,
+                                                               proto_to_dict(execution_global_variable_set))
+
                 workflow_execution_configuration = proto_to_dict(execution_configuration)
-                saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, wf_execution.id,
+                saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, db_wfe.id,
                                                 pb_id, playbook_execution.id, time_range,
                                                 workflow_execution_configuration)
                 if not saved_task:
                     logger.error(f"Failed to create workflow execution task for account: {account.id}, workflow_id: "
-                                 f"{workflow_id}, workflow_execution_id: {wf_execution.id}, playbook_id: {pb_id}")
+                                 f"{workflow_id}, workflow_execution_id: {db_wfe.id}, playbook_id: {pb_id}")
                     continue
                 logger.info("workflow_execution_configuration in scheduler", workflow_execution_configuration)
-                task = workflow_executor.delay(account.id, workflow_id, wf_execution_proto.id.value, pb_id,
+                task = workflow_executor.delay(account.id, workflow_id, wf_execution.id.value, pb_id,
                                                playbook_execution.id, time_range, workflow_execution_configuration)
                 task_run = TaskRun.objects.create(task=saved_task, task_uuid=task.id,
                                                   status=PeriodicTaskStatus.SCHEDULED,
@@ -158,13 +155,21 @@ def workflow_scheduler():
                                                   scheduled_at=datetime.fromtimestamp(float(current_time)))
             except Exception as e:
                 logger.error(f"Failed to create playbook execution:: workflow_id: {workflow_id}, workflow_execution_id:"
-                             f" {wf_execution.id} playbook_id: {pb_id}, error: {e}")
-                update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+                             f" {db_wfe.id} playbook_id: {pb_id}, error: {e}")
+                update_db_account_workflow_execution_status(account, db_wfe.id,
                                                             WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
-            update_db_account_workflow_execution_status(account, wf_execution.id, scheduled_at,
+        try:
+            latest_scheduled_at = get_next_workflow_execution(wf_execution.workflow.schedule, scheduled_at,
+                                                              latest_scheduled_at)
+
+        except WorkflowExpiredException as e:
+            logger.error(f"Execution expired: {e} for workflow: {workflow_id}")
+            update_db_account_workflow_execution_status(account, db_wfe.id,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
-            continue
+        except Exception as e:
+            logger.error(f"Error in calculating next Execution: {e} for workflow: {workflow_id}")
+            update_db_account_workflow_execution_status(account, db_wfe.id, WorkflowExecutionStatusType.WORKFLOW_FAILED)
 
 
 workflow_scheduler_prerun_notifier = publish_pre_run_task(workflow_scheduler)
