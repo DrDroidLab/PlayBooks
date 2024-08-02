@@ -59,6 +59,7 @@ export const Key = {
   TO: "to",
   SUBJECT: "subject",
   BODY: "body",
+  CHANNEL: "channel"
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
