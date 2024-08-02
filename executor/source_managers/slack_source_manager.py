@@ -39,7 +39,7 @@ class SlackSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Message"),
                               description=StringValue(value='Enter Message'),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT_FT),
+                              form_field_type=FormFieldType.MULTILINE_FT),
                 ]
             },
             # SlackTaskProto.TaskType.SEND_THREAD_REPLY: {

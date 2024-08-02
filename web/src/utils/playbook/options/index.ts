@@ -10,3 +10,4 @@ export * from "./bashCommand.ts";
 export * from "./elasticSearchQueryLogs.ts";
 export * from "./nrGoldenMetrics.ts";
 export * from "./nrDashboard.ts";
+export * from "./slackSendMessage.ts"

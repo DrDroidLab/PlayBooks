@@ -19,6 +19,7 @@ export const taskTypeOptionMappings = {
   [taskTypes.GKE_GET_PODS]: Options.gke,
   [taskTypes.GKE_GET_SERVICES]: Options.gke,
   [taskTypes.GKE_KUBECTL_COMMAND]: Options.gke,
+  [taskTypes.SLACK_SEND_MESSAGE]: Options.slackSendMessage,
   [taskTypes.GRAFANA_PROMETHEUS_DATASOURCE]:
     Options.grafanaPrometheusDatasource,
   [taskTypes.NEW_RELIC_ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION]:
