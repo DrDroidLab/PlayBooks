@@ -3,6 +3,7 @@ import { dynamicAlertSelector } from "../../../store/features/dynamicAlerts/sele
 import { currentPlaybookSelector } from "../../../store/features/playbook/selectors";
 import { Playbook } from "../../../types";
 import { DynamicAlertType } from "../../../types";
+import { TimezoneTypes } from "../../workflow/types";
 
 export const stateToDynamicAlert = () => {
   const dynamicAlert: DynamicAlertType = dynamicAlertSelector(store.getState());
@@ -14,11 +15,20 @@ export const stateToDynamicAlert = () => {
     name: dynamicAlert.name,
     type: "DYNAMIC_ALERT",
     schedule: {
-      type: "ONE_OFF",
-      one_off: {},
+      type: "CRON",
+      cron: {
+        keep_alive: true,
+        rule: "* * 5 *",
+        timezone: TimezoneTypes.UTC,
+      },
     },
     playbooks: [playbook],
-    entry_points: [],
+    entry_points: [
+      {
+        type: "API",
+        api: {},
+      },
+    ],
     actions: [],
     configuration: {},
   };
