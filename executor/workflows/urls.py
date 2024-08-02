@@ -14,7 +14,9 @@ urlpatterns = [
     path('execute', workflow_views.workflows_execute),
     path('executions/list', workflow_views.workflows_execution_list),
     path('executions/get/all', workflow_views.workflows_execution_get_all),
+    path('executions/get/all/logs', workflow_views.workflows_execution_get_all_logs),
     path('executions/get', workflow_views.workflows_execution_get),
+    path('executions/terminate', workflow_views.workflows_terminate),
 
     # API based executions
     path(settings.WORKFLOW_EXECUTE_API_PATH, workflow_views.workflows_api_execute),

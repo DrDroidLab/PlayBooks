@@ -360,8 +360,9 @@ class WorkflowExecutionLog(models.Model):
 
     @property
     def proto_partial(self) -> WorkflowExecutionLogProto:
+        playbook_execution_proto = self.playbook_execution.proto_partial
         return WorkflowExecutionLogProto(
             id=UInt64Value(value=self.id),
+            playbook_execution=playbook_execution_proto,
             created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()),
-            scheduled_at=int(self.scheduled_at.replace(tzinfo=timezone.utc).timestamp()) if self.scheduled_at else 0
         )

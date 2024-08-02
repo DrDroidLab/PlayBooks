@@ -14,7 +14,8 @@ from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
-from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
+    update_db_account_workflow_execution_status
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
@@ -30,7 +31,9 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
-    ExecutionsWorkflowsGetAllResponse, TestWorkflowTransformerRequest, TestWorkflowTransformerResponse
+    ExecutionsWorkflowsGetAllResponse, TestWorkflowTransformerRequest, TestWorkflowTransformerResponse, \
+    TerminateWorkflowExecutionRequest, TerminateWorkflowExecutionResponse, ExecutionsWorkflowsGetAllLogsRequest, \
+    ExecutionsWorkflowsGetAllLogsResponse
 from protos.playbooks.workflow_pb2 import Workflow, WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -153,6 +156,33 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
                                        message=Message(title="Error", description=str(e)))
 
 
+@web_api(TerminateWorkflowExecutionRequest)
+def workflows_terminate(request_message: TerminateWorkflowExecutionRequest) -> \
+        Union[TerminateWorkflowExecutionResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                  message=Message(title="Invalid Request",
+                                                                  description="Missing workflow_run_id"))
+    try:
+        db_wfe = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not db_wfe:
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                      message=Message(title="Error",
+                                                                      description="Workflow Execution not found"))
+        db_wfe = db_wfe.first()
+        if db_wfe.created_by != user.email:
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                      message=Message(title="Error", description="Unauthorized"))
+        update_db_account_workflow_execution_status(account, db_wfe.id, WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+        return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
+    except Exception as e:
+        return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                  message=Message(title="Error", description=str(e)))
+
+
 @web_api(ExecutionsWorkflowsListRequest)
 def workflows_execution_list(request_message: ExecutionsWorkflowsListRequest) -> \
         Union[ExecutionsWorkflowsListResponse, HttpResponse]:
@@ -218,6 +248,36 @@ def workflows_execution_get_all(request_message: ExecutionsWorkflowsGetAllReques
 
     we_protos = [we.proto for we in workflow_execution]
     return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=True), workflow_executions=we_protos)
+
+
+@web_api(ExecutionsWorkflowsGetAllLogsRequest)
+def workflows_execution_get_all_logs(request_message: ExecutionsWorkflowsGetAllLogsRequest) -> \
+        Union[ExecutionsWorkflowsGetAllLogsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    page: Page = meta.page
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionsWorkflowsGetAllLogsResponse(success=BoolValue(value=False),
+                                                     message=Message(title="Invalid Request",
+                                                                     description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionsWorkflowsGetAllLogsResponse(success=BoolValue(value=False),
+                                                         message=Message(title="Error",
+                                                                         description="Workflow Executions not found"))
+        workflow_execution = workflow_execution.first()
+        workflow_execution_logs = workflow_execution.workflowexecutionlog_set.all().order_by('-created_at')
+        total_count = workflow_execution_logs.count()
+        workflow_execution_logs = filter_page(workflow_execution_logs, page)
+    except Exception as e:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Error", description=str(e)))
+
+    wel_protos = [wel.proto_partial for wel in workflow_execution_logs]
+    return ExecutionsWorkflowsGetAllLogsResponse(meta=get_meta(page=page, total_count=total_count),
+                                                 success=BoolValue(value=True), workflow_execution_logs=wel_protos)
 
 
 @web_api(ExecutionWorkflowGetRequest)
