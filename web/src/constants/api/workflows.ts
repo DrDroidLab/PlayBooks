@@ -15,3 +15,6 @@ export const GENERATE_WEBHOOK =
   "/connectors/handlers/pagerduty/generate/webhook";
 
 export const TEST_TRANSFORMER = "/executor/workflows/test_transformer";
+export const EXECUTE_WORKFLOW = "/executor/workflows/execute";
+export const STOP_WORKFLOW_EXECUTION =
+  "/executor/workflows/executions/terminate";

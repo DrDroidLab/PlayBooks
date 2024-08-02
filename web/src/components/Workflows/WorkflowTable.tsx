@@ -4,39 +4,14 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import NoExistingPlaybook from "./NoExistingWorkflow.js";
-import { Delete, Edit, History } from "@mui/icons-material";
-import WorkflowActionOverlay from "./WorkflowActionOverlay.js";
-import { useState } from "react";
 import { renderTimestamp } from "../../utils/common/dateUtils.ts";
 import { handleStatus } from "../../utils/common/handleStatus.tsx";
-import useToggle from "../../hooks/common/useToggle.ts";
+import WorkflowActions from "./WorkflowActions.tsx";
 
 const WorkflowTable = ({ data, refreshTable }) => {
-  const navigate = useNavigate();
-  const { isOpen: isActionOpen, toggle } = useToggle();
-  const [selectedWorkflow, setSelectedWorkflow] = useState({});
-
-  const handleDeleteWorkflow = (item) => {
-    setSelectedWorkflow(item);
-    toggle();
-  };
-
-  const handleEditWorkflow = (id) => {
-    navigate(`/workflows/${id}`);
-  };
-
-  const handleExecutionHistory = (id) => {
-    navigate(`/workflows/executions/${id}`);
-  };
-
-  // const navigateToPlaybook = (id) => {
-  //   navigate(`/playbooks/${id}`);
-  // };
-
   return (
     <>
       <Table stickyHeader>
@@ -107,41 +82,13 @@ const WorkflowTable = ({ data, refreshTable }) => {
                 {item.created_by}
               </TableCell>
               <TableCell component="td" scope="row">
-                <div className="flex gap-2">
-                  <button
-                    className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
-                    onClick={() => handleEditWorkflow(item.id)}>
-                    <Tooltip title="Edit this Workflow">
-                      <Edit />
-                    </Tooltip>
-                  </button>
-                  <button
-                    className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
-                    onClick={() => handleDeleteWorkflow(item)}>
-                    <Tooltip title="Remove this Workflow">
-                      <Delete />
-                    </Tooltip>
-                  </button>
-                  <button
-                    className="rounded border border-violet-500 text-violet-500 hover:text-white hover:bg-violet-500 transition-all p-1"
-                    onClick={() => handleExecutionHistory(item.id)}>
-                    <Tooltip title="View execution history">
-                      <History />
-                    </Tooltip>
-                  </button>
-                </div>
+                <WorkflowActions item={item} refreshTable={refreshTable} />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {!data?.length ? <NoExistingPlaybook /> : null}
-      <WorkflowActionOverlay
-        workflow={selectedWorkflow}
-        isOpen={isActionOpen}
-        toggleOverlay={toggle}
-        refreshTable={refreshTable}
-      />
     </>
   );
 };
