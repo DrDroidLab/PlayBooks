@@ -13,7 +13,7 @@ function AddStepCondition() {
 
   return (
     <div className="p-2">
-      <h1 className="text-violet-500 font-semibold text-lg flex justify-between my-2">
+      <h1 className="text-violet-500 font-semibold text-xs flex justify-between my-2">
         <span>Add Step Condition</span>
       </h1>
       <hr />
@@ -24,9 +24,7 @@ function AddStepCondition() {
 
       {!isPrefetched && (
         <>
-          <CustomButton
-            className="!text-sm !w-fit my-2"
-            onClick={addNewStepRule}>
+          <CustomButton className="!w-fit my-2" onClick={addNewStepRule}>
             <Add fontSize="inherit" /> Add
           </CustomButton>
         </>
