@@ -34,7 +34,7 @@ class SlackSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Channel"),
                               description=StringValue(value="Select Slack Channel"),
                               data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TEXT_FT),
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="text"),
                               display_name=StringValue(value="Message"),
                               description=StringValue(value='Enter Message'),
