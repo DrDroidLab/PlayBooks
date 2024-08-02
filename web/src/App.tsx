@@ -7,7 +7,6 @@ import Loading from "./components/common/Loading";
 import {
   generateNoLayoutRoutes,
   generateOtherRoutes,
-  generateUnauthRoutes,
 } from "./generateRoutes";
 import useDefaultPage from "./hooks/useDefaultPage";
 
@@ -21,13 +20,8 @@ const App = () => {
 
   return (
     <Routes>
-      {generateUnauthRoutes()}
-
-      <Route element={<RequireAuth />}>{generateNoLayoutRoutes()}</Route>
-
-      <Route element={<RequireAuth />}>
-        <Route element={<Layout />}>{generateOtherRoutes()}</Route>
-      </Route>
+      {generateNoLayoutRoutes()}
+      <Route element={<Layout />}>{generateOtherRoutes()}</Route>
     </Routes>
   );
 };
