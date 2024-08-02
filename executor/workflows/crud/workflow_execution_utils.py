@@ -74,6 +74,7 @@ def get_next_workflow_execution(schedule: WorkflowSchedule, scheduled_at, last_s
             raise WorkflowExpiredException(f"Next Scheduled At is greater than Workflow Expiry time for workflow")
     elif schedule.type == WorkflowSchedule.Type.ONE_OFF:
         latest_scheduled_at = scheduled_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL))
+        expiry_at = latest_scheduled_at
     else:
         raise ValueError(f'Received invalid Schedule Type for workflow')
     return latest_scheduled_at, expiry_at, keep_alive
