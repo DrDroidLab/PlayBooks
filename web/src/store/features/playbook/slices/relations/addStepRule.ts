@@ -14,8 +14,9 @@ export const addStepRule = (
   const relation = state.currentPlaybook?.step_relations.find(
     (e) => e.id === id,
   );
-  if (!relation) return;
-  relation.condition?.step_rules.push({
+  if (!relation || !relation.condition) return;
+  if (!relation.condition.step_rules) relation.condition.step_rules = [];
+  relation.condition.step_rules.push({
     type: StepRuleTypes.COMPARE_TIME_WITH_CRON,
     [StepRuleTypes.COMPARE_TIME_WITH_CRON]: {
       operator: OperatorOptions.GREATER_THAN_EQUAL_O,

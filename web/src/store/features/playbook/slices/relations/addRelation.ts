@@ -32,6 +32,7 @@ export const addRelation = (
     condition: {
       logical_operator: LogicalOperator.AND_LO,
       rules: [],
+      step_rules: [],
     },
     ui_requirement: {},
   };
