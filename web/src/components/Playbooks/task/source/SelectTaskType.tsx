@@ -34,6 +34,11 @@ function SelectTaskType({ id }) {
       currentTaskType.result_type,
       currentId,
     );
+    updateCardById(
+      "ui_requirement.model_type",
+      currentTaskType.supported_model_types?.[0]?.model_type ?? task?.source,
+      currentId,
+    );
     if (!task?.ui_requirement?.userEnteredDescription)
       updateCardById("description", val.type.display_name, currentId);
   }
