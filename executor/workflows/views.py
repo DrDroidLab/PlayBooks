@@ -8,7 +8,7 @@ import traceback
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest
 from google.protobuf.struct_pb2 import Struct
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue

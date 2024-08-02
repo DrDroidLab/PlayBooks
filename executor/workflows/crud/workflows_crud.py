@@ -48,10 +48,16 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     wf_schedule_type = wf_schedule_proto.type
     if wf_schedule_type == WorkflowScheduleProto.Type.UNKNOWN:
         return None, 'Invalid Schedule Type'
-    if wf_schedule_type == WorkflowScheduleProto.Type.INTERVAL and not wf_schedule_proto.interval.duration_in_seconds.value:
-        return None, 'Invalid Periodic Schedule'
+    if wf_schedule_type == WorkflowScheduleProto.Type.INTERVAL:
+        if wf_schedule_proto.interval.keep_alive.value and wf_schedule_proto.interval.duration_in_seconds.value:
+            return None, 'Invalid Interval Schedule'
+        if not wf_schedule_proto.interval.duration_in_seconds.value:
+            wf_schedule_proto.interval.keep_alive.value = True
     elif wf_schedule_type == WorkflowScheduleProto.Type.CRON and not wf_schedule_proto.cron.duration_in_seconds.value:
-        return None, 'Invalid Cron Schedule'
+        if wf_schedule_proto.cron.keep_alive.value and wf_schedule_proto.cron.duration_in_seconds.value:
+            return None, 'Invalid Cron Schedule'
+        if not wf_schedule_proto.cron.duration_in_seconds.value:
+            wf_schedule_proto.cron.keep_alive.value = True
 
     wf_schedule = proto_to_dict(wf_schedule_proto)
     wf_configuration = proto_to_dict(workflow_proto.configuration)
@@ -63,7 +69,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids, is_active=True)
     if update_mode and db_playbooks.count() != len(playbook_ids):
         return None, 'Invalid Playbooks in Workflow Config'
-    else:
+    elif not update_mode:
         try:
             db_playbooks = []
             for pb in db_playbooks:
