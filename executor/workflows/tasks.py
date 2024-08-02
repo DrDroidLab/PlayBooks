@@ -161,8 +161,8 @@ def workflow_scheduler():
                                                             WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
         try:
-            latest_scheduled_at = get_next_workflow_execution(wf_execution.workflow.schedule, scheduled_at,
-                                                              latest_scheduled_at)
+            latest_scheduled_at, _, _ = get_next_workflow_execution(wf_execution.workflow.schedule, scheduled_at,
+                                                                    latest_scheduled_at)
             update_db_account_workflow_execution_latest_scheduled_at(account, wf_execution.id.value,
                                                                      latest_scheduled_at)
         except WorkflowExpiredException as e:
