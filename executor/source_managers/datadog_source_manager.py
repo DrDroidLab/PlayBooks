@@ -9,7 +9,7 @@ from protos.literal_pb2 import LiteralType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TimeseriesResult, LabelValuePair, \
     PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.datadog_task_pb2 import Datadog
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class DatadogSourceManager(PlaybookSourceManager):
@@ -28,19 +28,23 @@ class DatadogSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="service_name"),
                               display_name=StringValue(value="Service"),
                               description=StringValue(value='Select Service'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="environment_name"),
                               display_name=StringValue(value="Environment"),
                               description=StringValue(value='Select Environment'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="metric_family"),
                               display_name=StringValue(value="Metric Family"),
                               description=StringValue(value='Select Metric Family'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="metric"),
                               display_name=StringValue(value="Metric"),
                               description=StringValue(value='Select Metric'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_MULTIPLE_FT),
                 ]
             },
             Datadog.TaskType.QUERY_METRIC_EXECUTION: {
@@ -54,12 +58,14 @@ class DatadogSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Queries"),
                               description=StringValue(value='Enter Queries'),
                               data_type=LiteralType.STRING_ARRAY,
-                              max_length_allowed=UInt64Value(value=2)),
+                              max_length_allowed=UInt64Value(value=2),
+                              form_field_type=FormFieldType.STRING_ARRAY_FT),
                     FormField(key_name=StringValue(value="formula"),
                               display_name=StringValue(value="Formula"),
                               description=StringValue(value='Select Formula'),
                               data_type=LiteralType.STRING,
-                              is_optional=True),
+                              is_optional=True,
+                              form_field_type=FormFieldType.TEXT_FT),
                 ]
             },
         }
@@ -80,6 +86,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             service_name = task.service_name.value
             env_name = task.environment_name.value
             metric = task.metric.value
+            timeseries_offsets = task.timeseries_offsets
             query_tags = f"service:{service_name},env:{env_name}"
             metric_query = f'avg:{metric}{{{query_tags}}}'
             specific_metric = {"queries": [
@@ -94,14 +101,14 @@ class DatadogSourceManager(PlaybookSourceManager):
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Time Range -> {}, Query -> {}".format(
                 "Datadog", datadog_connector.account_id.value, time_range, metric_query), flush=True)
 
-            results = dd_api_processor.fetch_metric_timeseries(time_range, specific_metric)
-            if not results:
-                raise Exception("No data returned from Datadog")
-
-            process_function = task.process_function.value
             labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
 
-            for itr, item in enumerate(results.series.value):
+            # Get current time values
+            current_results = dd_api_processor.fetch_metric_timeseries(time_range, specific_metric)
+            if not current_results:
+                raise Exception("No data returned from Datadog for current time range")
+
+            for itr, item in enumerate(current_results.series.value):
                 group_tags = item.group_tags.value
                 metric_labels: [LabelValuePair] = []
                 if item.unit:
@@ -112,8 +119,12 @@ class DatadogSourceManager(PlaybookSourceManager):
                     metric_labels.append(
                         LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
-                times = results.times.value
-                values = results.values.value[itr].value
+                metric_labels.append(
+                    LabelValuePair(name=StringValue(value='offset_seconds'), value=StringValue(value='0'))
+                )
+
+                times = current_results.times.value
+                values = current_results.values.value[itr].value
                 datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
                 for it, val in enumerate(values):
                     datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
@@ -123,6 +134,49 @@ class DatadogSourceManager(PlaybookSourceManager):
                 labeled_metric_timeseries.append(
                     TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
                                                              unit=StringValue(value=unit), datapoints=datapoints))
+
+            # Get offset values if specified
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
+                for offset in offsets:
+                    adjusted_start_time = TimeRange(
+                        time_geq=time_range.time_geq - offset,
+                        time_lt=time_range.time_lt - offset
+                    )
+                    offset_results = dd_api_processor.fetch_metric_timeseries(adjusted_start_time, specific_metric)
+                    if not offset_results:
+                        print(f"No data returned from Datadog for offset {offset} seconds")
+                        continue
+
+                    for itr, item in enumerate(offset_results.series.value):
+                        group_tags = item.group_tags.value
+                        metric_labels: [LabelValuePair] = []
+                        if item.unit:
+                            unit = item.unit[0].name
+                        else:
+                            unit = ''
+                        for gt in group_tags:
+                            metric_labels.append(
+                                LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
+
+                        metric_labels.append(
+                            LabelValuePair(name=StringValue(value='offset_seconds'),
+                                           value=StringValue(value=str(offset)))
+                        )
+
+                        times = offset_results.times.value
+                        values = offset_results.values.value[itr].value
+                        datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                        for it, val in enumerate(values):
+                            datapoints.append(
+                                TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                   value=DoubleValue(
+                                                                                       value=val)))
+
+                        labeled_metric_timeseries.append(
+                            TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                                     unit=StringValue(value=unit),
+                                                                     datapoints=datapoints))
 
             timeseries_result = TimeseriesResult(metric_expression=StringValue(value=metric),
                                                  metric_name=StringValue(value=service_name),
@@ -145,6 +199,7 @@ class DatadogSourceManager(PlaybookSourceManager):
             task = dd_task.query_metric_execution
             queries = task.queries
             formula = task.formula.value
+            timeseries_offsets = task.timeseries_offsets
 
             queries_list = [
                 {
@@ -168,13 +223,14 @@ class DatadogSourceManager(PlaybookSourceManager):
                 "Playbook Task Downstream Request: Type -> {}, Account -> {}, Time Range -> {}, Queries -> {}, Formula -> "
                 "{}".format("Datadog", datadog_connector.account_id.value, time_range, queries, formula), flush=True)
 
-            results = dd_api_processor.fetch_metric_timeseries(time_range, specific_metric)
-            if not results:
-                raise Exception("No data returned from Datadog")
-
             labeled_metric_timeseries: [TimeseriesResult.LabeledMetricTimeseries] = []
 
-            for itr, item in enumerate(results.series.value):
+            # Get current time values
+            current_results = dd_api_processor.fetch_metric_timeseries(time_range, specific_metric)
+            if not current_results:
+                raise Exception("No data returned from Datadog for current time range")
+
+            for itr, item in enumerate(current_results.series.value):
                 group_tags = item.group_tags.value
                 metric_labels: [LabelValuePair] = []
                 if item.unit:
@@ -185,8 +241,12 @@ class DatadogSourceManager(PlaybookSourceManager):
                     metric_labels.append(
                         LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
 
-                times = results.times.value
-                values = results.values.value[itr].value
+                metric_labels.append(
+                    LabelValuePair(name=StringValue(value='offset_seconds'), value=StringValue(value='0'))
+                )
+
+                times = current_results.times.value
+                values = current_results.values.value[itr].value
                 datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
                 for it, val in enumerate(values):
                     datapoints.append(TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
@@ -196,6 +256,49 @@ class DatadogSourceManager(PlaybookSourceManager):
                 labeled_metric_timeseries.append(
                     TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
                                                              unit=StringValue(value=unit), datapoints=datapoints))
+
+            # Get offset values if specified
+            if timeseries_offsets:
+                offsets = [offset for offset in timeseries_offsets]
+                for offset in offsets:
+                    adjusted_start_time = TimeRange(
+                        time_geq=time_range.time_geq - offset,
+                        time_lt=time_range.time_lt - offset
+                    )
+                    offset_results = dd_api_processor.fetch_metric_timeseries(adjusted_start_time, specific_metric)
+                    if not offset_results:
+                        print(f"No data returned from Datadog for offset {offset} seconds")
+                        continue
+
+                    for itr, item in enumerate(offset_results.series.value):
+                        group_tags = item.group_tags.value
+                        metric_labels: [LabelValuePair] = []
+                        if item.unit:
+                            unit = item.unit[0].name
+                        else:
+                            unit = ''
+                        for gt in group_tags:
+                            metric_labels.append(
+                                LabelValuePair(name=StringValue(value='resource_name'), value=StringValue(value=gt)))
+
+                        metric_labels.append(
+                            LabelValuePair(name=StringValue(value='offset_seconds'),
+                                           value=StringValue(value=str(offset)))
+                        )
+
+                        times = offset_results.times.value
+                        values = offset_results.values.value[itr].value
+                        datapoints: [TimeseriesResult.LabeledMetricTimeseries.Datapoint] = []
+                        for it, val in enumerate(values):
+                            datapoints.append(
+                                TimeseriesResult.LabeledMetricTimeseries.Datapoint(timestamp=int(times[it]),
+                                                                                   value=DoubleValue(
+                                                                                       value=val)))
+
+                        labeled_metric_timeseries.append(
+                            TimeseriesResult.LabeledMetricTimeseries(metric_label_values=metric_labels,
+                                                                     unit=StringValue(value=unit),
+                                                                     datapoints=datapoints))
 
             list_of_queries = ",".join(queries)
             timeseries_result = TimeseriesResult(metric_expression=StringValue(value=list_of_queries),

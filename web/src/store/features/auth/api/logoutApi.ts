@@ -4,7 +4,7 @@ import { logOut } from "../authSlice.ts";
 
 export const logoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    logout: builder.mutation<any, any>({
+    logout: builder.mutation<any, void>({
       query: () => ({
         url: LOGOUT_USER,
         method: "POST",

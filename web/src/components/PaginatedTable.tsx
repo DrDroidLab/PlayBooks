@@ -2,7 +2,7 @@
 import { Paper, TableContainer, TablePagination } from "@mui/material";
 import { useState, useEffect } from "react";
 import React from "react";
-import usePagination from "../hooks/usePagination.ts";
+import usePagination from "../hooks/common/usePagination";
 
 const rowsPerPageOptions = [2, 5, 10, 25, 100];
 

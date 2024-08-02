@@ -12,7 +12,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, TableResult
 from protos.playbooks.source_task_definitions.azure_task_pb2 import Azure
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 logger = logging.getLogger(__name__)
 
@@ -33,15 +33,18 @@ class AzureSourceManager(PlaybookSourceManager):
                     FormField(key_name=StringValue(value="workspace_id"),
                               display_name=StringValue(value="Azure Workspace ID"),
                               description=StringValue(value='Select Workspace ID'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="filter_query"),
                               display_name=StringValue(value="Log Filter Query"),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="timespan"),
                               display_name=StringValue(value="Timespan (hours)"),
                               description=StringValue(value='Enter Timespan (hours)'),
                               data_type=LiteralType.STRING,
-                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value="1")))
+                              default_value=Literal(type=LiteralType.STRING, string=StringValue(value="1")),
+                              form_field_type=FormFieldType.TEXT_FT)
                 ]
             },
         }

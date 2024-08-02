@@ -8,9 +8,9 @@ function extractDate(time: string): Date {
   return new Date(Date.now() - milliseconds);
 }
 
-function extractTime(
+export const extractTime = (
   date: Date | string | undefined | null,
-): number | undefined | null {
+): number | undefined | null => {
   if (!date) return undefined;
 
   if (typeof date === "string") {
@@ -18,6 +18,4 @@ function extractTime(
   }
 
   return Math.round(date.getTime() / 1000);
-}
-
-export default extractTime;
+};

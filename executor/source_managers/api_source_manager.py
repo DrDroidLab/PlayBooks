@@ -10,7 +10,7 @@ from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, ApiResponseResult, PlaybookTaskResultType
 from protos.playbooks.source_task_definitions.api_task_pb2 import Api
-from protos.ui_definition_pb2 import FormField
+from protos.ui_definition_pb2 import FormField, FormFieldType
 
 method_proto_string_mapping = {
     Api.HttpRequest.Method.GET: "GET",
@@ -44,24 +44,30 @@ class ApiSourceManager(PlaybookSourceManager):
                                   Literal(type=LiteralType.STRING, string=StringValue(value="PUT")),
                                   Literal(type=LiteralType.STRING, string=StringValue(value="PATCH")),
                                   Literal(type=LiteralType.STRING, string=StringValue(value="DELETE"))
-                              ]),
+                              ],
+                              form_field_type=FormFieldType.DROPDOWN_FT
+                              ),
                     FormField(key_name=StringValue(value="url"),
                               display_name=StringValue(value="URL"),
                               description=StringValue(value='Enter URL'),
-                              data_type=LiteralType.STRING),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TEXT_FT),
                     FormField(key_name=StringValue(value="headers"),
                               display_name=StringValue(value="Headers (Enter JSON)"),
                               data_type=LiteralType.STRING,
-                              is_optional=True),
+                              is_optional=True,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="payload"),
                               display_name=StringValue(value="Payload/Body (Enter JSON)"),
                               data_type=LiteralType.STRING,
-                              is_optional=True),
+                              is_optional=True,
+                              form_field_type=FormFieldType.MULTILINE_FT),
                     FormField(key_name=StringValue(value="timeout"),
                               display_name=StringValue(value="Timeout (in seconds)"),
                               description=StringValue(value='Enter Timeout (in seconds)'),
                               data_type=LiteralType.LONG,
-                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120))),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)),
+                              form_field_type=FormFieldType.TEXT_FT),
                 ]
             },
         }

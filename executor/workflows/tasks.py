@@ -123,19 +123,21 @@ def workflow_scheduler():
         update_db_account_workflow_execution_status(account, wf_execution_proto.id.value, scheduled_at,
                                                     WorkflowExecutionStatusType.WORKFLOW_RUNNING)
         all_pbs = wf_execution.workflow.playbooks.filter(workflowplaybookmapping__is_active=True)
-        all_playbook_ids = [pb.id for pb in all_pbs]
-        for pb_id in all_playbook_ids:
+        for pb in all_pbs:
+            pb_id = pb.id
+            default_global_variable_set = pb.global_variable_set if pb.global_variable_set else {}
             try:
                 uuid_str = uuid.uuid4().hex
                 playbook_run_uuid = f'{str(current_time)}_{account.id}_{pb_id}_pb_run_{uuid_str}'
                 time_range = proto_to_dict(wf_execution_proto.time_range)
-                execution_global_variable_set = None
-                if execution_configuration and execution_configuration.global_variable_set is not None:
-                    execution_global_variable_set = proto_to_dict(
-                        execution_configuration.global_variable_set) if execution_configuration.global_variable_set else {}
-                    if event_context and isinstance(event_context, dict):
-                        event_context = {f"${key}": value for key, value in event_context.items()}
-                        execution_global_variable_set.update(event_context)
+                execution_global_variable_set = default_global_variable_set
+                if execution_configuration and \
+                        execution_configuration.global_variable_set is not None and \
+                        execution_configuration.global_variable_set.items():
+                    execution_global_variable_set.update(proto_to_dict(execution_configuration.global_variable_set))
+                if event_context and isinstance(event_context, dict):
+                    event_context = {f"${key}": value for key, value in event_context.items()}
+                    execution_global_variable_set.update(event_context)
                 playbook_execution = create_playbook_execution(account, wf_execution_proto.time_range, pb_id,
                                                                playbook_run_uuid, wf_execution_proto.created_by.value,
                                                                execution_global_variable_set)

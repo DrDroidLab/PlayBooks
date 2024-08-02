@@ -3,10 +3,10 @@ import { useGetTemplatesQuery } from "../../../store/features/templates/api/inde
 import Loading from "../../common/Loading/index.tsx";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../../store/features/playbook/playbookSlice.ts";
-import useDrawerState from "../../../hooks/useDrawerState.ts";
+import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import { Playbook, Step } from "../../../types/index.ts";
-import generateUUIDWithoutHyphens from "../../../utils/generateUUIDWithoutHyphens.ts";
+import generateUUIDWithoutHyphens from "../../../utils/common/generateUUIDWithoutHyphens.ts";
 import { v4 as uuidv4 } from "uuid";
 
 function TemplatesList() {

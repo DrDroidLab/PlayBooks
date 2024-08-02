@@ -55,7 +55,6 @@ class PlayBookTask(models.Model):
         playbook_task.name.value = self.name
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
-        playbook_task.created_by.value = self.created_by if self.created_by else ''
         return playbook_task
 
     def proto_with_connector_source(self, playbook_id, playbook_step_id) -> PlaybookTaskProto:
@@ -65,6 +64,7 @@ class PlayBookTask(models.Model):
         playbook_task.description.value = self.description
         playbook_task.notes.value = self.notes
         playbook_task.created_by.value = self.created_by if self.created_by else ''
+
         all_playbook_step_task_connectors = PlayBookStepTaskConnectorMapping.objects.filter(
             account=self.account, playbook_id=playbook_id, playbook_step_id=playbook_step_id, playbook_task=self,
             is_active=True
@@ -201,8 +201,17 @@ class PlayBookStep(models.Model):
         )
 
     def playbook_specific_proto(self, playbook_id) -> PlaybookStepProto:
-        all_tasks = self.tasks.all().order_by('playbooksteptaskdefinitionmapping__id')
-        tasks = [pbt.proto for pbt in all_tasks]
+        all_step_task_mappings = PlayBookStepTaskDefinitionMapping.objects.filter(account=self.account,
+                                                                                  playbook_step=self)
+        tasks = []
+        for stm in all_step_task_mappings:
+            task_proto: PlaybookTaskProto = stm.playbook_task_definition.proto
+            playbook_task_execution_config = stm.playbook_task_execution_config
+            if playbook_task_execution_config:
+                playbook_task_execution_config_proto = dict_to_proto(playbook_task_execution_config,
+                                                                     PlaybookTaskProto.ExecutionConfiguration)
+                task_proto.execution_configuration.CopyFrom(playbook_task_execution_config_proto)
+            tasks.append(task_proto)
 
         all_active_relations = PlayBookStepRelation.objects.filter(account=self.account, playbook_id=playbook_id,
                                                                    parent=self, is_active=True)
@@ -349,6 +358,7 @@ class PlayBookStepTaskDefinitionMapping(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, db_index=True)
     playbook_step = models.ForeignKey(PlayBookStep, on_delete=models.CASCADE, db_index=True)
     playbook_task_definition = models.ForeignKey(PlayBookTask, on_delete=models.CASCADE, db_index=True)
+    playbook_task_execution_config = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, null=True, blank=True)
 
 

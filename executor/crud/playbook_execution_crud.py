@@ -72,6 +72,23 @@ def update_db_account_playbook_execution_status(account: Account, playbook_execu
     return False
 
 
+def update_db_account_playbook_execution_global_variable_set(account: Account, playbook_execution_id: int,
+                                                             execution_global_variable_set=None):
+    try:
+        playbook_execution = account.playbookexecution_set.get(id=playbook_execution_id)
+        playbook_execution.execution_global_variable_set = execution_global_variable_set
+        update_fields = ['execution_global_variable_set']
+        playbook_execution.save(update_fields=update_fields)
+        return True
+    except PlayBookExecution.DoesNotExist:
+        logger.error(
+            f"Failed to update playbook execution for account_id: {account.id}, playbook_run_id: {playbook_execution_id}")
+    except Exception as e:
+        logger.error(
+            f"Failed to update playbook execution for account_id: {account.id}, playbook_run_id: {playbook_execution_id}, error: {e}")
+    return False
+
+
 def update_db_playbook_execution_status(playbook_execution_id: int, status: PlaybookExecutionStatusType):
     try:
         playbook_execution = PlayBookExecution.objects.get(id=playbook_execution_id)

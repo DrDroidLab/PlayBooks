@@ -6,6 +6,14 @@ export default defineConfig({
   base: "/",
   server: {
     port: 3000,
+    watch: {
+      usePolling: true,
+    },
+    host: true,
+    strictPort: true,
+    hmr: {
+      clientPort: 3000,
+    },
   },
   optimizeDeps: {
     include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],

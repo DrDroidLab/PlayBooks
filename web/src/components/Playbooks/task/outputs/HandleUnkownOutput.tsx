@@ -1,9 +1,8 @@
-import React from "react";
-import useCurrentTask from "../../../../hooks/useCurrentTask.ts";
 import { SOURCES } from "../../../../constants/index.ts";
 import HandleDocumentationOutputs from "../../outputs/HandleDocumentationOutputs.tsx";
-import PlayBookRunMetricGraph from "../../PlayBookRunMetricGraph.jsx";
+import PlayBookRunMetricGraph from "../../outputs/PlayBookRunMetricGraph.js";
 import HandleSmtpOutput from "../../outputs/HandleSmtpOutput.tsx";
+import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 
 function HandleUnkownOutput({ taskId, error }) {
   const [task] = useCurrentTask(taskId);
@@ -21,7 +20,7 @@ function HandleUnkownOutput({ taskId, error }) {
             error ? "Error from Source" : "No data available for this step"
           }
           result={null}
-          timestamp={null}
+          timestamp={undefined}
         />
       );
   }

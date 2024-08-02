@@ -8,6 +8,7 @@ message PromQl {
   message PromQlMetricExecution {
     google.protobuf.StringValue datasource_uid = 1;
     google.protobuf.StringValue promql_expression = 2;
+    repeated uint32 timeseries_offsets = 3;
   }
 
   enum TaskType {

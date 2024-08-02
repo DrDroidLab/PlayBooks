@@ -9,9 +9,10 @@ import {
 } from "../../store/features/playbook/playbookSlice.ts";
 import getCurrentStep from "../playbook/step/getCurrentStep.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
-import checkId from "../checkId.ts";
+import checkId from "../common/checkId.ts";
 import { Task } from "../../types/index.ts";
 import { updateCardById } from "./updateCardById.ts";
+import { extractTimeFromHours } from "../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
 
 export async function executeStep(id?: string) {
   const { executionId, currentPlaybook } = playbookSelector(store.getState());
@@ -43,6 +44,19 @@ export async function executeStep(id?: string) {
       id: checkId(e?.id ?? ""),
       ui_requirement: undefined,
       global_variable_set: globalVariableSet,
+      execution_configuration: e?.execution_configuration
+        ? {
+            ...e.execution_configuration,
+            timeseries_offsets: e?.execution_configuration
+              ?.timeseries_offsets?.[0]
+              ? [
+                  extractTimeFromHours(
+                    e?.execution_configuration?.timeseries_offsets?.[0],
+                  ),
+                ]
+              : undefined,
+          }
+        : {},
     })),
   };
 
@@ -83,22 +97,26 @@ export async function executeStep(id?: string) {
     const error = outputErrors.length > 0 ? outputErrors[0] : undefined;
 
     // Set task data (error and output)
-    outputList.forEach((output, index: number) => {
+    outputList.forEach((outputs, index: number) => {
+      const list: any = [];
       const taskId: Task | string | undefined = step?.tasks[index];
       const id = typeof taskId === "string" ? taskId : taskId?.id;
-      const outputError = output?.result?.error;
-      updateCardById(
-        "ui_requirement.output",
-        {
+
+      outputs.forEach((output) => {
+        const outputError = output?.result?.error;
+        list.push({
           data: { ...output?.result, timestamp: output?.timestamp },
           interpretation: output?.interpretation,
-        },
-        id,
-      );
-      if (outputError) {
-        updateCardById("ui_requirement.showError", true, id);
-        updateCardById("ui_requirement.outputError", outputError, id);
-      }
+          execution_global_variable_set: output?.execution_global_variable_set,
+          error: outputError ? outputError : undefined,
+        });
+        if (outputError) {
+          updateCardById("ui_requirement.showError", true, id);
+          updateCardById("ui_requirement.outputError", true, id);
+        }
+      });
+
+      updateCardById("ui_requirement.outputs", list, id);
     });
 
     // Set step output

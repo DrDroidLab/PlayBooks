@@ -1,6 +1,6 @@
 import { ALL_CONNECTORS } from "../../../../constants/index.ts";
 import { connectors } from "../../../../constants/connectors.ts";
-import { cardsData } from "../../../../utils/cardsData.js";
+import { cardsData } from "../../../../utils/common/cardsData.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import {
   setAgentProxy,
@@ -47,8 +47,7 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           const card = cardsData.find((e) => e.enum === integration.type);
           const cardData: CardData = {
             title: integration.display_name,
-            buttonLink: card?.buttonLink ?? "",
-            buttonText: card?.buttonTitle ?? "Connect",
+            buttonText: "Connect",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",
             enum: integration.type,
@@ -78,7 +77,6 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           const cardData: CardData = {
             id: integration.id ?? "",
             title: integration.display_name,
-            buttonLink: card?.buttonLink ?? "",
             buttonText: "Connect",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",
@@ -108,7 +106,6 @@ export const getConnectorListApi = apiSlice.injectEndpoints({
           const card = cardsData.find((e) => e.enum === integration.type);
           const cardData: CardData = {
             title: integration.display_name,
-            buttonLink: card?.buttonLink ?? "",
             buttonText: "Request on Github",
             desc: card?.desc ?? "",
             imgUrl: card?.url ?? "",

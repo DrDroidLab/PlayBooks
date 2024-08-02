@@ -3,7 +3,9 @@
 isort:skip_file
 """
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
@@ -47,6 +49,7 @@ class NewRelic(google.protobuf.message.Message):
         GOLDEN_METRIC_NAME_FIELD_NUMBER: builtins.int
         GOLDEN_METRIC_UNIT_FIELD_NUMBER: builtins.int
         GOLDEN_METRIC_NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def application_entity_guid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -57,6 +60,8 @@ class NewRelic(google.protobuf.message.Message):
         def golden_metric_unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def golden_metric_nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
@@ -65,9 +70,10 @@ class NewRelic(google.protobuf.message.Message):
             golden_metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             golden_metric_unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
             golden_metric_nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["application_entity_guid", b"application_entity_guid", "application_entity_name", b"application_entity_name", "golden_metric_name", b"golden_metric_name", "golden_metric_nrql_expression", b"golden_metric_nrql_expression", "golden_metric_unit", b"golden_metric_unit"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["application_entity_guid", b"application_entity_guid", "application_entity_name", b"application_entity_name", "golden_metric_name", b"golden_metric_name", "golden_metric_nrql_expression", b"golden_metric_nrql_expression", "golden_metric_unit", b"golden_metric_unit"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["application_entity_guid", b"application_entity_guid", "application_entity_name", b"application_entity_name", "golden_metric_name", b"golden_metric_name", "golden_metric_nrql_expression", b"golden_metric_nrql_expression", "golden_metric_unit", b"golden_metric_unit", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     @typing_extensions.final
     class EntityDashboardWidgetNRQLMetricExecutionTask(google.protobuf.message.Message):
@@ -82,6 +88,7 @@ class NewRelic(google.protobuf.message.Message):
         WIDGET_TYPE_FIELD_NUMBER: builtins.int
         WIDGET_NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
         UNIT_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def dashboard_guid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -100,6 +107,8 @@ class NewRelic(google.protobuf.message.Message):
         def widget_nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
@@ -112,9 +121,10 @@ class NewRelic(google.protobuf.message.Message):
             widget_type: google.protobuf.wrappers_pb2.StringValue | None = ...,
             widget_nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
             unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["dashboard_guid", b"dashboard_guid", "dashboard_name", b"dashboard_name", "page_guid", b"page_guid", "page_name", b"page_name", "unit", b"unit", "widget_id", b"widget_id", "widget_nrql_expression", b"widget_nrql_expression", "widget_title", b"widget_title", "widget_type", b"widget_type"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["dashboard_guid", b"dashboard_guid", "dashboard_name", b"dashboard_name", "page_guid", b"page_guid", "page_name", b"page_name", "unit", b"unit", "widget_id", b"widget_id", "widget_nrql_expression", b"widget_nrql_expression", "widget_title", b"widget_title", "widget_type", b"widget_type"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dashboard_guid", b"dashboard_guid", "dashboard_name", b"dashboard_name", "page_guid", b"page_guid", "page_name", b"page_name", "timeseries_offsets", b"timeseries_offsets", "unit", b"unit", "widget_id", b"widget_id", "widget_nrql_expression", b"widget_nrql_expression", "widget_title", b"widget_title", "widget_type", b"widget_type"]) -> None: ...
 
     @typing_extensions.final
     class NRQLMetricExecutionTask(google.protobuf.message.Message):
@@ -123,21 +133,25 @@ class NewRelic(google.protobuf.message.Message):
         METRIC_NAME_FIELD_NUMBER: builtins.int
         NRQL_EXPRESSION_FIELD_NUMBER: builtins.int
         UNIT_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def metric_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def nrql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def unit(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
             metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             nrql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
             unit: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "nrql_expression", b"nrql_expression", "unit", b"unit"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "nrql_expression", b"nrql_expression", "unit", b"unit"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "nrql_expression", b"nrql_expression", "timeseries_offsets", b"timeseries_offsets", "unit", b"unit"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     ENTITY_APPLICATION_GOLDEN_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

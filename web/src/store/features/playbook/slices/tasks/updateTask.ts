@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { PlaybookUIState } from "../../../../../types/index.ts";
-import setNestedValue from "../../../../../utils/setNestedValue.ts";
+import setNestedValue from "../../../../../utils/common/setNestedValue.ts";
 
 export const updateTask = (
   state: PlaybookUIState,

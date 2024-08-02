@@ -4,7 +4,7 @@ import { InfoTypes } from "./InfoTypes.ts";
 export const newRelicApplication = [
   {
     label: "Application",
-    key: Key.APPLICATION_NAME,
+    key: Key.APPLICATION_ENTITY_NAME,
     type: InfoTypes.TEXT,
   },
   {
