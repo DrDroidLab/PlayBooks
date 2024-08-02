@@ -19,7 +19,7 @@ function AddStepCondition() {
       <hr />
 
       {step_rules?.map((rule, i) => (
-        <StepConditions rule={rule} ruleIndex={i} id={id} />
+        <StepConditions rule={rule} ruleIndex={i} />
       ))}
 
       {!isPrefetched && (

@@ -12,6 +12,7 @@ import {
   StepRelation,
   StepRelationContract,
 } from "../../types";
+import { RuleType } from "../../components/common/Conditions/types/RuleTypes.ts";
 
 const playbookKey = "step_relations";
 
@@ -48,12 +49,22 @@ function useEdgeConditions(id: string) {
     dispatch(addStepRule({ id: relation?.id }));
   };
 
-  const deleteCondition = (conditionIndex: number) => {
+  const deleteRule = (conditionIndex: number) => {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
     if (!tempEdge.condition) return;
     tempEdge.condition.rules = tempEdge.condition?.rules.filter(
       (c, i) => i !== conditionIndex,
+    );
+    setPlaybookRelations(temp);
+  };
+
+  const deleteStepRule = (conditionIndex: number) => {
+    const temp = structuredClone(relations ?? []);
+    const tempEdge = temp[edgeIndex];
+    if (!tempEdge.condition) return;
+    tempEdge.condition.step_rules = tempEdge.condition?.step_rules.filter(
+      (_, i) => i !== conditionIndex,
     );
     setPlaybookRelations(temp);
   };
@@ -92,6 +103,19 @@ function useEdgeConditions(id: string) {
     setPlaybookRelations(temp);
   };
 
+  const handleDeleteRule = (ruleType: RuleType, index: number) => {
+    switch (ruleType) {
+      case RuleType.RULE:
+        deleteRule(index);
+        break;
+      case RuleType.STEP_RULE:
+        deleteStepRule(index);
+        break;
+      default:
+        return;
+    }
+  };
+
   return {
     playbookEdges: relations,
     edge,
@@ -106,7 +130,7 @@ function useEdgeConditions(id: string) {
     handleStepRule,
     addNewStepRule,
     addNewRule,
-    deleteCondition,
+    handleDeleteRule,
     handleGlobalRule,
   };
 }

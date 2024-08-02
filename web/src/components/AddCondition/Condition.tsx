@@ -1,4 +1,3 @@
-import React from "react";
 import CustomInput from "../Inputs/CustomInput";
 import { ConditionRule, InputTypes, Task } from "../../types";
 import handleTaskTypeLabels from "../../utils/conditionals/handleTaskTypeLabels";
@@ -7,13 +6,13 @@ import {
   ResultTypeType,
   ResultTypeTypes,
 } from "../../utils/conditionals/resultTypeOptions";
-import CustomButton from "../common/CustomButton";
-import { Delete } from "@mui/icons-material";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched";
 import { useSelector } from "react-redux";
 import { currentPlaybookSelector } from "../../store/features/playbook/selectors";
 import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions";
 import { additionalStateSelector } from "../../store/features/drawers/selectors";
+import DeleteRuleButton from "../common/Conditions/DeleteRuleButton";
+import { RuleType } from "../common/Conditions/types";
 
 type ConditionProps = {
   i: number;
@@ -26,7 +25,7 @@ function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
   const isPrefetched = useIsPrefetched();
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const tasks = currentPlaybook?.ui_requirement.tasks ?? [];
-  const { handleRule, deleteCondition } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
 
   const handleTaskChange = (id: string, i: number) => {
     const task = tasks?.find((task) => task.id === id);
@@ -71,15 +70,7 @@ function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
           />
         </div>
 
-        {!isPrefetched && (
-          <div className="flex gap-2 flex-wrap">
-            <CustomButton
-              className="!text-sm !w-fit"
-              onClick={() => deleteCondition(i)}>
-              <Delete fontSize="inherit" />
-            </CustomButton>
-          </div>
-        )}
+        <DeleteRuleButton ruleType={RuleType.RULE} ruleIndex={i} />
       </div>
     </div>
   );
