@@ -1,6 +1,6 @@
 export const notificationOptions = [
   {
-    id: "slack",
+    id: "SLACK",
     label: "Slack",
   },
 ];

@@ -6,7 +6,17 @@ import CustomInput from "../../../Inputs/CustomInput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
 import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
-function SelectSource({ id }) {
+type SelectSourceType = {
+  id: string | undefined;
+  showLabel?: boolean;
+  options?: any[];
+};
+
+function SelectSource({
+  id,
+  showLabel = true,
+  options = undefined,
+}: SelectSourceType) {
   const { connectorOptions } = useSelector(commonKeySelector);
   const [task, currentStepId] = useCurrentTask(id);
   const dispatch = useDispatch();
@@ -19,8 +29,8 @@ function SelectSource({ id }) {
   return (
     <div className="flex flex-col">
       <CustomInput
-        label="Data Source"
-        options={connectorOptions}
+        label={showLabel ? "Data Source" : ""}
+        options={options ?? connectorOptions}
         inputType={InputTypes.DROPDOWN}
         value={task?.source ?? ""}
         handleChange={handleSourceChange}

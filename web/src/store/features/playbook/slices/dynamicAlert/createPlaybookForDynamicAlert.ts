@@ -36,6 +36,7 @@ const notificationTask: Task = {
   ui_requirement: {
     isOpen: false,
     stepId: "",
+    model_type: "SLACK_CHANNEL",
   },
 };
 
