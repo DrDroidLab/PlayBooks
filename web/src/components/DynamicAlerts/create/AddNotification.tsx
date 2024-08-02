@@ -7,6 +7,7 @@ import { getAssetsFunction } from "../../../utils/fetchAssetModelOptions";
 import { useEffect } from "react";
 import { commonKeySelector } from "../../../store/features/common/selectors";
 import { updateCardById } from "../../../utils/execution/updateCardById";
+import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask";
 
 const connectorKey = "task_connector_sources.0.id";
 
@@ -15,6 +16,7 @@ function AddNotification() {
   const tasks = currentPlaybook?.ui_requirement?.tasks ?? [];
   const notificationTask: Task = tasks[1];
   const { connectorOptions } = useSelector(commonKeySelector);
+  const [, , , data] = useCurrentTask(notificationTask?.id);
 
   useEffect(() => {
     if (!notificationTask?.id || !notificationTask?.source) return;
@@ -23,7 +25,14 @@ function AddNotification() {
 
   if (!notificationTask || connectorOptions?.length === 0) return;
 
-  const handleChannelsChange = (val: string) => {};
+  const handleChannelsChange = (val: string) => {
+    const source = notificationTask?.source ?? "";
+    const taskType = notificationTask?.[source?.toLowerCase()]?.type ?? "";
+    const taskKey = `${[source.toLowerCase()]}.${[
+      taskType.toLowerCase(),
+    ]}.channel`;
+    updateCardById(taskKey, val, notificationTask.id);
+  };
 
   const handleSourceChange = (val: string) => {
     const currentConnectorOptions =
@@ -33,6 +42,12 @@ function AddNotification() {
     updateCardById(connectorKey, id, notificationTask.id);
     updateCardById("source", val, notificationTask.id);
   };
+
+  const assets =
+    notificationTask?.ui_requirement?.assets?.map((e) => ({
+      id: e.channel_id,
+      label: e.channel_name,
+    })) ?? [];
 
   return (
     <div className="flex flex-col gap-1">
@@ -47,9 +62,9 @@ function AddNotification() {
           error={undefined}
         />
         <CustomInput
-          inputType={InputTypes.TYPING_DROPDOWN_MULTIPLE_SELECTION}
-          options={notificationOptions}
-          value={[]}
+          inputType={InputTypes.TYPING_DROPDOWN}
+          options={assets}
+          value={data?.channel}
           placeholder={`Select Channels`}
           handleChange={handleChannelsChange}
           error={undefined}
