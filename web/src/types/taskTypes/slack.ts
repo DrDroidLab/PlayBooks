@@ -2,7 +2,7 @@ import { TaskType } from "../index.ts";
 
 type SendMessageType = {
   text?: string;
-  channel?: string;
+  message?: string;
 };
 
 export interface Slack {

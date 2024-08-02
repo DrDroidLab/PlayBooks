@@ -19,30 +19,34 @@ function stateToPlaybook(): Playbook | null {
   playbook.steps = playbook?.steps?.map((step: Step) => ({
     ...step,
     id: checkId(step.id),
-    tasks: step.tasks?.map((taskId: Task | string) => {
-      const task = tasks.find(
-        (task) => task.id === (typeof taskId === "string" ? taskId : taskId.id),
-      );
-      return {
-        ...task,
-        execution_configuration: task.execution_configuration
-          ? {
-              ...task.execution_configuration,
-              timeseries_offsets: task?.execution_configuration
-                ?.timeseries_offsets?.[0]
-                ? [
-                    extractTimeFromHours(
-                      task?.execution_configuration?.timeseries_offsets?.[0],
-                    ),
-                  ]
-                : undefined,
-            }
-          : {},
-        id: checkId(
-          (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
-        ),
-      };
-    }),
+    tasks: step.tasks
+      ?.map((taskId: Task | string) => {
+        const task = tasks.find(
+          (task) =>
+            task.id === (typeof taskId === "string" ? taskId : taskId.id),
+        );
+        if (!task) return undefined;
+        return {
+          ...task,
+          execution_configuration: task.execution_configuration
+            ? {
+                ...task.execution_configuration,
+                timeseries_offsets: task?.execution_configuration
+                  ?.timeseries_offsets?.[0]
+                  ? [
+                      extractTimeFromHours(
+                        task?.execution_configuration?.timeseries_offsets?.[0],
+                      ),
+                    ]
+                  : undefined,
+              }
+            : {},
+          id: checkId(
+            (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
+          ),
+        };
+      })
+      .filter((task) => task !== undefined),
   }));
 
   playbook.step_relations = playbook.step_relations?.map((relation) => ({

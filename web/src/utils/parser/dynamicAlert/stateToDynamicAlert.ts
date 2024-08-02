@@ -1,15 +1,11 @@
 import { store } from "../../../store";
 import { dynamicAlertSelector } from "../../../store/features/dynamicAlerts/selectors";
-import { currentPlaybookSelector } from "../../../store/features/playbook/selectors";
-import { Playbook } from "../../../types";
 import { DynamicAlertType } from "../../../types";
 import { TimezoneTypes } from "../../workflow/types";
+import stateToPlaybook from "../playbook/stateToPlaybook";
 
 export const stateToDynamicAlert = () => {
   const dynamicAlert: DynamicAlertType = dynamicAlertSelector(store.getState());
-  const playbook: Playbook | undefined = currentPlaybookSelector(
-    store.getState(),
-  );
 
   return {
     name: dynamicAlert.name,
@@ -22,7 +18,7 @@ export const stateToDynamicAlert = () => {
         timezone: TimezoneTypes.UTC,
       },
     },
-    playbooks: [playbook],
+    playbooks: [stateToPlaybook()],
     entry_points: [
       {
         type: "API",

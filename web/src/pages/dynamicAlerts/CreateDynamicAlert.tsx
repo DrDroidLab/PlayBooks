@@ -15,13 +15,13 @@ import {
 import { routes } from "../../routes";
 import { showSnackbar } from "../../store/features/snackbar/snackbarSlice";
 import { useNavigate } from "react-router-dom";
-import { useCreateWorkflowMutation } from "../../store/features/workflow/api";
 import useDynamicAlertsKey from "../../hooks/dynamicAlerts/useDynamicAlertsKey";
+import { useCreateDynamicAlertMutation } from "../../store/features/dynamicAlerts/api";
 
 function CreateDynamicAlert() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [triggerSave, { isLoading }] = useCreateWorkflowMutation();
+  const [triggerSave, { isLoading }] = useCreateDynamicAlertMutation();
   usePlaybookBuilderOptionsQuery();
   const [name, setName] = useDynamicAlertsKey("name");
 

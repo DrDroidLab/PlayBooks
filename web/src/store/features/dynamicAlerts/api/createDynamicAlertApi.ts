@@ -4,7 +4,7 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const createDynamicAlertApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createWorkflow: builder.mutation<any, void>({
+    createDynamicAlert: builder.mutation<any, void>({
       query: () => ({
         url: CREATE_DYNAMIC_ALERTS,
         body: stateToDynamicAlert(),
@@ -15,4 +15,4 @@ export const createDynamicAlertApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useCreateWorkflowMutation } = createDynamicAlertApi;
+export const { useCreateDynamicAlertMutation } = createDynamicAlertApi;

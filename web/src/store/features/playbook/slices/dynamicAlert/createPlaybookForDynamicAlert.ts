@@ -29,7 +29,7 @@ const notificationTask: Task = {
   slack: {
     type: TaskType.Slack,
     send_message: {
-      text: "",
+      message: "",
       channel: "",
     },
   },
@@ -56,6 +56,8 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
   const notificationStepId = generateUUIDWithoutHyphens();
   const stepRefId = uuidv4();
   const notificationStepRefId = uuidv4();
+  const notificationTaskRefId = uuidv4();
+  const taskRefId = uuidv4();
   const relationId = `edge-${stepRefId}-${notificationStepId}`;
 
   const relation: StepRelationContract = {
@@ -78,13 +80,17 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     step_relations: [relation],
     steps: [
       { ...emptyStep, id: stepId, tasks: [taskId] },
-      { ...emptyStep, id: notificationStepId, tasks: [notificationTask] },
+      { ...emptyStep, id: notificationStepId, tasks: [notificationTaskId] },
     ],
     ui_requirement: {
       isExisting: false,
       tasks: [
-        { ...emptyTask, id: taskId },
-        { ...notificationTask, id: notificationTaskId },
+        { ...emptyTask, id: taskId, reference_id: taskRefId },
+        {
+          ...notificationTask,
+          id: notificationTaskId,
+          reference_id: notificationTaskRefId,
+        },
       ],
     },
   };
