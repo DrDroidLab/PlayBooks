@@ -32,12 +32,15 @@ export const scheduleOptions = [
       {
         id: "duration",
         label: "Stop after (in seconds)",
-        inputType: InputTypes.TEXT_BUTTON,
+        inputType: InputTypes.TEXT,
         placeholder: "Enter Duration (in seconds)",
         type: "number",
         length: 200,
-        buttonText: "Keep Alive",
-        buttonClickValue: "keep_alive",
+        suffix: (
+          <p className="text-xs text-gray-500 italic">
+            Keeping this empty will keep it alive
+          </p>
+        ),
       },
     ],
   },
@@ -59,6 +62,11 @@ export const scheduleOptions = [
         placeholder: "Enter Duration (in seconds)",
         type: "number",
         length: 200,
+        suffix: (
+          <p className="text-xs text-gray-500 italic">
+            Keeping this empty will keep it alive
+          </p>
+        ),
       },
     ],
   },

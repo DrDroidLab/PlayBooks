@@ -32,6 +32,9 @@ function CustomInput({
         <HandleInputRender {...props} />
         {props.suffix}
       </div>
+      {props.helpText && (
+        <p className="text-xs text-gray-500 italic">{props.helpText}</p>
+      )}
     </div>
   );
 }
