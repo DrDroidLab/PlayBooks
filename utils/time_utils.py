@@ -45,7 +45,7 @@ def calculate_next_cron_time(rule, start_time=None, latest_time=None):
         next_cron_time = cron.get_next(datetime)
     else:
         next_cron_time = start_time
-        while next_cron_time < latest_time:
+        while next_cron_time <= latest_time:
             next_cron_time = cron.get_next(datetime)
     return next_cron_time
 
