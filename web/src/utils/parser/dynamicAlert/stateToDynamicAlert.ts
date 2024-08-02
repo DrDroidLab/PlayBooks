@@ -18,7 +18,9 @@ export const stateToDynamicAlert = () => {
         timezone: TimezoneTypes.UTC,
       },
     },
-    playbooks: [stateToPlaybook()],
+    playbooks: [
+      { ...stateToPlaybook(), name: `${dynamicAlert.name}_playbook` },
+    ],
     entry_points: [
       {
         type: "API",
