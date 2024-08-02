@@ -1,10 +1,11 @@
 import CustomInput from "../Inputs/CustomInput";
-import { InputTypes, StepRule } from "../../types";
+import { InputTypes, StepRule, StepRuleTypes } from "../../types";
 import { operationOptions } from "../../utils/conditionals/operationOptions";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/selectors";
 import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions";
+import { RuleType } from "../common/Conditions/types";
 
 type ConditionInputsPropTypes = {
   rule: StepRule;
@@ -13,12 +14,13 @@ type ConditionInputsPropTypes = {
 
 function ConditionInputs({ rule, ruleIndex }: ConditionInputsPropTypes) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleStepRule } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const isPrefetched = useIsPrefetched();
+  const ruleType = rule.type?.toLowerCase() as StepRuleTypes;
+  const ruleData = rule?.[ruleType];
 
   const handleChange = (val: string | undefined, type: string) => {
-    if (!val) return;
-    handleStepRule(type, val, ruleIndex);
+    handleRule(type, val, ruleIndex, RuleType.STEP_RULE);
   };
 
   return (
@@ -27,23 +29,19 @@ function ConditionInputs({ rule, ruleIndex }: ConditionInputsPropTypes) {
         inputType={InputTypes.DROPDOWN}
         error={undefined}
         options={operationOptions}
-        value={""}
+        value={ruleData.operator}
         label="Operator"
-        handleChange={(id: string) =>
-          handleChange(id, `${rule.type?.toLowerCase()}.operator`)
-        }
+        handleChange={(id: string) => handleChange(id, `${ruleType}.operator`)}
         disabled={!!isPrefetched}
       />
       <CustomInput
         inputType={InputTypes.TEXT}
         error={undefined}
         options={operationOptions}
-        value={""}
+        value={ruleData.rule}
         label="CRON Rule"
         placeholder={`Enter CRON Rule`}
-        handleChange={(id: string) =>
-          handleChange(id, `${rule.type?.toLowerCase()}.rule`)
-        }
+        handleChange={(id: string) => handleChange(id, `${ruleType}.rule`)}
         disabled={!!isPrefetched}
       />
       <CustomInput
@@ -51,10 +49,10 @@ function ConditionInputs({ rule, ruleIndex }: ConditionInputsPropTypes) {
         error={undefined}
         type="number"
         options={operationOptions}
-        value={""}
+        value={ruleData.within_seconds}
         label="Within Seconds"
         handleChange={(id: string) =>
-          handleChange(id, `${rule.type?.toLowerCase()}.within_seconds`)
+          handleChange(id, `${ruleType}.within_seconds`)
         }
         disabled={!!isPrefetched}
       />

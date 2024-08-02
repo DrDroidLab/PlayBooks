@@ -1,13 +1,12 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/playbooks/useEdgeConditions.ts";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import Checkbox from "../../common/Checkbox/index.tsx";
-import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import { RuleType } from "../../common/Conditions/types/RuleTypes.ts";
 
 function GrepExistence({
   condition,
@@ -15,12 +14,12 @@ function GrepExistence({
   rule,
 }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition, edgeIndex } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
   const isPrefetched = useIsPrefetched();
 
-  const handleChange = (val: string, type: string) => {
-    handleCondition(`${keyValue}.${type}`, val, conditionIndex);
+  const handleChange = (val: any, type: string) => {
+    handleRule(`${keyValue}.${type}`, val, conditionIndex, RuleType.RULE);
   };
 
   return (
@@ -37,12 +36,7 @@ function GrepExistence({
         id="case_sensitive"
         isChecked={rule.case_sensitive}
         onChange={() => {
-          addConditionToEdgeByIndex(
-            `${keyValue}.case_sensitive`,
-            !rule.case_sensitive,
-            edgeIndex,
-            conditionIndex,
-          );
+          handleChange(!rule.case_sensitive, "case_sensitive");
         }}
         label="Pattern is Case Sensitive"
         isSmall={true}

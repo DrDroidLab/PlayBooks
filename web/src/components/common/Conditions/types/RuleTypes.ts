@@ -1,4 +1,4 @@
 export enum RuleType {
-  RULE = "RULE",
-  STEP_RULE = "STEP_RULE",
+  RULE = "rules",
+  STEP_RULE = "step_rules",
 }

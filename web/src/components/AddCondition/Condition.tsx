@@ -30,13 +30,14 @@ function Condition({ i, condition, taskTypeOptions }: ConditionProps) {
   const handleTaskChange = (id: string, i: number) => {
     const task = tasks?.find((task) => task.id === id);
     if (!task) return;
-    handleRule("task.id", id, i);
-    handleRule("task.reference_id", task?.reference_id ?? "", i);
+    handleRule("task.id", id, i, RuleType.RULE);
+    handleRule("task.reference_id", task?.reference_id ?? "", i, RuleType.RULE);
     handleRule(
       "type",
       (task?.ui_requirement.resultType ??
         ResultTypeTypes.OTHERS) as ResultTypeType,
       i,
+      RuleType.RULE,
     );
   };
 

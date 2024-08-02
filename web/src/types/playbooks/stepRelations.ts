@@ -1,4 +1,5 @@
 import { OperatorOptionType } from "../../utils/conditionals/types/operatorOptionTypes.ts";
+import { LowercaseString } from "../common/lowercaseString.ts";
 import { Step } from "./steps/step.ts";
 
 export enum LogicalOperator {
@@ -8,7 +9,7 @@ export enum LogicalOperator {
 }
 
 export enum StepRuleTypes {
-  COMPARE_TIME_WITH_CRON = "compare_time_with_cron",
+  COMPARE_TIME_WITH_CRON = "COMPARE_TIME_WITH_CRON",
 }
 
 enum RuleType {
@@ -37,7 +38,7 @@ export type ConditionRule = {
 };
 
 export type StepRuleType = {
-  [key in StepRuleTypes]: {
+  [key in StepRuleTypes as LowercaseString<StepRuleTypes>]: {
     operator: OperatorOptionType;
     rule: string;
     within_seconds: number;

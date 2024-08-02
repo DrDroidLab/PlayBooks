@@ -7,18 +7,18 @@ import setNestedValue from "../common/setNestedValue.ts";
 
 const playbookKey = "step_relations";
 
-export function addConditionToEdgeByIndex(
+export function addStepRuleToRelationByIndex(
   key: string,
   value: any,
   index: number,
-  conditionIndex: number,
+  ruleIndex: number,
 ) {
   const currentPlaybook = currentPlaybookSelector(store.getState());
   const relations = currentPlaybook?.[playbookKey];
   const edges = structuredClone(relations ?? []);
   if (edges.length === 0) return;
   if (!edges[index] || !edges[index].condition) return;
-  setNestedValue(edges[index].condition.rules[conditionIndex], key, value);
+  setNestedValue(edges[index].condition.step_rules[ruleIndex], key, value);
   store.dispatch(
     setCurrentPlaybookKey({
       key: playbookKey,

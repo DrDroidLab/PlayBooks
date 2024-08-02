@@ -1,4 +1,4 @@
-import { addConditionToEdgeByIndex } from "../../utils/conditionals/addConditionToEdgeByIndex.ts";
+import { addRuleToRelationByIndex } from "../../utils/conditionals/addRuleToRelationByIndex.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +13,7 @@ import {
   StepRelationContract,
 } from "../../types";
 import { RuleType } from "../../components/common/Conditions/types/RuleTypes.ts";
+import { handleRelationRuleChange } from "../../utils/conditionals/handleRelationRuleChange.ts";
 
 const playbookKey = "step_relations";
 
@@ -69,30 +70,13 @@ function useEdgeConditions(id: string) {
     setPlaybookRelations(temp);
   };
 
-  const handleCondition = (
+  const handleRule = (
     key: string,
-    value: string | undefined,
-    conditionIndex: number,
+    value: any,
+    ruleIndex: number,
+    ruleType: RuleType,
   ) => {
-    if (conditions.length !== 0) {
-      addConditionToEdgeByIndex(key, value, edgeIndex, conditionIndex);
-    }
-  };
-
-  const handleRule = (key: string, value: string, ruleIndex: number) => {
-    if (rules.length === 0) {
-      addNewRule();
-    } else {
-      addConditionToEdgeByIndex(key, value, edgeIndex, ruleIndex);
-    }
-  };
-
-  const handleStepRule = (key: string, value: string, ruleIndex: number) => {
-    if (rules.length === 0) {
-      addNewStepRule();
-    } else {
-      addConditionToEdgeByIndex(key, value, edgeIndex, ruleIndex);
-    }
+    handleRelationRuleChange(key, value, edgeIndex, ruleIndex, ruleType);
   };
 
   const handleGlobalRule = (value: string) => {
@@ -125,9 +109,7 @@ function useEdgeConditions(id: string) {
     condition,
     rules,
     step_rules,
-    handleCondition,
     handleRule,
-    handleStepRule,
     addNewStepRule,
     addNewRule,
     handleDeleteRule,
