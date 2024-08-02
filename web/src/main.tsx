@@ -1,15 +1,13 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
-import config from "./config.ts";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import App from "./App";
+import config from "./config";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./store/index.ts";
+import { store } from "./store";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { GlobalSnackbar } from "./components/common/GlobalSnackbar/index.jsx";
-import Loading from "./components/common/Loading/index.tsx";
+import { GlobalSnackbar } from "./components/common/GlobalSnackbar";
 import { ReactFlowProvider } from "reactflow";
 import TopBanner from "./components/TopBanner.tsx";
 import "highlight.js/styles/github.min.css";
@@ -27,16 +25,7 @@ root.render(
     <ReactFlowProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <Routes>
-            <Route
-              path={"/*"}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <App />
-                </React.Suspense>
-              }
-            />
-          </Routes>
+          <App />
           <GlobalSnackbar />
         </BrowserRouter>
       </Provider>

@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django.contrib.sites',
     'django.contrib.postgres',
+    'django.test',
     *LOCAL_APPS,
     *THIRD_PARTY_APPS,
 ]

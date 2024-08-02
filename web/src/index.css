@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+}
+
 /* nprogress custom styles */
 #nprogress .bar {
   background: #9553fe !important;
@@ -134,4 +141,25 @@ td {
   to {
     stroke-dashoffset: -20;
   }
+}
+
+.rs-input-group {
+  border: none !important;
+  border-color: transparent !important;
+  outline: none !important;
+}
+
+.rs-input-group:hover {
+  border: none !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

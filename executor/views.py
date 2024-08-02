@@ -52,7 +52,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
     PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
-    PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse
+    PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse, RunBulkPlaybookTaskResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -141,6 +141,67 @@ def task_run_v3(request_message: RunPlaybookTaskRequestV3) -> Union[RunPlaybookT
                                                                    error=StringValue(value=str(e))))
     return RunPlaybookTaskResponseV3(meta=get_meta(tr=time_range), success=BoolValue(value=True),
                                      playbook_task_execution_log=playbook_task_execution_log)
+
+
+@web_api(RunPlaybookTaskRequestV3)
+def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPlaybookTaskResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    time_range: TimeRange = meta.time_range
+    if not time_range.time_lt or not time_range.time_geq:
+        current_time = current_epoch_timestamp()
+        time_range = TimeRange(time_geq=int(current_time - 14400), time_lt=int(current_time))
+
+    task: PlaybookTask = request_message.playbook_task
+    global_variable_set = {}
+    if request_message.global_variable_set:
+        global_variable_set = proto_to_dict(request_message.global_variable_set)
+    elif task.global_variable_set:
+        global_variable_set = proto_to_dict(task.global_variable_set)
+    interpreter_type: InterpreterType = task.interpreter_type if task.interpreter_type else InterpreterType.BASIC_I
+
+    if not task.execution_configuration.is_bulk_execution or not task.execution_configuration.is_bulk_execution.value:
+        return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                           message=Message(title="Invalid Request",
+                                                           description="Task is not configured for bulk execution"))
+
+    bulk_task_var = task.execution_configuration.bulk_execution_var_field.value if task.execution_configuration.HasField(
+        'bulk_execution_var_field') else None
+    if not bulk_task_var:
+        return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                           message=Message(title="Invalid Request",
+                                                           description="Bulk execution variable not found"))
+    if bulk_task_var not in global_variable_set:
+        return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                           message=Message(title="Invalid Request",
+                                                           description="Bulk execution variable not found in global variables"))
+
+    bulk_execution_var_values = global_variable_set[bulk_task_var].split(',')
+    if not bulk_execution_var_values:
+        return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
+                                           message=Message(title="Invalid Request",
+                                                           description="Bulk execution variable values not found"))
+
+    pte_logs: [PlaybookTaskExecutionLog] = []
+    for bev in bulk_execution_var_values:
+        global_variable_set[bulk_task_var] = bev
+        try:
+            task_result = playbook_source_facade.execute_task(account.id, time_range, global_variable_set, task)
+            interpretation: InterpretationProto = task_result_interpret(interpreter_type, task, task_result)
+            execution_global_variable_set_proto = dict_to_proto(global_variable_set, Struct)
+            playbook_task_execution_log = PlaybookTaskExecutionLog(task=task, result=task_result,
+                                                                   interpretation=interpretation,
+                                                                   execution_global_variable_set=execution_global_variable_set_proto)
+            pte_logs.append(playbook_task_execution_log)
+        except Exception as e:
+            playbook_task_execution_log = PlaybookTaskExecutionLog(task=task,
+                                                                   result=PlaybookTaskResult(
+                                                                       error=StringValue(value=str(e))),
+                                                                   execution_global_variable_set=execution_global_variable_set_proto)
+            pte_logs.append(playbook_task_execution_log)
+
+    return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True),
+                                       playbook_task_execution_logs=pte_logs)
 
 
 @web_api(RunPlaybookStepRequest)

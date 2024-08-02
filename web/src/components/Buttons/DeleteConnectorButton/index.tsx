@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ConnectorDeleteOverlay from "../../Integration/connectors/ConnectorDeleteOverlay";
+import ConnectorDeleteOverlay from "../../Integration/connectors/ConnectorDeleteOverlay.tsx";
 import CustomButton from "../../common/CustomButton/index.tsx";
 
 function DeleteConnectorButton({ id, connector }) {

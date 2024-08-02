@@ -3,7 +3,9 @@
 isort:skip_file
 """
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
 import google.protobuf.wrappers_pb2
@@ -40,18 +42,22 @@ class PromQl(google.protobuf.message.Message):
 
         DATASOURCE_UID_FIELD_NUMBER: builtins.int
         PROMQL_EXPRESSION_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def datasource_uid(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
         def promql_expression(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
             datasource_uid: google.protobuf.wrappers_pb2.StringValue | None = ...,
             promql_expression: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_expression", b"promql_expression"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_expression", b"promql_expression"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["datasource_uid", b"datasource_uid", "promql_expression", b"promql_expression", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     PROMQL_METRIC_EXECUTION_FIELD_NUMBER: builtins.int

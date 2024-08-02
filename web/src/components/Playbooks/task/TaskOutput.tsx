@@ -1,11 +1,9 @@
-import PlayBookRunMetricGraph from "../PlayBookRunMetricGraph.jsx";
-import PlaybookAPIActionOutput from "../PlaybookAPIActionOutput.jsx";
-import PlaybookBashActionOutput from "../PlaybookBashActionOutput.jsx";
-import useCurrentTask from "../../../hooks/useCurrentTask.ts";
-import React from "react";
+import PlayBookRunMetricGraph from "../outputs/PlayBookRunMetricGraph.js";
+import PlaybookAPIActionOutput from "../outputs/PlaybookAPIActionOutput.js";
+import PlaybookBashActionOutput from "../outputs/PlaybookBashActionOutput.js";
 import HandleUnkownOutput from "./outputs/HandleUnkownOutput.tsx";
-import PlayBookRunLogTable from "../PlayBookRunLogTable.tsx";
-import PlayBookRunDataTable from "../PlayBookRunDataTable.jsx";
+import PlayBookRunLogTable from "../outputs/PlayBookRunLogTable.tsx";
+import PlayBookRunDataTable from "../outputs/PlayBookRunDataTable.js";
 import handleTaskTypeLabels from "../../../utils/conditionals/handleTaskTypeLabels.ts";
 
 const OutputTypes = {
@@ -16,12 +14,7 @@ const OutputTypes = {
   LOGS: "LOGS",
 };
 
-const TaskOutput = ({ id, showHeading, taskFromExecution }) => {
-  const [taskFromPlaybook] = useCurrentTask(id);
-  const task = taskFromExecution ?? taskFromPlaybook;
-  const output = task?.ui_requirement.output?.data;
-  const error = task?.ui_requirement?.outputError;
-
+const TaskOutput = ({ id, showHeading, task, output, error }) => {
   switch (output?.type) {
     case OutputTypes.API_RESPONSE:
       return <PlaybookAPIActionOutput output={output.api_response} />;

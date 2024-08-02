@@ -66,6 +66,7 @@ class Cloudwatch(google.protobuf.message.Message):
         METRIC_NAME_FIELD_NUMBER: builtins.int
         DIMENSIONS_FIELD_NUMBER: builtins.int
         STATISTIC_FIELD_NUMBER: builtins.int
+        TIMESERIES_OFFSETS_FIELD_NUMBER: builtins.int
         @property
         def namespace(self) -> google.protobuf.wrappers_pb2.StringValue: ...
         @property
@@ -76,6 +77,8 @@ class Cloudwatch(google.protobuf.message.Message):
         def dimensions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Cloudwatch.MetricExecution.Dimension]: ...
         @property
         def statistic(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def timeseries_offsets(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
         def __init__(
             self,
             *,
@@ -84,9 +87,10 @@ class Cloudwatch(google.protobuf.message.Message):
             metric_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
             dimensions: collections.abc.Iterable[global___Cloudwatch.MetricExecution.Dimension] | None = ...,
             statistic: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            timeseries_offsets: collections.abc.Iterable[builtins.int] | None = ...,
         ) -> None: ...
         def HasField(self, field_name: typing_extensions.Literal["metric_name", b"metric_name", "namespace", b"namespace", "region", b"region", "statistic", b"statistic"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["dimensions", b"dimensions", "metric_name", b"metric_name", "namespace", b"namespace", "region", b"region", "statistic", b"statistic"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["dimensions", b"dimensions", "metric_name", b"metric_name", "namespace", b"namespace", "region", b"region", "statistic", b"statistic", "timeseries_offsets", b"timeseries_offsets"]) -> None: ...
 
     @typing_extensions.final
     class FilterLogEvents(google.protobuf.message.Message):

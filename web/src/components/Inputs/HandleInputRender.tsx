@@ -8,10 +8,13 @@ import TypingDropdownInput from "./InputTypes/TypingDropdownInput.tsx";
 import TypingDropdownMultipleInput from "./InputTypes/TypingDropdownMultipleInput.tsx";
 import DropdownInput from "./InputTypes/DropdownInput.tsx";
 import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
+import CompositeField from "./InputTypes/CompositeField.tsx";
+import DateInput from "./InputTypes/Date.tsx";
+import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
-  value: string;
+  value: any;
   type?: HTMLInputTypeAttribute;
   label?: string;
   handleChange?: (val: string) => void;
@@ -25,26 +28,28 @@ export type HandleInputRenderType = {
   searchable?: boolean;
   length?: number;
   className?: string;
-};
+  compositeFields?: HandleInputRenderType[];
+  key?: string;
+  isOptional?: boolean;
+  default?: string;
+  format?: string;
+  disabledDate?: (date: Date) => boolean;
+} & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
   switch (inputType) {
     case InputTypes.TEXT:
       return <Text {...props} handleChange={props.handleChange!} />;
-
     case InputTypes.MULTILINE:
       return <Multiline handleChange={props.handleChange!} {...props} />;
-
     case InputTypes.BUTTON:
       return (
         <CustomButton onClick={props.handleClick!} {...props}>
           {props.label}
         </CustomButton>
       );
-
     case InputTypes.IFRAME_RENDER:
       return <IframeRender url={props.value} />;
-
     case InputTypes.DROPDOWN:
       return (
         <DropdownInput
@@ -53,7 +58,6 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
           options={props.options ?? []}
         />
       );
-
     case InputTypes.TYPING_DROPDOWN:
       return (
         <TypingDropdownInput
@@ -62,7 +66,6 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
           options={props.options ?? []}
         />
       );
-
     case InputTypes.TYPING_DROPDOWN_MULTIPLE:
       return (
         <TypingDropdownMultipleInput
@@ -72,9 +75,14 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
           handleAddClick={props.handleAddClick!}
         />
       );
-
     case InputTypes.WYISWYG:
       return <Wysiwyg handleChange={props.handleChange!} {...props} />;
+    case InputTypes.COMPOSITE:
+      return <CompositeField handleChange={props.handleChange} {...props} />;
+    case InputTypes.DATE:
+      return <DateInput handleChange={props.handleChange!} {...props} />;
+    case InputTypes.STRING_ARRAY:
+      return <StringArrayInput handleChange={props.handleChange!} {...props} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

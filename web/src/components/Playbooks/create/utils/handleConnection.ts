@@ -1,5 +1,5 @@
 import { Connection } from "reactflow";
-import { extractSource } from "../../../../utils/extractData.ts";
+import { extractSource } from "../../../../utils/playbook/extractData.ts";
 import { store } from "../../../../store/index.ts";
 import { addRelation } from "../../../../store/features/playbook/playbookSlice.ts";
 
