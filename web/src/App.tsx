@@ -1,13 +1,9 @@
 import Layout from "./Layout";
 import { Route, Routes } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth";
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api";
 import Loading from "./components/common/Loading";
-import {
-  generateNoLayoutRoutes,
-  generateOtherRoutes,
-} from "./generateRoutes";
+import { generateNoLayoutRoutes, generateOtherRoutes } from "./generateRoutes";
 import useDefaultPage from "./hooks/useDefaultPage";
 
 const App = () => {
