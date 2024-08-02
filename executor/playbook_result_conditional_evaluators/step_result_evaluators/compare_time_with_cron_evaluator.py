@@ -18,8 +18,8 @@ class CompareTimeWithCronEvaluator(StepResultEvaluator):
         timezone = compare_with_cron_rule.timezone.value
         within_seconds = compare_with_cron_rule.within_seconds
 
-        cron_schedules = calculate_next_cron_time(cron_rule)
-        if not cron_schedules or len(cron_schedules) == 0:
+        next_cron_schedule = calculate_next_cron_time(cron_rule)
+        if not next_cron_schedule:
             return False
 
         current_time = current_datetime()
@@ -27,27 +27,27 @@ class CompareTimeWithCronEvaluator(StepResultEvaluator):
         # compare current time with first member of cron schedules
         if operator == Operator.EQUAL_O:
             if within_seconds:
-                return abs(current_time - cron_schedules[0]).total_seconds() <= within_seconds
-            return current_time == cron_schedules[0]
+                return abs(current_time - next_cron_schedule).total_seconds() <= within_seconds
+            return current_time == next_cron_schedule
         elif operator == Operator.GREATER_THAN_O:
             if within_seconds:
-                return current_time > cron_schedules[0] and abs(
-                    current_time - cron_schedules[0]).total_seconds() <= within_seconds
-            return current_time > cron_schedules[0]
+                return current_time > next_cron_schedule and abs(
+                    current_time - next_cron_schedule).total_seconds() <= within_seconds
+            return current_time > next_cron_schedule
         elif operator == Operator.GREATER_THAN_EQUAL_O:
             if within_seconds:
-                return current_time >= cron_schedules[0] and abs(
-                    current_time - cron_schedules[0]).total_seconds() <= within_seconds
-            return current_time >= cron_schedules[0]
+                return current_time >= next_cron_schedule and abs(
+                    current_time - next_cron_schedule).total_seconds() <= within_seconds
+            return current_time >= next_cron_schedule
         elif operator == Operator.LESS_THAN_O:
             if within_seconds:
-                return current_time < cron_schedules[0] and abs(
-                    current_time - cron_schedules[0]).total_seconds() <= within_seconds
-            return current_time < cron_schedules[0]
+                return current_time < next_cron_schedule and abs(
+                    current_time - next_cron_schedule).total_seconds() <= within_seconds
+            return current_time < next_cron_schedule
         elif operator == Operator.LESS_THAN_EQUAL_O:
             if within_seconds:
-                return current_time <= cron_schedules[0] and abs(
-                    current_time - cron_schedules[0]).total_seconds() <= within_seconds
-            return current_time <= cron_schedules[0]
+                return current_time <= next_cron_schedule and abs(
+                    current_time - next_cron_schedule).total_seconds() <= within_seconds
+            return current_time <= next_cron_schedule
         else:
             raise ValueError(f'Operator {Operator.Name(operator)} not supported')
