@@ -46,9 +46,7 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       return <Multiline handleChange={props.handleChange!} {...props} />;
     case InputTypes.BUTTON:
       return (
-        <CustomButton onClick={props.handleClick!} {...props}>
-          {props.label}
-        </CustomButton>
+        <CustomButton onClick={props.handleClick!}>{props.label}</CustomButton>
       );
     case InputTypes.IFRAME_RENDER:
       return <IframeRender url={props.value} />;

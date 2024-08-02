@@ -42,6 +42,7 @@ function useEdgeConditions(id: string) {
   };
 
   const addNewRule = () => {
+    if (!relation?.id) return;
     dispatch(addRule({ id: relation?.id }));
   };
 
