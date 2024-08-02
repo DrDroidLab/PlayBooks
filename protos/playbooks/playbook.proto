@@ -43,7 +43,8 @@ message PlaybookTask {
 
     repeated uint32 timeseries_offsets = 3;
 
-    Lambda.Function result_transformer_lambda_function = 4;
+    google.protobuf.BoolValue is_result_transformer_enabled = 4;
+    Lambda.Function result_transformer_lambda_function = 5;
   }
 
   google.protobuf.UInt64Value id = 1;

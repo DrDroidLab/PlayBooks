@@ -21,7 +21,7 @@ function extractExecutionTasks(
           ...(taskInPlaybook.ui_requirement?.outputs ?? []),
           {
             data: { ...log.result, timestamp: log.timestamp },
-            execution_global_variable_set: log.execution_global_variable_set,
+            execution_global_variable_set: log.result.task_local_variable_set,
             interpretation: log.interpretation,
           },
         ],
