@@ -12,6 +12,7 @@ import CompositeField from "./InputTypes/CompositeField.tsx";
 import DateInput from "./InputTypes/Date.tsx";
 import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
 import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMultipleSelectionInput.tsx";
+import TextButton from "./InputTypes/TextButton.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -36,6 +37,8 @@ export type HandleInputRenderType = {
   format?: string;
   disabledDate?: (date: Date) => boolean;
   typingContainerClassname?: string;
+  buttonText?: string;
+  buttonClickValue?: string;
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -88,6 +91,15 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
         <TypingDropdownMultipleSelectionInput
           handleChange={props.handleChange!}
           {...props}
+        />
+      );
+    case InputTypes.TEXT_BUTTON:
+      return (
+        <TextButton
+          {...props}
+          handleChange={props.handleChange!}
+          buttonText={props.buttonText!}
+          buttonClickValue={props.buttonClickValue!}
         />
       );
     default:
