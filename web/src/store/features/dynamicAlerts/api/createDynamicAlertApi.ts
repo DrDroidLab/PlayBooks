@@ -7,7 +7,9 @@ export const createDynamicAlertApi = apiSlice.injectEndpoints({
     createDynamicAlert: builder.mutation<any, void>({
       query: () => ({
         url: CREATE_DYNAMIC_ALERTS,
-        body: stateToDynamicAlert(),
+        body: {
+          workflow: stateToDynamicAlert(),
+        },
         method: "POST",
       }),
       invalidatesTags: ["Workflows"],
