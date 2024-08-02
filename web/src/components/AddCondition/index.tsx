@@ -11,7 +11,7 @@ import Condition from "./Condition.tsx";
 
 function AddCondition() {
   const { source, id } = useSelector(additionalStateSelector);
-  const { rules, addNewRule, addNewStepRule } = useEdgeConditions(id);
+  const { rules, addNewRule } = useEdgeConditions(id);
   const sourceId = extractSource(source);
   const [parentStep] = useCurrentStep(sourceId);
   const isPrefetched = useIsPrefetched();
