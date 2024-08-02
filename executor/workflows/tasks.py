@@ -1,8 +1,7 @@
 import logging
-from datetime import timedelta, datetime, timezone
 import uuid
-from struct import Struct
 
+from datetime import timedelta, datetime, timezone
 from celery import shared_task
 from django.conf import settings
 
@@ -16,7 +15,8 @@ from executor.tasks import execute_playbook
 from executor.workflows.action.action_executor_facade import action_executor_facade
 from executor.workflows.action.smtp_email_executor import generate_email_body
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log
+    update_db_account_workflow_execution_status, get_workflow_executions, create_workflow_execution_log, \
+    update_db_account_workflow_execution_latest_scheduled_at
 from executor.workflows.crud.workflow_execution_utils import get_next_workflow_execution, WorkflowExpiredException
 from executor.workflows.crud.workflows_crud import get_db_workflows
 from executor.source_processors.slack_api_processor import SlackApiProcessor
@@ -139,12 +139,12 @@ def workflow_scheduler():
                                                                proto_to_dict(execution_global_variable_set))
 
                 workflow_execution_configuration = proto_to_dict(execution_configuration)
-                saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id, db_wfe.id,
-                                                pb_id, playbook_execution.id, time_range,
+                saved_task = get_or_create_task(workflow_executor.__name__, account.id, workflow_id,
+                                                wf_execution.id.value, pb_id, playbook_execution.id, time_range,
                                                 workflow_execution_configuration)
                 if not saved_task:
                     logger.error(f"Failed to create workflow execution task for account: {account.id}, workflow_id: "
-                                 f"{workflow_id}, workflow_execution_id: {db_wfe.id}, playbook_id: {pb_id}")
+                                 f"{workflow_id}, workflow_run_id: {wf_execution.workflow_run_id.value}, playbook_id: {pb_id}")
                     continue
                 logger.info("workflow_execution_configuration in scheduler", workflow_execution_configuration)
                 task = workflow_executor.delay(account.id, workflow_id, wf_execution.id.value, pb_id,
@@ -154,22 +154,24 @@ def workflow_scheduler():
                                                   account_id=account.id,
                                                   scheduled_at=datetime.fromtimestamp(float(current_time)))
             except Exception as e:
-                logger.error(f"Failed to create playbook execution:: workflow_id: {workflow_id}, workflow_execution_id:"
-                             f" {db_wfe.id} playbook_id: {pb_id}, error: {e}")
-                update_db_account_workflow_execution_status(account, db_wfe.id,
+                logger.error(f"Failed to create playbook execution:: workflow_id: {workflow_id}, workflow_run_id:"
+                             f" {wf_execution.workflow_run_id.value} playbook_id: {pb_id}, error: {e}")
+                update_db_account_workflow_execution_status(account, wf_execution.id.value,
                                                             WorkflowExecutionStatusType.WORKFLOW_FAILED)
                 continue
         try:
             latest_scheduled_at = get_next_workflow_execution(wf_execution.workflow.schedule, scheduled_at,
                                                               latest_scheduled_at)
-
+            update_db_account_workflow_execution_latest_scheduled_at(account, wf_execution.id.value,
+                                                                     latest_scheduled_at)
         except WorkflowExpiredException as e:
             logger.error(f"Execution expired: {e} for workflow: {workflow_id}")
-            update_db_account_workflow_execution_status(account, db_wfe.id,
+            update_db_account_workflow_execution_status(account, wf_execution.id.value,
                                                         WorkflowExecutionStatusType.WORKFLOW_FINISHED)
         except Exception as e:
             logger.error(f"Error in calculating next Execution: {e} for workflow: {workflow_id}")
-            update_db_account_workflow_execution_status(account, db_wfe.id, WorkflowExecutionStatusType.WORKFLOW_FAILED)
+            update_db_account_workflow_execution_status(account, wf_execution.id.value,
+                                                        WorkflowExecutionStatusType.WORKFLOW_FAILED)
 
 
 workflow_scheduler_prerun_notifier = publish_pre_run_task(workflow_scheduler)
