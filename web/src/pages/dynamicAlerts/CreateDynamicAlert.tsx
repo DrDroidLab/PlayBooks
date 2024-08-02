@@ -12,10 +12,18 @@ import {
   createPlaybookForDynamicAlert,
   resetState as resetPlaybookState,
 } from "../../store/features/playbook/playbookSlice";
+import { routes } from "../../routes";
+import { showSnackbar } from "../../store/features/snackbar/snackbarSlice";
+import { useNavigate } from "react-router-dom";
+import { useCreateWorkflowMutation } from "../../store/features/workflow/api";
+import useDynamicAlertsKey from "../../hooks/dynamicAlerts/useDynamicAlertsKey";
 
 function CreateDynamicAlert() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [triggerSave, { isLoading }] = useCreateWorkflowMutation();
   usePlaybookBuilderOptionsQuery();
+  const [name, setName] = useDynamicAlertsKey("name");
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -25,7 +33,17 @@ function CreateDynamicAlert() {
     };
   }, []);
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    try {
+      let response: any = {};
+      response = await triggerSave().unwrap();
+      if (response.success) {
+        navigate(routes.DYNAMIC_ALERTS);
+      }
+    } catch (e: any) {
+      dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
+    }
+  };
 
   return (
     <div>
@@ -34,7 +52,8 @@ function CreateDynamicAlert() {
         <CustomInput
           inputType={InputTypes.TEXT}
           label="Alert name"
-          value={""}
+          value={name}
+          handleChange={(val: string) => setName(val)}
           className="!w-[200px]"
         />
         <AddMetric />
@@ -43,8 +62,11 @@ function CreateDynamicAlert() {
         <hr />
         <AddNotification />
 
-        <CustomButton className="w-fit" onClick={handleSave}>
-          Save
+        <CustomButton
+          disabled={isLoading}
+          className="w-fit"
+          onClick={handleSave}>
+          {isLoading ? "Loading.." : "Save"}
         </CustomButton>
       </div>
     </div>

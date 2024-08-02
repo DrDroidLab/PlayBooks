@@ -12,6 +12,7 @@ import fakeLoadingSlice from "./features/fakeLoading/fakeLoadingSlice.ts";
 import searchSlice from "./features/search/searchSlice.ts";
 import paginationSlice from "./features/pagination/paginationSlice.ts";
 import commonSlice from "./features/common/commonSlice.ts";
+import dynamicAlertsSlice from "./features/dynamicAlerts/dynamicAlertsSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     search: searchSlice,
     pagination: paginationSlice,
     common: commonSlice,
+    dynamicAlerts: dynamicAlertsSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
