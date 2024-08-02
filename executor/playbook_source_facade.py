@@ -11,6 +11,7 @@ from executor.source_managers.bash_source_manager import BashSourceManager
 from executor.source_managers.documentation_source_manager import DocumentationSourceManager
 from executor.source_managers.elastic_search_source_manager import ElasticSearchSourceManager
 from executor.source_managers.gcm_source_manager import GcmSourceManager
+from executor.source_managers.slack_source_manager import SlackSourceManager
 from executor.source_managers.smtp_source_manager import SMTPSourceManager
 from executor.source_managers.gke_source_manager import GkeSourceManager
 from executor.source_managers.grafana_loki_source_manager import GrafanaLokiSourceManager
@@ -137,5 +138,6 @@ playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
 playbook_source_facade.register(Source.KUBERNETES, KubernetesSourceManager())
 playbook_source_facade.register(Source.SMTP, SMTPSourceManager())
+playbook_source_facade.register(Source.SLACK, SlackSourceManager())
 
 playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())
