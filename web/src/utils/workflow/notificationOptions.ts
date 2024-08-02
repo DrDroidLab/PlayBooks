@@ -1,4 +1,4 @@
-import { NotificationOptionTypes } from "../notificationOptionTypes.ts";
+import { NotificationOptionTypes } from "./notificationOptionTypes.ts";
 
 export const notificationOptions = [
   {

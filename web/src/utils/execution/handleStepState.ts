@@ -41,7 +41,7 @@ function handleStepState(stepId: string): StepStateType {
   }
 
   const taskWithError = stepTasks?.findIndex(
-    (task) => task?.ui_requirement.outputError,
+    (task) => task?.ui_requirement.showError,
   );
   const logWithError = logs?.find((log) => !log);
 

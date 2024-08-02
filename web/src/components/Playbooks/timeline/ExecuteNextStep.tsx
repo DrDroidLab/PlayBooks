@@ -2,10 +2,10 @@ import React from "react";
 import { executeStep } from "../../../utils/execution/executeStep.ts";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { PlayArrowRounded } from "@mui/icons-material";
-import useCurrentStep from "../../../hooks/useCurrentStep.ts";
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { useSelector } from "react-redux";
 import { Task } from "../../../types/index.ts";
+import useCurrentStep from "../../../hooks/playbooks/step/useCurrentStep.ts";
 
 function ExecuteNextStep({ stepId, refetch }) {
   const [step, id] = useCurrentStep(stepId);

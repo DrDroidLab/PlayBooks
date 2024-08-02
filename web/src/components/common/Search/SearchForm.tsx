@@ -1,5 +1,4 @@
-import React from "react";
-import useSearch from "../../../hooks/useSearch.ts";
+import useSearch from "../../../hooks/common/useSearch";
 import { useDispatch } from "react-redux";
 import { handleKeyDown } from "../../../utils/search/handleKeyDown.ts";
 import { setIsOpen } from "../../../store/features/search/searchSlice.ts";

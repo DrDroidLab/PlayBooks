@@ -3,7 +3,7 @@ import hljs from "highlight.js/lib/core";
 import json from "highlight.js/lib/languages/json";
 import "highlight.js/styles/github.css";
 import { ContentCopyRounded } from "@mui/icons-material";
-import unsecuredCopyToClipboard from "../../../utils/unsecuredCopy.ts";
+import unsecuredCopyToClipboard from "../../../utils/common/unsecuredCopy.ts";
 
 hljs.registerLanguage("json", json);
 

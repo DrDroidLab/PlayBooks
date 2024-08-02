@@ -85,7 +85,8 @@ class BashCommandOutputResultEvaluator(TaskResultEvaluator):
         case_sensitive = bash_command_result_rule.case_sensitive.value if bash_command_result_rule.case_sensitive else False
         threshold = bash_command_result_rule.threshold.value
         try:
-            evaluation, value = bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_sensitive, bash_command_result)
+            evaluation, value = bash_command_grep_counter_rule_evaluator(operator, threshold, pattern, case_sensitive,
+                                                                         bash_command_result)
             return evaluation, {'value': value}
         except Exception as e:
             logger.error(f'Error while evaluating bash command output rule: {e}')

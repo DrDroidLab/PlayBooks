@@ -1,7 +1,7 @@
 import React from "react";
 import DropdownOptions from "../../common/DropdownOptions/index.tsx";
 import DropdownTitle from "../../common/DropdownTitle/index.tsx";
-import useDropdown from "../../../hooks/useDropdown.ts";
+import useDropdown from "../../../hooks/common/useDropdown.ts";
 
 type DropdownInputType = {
   value: string;

@@ -1,6 +1,6 @@
 import { currentPlaybookSelector } from "../../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../../store/index.ts";
-import { ExecutionStatus } from "../../../types/ExecutionStatus.ts";
+import { ExecutionStatus } from "../../../types/playbooks/ExecutionStatus.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import extractExecutionRelations from "./execution/extractExecutionRelations.ts";
 import extractExecutionTasks from "./execution/extractExecutionTasks.ts";

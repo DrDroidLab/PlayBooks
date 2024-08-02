@@ -1,13 +1,18 @@
-import getCurrentTask from "../getCurrentTask.ts";
+import getCurrentTask from "./task/getCurrentTask.ts";
 
 function handleTaskBorderColor(taskId: string) {
   const [task] = getCurrentTask(taskId);
 
-  if (task?.ui_requirement?.outputError) {
+  if (task?.ui_requirement?.showError) {
     return "red";
   }
 
-  if (task?.ui_requirement?.output?.data) {
+  if (
+    task?.ui_requirement?.outputs?.length > 0 &&
+    (task?.ui_requirement?.outputs as any[])?.every((e) => {
+      return e.error !== undefined;
+    })
+  ) {
     return "green";
   }
 }
