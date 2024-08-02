@@ -1,6 +1,7 @@
 import logging
 from typing import Dict
 
+from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue
 
 from connectors.models import integrations_connector_type_display_name_map
@@ -90,7 +91,8 @@ class PlaybookSourceFacade:
                                                         connector_options=connector_options))
         return source_options
 
-    def execute_task(self, account_id, time_range, global_variable_set: Dict, task: PlaybookTask) -> PlaybookTaskResult:
+    def execute_task(self, account_id, time_range, global_variable_set: Struct,
+                     task: PlaybookTask) -> PlaybookTaskResult:
         source = task.source
         if source not in self._map:
             raise ValueError(f'No executor found for source: {source}')
