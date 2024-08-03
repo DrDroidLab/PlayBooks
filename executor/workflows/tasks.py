@@ -136,7 +136,7 @@ def workflow_scheduler():
                         execution_configuration.global_variable_set.items():
                     execution_global_variable_set.update(proto_to_dict(execution_configuration.global_variable_set))
                 if event_context and isinstance(event_context, dict):
-                    event_context = {f"${key}": value for key, value in event_context.items()}
+                    event_context = {f"${k}" if not k.startswith("$") else k: v for k, v in event_context.items()}
                     execution_global_variable_set.update(event_context)
                 playbook_execution = create_playbook_execution(account, wf_execution_proto.time_range, pb_id,
                                                                playbook_run_uuid, wf_execution_proto.created_by.value,
