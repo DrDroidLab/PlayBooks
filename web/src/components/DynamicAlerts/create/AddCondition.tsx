@@ -27,7 +27,7 @@ function AddCondition() {
   }, [relation?.id, parentStep?.id]);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 border p-2 rounded">
       <p className="font-bold text-violet-500 text-sm">Conditions</p>
       <CommonConditionTop />
 

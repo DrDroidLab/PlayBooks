@@ -57,9 +57,7 @@ function CreateDynamicAlert() {
           className="!w-[200px]"
         />
         <AddMetric />
-        <hr />
         <AddCondition />
-        <hr />
         <AddNotification />
 
         <CustomButton
