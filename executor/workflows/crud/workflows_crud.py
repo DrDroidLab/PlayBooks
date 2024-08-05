@@ -72,7 +72,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     elif not update_mode:
         try:
             db_playbooks = []
-            for pb in db_playbooks:
+            for pb in playbooks:
                 saved_pb = update_or_create_db_playbook(account, created_by, pb)
                 db_playbooks.append(saved_pb)
         except Exception as e:
