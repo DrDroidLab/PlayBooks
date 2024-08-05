@@ -1,4 +1,3 @@
-import React from "react";
 import { InputTypes } from "../../types/inputs/index.ts";
 
 export const scheduleOptions = [
@@ -26,7 +25,7 @@ export const scheduleOptions = [
             )
           </>
         ),
-        inputType: InputTypes.TEXT,
+        inputType: InputTypes.CRON,
         placeholder: "Enter Cron Schedule",
       },
       {

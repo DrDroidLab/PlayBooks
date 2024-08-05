@@ -26,7 +26,7 @@ function ConditionInputs({ rule, ruleIndex }: ConditionInputsPropTypes) {
   return (
     <div className="flex flex-wrap gap-2">
       <CustomInput
-        inputType={InputTypes.TEXT}
+        inputType={InputTypes.CRON}
         error={undefined}
         options={operationOptions}
         value={ruleData.rule}
