@@ -6,17 +6,22 @@ import handleTaskTypeOptions from "../../../utils/conditionals/handleTaskTypeOpt
 import StepConditions from "../../AddStepCondition/StepConditions";
 import { useEffect } from "react";
 import { setAdditionalState } from "../../../store/features/drawers/drawersSlice";
+import ConditionRuleSet from "./ConditionRuleSet";
+import CustomButton from "../../common/CustomButton";
+import { AddRounded } from "@mui/icons-material";
+import { addStepRuleSetForDynamicAlert } from "../../../store/features/playbook/playbookSlice";
 
 function AddCondition() {
   const dispatch = useDispatch();
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const step_relations = currentPlaybook?.step_relations ?? [];
   const parentStep = currentPlaybook?.steps?.[0];
-
-  const taskTypeOptions = handleTaskTypeOptions(parentStep);
   const relation = step_relations?.[0];
   const condition = relation?.condition;
-  const ruleSet = condition?.rule_sets?.[0];
+
+  const handleAddRuleSet = () => {
+    dispatch(addStepRuleSetForDynamicAlert());
+  };
 
   useEffect(() => {
     dispatch(
@@ -30,20 +35,12 @@ function AddCondition() {
   return (
     <div className="flex flex-col gap-1 border p-2 rounded">
       <p className="font-bold text-violet-500 text-sm">Conditions</p>
-      <CommonConditionTop />
-
-      {ruleSet?.rules?.map((condition, i) => (
-        <Condition
-          key={i}
-          i={i}
-          condition={condition}
-          taskTypeOptions={taskTypeOptions}
-          showDelete={false}
-        />
+      {condition?.rule_sets?.map((_, i) => (
+        <ConditionRuleSet ruleSetIndex={i} key={i} />
       ))}
-      {ruleSet?.step_rules?.map((rule, i) => (
-        <StepConditions rule={rule} ruleIndex={i} showDelete={false} />
-      ))}
+      <CustomButton className="w-fit" onClick={handleAddRuleSet}>
+        <AddRounded fontSize="inherit" /> Condition
+      </CustomButton>
     </div>
   );
 }

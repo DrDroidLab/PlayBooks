@@ -94,12 +94,5 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     },
   };
 
-  playbookSlice.caseReducers.addRule(state, {
-    payload: { id: relationId, ruleSetIndex: 0 },
-    type: "",
-  });
-  playbookSlice.caseReducers.addStepRule(state, {
-    payload: { id: relationId, ruleSetIndex: 0 },
-    type: "",
-  });
+  playbookSlice.caseReducers.addStepRuleSetForDynamicAlert(state);
 };
