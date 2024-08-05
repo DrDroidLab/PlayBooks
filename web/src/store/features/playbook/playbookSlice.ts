@@ -43,6 +43,7 @@ export const playbookSlice = createSlice({
     addRelation: Actions.addRelation,
     addStepRule: Actions.addStepRule,
     createPlaybookForDynamicAlert: Actions.createPlaybookForDynamicAlert,
+    addStepRuleSet: Actions.addStepRuleSet,
   },
 });
 

@@ -7,8 +7,8 @@ function ConditionDrawer() {
   return (
     <div className="p-2">
       <CommonConditionTop />
-      <AddCondition />
       <AddStepCondition />
+      <AddCondition />
       <CommonConditionBottom />
     </div>
   );

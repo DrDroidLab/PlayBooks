@@ -26,34 +26,12 @@ function ConditionInputs({ rule, ruleIndex }: ConditionInputsPropTypes) {
   return (
     <div className="flex flex-wrap gap-2">
       <CustomInput
-        inputType={InputTypes.DROPDOWN}
-        error={undefined}
-        options={operationOptions}
-        value={ruleData.operator}
-        label="Operator"
-        handleChange={(id: string) => handleChange(id, `${ruleType}.operator`)}
-        disabled={!!isPrefetched}
-      />
-      <CustomInput
         inputType={InputTypes.TEXT}
         error={undefined}
         options={operationOptions}
         value={ruleData.rule}
-        label="CRON Rule"
         placeholder={`Enter CRON Rule`}
         handleChange={(id: string) => handleChange(id, `${ruleType}.rule`)}
-        disabled={!!isPrefetched}
-      />
-      <CustomInput
-        inputType={InputTypes.TEXT}
-        error={undefined}
-        type="number"
-        options={operationOptions}
-        value={ruleData.within_seconds}
-        label="Within Seconds"
-        handleChange={(id: string) =>
-          handleChange(id, `${ruleType}.within_seconds`)
-        }
         disabled={!!isPrefetched}
       />
     </div>

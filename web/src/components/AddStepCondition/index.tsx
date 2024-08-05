@@ -8,28 +8,23 @@ import StepConditions from "./StepConditions.tsx";
 
 function AddStepCondition() {
   const { id } = useSelector(additionalStateSelector);
-  const { step_rules, addNewStepRule } = useEdgeConditions(id);
+  const { addNewStepRule, step_rules } = useEdgeConditions(id);
   const isPrefetched = useIsPrefetched();
 
   return (
-    <>
-      <h1 className="text-violet-500 font-semibold text-xs flex justify-between my-2">
-        <span>Add Step Condition</span>
-      </h1>
-      <hr />
-
+    <div className="my-4">
       {step_rules?.map((rule, i) => (
         <StepConditions rule={rule} ruleIndex={i} />
       ))}
 
-      {!isPrefetched && (
+      {!isPrefetched && step_rules.length === 0 && (
         <>
           <CustomButton className="!w-fit my-2" onClick={addNewStepRule}>
-            <Add fontSize="inherit" /> Add
+            <Add fontSize="inherit" /> Add time condition
           </CustomButton>
         </>
       )}
-    </>
+    </div>
   );
 }
 

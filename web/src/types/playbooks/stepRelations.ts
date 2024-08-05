@@ -49,9 +49,13 @@ export type StepRule = {
   type: StepRuleTypes;
 } & StepRuleType;
 
-type StepCondition = {
+export type ConditionRuleSet = {
   rules: ConditionRule[];
-  step_rules: StepRule[];
+  step_rules?: StepRule[];
+};
+
+type StepCondition = {
+  rule_sets: ConditionRuleSet[];
   logical_operator: LogicalOperator;
 };
 
