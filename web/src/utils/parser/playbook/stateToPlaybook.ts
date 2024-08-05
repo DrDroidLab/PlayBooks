@@ -63,14 +63,17 @@ function stateToPlaybook(): Playbook | null {
     condition: relation.condition
       ? {
           ...relation.condition,
-          rules:
-            relation.condition?.rules?.map((rule) => ({
-              ...rule,
-              task: {
-                reference_id: rule.task.reference_id ?? "",
-                id: checkId(rule.task.id ?? ""),
-              },
-            })) ?? [],
+          rule_sets: relation.condition.rule_sets?.map((ruleSet) => ({
+            ...ruleSet,
+            rules:
+              ruleSet.rules?.map((rule) => ({
+                ...rule,
+                task: {
+                  reference_id: rule.task.reference_id ?? "",
+                  id: checkId(rule.task.id ?? ""),
+                },
+              })) ?? [],
+          })),
         }
       : undefined,
   }));

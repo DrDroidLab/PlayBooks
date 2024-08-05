@@ -22,7 +22,7 @@ export const addStepRule = (
   );
   if (!relation || !relation.condition) return;
   if (!relation.condition.rule_sets)
-    playbookSlice.caseReducers.addRule(state, {
+    playbookSlice.caseReducers.addStepRuleSet(state, {
       payload: { id },
       type: "",
     });

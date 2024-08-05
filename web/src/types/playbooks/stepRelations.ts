@@ -52,6 +52,7 @@ export type StepRule = {
 export type ConditionRuleSet = {
   rules: ConditionRule[];
   step_rules?: StepRule[];
+  logical_operator: LogicalOperator;
 };
 
 type StepCondition = {

@@ -18,15 +18,17 @@ import { handleRelationRuleChange } from "../../utils/conditionals/handleRelatio
 const playbookKey = "step_relations";
 
 function useEdgeConditions(id: string) {
+  const ruleSetIndex = 0;
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const relations = currentPlaybook?.step_relations ?? [];
   const relation = relations.find((r) => r.id === id);
   const edgeIndex = relations?.findIndex((e) => e.id === id);
   const edge = relations?.length > 0 ? relations[edgeIndex] : undefined;
-  const conditions = edge?.condition?.rules ?? [];
+  const ruleSet = edge?.condition?.rule_sets?.[ruleSetIndex];
+  const conditions = ruleSet?.rules ?? [];
   const condition = relation?.condition;
-  const rules = condition?.rules ?? [];
-  const step_rules = condition?.step_rules ?? [];
+  const rules = ruleSet?.rules ?? [];
+  const step_rules = ruleSet?.step_rules ?? [];
   const globalRule = edge?.condition?.logical_operator ?? ruleOptions[0].id;
   const dispatch = useDispatch();
 
@@ -43,19 +45,20 @@ function useEdgeConditions(id: string) {
 
   const addNewRule = () => {
     if (!relation?.id) return;
-    dispatch(addRule({ id: relation?.id }));
+    dispatch(addRule({ id: relation?.id, ruleSetIndex }));
   };
 
   const addNewStepRule = () => {
     if (!relation?.id) return;
-    dispatch(addStepRule({ id: relation?.id }));
+    dispatch(addStepRule({ id: relation?.id, ruleSetIndex }));
   };
 
   const deleteRule = (conditionIndex: number) => {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
     if (!tempEdge.condition) return;
-    tempEdge.condition.rules = tempEdge.condition?.rules.filter(
+    const tempRuleSet = tempEdge.condition.rule_sets?.[ruleSetIndex];
+    tempRuleSet.rules = tempRuleSet?.rules.filter(
       (c, i) => i !== conditionIndex,
     );
     setPlaybookRelations(temp);
@@ -65,7 +68,8 @@ function useEdgeConditions(id: string) {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
     if (!tempEdge.condition) return;
-    tempEdge.condition.step_rules = tempEdge.condition?.step_rules.filter(
+    const tempRuleSet = tempEdge.condition.rule_sets?.[ruleSetIndex];
+    tempRuleSet.step_rules = tempRuleSet?.step_rules?.filter(
       (_, i) => i !== conditionIndex,
     );
     setPlaybookRelations(temp);

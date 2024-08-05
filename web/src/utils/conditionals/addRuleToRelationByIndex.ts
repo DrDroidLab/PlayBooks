@@ -12,13 +12,18 @@ export function addRuleToRelationByIndex(
   value: any,
   index: number,
   ruleIndex: number,
+  ruleSetIndex: number = 0,
 ) {
   const currentPlaybook = currentPlaybookSelector(store.getState());
   const relations = currentPlaybook?.[playbookKey];
   const edges = structuredClone(relations ?? []);
   if (edges.length === 0) return;
   if (!edges[index] || !edges[index].condition) return;
-  setNestedValue(edges[index].condition.rules[ruleIndex], key, value);
+  setNestedValue(
+    edges[index]?.condition?.rule_sets?.[ruleSetIndex]?.rules?.[ruleIndex],
+    key,
+    value,
+  );
   store.dispatch(
     setCurrentPlaybookKey({
       key: playbookKey,

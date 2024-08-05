@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { PlaybookUIState } from "../../../../../types";
+import { LogicalOperator, PlaybookUIState } from "../../../../../types";
 
 export const addStepRuleSet = (
   state: PlaybookUIState,
@@ -17,5 +17,6 @@ export const addStepRuleSet = (
   if (!relation.condition.rule_sets) relation.condition.rule_sets = [];
   relation.condition.rule_sets.push({
     rules: [],
+    logical_operator: LogicalOperator.AND_LO,
   });
 };

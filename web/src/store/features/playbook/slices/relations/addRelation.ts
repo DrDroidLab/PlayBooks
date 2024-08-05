@@ -4,6 +4,7 @@ import {
   PlaybookUIState,
   StepRelation,
 } from "../../../../../types/index.ts";
+import { playbookSlice } from "../../playbookSlice.ts";
 
 type AddRelationArgType = {
   source: string;
@@ -26,16 +27,20 @@ export const addRelation = (
   if (!parent || !child || existingEdge) return;
 
   const newRelation: StepRelation = {
-    id: `edge-${source}-${target}`,
+    id,
     child,
     parent,
     condition: {
       logical_operator: LogicalOperator.AND_LO,
-      rules: [],
-      step_rules: [],
+      rule_sets: [],
     },
     ui_requirement: {},
   };
+
+  playbookSlice.caseReducers.addStepRuleSet(state, {
+    payload: { id },
+    type: "",
+  });
 
   currentPlaybook?.step_relations.push(newRelation);
 };

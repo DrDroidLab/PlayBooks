@@ -16,6 +16,7 @@ function AddCondition() {
   const taskTypeOptions = handleTaskTypeOptions(parentStep);
   const relation = step_relations?.[0];
   const condition = relation?.condition;
+  const ruleSet = condition?.rule_sets?.[0];
 
   useEffect(() => {
     dispatch(
@@ -31,7 +32,7 @@ function AddCondition() {
       <p className="font-bold text-violet-500 text-sm">Conditions</p>
       <CommonConditionTop />
 
-      {condition?.rules?.map((condition, i) => (
+      {ruleSet?.rules?.map((condition, i) => (
         <Condition
           key={i}
           i={i}
@@ -40,7 +41,7 @@ function AddCondition() {
           showDelete={false}
         />
       ))}
-      {condition?.step_rules?.map((rule, i) => (
+      {ruleSet?.step_rules?.map((rule, i) => (
         <StepConditions rule={rule} ruleIndex={i} showDelete={false} />
       ))}
     </div>
