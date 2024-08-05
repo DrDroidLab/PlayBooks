@@ -108,9 +108,13 @@ message PlaybookTaskExecutionLog {
 
 // Playbook Step Protos
 message PlaybookStepResultCondition {
+  message RuleSet {
+    LogicalOperator logical_operator = 1;
+    repeated PlaybookTaskResultRule rules = 2;
+    repeated PlaybookStepResultRule step_rules = 3;
+  }
   LogicalOperator logical_operator = 1;
-  repeated PlaybookTaskResultRule rules = 2;
-  repeated PlaybookStepResultRule step_rules = 3;
+  repeated RuleSet rule_sets = 2;
 }
 
 message PlaybookStep {
