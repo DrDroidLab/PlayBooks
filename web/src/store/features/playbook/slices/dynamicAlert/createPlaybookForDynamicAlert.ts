@@ -78,8 +78,13 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     global_variable_set: {},
     step_relations: [relation],
     steps: [
-      { ...emptyStep, id: stepId, tasks: [taskId] },
-      { ...emptyStep, id: notificationStepId, tasks: [notificationTaskId] },
+      { ...emptyStep, id: stepId, tasks: [taskId], reference_id: stepRefId },
+      {
+        ...emptyStep,
+        id: notificationStepId,
+        tasks: [notificationTaskId],
+        reference_id: notificationStepRefId,
+      },
     ],
     ui_requirement: {
       isExisting: false,
