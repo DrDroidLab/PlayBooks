@@ -40,4 +40,6 @@ export const components = {
   [PageKeys.DYNAMIC_ALERTS]: () => import("./pages/dynamicAlerts"),
   [PageKeys.CREATE_DYNAMIC_ALERTS]: () =>
     import("./pages/dynamicAlerts/CreateDynamicAlert"),
+  [PageKeys.DYNAMIC_ALERT_VIEW]: () =>
+    import("./pages/dynamicAlerts/CreateDynamicAlert"),
 };

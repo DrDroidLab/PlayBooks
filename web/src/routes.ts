@@ -30,5 +30,6 @@ export const routes = {
   [PageKeys.CREATE_DYNAMIC_ALERTS]: "/dynamic-alerts/create",
   [PageKeys.INVITE_TEAM]: "/settings/invite-team",
   [PageKeys.SUPPORT]: "/support",
+  [PageKeys.DYNAMIC_ALERT_VIEW]: "/dynamic-alerts/:alert_id",
   [PageKeys.NOT_FOUND]: "*",
 };
