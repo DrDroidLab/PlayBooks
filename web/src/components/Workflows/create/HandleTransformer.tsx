@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
 import json from "highlight.js/lib/languages/json";
@@ -12,6 +12,7 @@ import { useTestTransformerMutation } from "../../../store/features/workflow/api
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice.ts";
 import CodeAccordion from "../../common/CodeAccordion/index.tsx";
 import { LanguageTypes } from "../../common/CodeAccordion/types/index.ts";
+import { useLazyGetSearchTriggersQuery } from "../../../store/features/triggers/api/searchTriggerApi.ts";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
@@ -26,19 +27,36 @@ function HandleTransformer() {
   const [triggerTestTransformer, { isLoading, data }] =
     useTestTransformerMutation();
   const outputRef = useRef<HTMLDivElement>(null);
+  const [triggerSearch, { data: alertData }] = useLazyGetSearchTriggersQuery();
+
+  useEffect(() => {
+    triggerSearch(1, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkflow]);
+
+  const sampleInputSlackMessage = alertData?.alerts?.[0]?.alert_json;
 
   const testCode = async () => {
     if (isLoading) return;
-    await triggerTestTransformer().unwrap();
-    dispatch(
-      showSnackbar({
-        message: "Test connection successful",
-        type: "success",
-      }),
-    );
-    outputRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    try {
+      await triggerTestTransformer().unwrap();
+      dispatch(
+        showSnackbar({
+          message: "Test connection successful",
+          type: "success",
+        }),
+      );
+      outputRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+    } catch (e: any) {
+      dispatch(
+        showSnackbar({
+          message: e.message ?? "There was an error testing the transformer",
+          type: "error",
+        }),
+      );
+    }
   };
 
   const setCode = (value: string) => {
@@ -48,6 +66,12 @@ function HandleTransformer() {
   const setExampleInput = (value: string) => {
     dispatch(setCurrentWorkflowKey({ key: exampleInputKey, value }));
   };
+
+  useEffect(() => {
+    if (sampleInputSlackMessage) {
+      setExampleInput(JSON.stringify(sampleInputSlackMessage, null, 2));
+    }
+  }, [sampleInputSlackMessage]);
 
   return (
     <div className="my-2 flex flex-col gap-2">
@@ -60,7 +84,11 @@ function HandleTransformer() {
 
       <CodeAccordion
         code={exampleInput}
-        label="Test your transformer function against a sample trigger json payload"
+        label={
+          sampleInputSlackMessage
+            ? "Test your transformer function against a sample slack message"
+            : "Test your transformer function against a sample json payload"
+        }
         language={LanguageTypes.JSON}
         onValueChange={setExampleInput}>
         {data && (

@@ -49,7 +49,7 @@ const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
           {label}
         </p>
         {isOpen && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 !text-xs">
             <Editor
               value={value}
               className={`${className} border rounded outline-none`}
@@ -61,10 +61,6 @@ const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
               }
               disabled={disabled}
               padding={10}
-              style={{
-                fontFamily: '"Fira code", "Fira Mono", monospace',
-                fontSize: 12,
-              }}
             />
             {children}
           </div>
