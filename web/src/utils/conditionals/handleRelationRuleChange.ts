@@ -8,13 +8,14 @@ export const handleRelationRuleChange = (
   index: number,
   ruleIndex: number,
   ruleType: RuleType,
+  ruleSetIndex: number = 0,
 ) => {
   switch (ruleType) {
     case RuleType.RULE:
-      addRuleToRelationByIndex(key, value, index, ruleIndex);
+      addRuleToRelationByIndex(key, value, index, ruleIndex, ruleSetIndex);
       break;
     case RuleType.STEP_RULE:
-      addStepRuleToRelationByIndex(key, value, index, ruleIndex);
+      addStepRuleToRelationByIndex(key, value, index, ruleIndex, ruleSetIndex);
       break;
     default:
       return;

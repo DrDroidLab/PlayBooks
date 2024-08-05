@@ -81,7 +81,14 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
     ruleIndex: number,
     ruleType: RuleType,
   ) => {
-    handleRelationRuleChange(key, value, edgeIndex, ruleIndex, ruleType);
+    handleRelationRuleChange(
+      key,
+      value,
+      edgeIndex,
+      ruleIndex,
+      ruleType,
+      ruleSetIndex,
+    );
   };
 
   const handleGlobalRule = (value: string) => {
