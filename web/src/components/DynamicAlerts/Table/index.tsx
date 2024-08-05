@@ -26,10 +26,9 @@ const DynamicAlertsTable = ({ data }) => {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Created At</TableCell>
-            <TableCell>Created By</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell className="!font-bold">Name</TableCell>
+            <TableCell className="!font-bold">Created At</TableCell>
+            <TableCell className="!font-bold">Created By</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -40,22 +39,17 @@ const DynamicAlertsTable = ({ data }) => {
                 "&:last-child td, &:last-child th": { border: 0 },
               }}>
               <TableCell component="td" scope="row">
-                <Link to={`/playbooks/${item.id}`}>{item.name}</Link>
+                <Link
+                  to={`/dynamic-alerts/${item.id}`}
+                  className="text-violet-500 underline">
+                  {item.name}
+                </Link>
               </TableCell>
               <TableCell component="td" scope="row">
                 {renderTimestamp(item.created_at)}
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.created_by}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                <div className="flex gap-2">
-                  <CustomButton onClick={handleDeleteDynamicAlert}>
-                    <Tooltip title="Remove this Alert">
-                      <DeleteIcon />
-                    </Tooltip>
-                  </CustomButton>
-                </div>
               </TableCell>
             </TableRow>
           ))}

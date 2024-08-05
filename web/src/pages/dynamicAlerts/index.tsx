@@ -7,9 +7,14 @@ import TableSkeleton from "../../components/Skeleton/TableLoader";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
 import DynamicAlertsTable from "../../components/DynamicAlerts/Table";
+import { useSearchQuery } from "../../store/features/search/api/searchApi";
+import { selectedQuery } from "../../utils/dynamicAlerts/selectedQuery";
+
+const context = "WORKFLOW";
 
 function DynamicAlerts() {
   const navigate = useNavigate();
+  const { data } = useSearchQuery({ context, selected: selectedQuery });
 
   const handleCreateDynamicAlert = () => {
     navigate(routes.CREATE_DYNAMIC_ALERTS);
@@ -27,7 +32,7 @@ function DynamicAlerts() {
         <SuspenseLoader loading={false} loader={<TableSkeleton />}>
           <PaginatedTable
             renderTable={DynamicAlertsTable}
-            data={[]}
+            data={data?.workflow ?? []}
             total={0}
           />
         </SuspenseLoader>
