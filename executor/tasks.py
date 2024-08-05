@@ -74,7 +74,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         task_interpretations = []
         for task_proto in tasks:
             if not global_variable_set:
-                if task_proto.global_variable_set.items():
+                if task_proto.global_variable_set and task_proto.global_variable_set.items():
                     global_variable_set = proto_to_dict(task_proto.global_variable_set)
                     global_variable_set_proto = task_proto.global_variable_set
                 else:
@@ -215,7 +215,7 @@ def execute_playbook_step_with_children_impl(tr: TimeRange, account: Account, st
 def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto, global_variable_set=None):
     try:
         if not global_variable_set:
-            if playbook.global_variable_set.items():
+            if playbook.global_variable_set and playbook.global_variable_set.items():
                 global_variable_set = proto_to_dict(playbook.global_variable_set)
         step_execution_logs = []
         step_id_def_map = get_playbook_steps_id_def_map(playbook.steps)
@@ -259,8 +259,11 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
     pb_proto = pb.proto
     try:
-        execution_global_variable_set = proto_to_dict(pb_proto.global_variable_set)
-        if pb_execution.execution_global_variable_set:
+        execution_global_variable_set = None
+        if pb_proto.global_variable_set and pb_proto.global_variable_set.items():
+            execution_global_variable_set = proto_to_dict(pb_proto.global_variable_set)
+        if pb_execution.execution_global_variable_set and pb_execution.execution_global_variable_set.items():
+            execution_global_variable_set = {} if not execution_global_variable_set else execution_global_variable_set
             execution_global_variable_set.update(pb_execution.execution_global_variable_set)
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
                                                                  execution_global_variable_set)
