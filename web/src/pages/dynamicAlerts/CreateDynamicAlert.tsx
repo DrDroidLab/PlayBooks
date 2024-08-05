@@ -17,6 +17,8 @@ import { showSnackbar } from "../../store/features/snackbar/snackbarSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import useDynamicAlertsKey from "../../hooks/dynamicAlerts/useDynamicAlertsKey";
 import { useCreateDynamicAlertMutation } from "../../store/features/dynamicAlerts/api";
+import { useLazyGetWorkflowQuery } from "../../store/features/workflow/api";
+import Loading from "../../components/common/Loading";
 
 function CreateDynamicAlert() {
   const { alert_id: workflowId } = useParams();
@@ -25,6 +27,8 @@ function CreateDynamicAlert() {
   const [triggerSave, { isLoading }] = useCreateDynamicAlertMutation();
   usePlaybookBuilderOptionsQuery();
   const [name, setName] = useDynamicAlertsKey("name");
+  const [triggerGetWorkflow, { isLoading: workflowLoading }] =
+    useLazyGetWorkflowQuery();
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -45,6 +49,14 @@ function CreateDynamicAlert() {
       dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
     }
   };
+
+  useEffect(() => {
+    if (workflowId != null) {
+      triggerGetWorkflow(workflowId);
+    }
+  }, [workflowId]);
+
+  if (isLoading) return <Loading />;
 
   return (
     <div>
