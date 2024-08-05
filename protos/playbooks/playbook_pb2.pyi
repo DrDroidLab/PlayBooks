@@ -322,22 +322,39 @@ class PlaybookStepResultCondition(google.protobuf.message.Message):
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    @typing_extensions.final
+    class RuleSet(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
+        RULES_FIELD_NUMBER: builtins.int
+        STEP_RULES_FIELD_NUMBER: builtins.int
+        logical_operator: protos.base_pb2.LogicalOperator.ValueType
+        @property
+        def rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
+        @property
+        def step_rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule]: ...
+        def __init__(
+            self,
+            *,
+            logical_operator: protos.base_pb2.LogicalOperator.ValueType = ...,
+            rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
+            step_rules: collections.abc.Iterable[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule] | None = ...,
+        ) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules", "step_rules", b"step_rules"]) -> None: ...
+
     LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
-    RULES_FIELD_NUMBER: builtins.int
-    STEP_RULES_FIELD_NUMBER: builtins.int
+    RULE_SETS_FIELD_NUMBER: builtins.int
     logical_operator: protos.base_pb2.LogicalOperator.ValueType
     @property
-    def rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
-    @property
-    def step_rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule]: ...
+    def rule_sets(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookStepResultCondition.RuleSet]: ...
     def __init__(
         self,
         *,
         logical_operator: protos.base_pb2.LogicalOperator.ValueType = ...,
-        rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
-        step_rules: collections.abc.Iterable[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule] | None = ...,
+        rule_sets: collections.abc.Iterable[global___PlaybookStepResultCondition.RuleSet] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules", "step_rules", b"step_rules"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rule_sets", b"rule_sets"]) -> None: ...
 
 global___PlaybookStepResultCondition = PlaybookStepResultCondition
 

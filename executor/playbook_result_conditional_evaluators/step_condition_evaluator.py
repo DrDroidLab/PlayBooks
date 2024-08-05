@@ -36,47 +36,57 @@ class StepConditionEvaluator:
                  playbook_task_execution_log: [PlaybookTaskExecutionLog]) -> (bool, Dict):
         if not condition:
             return True, {}
-        rules: [PlaybookTaskResultRule] = condition.rules
-        all_evaluations = []
-        all_evaluation_results = []
-        for r in rules:
-            rule_task_id = r.task.id.value
-            task_result = next(
-                (tr.result for tr in playbook_task_execution_log if tr.task.id.value == rule_task_id), None)
-            if task_result:
-                task_result_evaluator = self._map.get(task_result.type)
-                if not task_result_evaluator:
-                    raise ValueError(f"Task result type {task_result.type} not supported")
-                evaluation, evaluation_result = task_result_evaluator.evaluate(r, task_result)
+        rule_sets: [PlaybookStepResultCondition.RuleSet] = condition.rule_sets
+        rs_logical_operator = condition.logical_operator
+        all_rs_evaluations = []
+        all_rs_evaluation_results = []
+        for rs in rule_sets:
+            rules: [PlaybookTaskResultRule] = rs.rules
+            all_evaluations = []
+            for r in rules:
+                rule_task_id = r.task.id.value
+                task_result = next(
+                    (tr.result for tr in playbook_task_execution_log if tr.task.id.value == rule_task_id), None)
+                if task_result:
+                    task_result_evaluator = self._map.get(task_result.type)
+                    if not task_result_evaluator:
+                        raise ValueError(f"Task result type {task_result.type} not supported")
+                    evaluation, evaluation_result = task_result_evaluator.evaluate(r, task_result)
+                    all_evaluations.append(evaluation)
+                    all_rs_evaluation_results.append(evaluation_result)
+
+            step_rules: [PlaybookTaskResultRule] = rs.step_rules
+            for sr in step_rules:
+                step_result_evaluator = self._map.get(sr.type)
+                if not step_result_evaluator:
+                    raise ValueError(f"Step result type {PlaybookStepResultRule.Type.Name(sr.type)} not supported")
+                evaluation = step_result_evaluator.evaluate(sr, playbook_task_execution_log)
                 all_evaluations.append(evaluation)
-                all_evaluation_results.append(evaluation_result)
+            logical_operator = rs.logical_operator
+            if logical_operator == LogicalOperator.AND_LO:
+                all_rs_evaluations.append(all(all_evaluations))
+            elif logical_operator == LogicalOperator.OR_LO:
+                all_rs_evaluations.append(any(all_evaluations))
+            elif logical_operator == LogicalOperator.NOT_LO and len(all_evaluations) == 1:
+                all_rs_evaluations.append(not all(all_evaluations))
+            elif logical_operator == LogicalOperator.NOT_LO:
+                if len(all_evaluations) > 1:
+                    raise ValueError(f"Logical operator {logical_operator} not supported for multiple evaluations")
+                all_rs_evaluations.append(all(all_evaluations))
+            elif logical_operator == LogicalOperator.UNKNOWN_LO:
+                if len(all_evaluations) == 1:
+                    all_rs_evaluations.append(all_evaluations[0])
+                elif len(all_evaluations) == 0:
+                    all_rs_evaluations.append(True)
+            else:
+                raise ValueError(f"Logical operator {logical_operator} not supported")
 
-        step_rules: [PlaybookTaskResultRule] = condition.step_rules
-        for sr in step_rules:
-            step_result_evaluator = self._map.get(sr.type)
-            if not step_result_evaluator:
-                raise ValueError(f"Step result type {PlaybookStepResultRule.Type.Name(sr.type)} not supported")
-            evaluation = step_result_evaluator.evaluate(sr, playbook_task_execution_log)
-            all_evaluations.append(evaluation)
-
-        logical_operator = condition.logical_operator
-        if logical_operator == LogicalOperator.AND_LO:
-            return all(all_evaluations), {'evaluation_results': all_evaluation_results}
-        elif logical_operator == LogicalOperator.OR_LO:
-            return any(all_evaluations), {'evaluation_results': all_evaluation_results}
-        elif logical_operator == LogicalOperator.NOT_LO and len(all_evaluations) == 1:
-            return not all(all_evaluations), {'evaluation_results': all_evaluation_results}
-        elif logical_operator == LogicalOperator.NOT_LO:
-            if len(all_evaluations) > 1:
-                raise ValueError(f"Logical operator {logical_operator} not supported for multiple evaluations")
-            return not all(all_evaluations), {'evaluation_results': all_evaluation_results}
-        elif logical_operator == LogicalOperator.UNKNOWN_LO:
-            if len(all_evaluations) == 1:
-                return all_evaluations[0], {'evaluation_results': all_evaluation_results}
-            elif len(all_evaluations) == 0:
-                return True, {}
+        if rs_logical_operator == LogicalOperator.AND_LO:
+            return all(all_rs_evaluations), all_rs_evaluation_results
+        elif rs_logical_operator == LogicalOperator.OR_LO:
+            return any(all_rs_evaluations), all_rs_evaluation_results
         else:
-            raise ValueError(f"Logical operator {logical_operator} not supported")
+            raise ValueError(f"Logical operator {rs_logical_operator} not supported")
 
 
 step_condition_evaluator = StepConditionEvaluator()
