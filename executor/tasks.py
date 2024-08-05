@@ -259,8 +259,11 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
     pb_proto = pb.proto
     try:
-        execution_global_variable_set = proto_to_dict(pb_proto.global_variable_set)
-        if pb_execution.execution_global_variable_set:
+        execution_global_variable_set = None
+        if pb_proto.global_variable_set and pb_proto.global_variable_set.items():
+            execution_global_variable_set = proto_to_dict(pb_proto.global_variable_set)
+        if pb_execution.execution_global_variable_set and pb_execution.execution_global_variable_set.items():
+            execution_global_variable_set = {} if not execution_global_variable_set else execution_global_variable_set
             execution_global_variable_set.update(pb_execution.execution_global_variable_set)
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
                                                                  execution_global_variable_set)
