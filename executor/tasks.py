@@ -74,7 +74,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         task_interpretations = []
         for task_proto in tasks:
             if not global_variable_set:
-                if task_proto.global_variable_set:
+                if task_proto.global_variable_set.items():
                     global_variable_set = proto_to_dict(task_proto.global_variable_set)
                     global_variable_set_proto = task_proto.global_variable_set
                 else:
@@ -215,7 +215,8 @@ def execute_playbook_step_with_children_impl(tr: TimeRange, account: Account, st
 def execute_playbook_impl(tr: TimeRange, account: Account, playbook: PlaybookProto, global_variable_set=None):
     try:
         if not global_variable_set:
-            global_variable_set = proto_to_dict(playbook.global_variable_set)
+            if playbook.global_variable_set.items():
+                global_variable_set = proto_to_dict(playbook.global_variable_set)
         step_execution_logs = []
         step_id_def_map = get_playbook_steps_id_def_map(playbook.steps)
         if playbook.step_relations:
