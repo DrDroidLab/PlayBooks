@@ -24,6 +24,7 @@
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
+    "react-js-cron": "^5.0.1",
     "react-markdown": "^9.0.1",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.8.1",

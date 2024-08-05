@@ -13,6 +13,7 @@ import DateInput from "./InputTypes/Date.tsx";
 import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
 import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMultipleSelectionInput.tsx";
 import TextButton from "./InputTypes/TextButton.tsx";
+import CronInput from "../common/CronInput/index.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -102,6 +103,8 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
           buttonClickValue={props.buttonClickValue!}
         />
       );
+    case InputTypes.CRON:
+      return <CronInput {...props} handleChange={props.handleChange!} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

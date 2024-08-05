@@ -59,7 +59,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
       />
 
       <CustomInput
-        inputType={InputTypes.TEXT}
+        inputType={InputTypes.CRON}
         error={undefined}
         options={operationOptions}
         value={stepRule.rule}
