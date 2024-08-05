@@ -73,7 +73,9 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
         try:
             db_playbooks = []
             for pb in playbooks:
-                saved_pb = update_or_create_db_playbook(account, created_by, pb)
+                saved_pb, err = update_or_create_db_playbook(account, created_by, pb)
+                if err:
+                    return None, err
                 db_playbooks.append(saved_pb)
         except Exception as e:
             logger.error(f'Error Saving Workflow Playbooks: {str(e)}')
