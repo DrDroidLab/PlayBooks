@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import CustomButton from "../common/CustomButton/index.tsx";
-import { Add } from "@mui/icons-material";
+import { Add, InfoOutlined } from "@mui/icons-material";
 import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions.ts";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
 import StepConditions from "./StepConditions.tsx";
+import { Tooltip } from "@mui/material";
 
 function AddStepCondition() {
   const { id } = useSelector(additionalStateSelector);
@@ -12,7 +13,7 @@ function AddStepCondition() {
   const isPrefetched = useIsPrefetched();
 
   return (
-    <div className="my-4">
+    <div className="flex flex-wrap items-center gap-2 my-4">
       {step_rules?.map((rule, i) => (
         <StepConditions rule={rule} ruleIndex={i} />
       ))}
@@ -24,6 +25,12 @@ function AddStepCondition() {
           </CustomButton>
         </>
       )}
+      <Tooltip title="Add a time condition to step execution">
+        <InfoOutlined
+          fontSize="small"
+          className="text-violet-500 cursor-pointer"
+        />
+      </Tooltip>
     </div>
   );
 }
