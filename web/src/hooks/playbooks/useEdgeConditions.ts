@@ -17,14 +17,14 @@ import { handleRelationRuleChange } from "../../utils/conditionals/handleRelatio
 
 const playbookKey = "step_relations";
 
-function useEdgeConditions(id: string) {
-  const ruleSetIndex = 0;
+function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const relations = currentPlaybook?.step_relations ?? [];
   const relation = relations.find((r) => r.id === id);
   const edgeIndex = relations?.findIndex((e) => e.id === id);
   const edge = relations?.length > 0 ? relations[edgeIndex] : undefined;
-  const ruleSet = edge?.condition?.rule_sets?.[ruleSetIndex];
+  const rule_sets = edge?.condition?.rule_sets ?? [];
+  const ruleSet = rule_sets?.[ruleSetIndex];
   const conditions = ruleSet?.rules ?? [];
   const condition = relation?.condition;
   const rules = ruleSet?.rules ?? [];
