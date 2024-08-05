@@ -254,7 +254,8 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         tr: TimeRange = dict_to_proto(time_range, TimeRange)
 
     try:
-        execution_global_variable_set = pb_proto.global_variable_set
+        execution_global_variable_set = Struct()
+        execution_global_variable_set.update(pb_proto.global_variable_set)
         execution_global_variable_set.update(pb_execution_proto.execution_global_variable_set)
 
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
