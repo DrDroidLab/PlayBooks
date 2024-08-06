@@ -8,6 +8,9 @@ on:
     branches:
       - "@feature/unit_tests"
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
