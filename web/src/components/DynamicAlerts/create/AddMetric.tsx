@@ -4,6 +4,10 @@ import Details from "../../Playbooks/task/Details";
 import { currentPlaybookSelector } from "../../../store/features/playbook/selectors";
 import RunButton from "../../Buttons/RunButton";
 import HandleOutput from "../../Playbooks/task/HandleOutput";
+import SelectTaskType from "./SelectTaskType";
+import { unsupportedConnctorTypeOptions } from "../../../utils/playbook/unsupportedConnctorTypeOptions";
+import SelectConnectorOption from "../../Playbooks/task/source/SelectConnectorOption";
+import AddMetricSource from "./AddMetricSource";
 
 function AddMetric() {
   const currentPlaybook = useSelector(currentPlaybookSelector);
@@ -24,7 +28,7 @@ function AddMetric() {
       <p className="font-bold text-violet-500 text-sm">Metric</p>
       <div className="flex w-full gap-4 justify-start">
         <div className="flex flex-col flex-[0.5]">
-          <AddSource id={currentTask.id} />
+          <AddMetricSource id={currentTask.id} />
           <Details id={currentTask.id} />
           <div className="w-fit mt-2">
             <RunButton id={currentTask.id} />
