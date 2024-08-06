@@ -36,18 +36,18 @@ function WorkflowRunButton({ item }: WorkflowRunButtonProps) {
     <CustomButton onClick={handleExecutionRun}>
       <Tooltip
         title={
-          status === ExecutionStatus.RUNNING
+          status === ExecutionStatus.WORKFLOW_RUNNING ||
+          status === ExecutionStatus.WORKFLOW_SCHEDULED
             ? "Stop workflow execution"
             : "Start workflow execution"
         }>
-        <div className="flex items-center">
-          {isLoading && <CircularProgress size={15} />}
-          {status === ExecutionStatus.RUNNING ? (
-            <StopRounded />
-          ) : (
-            <PlayArrowRounded />
-          )}
-        </div>
+        {isLoading ? (
+          <CircularProgress size={15} />
+        ) : status === ExecutionStatus.RUNNING ? (
+          <StopRounded />
+        ) : (
+          <PlayArrowRounded />
+        )}
       </Tooltip>
     </CustomButton>
   );
