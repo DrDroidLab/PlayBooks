@@ -354,6 +354,7 @@ message ExecuteWorkflowResponse {
 message TerminateWorkflowExecutionRequest {
   Meta meta = 1;
   google.protobuf.StringValue workflow_run_id = 2;
+  google.protobuf.StringValue workflow_id = 3;
 }
 
 message TerminateWorkflowExecutionResponse {

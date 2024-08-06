@@ -15,7 +15,7 @@ from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
 from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
-    update_db_account_workflow_execution_status
+    update_db_account_workflow_execution_status, get_workflow_executions
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
@@ -161,26 +161,48 @@ def workflows_terminate(request_message: TerminateWorkflowExecutionRequest) -> \
         Union[TerminateWorkflowExecutionResponse, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
-    workflow_run_id = request_message.workflow_run_id.value
-    if not workflow_run_id:
-        return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
-                                                  message=Message(title="Invalid Request",
-                                                                  description="Missing workflow_run_id"))
-    try:
-        db_wfe = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
-        if not db_wfe:
+    workflow_run_id = request_message.workflow_run_id.value if request_message.workflow_run_id else None
+    workflow_id = request_message.workflow_id.value if request_message.workflow_id else None
+    if workflow_run_id:
+        try:
+            db_wfe = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+            if not db_wfe:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error",
+                                                                          description="Workflow Execution not found"))
+            db_wfe = db_wfe.first()
+            if db_wfe.created_by != user.email:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error", description="Unauthorized"))
+            update_db_account_workflow_execution_status(account, db_wfe.id,
+                                                        WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
+        except Exception as e:
             return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
-                                                      message=Message(title="Error",
-                                                                      description="Workflow Execution not found"))
-        db_wfe = db_wfe.first()
-        if db_wfe.created_by != user.email:
+                                                      message=Message(title="Error", description=str(e)))
+    elif workflow_id:
+        try:
+            db_wfes = get_workflow_executions(account, workflow_ids=[workflow_id],
+                                              status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED,
+                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING])
+            if not db_wfes:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error",
+                                                                          description="Workflow Execution not found"))
+            for db_wfe in db_wfes:
+                if db_wfe.created_by != user.email:
+                    return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                              message=Message(title="Error",
+                                                                              description="Unauthorized"))
+                update_db_account_workflow_execution_status(account, db_wfe.id,
+                                                            WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
+        except Exception as e:
             return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
-                                                      message=Message(title="Error", description="Unauthorized"))
-        update_db_account_workflow_execution_status(account, db_wfe.id, WorkflowExecutionStatusType.WORKFLOW_FINISHED)
-        return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
-    except Exception as e:
-        return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
-                                                  message=Message(title="Error", description=str(e)))
+                                                      message=Message(title="Error", description=str(e)))
+    return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                              message=Message(title="Invalid Request",
+                                                              description="Missing workflow_run_id/workflow_id"))
 
 
 @web_api(ExecutionsWorkflowsListRequest)
