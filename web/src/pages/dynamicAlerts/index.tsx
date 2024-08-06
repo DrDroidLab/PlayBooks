@@ -43,7 +43,7 @@ function DynamicAlerts() {
           <PaginatedTable
             renderTable={DynamicAlertsTable}
             data={data?.workflow ?? []}
-            total={0}
+            total={data?.workflow?.length ?? 0}
           />
         </SuspenseLoader>
       </main>
