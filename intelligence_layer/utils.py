@@ -1,3 +1,4 @@
+import os
 import random
 
 import logging
@@ -7,7 +8,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import math
 
-from media.utils import save_image_to_db, save_csv_to_db
+from media.utils import save_image_to_db, save_csv_to_db, save_text_to_db
 from protos.playbooks.playbook_commons_pb2 import TimeseriesResult, TableResult
 
 logger = logging.getLogger(__name__)
@@ -96,21 +97,32 @@ def generate_graph_for_timeseries_result(timeseries: TimeseriesResult, file_key,
 
     try:
         pio.write_image(fig, file_key)
-        object_url = save_image_to_db(file_key, image_title, remove_file_from_os=False)
+        object_url = save_image_to_db(file_key, image_title)
         return object_url
     except Exception as e:
         logger.error(f'Error generating graph using metric timeseries data: {e}')
         raise e
 
 
-def generate_csv_for_table_result(table: TableResult, csv_file_path, csv_file_title='Untitled') -> str:
+def generate_csv_for_table_result(table: TableResult, csv_file_path, csv_file_title='Untitled') -> (str, str):
     df = table_result_to_df(table)
     df.to_csv(csv_file_path, index=False)
     if df.empty:
         return ''
     try:
-        object_url = save_csv_to_db(csv_file_path, csv_file_title)
-        return object_url
+        object_uid, object_url = save_csv_to_db(csv_file_path, csv_file_title)
+        return object_uid, object_url
+    except Exception as e:
+        logger.error(f'Error generating graph using metric timeseries data: {e}')
+        raise e
+
+
+def generate_txt_for_bash_result(text_content, text_file_path, text_file_title='Untitled') -> (str, str):
+    try:
+        with open(text_file_path, 'w+') as text_file:
+            text_file.write(text_content)
+        object_uid, object_url = save_text_to_db(text_file_path, text_file_title)
+        return object_uid, object_url
     except Exception as e:
         logger.error(f'Error generating graph using metric timeseries data: {e}')
         raise e
