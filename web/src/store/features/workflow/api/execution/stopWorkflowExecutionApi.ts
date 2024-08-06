@@ -3,12 +3,10 @@ import { apiSlice } from "../../../../app/apiSlice";
 
 export const stopWorkflowExecutionApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    stopWorkflowExecution: builder.mutation<any, string>({
-      query: (workflow_run_id) => ({
+    stopWorkflowExecution: builder.mutation<any, Record<string, string>>({
+      query: (body) => ({
         url: STOP_WORKFLOW_EXECUTION,
-        body: {
-          workflow_run_id,
-        },
+        body,
         method: "POST",
       }),
       invalidatesTags: ["Workflows"],

@@ -28,7 +28,7 @@ function WorkflowRunButton({ status, id }: WorkflowRunButtonProps) {
     switch (status) {
       case ExecutionStatus.WORKFLOW_RUNNING:
       case ExecutionStatus.WORKFLOW_SCHEDULED:
-        response = await triggerStopWorkflow("").unwrap();
+        response = await triggerStopWorkflow({ workflow_id: id }).unwrap();
         break;
       default:
         response = await triggerStartWorkflow(id).unwrap();

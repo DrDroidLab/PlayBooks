@@ -19,7 +19,7 @@ function WorkflowExecutionActions({ item }: WorkflowExecutionActionsProps) {
   };
 
   const handleStopExecution = () => {
-    stopExecution(item.workflow_run_id);
+    stopExecution({ workflow_run_id: item.workflow_run_id });
     window.location.reload();
   };
 
