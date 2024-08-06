@@ -47,9 +47,6 @@ jobs:
 
       - name: Prepare Report Directory
         run: |
-          mkdir -p ./public/reports/backend
           mkdir -p ./public/reports/frontend
-          mv report.html ./public/reports/backend/
-          mv htmlcov/* ./public/reports/backend/
           mv ./web/reports/test-report.html ./public/reports/frontend/
           mv ./web/coverage/lcov-report/* ./public/reports/frontend/
