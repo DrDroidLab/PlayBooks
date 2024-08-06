@@ -5,9 +5,12 @@ import CustomButton from "../../common/CustomButton";
 function ActionOverlay({ isOpen, toggleOverlay, item }) {
   const [deleteDynamicAlert] = useDeleteWorkflowMutation();
 
-  const handleSuccess = () => {
-    deleteDynamicAlert(item.id);
-    window.location.reload();
+  const handleSuccess = async () => {
+    const response = await deleteDynamicAlert(item.id).unwrap();
+    if (response.success) {
+      toggleOverlay();
+      window.location.reload();
+    }
   };
 
   if (!isOpen) return;

@@ -9,16 +9,26 @@ import { routes } from "../../routes";
 import DynamicAlertsTable from "../../components/DynamicAlerts/Table";
 import { useSearchQuery } from "../../store/features/search/api/searchApi";
 import { selectedQuery } from "../../utils/dynamicAlerts/selectedQuery";
+import { useEffect } from "react";
 
 const context = "WORKFLOW";
 
 function DynamicAlerts() {
   const navigate = useNavigate();
-  const { data } = useSearchQuery({ context, selected: selectedQuery });
+  const { data, refetch, isUninitialized } = useSearchQuery({
+    context,
+    selected: selectedQuery,
+  });
 
   const handleCreateDynamicAlert = () => {
     navigate(routes.CREATE_DYNAMIC_ALERTS);
   };
+
+  useEffect(() => {
+    if (!isUninitialized) {
+      refetch();
+    }
+  }, [isUninitialized]);
 
   return (
     <div>
