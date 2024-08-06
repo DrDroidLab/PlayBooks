@@ -31,7 +31,4 @@ export const getPlaybookApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const {
-  useLazyGetPlaybookQuery,
-  endpoints: { getPlaybook },
-} = getPlaybookApi;
+export const { useLazyGetPlaybookQuery } = getPlaybookApi;

@@ -22,6 +22,7 @@ import useDynamicAlertsKey from "../../hooks/dynamicAlerts/useDynamicAlertsKey";
 import { useCreateDynamicAlertMutation } from "../../store/features/dynamicAlerts/api";
 import Loading from "../../components/common/Loading";
 import { useLazyGetDynamicAlertQuery } from "../../store/features/dynamicAlerts/api";
+import { resetDynamicAlertState } from "../../store/features/dynamicAlerts/dynamicAlertsSlice";
 
 function CreateDynamicAlert() {
   const { alert_id: alertId } = useParams();
@@ -41,6 +42,7 @@ function CreateDynamicAlert() {
 
     return () => {
       dispatch(resetPlaybookState());
+      dispatch(resetDynamicAlertState());
     };
   }, []);
 
