@@ -15,7 +15,7 @@ export const stateToDynamicAlert = () => {
       type: "CRON",
       cron: {
         keep_alive: true,
-        rule: "* * 5 *",
+        rule: "* * * 5 *",
         timezone: TimezoneTypes.UTC,
       },
     },
