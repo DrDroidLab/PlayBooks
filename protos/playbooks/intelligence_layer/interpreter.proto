@@ -30,7 +30,7 @@ message Interpretation {
     WORKFLOW_EXECUTION = 4;
   }
 
-  Type type = 1;  
+  Type type = 1;
   InterpreterType interpreter_type = 2;
   google.protobuf.StringValue title = 3;
   google.protobuf.StringValue description = 4;
@@ -39,4 +39,5 @@ message Interpretation {
   google.protobuf.StringValue file_path = 7;
   google.protobuf.StringValue object_url = 8;
   ModelType model_type = 9;
+  google.protobuf.StringValue object_uid = 10;
 }

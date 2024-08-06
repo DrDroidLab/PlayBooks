@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 
-from media.models import Image, CSVFile
+from media.models import Image, CSVFile, TextFile
 
 
 class ImageView(View):
@@ -39,6 +39,29 @@ class CSVView(View):
                 title += '.csv'
             response['Content-Disposition'] = 'attachment; filename="{}"'.format(title)
             response.write(csv_text)
+            return response
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+class TextView(View):
+    def get(self, request):
+        text_uuid = request.GET.get('uuid')
+        try:
+            text = TextFile.objects.get(uuid=text_uuid)
+        except TextFile.DoesNotExist:
+            return JsonResponse({'error': 'Text not found'}, status=404)
+
+        try:
+            text_text = text.fetch_text_from_blob()
+            response = HttpResponse(content_type='text/plain')
+            title = text.title
+            if not title or title == 'Untitled':
+                title = 'Untitled-{}'.format(text.uuid)
+            if not title.endswith('.md'):
+                title += '.md'
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(title)
+            response.write(text_text)
             return response
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
