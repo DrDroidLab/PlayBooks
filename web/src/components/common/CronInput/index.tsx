@@ -30,6 +30,7 @@ function CronInput(props: CronInputTypes) {
       <div className="cursor-pointer" onClick={handleOpenOverlay}>
         <CustomInput
           {...props}
+          label=""
           inputType={InputTypes.TEXT}
           className="border-none !p-0 cursor-pointer disabled:!bg-transparent"
           disabled={true}
