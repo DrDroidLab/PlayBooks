@@ -26,6 +26,7 @@ const notificationTask: Task = {
   interpreter_type: "BASIC_I",
   task_connector_sources: [],
   source: "",
+  description: "Send a message to slack",
   slack: {
     type: TaskType.Slack,
     send_message: {
