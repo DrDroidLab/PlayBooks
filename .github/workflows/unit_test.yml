@@ -3,10 +3,10 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - feature/unit_tests
+      - "@feature/unit_tests"
   pull_request:
     branches:
-      - feature/unit_tests
+      - "@feature/unit_tests"
 
 jobs:
   test:
