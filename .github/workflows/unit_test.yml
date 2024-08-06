@@ -1,0 +1,64 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - feature/unit_tests
+  pull_request:
+    branches:
+      - feature/unit_tests
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Backend Setup and Testing
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install Backend Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Backend Unit Tests
+        run: pytest --html=report.html --self-contained-html --cov=. --cov-report=html
+
+      # Frontend Setup and Testing
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+
+      - name: Install Frontend Dependencies
+        working-directory: ./web
+        run: npm install
+
+      - name: Run Frontend Unit Tests
+        working-directory: ./web
+        run: npm run test
+
+      - name: Generate Frontend Coverage Report
+        working-directory: ./web
+        run: npm run test:coverage
+
+      # Deploy reports to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/reports
+
+      - name: Prepare Report Directory
+        run: |
+          mkdir -p ./public/reports/backend
+          mkdir -p ./public/reports/frontend
+          mv report.html ./public/reports/backend/
+          mv htmlcov/* ./public/reports/backend/
+          mv ./web/reports/test-report.html ./public/reports/frontend/
+          mv ./web/coverage/lcov-report/* ./public/reports/frontend/
