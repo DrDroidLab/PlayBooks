@@ -13,4 +13,14 @@ export const selectedQuery = [
       },
     },
   },
+  {
+    column: {
+      name: "is_active",
+      type: "BOOLEAN",
+    },
+    option: {
+      type: "BOOLEAN",
+      boolean: true,
+    },
+  },
 ];
