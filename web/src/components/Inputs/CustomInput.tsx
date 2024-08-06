@@ -9,11 +9,13 @@ type CustomInputPropTypes = {
   suffix?: ReactNode;
   labelPosition?: LabelPosition;
   containerClassName?: string;
+  helpTextSide?: string;
 } & HandleInputRenderType;
 
 function CustomInput({
   labelPosition = LabelPosition.TOP,
   containerClassName = "",
+  helpTextSide,
   ...props
 }: CustomInputPropTypes) {
   return (
@@ -32,8 +34,8 @@ function CustomInput({
         <HandleInputRender {...props} />
         {props.suffix}
       </div>
-      {props.helpText && (
-        <p className="text-xs text-gray-500 italic">{props.helpText}</p>
+      {helpTextSide && (
+        <p className="text-xs text-gray-500 italic">{helpTextSide}</p>
       )}
     </div>
   );

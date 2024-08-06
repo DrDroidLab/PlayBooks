@@ -34,6 +34,15 @@ function AddNotification() {
     updateCardById(taskKey, val, notificationTask.id);
   };
 
+  const handleMessageChange = (val: string) => {
+    const source = notificationTask?.source ?? "";
+    const taskType = notificationTask?.[source?.toLowerCase()]?.type ?? "";
+    const taskKey = `${[source.toLowerCase()]}.${[
+      taskType.toLowerCase(),
+    ]}.message`;
+    updateCardById(taskKey, val, notificationTask.id);
+  };
+
   const handleSourceChange = (val: string) => {
     const currentConnectorOptions =
       connectorOptions?.find((e) => e.id === "SLACK")?.connector
@@ -68,8 +77,17 @@ function AddNotification() {
           placeholder={`Select Channels`}
           handleChange={handleChannelsChange}
           error={undefined}
+          helpText={assets?.find((e) => e.id === data?.channel)?.label}
         />
       </div>
+      <CustomInput
+        inputType={InputTypes.MULTILINE}
+        options={assets}
+        value={data?.message}
+        placeholder={`Enter message to send to slack`}
+        handleChange={handleMessageChange}
+        error={undefined}
+      />
     </div>
   );
 }
