@@ -32,6 +32,9 @@ function CreateDynamicAlert() {
   const [triggerGetPlaybook, { isLoading: playbookLoading }] =
     useLazyGetPlaybookQuery();
   const loading = alertLoading || playbookLoading || builderOptionsLoading;
+  const heading = alertId
+    ? `Editing Dynamic Alert - ${name}`
+    : "Create Dynamic Alert";
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -59,7 +62,7 @@ function CreateDynamicAlert() {
 
   return (
     <div>
-      <Heading heading={"Dynamic Alerts(beta)"} />
+      <Heading heading={heading} />
       <div className="p-6 flex flex-col gap-3 bg-white border rounded m-2">
         <CustomInput
           inputType={InputTypes.TEXT}

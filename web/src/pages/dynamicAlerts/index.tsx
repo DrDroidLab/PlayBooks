@@ -32,7 +32,7 @@ function DynamicAlerts() {
 
   return (
     <div>
-      <Heading heading="Playbooks" />
+      <Heading heading="Dynamic Alerts" />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center gap-2">
           <CustomButton onClick={handleCreateDynamicAlert}>
