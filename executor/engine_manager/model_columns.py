@@ -151,6 +151,13 @@ workflow_columns = {
         is_filterable=True,
         is_groupable=True
     ),
+    'is_active': Column(
+        name='is_active',
+        display_name='Status',
+        type=LiteralType.BOOLEAN,
+        is_filterable=True,
+        is_groupable=True
+    ),
 }
 
 workflow_execution_columns = {
