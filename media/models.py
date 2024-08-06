@@ -81,3 +81,38 @@ class CSVFile(models.Model):
             with open(output_path, 'w') as output_file:
                 output_file.write(csv_text)
         return csv_text
+
+
+class TextFile(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    title = models.TextField(null=True, blank=True, default='Untitled')
+    description = models.TextField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+    text_blob = models.BinaryField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.uuid})"
+
+    def save_text_as_blob(self, text):
+        """
+        Converts the given text to a binary blob and saves it in the database.
+        """
+        self.text_blob = text.encode('utf-8')
+        self.save()
+
+    def fetch_text_from_blob(self, write=False, output_path=None):
+        """
+        Fetches the text blob from the database using the provided UUID and writes it to a text file at the output path.
+        """
+        text_memory_view = self.text_blob
+        text_binary = bytes(text_memory_view)
+        if write:
+            if output_path is None:
+                output_path = f"{self.title}-{str(self.uuid)}.md"
+            with open(output_path, 'w') as output_file:
+                output_file.write(text_binary.decode('utf-8'))
+        return text_binary.decode('utf-8')
