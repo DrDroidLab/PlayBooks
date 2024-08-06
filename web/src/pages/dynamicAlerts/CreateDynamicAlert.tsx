@@ -5,7 +5,10 @@ import AddMetric from "../../components/DynamicAlerts/create/AddMetric";
 import AddNotification from "../../components/DynamicAlerts/create/AddNotification";
 import Heading from "../../components/Heading";
 import CustomInput from "../../components/Inputs/CustomInput";
-import { usePlaybookBuilderOptionsQuery } from "../../store/features/playbook/api";
+import {
+  useLazyGetPlaybookQuery,
+  usePlaybookBuilderOptionsQuery,
+} from "../../store/features/playbook/api";
 import { InputTypes } from "../../types";
 import { useDispatch } from "react-redux";
 import {
@@ -29,7 +32,9 @@ function CreateDynamicAlert() {
   const [name, setName] = useDynamicAlertsKey("name");
   const [triggerGetAlert, { isLoading: alertLoading }] =
     useLazyGetDynamicAlertQuery();
-  const loading = alertLoading || isLoading;
+  const [triggerGetPlaybook, { isLoading: playbookLoading }] =
+    useLazyGetPlaybookQuery();
+  const loading = alertLoading || isLoading || playbookLoading;
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -51,9 +56,16 @@ function CreateDynamicAlert() {
     }
   };
 
+  const fetchData = async () => {
+    if (!alertId) return;
+    const data = await triggerGetAlert(alertId).unwrap();
+    const playbookId = data?.playbooks?.[0]?.id;
+    await triggerGetPlaybook({ playbookId });
+  };
+
   useEffect(() => {
     if (alertId != null) {
-      triggerGetAlert(alertId);
+      fetchData();
     }
   }, [alertId]);
 

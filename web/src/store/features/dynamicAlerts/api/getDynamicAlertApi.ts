@@ -19,12 +19,6 @@ export const getDynamicAlertApi = apiSlice.injectEndpoints({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const playbookId = data?.playbooks?.[0]?.id;
-
-          if (playbookId)
-            dispatch(
-              getPlaybook.initiate({ playbookId }, { forceRefetch: true }),
-            );
           dispatch(setDynamicAlert(data));
         } catch (error) {
           // Handle any errors
