@@ -23,16 +23,18 @@ function WorkflowRunButton({ status, id }: WorkflowRunButtonProps) {
     status === ExecutionStatus.RUNNING ||
     status === ExecutionStatus.WORKFLOW_SCHEDULED;
 
-  const handleExecution = () => {
+  const handleExecution = async () => {
+    let response: any;
     switch (status) {
       case ExecutionStatus.WORKFLOW_RUNNING:
       case ExecutionStatus.WORKFLOW_SCHEDULED:
-        triggerStopWorkflow("");
-        return;
+        response = await triggerStopWorkflow("").unwrap();
+        break;
       default:
-        triggerStartWorkflow(id);
-        return;
+        response = await triggerStartWorkflow(id).unwrap();
+        break;
     }
+    if (response.success) window.location.reload();
   };
 
   return (

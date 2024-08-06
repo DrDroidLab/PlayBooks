@@ -35,7 +35,7 @@ function DynamicAlertActions({ item }: DynamicAlertActionsProps) {
           <DeleteRounded fontSize="small" />
         </Tooltip>
       </CustomButton>
-      <WorkflowRunButton id={item.id} status={item.status} />
+      <WorkflowRunButton id={item.id} status={item.last_execution_status} />
 
       <ActionOverlay isOpen={isActionOpen} toggleOverlay={toggle} item={item} />
     </div>
