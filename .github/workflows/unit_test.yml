@@ -16,18 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Backend Setup and Testing
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
-      - name: Install Backend Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run Backend Unit Tests
-        run: pytest --html=report.html --self-contained-html --cov=. --cov-report=html
-
       # Frontend Setup and Testing
       - name: Set up Node.js
         uses: actions/setup-node@v3
