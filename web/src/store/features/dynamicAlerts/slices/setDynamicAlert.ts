@@ -6,4 +6,5 @@ export const setDynamicAlert = (
   action: PayloadAction<any>,
 ) => {
   state.name = action.payload.name;
+  state.id = action.payload.id;
 };

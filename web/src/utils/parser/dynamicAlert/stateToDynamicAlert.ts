@@ -8,6 +8,7 @@ export const stateToDynamicAlert = () => {
   const dynamicAlert: DynamicAlertType = dynamicAlertSelector(store.getState());
 
   return {
+    id: dynamicAlert.id,
     name: dynamicAlert.name,
     type: "DYNAMIC_ALERT",
     schedule: {

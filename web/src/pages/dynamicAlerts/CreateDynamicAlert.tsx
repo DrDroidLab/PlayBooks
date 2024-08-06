@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import CustomButton from "../../components/common/CustomButton";
 import AddCondition from "../../components/DynamicAlerts/create/AddCondition";
 import AddMetric from "../../components/DynamicAlerts/create/AddMetric";
 import AddNotification from "../../components/DynamicAlerts/create/AddNotification";
@@ -15,20 +14,16 @@ import {
   createPlaybookForDynamicAlert,
   resetState as resetPlaybookState,
 } from "../../store/features/playbook/playbookSlice";
-import { routes } from "../../routes";
-import { showSnackbar } from "../../store/features/snackbar/snackbarSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useDynamicAlertsKey from "../../hooks/dynamicAlerts/useDynamicAlertsKey";
-import { useCreateDynamicAlertMutation } from "../../store/features/dynamicAlerts/api";
 import Loading from "../../components/common/Loading";
 import { useLazyGetDynamicAlertQuery } from "../../store/features/dynamicAlerts/api";
 import { resetDynamicAlertState } from "../../store/features/dynamicAlerts/dynamicAlertsSlice";
+import SaveOrUpdateDynamicAlertButton from "../../components/Buttons/SaveOrUpdateDynamicAlertButton";
 
 function CreateDynamicAlert() {
   const { alert_id: alertId } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [triggerSave, { isLoading }] = useCreateDynamicAlertMutation();
   const { data: builderOptionsData, isLoading: builderOptionsLoading } =
     usePlaybookBuilderOptionsQuery();
   const [name, setName] = useDynamicAlertsKey("name");
@@ -36,8 +31,7 @@ function CreateDynamicAlert() {
     useLazyGetDynamicAlertQuery();
   const [triggerGetPlaybook, { isLoading: playbookLoading }] =
     useLazyGetPlaybookQuery();
-  const loading =
-    alertLoading || isLoading || playbookLoading || builderOptionsLoading;
+  const loading = alertLoading || playbookLoading || builderOptionsLoading;
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -47,18 +41,6 @@ function CreateDynamicAlert() {
       dispatch(resetDynamicAlertState());
     };
   }, []);
-
-  const handleSave = async () => {
-    try {
-      let response: any = {};
-      response = await triggerSave().unwrap();
-      if (response.success) {
-        navigate(routes.DYNAMIC_ALERTS);
-      }
-    } catch (e: any) {
-      dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
-    }
-  };
 
   const fetchData = async () => {
     if (!alertId) return;
@@ -90,12 +72,7 @@ function CreateDynamicAlert() {
         <AddCondition />
         <AddNotification />
 
-        <CustomButton
-          disabled={isLoading}
-          className="w-fit"
-          onClick={handleSave}>
-          {isLoading ? "Loading.." : "Save"}
-        </CustomButton>
+        <SaveOrUpdateDynamicAlertButton />
       </div>
     </div>
   );
