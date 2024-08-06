@@ -5,7 +5,6 @@ import Interpretation from "../../common/Interpretation";
 import TaskOutput from "./TaskOutput";
 
 function HandleTaskOutput({ showHeading, task, output }) {
-  console.log("utut", output);
   return (
     <div
       className={`${
@@ -14,7 +13,7 @@ function HandleTaskOutput({ showHeading, task, output }) {
       <div className="w-full">
         <div className="flex flex-wrap gap-2 justify-between">
           <div className="flex flex-wrap gap-2">
-            {Object.entries(output?.execution_global_variable_set ?? {}).map(
+            {Object.entries(output?.data?.task_local_variable_set ?? {}).map(
               ([key, value]) => (
                 <p className="text-xs my-1 flex items-center border-r pr-2">
                   <span className="bg-violet-100 rounded p-1">{key}</span> :{" "}

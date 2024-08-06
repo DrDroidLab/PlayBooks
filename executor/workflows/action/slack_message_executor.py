@@ -1,10 +1,11 @@
 import logging
-import os
+import tempfile
 
 from connectors.crud.connectors_crud import get_db_connectors
 from connectors.utils import generate_credentials_dict
 from executor.source_processors.slack_api_processor import SlackApiProcessor
 from executor.workflows.action.action_executor import WorkflowActionExecutor
+from media.models import TextFile, CSVFile
 from protos.base_pb2 import Source
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto
@@ -40,8 +41,9 @@ class SlackMessageExecutor(WorkflowActionExecutor):
         logger.info(f"Sending slack message  to channel {channel_id}")
         blocks = []
         file_uploads = []
+        temp_files = []
         text_message = ""
-        step_number = 1
+        step_number = 0
         for i, interpretation in enumerate(execution_output):
             title = interpretation.title.value
             description = interpretation.description.value
@@ -52,59 +54,67 @@ class SlackMessageExecutor(WorkflowActionExecutor):
             if summary:
                 block_message += f"{summary}\n"
             text_message = text_message + block_message
-            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+            if interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION:
                 if title:
                     blocks.extend([
                         {
                             "type": "header",
-                            "text": 
-                            {
-                                "type": "plain_text",
-                                "text": f'{title}'
-                            }
+                            "text":
+                                {
+                                    "type": "plain_text",
+                                    "text": f'{title}'
+                                }
                         }])
                 if block_message:
                     blocks.extend([
                         {
                             "type": "section",
-                            "text": 
-                            {
-                                "type": "mrkdwn",
-                                "text": f'{block_message}'
-                            }
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f'{block_message}'
+                                }
                         }])
             elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
+                step_number += 1
                 blocks.extend(
                     [{
                         "type": "header",
-                        "text": 
-                        {
-                            "type": "plain_text",
-                            "text": f"{step_number}. {title}"
-                        }
+                        "text":
+                            {
+                                "type": "plain_text",
+                                "text": f"{step_number}. {title}"
+                            }
                     }])
-                step_number += 1
             elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
                 if interpretation.type == InterpretationProto.Type.TEXT:
                     blocks.extend(
                         [{
                             "type": "section",
-                            "text": 
-                            {
-                                "type": "mrkdwn",
-                                "text": f'{block_message}'
-                            }                
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f'{description} \n (File attached separately)'
+                                }
                         }])
-                    text_message = text_message + f"{title} {description} \n{summary}"
+                    object_uid = interpretation.object_uid.value
+                    text_content = TextFile.objects.get(uuid=object_uid).fetch_text_from_blob()
+                    temp_file = tempfile.NamedTemporaryFile(suffix='.md', mode='w+')
+                    text_filename = temp_file.name
+                    with open(text_filename, 'w') as text_file:
+                        text_file.write(text_content)
+                    temp_files.append(temp_file)
+                    file_uploads.append({'channel_id': channel_id, 'file_path': text_filename,
+                                         'title': title, 'initial_comment': f'Data for {step_number}.{description}'})
                 elif interpretation.type == InterpretationProto.Type.IMAGE:
                     blocks.extend([
                         {
                             "type": "section",
-                            "text": 
-                            {
-                                "type": "mrkdwn",
-                                "text": f'{description}'
-                            }                
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f'{description}'
+                                }
                         },
                         {
                             "type": "image",
@@ -115,24 +125,38 @@ class SlackMessageExecutor(WorkflowActionExecutor):
                     blocks.extend(
                         [{
                             "type": "section",
-                            "text": 
-                            {
-                                "type": "mrkdwn",
-                                "text": f'{description} \n (File attached separately)'
-                            }                
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f'{description} \n (File attached separately)'
+                                }
                         }])
-                    file_uploads.append({'channel_id': channel_id, 'file_path': interpretation.file_path.value,
-                                        'title': title,'initial_comment': f'Data for {step_number}.{description}'})
+                    object_uid = interpretation.object_uid.value
+                    temp_file = tempfile.NamedTemporaryFile(suffix='.csv', mode='w+')
+                    csv_filename = temp_file.name
+                    CSVFile.objects.get(uuid=object_uid).fetch_csv_from_blob(write=True, output_path=csv_filename)
+                    temp_files.append(temp_file)
+                    file_uploads.append({'channel_id': channel_id, 'file_path': csv_filename,
+                                         'title': title, 'initial_comment': f'Data for {step_number}.{description}'})
                 elif interpretation.type == InterpretationProto.Type.JSON:
                     blocks.extend(
                         [{
                             "type": "section",
-                            "text": 
-                            {
-                                "type": "mrkdwn",
-                                "text": f"```{summary}```"
-                            }
+                            "text":
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f'{description} \n (File attached separately)'
+                                }
                         }])
+                    object_uid = interpretation.object_uid.value
+                    text_content = TextFile.objects.get(uuid=object_uid).fetch_text_from_blob()
+                    temp_file = tempfile.NamedTemporaryFile(suffix='.md', mode='w+')
+                    text_filename = temp_file.name
+                    with open(text_filename, 'w') as text_file:
+                        text_file.write(text_content)
+                    temp_files.append(temp_file)
+                    file_uploads.append({'channel_id': channel_id, 'file_path': text_filename,
+                                         'title': title, 'initial_comment': f'Data for {step_number}.{description}'})
         message_params = {'blocks': blocks, 'channel_id': channel_id, 'text_message': text_message}
         try:
             slack_api_processor = self.get_action_connector_processor(connector)
@@ -140,9 +164,14 @@ class SlackMessageExecutor(WorkflowActionExecutor):
             for file_upload in file_uploads:
                 try:
                     slack_api_processor.files_upload(**file_upload)
-                    os.remove(file_upload['file_path'])
                 except Exception as e:
                     logger.error(f"Error uploading file to slack: {e}")
+                    continue
+            for temp_file in temp_files:
+                try:
+                    temp_file.close()
+                except Exception as e:
+                    logger.error(f"Error closing temp file: {e}")
                     continue
             return True
         except Exception as e:
