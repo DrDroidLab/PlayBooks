@@ -7,9 +7,11 @@ const dynamicAlertSlice = createSlice({
   initialState: initialState,
   reducers: {
     setDynamicAlertKey: Actions.setDynamicAlertKey,
+    setDynamicAlert: Actions.setDynamicAlert,
   },
 });
 
-export const { setDynamicAlertKey } = dynamicAlertSlice.actions;
+export const { setDynamicAlertKey, setDynamicAlert } =
+  dynamicAlertSlice.actions;
 
 export default dynamicAlertSlice.reducer;
