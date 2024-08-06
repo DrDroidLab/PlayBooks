@@ -6,9 +6,12 @@ import { PageKeys } from "./pageKeys";
 import { noLayoutPages } from "./utils/pages/noLayoutPages";
 import { routes } from "./routes";
 import Loading from "./components/common/Loading";
+import AnimatedRoute from "./components/AnimatedRoute";
 
 const LazyComponent = ({ importFn }) => (
-  <Suspense fallback={<Loading />}>{createElement(lazy(importFn))}</Suspense>
+  <Suspense fallback={<Loading />}>
+    <AnimatedRoute>{createElement(lazy(importFn))}</AnimatedRoute>
+  </Suspense>
 );
 
 export const generateUnauthRoutes = () => {
