@@ -5,22 +5,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Tooltip from "@mui/material/Tooltip";
 import { Link } from "react-router-dom";
 import NoExisting from "./NoExisting.tsx";
 import useToggle from "../../../hooks/common/useToggle.ts";
 import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
-import CustomButton from "../../common/CustomButton/index.tsx";
-import ActionOverlay from "./ActionOverlay.tsx";
+import DynamicAlertActions from "./DynamicAlertActions.tsx";
 
 const DynamicAlertsTable = ({ data }) => {
-  const { isOpen: isActionOpen, toggle } = useToggle();
-
-  const handleDeleteDynamicAlert = () => {
-    toggle();
-  };
-
   return (
     <>
       <Table stickyHeader>
@@ -29,6 +20,7 @@ const DynamicAlertsTable = ({ data }) => {
             <TableCell className="!font-bold">Name</TableCell>
             <TableCell className="!font-bold">Created At</TableCell>
             <TableCell className="!font-bold">Created By</TableCell>
+            <TableCell className="!font-bold">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,12 +43,14 @@ const DynamicAlertsTable = ({ data }) => {
               <TableCell component="td" scope="row">
                 {item.created_by}
               </TableCell>
+              <TableCell component="td" scope="row">
+                <DynamicAlertActions item={item} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {!data?.length ? <NoExisting /> : null}
-      <ActionOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </>
   );
 };
