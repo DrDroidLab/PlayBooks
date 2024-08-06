@@ -39,7 +39,7 @@ function AddNotification() {
     const taskType = notificationTask?.[source?.toLowerCase()]?.type ?? "";
     const taskKey = `${[source.toLowerCase()]}.${[
       taskType.toLowerCase(),
-    ]}.message`;
+    ]}.text`;
     updateCardById(taskKey, val, notificationTask.id);
   };
 
@@ -83,7 +83,7 @@ function AddNotification() {
       <CustomInput
         inputType={InputTypes.MULTILINE}
         options={assets}
-        value={data?.message}
+        value={data?.text}
         placeholder={`Enter message to send to slack`}
         handleChange={handleMessageChange}
         error={undefined}
