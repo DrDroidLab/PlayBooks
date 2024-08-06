@@ -271,6 +271,11 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         
         store_step_execution_logs(account, pb, pb_execution, step_execution_logs)
 
+        if not execution_global_variable_set:
+            execution_global_variable_set_dict = {}
+        else:
+            execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
+            
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
                                                                  execution_global_variable_set_dict)
         update_db_account_playbook_execution_status(account, playbook_execution_id,
