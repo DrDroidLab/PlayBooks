@@ -29,13 +29,15 @@ function CreateDynamicAlert() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [triggerSave, { isLoading }] = useCreateDynamicAlertMutation();
-  usePlaybookBuilderOptionsQuery();
+  const { data: builderOptionsData, isLoading: builderOptionsLoading } =
+    usePlaybookBuilderOptionsQuery();
   const [name, setName] = useDynamicAlertsKey("name");
   const [triggerGetAlert, { isLoading: alertLoading }] =
     useLazyGetDynamicAlertQuery();
   const [triggerGetPlaybook, { isLoading: playbookLoading }] =
     useLazyGetPlaybookQuery();
-  const loading = alertLoading || isLoading || playbookLoading;
+  const loading =
+    alertLoading || isLoading || playbookLoading || builderOptionsLoading;
 
   useEffect(() => {
     dispatch(createPlaybookForDynamicAlert());
@@ -62,14 +64,14 @@ function CreateDynamicAlert() {
     if (!alertId) return;
     const data = await triggerGetAlert(alertId).unwrap();
     const playbookId = data?.playbooks?.[0]?.id;
-    await triggerGetPlaybook({ playbookId });
+    if (playbookId) await triggerGetPlaybook({ playbookId });
   };
 
   useEffect(() => {
-    if (alertId != null) {
+    if (alertId != null && builderOptionsData) {
       fetchData();
     }
-  }, [alertId]);
+  }, [alertId, builderOptionsData]);
 
   if (loading) return <Loading />;
 
