@@ -12,6 +12,7 @@ import useToggle from "../../hooks/common/useToggle";
 import { useState } from "react";
 import CustomButton from "../common/CustomButton";
 import WorkflowRunButton from "../Buttons/WorkflowRunButton";
+import { ExecutionStatus } from "../../types";
 
 type WorkflowActionProps = {
   item: any;
@@ -53,7 +54,10 @@ function WorkflowActions({ item, refreshTable }: WorkflowActionProps) {
           <HistoryRounded />
         </Tooltip>
       </CustomButton>
-      <WorkflowRunButton item={item} />
+      <WorkflowRunButton
+        status={item.last_execution_status as ExecutionStatus}
+        id={item.id as string}
+      />
 
       <WorkflowActionOverlay
         workflow={selectedWorkflow}

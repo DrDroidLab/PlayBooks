@@ -1,7 +1,7 @@
-import { Tooltip } from "rsuite";
 import CustomButton from "../../common/CustomButton";
-import { ExecutionStatus } from "../../../types";
+import { Tooltip } from "rsuite";
 import { PlayArrowRounded, StopRounded } from "@mui/icons-material";
+import { ExecutionStatus } from "../../../types";
 import {
   useStartWorkflowExecutionMutation,
   useStopWorkflowExecutionMutation,
@@ -9,44 +9,41 @@ import {
 import { CircularProgress } from "@mui/material";
 
 type WorkflowRunButtonProps = {
-  item: any;
+  status: ExecutionStatus;
+  id: string;
 };
 
-function WorkflowRunButton({ item }: WorkflowRunButtonProps) {
-  const status: ExecutionStatus = item.last_execution_status;
+function WorkflowRunButton({ status, id }: WorkflowRunButtonProps) {
   const [triggerStartWorkflow, { isLoading: startExecutionLoading }] =
     useStartWorkflowExecutionMutation();
   const [triggerStopWorkflow, { isLoading: stopExecutionLoading }] =
     useStopWorkflowExecutionMutation();
+  const loading = startExecutionLoading || stopExecutionLoading;
+  const showStop =
+    status === ExecutionStatus.RUNNING ||
+    status === ExecutionStatus.WORKFLOW_SCHEDULED;
 
-  const isLoading = startExecutionLoading || stopExecutionLoading;
-
-  const handleExecutionRun = () => {
+  const handleExecution = () => {
     switch (status) {
-      case ExecutionStatus.RUNNING:
+      case ExecutionStatus.WORKFLOW_RUNNING:
+      case ExecutionStatus.WORKFLOW_SCHEDULED:
         triggerStopWorkflow("");
         return;
       default:
-        triggerStartWorkflow(item.id);
+        triggerStartWorkflow(id);
         return;
     }
   };
 
   return (
-    <CustomButton onClick={handleExecutionRun}>
-      <Tooltip
-        title={
-          status === ExecutionStatus.WORKFLOW_RUNNING ||
-          status === ExecutionStatus.WORKFLOW_SCHEDULED
-            ? "Stop workflow execution"
-            : "Start workflow execution"
-        }>
-        {isLoading ? (
-          <CircularProgress size={15} />
-        ) : status === ExecutionStatus.RUNNING ? (
-          <StopRounded />
+    <CustomButton onClick={handleExecution}>
+      <Tooltip title={showStop ? "Stop Execution" : "Start Execution"}>
+        {loading ? (
+          <CircularProgress size={20} />
+        ) : showStop ? (
+          <StopRounded fontSize="small" />
         ) : (
-          <PlayArrowRounded />
+          <PlayArrowRounded fontSize="small" />
         )}
       </Tooltip>
     </CustomButton>

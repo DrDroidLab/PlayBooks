@@ -1,10 +1,10 @@
 import CustomButton from "../../common/CustomButton";
 import { Tooltip } from "@mui/material";
-import { DeleteRounded, EditRounded, StopRounded } from "@mui/icons-material";
-import { useDeleteWorkflowMutation } from "../../../store/features/workflow/api";
+import { DeleteRounded, EditRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import ActionOverlay from "./ActionOverlay";
 import useToggle from "../../../hooks/common/useToggle";
+import WorkflowRunButton from "../../Buttons/WorkflowRunButton";
 
 type DynamicAlertActionsProps = {
   item: any;
@@ -17,8 +17,6 @@ function DynamicAlertActions({ item }: DynamicAlertActionsProps) {
   const handleDelete = () => {
     toggle();
   };
-
-  const handleStop = () => {};
 
   const handleEdit = () => {
     navigate(`/dynamic-alerts/${item.id}`);
@@ -37,12 +35,7 @@ function DynamicAlertActions({ item }: DynamicAlertActionsProps) {
           <DeleteRounded fontSize="small" />
         </Tooltip>
       </CustomButton>
-
-      <CustomButton onClick={handleStop}>
-        <Tooltip title="Stop Dynamic Alert">
-          <StopRounded fontSize="small" />
-        </Tooltip>
-      </CustomButton>
+      <WorkflowRunButton id={item.id} status={item.status} />
 
       <ActionOverlay isOpen={isActionOpen} toggleOverlay={toggle} item={item} />
     </div>
