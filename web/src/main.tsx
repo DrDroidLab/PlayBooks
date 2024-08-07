@@ -27,7 +27,7 @@ root.render(
     <ReactFlowProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             <App />
           </AnimatePresence>
           <GlobalSnackbar />
