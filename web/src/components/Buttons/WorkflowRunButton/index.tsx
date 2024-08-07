@@ -20,7 +20,7 @@ function WorkflowRunButton({ status, id }: WorkflowRunButtonProps) {
     useStopWorkflowExecutionMutation();
   const loading = startExecutionLoading || stopExecutionLoading;
   const showStop =
-    status === ExecutionStatus.RUNNING ||
+    status === ExecutionStatus.WORKFLOW_RUNNING ||
     status === ExecutionStatus.WORKFLOW_SCHEDULED;
 
   const handleExecution = async () => {
