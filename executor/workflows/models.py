@@ -129,7 +129,8 @@ class Workflow(models.Model):
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
             last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
-            configuration=configuration
+            configuration=configuration,
+            type=self.type
 
         )
 
@@ -158,7 +159,8 @@ class Workflow(models.Model):
             last_execution_time=int(latest_workflow_execution.scheduled_at.replace(
                 tzinfo=timezone.utc).timestamp()) if latest_workflow_execution else 0,
             last_execution_status=latest_workflow_execution.status if latest_workflow_execution else WorkflowExecutionStatusType.UNKNOWN_WORKFLOW_STATUS,
-            configuration=configuration
+            configuration=configuration,
+            type=self.type
         )
 
 
