@@ -887,8 +887,12 @@ def playbooks_execution_step_execute(request_message: PlaybookExecutionStepExecu
         step_execution_log, execution_global_variable_set = execute_playbook_step_impl(time_range, account,
                                                                                        playbook_step)
         store_step_execution_logs(account, playbook, playbook_execution, [step_execution_log], user.email, time_range)
+
+        execution_global_variable_set_dict = {}
+        if execution_global_variable_set and execution_global_variable_set.items():
+            execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution.id,
-                                                                 proto_to_dict(execution_global_variable_set))
+                                                                 execution_global_variable_set_dict)
     except Exception as e:
         logger.error(e)
         return PlaybookExecutionStepExecuteResponse(success=BoolValue(value=False),
