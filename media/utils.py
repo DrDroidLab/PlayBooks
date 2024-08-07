@@ -21,7 +21,7 @@ def generate_local_image_path(image_data=None, image_name: str = None):
         image_name = f'{current_milli_time()}_{random_name}' + '.png'
     if not image_name.endswith('.png'):
         image_name += '.png'
-    file_path = os.path.join(settings.MEDIA_IMAGE_LOCATION, image_name)
+    file_path = os.path.join(settings.MEDIA_IMAGE_LOCATION[1:], image_name)
     if image_data:
         file_content = ContentFile(image_data)
         return default_storage.save(file_path, file_content)
