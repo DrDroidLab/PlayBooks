@@ -101,6 +101,12 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
                                       message=Message(title="Error", description="Unauthorized"))
     try:
         workflows_update_processor.update(account_workflow, update_workflow_ops)
+        workflow_executions = get_workflow_executions(account, workflow_ids=[workflow_id],
+                                                      status_in=[WorkflowExecutionStatusType.WORKFLOW_RUNNING,
+                                                                 WorkflowExecutionStatusType.WORKFLOW_SCHEDULED])
+        for we in workflow_executions:
+            update_db_account_workflow_execution_status(account, we.id,
+                                                        WorkflowExecutionStatusType.WORKFLOW_CANCELLED)
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return UpdateWorkflowResponse(success=BoolValue(value=False),

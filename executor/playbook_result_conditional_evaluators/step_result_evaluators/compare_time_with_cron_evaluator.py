@@ -12,17 +12,18 @@ class CompareTimeWithCronEvaluator(StepResultEvaluator):
         if rule.type != PlaybookStepResultRule.Type.COMPARE_TIME_WITH_CRON:
             raise ValueError(f'Rule type {PlaybookStepResultRule.Type.Name(rule.type)} not supported')
 
+        current_time = current_datetime()
         compare_with_cron_rule: CompareTimeWithCronRule = rule.compare_time_with_cron
         operator = compare_with_cron_rule.operator
         cron_rule = compare_with_cron_rule.rule.value
         timezone = compare_with_cron_rule.timezone.value
-        within_seconds = compare_with_cron_rule.within_seconds
+        within_seconds = compare_with_cron_rule.within_seconds.value if compare_with_cron_rule.within_seconds else 60
+        if within_seconds < 60:
+            within_seconds = 60
 
         next_cron_schedule = calculate_next_cron_time(cron_rule)
         if not next_cron_schedule:
             return False
-
-        current_time = current_datetime()
 
         # compare current time with first member of cron schedules
         if operator == Operator.EQUAL_O:
