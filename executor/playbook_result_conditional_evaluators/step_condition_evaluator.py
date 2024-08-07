@@ -83,9 +83,9 @@ class StepConditionEvaluator:
                 raise ValueError(f"Logical operator {logical_operator} not supported")
 
         if rs_logical_operator == LogicalOperator.AND_LO:
-            return all(all_rs_evaluations), all_rs_evaluation_results
+            return all(all_rs_evaluations), {'evaluation_results': all_rs_evaluation_results}
         elif rs_logical_operator == LogicalOperator.OR_LO:
-            return any(all_rs_evaluations), all_rs_evaluation_results
+            return any(all_rs_evaluations), {'evaluation_results': all_rs_evaluation_results}
         else:
             raise ValueError(f"Logical operator {rs_logical_operator} not supported")
 
