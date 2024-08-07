@@ -33,7 +33,7 @@ function Text({
         error ? "border-red-500" : ""
       } border p-2 rounded text-xs outline-none font-normal text-ellipsis min-w-[100px] w-fit max-w-full h-auto`}
       onChange={onChange}
-      placeholder={placeholder ?? `Enter ${label}`}
+      placeholder={placeholder ?? `${label}`}
       value={value}
       disabled={disabled}
       type={type}

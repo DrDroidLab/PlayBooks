@@ -11,6 +11,7 @@ import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import { Tooltip } from "@mui/material";
 
 function GlobalVariables() {
   const [isAddVariableOpen, setIsAddVariableOpen] = useState(false);
@@ -53,9 +54,11 @@ function GlobalVariables() {
           globalVariables.map((key) => (
             <div key={key} className={`flex gap-1 flex-wrap p-1`}>
               <div className="bg-violet-100 p-1 flex items-center rounded w-[80px]">
-                <p className="text-xs text-center text-ellipsis overflow-hidden">
-                  {key}
-                </p>
+                <Tooltip title={key}>
+                  <p className="text-xs text-center text-ellipsis overflow-hidden">
+                    {key}
+                  </p>
+                </Tooltip>
               </div>
               <div className="flex gap-2 items-center">
                 <CustomInput

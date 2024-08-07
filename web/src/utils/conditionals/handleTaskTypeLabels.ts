@@ -6,10 +6,14 @@ function handleTaskTypeLabels(task?: Task): {
   label: string;
   labelValue: string;
 } {
-  if (!task) return { label: "", labelValue: "" };
+  const defaultVal = { label: "", labelValue: "" };
+  if (!task || !task?.source) return defaultVal;
   const source = task.source;
+  if (!source) return defaultVal;
   const taskType = task[source?.toLowerCase()]?.type;
+  if (!taskType) return defaultVal;
   const taskData = task[source?.toLowerCase()][taskType.toLowerCase()];
+  if (!taskData) return defaultVal;
   const type = `${source} ${taskType}`;
   let labelValue: string = "";
 

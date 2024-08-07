@@ -11,6 +11,9 @@ import Wysiwyg from "./InputTypes/Wysiwyg.tsx";
 import CompositeField from "./InputTypes/CompositeField.tsx";
 import DateInput from "./InputTypes/Date.tsx";
 import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
+import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMultipleSelectionInput.tsx";
+import TextButton from "./InputTypes/TextButton.tsx";
+import CronInput from "../common/CronInput/index.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -34,6 +37,9 @@ export type HandleInputRenderType = {
   default?: string;
   format?: string;
   disabledDate?: (date: Date) => boolean;
+  typingContainerClassname?: string;
+  buttonText?: string;
+  buttonClickValue?: string;
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -44,9 +50,7 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       return <Multiline handleChange={props.handleChange!} {...props} />;
     case InputTypes.BUTTON:
       return (
-        <CustomButton onClick={props.handleClick!} {...props}>
-          {props.label}
-        </CustomButton>
+        <CustomButton onClick={props.handleClick!}>{props.label}</CustomButton>
       );
     case InputTypes.IFRAME_RENDER:
       return <IframeRender url={props.value} />;
@@ -83,6 +87,24 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       return <DateInput handleChange={props.handleChange!} {...props} />;
     case InputTypes.STRING_ARRAY:
       return <StringArrayInput handleChange={props.handleChange!} {...props} />;
+    case InputTypes.TYPING_DROPDOWN_MULTIPLE_SELECTION:
+      return (
+        <TypingDropdownMultipleSelectionInput
+          handleChange={props.handleChange!}
+          {...props}
+        />
+      );
+    case InputTypes.TEXT_BUTTON:
+      return (
+        <TextButton
+          {...props}
+          handleChange={props.handleChange!}
+          buttonText={props.buttonText!}
+          buttonClickValue={props.buttonClickValue!}
+        />
+      );
+    case InputTypes.CRON:
+      return <CronInput {...props} handleChange={props.handleChange!} />;
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

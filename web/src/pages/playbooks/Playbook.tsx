@@ -26,7 +26,6 @@ function Playbook() {
   const { openDrawer, permanentView } = usePermanentDrawerState();
   const { playbook_id: id } = useParams();
   const dispatch = useDispatch();
-  const playbookDataRef = useRef<PlaybookType | null>(null);
   const [searchParams] = useSearchParams();
   const executionId = searchParams.get("executionId");
   const isPrefetched = useIsPrefetched();
@@ -54,8 +53,7 @@ function Playbook() {
 
   const fetchPlaybook = async () => {
     if (!id) return;
-    const res = await triggerGetPlaybook({ playbookId: id }).unwrap();
-    if (playbookDataRef) playbookDataRef.current = res;
+    await triggerGetPlaybook({ playbookId: id }).unwrap();
     if (executionId) handleTimeline();
   };
 

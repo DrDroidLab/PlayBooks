@@ -14,4 +14,5 @@ export enum TaskType {
   Azure = "azure",
   Gke = "gke",
   ElasticSearch = "elastic_search",
+  Slack = "SEND_MESSAGE",
 }

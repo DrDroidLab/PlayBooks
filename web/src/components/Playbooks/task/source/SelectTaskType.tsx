@@ -1,16 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  playbookSelector,
-  updateTaskType,
-} from "../../../../store/features/playbook/playbookSlice.ts";
+import { updateTaskType } from "../../../../store/features/playbook/playbookSlice.ts";
 import { updateCardById } from "../../../../utils/execution/updateCardById.ts";
 import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched.ts";
 import { InputTypes } from "../../../../types/inputs/inputTypes.ts";
 import CustomInput from "../../../Inputs/CustomInput.tsx";
 import useCurrentTask from "../../../../hooks/playbooks/task/useCurrentTask.ts";
+import { commonKeySelector } from "../../../../store/features/common/commonSlice.ts";
 
 function SelectTaskType({ id }) {
-  const { connectorOptions } = useSelector(playbookSelector);
+  const { connectorOptions } = useSelector(commonKeySelector);
   const [task, currentId] = useCurrentTask(id);
   const currentConnector = connectorOptions?.find(
     (e) => e.id === task?.source,
@@ -34,6 +32,11 @@ function SelectTaskType({ id }) {
     updateCardById(
       "ui_requirement.resultType",
       currentTaskType.result_type,
+      currentId,
+    );
+    updateCardById(
+      "ui_requirement.model_type",
+      currentTaskType.supported_model_types?.[0]?.model_type ?? task?.source,
       currentId,
     );
     if (!task?.ui_requirement?.userEnteredDescription)
