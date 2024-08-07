@@ -38,7 +38,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
         inputType={InputTypes.DROPDOWN}
         options={functionOptions(ResultTypeTypes.TIMESERIES)}
         value={rule.function}
-        placeholder={`Select Function`}
+        placeholder={`Function`}
         handleChange={(id: string) => handleRuleChange(id, `function`)}
       />
 
@@ -46,7 +46,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
         inputType={InputTypes.DROPDOWN}
         options={operationOptions}
         value={rule.operator}
-        placeholder={`Select Operator`}
+        placeholder={`Operator`}
         handleChange={(id: string) => handleRuleChange(id, `operator`)}
       />
 
@@ -54,7 +54,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
         inputType={InputTypes.TEXT}
         handleChange={(val: string) => handleRuleChange(val, `threshold`)}
         value={rule.threshold}
-        placeholder={"Enter Value of condition"}
+        placeholder={"Threshold"}
         className="!w-[200px]"
       />
 
@@ -63,7 +63,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
         error={undefined}
         options={operationOptions}
         value={stepRule.rule}
-        placeholder={`Enter CRON Rule`}
+        placeholder={`Time Schedule (UTC)`}
         handleChange={(id: string) => handleStepRuleChange(id, `rule`)}
       />
     </div>

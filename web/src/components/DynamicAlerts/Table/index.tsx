@@ -21,8 +21,6 @@ const DynamicAlertsTable = ({ data }) => {
             <TableCell className="!font-bold">Name</TableCell>
             <TableCell className="!font-bold">Created At</TableCell>
             <TableCell className="!font-bold">Created By</TableCell>
-            <TableCell className="!font-bold">Started At</TableCell>
-            <TableCell className="!font-bold">Status</TableCell>
             <TableCell className="!font-bold">Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -45,16 +43,6 @@ const DynamicAlertsTable = ({ data }) => {
               </TableCell>
               <TableCell component="td" scope="row">
                 {item.created_by}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                {item.last_execution_time
-                  ? renderTimestamp(item.last_execution_time)
-                  : "--"}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                {item.last_execution_status
-                  ? handleStatus(item.last_execution_status)
-                  : "--"}
               </TableCell>
               <TableCell component="td" scope="row">
                 <DynamicAlertActions item={item} />

@@ -1,9 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import CommonConditionTop from "../../common/Conditions/CommonConditionTop";
 import { currentPlaybookSelector } from "../../../store/features/playbook/selectors";
-import Condition from "../../AddCondition/Condition";
-import handleTaskTypeOptions from "../../../utils/conditionals/handleTaskTypeOptions";
-import StepConditions from "../../AddStepCondition/StepConditions";
 import { useEffect } from "react";
 import { setAdditionalState } from "../../../store/features/drawers/drawersSlice";
 import ConditionRuleSet from "./ConditionRuleSet";

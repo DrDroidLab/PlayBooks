@@ -35,6 +35,18 @@ const CronOverlay = ({ isOpen, close, value, setValue }: CronOverlayProps) => {
             <Cron
               value={value}
               setValue={setValue}
+              allowClear={false}
+              allowEmpty={"always"}
+              allowedDropdowns={[
+                "hours",
+                "minutes",
+                "month-days",
+                "week-days",
+                "months",
+                "period",
+              ]}
+              allowedPeriods={["day", "hour", "month", "week"]}
+              periodicityOnDoubleClick={true}
               className="text-xs"
               clearButtonProps={{
                 className:

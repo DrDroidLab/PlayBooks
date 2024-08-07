@@ -66,7 +66,7 @@ function AddNotification() {
           inputType={InputTypes.DROPDOWN}
           options={notificationOptions}
           value={notificationTask.source}
-          placeholder={`Select Source`}
+          placeholder={`Source`}
           handleChange={handleSourceChange}
           error={undefined}
         />
@@ -74,7 +74,7 @@ function AddNotification() {
           inputType={InputTypes.TYPING_DROPDOWN}
           options={assets}
           value={data?.channel}
-          placeholder={`Select Channels`}
+          placeholder={`Channel`}
           handleChange={handleChannelsChange}
           error={undefined}
           helpText={assets?.find((e) => e.id === data?.channel)?.label}
