@@ -18,14 +18,16 @@ def logical_operator_enum_to_string(logical_operator: LogicalOperator):
 
 def step_relation_interpret(relation: PlaybookStepRelation):
     condition: PlaybookStepResultCondition = relation.condition
-    rules = condition.rules
+    rule_sets = condition.rule_sets
     operator = logical_operator_enum_to_string(condition.logical_operator)
     relation_interpretation_string = ''
-    for r in rules:
-        rule_interpretation = conditional_rule_interpreter_facade.interpret(r)
-        if not relation_interpretation_string:
-            relation_interpretation_string = rule_interpretation
-        else:
-            relation_interpretation_string += f'{operator} {rule_interpretation}'
+    for rs in rule_sets:
+        rules = rs.rules
+        for r in rules:
+            rule_interpretation = conditional_rule_interpreter_facade.interpret(r)
+            if not relation_interpretation_string:
+                relation_interpretation_string = rule_interpretation
+            else:
+                relation_interpretation_string += f'{operator} {rule_interpretation}'
 
     return relation_interpretation_string
