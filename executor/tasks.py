@@ -268,6 +268,9 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         step_execution_logs, execution_global_variable_set = execute_playbook_impl(tr, account, pb_proto,
                                                                                    execution_global_variable_set)
 
+        if execution_global_variable_set and execution_global_variable_set.items():
+            execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
+
         store_step_execution_logs(account, pb, pb_execution, step_execution_logs)
 
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
