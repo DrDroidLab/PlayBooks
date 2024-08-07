@@ -47,6 +47,8 @@ export const playbookSlice = createSlice({
     addRuleForDynamicAlert: Actions.addRuleForDynamicAlert,
     addStepRuleSetForDynamicAlert: Actions.addStepRuleSetForDynamicAlert,
     removeStepRuleSetForDynamicAlert: Actions.removeStepRuleSetForDynamicAlert,
+    duplicateStep: Actions.duplicateStep,
+    addRelationKey: Actions.addRelationKey,
   },
 });
 
@@ -91,6 +93,8 @@ export const {
   addStepRuleSet,
   addStepRuleSetForDynamicAlert,
   removeStepRuleSetForDynamicAlert,
+  duplicateStep,
+  addRelationKey,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

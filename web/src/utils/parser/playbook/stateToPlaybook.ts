@@ -4,8 +4,10 @@ import removeKeyFromObject from "../../common/removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import checkId from "../../common/checkId.ts";
 import { extractTimeFromHours } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
+import { handleMultipleRuleSets } from "./handleMultipleRuleSets.ts";
 
 function stateToPlaybook(): Playbook | null {
+  handleMultipleRuleSets();
   const currentPlaybook = currentPlaybookSelector(store.getState());
   if (!currentPlaybook) return null;
   const playbookTasks = currentPlaybook.ui_requirement.tasks;
@@ -58,7 +60,7 @@ function stateToPlaybook(): Playbook | null {
           : "",
     },
     child: {
-      reference_id: relation.child.reference_id ?? "",
+      reference_id: relation.child?.reference_id ?? "",
     },
     condition: relation.condition
       ? {
