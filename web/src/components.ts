@@ -37,4 +37,9 @@ export const components = {
   [PageKeys.SUPPORT]: () => import("./pages/Support"),
   [PageKeys.NOT_FOUND]: () => import("./pages/NotFound"),
   [PageKeys.SETTINGS]: () => import("./pages/Settings"),
+  [PageKeys.DYNAMIC_ALERTS]: () => import("./pages/dynamicAlerts"),
+  [PageKeys.CREATE_DYNAMIC_ALERTS]: () =>
+    import("./pages/dynamicAlerts/CreateDynamicAlert"),
+  [PageKeys.DYNAMIC_ALERT_VIEW]: () =>
+    import("./pages/dynamicAlerts/CreateDynamicAlert"),
 };

@@ -52,7 +52,13 @@ function CreateWorkflow() {
         navigate("/workflows");
       }
     } catch (e: any) {
-      dispatch(showSnackbar(e?.message?.toString() ?? e.toString()));
+      dispatch(
+        showSnackbar(
+          e?.data?.message?.toString() ??
+            e?.data?.message?.description?.toString() ??
+            JSON.stringify(e),
+        ),
+      );
     }
   };
 

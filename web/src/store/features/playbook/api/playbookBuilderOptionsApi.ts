@@ -1,6 +1,6 @@
 import { GET_BUILDER_OPTIONS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { setPlaybookKey } from "../playbookSlice.ts";
+import { setCommonKey } from "../../common/commonSlice.ts";
 
 export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -50,25 +50,25 @@ export const playbookBuilderOptionsApi = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(
-            setPlaybookKey({
+            setCommonKey({
               key: "connectorOptionsMap",
               value: data.connectorOptionsMap,
             }),
           );
           dispatch(
-            setPlaybookKey({
+            setCommonKey({
               key: "supportedTaskTypes",
               value: data.supportedTaskTypes,
             }),
           );
           dispatch(
-            setPlaybookKey({
+            setCommonKey({
               key: "connectorOptions",
               value: data.connectorOptions,
             }),
           );
           dispatch(
-            setPlaybookKey({
+            setCommonKey({
               key: "interpreterTypes",
               value: data.interpreterTypes,
             }),

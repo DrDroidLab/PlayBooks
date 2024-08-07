@@ -15,6 +15,7 @@ import {
   SqlDatabaseConnection,
   Api,
 } from "../../taskTypes";
+import { Slack } from "../../taskTypes/slack";
 import { Sources } from "../sources";
 
 type TaskDetailsMapping = {
@@ -33,6 +34,7 @@ type TaskDetailsMapping = {
   [Sources.Azure]: Azure;
   [Sources.Gke]: Gke;
   [Sources.ElasticSearch]: ElasticSearch;
+  [Sources.Slack]: Slack;
 };
 
 export type TaskDetails = {

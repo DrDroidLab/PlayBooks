@@ -8,13 +8,14 @@ import traceback
 import uuid
 from django.conf import settings
 from django.db.models import QuerySet
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest
 from google.protobuf.struct_pb2 import Struct
 
 from google.protobuf.wrappers_pb2 import BoolValue, StringValue
 
 from accounts.models import Account, get_request_account, get_request_user, AccountApiToken
-from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions
+from executor.workflows.crud.workflow_execution_crud import get_db_workflow_executions, \
+    update_db_account_workflow_execution_status, get_workflow_executions
 from executor.workflows.crud.workflow_execution_utils import create_workflow_execution_util
 from executor.workflows.crud.workflows_crud import update_or_create_db_workflow, get_db_workflows
 from executor.workflows.crud.workflows_update_processor import workflows_update_processor
@@ -30,7 +31,9 @@ from protos.playbooks.api_pb2 import GetWorkflowsRequest, GetWorkflowsResponse, 
     CreateWorkflowResponse, UpdateWorkflowRequest, UpdateWorkflowResponse, ExecuteWorkflowRequest, \
     ExecuteWorkflowResponse, ExecutionWorkflowGetResponse, ExecutionsWorkflowsListResponse, \
     ExecutionsWorkflowsListRequest, ExecutionWorkflowGetRequest, ExecutionsWorkflowsGetAllRequest, \
-    ExecutionsWorkflowsGetAllResponse, TestWorkflowTransformerRequest, TestWorkflowTransformerResponse
+    ExecutionsWorkflowsGetAllResponse, TestWorkflowTransformerRequest, TestWorkflowTransformerResponse, \
+    TerminateWorkflowExecutionRequest, TerminateWorkflowExecutionResponse, ExecutionsWorkflowsGetAllLogsRequest, \
+    ExecutionsWorkflowsGetAllLogsResponse
 from protos.playbooks.workflow_pb2 import Workflow, WorkflowConfiguration, WorkflowExecutionStatusType
 from utils.uri_utils import construct_curl, build_absolute_uri
 
@@ -100,6 +103,12 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
                                       message=Message(title="Error", description="Unauthorized"))
     try:
         workflows_update_processor.update(account_workflow, update_workflow_ops)
+        workflow_executions = get_workflow_executions(account, workflow_ids=[workflow_id],
+                                                      status_in=[WorkflowExecutionStatusType.WORKFLOW_RUNNING,
+                                                                 WorkflowExecutionStatusType.WORKFLOW_SCHEDULED])
+        for we in workflow_executions:
+            update_db_account_workflow_execution_status(account, we.id,
+                                                        WorkflowExecutionStatusType.WORKFLOW_CANCELLED)
     except Exception as e:
         logger.error(f"Error updating playbook: {e}")
         return UpdateWorkflowResponse(success=BoolValue(value=False),
@@ -108,6 +117,7 @@ def workflows_update(request_message: UpdateWorkflowRequest) -> Union[UpdateWork
 
 
 @web_api(ExecuteWorkflowRequest)
+@api_blocked
 def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteWorkflowResponse, HttpResponse]:
     account: Account = get_request_account()
     user = get_request_user()
@@ -126,10 +136,8 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         uuid_str = uuid.uuid4().hex
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
         workflow: Workflow = account_workflow.proto_partial
-        schedule = workflow.schedule
-        schedule_type = account_workflow.schedule_type
-        workflow_config = proto_to_dict(workflow.configuration)
 
+        workflow_config = proto_to_dict(workflow.configuration)
         requested_config = proto_to_dict(request_message.workflow_configuration)
         if requested_config:
             for key, value in requested_config.items():
@@ -141,9 +149,10 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
                     workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
-        execution_scheduled, err = create_workflow_execution_util(account, workflow_id, schedule_type, schedule,
-                                                                  current_time_utc, workflow_run_uuid, user.email, None,
-                                                                  workflow_config_proto)
+        workflow.configuration.CopyFrom(workflow_config_proto)
+
+        execution_scheduled, err = create_workflow_execution_util(account, workflow, current_time_utc,
+                                                                  workflow_run_uuid, user.email, None)
         if err:
             return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                            message=Message(title="Failed to Schedule Workflow Execution",
@@ -154,6 +163,56 @@ def workflows_execute(request_message: ExecuteWorkflowRequest) -> Union[ExecuteW
         logger.error(f"Error updating playbook: {e}")
         return ExecuteWorkflowResponse(success=BoolValue(value=False),
                                        message=Message(title="Error", description=str(e)))
+
+
+@web_api(TerminateWorkflowExecutionRequest)
+@api_blocked
+def workflows_terminate(request_message: TerminateWorkflowExecutionRequest) -> \
+        Union[TerminateWorkflowExecutionResponse, HttpResponse]:
+    account: Account = get_request_account()
+    user = get_request_user()
+    workflow_run_id = request_message.workflow_run_id.value if request_message.workflow_run_id else None
+    workflow_id = request_message.workflow_id.value if request_message.workflow_id else None
+    if workflow_run_id:
+        try:
+            db_wfe = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+            if not db_wfe:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error",
+                                                                          description="Workflow Execution not found"))
+            db_wfe = db_wfe.first()
+            if db_wfe.created_by != user.email:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error", description="Unauthorized"))
+            update_db_account_workflow_execution_status(account, db_wfe.id,
+                                                        WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
+        except Exception as e:
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                      message=Message(title="Error", description=str(e)))
+    elif workflow_id:
+        try:
+            db_wfes = get_workflow_executions(account, workflow_ids=[workflow_id],
+                                              status_in=[WorkflowExecutionStatusType.WORKFLOW_SCHEDULED,
+                                                         WorkflowExecutionStatusType.WORKFLOW_RUNNING])
+            if not db_wfes:
+                return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                          message=Message(title="Error",
+                                                                          description="Workflow Execution not found"))
+            for db_wfe in db_wfes:
+                if db_wfe.created_by != user.email:
+                    return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                              message=Message(title="Error",
+                                                                              description="Unauthorized"))
+                update_db_account_workflow_execution_status(account, db_wfe.id,
+                                                            WorkflowExecutionStatusType.WORKFLOW_FINISHED)
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=True))
+        except Exception as e:
+            return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                                      message=Message(title="Error", description=str(e)))
+    return TerminateWorkflowExecutionResponse(success=BoolValue(value=False),
+                                              message=Message(title="Invalid Request",
+                                                              description="Missing workflow_run_id/workflow_id"))
 
 
 @web_api(ExecutionsWorkflowsListRequest)
@@ -223,6 +282,36 @@ def workflows_execution_get_all(request_message: ExecutionsWorkflowsGetAllReques
     return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=True), workflow_executions=we_protos)
 
 
+@web_api(ExecutionsWorkflowsGetAllLogsRequest)
+def workflows_execution_get_all_logs(request_message: ExecutionsWorkflowsGetAllLogsRequest) -> \
+        Union[ExecutionsWorkflowsGetAllLogsResponse, HttpResponse]:
+    account: Account = get_request_account()
+    meta: Meta = request_message.meta
+    page: Page = meta.page
+    workflow_run_id = request_message.workflow_run_id.value
+    if not workflow_run_id:
+        return ExecutionsWorkflowsGetAllLogsResponse(success=BoolValue(value=False),
+                                                     message=Message(title="Invalid Request",
+                                                                     description="Missing workflow_run_id"))
+    try:
+        workflow_execution = get_db_workflow_executions(account, workflow_run_id=workflow_run_id)
+        if not workflow_execution:
+            return ExecutionsWorkflowsGetAllLogsResponse(success=BoolValue(value=False),
+                                                         message=Message(title="Error",
+                                                                         description="Workflow Executions not found"))
+        workflow_execution = workflow_execution.first()
+        workflow_execution_logs = workflow_execution.workflowexecutionlog_set.all().order_by('-created_at')
+        total_count = workflow_execution_logs.count()
+        workflow_execution_logs = filter_page(workflow_execution_logs, page)
+    except Exception as e:
+        return ExecutionsWorkflowsGetAllResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Error", description=str(e)))
+
+    wel_protos = [wel.proto_partial for wel in workflow_execution_logs]
+    return ExecutionsWorkflowsGetAllLogsResponse(meta=get_meta(page=page, total_count=total_count),
+                                                 success=BoolValue(value=True), workflow_execution_logs=wel_protos)
+
+
 @web_api(ExecutionWorkflowGetRequest)
 def workflows_execution_get(request_message: ExecutionWorkflowGetRequest) -> \
         Union[ExecutionWorkflowGetResponse, HttpResponse]:
@@ -274,8 +363,6 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
         uuid_str = uuid.uuid4().hex
         workflow_run_uuid = f'{str(int(current_time_utc.timestamp()))}_{account.id}_{account_workflow.id}_wf_run_{uuid_str}'
         workflow: Workflow = account_workflow.proto_partial
-        schedule = workflow.schedule
-        schedule_type = account_workflow.schedule_type
         workflow_config = proto_to_dict(workflow.configuration)
 
         requested_config = proto_to_dict(request_message.workflow_configuration)
@@ -289,9 +376,10 @@ def workflows_api_execute(request_message: ExecuteWorkflowRequest) -> HttpRespon
                     workflow_config[key] = value
 
         workflow_config_proto = dict_to_proto(workflow_config, WorkflowConfiguration)
-        execution_scheduled, err = create_workflow_execution_util(account, account_workflow.id, schedule_type,
-                                                                  schedule, current_time_utc, workflow_run_uuid,
-                                                                  user.email, None, workflow_config_proto)
+        workflow.configuration.CopyFrom(workflow_config_proto)
+
+        execution_scheduled, err = create_workflow_execution_util(account, workflow, current_time_utc,
+                                                                  workflow_run_uuid, user.email, None)
         if err:
             return HttpResponse(json.dumps(
                 {'success': False, 'error_message': f'Failed to schedule workflow execution'}),

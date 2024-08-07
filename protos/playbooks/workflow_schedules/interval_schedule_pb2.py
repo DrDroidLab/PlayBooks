@@ -15,7 +15,7 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from protos import base_pb2 as protos_dot_base__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/workflow_schedules/interval_schedule.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"\x88\x01\n\x10IntervalSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x39\n\x13interval_in_seconds\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Valueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n;protos/playbooks/workflow_schedules/interval_schedule.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"\xb8\x01\n\x10IntervalSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x39\n\x13interval_in_seconds\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12.\n\nkeep_alive\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.BoolValueb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.workflow_schedules.interval_schedule_pb2', globals())
@@ -23,5 +23,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _INTERVALSCHEDULE._serialized_start=133
-  _INTERVALSCHEDULE._serialized_end=269
+  _INTERVALSCHEDULE._serialized_end=317
 # @@protoc_insertion_point(module_scope)

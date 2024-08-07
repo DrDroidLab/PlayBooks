@@ -12,6 +12,7 @@ import { ReactFlowProvider } from "reactflow";
 import TopBanner from "./components/TopBanner.tsx";
 import "highlight.js/styles/github.min.css";
 import "rsuite/DatePicker/styles/index.css";
+import { AnimatePresence } from "framer-motion";
 
 posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
   api_host: "https://pumpkins.drdroid.io",
@@ -25,7 +26,9 @@ root.render(
     <ReactFlowProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <App />
+          <AnimatePresence mode="wait">
+            <App />
+          </AnimatePresence>
           <GlobalSnackbar />
         </BrowserRouter>
       </Provider>

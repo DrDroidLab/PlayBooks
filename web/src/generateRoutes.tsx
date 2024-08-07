@@ -6,9 +6,22 @@ import { PageKeys } from "./pageKeys";
 import { noLayoutPages } from "./utils/pages/noLayoutPages";
 import { routes } from "./routes";
 import Loading from "./components/common/Loading";
+import AnimatedRoute from "./components/AnimatedRoute";
+import { unsupportedAnimationPages } from "./utils/pages/unsupportedAnimationPages";
 
-const LazyComponent = ({ importFn }) => (
-  <Suspense fallback={<Loading />}>{createElement(lazy(importFn))}</Suspense>
+type LazyComponentProps = {
+  importFn: () => Promise<{ default: any }>;
+  pageKey?: string;
+};
+
+const LazyComponent = ({ importFn, pageKey }: LazyComponentProps) => (
+  <Suspense fallback={<Loading />}>
+    {unsupportedAnimationPages.includes(pageKey as PageKeys) ? (
+      createElement(lazy(importFn))
+    ) : (
+      <AnimatedRoute>{createElement(lazy(importFn))}</AnimatedRoute>
+    )}
+  </Suspense>
 );
 
 export const generateNoLayoutRoutes = () => {
@@ -33,7 +46,7 @@ export const generateOtherRoutes = () => {
       <Route
         key={pageKey}
         path={routes[pageKey]}
-        element={<LazyComponent importFn={importFn} />}
+        element={<LazyComponent importFn={importFn} pageKey={pageKey} />}
       />
     ));
 };

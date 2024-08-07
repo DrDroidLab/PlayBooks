@@ -7,12 +7,31 @@ import { deepEqual } from "../../../utils/common/deepEqual.ts";
 import OptionRender from "./OptionRender.tsx";
 import useCurrentTask from "../../../hooks/playbooks/task/useCurrentTask.ts";
 import getNestedValue from "../../../utils/common/getNestedValue.ts";
+import { InputType, InputTypes } from "../../../types";
 
-function Details({ id }) {
+type DetailsPropTypes = {
+  id: string;
+  allowMultipleMetricSelection?: boolean;
+};
+
+function Details({
+  id,
+  allowMultipleMetricSelection = true,
+}: DetailsPropTypes) {
   const data: any = constructBuilder(id);
   const [task, currentTaskId] = useCurrentTask(id);
   const dispatch = useDispatch();
   const prevError = useRef<any>(null);
+
+  const handleInputType = (inputType: InputType) => {
+    if (allowMultipleMetricSelection) return inputType;
+    switch (inputType) {
+      case InputTypes.TYPING_DROPDOWN_MULTIPLE:
+        return InputTypes.TYPING_DROPDOWN;
+      default:
+        return inputType;
+    }
+  };
 
   const setDefaultErrors = () => {
     const errors = {};
@@ -78,7 +97,10 @@ function Details({ id }) {
               maxWidth: "600px",
             }}>
             <OptionRender
-              data={value}
+              data={{
+                ...value,
+                inputType: handleInputType(value.inputType),
+              }}
               removeErrors={removeErrors}
               id={currentTaskId}
             />

@@ -1,4 +1,3 @@
-import React from "react";
 import { InputTypes } from "../../types/inputs/index.ts";
 
 export const scheduleOptions = [
@@ -26,7 +25,7 @@ export const scheduleOptions = [
             )
           </>
         ),
-        inputType: InputTypes.TEXT,
+        inputType: InputTypes.CRON,
         placeholder: "Enter Cron Schedule",
       },
       {
@@ -34,8 +33,13 @@ export const scheduleOptions = [
         label: "Stop after (in seconds)",
         inputType: InputTypes.TEXT,
         placeholder: "Enter Duration (in seconds)",
-        valueType: "LONG",
+        type: "number",
         length: 200,
+        suffix: (
+          <p className="text-xs text-gray-500 italic">
+            Keeping this empty will keep it alive
+          </p>
+        ),
       },
     ],
   },
@@ -46,7 +50,7 @@ export const scheduleOptions = [
       {
         id: "interval",
         label: "Interval (in seconds)",
-        valueType: "LONG",
+        type: "number",
         inputType: InputTypes.TEXT,
         placeholder: "Enter Interval in seconds",
       },
@@ -55,8 +59,13 @@ export const scheduleOptions = [
         label: "Stop after (in seconds)",
         inputType: InputTypes.TEXT,
         placeholder: "Enter Duration (in seconds)",
-        valueType: "LONG",
+        type: "number",
         length: 200,
+        suffix: (
+          <p className="text-xs text-gray-500 italic">
+            Keeping this empty will keep it alive
+          </p>
+        ),
       },
     ],
   },

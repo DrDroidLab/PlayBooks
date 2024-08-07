@@ -8,6 +8,7 @@ import "protos/playbooks/playbook_commons.proto";
 import "protos/playbooks/intelligence_layer/interpreter.proto";
 
 import "protos/playbooks/playbook_task_result_evaluator.proto";
+import "protos/playbooks/playbook_step_result_evaluator.proto";
 
 import "protos/playbooks/source_task_definitions/cloudwatch_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_task.proto";
@@ -27,6 +28,7 @@ import "protos/playbooks/source_task_definitions/kubectl_task.proto";
 import "protos/playbooks/source_task_definitions/gcm_task.proto";
 import "protos/playbooks/source_task_definitions/email_task.proto";
 import "protos/playbooks/source_task_definitions/lambda_function_task.proto";
+import "protos/playbooks/source_task_definitions/slack_task.proto";
 
 
 // Playbook Task Protos
@@ -43,7 +45,8 @@ message PlaybookTask {
 
     repeated uint32 timeseries_offsets = 3;
 
-    Lambda.Function result_transformer_lambda_function = 4;
+    google.protobuf.BoolValue is_result_transformer_enabled = 4;
+    Lambda.Function result_transformer_lambda_function = 5;
   }
 
   google.protobuf.UInt64Value id = 1;
@@ -77,6 +80,7 @@ message PlaybookTask {
     Kubectl kubernetes = 117;
     Gcm gcm = 118;
     SMTP smtp = 119;
+    Slack slack = 120;
   }
 }
 
@@ -104,8 +108,13 @@ message PlaybookTaskExecutionLog {
 
 // Playbook Step Protos
 message PlaybookStepResultCondition {
-  repeated PlaybookTaskResultRule rules = 1;
-  LogicalOperator logical_operator = 2;
+  message RuleSet {
+    LogicalOperator logical_operator = 1;
+    repeated PlaybookTaskResultRule rules = 2;
+    repeated PlaybookStepResultRule step_rules = 3;
+  }
+  LogicalOperator logical_operator = 1;
+  repeated RuleSet rule_sets = 2;
 }
 
 message PlaybookStep {

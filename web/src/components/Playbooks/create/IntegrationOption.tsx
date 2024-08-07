@@ -1,9 +1,6 @@
 import { cardsData } from "../../../utils/common/cardsData.ts";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createTaskWithSource,
-  playbookSelector,
-} from "../../../store/features/playbook/playbookSlice.ts";
+import { createTaskWithSource } from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/playbook/unsupportedBuilderOptions.ts";
@@ -13,13 +10,14 @@ import { additionalStateSelector } from "../../../store/features/drawers/drawers
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
+import { commonKeySelector } from "../../../store/features/common/commonSlice.ts";
 
 function IntegrationOption({ option }) {
   const { toggle } = useDrawerState(DrawerTypes.ADD_DATA);
   const { openDrawer } = usePermanentDrawerState();
   const addtionalState = useSelector(additionalStateSelector);
   const dispatch = useDispatch();
-  const { connectorOptionsMap } = useSelector(playbookSelector);
+  const { connectorOptionsMap } = useSelector(commonKeySelector);
   const unsupported = unsupportedBuilderOptions.includes(
     `${option.source} ${option.task_type}`,
   );

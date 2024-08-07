@@ -6,3 +6,4 @@ export * from "./addNotes.ts";
 export * from "./addExternalLinks.ts";
 export * from "./toggleExternalLinkVisibility.ts";
 export * from "./toggleNotesVisibility.ts";
+export * from "./duplicateStep.ts";

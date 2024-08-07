@@ -20,5 +20,8 @@ export const routes = {
   [PageKeys.DATA_SOURCES]: "/data-sources",
   [PageKeys.CONNECTOR_PAGE]: "/data-sources/:connectorEnum",
   [PageKeys.CONNECTOR_PAGE_ID]: "/data-sources/:connectorEnum/:id",
+  [PageKeys.DYNAMIC_ALERTS]: "/dynamic-alerts",
+  [PageKeys.CREATE_DYNAMIC_ALERTS]: "/dynamic-alerts/create",
+  [PageKeys.DYNAMIC_ALERT_VIEW]: "/dynamic-alerts/:alert_id",
   [PageKeys.NOT_FOUND]: "*",
 };
