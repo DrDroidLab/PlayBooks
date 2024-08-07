@@ -16,7 +16,7 @@ class CompareTimeWithCronEvaluator(StepResultEvaluator):
         operator = compare_with_cron_rule.operator
         cron_rule = compare_with_cron_rule.rule.value
         timezone = compare_with_cron_rule.timezone.value
-        within_seconds = compare_with_cron_rule.within_seconds
+        within_seconds = compare_with_cron_rule.within_seconds.value if compare_with_cron_rule.within_seconds else 0
 
         next_cron_schedule = calculate_next_cron_time(cron_rule)
         if not next_cron_schedule:
