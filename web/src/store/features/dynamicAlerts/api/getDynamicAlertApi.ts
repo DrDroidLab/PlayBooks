@@ -1,6 +1,5 @@
 import { GET_WORKFLOWS } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
-import { getPlaybook } from "../../playbook/api/getPlaybookApi.ts";
 import { setDynamicAlert } from "../dynamicAlertsSlice.ts";
 
 export const getDynamicAlertApi = apiSlice.injectEndpoints({

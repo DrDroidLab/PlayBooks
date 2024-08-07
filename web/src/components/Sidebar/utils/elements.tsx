@@ -5,6 +5,7 @@ import {
   SlowMotionVideoRounded,
   TerminalRounded,
   TipsAndUpdatesRounded,
+  AddAlert,
 } from "@mui/icons-material";
 import { routes } from "../../../routes";
 
@@ -42,6 +43,6 @@ export const elements = [
   {
     to: routes.DYNAMIC_ALERTS,
     label: "Dynamic Alerts",
-    icon: <TipsAndUpdatesRounded />,
+    icon: <AddAlert />,
   },
 ];
