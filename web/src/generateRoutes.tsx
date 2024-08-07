@@ -7,10 +7,20 @@ import { noLayoutPages } from "./utils/pages/noLayoutPages";
 import { routes } from "./routes";
 import Loading from "./components/common/Loading";
 import AnimatedRoute from "./components/AnimatedRoute";
+import { unsupportedAnimationPages } from "./utils/pages/unsupportedAnimationPages";
 
-const LazyComponent = ({ importFn }) => (
+type LazyComponentProps = {
+  importFn: () => Promise<{ default: any }>;
+  pageKey?: string;
+};
+
+const LazyComponent = ({ importFn, pageKey }: LazyComponentProps) => (
   <Suspense fallback={<Loading />}>
-    <AnimatedRoute>{createElement(lazy(importFn))}</AnimatedRoute>
+    {unsupportedAnimationPages.includes(pageKey as PageKeys) ? (
+      createElement(lazy(importFn))
+    ) : (
+      <AnimatedRoute>{createElement(lazy(importFn))}</AnimatedRoute>
+    )}
   </Suspense>
 );
 
@@ -49,7 +59,7 @@ export const generateOtherRoutes = () => {
       <Route
         key={pageKey}
         path={routes[pageKey]}
-        element={<LazyComponent importFn={importFn} />}
+        element={<LazyComponent importFn={importFn} pageKey={pageKey} />}
       />
     ));
 };
