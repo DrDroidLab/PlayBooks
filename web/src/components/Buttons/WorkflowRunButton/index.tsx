@@ -1,6 +1,6 @@
 import CustomButton from "../../common/CustomButton";
 import { Tooltip } from "rsuite";
-import { PlayArrowRounded, StopRounded } from "@mui/icons-material";
+import { PlayArrowRounded, PowerSettingsNewRounded } from "@mui/icons-material";
 import { ExecutionStatus } from "../../../types";
 import {
   useStartWorkflowExecutionMutation,
@@ -43,7 +43,7 @@ function WorkflowRunButton({ status, id }: WorkflowRunButtonProps) {
         {loading ? (
           <CircularProgress size={20} />
         ) : showStop ? (
-          <StopRounded fontSize="small" />
+          <PowerSettingsNewRounded fontSize="small" />
         ) : (
           <PlayArrowRounded fontSize="small" />
         )}

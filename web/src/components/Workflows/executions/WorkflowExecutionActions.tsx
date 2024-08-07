@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../common/CustomButton";
 import { ExecutionStatus } from "../../../types";
-import { StopRounded } from "@mui/icons-material";
 import { useStopWorkflowExecutionMutation } from "../../../store/features/workflow/api";
 import { CircularProgress, Tooltip } from "@mui/material";
+import { PowerSettingsNewRounded } from "@mui/icons-material";
 
 type WorkflowExecutionActionsProps = {
   item: any;
@@ -38,7 +38,7 @@ function WorkflowExecutionActions({ item }: WorkflowExecutionActionsProps) {
             {stopLoading ? (
               <CircularProgress size={20} />
             ) : (
-              <StopRounded fontSize="small" />
+              <PowerSettingsNewRounded fontSize="small" />
             )}
           </Tooltip>
         </CustomButton>
