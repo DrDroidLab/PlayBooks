@@ -31,7 +31,10 @@ function AddMetric() {
           <AddMetricSource id={currentTask.id} />
           {currentTask.source && (
             <>
-              <Details id={currentTask.id} />
+              <Details
+                id={currentTask.id}
+                allowMultipleMetricSelection={false}
+              />
               <div className="w-fit mt-2">
                 <RunButton id={currentTask.id} />
               </div>
