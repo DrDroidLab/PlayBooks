@@ -4,8 +4,10 @@ import removeKeyFromObject from "../../common/removeKeys.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import checkId from "../../common/checkId.ts";
 import { extractTimeFromHours } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
+import { handleMultipleRuleSets } from "./handleMultipleRuleSets.ts";
 
 function stateToPlaybook(): Playbook | null {
+  handleMultipleRuleSets();
   const currentPlaybook = currentPlaybookSelector(store.getState());
   if (!currentPlaybook) return null;
   const playbookTasks = currentPlaybook.ui_requirement.tasks;
@@ -19,30 +21,34 @@ function stateToPlaybook(): Playbook | null {
   playbook.steps = playbook?.steps?.map((step: Step) => ({
     ...step,
     id: checkId(step.id),
-    tasks: step.tasks?.map((taskId: Task | string) => {
-      const task = tasks.find(
-        (task) => task.id === (typeof taskId === "string" ? taskId : taskId.id),
-      );
-      return {
-        ...task,
-        execution_configuration: task.execution_configuration
-          ? {
-              ...task.execution_configuration,
-              timeseries_offsets: task?.execution_configuration
-                ?.timeseries_offsets?.[0]
-                ? [
-                    extractTimeFromHours(
-                      task?.execution_configuration?.timeseries_offsets?.[0],
-                    ),
-                  ]
-                : undefined,
-            }
-          : {},
-        id: checkId(
-          (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
-        ),
-      };
-    }),
+    tasks: step.tasks
+      ?.map((taskId: Task | string) => {
+        const task = tasks.find(
+          (task) =>
+            task.id === (typeof taskId === "string" ? taskId : taskId.id),
+        );
+        if (!task) return undefined;
+        return {
+          ...task,
+          execution_configuration: task.execution_configuration
+            ? {
+                ...task.execution_configuration,
+                timeseries_offsets: task?.execution_configuration
+                  ?.timeseries_offsets?.[0]
+                  ? [
+                      extractTimeFromHours(
+                        task?.execution_configuration?.timeseries_offsets?.[0],
+                      ),
+                    ]
+                  : undefined,
+              }
+            : {},
+          id: checkId(
+            (typeof taskId === "string" ? taskId : taskId.id) ?? "0".toString(),
+          ),
+        };
+      })
+      .filter((task) => task !== undefined),
   }));
 
   playbook.step_relations = playbook.step_relations?.map((relation) => ({
@@ -54,19 +60,22 @@ function stateToPlaybook(): Playbook | null {
           : "",
     },
     child: {
-      reference_id: relation.child.reference_id ?? "",
+      reference_id: relation.child?.reference_id ?? "",
     },
     condition: relation.condition
       ? {
           ...relation.condition,
-          rules:
-            relation.condition?.rules?.map((rule) => ({
-              ...rule,
-              task: {
-                reference_id: rule.task.reference_id ?? "",
-                id: checkId(rule.task.id ?? ""),
-              },
-            })) ?? [],
+          rule_sets: relation.condition.rule_sets?.map((ruleSet) => ({
+            ...ruleSet,
+            rules:
+              ruleSet.rules?.map((rule) => ({
+                ...rule,
+                task: {
+                  reference_id: rule.task.reference_id ?? "",
+                  id: checkId(rule.task.id ?? ""),
+                },
+              })) ?? [],
+          })),
         }
       : undefined,
   }));

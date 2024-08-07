@@ -131,13 +131,14 @@ def update_or_create_db_playbook(account: Account, created_by, playbook: Playboo
                 condition = None
                 if step_relation.condition:
                     condition = proto_to_dict(step_relation.condition)
-                    for r in condition.get('rules', []):
-                        task = r.get('task')
-                        condition_task = {
-                            'id': all_task_ref_id_db_id_map[task['reference_id']],
-                            'name': task.get('name', ''),
-                        }
-                        r['task'] = condition_task
+                    for rs in condition.get('rule_sets', []):
+                        for r in rs.get('rules', []):
+                            task = r.get('task')
+                            condition_task = {
+                                'id': all_task_ref_id_db_id_map[task['reference_id']],
+                                'name': task.get('name', ''),
+                            }
+                            r['task'] = condition_task
 
                 condition_md5 = md5(str(condition).encode('utf-8')).hexdigest()
                 PlayBookStepRelation.objects.get_or_create(account=account,

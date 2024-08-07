@@ -6,23 +6,20 @@ import TableSkeleton from "../../components/Skeleton/TableLoader.js";
 import { ChevronLeft } from "@mui/icons-material";
 import { useGetWorkflowExecutionLogsQuery } from "../../store/features/workflow/api/getWorkflowExecutionLogsApi.ts";
 import ExecutionsTable from "../../components/Playbooks/executions/ExecutionsTable.js";
+import PaginatedTable from "../../components/PaginatedTable.tsx";
+import usePaginationComponent from "../../hooks/common/usePaginationComponent.ts";
 
 const WorkflowExecutionLogs = () => {
   const { workflow_run_id: workflowRunId } = useParams();
   const navigate = useNavigate();
-  const { data, isFetching } = useGetWorkflowExecutionLogsQuery({
+  const { data, isFetching, refetch } = useGetWorkflowExecutionLogsQuery({
     workflowRunId: workflowRunId ?? "",
   });
+  usePaginationComponent(refetch);
 
   const playbooksList =
-    data?.workflow_executions?.length > 0
-      ? data?.workflow_executions?.[0].workflow_logs
-      : [];
+    data?.workflow_execution_logs?? [];
 
-  const execution =
-    data?.workflow_executions?.length > 0
-      ? data?.workflow_executions?.[0]
-      : null;
 
   const total = data?.meta?.total_count ?? 0;
 
@@ -38,16 +35,23 @@ const WorkflowExecutionLogs = () => {
           </button>
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-          <ExecutionsTable
-            data={
-              playbooksList?.map((e) => ({
-                ...e.playbook_execution,
-                finished_at: execution.finished_at,
-                scheduled_at: execution.scheduled_at,
-                created_at: execution.created_at,
-                created_by: execution.created_by,
-              })) ?? []
-            }
+          <PaginatedTable
+          renderTable={ExecutionsTable}
+          data={
+            playbooksList?.map((e) => ({
+              ...e.playbook_execution,
+              finished_at: e.finished_at,
+              scheduled_at: e.scheduled_at,
+              created_at: e.created_at,
+              created_by: e.created_by,
+            })) ?? []
+          }
+          total={total}
+          tableContainerStyles={
+            playbooksList?.length
+              ? {}
+              : { maxHeight: "35vh", minHeight: "35vh" }
+          }
           />
         </SuspenseLoader>
       </main>

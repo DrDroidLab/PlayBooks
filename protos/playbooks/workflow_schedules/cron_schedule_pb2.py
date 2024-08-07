@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/workflow_schedules/cron_schedule.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xa5\x01\n\x0c\x43ronSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12*\n\x04rule\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08timezone\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7protos/playbooks/workflow_schedules/cron_schedule.proto\x12\x10protos.playbooks\x1a\x1egoogle/protobuf/wrappers.proto\"\xd5\x01\n\x0c\x43ronSchedule\x12\x39\n\x13\x64uration_in_seconds\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12*\n\x04rule\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\x08timezone\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12.\n\nkeep_alive\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.BoolValueb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.workflow_schedules.cron_schedule_pb2', globals())
@@ -22,5 +22,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _CRONSCHEDULE._serialized_start=110
-  _CRONSCHEDULE._serialized_end=275
+  _CRONSCHEDULE._serialized_end=323
 # @@protoc_insertion_point(module_scope)

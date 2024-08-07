@@ -27,12 +27,12 @@ export const deleteStep = (
           if (typeof relation.parent === "string") {
             return (
               relation.parent !== id &&
-              relation.child.reference_id !== step?.reference_id
+              relation.child?.reference_id !== step?.reference_id
             );
           }
           return (
             relation.parent.reference_id !== step?.reference_id &&
-            relation.child.reference_id !== step.reference_id
+            relation.child?.reference_id !== step.reference_id
           );
         });
     }

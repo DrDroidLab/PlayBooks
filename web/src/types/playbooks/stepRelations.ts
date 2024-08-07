@@ -1,9 +1,15 @@
+import { OperatorOptionType } from "../../utils/conditionals/types/operatorOptionTypes.ts";
+import { LowercaseString } from "../common/lowercaseString.ts";
 import { Step } from "./steps/step.ts";
 
 export enum LogicalOperator {
   AND_LO = "AND_LO",
   OR_LO = "OR_LO",
   NOT_LO = "NOT_LO",
+}
+
+export enum StepRuleTypes {
+  COMPARE_TIME_WITH_CRON = "COMPARE_TIME_WITH_CRON",
 }
 
 enum RuleType {
@@ -31,8 +37,26 @@ export type ConditionRule = {
   [key in RuleType]?: any;
 };
 
-type StepCondition = {
+export type StepRuleType = {
+  [key in StepRuleTypes as LowercaseString<StepRuleTypes>]: {
+    operator: OperatorOptionType;
+    rule: string;
+    within_seconds: number;
+  };
+};
+
+export type StepRule = {
+  type: StepRuleTypes;
+} & StepRuleType;
+
+export type ConditionRuleSet = {
   rules: ConditionRule[];
+  step_rules?: StepRule[];
+  logical_operator: LogicalOperator;
+};
+
+type StepCondition = {
+  rule_sets: ConditionRuleSet[];
   logical_operator: LogicalOperator;
 };
 
@@ -41,7 +65,7 @@ export type StepRelationContract = {
   parent: {
     reference_id: string;
   };
-  child: {
+  child?: {
     reference_id: string;
   };
   condition?: StepCondition;

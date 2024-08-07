@@ -1,0 +1,26 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "protos/ui_definition.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+message CompareTimeWithCronRule {
+  Operator operator = 1;
+  google.protobuf.StringValue rule = 2;
+  google.protobuf.StringValue timezone = 3;
+  google.protobuf.UInt64Value within_seconds = 4;
+}
+
+message PlaybookStepResultRule {
+  enum Type {
+    UNKNOWN = 0;
+    COMPARE_TIME_WITH_CRON = 1;
+  }
+
+  Type type = 1;
+  oneof rule {
+    CompareTimeWithCronRule compare_time_with_cron = 101;
+  }
+}

@@ -6,9 +6,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingExecution.js";
-import { renderTimestamp } from "../../../utils/common/dateUtils.ts";
-import { handleStatus } from "../../../utils/common/handleStatus.tsx";
+import NoExistingPlaybook from "./NoExistingExecution";
+import { renderTimestamp } from "../../../utils/common/dateUtils";
+import { handleStatus } from "../../../utils/common/handleStatus";
+import WorkflowExecutionActions from "./WorkflowExecutionActions";
 
 const ExecutionsTable = ({ data }) => {
   return (
@@ -21,7 +22,7 @@ const ExecutionsTable = ({ data }) => {
             <TableCell className="!font-bold">Playbooks</TableCell>
             <TableCell className="!font-bold">Started At</TableCell>
             <TableCell className="!font-bold">Status</TableCell>
-            <TableCell className="!font-boldd">Actions</TableCell>
+            <TableCell className="!font-bold">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -65,11 +66,7 @@ const ExecutionsTable = ({ data }) => {
                 {handleStatus(item.status)}
               </TableCell>
               <TableCell component="td" scope="row">
-                <Link to={`/workflows/logs/${item.workflow_run_id}`}>
-                  <div className="border w-fit border-violet-500 text-violet-500 p-1 rounded hover:text-white hover:bg-violet-500 transition-all">
-                    View Playbook Executions
-                  </div>
-                </Link>
+                <WorkflowExecutionActions item={item} />
               </TableCell>
             </TableRow>
           ))}

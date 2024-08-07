@@ -21,3 +21,4 @@ export * from "./gcmMqlQuery.ts";
 export * from "./markdown.ts";
 export * from "./kubectl.ts";
 export * from "./smtp.ts";
+export * from "./slack.ts";

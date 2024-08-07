@@ -1,13 +1,12 @@
-import React from "react";
 import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../../hooks/playbooks/useEdgeConditions.ts";
-import { addConditionToEdgeByIndex } from "../../../utils/conditionals/addConditionToEdgeByIndex.ts";
 import Checkbox from "../../common/Checkbox/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import { RuleType } from "../../common/Conditions/types/RuleTypes.ts";
 
 function ColumnValue({
   condition,
@@ -15,12 +14,12 @@ function ColumnValue({
   rule,
 }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition, edgeIndex } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
   const isPrefetched = useIsPrefetched();
 
-  const handleChange = (val: string, type: string) => {
-    handleCondition(`${keyValue}.${type}`, val, conditionIndex);
+  const handleChange = (val: any, type: string) => {
+    handleRule(`${keyValue}.${type}`, val, conditionIndex, RuleType.RULE);
   };
 
   return (
@@ -38,12 +37,7 @@ function ColumnValue({
           id="isNumeric"
           isChecked={rule.isNumeric}
           onChange={() => {
-            addConditionToEdgeByIndex(
-              `${keyValue}.isNumeric`,
-              !rule.isNumeric,
-              edgeIndex,
-              conditionIndex,
-            );
+            handleChange(!rule.isNumeric, "isNumeric");
           }}
           disabled={!!isPrefetched}
           label="Is Numeric"

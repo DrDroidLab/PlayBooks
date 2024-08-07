@@ -5,9 +5,15 @@ import { v4 as uuidv4 } from "uuid";
 
 export const duplicateTask = (
   state: PlaybookUIState,
-  { payload }: PayloadAction<any>,
+  {
+    payload,
+  }: PayloadAction<{
+    id: string;
+    keyToBeRemoved?: string;
+    parentStepId?: string;
+  }>,
 ) => {
-  const { id, keyToBeRemoved } = payload;
+  const { id, keyToBeRemoved, parentStepId } = payload;
   const playbook = state.currentPlaybook;
   const tasks = playbook?.ui_requirement.tasks ?? [];
   const steps = playbook?.steps ?? [];
@@ -24,7 +30,7 @@ export const duplicateTask = (
   const type = newTask[source.toLowerCase()].type;
   const data = newTask[source.toLowerCase()][type.toLowerCase()];
   if (keyToBeRemoved) data[keyToBeRemoved] = "";
-  const stepId = task.ui_requirement.stepId;
+  const stepId = parentStepId ?? task.ui_requirement.stepId;
   const step = steps.find((step) => step.id === stepId);
   tasks.push(newTask);
   step?.tasks.push(newTaskId);
