@@ -1,5 +1,6 @@
 import { motion, Transition } from "framer-motion";
 import { PropsWithChildren } from "react";
+import { useLocation } from "react-router-dom";
 
 const pageVariants = {
   initial: {
@@ -15,18 +16,23 @@ const pageVariants = {
 
 const pageTransition: Transition = {
   ease: "easeInOut",
-  duration: 0.2,
+  duration: 0.25,
 };
 
-const AnimatedRoute = ({ children }: PropsWithChildren) => (
-  <motion.div
-    initial="initial"
-    animate="in"
-    exit="out"
-    variants={pageVariants}
-    transition={pageTransition}>
-    {children}
-  </motion.div>
-);
+const AnimatedRoute = ({ children }: PropsWithChildren) => {
+  const location = useLocation();
+
+  return (
+    <motion.div
+      key={`animated-route-${location.pathname}`}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}>
+      {children}
+    </motion.div>
+  );
+};
 
 export default AnimatedRoute;
