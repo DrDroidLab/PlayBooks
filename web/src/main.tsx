@@ -11,6 +11,7 @@ import { GlobalSnackbar } from "./components/common/GlobalSnackbar";
 import { ReactFlowProvider } from "reactflow";
 import "highlight.js/styles/github.min.css";
 import "rsuite/DatePicker/styles/index.css";
+import { AnimatePresence } from "framer-motion";
 
 if (config.posthogEnabled === "true") {
   posthog.init("phc_DakJVaJiJMjyu764IBSgH2A4OPV57Fu8H7I8XPE09iM", {
@@ -26,7 +27,9 @@ root.render(
     <ReactFlowProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <App />
+          <AnimatePresence mode="wait">
+            <App />
+          </AnimatePresence>
           <GlobalSnackbar />
         </BrowserRouter>
       </Provider>

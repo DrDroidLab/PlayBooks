@@ -43,7 +43,9 @@ function HeadingTitle({ heading }: HeadingTitleProps) {
           className={`${!isOnPlaybookPage ? "" : "cursor-pointer text-sm"}`}
           onClick={isOnPlaybookPage ? () => setShowEdit(!showEdit) : () => {}}>
           {!isPrefetched && isOnPlaybookPage ? "Editing - " : ""}{" "}
-          {currentPlaybook?.name || heading}
+          {currentPlaybook?.name && isOnPlaybookPage
+            ? currentPlaybook?.name ?? heading
+            : heading}
           {isPrefetched && <> - {executionId}</>}
         </div>
       )}

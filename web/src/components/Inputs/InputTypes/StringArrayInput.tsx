@@ -50,7 +50,7 @@ function StringArrayInput({
             handleChange={(val: string) => handleValueChange(val, index)}
             inputType={InputTypes.TEXT}
             label={undefined}
-            placeholder={placeholder ?? `Enter ${label}`}
+            placeholder={placeholder ?? `${label}`}
             className="!w-[200px]"
           />
           {!disabled && index > 0 && (

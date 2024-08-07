@@ -1,21 +1,16 @@
-import CustomDrawer from "../CustomDrawer/index.tsx";
-import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
 import AddCondition from "../../AddCondition/index.tsx";
-import useDrawerState from "../../../hooks/common/useDrawerState.ts";
-
-const id = DrawerTypes.CONDITION;
+import AddStepCondition from "../../AddStepCondition/index.tsx";
+import CommonConditionBottom from "../Conditions/CommonConditionBottom.tsx";
+import CommonConditionTop from "../Conditions/CommonConditionTop.tsx";
 
 function ConditionDrawer() {
-  const { isOpen } = useDrawerState(id);
-
-  if (!isOpen) return;
-
   return (
-    <CustomDrawer id={id} startFrom="80">
-      <div className="flex-[0.4] border-l-[1px] border-l-gray-200 h-full overflow-scroll">
-        <AddCondition />
-      </div>
-    </CustomDrawer>
+    <div className="p-2">
+      <CommonConditionTop />
+      <AddStepCondition />
+      <AddCondition />
+      <CommonConditionBottom />
+    </div>
   );
 }
 

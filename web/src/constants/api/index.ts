@@ -10,3 +10,4 @@ export * from "./workflows.ts";
 export * from "./templates.ts";
 export * from "./management.ts";
 export * from "./search.ts";
+export * from "./dynamicAlerts";
