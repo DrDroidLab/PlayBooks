@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import useEdgeConditions from "../../hooks/playbooks/useEdgeConditions.ts";
@@ -8,14 +7,15 @@ import HandleTypes from "./HandleTypes.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
+import { RuleType } from "../common/Conditions/types/RuleTypes.ts";
 
 function Table({ condition, conditionIndex, rule }) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string | undefined, type: string) => {
-    handleCondition(type, val, conditionIndex);
+    handleRule(type, val, conditionIndex, RuleType.RULE);
   };
 
   const checkIfNumeric = rule.isNumeric || rule.type === "ROW_COUNT";

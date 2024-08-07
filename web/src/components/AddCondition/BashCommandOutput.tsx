@@ -7,15 +7,16 @@ import HandleTypes from "./HandleTypes.tsx";
 import CustomInput from "../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched.ts";
+import { RuleType } from "../common/Conditions/types/RuleTypes.ts";
 
 function BashCommandOutput({ rule, condition, conditionIndex }) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
   const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string | undefined, type: string) => {
-    handleCondition(type, val, conditionIndex);
+    handleRule(type, val, conditionIndex, RuleType.RULE);
   };
 
   return (

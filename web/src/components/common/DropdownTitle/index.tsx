@@ -1,5 +1,5 @@
 import { KeyboardArrowDownRounded } from "@mui/icons-material";
-import React, { ChangeEventHandler } from "react";
+import { ChangeEventHandler } from "react";
 
 type DropdownTitleProps = {
   label?: string;
@@ -40,7 +40,7 @@ function DropdownTitle({
           disabled ? "bg-transparent" : ""
         } w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis disabled:bg-transparent`}
         type="text"
-        placeholder={placeholder ?? `Select ${label}`}
+        placeholder={placeholder ?? `${label}`}
         value={value}
         disabled={inputDisabed}
         onChange={onChange}

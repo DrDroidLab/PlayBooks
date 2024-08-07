@@ -5,15 +5,16 @@ import { HandleTypesPropTypes } from "../HandleTypes.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
+import { RuleType } from "../../common/Conditions/types/RuleTypes.ts";
 
 function Rolling({ condition, conditionIndex, rule }: HandleTypesPropTypes) {
   const { id } = useSelector(additionalStateSelector);
-  const { handleCondition } = useEdgeConditions(id);
+  const { handleRule } = useEdgeConditions(id);
   const keyValue = condition?.type?.toLowerCase();
   const isPrefetched = useIsPrefetched();
 
   const handleChange = (val: string, type: string) => {
-    handleCondition(`${keyValue}.${type}`, val, conditionIndex);
+    handleRule(`${keyValue}.${type}`, val, conditionIndex, RuleType.RULE);
   };
 
   return (

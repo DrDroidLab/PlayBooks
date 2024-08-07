@@ -47,7 +47,12 @@ export const addStep = (
     condition: addCondition
       ? {
           logical_operator: LogicalOperator.AND_LO,
-          rules: [],
+          rule_sets: [
+            {
+              rules: [],
+              logical_operator: LogicalOperator.AND_LO,
+            },
+          ],
         }
       : undefined,
   });

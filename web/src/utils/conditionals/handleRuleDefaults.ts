@@ -1,8 +1,9 @@
+import { RuleType } from "../../components/common/Conditions/types/RuleTypes.ts";
 import { additionalStateSelector } from "../../store/features/drawers/drawersSlice.ts";
 import { currentPlaybookSelector } from "../../store/features/playbook/playbookSlice.ts";
 import { store } from "../../store/index.ts";
-import { addConditionToEdgeByIndex } from "./addConditionToEdgeByIndex.ts";
 import handleDefaults from "./defaults/handleDefaults.ts";
+import { handleRelationRuleChange } from "./handleRelationRuleChange.ts";
 import { bashCommandOutputOptions } from "./typeOptions/bash.ts";
 import { RuleTypes } from "./types/ruleTypes.ts";
 
@@ -20,11 +21,12 @@ function handleRuleDefaults(rule: any, conditionIndex: number, condition: any) {
   const keyValue = condition?.type?.toLowerCase();
 
   const setValue = (key: string, value: any) => {
-    addConditionToEdgeByIndex(
+    handleRelationRuleChange(
       `${keyValue}.${key}`,
       value,
       edgeIndex,
       conditionIndex,
+      RuleType.RULE,
     );
   };
 

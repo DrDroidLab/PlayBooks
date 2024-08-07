@@ -7,4 +7,5 @@ message CronSchedule {
   google.protobuf.UInt64Value duration_in_seconds = 1;
   google.protobuf.StringValue rule = 2;
   google.protobuf.StringValue timezone = 3;
+  google.protobuf.BoolValue keep_alive = 4;
 }

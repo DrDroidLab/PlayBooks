@@ -3,7 +3,7 @@ import * as Actions from "./slices/index.ts";
 import { initialState } from "./initialState.ts";
 export * from "./selectors";
 
-const playbookSlice = createSlice({
+export const playbookSlice = createSlice({
   name: "playbook",
   initialState: initialState,
   reducers: {
@@ -41,6 +41,14 @@ const playbookSlice = createSlice({
     duplicateTask: Actions.duplicateTask,
     removeRelation: Actions.removeRelation,
     addRelation: Actions.addRelation,
+    addStepRule: Actions.addStepRule,
+    createPlaybookForDynamicAlert: Actions.createPlaybookForDynamicAlert,
+    addStepRuleSet: Actions.addStepRuleSet,
+    addRuleForDynamicAlert: Actions.addRuleForDynamicAlert,
+    addStepRuleSetForDynamicAlert: Actions.addStepRuleSetForDynamicAlert,
+    removeStepRuleSetForDynamicAlert: Actions.removeStepRuleSetForDynamicAlert,
+    duplicateStep: Actions.duplicateStep,
+    addRelationKey: Actions.addRelationKey,
   },
 });
 
@@ -79,6 +87,14 @@ export const {
   duplicateTask,
   removeRelation,
   addRelation,
+  addStepRule,
+  createPlaybookForDynamicAlert,
+  addRuleForDynamicAlert,
+  addStepRuleSet,
+  addStepRuleSetForDynamicAlert,
+  removeStepRuleSetForDynamicAlert,
+  duplicateStep,
+  addRelationKey,
 } = playbookSlice.actions;
 
 export default playbookSlice.reducer;

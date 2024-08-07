@@ -105,19 +105,26 @@ message WorkflowAction {
 }
 
 message Workflow {
+  enum Type {
+    UNKNOWN = 0;
+    STANDARD = 1;
+    DYNAMIC_ALERT = 2;
+  }
+
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue name = 2;
   google.protobuf.StringValue description = 3;
-  google.protobuf.StringValue created_by = 4;
-  sfixed64 created_at = 5;
-  google.protobuf.BoolValue is_active = 6;
-  WorkflowSchedule schedule = 7;
-  repeated Playbook playbooks = 8;
-  repeated WorkflowEntryPoint entry_points = 9;
-  repeated WorkflowAction actions = 10;
-  sfixed64 last_execution_time = 11;
-  WorkflowExecutionStatusType last_execution_status = 12;
-  WorkflowConfiguration configuration = 13;
+  Type type = 4;
+  google.protobuf.StringValue created_by = 5;
+  sfixed64 created_at = 6;
+  google.protobuf.BoolValue is_active = 7;
+  WorkflowSchedule schedule = 8;
+  repeated Playbook playbooks = 9;
+  repeated WorkflowEntryPoint entry_points = 10;
+  repeated WorkflowAction actions = 11;
+  sfixed64 last_execution_time = 12;
+  WorkflowExecutionStatusType last_execution_status = 13;
+  WorkflowConfiguration configuration = 14;
 }
 
 
@@ -189,18 +196,26 @@ message WorkflowExecution {
     google.protobuf.Struct event = 2;
     google.protobuf.Struct event_context = 3;
   }
+
   google.protobuf.UInt64Value id = 1;
   google.protobuf.StringValue workflow_run_id = 2;
   Workflow workflow = 3;
   WorkflowExecutionStatusType status = 4;
-  sfixed64 scheduled_at = 5;
-  sfixed64 expiry_at = 6;
-  sfixed64 created_at = 7;
-  sfixed64 started_at = 8;
-  sfixed64 finished_at = 9;
-  google.protobuf.StringValue created_by = 10;
-  repeated WorkflowExecutionLog workflow_logs = 11;
-  WorkflowConfiguration execution_configuration = 12;
-  WorkflowExecutionMetadata metadata = 13;
-  TimeRange time_range = 14;
+  TimeRange time_range = 5;
+
+  sfixed64 created_at = 6;
+  sfixed64 scheduled_at = 7;
+  sfixed64 expiry_at = 8;
+  google.protobuf.BoolValue keep_alive = 9;
+
+  sfixed64 started_at = 10;
+  sfixed64 latest_scheduled_at = 11;
+  sfixed64 finished_at = 12;
+  google.protobuf.UInt64Value total_executions = 13;
+
+  google.protobuf.StringValue created_by = 14;
+
+  repeated WorkflowExecutionLog workflow_logs = 15;
+  WorkflowConfiguration execution_configuration = 16;
+  WorkflowExecutionMetadata metadata = 17;
 }

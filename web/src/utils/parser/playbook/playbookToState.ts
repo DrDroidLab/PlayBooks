@@ -1,11 +1,12 @@
 import { injectTimeRangeIdFromSeconds } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils";
-import { playbookSelector } from "../../../store/features/playbook/playbookSlice.ts";
+import { commonKeySelector } from "../../../store/features/common/commonSlice.ts";
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import { v4 as uuidv4 } from "uuid";
+import { relationToState } from "./relationToState.ts";
 
 function playbookToState(playbook: Playbook): Playbook {
-  const { supportedTaskTypes } = playbookSelector(store.getState());
+  const { supportedTaskTypes } = commonKeySelector(store.getState());
   const tasks: Task[] = [];
   const steps = playbook?.steps?.map((e: Step, i: number) => ({
     ...e,
@@ -56,30 +57,7 @@ function playbookToState(playbook: Playbook): Playbook {
     step.reference_id = uuidv4();
     tasks.push(...stepTasks);
   });
-  playbook?.step_relations?.forEach((relation) => {
-    const sourceId =
-      typeof relation.parent !== "string" ? (relation.parent as Step).id : "";
-    const targetId = (relation.child as Step).id;
-    relation.ui_requirement = {
-      playbookRelationId: relation.id,
-    };
-    relation.id = `edge-${sourceId}-${targetId}`;
-    const rules = relation.condition?.rules ?? [];
-    if (relation.condition) {
-      relation.condition.rules = rules.map((rule) => ({
-        ...rule,
-        task: tasks.find((e) => e.id === rule.task.id) ?? rule.task,
-        [rule.type.toLowerCase()]: {
-          ...rule?.[rule?.type?.toLowerCase()],
-          isNumeric:
-            rule?.[rule?.type?.toLowerCase()]?.numeric_value_threshold !==
-              undefined ?? false,
-        },
-      }));
-    }
-    relation.parent = steps?.find((e) => e.id === sourceId) ?? relation.parent;
-    relation.child = steps?.find((e) => e.id === targetId) ?? relation.child;
-  });
+  relationToState(playbook, tasks, steps);
   return {
     ...playbook,
     steps,
