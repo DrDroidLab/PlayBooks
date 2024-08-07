@@ -22,15 +22,16 @@ from protos.playbooks.playbook_step_result_evaluator_pb2 import PlaybookStepResu
 class StepConditionEvaluator:
 
     def __init__(self):
-        self._map = {}
+        self._task_rule_map = {}
+        self._step_rule_map = {}
 
     def register_task_result_evaluator(self, result_type: PlaybookTaskResultType,
                                        task_result_evaluator: TaskResultEvaluator):
-        self._map[result_type] = task_result_evaluator
+        self._task_rule_map[result_type] = task_result_evaluator
 
     def register_step_result_evaluator(self, step_rule_type: PlaybookStepResultRule.Type,
                                        step_result_evaluator: StepResultEvaluator):
-        self._map[step_rule_type] = step_result_evaluator
+        self._step_rule_map[step_rule_type] = step_result_evaluator
 
     def evaluate(self, condition: PlaybookStepResultCondition,
                  playbook_task_execution_log: [PlaybookTaskExecutionLog]) -> (bool, Dict):
@@ -48,7 +49,7 @@ class StepConditionEvaluator:
                 task_result = next(
                     (tr.result for tr in playbook_task_execution_log if tr.task.id.value == rule_task_id), None)
                 if task_result:
-                    task_result_evaluator = self._map.get(task_result.type)
+                    task_result_evaluator = self._task_rule_map.get(task_result.type)
                     if not task_result_evaluator:
                         raise ValueError(f"Task result type {task_result.type} not supported")
                     evaluation, evaluation_result = task_result_evaluator.evaluate(r, task_result)
@@ -57,7 +58,7 @@ class StepConditionEvaluator:
 
             step_rules: [PlaybookTaskResultRule] = rs.step_rules
             for sr in step_rules:
-                step_result_evaluator = self._map.get(sr.type)
+                step_result_evaluator = self._step_rule_map.get(sr.type)
                 if not step_result_evaluator:
                     raise ValueError(f"Step result type {PlaybookStepResultRule.Type.Name(sr.type)} not supported")
                 evaluation = step_result_evaluator.evaluate(sr, playbook_task_execution_log)
