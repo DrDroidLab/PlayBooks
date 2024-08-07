@@ -7,6 +7,9 @@ import { functionOptions } from "../../../utils/conditionals/functionOptions";
 import { ResultTypeTypes } from "../../../utils/conditionals/resultTypeOptions";
 import { RuleType } from "../../common/Conditions/types";
 import { operationOptions } from "../../../utils/conditionals/operationOptions";
+import CustomButton from "../../common/CustomButton";
+import { DeleteRounded } from "@mui/icons-material";
+import { removeStepRuleSetForDynamicAlert } from "../../../store/features/playbook/playbookSlice";
 
 type ConditionRuleSetProps = {
   ruleSetIndex: number;
@@ -18,6 +21,7 @@ const STEP_RULE_KEY = StepRuleTypes.COMPARE_TIME_WITH_CRON.toLowerCase();
 
 function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
   const { id } = useSelector(additionalStateSelector);
+  const dispatch = useDispatch();
   const { rules, step_rules, handleRule } = useEdgeConditions(id, ruleSetIndex);
   const rule = rules?.[RULE_INDEX]?.[RULE_KEY];
   const stepRule = step_rules?.[RULE_INDEX]?.[STEP_RULE_KEY];
@@ -28,6 +32,10 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
 
   const handleStepRuleChange = (val: any, key: string) => {
     handleRule(`${STEP_RULE_KEY}.${key}`, val, RULE_INDEX, RuleType.STEP_RULE);
+  };
+
+  const handleDeleteRuleSet = () => {
+    dispatch(removeStepRuleSetForDynamicAlert(ruleSetIndex));
   };
 
   if (!rule || !stepRule) return;
@@ -66,6 +74,12 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
         placeholder={`Time Schedule (UTC)`}
         handleChange={(id: string) => handleStepRuleChange(id, `rule`)}
       />
+
+      {ruleSetIndex > 0 && (
+        <CustomButton className="w-fit" onClick={handleDeleteRuleSet}>
+          <DeleteRounded fontSize="small" />
+        </CustomButton>
+      )}
     </div>
   );
 }
