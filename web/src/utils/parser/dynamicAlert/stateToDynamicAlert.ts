@@ -29,6 +29,8 @@ export const stateToDynamicAlert = () => {
       },
     ],
     actions: [],
-    configuration: {},
+    configuration: {
+      generate_summary: true,
+    },
   };
 };
