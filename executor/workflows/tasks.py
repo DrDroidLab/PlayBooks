@@ -133,9 +133,13 @@ def workflow_scheduler():
                 if execution_metadata.event_context.items():
                     execution_global_variable_set.update(execution_metadata.event_context)
 
+                execution_global_variable_set_dict = {}
+                if execution_global_variable_set and execution_global_variable_set.items():
+                    execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
+
                 playbook_execution = create_playbook_execution(account, wf_execution.time_range, pb_id,
                                                                playbook_run_uuid, wf_execution.created_by.value,
-                                                               proto_to_dict(execution_global_variable_set))
+                                                               execution_global_variable_set_dict)
 
                 workflow_execution_configuration = proto_to_dict(execution_configuration)
                 time_range = proto_to_dict(wf_execution.time_range)
