@@ -1,6 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { PlaybookUIState } from "../../../../../types";
-import { playbookSlice } from "../../playbookSlice";
 
 export const addRuleForDynamicAlert = (
   state: PlaybookUIState,

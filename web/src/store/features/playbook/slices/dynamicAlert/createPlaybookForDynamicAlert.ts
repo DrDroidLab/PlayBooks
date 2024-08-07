@@ -71,7 +71,13 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     },
     condition: {
       logical_operator: LogicalOperator.AND_LO,
-      rule_sets: [],
+      rule_sets: [
+        {
+          rules: [],
+          step_rules: [],
+          logical_operator: LogicalOperator.AND_LO,
+        },
+      ],
     },
   };
 
@@ -100,5 +106,18 @@ export const createPlaybookForDynamicAlert = (state: PlaybookUIState) => {
     },
   };
 
-  playbookSlice.caseReducers.addStepRuleSetForDynamicAlert(state);
+  playbookSlice.caseReducers.addRuleForDynamicAlert(state, {
+    payload: {
+      id: relation.id,
+      ruleSetIndex: 0,
+    },
+    type: "",
+  });
+  playbookSlice.caseReducers.addStepRule(state, {
+    payload: {
+      id: relation.id,
+      ruleSetIndex: 0,
+    },
+    type: "",
+  });
 };

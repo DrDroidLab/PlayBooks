@@ -13,16 +13,16 @@ import { removeStepRuleSetForDynamicAlert } from "../../../store/features/playbo
 
 type ConditionRuleSetProps = {
   ruleSetIndex: number;
+  relationId: string;
 };
 
 const RULE_INDEX = 0;
 const RULE_KEY = "timeseries";
 const STEP_RULE_KEY = StepRuleTypes.COMPARE_TIME_WITH_CRON.toLowerCase();
 
-function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
-  const { id } = useSelector(additionalStateSelector);
+function ConditionRuleSet({ ruleSetIndex, relationId }: ConditionRuleSetProps) {
   const dispatch = useDispatch();
-  const { rules, step_rules, handleRule } = useEdgeConditions(id, ruleSetIndex);
+  const { rules, step_rules, handleRule } = useEdgeConditions(relationId);
   const rule = rules?.[RULE_INDEX]?.[RULE_KEY];
   const stepRule = step_rules?.[RULE_INDEX]?.[STEP_RULE_KEY];
 
@@ -35,7 +35,7 @@ function ConditionRuleSet({ ruleSetIndex }: ConditionRuleSetProps) {
   };
 
   const handleDeleteRuleSet = () => {
-    dispatch(removeStepRuleSetForDynamicAlert(ruleSetIndex));
+    dispatch(removeStepRuleSetForDynamicAlert(relationId));
   };
 
   if (!rule || !stepRule) return;

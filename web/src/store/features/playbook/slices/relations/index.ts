@@ -6,3 +6,4 @@ export * from "./addStepRuleSet";
 export * from "./addStepRuleSetForDynamicAlert";
 export * from "./addRuleForDynamicAlert";
 export * from "./removeStepRuleSetForDynamicAlert";
+export * from "./addRelationKey";

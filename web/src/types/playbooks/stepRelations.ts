@@ -65,7 +65,7 @@ export type StepRelationContract = {
   parent: {
     reference_id: string;
   };
-  child: {
+  child?: {
     reference_id: string;
   };
   condition?: StepCondition;
