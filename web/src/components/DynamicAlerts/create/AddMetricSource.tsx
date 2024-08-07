@@ -15,11 +15,12 @@ function AddMetricSource({ id }: AddMetricSourcePropTypes) {
   return (
     <div className="flex flex-col gap-2">
       <SelectTaskType id={task.id ?? ""} />
-      {!unsupportedConnctorTypeOptions.includes(task?.type ?? "") && (
-        <div className="flex gap-2 items-center">
-          <SelectConnectorOption id={task.id} />
-        </div>
-      )}
+      {task.source &&
+        !unsupportedConnctorTypeOptions.includes(task?.type ?? "") && (
+          <div className="flex gap-2 items-center">
+            <SelectConnectorOption id={task.id} />
+          </div>
+        )}
     </div>
   );
 }

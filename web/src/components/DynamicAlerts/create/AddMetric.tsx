@@ -29,10 +29,14 @@ function AddMetric() {
       <div className="flex w-full gap-4 justify-start">
         <div className="flex flex-col flex-[0.5]">
           <AddMetricSource id={currentTask.id} />
-          <Details id={currentTask.id} />
-          <div className="w-fit mt-2">
-            <RunButton id={currentTask.id} />
-          </div>
+          {currentTask.source && (
+            <>
+              <Details id={currentTask.id} />
+              <div className="w-fit mt-2">
+                <RunButton id={currentTask.id} />
+              </div>
+            </>
+          )}
         </div>
         <div className="flex-[0.6] max-h-[400px] overflow-scroll">
           <HandleOutput id={currentTask.id} />

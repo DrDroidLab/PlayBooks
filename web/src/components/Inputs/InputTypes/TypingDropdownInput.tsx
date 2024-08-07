@@ -27,7 +27,7 @@ function TypingDropdownInput({
       <TypingDropdown
         data={options ?? []}
         selected={value}
-        placeholder={placeholder ?? `Select ${label}`}
+        placeholder={placeholder ?? `${label}`}
         handleChange={handleChange}
         disabled={disabled}
         error={error}

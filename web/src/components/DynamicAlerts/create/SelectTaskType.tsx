@@ -9,6 +9,7 @@ import {
   updateTaskType,
   updateSource,
 } from "../../../store/features/playbook/playbookSlice";
+import { unsupportedBuilderOptions } from "../../../utils/playbook/unsupportedBuilderOptions";
 
 const resultTypeKeysAvailable = [ResultTypeTypes.TIMESERIES];
 
@@ -20,8 +21,10 @@ function SelectTaskType({ id }: SelectTaskTypePropTypes) {
   const dispatch = useDispatch();
   const { supportedTaskTypes } = useSelector(commonKeySelector);
   const options = (
-    supportedTaskTypes?.filter((type) =>
-      resultTypeKeysAvailable.includes(type.result_type),
+    supportedTaskTypes?.filter(
+      (type) =>
+        resultTypeKeysAvailable.includes(type.result_type) &&
+        !unsupportedBuilderOptions.includes(`${type.source} ${type.task_type}`),
     ) ?? []
   ).map((type) => ({
     id: `${type.source}-${type.task_type}`,
