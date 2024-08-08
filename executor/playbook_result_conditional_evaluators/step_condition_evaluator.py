@@ -35,7 +35,7 @@ class StepConditionEvaluator:
 
     def evaluate(self, condition: PlaybookStepResultCondition,
                  playbook_task_execution_log: [PlaybookTaskExecutionLog]) -> (bool, Dict):
-        if not condition:
+        if not condition.rule_sets:
             return True, {}
         rule_sets: [PlaybookStepResultCondition.RuleSet] = condition.rule_sets
         rs_logical_operator = condition.logical_operator
