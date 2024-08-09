@@ -61,7 +61,7 @@ function HandleResultTransformer({ id }) {
     <div className="my-2 flex flex-col gap-2">
       <CodeAccordion
         code={code}
-        label="Transformer (Write a python function returning a dict, the input is the trigger json payload)"
+        label="Transformer (Write a python function returning a dict, the input is the task output payload)"
         placeholder={defaultCodeTransformer}
         language={LanguageTypes.PYTHON}
         onValueChange={setCode}

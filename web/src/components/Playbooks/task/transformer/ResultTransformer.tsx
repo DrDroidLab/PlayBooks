@@ -3,8 +3,10 @@ import useIsPrefetched from "../../../../hooks/playbooks/useIsPrefetched";
 import Checkbox from "../../../common/Checkbox";
 import { updateCardById } from "../../../../utils/execution/updateCardById";
 import HandleResultTransformer from "./HandleTransformer";
+import getNestedValue from "../../../../utils/common/getNestedValue";
 
-const key = "ui_requirement.use_transformer";
+const key =
+  "execution_configuration.result_transformer_lambda_function.is_result_transformer_enabled";
 
 type ResultTransformerProps = {
   id: string;
@@ -13,7 +15,7 @@ type ResultTransformerProps = {
 function ResultTransformer({ id }: ResultTransformerProps) {
   const [task] = useCurrentTask(id);
   const isPrefetched = useIsPrefetched();
-  const value = task?.ui_requirement?.use_transformer ?? false;
+  const value = getNestedValue(task, key) ?? false;
 
   const handleTransformer = (key: string) => {
     updateCardById(key, !value, id);
