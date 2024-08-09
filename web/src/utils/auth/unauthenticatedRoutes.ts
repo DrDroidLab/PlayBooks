@@ -1,11 +1,19 @@
-export const unauthenticatedRoutes = ["/signup", "/login", "/oauth/callback/*"];
+import { routes } from "@/routes";
+import { pathNameValues, replaceRouteParam } from "../common/replaceRouteParam";
 
-const pathToRegex = (path) => {
+export const unauthenticatedRoutes: (typeof routes)[keyof typeof routes][] = [
+  routes.SIGNUP,
+  routes.LOGIN,
+  replaceRouteParam(routes.OAUTH_CALLBACK, pathNameValues.OAUTH_ID, "*"),
+  routes.RESET_PASSWORD,
+  routes.PLAYGROUND,
+];
+
+export const pathToRegex = (path: string): RegExp => {
   return new RegExp(
     "^" + path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\*/g, ".*"),
   );
 };
 
-export const isUnAuth = unauthenticatedRoutes.some((route) =>
-  pathToRegex(route).test(window.location.pathname),
-);
+export const isUnAuth = (path: string) =>
+  unauthenticatedRoutes.some((route) => pathToRegex(route).test(path));

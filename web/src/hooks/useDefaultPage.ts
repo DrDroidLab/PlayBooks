@@ -25,7 +25,7 @@ function useDefaultPage() {
   }, [email]);
 
   useEffect(() => {
-    if (!data && isError && !isUnAuth) {
+    if (!data && isError && !isUnAuth(location.pathname)) {
       navigate("/signup", {
         replace: true,
         state: { from: location.pathname },
