@@ -24,7 +24,7 @@ function ResultTransformer({ id }: ResultTransformerProps) {
       <Checkbox
         id={key}
         isChecked={value}
-        label="Add a python transformer"
+        label="Add an output exporter"
         onChange={handleTransformer}
         isSmall={true}
         disabled={!!isPrefetched}
