@@ -7,10 +7,7 @@ import {
 } from "../../../../../types/index.ts";
 import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens.ts";
 import { v4 as uuidv4 } from "uuid";
-import {
-  defaultCodeTransformer,
-  exampleInputTransformer,
-} from "../../../../../utils/common/transformerDefaults.ts";
+import { exampleInputTransformer } from "../../../../../utils/common/transformerDefaults.ts";
 
 const emptyStep: Step = {
   id: "",
@@ -37,7 +34,7 @@ export const createTaskWithSource = (
     source: payload.source,
     interpreter_type: "BASIC_I",
     task_connector_sources: [],
-    transformer_code: defaultCodeTransformer,
+    transformer_code: "",
     ui_requirement: {
       isOpen: true,
       taskType: payload.taskType,

@@ -3,10 +3,7 @@ import { commonKeySelector } from "../../../store/features/common/commonSlice.ts
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import { v4 as uuidv4 } from "uuid";
-import {
-  defaultCodeTransformer,
-  exampleInputTransformer,
-} from "../../common/transformerDefaults.ts";
+import { exampleInputTransformer } from "../../common/transformerDefaults.ts";
 import { relationToState } from "./relationToState.ts";
 
 function playbookToState(playbook: Playbook): Playbook {
@@ -32,7 +29,7 @@ function playbookToState(playbook: Playbook): Playbook {
         return {
           ...e,
           reference_id: uuidv4(),
-          transformer_code: e.transformer_code ?? defaultCodeTransformer,
+          transformer_code: e.transformer_code ?? "",
           execution_configuration: {
             ...e.execution_configuration,
             timeseries_offsets: [

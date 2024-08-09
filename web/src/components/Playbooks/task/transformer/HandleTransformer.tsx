@@ -10,22 +10,28 @@ import { updateCardById } from "../../../../utils/execution/updateCardById";
 import CodeAccordion from "../../../common/CodeAccordion";
 import { LanguageTypes } from "../../../common/CodeAccordion/types";
 import CustomButton from "../../../common/CustomButton";
+import { useTestTransformerPlaybooksMutation } from "../../../../store/features/playbook/api";
+import { defaultCodeTransformer } from "../../../../utils/common/transformerDefaults";
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
 const key = "transformer_code";
-const output_key = "ui_requirement.transformer_output";
 
 function HandleResultTransformer({ id }) {
   const [task] = useCurrentTask(id);
   const code = getNestedValue(task, key) ?? "";
-  const output = getNestedValue(task, output_key) ?? "";
   const dispatch = useDispatch();
   const outputRef = useRef<HTMLDivElement>(null);
+  const [triggerTestTransformer, { isLoading, data }] =
+    useTestTransformerPlaybooksMutation();
 
   const testCode = async () => {
+    if (isLoading) return;
     try {
-      // await triggerTestTransformer().unwrap();
+      await triggerTestTransformer({
+        transformerCode: code,
+        payload: task?.ui_requirement.outputs?.[0]?.data ?? "{}",
+      }).unwrap();
       dispatch(
         showSnackbar({
           message: "Test connection successful",
@@ -54,21 +60,23 @@ function HandleResultTransformer({ id }) {
       <CodeAccordion
         code={code}
         label="Transformer (Write a python function returning a dict, the input is the trigger json payload)"
+        placeholder={defaultCodeTransformer}
         language={LanguageTypes.PYTHON}
         onValueChange={setCode}
+        className="min-h-[100px]"
       />
 
       <CodeAccordion
-        code={task?.ui_requirement.outputs?.[0] ?? ""}
+        code={task?.ui_requirement.outputs?.[0]?.data ?? ""}
         placeholder="Run the task to view the output"
         className="max-h-[150px] !overflow-y-auto"
         disabled={true}
         label={"Test your python function against a sample json payload"}
         language={LanguageTypes.JSON}>
-        {output && (
+        {data && (
           <CodeAccordion
             ref={outputRef}
-            code={output}
+            code={data}
             label="Output"
             language={LanguageTypes.JSON}
             className="max-h-[150px] !overflow-y-auto"
@@ -76,8 +84,8 @@ function HandleResultTransformer({ id }) {
             defaultOpen={true}
           />
         )}
-        <CustomButton className="w-fit" onClick={testCode}>
-          Test Code
+        <CustomButton disabled={isLoading} className="w-fit" onClick={testCode}>
+          {isLoading ? "Loading..." : "Test Code"}
         </CustomButton>
       </CodeAccordion>
     </div>
