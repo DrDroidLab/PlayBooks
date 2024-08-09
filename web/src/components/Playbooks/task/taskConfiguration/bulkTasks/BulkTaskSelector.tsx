@@ -20,7 +20,7 @@ function BulkTaskSelector({ id }: BulkTaskSelectorProps) {
   };
 
   return (
-    <div className="mt-2">
+    <div>
       <Checkbox
         id="is_bulk_execution"
         isChecked={isChecked ?? false}

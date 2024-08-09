@@ -27,6 +27,8 @@ type TaskUIRequirement = {
   requiresFormula?: boolean;
   timeseries_offset_id?: string;
   use_comparison?: boolean;
+  use_transformer?: boolean;
+  example_input?: string;
 };
 
 export type Task = {

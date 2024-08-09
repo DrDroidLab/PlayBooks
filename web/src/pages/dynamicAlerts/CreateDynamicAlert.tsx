@@ -20,6 +20,7 @@ import Loading from "../../components/common/Loading";
 import { useLazyGetDynamicAlertQuery } from "../../store/features/dynamicAlerts/api";
 import { resetDynamicAlertState } from "../../store/features/dynamicAlerts/dynamicAlertsSlice";
 import SaveOrUpdateDynamicAlertButton from "../../components/Buttons/SaveOrUpdateDynamicAlertButton";
+import AddConfiguration from "../../components/DynamicAlerts/create/AddConfiguration";
 
 function CreateDynamicAlert() {
   const { alert_id: alertId } = useParams();
@@ -67,11 +68,12 @@ function CreateDynamicAlert() {
         <CustomInput
           inputType={InputTypes.TEXT}
           label="Alert name"
-          value={name}
+          value={name as string}
           handleChange={(val: string) => setName(val)}
           className="!w-[200px]"
         />
         <AddMetric />
+        <AddConfiguration />
         <AddCondition />
         <AddNotification />
 

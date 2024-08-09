@@ -17,6 +17,16 @@ from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 
+def apply_result_transformer(result_dict, lambda_function: Lambda.Function) -> Dict:
+    lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
+                                                        lambda_function.requirements)
+    transformer_result = lambda_function_processor.execute(result_dict)
+    if not isinstance(transformer_result, Dict):
+        raise ValueError("Result transformer should return a dictionary")
+    transformer_result = {f"${k}" if not k.startswith("$") else k: v for k, v in transformer_result.items()}
+    return transformer_result
+
+
 def resolve_global_variables(form_fields: [FormField], global_variable_set: Struct,
                              source_type_task_def: Dict) -> (Dict, Dict):
     all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
@@ -97,16 +107,6 @@ class PlaybookSourceManager:
                 connector_protos.append(dbc.unmasked_proto)
         return connector_protos
 
-    def apply_result_transformer(self, result: PlaybookTaskResult, lambda_function: Lambda.Function) -> Dict:
-        lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
-                                                            lambda_function.requirements)
-        result_dict = proto_to_dict(result)
-        transformer_result = lambda_function_processor.execute(result_dict)
-        if not isinstance(transformer_result, Dict):
-            raise ValueError("Result transformer should return a dictionary")
-        transformer_result = {f"${k}" if not k.startswith("$") else k: v for k, v in transformer_result.items()}
-        return transformer_result
-
     def execute_task(self, account_id, time_range: TimeRange, global_variable_set: Struct,
                      task: PlaybookTask) -> PlaybookTaskResult:
         try:
@@ -166,8 +166,9 @@ class PlaybookSourceManager:
                     # Apply result transformer
                     if task.execution_configuration.is_result_transformer_enabled.value:
                         lambda_function = task.execution_configuration.result_transformer_lambda_function
-                        result_transformer_lambda_function_variable_set = self.apply_result_transformer(
-                            playbook_task_result, lambda_function)
+                        playbook_task_result_dict = proto_to_dict(playbook_task_result) if playbook_task_result else {}
+                        result_transformer_lambda_function_variable_set = apply_result_transformer(playbook_task_result_dict,
+                                                                                                   lambda_function)
                         result_transformer_lambda_function_variable_set_proto = dict_to_proto(
                             result_transformer_lambda_function_variable_set,
                             Struct) if result_transformer_lambda_function_variable_set else Struct()

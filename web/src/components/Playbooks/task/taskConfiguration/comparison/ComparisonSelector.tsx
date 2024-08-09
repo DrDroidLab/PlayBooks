@@ -25,7 +25,7 @@ function ComparisonSelector({ id }: ComparisonSelectorProps) {
   };
 
   return (
-    <div className="mt-2">
+    <div>
       <Checkbox
         id="use_comparison"
         isChecked={isChecked ?? false}

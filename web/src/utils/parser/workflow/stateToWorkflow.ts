@@ -41,6 +41,7 @@ export const stateToWorkflow = () => {
               definition: workflow.transformerCode,
             }
           : undefined,
+        evaluation_window_in_seconds: workflow.evaluation_window_in_seconds,
       },
     },
   };

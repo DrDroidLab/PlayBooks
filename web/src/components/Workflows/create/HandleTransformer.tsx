@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
 import json from "highlight.js/lib/languages/json";
@@ -80,6 +80,7 @@ function HandleTransformer() {
         label="Transformer (Write a python function returning a dict, the input is the trigger json payload)"
         language={LanguageTypes.PYTHON}
         onValueChange={setCode}
+        defaultOpen={!!code}
       />
 
       <CodeAccordion

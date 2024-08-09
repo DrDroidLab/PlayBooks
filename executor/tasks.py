@@ -73,15 +73,13 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
         interpreter_type: InterpreterType = step.interpreter_type if step.interpreter_type else InterpreterType.BASIC_I
         pte_logs = []
         task_interpretations = []
-        for task_proto in tasks:
-            if not global_variable_set or not global_variable_set.items():
-                if task_proto.global_variable_set and task_proto.global_variable_set.items():
-                    global_variable_set = task_proto.global_variable_set
-                else:
-                    global_variable_set = Struct()
-
-            execution_global_variable_set = Struct()
+        execution_global_variable_set = Struct()
+        if global_variable_set and global_variable_set.items():
             execution_global_variable_set.CopyFrom(global_variable_set)
+        for task_proto in tasks:
+            if not execution_global_variable_set or not execution_global_variable_set.items():
+                if task_proto.global_variable_set and task_proto.global_variable_set.items():
+                    execution_global_variable_set = task_proto.global_variable_set
 
             is_bulk_execution = False
             bulk_execution_var_values = ['Single Execution']
@@ -94,15 +92,15 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                     task_result = PlaybookTaskResult(error=StringValue(value="Bulk execution variable not found"))
                     pte_logs.append(PlaybookTaskExecutionLog(task=task_proto,
                                                              result=task_result,
-                                                             execution_global_variable_set=global_variable_set))
+                                                             execution_global_variable_set=execution_global_variable_set))
                     continue
 
-                if bulk_task_var not in global_variable_set:
+                if bulk_task_var not in execution_global_variable_set:
                     task_result = PlaybookTaskResult(
                         error=StringValue(value="Bulk execution variable not found in global variables"))
                     pte_logs.append(PlaybookTaskExecutionLog(task=task_proto,
                                                              result=task_result,
-                                                             execution_global_variable_set=global_variable_set))
+                                                             execution_global_variable_set=execution_global_variable_set))
                     continue
 
                 bulk_execution_var_values = execution_global_variable_set[bulk_task_var].split(',')
@@ -124,17 +122,18 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                     task_interpretations.append(task_interpretation)
 
                     if task_result.result_transformer_lambda_function_variable_set and task_result.result_transformer_lambda_function_variable_set.items():
-                        global_variable_set.update(task_result.result_transformer_lambda_function_variable_set)
+                        execution_global_variable_set.update(
+                            task_result.result_transformer_lambda_function_variable_set)
 
                     playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto, result=task_result,
                                                                            interpretation=task_interpretation,
-                                                                           execution_global_variable_set=global_variable_set)
+                                                                           execution_global_variable_set=execution_global_variable_set)
                 except Exception as exc:
                     logger.error(f"Error occurred while running task: {exc}")
                     playbook_task_execution_log = PlaybookTaskExecutionLog(task=task_proto,
                                                                            result=PlaybookTaskResult(
                                                                                error=StringValue(value=str(exc))),
-                                                                           execution_global_variable_set=global_variable_set)
+                                                                           execution_global_variable_set=execution_global_variable_set)
                 pte_logs.append(playbook_task_execution_log)
         step_interpretation: InterpretationProto = step_result_interpret(interpreter_type, step, task_interpretations)
 
@@ -175,7 +174,7 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                       step_interpretation=step_interpretation,
                                                       relation_execution_logs=relation_execution_logs)
 
-        return step_execution_log, global_variable_set
+        return step_execution_log, execution_global_variable_set
     except Exception as exc:
         logger.error(f"Error occurred while running playbook: {exc}")
         raise exc

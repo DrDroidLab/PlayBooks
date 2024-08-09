@@ -21,6 +21,7 @@ const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
       className = "",
       defaultOpen = false,
       children,
+      placeholder,
     },
     ref,
   ) => {
@@ -52,6 +53,7 @@ const CodeAccordion = forwardRef<HTMLDivElement, CodeAccordionPropTypes>(
           <div className="flex flex-col gap-2 !text-xs">
             <Editor
               value={value}
+              placeholder={placeholder}
               className={`${className} border rounded outline-none`}
               onValueChange={onValueChange}
               highlight={(code: string) =>

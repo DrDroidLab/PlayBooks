@@ -7,6 +7,7 @@ import {
 } from "../../../../../types/index.ts";
 import generateUUIDWithoutHyphens from "../../../../../utils/common/generateUUIDWithoutHyphens.ts";
 import { v4 as uuidv4 } from "uuid";
+import { exampleInputTransformer } from "../../../../../utils/common/transformerDefaults.ts";
 
 const emptyStep: Step = {
   id: "",
@@ -39,6 +40,7 @@ export const createTaskWithSource = (
       stepId: stepId,
       model_type: payload.modelType,
       resultType,
+      example_input: exampleInputTransformer,
     },
     [payload.source.toLowerCase() as TaskType]: {
       type: payload.taskType,
@@ -51,6 +53,9 @@ export const createTaskWithSource = (
     execution_configuration: {
       is_bulk_execution: false,
       bulk_execution_var_field: "",
+      result_transformer_lambda_function: {
+        definition: "",
+      },
     },
   };
 

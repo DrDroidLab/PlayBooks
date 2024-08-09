@@ -9,4 +9,5 @@ export type CodeAccordionPropTypes = {
   disabled?: boolean;
   className?: string;
   defaultOpen?: boolean;
+  placeholder?: string;
 } & PropsWithChildren;

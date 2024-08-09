@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDynamicAlertKey } from "../../store/features/dynamicAlerts/dynamicAlertsSlice";
 import { DynamicAlertType } from "../../types";
 import { dynamicAlertSelector } from "../../store/features/dynamicAlerts/selectors";
+import getNestedValue from "../../utils/common/getNestedValue";
 
 type UseDynamicAlertsKeyReturnType = [
   DynamicAlertType[keyof DynamicAlertType],
@@ -18,7 +19,7 @@ function useDynamicAlertsKey(
     dispatch(setDynamicAlertKey({ key, value }));
   };
 
-  return [dynamicAlert[key], setValue];
+  return [getNestedValue(dynamicAlert, key), setValue];
 }
 
 export default useDynamicAlertsKey;

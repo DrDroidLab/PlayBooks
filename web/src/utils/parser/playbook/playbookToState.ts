@@ -3,6 +3,7 @@ import { commonKeySelector } from "../../../store/features/common/commonSlice.ts
 import { store } from "../../../store/index.ts";
 import { Playbook, Step, Task } from "../../../types/index.ts";
 import { v4 as uuidv4 } from "uuid";
+import { exampleInputTransformer } from "../../common/transformerDefaults.ts";
 import { relationToState } from "./relationToState.ts";
 
 function playbookToState(playbook: Playbook): Playbook {
@@ -50,6 +51,9 @@ function playbookToState(playbook: Playbook): Playbook {
             use_comparison:
               e?.execution_configuration?.timeseries_offsets &&
               (e?.execution_configuration?.timeseries_offsets?.length ?? 0) > 0,
+            use_transformer:
+              !!e?.execution_configuration?.result_transformer_lambda_function
+                ?.definition,
           },
         };
       })

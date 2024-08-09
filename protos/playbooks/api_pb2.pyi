@@ -1138,6 +1138,52 @@ class PlaybookExecutionStatusUpdateResponse(google.protobuf.message.Message):
 global___PlaybookExecutionStatusUpdateResponse = PlaybookExecutionStatusUpdateResponse
 
 @typing_extensions.final
+class TestResultTransformerRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    TRANSFORMER_LAMBDA_FUNCTION_FIELD_NUMBER: builtins.int
+    PAYLOAD_FIELD_NUMBER: builtins.int
+    @property
+    def transformer_lambda_function(self) -> protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function: ...
+    @property
+    def payload(self) -> google.protobuf.struct_pb2.Struct: ...
+    def __init__(
+        self,
+        *,
+        transformer_lambda_function: protos.playbooks.source_task_definitions.lambda_function_task_pb2.Lambda.Function | None = ...,
+        payload: google.protobuf.struct_pb2.Struct | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["payload", b"payload", "transformer_lambda_function", b"transformer_lambda_function"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["payload", b"payload", "transformer_lambda_function", b"transformer_lambda_function"]) -> None: ...
+
+global___TestResultTransformerRequest = TestResultTransformerRequest
+
+@typing_extensions.final
+class TestResultTransformerResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    OUTPUT_FIELD_NUMBER: builtins.int
+    @property
+    def success(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
+    @property
+    def message(self) -> protos.base_pb2.Message: ...
+    @property
+    def output(self) -> google.protobuf.struct_pb2.Struct: ...
+    def __init__(
+        self,
+        *,
+        success: google.protobuf.wrappers_pb2.BoolValue | None = ...,
+        message: protos.base_pb2.Message | None = ...,
+        output: google.protobuf.struct_pb2.Struct | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["message", b"message", "output", b"output", "success", b"success"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["message", b"message", "output", b"output", "success", b"success"]) -> None: ...
+
+global___TestResultTransformerResponse = TestResultTransformerResponse
+
+@typing_extensions.final
 class PlaybooksBuilderOptionsRequest(google.protobuf.message.Message):
     """/////////////////// Playbook Builder APIs /////////////////////"""
 
