@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useRef } from "react";
 import hljs from "highlight.js/lib/core";
 import python from "highlight.js/lib/languages/python";
 import json from "highlight.js/lib/languages/json";
@@ -14,12 +14,12 @@ import CustomButton from "../../../common/CustomButton";
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
 const key = "transformer_code";
-const exampleInputKey = "ui_requirement.example_input";
+const output_key = "ui_requirement.transformer_output";
 
 function HandleResultTransformer({ id }) {
   const [task] = useCurrentTask(id);
   const code = getNestedValue(task, key) ?? "";
-  const exampleInput = getNestedValue(task, exampleInputKey) ?? "";
+  const output = getNestedValue(task, output_key) ?? "";
   const dispatch = useDispatch();
   const outputRef = useRef<HTMLDivElement>(null);
 
@@ -49,10 +49,6 @@ function HandleResultTransformer({ id }) {
     updateCardById(key, value, id);
   };
 
-  const setExampleInput = (value: string) => {
-    updateCardById(exampleInputKey, value, id);
-  };
-
   return (
     <div className="my-2 flex flex-col gap-2">
       <CodeAccordion
@@ -63,14 +59,16 @@ function HandleResultTransformer({ id }) {
       />
 
       <CodeAccordion
-        code={exampleInput}
+        code={task?.ui_requirement.outputs?.[0] ?? ""}
+        placeholder="Run the task to view the output"
+        className="max-h-[150px] !overflow-y-auto"
+        disabled={true}
         label={"Test your python function against a sample json payload"}
-        language={LanguageTypes.JSON}
-        onValueChange={setExampleInput}>
-        {false && (
+        language={LanguageTypes.JSON}>
+        {output && (
           <CodeAccordion
             ref={outputRef}
-            code={""}
+            code={output}
             label="Output"
             language={LanguageTypes.JSON}
             className="max-h-[150px] !overflow-y-auto"
