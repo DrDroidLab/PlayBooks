@@ -24,6 +24,7 @@ function HandleResultTransformer({ id }) {
   const outputRef = useRef<HTMLDivElement>(null);
   const [triggerTestTransformer, { isLoading, data }] =
     useTestTransformerPlaybooksMutation();
+  const taskOutput = task?.ui_requirement.outputs?.[0]?.data ?? "";
 
   const testCode = async () => {
     if (isLoading) return;
@@ -67,8 +68,8 @@ function HandleResultTransformer({ id }) {
       />
 
       <CodeAccordion
-        code={task?.ui_requirement.outputs?.[0]?.data ?? ""}
-        placeholder="Run the task to view the output"
+        code={taskOutput}
+        placeholder="Run the task to test the transformer function"
         className="max-h-[150px] !overflow-y-auto"
         disabled={true}
         label={"Test your python function against a sample json payload"}
@@ -84,9 +85,14 @@ function HandleResultTransformer({ id }) {
             defaultOpen={true}
           />
         )}
-        <CustomButton disabled={isLoading} className="w-fit" onClick={testCode}>
-          {isLoading ? "Loading..." : "Test Code"}
-        </CustomButton>
+        {taskOutput && (
+          <CustomButton
+            disabled={isLoading}
+            className="w-fit"
+            onClick={testCode}>
+            {isLoading ? "Loading..." : "Test Code"}
+          </CustomButton>
+        )}
       </CodeAccordion>
     </div>
   );
