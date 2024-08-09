@@ -35,7 +35,7 @@ function HandleResultTransformer({ id }) {
       }).unwrap();
       dispatch(
         showSnackbar({
-          message: "Test connection successful",
+          message: "Tranformer function test successful",
           type: "success",
         }),
       );
