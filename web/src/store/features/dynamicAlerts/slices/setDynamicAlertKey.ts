@@ -6,6 +6,7 @@ export const setDynamicAlertKey = (
   action: PayloadAction<{ key: keyof DynamicAlertType; value: any }>,
 ) => {
   const { key, value } = action.payload;
+  let keyVal = state[key];
 
-  state[key] = value;
+  keyVal = value;
 };
