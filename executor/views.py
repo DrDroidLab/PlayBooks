@@ -56,7 +56,7 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
     PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
     PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse, RunBulkPlaybookTaskResponse, \
-    TestTransformerRequest, TestTransformerResponse, TestResultTransformerRequest, TestResultTransformerResponse
+    TestResultTransformerRequest, TestResultTransformerResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -945,7 +945,8 @@ def task_test_result_transformer(request_message: TestResultTransformerRequest) 
     lambda_function: Lambda.Function = request_message.transformer_lambda_function
     payload = request_message.payload
     try:
-        output = apply_result_transformer(lambda_function, payload)
+        payload_dict = proto_to_dict(payload) if payload and payload.items() else {}
+        output = apply_result_transformer(payload_dict, lambda_function)
         if not isinstance(output, dict):
             return TestResultTransformerResponse(success=BoolValue(value=False),
                                                  message=Message(title="Error",

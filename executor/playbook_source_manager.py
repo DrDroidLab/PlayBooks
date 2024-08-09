@@ -17,10 +17,9 @@ from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
 
 
-def apply_result_transformer(result: PlaybookTaskResult, lambda_function: Lambda.Function) -> Dict:
+def apply_result_transformer(result_dict, lambda_function: Lambda.Function) -> Dict:
     lambda_function_processor = LambdaFunctionProcessor(lambda_function.definition.value,
                                                         lambda_function.requirements)
-    result_dict = proto_to_dict(result)
     transformer_result = lambda_function_processor.execute(result_dict)
     if not isinstance(transformer_result, Dict):
         raise ValueError("Result transformer should return a dictionary")
@@ -167,7 +166,8 @@ class PlaybookSourceManager:
                     # Apply result transformer
                     if task.execution_configuration.is_result_transformer_enabled.value:
                         lambda_function = task.execution_configuration.result_transformer_lambda_function
-                        result_transformer_lambda_function_variable_set = apply_result_transformer(playbook_task_result,
+                        playbook_task_result_dict = proto_to_dict(playbook_task_result) if playbook_task_result else {}
+                        result_transformer_lambda_function_variable_set = apply_result_transformer(playbook_task_result_dict,
                                                                                                    lambda_function)
                         result_transformer_lambda_function_variable_set_proto = dict_to_proto(
                             result_transformer_lambda_function_variable_set,
