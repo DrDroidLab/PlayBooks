@@ -26,10 +26,12 @@ export async function executeTask(id?: string) {
   updateStepById("ui_requirement.outputLoading", true, stepId);
   updateStepById("ui_requirement.showOutput", false, stepId);
   updateStepById("ui_requirement.outputError", undefined, stepId);
+  updateStepById("ui_requirement.showError", false, stepId);
 
   updateCardById("ui_requirement.outputLoading", true, id);
   updateCardById("ui_requirement.showOutput", false, id);
   updateCardById("ui_requirement.outputError", undefined, id);
+  updateCardById("ui_requirement.showError", false, id);
 
   dispatch(popFromExecutionStack());
 

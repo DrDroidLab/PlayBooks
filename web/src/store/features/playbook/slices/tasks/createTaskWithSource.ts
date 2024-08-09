@@ -34,7 +34,6 @@ export const createTaskWithSource = (
     source: payload.source,
     interpreter_type: "BASIC_I",
     task_connector_sources: [],
-    transformer_code: "",
     ui_requirement: {
       isOpen: true,
       taskType: payload.taskType,
@@ -54,6 +53,9 @@ export const createTaskWithSource = (
     execution_configuration: {
       is_bulk_execution: false,
       bulk_execution_var_field: "",
+      result_transformer_lambda_function: {
+        definition: "",
+      },
     },
   };
 

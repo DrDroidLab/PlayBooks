@@ -29,7 +29,6 @@ function playbookToState(playbook: Playbook): Playbook {
         return {
           ...e,
           reference_id: uuidv4(),
-          transformer_code: e.transformer_code ?? "",
           execution_configuration: {
             ...e.execution_configuration,
             timeseries_offsets: [
@@ -52,7 +51,9 @@ function playbookToState(playbook: Playbook): Playbook {
             use_comparison:
               e?.execution_configuration?.timeseries_offsets &&
               (e?.execution_configuration?.timeseries_offsets?.length ?? 0) > 0,
-            example_input: exampleInputTransformer,
+            use_transformer:
+              !!e?.execution_configuration?.result_transformer_lambda_function
+                ?.definition,
           },
         };
       })

@@ -15,7 +15,8 @@ import { defaultCodeTransformer } from "../../../../utils/common/transformerDefa
 
 hljs.registerLanguage("python", python as any);
 hljs.registerLanguage("json", json as any);
-const key = "transformer_code";
+const key =
+  "execution_configuration.result_transformer_lambda_function.definition";
 
 function HandleResultTransformer({ id }) {
   const [task] = useCurrentTask(id);
@@ -65,6 +66,7 @@ function HandleResultTransformer({ id }) {
         language={LanguageTypes.PYTHON}
         onValueChange={setCode}
         className="min-h-[100px]"
+        defaultOpen={true}
       />
 
       <CodeAccordion

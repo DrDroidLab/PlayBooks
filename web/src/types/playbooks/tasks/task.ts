@@ -38,7 +38,6 @@ export type Task = {
   name?: string;
   description?: string;
   notes?: string;
-  transformer_code?: string;
   created_by?: string;
   global_variable_set?: GlobalVariableSet;
   interpreter_type: string;
