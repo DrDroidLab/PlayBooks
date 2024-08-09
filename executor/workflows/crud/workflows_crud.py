@@ -69,7 +69,7 @@ def update_or_create_db_workflow(account: Account, created_by, workflow_proto: W
     db_playbooks = get_db_playbooks(account, playbook_ids=playbook_ids, is_active=True)
     if update_mode and db_playbooks.count() != len(playbook_ids):
         return None, 'Invalid Playbooks in Workflow Config'
-    elif not update_mode:
+    elif not update_mode and db_playbooks.count() != len(playbook_ids):
         try:
             db_playbooks = []
             for pb in playbooks:
