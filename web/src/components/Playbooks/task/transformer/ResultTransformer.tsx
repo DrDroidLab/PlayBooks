@@ -5,8 +5,7 @@ import { updateCardById } from "../../../../utils/execution/updateCardById";
 import HandleResultTransformer from "./HandleTransformer";
 import getNestedValue from "../../../../utils/common/getNestedValue";
 
-const key =
-  "execution_configuration.result_transformer_lambda_function.is_result_transformer_enabled";
+const key = "execution_configuration.is_result_transformer_enabled";
 
 type ResultTransformerProps = {
   id: string;
