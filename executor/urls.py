@@ -8,6 +8,7 @@ urlpatterns = [
     path('task/run/v2', executor_views.task_run_v2),  # Deprecated
     path('task/run/v3', executor_views.task_run_v3),
     path('bulk_task/run', executor_views.bulk_task_run),
+    path('task/test_result_transformer', executor_views.task_test_result_transformer),
 
     path('step/run', executor_views.step_run),  # Deprecated
     path('step/run/v2', executor_views.step_run_v2),  # Deprecated

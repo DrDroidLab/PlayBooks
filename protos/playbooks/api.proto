@@ -286,6 +286,17 @@ message PlaybookExecutionStatusUpdateResponse {
   Message message = 3;
 }
 
+message TestResultTransformerRequest {
+  Lambda.Function transformer_lambda_function = 1;
+  google.protobuf.Struct payload = 2;
+}
+
+message TestResultTransformerResponse {
+  google.protobuf.BoolValue success = 1;
+  Message message = 2;
+  google.protobuf.Struct output = 3;
+}
+
 ///////////////////// Playbook Builder APIs /////////////////////
 
 message PlaybooksBuilderOptionsRequest {
