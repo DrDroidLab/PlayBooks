@@ -42,6 +42,8 @@ export const workflowToState = (workflow) => {
     useTransformer:
       workflow?.configuration?.transformer_lambda_function?.definition !==
       undefined,
+    evaluation_window_in_seconds:
+      workflow?.configuration?.evaluation_window_in_seconds,
     transformerCode:
       workflow?.configuration?.transformer_lambda_function?.definition ??
       defaultCode,
