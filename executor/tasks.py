@@ -11,7 +11,7 @@ from executor.crud.playbook_execution_crud import get_db_playbook_execution, upd
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.models import PlayBook, PlayBookExecution
 from executor.playbook_source_facade import playbook_source_facade
-from executor.task_result_conditional_evaluators.step_condition_evaluator import step_condition_evaluator
+from executor.playbook_result_conditional_evaluators.step_condition_evaluator import step_condition_evaluator
 from executor.utils.playbook_step_utils import get_playbook_steps_graph_view, get_playbook_steps_id_def_map
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
@@ -258,15 +258,23 @@ def execute_playbook(account_id, playbook_id, playbook_execution_id, time_range)
         execution_global_variable_set.update(pb_proto.global_variable_set)
         execution_global_variable_set.update(pb_execution_proto.execution_global_variable_set)
 
+        execution_global_variable_set_dict = {}
+        if execution_global_variable_set and execution_global_variable_set.items():
+            execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
+
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
-                                                                 proto_to_dict(execution_global_variable_set))
+                                                                 execution_global_variable_set_dict)
 
         step_execution_logs, execution_global_variable_set = execute_playbook_impl(tr, account, pb_proto,
                                                                                    execution_global_variable_set)
+
+        if execution_global_variable_set and execution_global_variable_set.items():
+            execution_global_variable_set_dict = proto_to_dict(execution_global_variable_set)
+
         store_step_execution_logs(account, pb, pb_execution, step_execution_logs)
 
         update_db_account_playbook_execution_global_variable_set(account, playbook_execution_id,
-                                                                 proto_to_dict(execution_global_variable_set))
+                                                                 execution_global_variable_set_dict)
         update_db_account_playbook_execution_status(account, playbook_execution_id,
                                                     PlaybookExecutionStatusType.FINISHED)
     except Exception as exc:

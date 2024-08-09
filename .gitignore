@@ -170,3 +170,8 @@ web/nginx.local.conf
 web/.env
 
 dev_scripts
+
+# Ignore all local media files
+media/images/*
+media/csv_files/*
+media/text_files/*

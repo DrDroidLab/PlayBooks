@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../../store/features/workflow/workflowSlice.ts";
 import { scheduleOptions } from "../../../utils/workflow/scheduleOptions.tsx";

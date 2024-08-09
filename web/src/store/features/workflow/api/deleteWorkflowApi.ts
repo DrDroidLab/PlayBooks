@@ -3,7 +3,7 @@ import { apiSlice } from "../../../app/apiSlice.ts";
 
 export const deleteWorkflowApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    deleteWorkflow: builder.mutation<any, number>({
+    deleteWorkflow: builder.mutation<any, string | number>({
       query: (workflowId) => ({
         url: DELETE_WORKFLOW,
         method: "POST",

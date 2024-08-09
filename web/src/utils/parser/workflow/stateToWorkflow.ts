@@ -8,6 +8,7 @@ export const stateToWorkflow = () => {
   const responseBody: any = {
     workflow: {
       id: workflow.id,
+      type: workflow.type,
       name: workflow.name,
       schedule: {
         type: workflow.schedule?.toUpperCase(),

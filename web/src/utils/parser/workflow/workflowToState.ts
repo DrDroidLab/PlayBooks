@@ -33,6 +33,7 @@ export const workflowToState = (workflow) => {
 
   const currentWorkflow = {
     name: workflow.name,
+    type: workflow.type ?? "STANDARD",
     playbookId,
     notification: workflowActionType,
     workflowType: entryPointType,

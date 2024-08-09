@@ -41,7 +41,7 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
         blocks = []
         text_message = ""
         step_number = 1
-        for i, interpretation in enumerate(execution_output):            
+        for i, interpretation in enumerate(execution_output):
             title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
@@ -51,7 +51,7 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
             if summary:
                 block_message += f"{summary}\n"
             text_message = text_message + block_message
-            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+            if interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION:
                 if title:
                     blocks.extend([
                         {
@@ -85,11 +85,19 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                     blocks.extend([
                         {
                             "type": "TextBlock",
-                            "text": f"{block_message}",
+                            "text": f'{description}',
                             "size": "medium",
                             "wrap": True,
                             "weight": "lighter"
-                        }])
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": f"Here's the [{'md file'}]({interpretation.object_url.value}).",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
+                        }
+                    ])
                 elif interpretation.type == InterpretationProto.Type.IMAGE:
                     blocks.extend([
                         {
@@ -126,10 +134,17 @@ class MSTeamsMessageWebhookExecutor(WorkflowActionExecutor):
                     blocks.extend([
                         {
                             "type": "TextBlock",
-                            "text": f"```\n{summary}\n```",
+                            "text": f"```\n{description}\n```",
                             "size": "Medium",
                             "wrap": True,
                             "fontType": "Monospace"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": f"Here's the [{'md file'}]({interpretation.object_url.value}).",
+                            "size": "medium",
+                            "wrap": True,
+                            "weight": "lighter"
                         }
                     ])
         payload = {"type": "message", "attachments": [{"contentType": "application/vnd.microsoft.card.adaptive",

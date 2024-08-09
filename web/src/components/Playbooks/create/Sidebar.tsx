@@ -1,4 +1,3 @@
-import React from "react";
 import IntegrationsList from "./IntegrationsList";
 
 function Sidebar() {

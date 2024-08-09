@@ -8,6 +8,7 @@ module.exports = {
   darkMode: "class",
   theme: {
     colors: {
+      inherit: "inherit",
       transparent: "transparent",
       black: colors.black,
       white: colors.white,

@@ -78,6 +78,8 @@ export default function handleStepInformation(
       return StepInformation.markdown;
     case taskTypes.SMTP_SEND_EMAIL:
       return StepInformation.smtp;
+    case taskTypes.SLACK_SEND_MESSAGE:
+      return StepInformation.slack;
 
     default:
       return [];
