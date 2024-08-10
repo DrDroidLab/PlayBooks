@@ -4,11 +4,7 @@ import RequireAuth from "./components/RequireAuth";
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api";
 import Loading from "./components/common/Loading";
-import {
-  generateNoLayoutRoutes,
-  generateOtherRoutes,
-  generateUnauthRoutes,
-} from "./generateRoutes";
+import { generateOtherRoutes, generateUnauthRoutes } from "./generateRoutes";
 import useDefaultPage from "./hooks/useDefaultPage";
 
 const App = () => {
@@ -24,7 +20,7 @@ const App = () => {
     <Routes key={location.pathname} location={location}>
       {generateUnauthRoutes()}
 
-      <Route element={<RequireAuth />}>{generateNoLayoutRoutes()}</Route>
+      {/* <Route element={<RequireAuth />}>{generateNoLayoutRoutes()}</Route> */}
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>{generateOtherRoutes()}</Route>

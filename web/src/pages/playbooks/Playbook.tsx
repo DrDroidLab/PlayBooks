@@ -77,7 +77,7 @@ function Playbook() {
       <Heading heading={"Untitled Playbook"} />
       <div className="flex h-[calc(100%-80px)]">
         <main className="relative flex flex-1">
-          <Builder isLog={!!isPrefetched} />
+          <Builder />
           {!isEditing && (
             <div
               className={`${
