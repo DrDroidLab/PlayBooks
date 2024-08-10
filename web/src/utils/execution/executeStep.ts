@@ -163,6 +163,6 @@ export async function executeStep(id?: string) {
       updateCardById("ui_requirement.showOutput", true, task?.id);
     });
 
-    setCurrentVisibleStepFunction(currentStepId);
+    if (!executionId) setCurrentVisibleStepFunction(currentStepId);
   }
 }
