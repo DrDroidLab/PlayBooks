@@ -67,7 +67,10 @@ function IntegrationOption({ option }) {
           parentId: addtionalState?.parentId,
           requireCondition: addtionalState?.requireCondition,
           currentConditionParentId: addtionalState?.currentConditionParentId,
-          stepId: addtionalState?.stepId ?? currentPlaybook?.steps?.[0]?.id,
+          stepId:
+            addtionalState?.stepId ?? addtionalState?.parentId
+              ? undefined
+              : currentPlaybook?.steps?.[0]?.id,
           resultType: option.result_type,
         }),
       );
