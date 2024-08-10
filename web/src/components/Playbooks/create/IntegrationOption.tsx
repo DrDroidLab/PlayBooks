@@ -1,12 +1,18 @@
 import { cardsData } from "../../../utils/common/cardsData.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { createTaskWithSource } from "../../../store/features/playbook/playbookSlice.ts";
+import {
+  createTaskWithSource,
+  currentPlaybookSelector,
+} from "../../../store/features/playbook/playbookSlice.ts";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { SOURCES } from "../../../constants/index.ts";
 import { unsupportedBuilderOptions } from "../../../utils/playbook/unsupportedBuilderOptions.ts";
 import { Tooltip } from "@mui/material";
 import { DrawerTypes } from "../../../store/features/drawers/drawerTypes.ts";
-import { additionalStateSelector } from "../../../store/features/drawers/drawersSlice.ts";
+import {
+  additionalStateSelector,
+  setAdditionalState,
+} from "../../../store/features/drawers/drawersSlice.ts";
 import { PermanentDrawerTypes } from "../../../store/features/drawers/permanentDrawerTypes.ts";
 import useDrawerState from "../../../hooks/common/useDrawerState.ts";
 import usePermanentDrawerState from "../../../hooks/common/usePermanentDrawerState.ts";
@@ -21,6 +27,7 @@ function IntegrationOption({ option }) {
   const unsupported = unsupportedBuilderOptions.includes(
     `${option.source} ${option.task_type}`,
   );
+  const currentPlaybook = useSelector(currentPlaybookSelector);
 
   const handleImageSrc = () => {
     switch (option?.source) {
@@ -60,7 +67,7 @@ function IntegrationOption({ option }) {
           parentId: addtionalState?.parentId,
           requireCondition: addtionalState?.requireCondition,
           currentConditionParentId: addtionalState?.currentConditionParentId,
-          stepId: addtionalState?.stepId,
+          stepId: addtionalState?.stepId ?? currentPlaybook?.steps?.[0]?.id,
           resultType: option.result_type,
         }),
       );
