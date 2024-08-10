@@ -13,6 +13,21 @@ import checkId from "../common/checkId.ts";
 import { Task } from "../../types/index.ts";
 import { updateCardById } from "./updateCardById.ts";
 import { extractTimeFromHours } from "../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
+import { setCurrentVisibleStepFunction } from "../playbook/step/setCurrentVisibleStepFunction.ts";
+
+const handleOutput = (output: any, list: any[], id: string | undefined) => {
+  const outputError = output?.result?.error;
+  list.push({
+    data: { ...output?.result, timestamp: output?.timestamp },
+    interpretation: output?.interpretation,
+    execution_global_variable_set: output?.execution_global_variable_set,
+    error: outputError ? outputError : undefined,
+  });
+  if (outputError) {
+    updateCardById("ui_requirement.showError", true, id);
+    updateCardById("ui_requirement.outputError", true, id);
+  }
+};
 
 export async function executeStep(id?: string) {
   const { executionId, currentPlaybook } = playbookSelector(store.getState());
@@ -101,20 +116,13 @@ export async function executeStep(id?: string) {
       const list: any = [];
       const taskId: Task | string | undefined = step?.tasks[index];
       const id = typeof taskId === "string" ? taskId : taskId?.id;
-
-      outputs.forEach((output) => {
-        const outputError = output?.result?.error;
-        list.push({
-          data: { ...output?.result, timestamp: output?.timestamp },
-          interpretation: output?.interpretation,
-          execution_global_variable_set: output?.execution_global_variable_set,
-          error: outputError ? outputError : undefined,
+      if (Array.isArray(outputs)) {
+        outputs.forEach((output) => {
+          handleOutput(output, list, id);
         });
-        if (outputError) {
-          updateCardById("ui_requirement.showError", true, id);
-          updateCardById("ui_requirement.outputError", true, id);
-        }
-      });
+      } else {
+        handleOutput(outputs, list, id);
+      }
 
       updateCardById("ui_requirement.outputs", list, id);
     });
@@ -154,5 +162,7 @@ export async function executeStep(id?: string) {
       updateCardById("ui_requirement.outputLoading", false, task?.id);
       updateCardById("ui_requirement.showOutput", true, task?.id);
     });
+
+    setCurrentVisibleStepFunction(currentStepId);
   }
 }
