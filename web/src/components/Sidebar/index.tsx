@@ -44,16 +44,6 @@ function Sidebar() {
           }
           onClick={toggle}
         />
-        <SidebarElement
-          to="/settings"
-          label="Settings"
-          icon={<SettingsRounded />}
-        />
-        <SidebarButtonElement
-          label="Logout"
-          icon={<LogoutRounded />}
-          onClick={signOut}
-        />
       </List>
 
       <SlackConnectOverlay isOpen={isActionOpen} toggleOverlay={toggle} />

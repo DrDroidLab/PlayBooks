@@ -31,11 +31,6 @@ export const elements = [
     icon: <SlowMotionVideoRounded />,
   },
   {
-    to: routes.PLAYGROUND,
-    label: "Sample Playbooks",
-    icon: <TerminalRounded />,
-  },
-  {
     to: routes.DATA_SOURCES,
     label: "Integrations",
     icon: <DataThresholdingRounded />,
