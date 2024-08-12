@@ -63,12 +63,12 @@ function HandleResultTransformer({ id }) {
         code={code}
         label={
           <>
-            Transformer Function{" "}
+            Transformer Function&nbsp;
             <a
               href="https://docs.drdroid.io/docs/output-exporter-transformers"
               target="_blank"
               rel="noreferrer"
-              className="hover:underline">
+              className="underline">
               (See how it works)
             </a>
           </>
