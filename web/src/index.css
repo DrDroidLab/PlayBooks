@@ -169,13 +169,13 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.sidebar a {
+/* .sidebar a {
   display: flex;
   align-items: center;
   padding: 0.5rem;
   transition: all 0.2s;
-}
+} */
 
-.sidebar a:hover {
+/* .sidebar a:hover {
   background-color: #f3f3f3;
-}
+} */
