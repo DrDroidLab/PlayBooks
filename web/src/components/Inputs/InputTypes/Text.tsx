@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import React, { HTMLInputTypeAttribute } from "react";
 
 type TextInputTypes = {
@@ -28,17 +29,19 @@ function Text({
   };
 
   return (
-    <input
-      className={`${className} ${
-        error ? "border-red-500" : ""
-      } border p-2 rounded text-xs outline-none font-normal text-ellipsis min-w-[100px] w-fit max-w-full h-auto`}
-      onChange={onChange}
-      placeholder={placeholder ?? `${label}`}
-      value={value}
-      disabled={disabled}
-      type={type}
-      {...props}
-    />
+    <Tooltip title={disabled ? value : ""}>
+      <input
+        className={`${className} ${
+          error ? "border-red-500" : ""
+        } border p-2 rounded text-xs outline-none font-normal text-ellipsis min-w-[100px] w-fit max-w-full h-auto`}
+        onChange={onChange}
+        placeholder={placeholder ?? `${label}`}
+        value={value}
+        disabled={disabled}
+        type={type}
+        {...props}
+      />
+    </Tooltip>
   );
 }
 

@@ -1,5 +1,6 @@
 import { ListItemButton, ListItemIcon } from "@mui/material";
 import { ReactNode } from "react";
+import useSidebar from "../../hooks/common/sidebar/useSidebar";
 
 type SidebarButtonElementProps = {
   icon: ReactNode;
@@ -12,13 +13,15 @@ function SidebarButtonElement({
   label,
   icon,
 }: SidebarButtonElementProps) {
+  const { isOpen } = useSidebar();
+
   return (
-    <ListItemButton
+    <div
       onClick={onClick}
-      className="!flex !justify-start !p-3 !gap-3">
+      className="flex gap-2 mx-2 px-2 py-1 items-center max-w-full rounded text-gray-500 hover:bg-gray-50 cursor-pointer">
       <div className="text-gray-500">{icon}</div>
-      <p className="text-sm flex-1">{label}</p>
-    </ListItemButton>
+      {isOpen && <p className="text-sm flex-1">{label}</p>}
+    </div>
   );
 }
 

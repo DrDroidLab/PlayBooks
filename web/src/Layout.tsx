@@ -5,12 +5,12 @@ import Sidebar from "./components/Sidebar";
 function Layout() {
   return (
     <div className="relative flex h-screen overflow-hidden">
-      <div className="lg:w-2/12 w-1/3 h-screen border-r border-gray-200 hidden lg:flex">
+      <div className="h-screen border-r border-gray-200 flex">
         <Sidebar />
       </div>
 
       <main
-        className="w-full lg:w-10/12 overflow-y-scroll"
+        className="w-full overflow-y-scroll"
         style={{ background: "#F8FAFC" }}>
         <CustomContainer>
           <Outlet />
