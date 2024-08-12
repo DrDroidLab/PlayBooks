@@ -110,6 +110,7 @@ td {
 .step-notes {
   opacity: 0;
   transition: all 0.2s;
+  min-width: 150px;
 }
 
 .step-information:hover + .step-notes {

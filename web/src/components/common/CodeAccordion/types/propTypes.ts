@@ -1,10 +1,10 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { LanguageTypes } from "./index.ts";
 
 export type CodeAccordionPropTypes = {
   code: string;
   language: LanguageTypes;
-  label: string;
+  label: string|ReactNode;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
   className?: string;
