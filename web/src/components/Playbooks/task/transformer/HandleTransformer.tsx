@@ -67,7 +67,8 @@ function HandleResultTransformer({ id }) {
             <a
               href="https://docs.drdroid.io/docs/output-exporter-transformers"
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+              className="hover:underline">
               (See how it works)
             </a>
           </>
