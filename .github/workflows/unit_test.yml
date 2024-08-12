@@ -83,3 +83,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public/reports
+
+      - name: Echo Report Links
+        run: |
+          echo "Frontend Coverage: https://DrDroidLab.github.io/PlayBooks/frontend/coverage/index.html"
+          echo "Frontend Report: https://DrDroidLab.github.io/PlayBooks/frontend/test-report.html"
+          echo "Backend Coverage: https://DrDroidLab.github.io/PlayBooks/backend/coverage/index.html"
+          echo "Backend Report: https://DrDroidLab.github.io/PlayBooks/backend/report.html"
+  
