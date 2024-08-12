@@ -22,10 +22,10 @@ jobs:
         uses: actions/checkout@v3
 
       # Backend Setup and Testing
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential python3-dev
+      # - name: Install system dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y build-essential python3-dev
 
       # - name: Set up Python
       #   uses: actions/setup-python@v4
@@ -102,8 +102,8 @@ jobs:
             - [Backend Report](https://DrDroidLab.github.io/PlayBooks/reports/backend/report.html)
             `;
 
-            // Create a Check Run using octokit
-            await octokit.checks.create({
+            // Create a Check Run using github object
+            await github.rest.checks.create({
               owner: owner,
               repo: repo,
               name: 'Test Report Links',
@@ -120,7 +120,7 @@ jobs:
             // Comment on the Pull Request if it exists
             if (context.payload.pull_request) {
               const pr_number = context.payload.pull_request.number;
-              await octokit.issues.createComment({
+              await github.rest.issues.createComment({
                 owner: owner,
                 repo: repo,
                 issue_number: pr_number,
