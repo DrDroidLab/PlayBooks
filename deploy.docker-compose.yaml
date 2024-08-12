@@ -57,6 +57,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pass}
       - POSTGRES_HOST=${POSTGRES_HOST:-db}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - OKTA_DOMAIN=${OKTA_DOMAIN}
+      - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
     depends_on:
       - db
       - redis

@@ -14,6 +14,11 @@ const RequireAuth = () => {
   const location = useLocation();
   const { isOpen, toggle } = useToggle(true);
 
+  const handleClose = () => {
+    window.location.reload();
+    toggle();
+  };
+
   return (
     <>
       <FakeLoading />
@@ -23,7 +28,9 @@ const RequireAuth = () => {
         <Navigate to="/signup" state={{ from: location }} replace />
       )}
 
-      {!lastLogin && <RecieveUpdatesModal close={toggle} isOpen={isOpen} />}
+      {/* {!lastLogin && (
+        <RecieveUpdatesModal close={handleClose} isOpen={isOpen} />
+      )} */}
     </>
   );
 };

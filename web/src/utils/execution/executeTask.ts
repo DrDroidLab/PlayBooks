@@ -10,6 +10,7 @@ import checkId from "../common/checkId.ts";
 import updateStepById from "../playbook/step/updateStepById.ts";
 import { executionBulkTaskExecute } from "../../store/features/playbook/api/executions/executionBulkTaskExecuteApi.ts";
 import { extractTimeFromHours } from "../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
+import { setCurrentVisibleTaskFunction } from "../playbook/task/setCurrentVisibleTaskFunction.ts";
 
 export async function executeTask(id?: string) {
   const [task] = getCurrentTask(id);
@@ -111,5 +112,6 @@ export async function executeTask(id?: string) {
 
     updateStepById("ui_requirement.showOutput", true, stepId);
     updateStepById("ui_requirement.outputLoading", false, stepId);
+    setCurrentVisibleTaskFunction(id ?? "");
   }
 }
