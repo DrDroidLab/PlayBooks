@@ -1,19 +1,25 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
-import { List } from "@mui/material";
 import { useLogoutMutation } from "../../store/features/auth/api";
 import useToggle from "../../hooks/common/useToggle";
 import SlackConnectOverlay from "../SlackConnectOverlay";
 import { elements } from "./utils";
 import SidebarElement from "./SidebarElement";
-import { LogoutRounded, SettingsRounded } from "@mui/icons-material";
+import {
+  LogoutRounded,
+  SettingsRounded,
+  MenuRounded,
+  CloseRounded,
+} from "@mui/icons-material";
 import SidebarButtonElement from "./SidebarButtonElement";
 import HeadElement from "./HeadElement";
+import useSidebar from "../../hooks/common/sidebar/useSidebar";
+import ToggleButton from "./ToggleButton";
 
 function Sidebar() {
   const navigate = useNavigate();
   const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
+  const { isOpen, toggle: toggleSidebar } = useSidebar();
 
   const signOut = async () => {
     await triggerLogout();
@@ -21,8 +27,12 @@ function Sidebar() {
   };
 
   return (
-    <div className="sidebar w-full flex items-center justify-between flex-col pb-2">
+    <div
+      className={`relative flex items-center justify-between flex-col pb-2 ${
+        isOpen ? "w-64" : "w-16"
+      } transition-width duration-300`}>
       <div className="flex w-full flex-col gap-0">
+        <ToggleButton />
         <HeadElement />
 
         <div className="flex flex-col gap-2 my-1">

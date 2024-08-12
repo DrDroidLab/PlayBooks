@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import useSidebar from "../../hooks/common/sidebar/useSidebar";
 
 type SidebarElementProps = {
   to: string;
@@ -9,6 +10,7 @@ type SidebarElementProps = {
 };
 
 function SidebarElement({ to, label, icon }: SidebarElementProps) {
+  const { isOpen } = useSidebar();
   const location = useLocation();
   const isActive = location.pathname === to;
 
@@ -21,7 +23,7 @@ function SidebarElement({ to, label, icon }: SidebarElementProps) {
             : "text-gray-500 hover:bg-gray-50"
         }`}>
         <div className="">{icon}</div>
-        <p className="text-sm">{label}</p>
+        {isOpen && <p className="text-sm">{label}</p>}
       </div>
       {isActive && (
         <motion.div
@@ -29,7 +31,7 @@ function SidebarElement({ to, label, icon }: SidebarElementProps) {
           className="absolute left-2 h-[70%] w-1 bg-violet-500 rounded"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         />
       )}
     </NavLink>
