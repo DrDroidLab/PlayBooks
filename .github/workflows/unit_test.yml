@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: write
+  checks: write
+  pull-requests: write
 
 jobs:
   test:
@@ -84,10 +86,45 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public/reports
 
-      - name: Echo Report Links
-        run: |
-          echo "Frontend Coverage: https://DrDroidLab.github.io/PlayBooks/frontend/coverage/index.html"
-          echo "Frontend Report: https://DrDroidLab.github.io/PlayBooks/frontend/test-report.html"
-          echo "Backend Coverage: https://DrDroidLab.github.io/PlayBooks/backend/coverage/index.html"
-          echo "Backend Report: https://DrDroidLab.github.io/PlayBooks/backend/report.html"
-  
+      # Create a GitHub Check Run with Report Links
+      - name: Create Check Run with Report Links
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context } = require('@actions/github');
+            const { repo, owner } = context.repo;
+
+            const reportComment = `
+            ### Test Reports:
+            - [Frontend Coverage](https://DrDroidLab.github.io/PlayBooks/reports/frontend/coverage/index.html)
+            - [Frontend Report](https://DrDroidLab.github.io/PlayBooks/reports/frontend/test-report.html)
+            - [Backend Coverage](https://DrDroidLab.github.io/PlayBooks/reports/backend/coverage/index.html)
+            - [Backend Report](https://DrDroidLab.github.io/PlayBooks/reports/backend/report.html)
+            `;
+
+            // Create a Check Run
+            await github.checks.create({
+              owner: owner,
+              repo: repo,
+              name: 'Test Report Links',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: 'success',
+              output: {
+                title: 'Test Reports',
+                summary: reportComment,
+                text: 'Click the links above to view the test coverage and report details.'
+              }
+            });
+
+            // Comment on the Pull Request
+            if (context.payload.pull_request) {
+              const pr_number = context.payload.pull_request.number;
+              await github.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: pr_number,
+                body: reportComment
+              });
+            }
