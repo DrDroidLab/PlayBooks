@@ -10,8 +10,8 @@ function HeadElement() {
     <div
       className={`flex border-b border-gray-300 items-center justify-center ${
         isOpen ? "flex-row h-[80px]" : "flex-col-reverse"
-      }`}>
-      <div className="py-2 px-2 bg-white flex items-center justify-center flex-col">
+      } overflow-hidden`}>
+      <div className="py-2 px-2 bg-white flex items-center justify-center flex-col flex-1 max-h-full">
         <Link className="hover:!bg-transparent" to="/">
           <img
             src={isOpen ? "/logo/drdroid-logo-full.png" : "/logo/logo.png"}
