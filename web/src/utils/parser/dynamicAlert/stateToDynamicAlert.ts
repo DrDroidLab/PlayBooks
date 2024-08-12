@@ -31,6 +31,9 @@ export const stateToDynamicAlert = () => {
     actions: [],
     configuration: {
       generate_summary: true,
+      evaluation_window_in_seconds: dynamicAlert.evaluationWindowInMinutes
+        ? parseInt(dynamicAlert.evaluationWindowInMinutes.toString(), 10) * 60
+        : undefined,
     },
   };
 };
