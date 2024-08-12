@@ -25,14 +25,14 @@ function Sidebar() {
       <div className="flex w-full flex-col gap-0">
         <HeadElement />
 
-        <List sx={{ padding: 0 }}>
+        <div className="flex flex-col gap-2 my-1">
           {elements.map((element, index) => (
             <SidebarElement key={index} {...element} />
           ))}
-        </List>
+        </div>
       </div>
 
-      <List className="w-full">
+      <div className="flex flex-col gap-2 w-full">
         <SidebarButtonElement
           label="Join Slack Community"
           icon={
@@ -51,10 +51,10 @@ function Sidebar() {
         />
         <SidebarButtonElement
           label="Logout"
-          icon={<LogoutRounded />}
+          icon={<LogoutRounded fontSize="small" />}
           onClick={signOut}
         />
-      </List>
+      </div>
 
       <SlackConnectOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </div>
