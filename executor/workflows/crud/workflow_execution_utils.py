@@ -73,6 +73,8 @@ def get_next_workflow_execution(schedule: WorkflowSchedule, scheduled_at, last_s
         if not keep_alive and expiry_at and latest_scheduled_at > expiry_at:
             raise WorkflowExpiredException(f"Next Scheduled At is greater than Workflow Expiry time for workflow")
     elif schedule.type == WorkflowSchedule.Type.ONE_OFF:
+        if last_scheduled_at:
+            raise WorkflowExpiredException(f"One Off Schedule in workflow already executed")
         latest_scheduled_at = scheduled_at + timedelta(seconds=int(settings.WORKFLOW_SCHEDULER_INTERVAL))
         expiry_at = latest_scheduled_at
     else:
@@ -129,7 +131,13 @@ def create_workflow_execution_util(account: Account, workflow: Workflow, schedul
         latest_scheduled_at, expiry_at, keep_alive = get_next_workflow_execution(schedule, scheduled_at)
     except Exception as e:
         return False, f"Error in calculating next workflow execution: {e} for workflow: {workflow.id}"
-    time_range = TimeRange(time_geq=int(latest_scheduled_at.timestamp()) - 3600,
+
+    offset = 3600
+    workflow_configuration: WorkflowConfiguration = workflow.configuration if workflow.configuration else WorkflowConfiguration()
+    if workflow_configuration and workflow_configuration.evaluation_window_in_seconds.value:
+        offset = workflow_configuration.evaluation_window_in_seconds.value
+
+    time_range = TimeRange(time_geq=int(latest_scheduled_at.timestamp()) - offset,
                            time_lt=int(latest_scheduled_at.timestamp()))
     if schedule.type != WorkflowSchedule.Type.ONE_OFF and not expiry_at and not keep_alive:
         return False, f"Expiry time is required for non-keep alive workflows"
@@ -137,5 +145,5 @@ def create_workflow_execution_util(account: Account, workflow: Workflow, schedul
     workflow_execution = create_workflow_execution(account, time_range, workflow.id.value, workflow_run_uuid,
                                                    scheduled_at, latest_scheduled_at, expiry_at, keep_alive,
                                                    triggered_by, execution_metadata,
-                                                   proto_to_dict(workflow.configuration))
+                                                   proto_to_dict(workflow_configuration))
     return workflow_execution, ''
