@@ -16,6 +16,7 @@ enum FormFieldType {
   WYSIWYG_FT = 8;
   COMPOSITE_FT = 9;
   STRING_ARRAY_FT = 10;
+  DATE_FT = 11;
 }
 
 message FormField {
