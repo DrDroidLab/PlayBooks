@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "nprogress/nprogress.css";
 import { useGetUserQuery } from "./store/features/auth/api";
 import Loading from "./components/common/Loading";
-import { generateNoLayoutRoutes, generateOtherRoutes } from "./generateRoutes";
+import { generateOtherRoutes } from "./generateRoutes";
 import useDefaultPage from "./hooks/useDefaultPage";
 
 const App = () => {
@@ -17,7 +17,6 @@ const App = () => {
 
   return (
     <Routes key={location.pathname} location={location}>
-      {generateNoLayoutRoutes()}
       <Route element={<Layout />}>{generateOtherRoutes()}</Route>
     </Routes>
   );

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 
@@ -39,12 +39,16 @@ class GrafanaLokiSourceManager(PlaybookSourceManager):
                               display_name=StringValue(value="Start Time"),
                               data_type=LiteralType.LONG,
                               is_date_time_field=True,
-                              form_field_type=FormFieldType.TEXT_FT),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(
+                                  value=int((datetime.now() - timedelta(minutes=30)).timestamp()))),
+                              form_field_type=FormFieldType.DATE_FT),
                     FormField(key_name=StringValue(value="end_time"),
                               display_name=StringValue(value="End Time"),
                               data_type=LiteralType.LONG,
                               is_date_time_field=True,
-                              form_field_type=FormFieldType.TEXT_FT),
+                              default_value=Literal(type=LiteralType.LONG, long=Int64Value(
+                                  value=int((datetime.now()).timestamp()))),
+                              form_field_type=FormFieldType.DATE_FT),
                 ]
             }
         }

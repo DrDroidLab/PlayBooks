@@ -60,7 +60,7 @@ function PlaybookLog() {
       <Heading heading={playbook.name} />
       <div className="flex flex-col h-[calc(100%-80px)]">
         <main className="relative flex flex-1">
-          <Builder isLog={true} />
+          <Builder />
         </main>
       </div>
     </div>

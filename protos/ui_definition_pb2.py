@@ -15,7 +15,7 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from protos import literal_pb2 as protos_dot_literal__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/ui_definition.proto\x12\x06protos\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14protos/literal.proto\"\xf7\x03\n\tFormField\x12.\n\x08key_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0c\x64isplay_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12&\n\tdata_type\x18\x04 \x01(\x0e\x32\x13.protos.LiteralType\x12\x13\n\x0bis_optional\x18\x05 \x01(\x08\x12&\n\rdefault_value\x18\x06 \x01(\x0b\x32\x0f.protos.Literal\x12%\n\x0cvalid_values\x18\x07 \x03(\x0b\x32\x0f.protos.Literal\x12\x14\n\x0cis_composite\x18\x08 \x01(\x08\x12+\n\x10\x63omposite_fields\x18\t \x03(\x0b\x32\x11.protos.FormField\x12\x38\n\x12max_length_allowed\x18\n \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x1a\n\x12is_date_time_field\x18\x0b \x01(\x08\x12.\n\x0f\x66orm_field_type\x18\x0c \x01(\x0e\x32\x15.protos.FormFieldType*\xe4\x01\n\rFormFieldType\x12\x0e\n\nUNKNOWN_FT\x10\x00\x12\x0b\n\x07TEXT_FT\x10\x01\x12\x10\n\x0cMULTILINE_FT\x10\x02\x12\r\n\tBUTTON_FT\x10\x03\x12\x14\n\x10IFRAME_RENDER_FT\x10\x04\x12\x0f\n\x0b\x44ROPDOWN_FT\x10\x05\x12\x16\n\x12TYPING_DROPDOWN_FT\x10\x06\x12\x1f\n\x1bTYPING_DROPDOWN_MULTIPLE_FT\x10\x07\x12\x0e\n\nWYSIWYG_FT\x10\x08\x12\x10\n\x0c\x43OMPOSITE_FT\x10\t\x12\x13\n\x0fSTRING_ARRAY_FT\x10\nb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotos/ui_definition.proto\x12\x06protos\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14protos/literal.proto\"\xf7\x03\n\tFormField\x12.\n\x08key_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0c\x64isplay_name\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12&\n\tdata_type\x18\x04 \x01(\x0e\x32\x13.protos.LiteralType\x12\x13\n\x0bis_optional\x18\x05 \x01(\x08\x12&\n\rdefault_value\x18\x06 \x01(\x0b\x32\x0f.protos.Literal\x12%\n\x0cvalid_values\x18\x07 \x03(\x0b\x32\x0f.protos.Literal\x12\x14\n\x0cis_composite\x18\x08 \x01(\x08\x12+\n\x10\x63omposite_fields\x18\t \x03(\x0b\x32\x11.protos.FormField\x12\x38\n\x12max_length_allowed\x18\n \x01(\x0b\x32\x1c.google.protobuf.UInt64Value\x12\x1a\n\x12is_date_time_field\x18\x0b \x01(\x08\x12.\n\x0f\x66orm_field_type\x18\x0c \x01(\x0e\x32\x15.protos.FormFieldType*\xf1\x01\n\rFormFieldType\x12\x0e\n\nUNKNOWN_FT\x10\x00\x12\x0b\n\x07TEXT_FT\x10\x01\x12\x10\n\x0cMULTILINE_FT\x10\x02\x12\r\n\tBUTTON_FT\x10\x03\x12\x14\n\x10IFRAME_RENDER_FT\x10\x04\x12\x0f\n\x0b\x44ROPDOWN_FT\x10\x05\x12\x16\n\x12TYPING_DROPDOWN_FT\x10\x06\x12\x1f\n\x1bTYPING_DROPDOWN_MULTIPLE_FT\x10\x07\x12\x0e\n\nWYSIWYG_FT\x10\x08\x12\x10\n\x0c\x43OMPOSITE_FT\x10\t\x12\x13\n\x0fSTRING_ARRAY_FT\x10\n\x12\x0b\n\x07\x44\x41TE_FT\x10\x0b\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.ui_definition_pb2', globals())
@@ -23,7 +23,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _FORMFIELDTYPE._serialized_start=599
-  _FORMFIELDTYPE._serialized_end=827
+  _FORMFIELDTYPE._serialized_end=840
   _FORMFIELD._serialized_start=93
   _FORMFIELD._serialized_end=596
 # @@protoc_insertion_point(module_scope)

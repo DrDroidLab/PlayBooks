@@ -24,29 +24,24 @@ const LazyComponent = ({ importFn, pageKey }: LazyComponentProps) => (
   </Suspense>
 );
 
-export const generateNoLayoutRoutes = () => {
-  return Object.entries(components)
-    .filter(([pageKey]) => noLayoutPages.includes(pageKey as PageKeys))
-    .map(([pageKey, importFn]) => (
-      <Route
-        key={pageKey}
-        path={routes[pageKey]}
-        element={<LazyComponent importFn={importFn} />}
-      />
-    ));
-};
+// export const generateNoLayoutRoutes = () => {
+//   return Object.entries(components)
+//     .filter(([pageKey]) => noLayoutPages.includes(pageKey as PageKeys))
+//     .map(([pageKey, importFn]) => (
+//       <Route
+//         key={pageKey}
+//         path={routes[pageKey]}
+//         element={<LazyComponent importFn={importFn} />}
+//       />
+//     ));
+// };
 
 export const generateOtherRoutes = () => {
-  return Object.entries(components)
-    .filter(
-      ([pageKey]) =>
-        !noLayoutPages.includes(pageKey as PageKeys)
-    )
-    .map(([pageKey, importFn]) => (
-      <Route
-        key={pageKey}
-        path={routes[pageKey]}
-        element={<LazyComponent importFn={importFn} pageKey={pageKey} />}
-      />
-    ));
+  return Object.entries(components).map(([pageKey, importFn]) => (
+    <Route
+      key={pageKey}
+      path={routes[pageKey]}
+      element={<LazyComponent importFn={importFn} pageKey={pageKey} />}
+    />
+  ));
 };

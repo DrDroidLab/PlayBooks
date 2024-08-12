@@ -10,9 +10,12 @@ const handleImageSrc = (
     case SOURCES.TEXT:
       if (task_type === SOURCES.IFRAME) {
         return cardsData.find((e) => e.enum === SOURCES.IFRAME)?.url;
+      } else {
+        return (
+          cardsData.find((e) => e.enum === source?.replace("_VPC", ""))?.url ??
+          cardsData.find((e) => model_type?.includes(e.enum))?.url
+        );
       }
-      break;
-    // eslint-disable-next-line no-fallthrough
     default:
       return (
         cardsData.find((e) => e.enum === source?.replace("_VPC", ""))?.url ??
