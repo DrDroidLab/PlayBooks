@@ -4,16 +4,10 @@ import useToggle from "../../hooks/common/useToggle";
 import SlackConnectOverlay from "../SlackConnectOverlay";
 import { elements } from "./utils";
 import SidebarElement from "./SidebarElement";
-import {
-  LogoutRounded,
-  SettingsRounded,
-  MenuRounded,
-  CloseRounded,
-} from "@mui/icons-material";
+import { LogoutRounded, SettingsRounded } from "@mui/icons-material";
 import SidebarButtonElement from "./SidebarButtonElement";
 import HeadElement from "./HeadElement";
 import useSidebar from "../../hooks/common/sidebar/useSidebar";
-import ToggleButton from "./ToggleButton";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -32,7 +26,6 @@ function Sidebar() {
         isOpen ? "w-64" : "w-16"
       } transition-width duration-300`}>
       <div className="flex w-full flex-col gap-0">
-        <ToggleButton />
         <HeadElement />
 
         <div className="flex flex-col gap-2 my-1">
