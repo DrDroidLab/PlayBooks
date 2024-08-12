@@ -92,7 +92,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { context } = require('@actions/github');
             const { repo, owner } = context.repo;
 
             const reportComment = `
