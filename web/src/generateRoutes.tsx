@@ -36,23 +36,23 @@ export const generateUnauthRoutes = () => {
     ));
 };
 
-export const generateNoLayoutRoutes = () => {
-  return Object.entries(components)
-    .filter(([pageKey]) => noLayoutPages.includes(pageKey as PageKeys))
-    .map(([pageKey, importFn]) => (
-      <Route
-        key={pageKey}
-        path={routes[pageKey]}
-        element={<LazyComponent importFn={importFn} />}
-      />
-    ));
-};
+// export const generateNoLayoutRoutes = () => {
+//   return Object.entries(components)
+//     .filter(([pageKey]) => noLayoutPages.includes(pageKey as PageKeys))
+//     .map(([pageKey, importFn]) => (
+//       <Route
+//         key={pageKey}
+//         path={routes[pageKey]}
+//         element={<LazyComponent importFn={importFn} />}
+//       />
+//     ));
+// };
 
 export const generateOtherRoutes = () => {
   return Object.entries(components)
     .filter(
       ([pageKey]) =>
-        !noLayoutPages.includes(pageKey as PageKeys) &&
+        // !noLayoutPages.includes(pageKey as PageKeys) &&
         !unAuthPages.includes(pageKey as PageKeys),
     )
     .map(([pageKey, importFn]) => (

@@ -17,7 +17,7 @@ export const relationToState = (
     if (relation.condition) {
       relation.condition.rule_sets = ruleSets.map((ruleSet) => ({
         ...ruleSet,
-        rules: ruleSet.rules.map((rule) => ({
+        rules: ruleSet.rules?.map((rule) => ({
           ...rule,
           task: tasks.find((e) => e.id === rule.task.id) ?? rule.task,
           [rule.type.toLowerCase()]: {

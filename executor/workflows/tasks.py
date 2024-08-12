@@ -359,9 +359,14 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
         p_proto = pe_proto.playbook
-        playbook_url = build_absolute_uri(None, settings.PLATFORM_PLAYBOOKS_PAGE_LOCATION.format(p_proto.id.value),
-                                          settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL,
-                                          settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE)
+
+        pb_exec_location = settings.PLATFORM_PLAYBOOKS_EXECUTION_PAGE_LOCATION.format(
+            p_proto.id.value, pe_proto.playbook_run_id.value)
+        pb_exec_protocol = settings.PLATFORM_PLAYBOOKS_PAGE_SITE_HTTP_PROTOCOL
+        pb_exec_use_sites = settings.PLATFORM_PLAYBOOKS_PAGE_USE_SITE
+
+        playbook_execution_url = build_absolute_uri(None, pb_exec_location, pb_exec_protocol, pb_exec_use_sites)
+
         step_execution_logs = pe_proto.step_execution_logs
         execution_output: [InterpretationProto] = playbook_step_execution_result_interpret(step_execution_logs)
         if workflow.actions[0].type == WorkflowActionProto.Type.SLACK_MESSAGE or workflow.actions[
@@ -370,7 +375,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
                 type=InterpretationProto.Type.TEXT,
                 title=StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
                 description=StringValue(
-                    value=f'This is a sample run of <{playbook_url}|{p_proto.name.value}> playbook.'),
+                    value=f'This is a sample run of <{playbook_execution_url}|{p_proto.name.value}> playbook.'),
                 model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
             )
         else:
@@ -378,7 +383,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
                 type=InterpretationProto.Type.TEXT,
                 title=StringValue(value=f'Testing Workflow: "{workflow.name.value}"'),
                 description=StringValue(
-                    value=f'This is a sample run of [{p_proto.name.value}]({playbook_url}) playbook.'),
+                    value=f'This is a sample run of [{p_proto.name.value}]({playbook_execution_url}) playbook.'),
                 model_type=InterpretationProto.ModelType.WORKFLOW_EXECUTION
             )
         execution_output.insert(0, workflow_test_message)
