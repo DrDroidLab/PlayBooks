@@ -64,7 +64,10 @@ function HandleResultTransformer({ id }) {
         label={
           <>
             Transformer Function{" "}
-            <a href="#" target="_blank" rel="noreferrer">
+            <a
+              href="https://docs.drdroid.io/docs/output-exporter-transformers"
+              target="_blank"
+              rel="noreferrer">
               (See how it works)
             </a>
           </>
