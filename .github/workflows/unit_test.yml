@@ -40,8 +40,9 @@ jobs:
       - name: Prepare Report Directory
         run: |
           mkdir -p ./public/reports/frontend
+          mkdir -p ./public/reports/frontend/coverage
           mv ./web/reports/test-report.html ./public/reports/frontend/
-          mv ./web/coverage/lcov-report/* ./public/reports/frontend/
+          mv ./web/coverage/lcov-report/* ./public/reports/frontend/coverage/
 
       # Deploy reports to GitHub Pages
       - name: Deploy to GitHub Pages
