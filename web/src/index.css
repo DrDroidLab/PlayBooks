@@ -110,6 +110,7 @@ td {
 .step-notes {
   opacity: 0;
   transition: all 0.2s;
+  min-width: 150px;
 }
 
 .step-information:hover + .step-notes {
@@ -168,13 +169,13 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.sidebar a {
+/* .sidebar a {
   display: flex;
   align-items: center;
   padding: 0.5rem;
   transition: all 0.2s;
-}
+} */
 
-.sidebar a:hover {
+/* .sidebar a:hover {
   background-color: #f3f3f3;
-}
+} */

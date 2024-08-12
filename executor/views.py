@@ -22,9 +22,11 @@ from executor.crud.playbooks_update_processor import playbooks_update_processor
 from executor.crud.playbooks_crud import update_or_create_db_playbook, get_db_playbooks
 from executor.deprecated_task_executor import deprecated_execute_task
 from executor.playbook_source_facade import playbook_source_facade
+from executor.playbook_source_manager import apply_result_transformer
 from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs, \
     execute_playbook_step_impl
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
+from executor.workflows.tasks import test_workflow_transformer
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
@@ -38,6 +40,7 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import InterpreterType,
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookExecutionStatusType
 from protos.playbooks.playbook_pb2 import PlaybookTask, PlaybookTaskExecutionLog, \
     PlaybookExecution, Playbook
+from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from utils.time_utils import current_epoch_timestamp, current_datetime
 from protos.base_pb2 import Meta, TimeRange, Message, Page
 from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResponse, RunPlaybookStepRequest, \
@@ -52,7 +55,8 @@ from protos.playbooks.api_pb2 import RunPlaybookTaskRequest, RunPlaybookTaskResp
     CreatePlaybookResponseV2, UpdatePlaybookRequestV2, UpdatePlaybookResponseV2, ExecutionPlaybookGetRequestV2, \
     ExecutionPlaybookGetResponseV2, ExecutionPlaybookAPIGetResponseV2, PlaybookExecutionCreateRequest, \
     PlaybookExecutionCreateResponse, PlaybookExecutionStepExecuteResponse, PlaybookExecutionStepExecuteRequest, \
-    PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse, RunBulkPlaybookTaskResponse
+    PlaybookExecutionStatusUpdateRequest, PlaybookExecutionStatusUpdateResponse, RunBulkPlaybookTaskResponse, \
+    TestResultTransformerRequest, TestResultTransformerResponse
 
 from protos.playbooks.deprecated_playbook_pb2 import DeprecatedPlaybookTaskExecutionResult, DeprecatedPlaybook, \
     DeprecatedPlaybookExecutionLog, DeprecatedPlaybookStepExecutionLog, DeprecatedPlaybookExecution
@@ -938,3 +942,22 @@ def playbooks_execution_status_update(request_message: PlaybookExecutionStatusUp
                                                      message=Message(title="Internal Error",
                                                                      description="Failed to stop playbook execution status"))
     return PlaybookExecutionStatusUpdateResponse(meta=get_meta(tr=time_range), success=BoolValue(value=True))
+
+
+@web_api(TestResultTransformerRequest)
+def task_test_result_transformer(request_message: TestResultTransformerRequest) -> \
+        Union[TestResultTransformerResponse, HttpResponse]:
+    lambda_function: Lambda.Function = request_message.transformer_lambda_function
+    payload = request_message.payload
+    try:
+        payload_dict = proto_to_dict(payload) if payload and payload.items() else {}
+        output = apply_result_transformer(payload_dict, lambda_function)
+        if not isinstance(output, dict):
+            return TestResultTransformerResponse(success=BoolValue(value=False),
+                                                 message=Message(title="Error",
+                                                                 description="Transformer function did not return a valid dictioanry."))
+        output_struct = dict_to_proto(output, Struct)
+        return TestResultTransformerResponse(success=BoolValue(value=True), output=output_struct)
+    except Exception as e:
+        return TestResultTransformerResponse(success=BoolValue(value=False),
+                                             message=Message(title="Error", description=str(e)))

@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
-import { List } from "@mui/material";
 import { useLogoutMutation } from "../../store/features/auth/api";
 import useToggle from "../../hooks/common/useToggle";
 import SlackConnectOverlay from "../SlackConnectOverlay";
@@ -9,11 +7,13 @@ import SidebarElement from "./SidebarElement";
 import { LogoutRounded, SettingsRounded } from "@mui/icons-material";
 import SidebarButtonElement from "./SidebarButtonElement";
 import HeadElement from "./HeadElement";
+import useSidebar from "../../hooks/common/sidebar/useSidebar";
 
 function Sidebar() {
   const navigate = useNavigate();
   const [triggerLogout] = useLogoutMutation();
   const { isOpen: isActionOpen, toggle } = useToggle();
+  const { isOpen, toggle: toggleSidebar } = useSidebar();
 
   const signOut = async () => {
     await triggerLogout();
@@ -21,18 +21,21 @@ function Sidebar() {
   };
 
   return (
-    <div className="sidebar w-full flex items-center justify-between flex-col pb-2">
+    <div
+      className={`relative flex items-center justify-between flex-col pb-2 ${
+        isOpen ? "w-64" : "w-16"
+      } transition-width duration-300`}>
       <div className="flex w-full flex-col gap-0">
         <HeadElement />
 
-        <List sx={{ padding: 0 }}>
+        <div className="flex flex-col gap-2 my-1">
           {elements.map((element, index) => (
             <SidebarElement key={index} {...element} />
           ))}
-        </List>
+        </div>
       </div>
 
-      <List className="w-full">
+      <div className="flex flex-col gap-2 w-full">
         <SidebarButtonElement
           label="Join Slack Community"
           icon={
@@ -44,8 +47,7 @@ function Sidebar() {
           }
           onClick={toggle}
         />
-      </List>
-
+      </div>
       <SlackConnectOverlay isOpen={isActionOpen} toggleOverlay={toggle} />
     </div>
   );

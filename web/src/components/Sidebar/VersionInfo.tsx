@@ -1,24 +1,33 @@
+import useSidebar from "../../hooks/common/sidebar/useSidebar";
 import { useFetchVersionInfoQuery } from "../../store/features/management/api";
 
 function VersionInfo() {
   const { data } = useFetchVersionInfoQuery();
+  const { isOpen } = useSidebar();
+
+  if (!data) return;
 
   return (
-    <div className="mb-2 italic text-xs text-gray-600 flex flex-row gap-2 mt-1">
-      <p>{data?.current_version ? data?.current_version : ""}</p>
-      {data?.should_upgrade ? (
+    <div
+      className={`mb-2 text-xs text-gray-600 flex ${
+        isOpen ? "flex-row" : "flex-col"
+      } gap-2 px-1 mt-1 justify-center items-center max-w-full text-ellipsis`}>
+      {data.current_version && (
+        <p className="line-clamp-1">{data?.current_version}</p>
+      )}
+      {data.should_upgrade && (
         <>
-          <p className="bg-[#9553fe59] px-1 rounded-md">
+          <p className="bg-violet-50 p-1 rounded overflow-hidden max-w-full">
             <a
-              style={{ padding: "0px" }}
               href="https://github.com/DrDroidLab/PlayBooks/releases"
               target="_blank"
-              rel="noreferrer">
-              {data?.upgrade_message}
+              rel="noreferrer"
+              className="line-clamp-3">
+              {data.upgrade_message}
             </a>
           </p>
         </>
-      ) : null}
+      )}
     </div>
   );
 }
