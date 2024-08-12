@@ -19,6 +19,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Backend Setup and Testing
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install Backend Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Backend Unit Tests
+        run: |
+          pytest --html=report.html --self-contained-html --cov=. --cov-report=html
+          ls -R
+
+      - name: Debug Backend Report
+        run: |
+          echo "Checking if report.html exists"
+          if [ ! -f report.html ]; then
+            echo "report.html not found!"
+            exit 1
+          fi
+
       # Frontend Setup and Testing
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -41,8 +63,15 @@ jobs:
         run: |
           mkdir -p ./public/reports/frontend
           mkdir -p ./public/reports/frontend/coverage
+
           mv ./web/reports/test-report.html ./public/reports/frontend/
           mv ./web/coverage/lcov-report/* ./public/reports/frontend/coverage/
+
+          mkdir -p ./public/reports/backend
+          mkdir -p ./public/reports/backend/coverage
+
+          mv report.html ./public/reports/backend/
+          mv htmlcov/* ./public/reports/backend/coverage/
 
       # Deploy reports to GitHub Pages
       - name: Deploy to GitHub Pages
