@@ -96,10 +96,10 @@ jobs:
 
             const reportComment = `
             ### Test Reports:
-            - [Frontend Coverage](https://DrDroidLab.github.io/PlayBooks/reports/frontend/coverage/index.html)
-            - [Frontend Report](https://DrDroidLab.github.io/PlayBooks/reports/frontend/test-report.html)
-            - [Backend Coverage](https://DrDroidLab.github.io/PlayBooks/reports/backend/coverage/index.html)
-            - [Backend Report](https://DrDroidLab.github.io/PlayBooks/reports/backend/report.html)
+            - [Frontend Coverage](https://DrDroidLab.github.io/PlayBooks/frontend/coverage/index.html)
+            - [Frontend Report](https://DrDroidLab.github.io/PlayBooks/frontend/test-report.html)
+            - [Backend Coverage](https://DrDroidLab.github.io/PlayBooks/backend/coverage/index.html)
+            - [Backend Report](https://DrDroidLab.github.io/PlayBooks/backend/report.html)
             `;
 
             // Create a Check Run using github object
