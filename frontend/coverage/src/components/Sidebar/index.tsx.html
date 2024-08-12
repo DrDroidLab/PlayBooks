@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -127,8 +127,10 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -143,17 +145,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -166,6 +162,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,9 +197,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable react-hooks/exhaustive-deps */
-<span class="cstat-no" title="statement not covered" >import { useNavigate } from "react-router-dom";</span>
-<span class="cstat-no" title="statement not covered" >import { List } from "@mui/material";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { useNavigate } from "react-router-dom";</span>
 <span class="cstat-no" title="statement not covered" >import { useLogoutMutation } from "../../store/features/auth/api";</span>
 <span class="cstat-no" title="statement not covered" >import useToggle from "../../hooks/common/useToggle";</span>
 <span class="cstat-no" title="statement not covered" >import SlackConnectOverlay from "../SlackConnectOverlay";</span>
@@ -202,11 +206,13 @@
 <span class="cstat-no" title="statement not covered" >import { LogoutRounded, SettingsRounded } from "@mui/icons-material";</span>
 <span class="cstat-no" title="statement not covered" >import SidebarButtonElement from "./SidebarButtonElement";</span>
 <span class="cstat-no" title="statement not covered" >import HeadElement from "./HeadElement";</span>
+<span class="cstat-no" title="statement not covered" >import useSidebar from "../../hooks/common/sidebar/useSidebar";</span>
 &nbsp;
 function <span class="fstat-no" title="function not covered" >Sidebar(</span>) {
   const navigate = <span class="cstat-no" title="statement not covered" >useNavigate();</span>
   const [triggerLogout] = <span class="cstat-no" title="statement not covered" >useLogoutMutation();</span>
   const { isOpen: isActionOpen, toggle } = <span class="cstat-no" title="statement not covered" >useToggle();</span>
+  const { isOpen, toggle: toggleSidebar } = <span class="cstat-no" title="statement not covered" >useSidebar();</span>
 &nbsp;
   const signOut = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    await triggerLogout();</span>
@@ -214,18 +220,21 @@ function <span class="fstat-no" title="function not covered" >Sidebar(</span>) {
   };
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div className="sidebar w-full flex items-center justify-between flex-col pb-2"&gt;
+    &lt;div
+      className={`relative flex items-center justify-between flex-col pb-2 ${
+        isOpen ? "w-64" : "w-16"
+      } transition-width duration-300`}&gt;
       &lt;div className="flex w-full flex-col gap-0"&gt;
         &lt;HeadElement /&gt;
 &nbsp;
-        &lt;List sx={{ padding: 0 }}&gt;
+        &lt;div className="flex flex-col gap-2 my-1"&gt;
           {elements.map(<span class="fstat-no" title="function not covered" >(e</span>lement, index) =&gt; (
 <span class="cstat-no" title="statement not covered" >            &lt;SidebarElement key={index} {...e</span>lement} /&gt;
           ))}
-        &lt;/List&gt;
+        &lt;/div&gt;
       &lt;/div&gt;
 &nbsp;
-      &lt;List className="w-full"&gt;
+      &lt;div className="flex flex-col gap-2 w-full"&gt;
         &lt;SidebarButtonElement
           label="Join Slack Community"
           icon={
@@ -244,10 +253,10 @@ function <span class="fstat-no" title="function not covered" >Sidebar(</span>) {
         /&gt;
         &lt;SidebarButtonElement
           label="Logout"
-          icon={&lt;LogoutRounded /&gt;}
+          icon={&lt;LogoutRounded fontSize="small" /&gt;}
           onClick={signOut}
         /&gt;
-      &lt;/List&gt;
+      &lt;/div&gt;
 &nbsp;
       &lt;SlackConnectOverlay isOpen={isActionOpen} toggleOverlay={toggle} /&gt;
     &lt;/div&gt;
@@ -262,7 +271,7 @@ function <span class="fstat-no" title="function not covered" >Sidebar(</span>) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-12T08:23:24.582Z
+                at 2024-08-12T12:04:53.200Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

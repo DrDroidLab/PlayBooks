@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
@@ -123,8 +123,14 @@
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,7 +162,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,6 +193,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { KeyboardArrowDownRounded } from "@mui/icons-material";</span>
 import { ChangeEventHandler } from "react";
+import CustomInput from "../../Inputs/CustomInput";
+<span class="cstat-no" title="statement not covered" >import { Tooltip } from "@mui/material";</span>
 &nbsp;
 type DropdownTitleProps = {
   label?: string;
@@ -215,30 +225,32 @@ function <span class="fstat-no" title="function not covered" >DropdownTitle(</sp
   className,
 }: DropdownTitleProps) {
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div
-      onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; (<span class="cstat-no" title="statement not covered" >disabled ? <span class="fstat-no" title="function not covered" >() =</span>&gt; {} : toggle())</span>}
-      className={`${error ? "border-red-500" : ""} ${
-        disabled ? "!bg-gray-100" : ""
-      } flex items-center gap-2 justify-between w-full rounded border p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none overflow-hidden cursor-pointer`}&gt;
-      &lt;input
-        className={`${className} ${
-          disabled ? "bg-transparent" : ""
-        } w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis disabled:bg-transparent`}
-        type="text"
-        placeholder={placeholder ?? `${label}`}
-        value={value}
-        disabled={inputDisabed}
-        onChange={onChange}
-      /&gt;
-      {showIcon &amp;&amp; !disabled &amp;&amp; (
-        &lt;KeyboardArrowDownRounded
-          fontSize="small"
-          className={`${
-            isOpen ? "rotate-180" : "rotate-0"
-          } text-gray-600 !transition-all`}
+    &lt;Tooltip title={disabled ? value : ""}&gt;
+      &lt;div
+        onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; (<span class="cstat-no" title="statement not covered" >disabled ? <span class="fstat-no" title="function not covered" >() =</span>&gt; {} : toggle())</span>}
+        className={`${error ? "border-red-500" : ""} ${
+          disabled ? "!bg-gray-100" : ""
+        } flex items-center gap-2 justify-between w-full rounded border p-2 bg-white text-xs font-medium text-gray-700 focus:outline-none overflow-hidden cursor-pointer`}&gt;
+        &lt;input
+          className={`${className} ${
+            disabled ? "bg-transparent" : ""
+          } w-full h-full rounded outline-none max-w-full min-w-[200px] font-medium text-ellipsis disabled:bg-transparent`}
+          type="text"
+          placeholder={placeholder ?? `${label}`}
+          value={value}
+          disabled={inputDisabed}
+          onChange={onChange}
         /&gt;
-      )}
-    &lt;/div&gt;
+        {showIcon &amp;&amp; !disabled &amp;&amp; (
+          &lt;KeyboardArrowDownRounded
+            fontSize="small"
+            className={`${
+              isOpen ? "rotate-180" : "rotate-0"
+            } text-gray-600 !transition-all`}
+          /&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/Tooltip&gt;
   );
 }
 &nbsp;
@@ -250,7 +262,7 @@ function <span class="fstat-no" title="function not covered" >DropdownTitle(</sp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-12T08:23:24.582Z
+                at 2024-08-12T12:04:53.200Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
