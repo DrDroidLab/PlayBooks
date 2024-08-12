@@ -37,6 +37,12 @@ jobs:
         working-directory: ./web
         run: npm run test:coverage
 
+      - name: Prepare Report Directory
+        run: |
+          mkdir -p ./public/reports/frontend
+          mv ./web/reports/test-report.html ./public/reports/frontend/
+          mv ./web/coverage/lcov-report/* ./public/reports/frontend/
+
       # Deploy reports to GitHub Pages
       - name: Deploy to GitHub Pages
         if: success()
@@ -44,9 +50,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public/reports
-
-      - name: Prepare Report Directory
-        run: |
-          mkdir -p ./public/reports/frontend
-          mv ./web/reports/test-report.html ./public/reports/frontend/
-          mv ./web/coverage/lcov-report/* ./public/reports/frontend/
