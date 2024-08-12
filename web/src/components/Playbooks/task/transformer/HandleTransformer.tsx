@@ -61,7 +61,18 @@ function HandleResultTransformer({ id }) {
     <div className="my-2 flex flex-col gap-2">
       <CodeAccordion
         code={code}
-        label="Transformer (Write a python function returning a dict, the input is the task output payload)"
+        label={
+          <>
+            Transformer Function{" "}
+            <a
+              href="https://docs.drdroid.io/docs/output-exporter-transformers"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline">
+              (See how it works)
+            </a>
+          </>
+        }
         placeholder={defaultCodeTransformer}
         language={LanguageTypes.PYTHON}
         onValueChange={setCode}
@@ -71,10 +82,10 @@ function HandleResultTransformer({ id }) {
 
       <CodeAccordion
         code={taskOutput}
-        placeholder="Run the task to test the transformer function"
+        placeholder="Run the task to generate the output json"
         className="max-h-[150px] !overflow-y-auto"
         disabled={true}
-        label={"Test your python function against a sample json payload"}
+        label={"Test your transformer against an output json"}
         language={LanguageTypes.JSON}>
         {data && (
           <CodeAccordion
