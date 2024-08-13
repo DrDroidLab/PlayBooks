@@ -4,11 +4,13 @@ import Heading from "../../components/Heading.tsx";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.tsx";
 import TableSkeleton from "../../components/Skeleton/TableLoader.tsx";
 import { useGetWorkflowsQuery } from "../../store/features/workflow/api/getWorkflowsApi.ts";
-import WorkflowTable from "../../components/Workflows/WorkflowTable.js";
 import CustomButton from "../../components/common/CustomButton/index.tsx";
 import { Add } from "@mui/icons-material";
-import PaginatedTable from "../../components/PaginatedTable.tsx";
 import usePaginationComponent from "../../hooks/common/usePaginationComponent";
+import PaginatedTable from "../../components/common/Table/PaginatedTable.tsx";
+import { useWorkflowsData } from "../../hooks/pages";
+import WorkflowActionOverlay from "../../components/Workflows/WorkflowActionOverlay.tsx";
+import { workflowColumns } from "../../utils/playbook/pages/workflowColumns.ts";
 
 const Workflows = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const Workflows = () => {
   usePaginationComponent(refetch);
   const workflowsList = data?.workflows;
   const total = data?.meta?.total_count;
+  const { rows, actions, isActionOpen, toggle, selectedWorkflow } =
+    useWorkflowsData(workflowsList ?? [], refetch);
 
   const handleCreateWorkflow = () => {
     navigate({
@@ -34,16 +38,19 @@ const Workflows = () => {
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <PaginatedTable
-            renderTable={WorkflowTable}
-            data={workflowsList ?? []}
+            columns={workflowColumns}
+            data={rows}
+            actions={actions}
             total={total}
-            tableContainerStyles={
-              workflowsList?.length
-                ? {}
-                : { maxHeight: "35vh", minHeight: "35vh" }
-            }></PaginatedTable>
+          />
         </SuspenseLoader>
       </main>
+      <WorkflowActionOverlay
+        workflow={selectedWorkflow}
+        isOpen={isActionOpen}
+        toggleOverlay={toggle}
+        refreshTable={refetch}
+      />
     </div>
   );
 };

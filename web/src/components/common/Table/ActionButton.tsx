@@ -66,7 +66,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actions, row }) => {
                 onClick={() => action.action(row)}
                 className="w-full flex items-center px-2 py-1 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-500 focus:outline-none rounded">
                 {action.icon}
-                <span className="ml-2">{action.label}</span>
+                <span className="ml-2 text-left">{action.label}</span>
               </button>
             ))}
           </motion.div>,
