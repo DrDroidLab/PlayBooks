@@ -49,7 +49,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 {col.header}
               </th>
             ))}
-            {showActions && <th className="px-4 py-2 min-w-[50px]"></th>}
+            {showActions && actions?.length > 0 && (
+              <th className="px-4 py-2 min-w-[50px]"></th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -69,7 +71,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   {row[col.key]}
                 </td>
               ))}
-              {showActions && (
+              {showActions && actions?.length > 0 && (
                 <td className="text-sm px-4 py-2 text-right min-w-[50px]">
                   <ActionButton actions={actions} />
                 </td>
