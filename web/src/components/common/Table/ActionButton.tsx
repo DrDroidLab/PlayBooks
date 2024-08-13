@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Row } from ".";
 
 interface Action {
   icon: React.ReactNode;
@@ -11,9 +12,10 @@ interface Action {
 
 interface ActionButtonProps {
   actions: Action[];
+  row: Row;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ actions }) => {
+const ActionButton: React.FC<ActionButtonProps> = ({ actions, row }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -43,8 +45,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actions }) => {
       <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="flex items-center justify-center p-1 cursor-pointer text-gray-700 hover:text-gray-900">
-        <MoreVertIcon />
+        className={`${
+          isOpen ? "text-violet-500" : ""
+        } flex items-center justify-center p-1 cursor-pointer text-gray-700 hover:text-violet-500`}>
+        <MoreVertIcon color="inherit" />
       </div>
       {isOpen &&
         ReactDOM.createPortal(
@@ -55,12 +59,12 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actions }) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             style={popupStyle}
-            className="w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            className="w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-2">
             {actions.map((action, index) => (
               <button
                 key={index}
-                onClick={action.action}
-                className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
+                onClick={() => action.action(row)}
+                className="w-full flex items-center px-2 py-1 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-500 focus:outline-none rounded">
                 {action.icon}
                 <span className="ml-2">{action.label}</span>
               </button>

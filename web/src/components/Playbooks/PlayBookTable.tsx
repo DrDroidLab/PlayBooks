@@ -46,6 +46,7 @@ const PlaybookTable = ({ data, refreshTable }) => {
   ];
 
   const rows = data?.map((item) => ({
+    id: item.id,
     name: (
       <Link
         to={`/playbooks/${item.id}`}

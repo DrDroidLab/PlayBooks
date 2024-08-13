@@ -8,7 +8,7 @@ interface Column {
   isMain?: boolean; // Property to designate the "main" column
 }
 
-interface Row {
+export interface Row {
   [key: string]: React.ReactNode;
 }
 
@@ -73,7 +73,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
               ))}
               {showActions && actions?.length > 0 && (
                 <td className="text-sm px-4 py-2 text-right min-w-[50px]">
-                  <ActionButton actions={actions} />
+                  <ActionButton actions={actions} row={row} />
                 </td>
               )}
             </motion.tr>
