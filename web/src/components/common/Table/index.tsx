@@ -4,7 +4,7 @@ import ActionButton from "./ActionButton";
 import { Action, Column } from "./types";
 
 export interface Row {
-  [key: string]: React.ReactNode;
+  [key: string]: any;
 }
 
 interface CustomTableProps {
