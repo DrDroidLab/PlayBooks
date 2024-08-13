@@ -2,8 +2,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: standard
-# provisioner: ebs.csi.aws.com # Use this for AWS EKS
-provisioner: pd.csi.storage.gke.io # Use this for GCP GKE
+provisioner: ebs.csi.aws.com # Use this for AWS EKS
+# provisioner: pd.csi.storage.gke.io # Use this for GCP GKE
 parameters:
   type: gp2
 reclaimPolicy: Retain
