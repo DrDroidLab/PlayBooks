@@ -8,6 +8,7 @@ interface Action {
   icon: React.ReactNode;
   label: string;
   action: (item: any) => void;
+  condition?: (item: any) => boolean;
 }
 
 interface ActionButtonProps {
@@ -60,15 +61,19 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actions, row }) => {
             onMouseLeave={handleMouseLeave}
             style={popupStyle}
             className="w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-2">
-            {actions.map((action, index) => (
-              <button
-                key={index}
-                onClick={() => action.action(row)}
-                className="w-full flex items-center px-2 py-1 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-500 focus:outline-none rounded">
-                {action.icon}
-                <span className="ml-2 text-left">{action.label}</span>
-              </button>
-            ))}
+            {actions
+              .filter((action) =>
+                action.condition ? action.condition(row) !== false : true,
+              )
+              .map((action, index) => (
+                <button
+                  key={index}
+                  onClick={() => action.action(row)}
+                  className="w-full flex items-center px-2 py-1 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-500 focus:outline-none rounded">
+                  {action.icon}
+                  <span className="ml-2 text-left">{action.label}</span>
+                </button>
+              ))}
           </motion.div>,
           document.body,
         )}

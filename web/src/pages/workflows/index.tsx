@@ -10,7 +10,7 @@ import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 import PaginatedTable from "../../components/common/Table/PaginatedTable.tsx";
 import { useWorkflowsData } from "../../hooks/pages";
 import WorkflowActionOverlay from "../../components/Workflows/WorkflowActionOverlay.tsx";
-import { workflowColumns } from "../../utils/playbook/pages/workflowColumns.ts";
+import { workflowColumns } from "../../utils/workflow/pages";
 
 const Workflows = () => {
   const navigate = useNavigate();
