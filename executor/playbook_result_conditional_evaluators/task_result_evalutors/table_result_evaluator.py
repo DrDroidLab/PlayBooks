@@ -65,7 +65,7 @@ class LogsResultEvaluator(TaskResultEvaluator):
     def evaluate(self, rule: PlaybookTaskResultRule, task_result: PlaybookTaskResult) -> (bool, Dict):
         if rule.type != PlaybookTaskResultType.LOGS or task_result.type != PlaybookTaskResultType.LOGS:
             raise ValueError("Received unsupported rule and task types")
-        table_result = task_result.table
+        table_result = task_result.logs
         table_result_rule: TableResultRule = rule.logs
         rule_type = table_result_rule.type
         operator = table_result_rule.operator
