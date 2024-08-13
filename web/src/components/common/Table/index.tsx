@@ -15,7 +15,7 @@ interface Row {
 interface Action {
   icon: React.ReactNode;
   label: string;
-  action: () => void;
+  action: (item: any) => void;
 }
 
 interface CustomTableProps {
@@ -58,8 +58,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
               key={rowIndex}
               initial={{ opacity: 0, translateY: -10 }}
               animate={{ opacity: 1, translateY: 0 }}
-              transition={{ duration: 0.3, delay: rowIndex * 0.1 }}
-              className={`${rowIndex % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              transition={{ duration: 0.2, delay: rowIndex * 0.05 }}
+              className={`${
+                rowIndex % 2 === 0 ? "bg-gray-50" : "bg-white"
+              } hover:bg-gray-50`}>
               {columns.map((col) => (
                 <td
                   key={col.key}

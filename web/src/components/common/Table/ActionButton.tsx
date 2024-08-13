@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 interface Action {
   icon: React.ReactNode;
   label: string;
-  action: () => void;
+  action: (item: any) => void;
 }
 
 interface ActionButtonProps {

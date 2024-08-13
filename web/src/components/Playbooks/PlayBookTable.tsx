@@ -1,26 +1,17 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { renderTimestamp } from "../../utils/common/dateUtils.ts";
-import { useState } from "react";
-import Tooltip from "@mui/material/Tooltip";
 import { Link, useNavigate } from "react-router-dom";
-import NoExistingPlaybook from "./NoExistingPlaybook.js";
-import styles from "./playbooks.module.css";
-import useToggle from "../../hooks/common/useToggle.js";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { ContentCopy } from "@mui/icons-material";
+import PlaybookActionOverlay from "./PlaybookActionOverlay.tsx";
+import NoExistingPlaybook from "./NoExistingPlaybook.js";
+import { renderTimestamp } from "../../utils/common/dateUtils.ts";
+import useToggle from "../../hooks/common/useToggle.js";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { copyPlaybook } from "../../store/features/playbook/playbookSlice.ts";
 import { useLazyGetPlaybookQuery } from "../../store/features/playbook/api/index.ts";
 import Loading from "../common/Loading/index.tsx";
 import { COPY_LOADING_DELAY } from "../../constants/index.ts";
-import CustomButton from "../common/CustomButton/index.tsx";
-import PlaybookActionOverlay from "./PlaybookActionOverlay.tsx";
+import CustomTable from "../common/Table/index.tsx";
 
 const PlaybookTable = ({ data, refreshTable }) => {
   const navigate = useNavigate();
@@ -48,51 +39,42 @@ const PlaybookTable = ({ data, refreshTable }) => {
     return <Loading title="Copying your playbook..." />;
   }
 
+  const columns = [
+    { header: "Name", key: "name", isMain: true },
+    { header: "Created At", key: "createdAt" },
+    { header: "Created By", key: "createdBy" },
+  ];
+
+  const rows = data?.map((item) => ({
+    name: (
+      <Link
+        to={`/playbooks/${item.id}`}
+        className="text-violet-500 hover:text-violet-800 transition-all">
+        {item.name}
+      </Link>
+    ),
+    createdAt: renderTimestamp(item.created_at),
+    createdBy: item.created_by,
+  }));
+
+  const actions = [
+    {
+      icon: <ContentCopy />,
+      label: "Copy",
+      action: (item) => handleCopyPlaybook(item.id),
+      tooltip: "Copy this Playbook",
+    },
+    {
+      icon: <DeleteIcon />,
+      label: "Delete",
+      action: (item) => handleDeletePlaybook(item),
+      tooltip: "Remove this Playbook",
+    },
+  ];
+
   return (
     <>
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell className={styles["tableTitle"]}>Name</TableCell>
-            <TableCell className={styles["tableTitle"]}>Created At</TableCell>
-            <TableCell className={styles["tableTitle"]}>Created By</TableCell>
-            <TableCell className={styles["tableTitle"]}>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.map((item, index) => (
-            <TableRow
-              key={index}
-              sx={{
-                "&:last-child td, &:last-child th": { border: 0 },
-              }}>
-              <TableCell component="td" scope="row">
-                <Link to={`/playbooks/${item.id}`}>{item.name}</Link>
-              </TableCell>
-              <TableCell component="td" scope="row">
-                {renderTimestamp(item.created_at)}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                {item.created_by}
-              </TableCell>
-              <TableCell component="td" scope="row">
-                <div className="flex gap-2">
-                  <CustomButton onClick={() => handleCopyPlaybook(item.id)}>
-                    <Tooltip title="Copy this Playbook">
-                      <ContentCopy />
-                    </Tooltip>
-                  </CustomButton>
-                  <CustomButton onClick={() => handleDeletePlaybook(item)}>
-                    <Tooltip title="Remove this Playbook">
-                      <DeleteIcon />
-                    </Tooltip>
-                  </CustomButton>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <CustomTable columns={columns} rows={rows} actions={actions} />
       {!data?.length ? <NoExistingPlaybook /> : null}
       <PlaybookActionOverlay
         playbook={selectedPlaybook}
