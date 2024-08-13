@@ -1,27 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
 import ActionButton from "./ActionButton";
-
-interface Column {
-  header: string;
-  key: string;
-  isMain?: boolean; // Property to designate the "main" column
-}
+import { Action, Column } from "./types";
 
 export interface Row {
   [key: string]: React.ReactNode;
 }
 
-interface Action {
-  icon: React.ReactNode;
-  label: string;
-  action: (item: any) => void;
-}
-
 interface CustomTableProps {
-  columns: Column[];
+  columns: Column<any>[];
   rows: Row[];
-  actions?: Action[];
+  actions?: Action<any>[];
   showActions?: boolean;
 }
 
@@ -42,7 +31,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
           <tr className="bg-gray-100">
             {columns.map((col) => (
               <th
-                key={col.key}
+                key={col.key as string}
                 className={`text-left text-xs font-medium text-gray-500 uppercase px-4 py-2 ${
                   col.isMain ? "w-full" : ""
                 } min-w-[200px]`}>
@@ -66,9 +55,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
               } hover:bg-gray-50`}>
               {columns.map((col) => (
                 <td
-                  key={col.key}
+                  key={col.key as string}
                   className="text-sm px-4 py-2 min-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">
-                  {row[col.key]}
+                  {row[col.key as string]}
                 </td>
               ))}
               {showActions && actions?.length > 0 && (
