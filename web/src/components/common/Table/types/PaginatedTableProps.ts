@@ -1,5 +1,5 @@
-import { Action } from "./action";
-import { Column } from "./column";
+import { Action } from "./Action";
+import { Column } from "./Column";
 
 export interface PaginatedTableProps<T> {
   columns: Column<T>[];
