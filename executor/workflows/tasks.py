@@ -26,6 +26,7 @@ from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.playbooks.playbook_pb2 import PlaybookExecution, Playbook
 from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
+from utils.logging_utils import log_function_call
 from utils.time_utils import current_datetime, current_epoch_timestamp, epoch_to_string
 from protos.base_pb2 import TimeRange, SourceKeyType
 from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation as InterpretationProto

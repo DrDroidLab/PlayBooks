@@ -1,6 +1,7 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.gke_api_processor import GkeApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
 
 
 class GkeSourceMetadataExtractor(SourceMetadataExtractor):
@@ -10,6 +11,7 @@ class GkeSourceMetadataExtractor(SourceMetadataExtractor):
         self.__service_account_json = service_account_json
         super().__init__(account_id, connector_id, Source.GKE)
 
+    @log_function_call
     def extract_clusters(self, save_to_db=False):
         model_data = {}
         gke_api_processor = GkeApiProcessor(self.__project_id, self.__service_account_json)

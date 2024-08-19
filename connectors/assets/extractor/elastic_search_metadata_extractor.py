@@ -1,6 +1,11 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.elastic_search_api_processor import ElasticSearchApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class ElasticSearchSourceMetadataExtractor(SourceMetadataExtractor):
@@ -10,12 +15,13 @@ class ElasticSearchSourceMetadataExtractor(SourceMetadataExtractor):
 
         super().__init__(account_id, connector_id, Source.ELASTIC_SEARCH)
 
+    @log_function_call
     def extract_index(self, save_to_db=False):
         model_type = SourceModelType.ELASTIC_SEARCH_INDEX
         try:
             indexes = self.__es_api_processor.fetch_indices()
         except Exception as e:
-            print(f'Error fetching databases: {e}')
+            logger.error(f'Error fetching databases: {e}')
             return
         if not indexes:
             return

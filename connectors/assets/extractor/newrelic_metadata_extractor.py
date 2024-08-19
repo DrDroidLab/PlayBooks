@@ -1,6 +1,7 @@
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.new_relic_graph_ql_processor import NewRelicGraphQlConnector
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
 
 
 class NewrelicSourceMetadataExtractor(SourceMetadataExtractor):
@@ -10,6 +11,7 @@ class NewrelicSourceMetadataExtractor(SourceMetadataExtractor):
 
         super().__init__(account_id, connector_id, Source.NEW_RELIC)
 
+    @log_function_call
     def extract_policy(self, save_to_db=False):
         model_type = SourceModelType.NEW_RELIC_POLICY
         cursor = 'null'

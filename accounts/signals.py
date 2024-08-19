@@ -1,3 +1,4 @@
+import logging
 from collections import Counter
 
 from allauth.account.signals import email_confirmed
@@ -9,6 +10,8 @@ from accounts.models import User, Account, AccountApiToken
 from playbooks.utils.decorators import skip_signal
 
 PUBLIC_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'zoho.com']
+
+logger = logging.getLogger(__name__)
 
 
 def get_account_for_user(instance: User) -> Account:
@@ -28,12 +31,12 @@ def get_account_for_user(instance: User) -> Account:
                 obj for obj in existing_same_domain_users if getattr(obj, 'account_id') == most_common_account_id)
             account = most_common_account_user.account
             found_associated_account = True
-            print(f'Found Associated account for user: {instance}')
+            logger.info(f'Found Associated account for user: {instance}')
 
     if not found_associated_account:
         account = Account(owner=instance)
         account.save()
-        print(f'Created account for user: {instance}')
+        logger.info(f'Created account for user: {instance}')
 
     return account
 
@@ -59,10 +62,10 @@ def create_user_account(sender, instance, created, **kwargs):
 
     instance.account = account
     instance.save()
-    print(f'Associated account for user: {instance}')
-    print(f'Created account setup task for: {instance}')
+    logger.info(f'Associated account for user: {instance}')
+    logger.info(f'Created account setup task for: {instance}')
     log_dict = {"msg": "Signup_New_User", "user_email": instance.email, "user_id": instance.id}
-    print(log_dict)
+    logger.info(log_dict)
 
 
 @receiver(email_confirmed)
@@ -73,6 +76,6 @@ def generate_account_token_on_email_confirmed(request, email_address, **kwargs):
         account = Account.objects.get(owner=user)
         token = AccountApiToken(account=account, created_by=user)
         token.save()
-        print(f'Created account api token for account: {account}')
+        logger.info(f'Created account api token for account: {account}')
     except Exception as e:
         pass

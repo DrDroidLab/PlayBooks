@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from celery import shared_task
@@ -7,6 +8,8 @@ from accounts.utils import generate_reset_password_hyperlink, generate_signup_hy
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -26,7 +29,7 @@ def send_reset_password_email(email: str):
             html_message=msg_html
         )
     except Exception as e:
-        print(str(e))
+        logger.error(str(e))
         pass
 
 
@@ -45,5 +48,5 @@ def send_user_invite_email(sender_name: str, invited_user_email: str, signup_dom
             html_message=msg_html
         )
     except Exception as e:
-        print(str(e))
+        logger.error(str(e))
         pass

@@ -1,3 +1,4 @@
+import logging
 import traceback
 
 from django.conf import settings
@@ -5,6 +6,8 @@ from django.core.cache import caches
 from rest_framework import exceptions
 
 from accounts.models import AccountApiToken, Account
+
+logger = logging.getLogger(__name__)
 
 
 class AccountApiTokenCache:
@@ -79,7 +82,7 @@ class AccountForgotPasswordTokenCache:
             key = f'reset_password_token:{email}'
             return caches[self._cache_key].get(key)
         except Exception as ex:
-            print(
+            logger.error(
                 f"Error while getting reset password token from cache:: {traceback.format_exception(type(ex), ex, ex.__traceback__)}")
 
     def create_or_update(self, email, token, time_to_expire_s=None):
@@ -89,7 +92,7 @@ class AccountForgotPasswordTokenCache:
             key = f'reset_password_token:{email}'
             caches[self._cache_key].set(key, token, time_to_expire_s)
         except Exception as ex:
-            print(
+            logger.error(
                 f"Error while setting reset password token in cache:: {traceback.format_exception(type(ex), ex, ex.__traceback__)}")
 
     def delete(self, email):
@@ -98,7 +101,7 @@ class AccountForgotPasswordTokenCache:
             value = caches[self._cache_key].delete(key)
             return value
         except Exception as ex:
-            print(
+            logger.error(
                 f"Error while deleting reset password token from cache:: {traceback.format_exception(type(ex), ex, ex.__traceback__)}")
 
 

@@ -26,7 +26,6 @@ from executor.playbook_source_manager import apply_result_transformer
 from executor.tasks import execute_playbook, execute_playbook_impl, store_step_execution_logs, \
     execute_playbook_step_impl
 from executor.utils.old_to_new_model_transformers import transform_PlaybookTaskExecutionResult_to_PlaybookTaskResult
-from executor.workflows.tasks import test_workflow_transformer
 from intelligence_layer.result_interpreters.result_interpreter_facade import task_result_interpret, \
     step_result_interpret
 from management.crud.task_crud import get_or_create_task, check_scheduled_or_running_task_run_for_task
