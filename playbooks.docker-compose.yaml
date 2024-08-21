@@ -71,6 +71,13 @@ services:
       - db
       - redis
       - setup_db
+      - fluent-bit
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: fluent-bit:24224
+        tag: "server"
+        fluentd-async: "true"
     networks:
       - mynetwork
 
@@ -199,6 +206,27 @@ services:
       - db
       - redis
       - setup_db
+      - fluent-bit
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: fluent-bit:24224
+        tag: "celery_beat"
+        fluentd-async: "true"
+    networks:
+      - mynetwork
+
+  test:
+    image: busybox
+    command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
+    depends_on:
+      - fluent-bit
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: fluent-bit:24224
+        tag: "test"
+        fluentd-async: "true"
     networks:
       - mynetwork
 
@@ -213,6 +241,16 @@ services:
       - "80:80"
     depends_on:
       - server
+    networks:
+      - mynetwork
+
+  fluent-bit:
+    image: fluent/fluent-bit:latest
+    ports:
+      - "24224:24224"
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf
     networks:
       - mynetwork
 
