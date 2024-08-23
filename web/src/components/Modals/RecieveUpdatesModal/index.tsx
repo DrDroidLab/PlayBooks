@@ -29,7 +29,7 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
 
   return (
     <div className="z-50">
-      <Overlay close={close} visible={isOpen}>
+      <Overlay close={() => {handleProductUpdateSignup(false)}} visible={isOpen}>
         <div className="relative bg-white py-6 px-4 rounded max-w-full w-[300px]">
           <div
             onClick={close}
