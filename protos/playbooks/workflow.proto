@@ -194,6 +194,7 @@ message WorkflowExecution {
       UNKNOWN = 0;
       SLACK_MESSAGE = 1;
       PAGER_DUTY_INCIDENT = 2;
+      ZENDUTY_INCIDENT = 3;
     }
     Type type = 1;
     google.protobuf.Struct event = 2;
