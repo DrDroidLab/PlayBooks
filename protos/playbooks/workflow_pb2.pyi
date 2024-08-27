@@ -575,11 +575,13 @@ class WorkflowExecution(google.protobuf.message.Message):
             UNKNOWN: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 0
             SLACK_MESSAGE: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 1
             PAGER_DUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 2
+            ZENDUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 3
 
         class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
         UNKNOWN: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 0
         SLACK_MESSAGE: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 1
         PAGER_DUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 2
+        ZENDUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 3
 
         TYPE_FIELD_NUMBER: builtins.int
         EVENT_FIELD_NUMBER: builtins.int
