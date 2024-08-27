@@ -160,8 +160,8 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     
 @csrf_exempt
 @api_view(['POST'])
-# @authentication_classes([AccountApiTokenAuthentication])
-# @api_auth_check
+@authentication_classes([AccountApiTokenAuthentication])
+@api_auth_check
 def zenuty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
