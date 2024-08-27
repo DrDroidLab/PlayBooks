@@ -60,7 +60,7 @@ def handle_zd_incident(data: Dict):
         'service_name': service_name
     }
 
-    incident_status = payload.get('status', '')
+    incident_status = payload.get('event_type', '')
     if incident_status == 'triggered':
         try:
             saved_task = get_or_create_task(zenduty_handle_webhook_call.__name__, zenduty_connector_proto.id.value,
