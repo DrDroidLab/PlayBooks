@@ -15,11 +15,11 @@ class ZendutyApiProcessor(Processor):
         try:
             # Prepare the request payload and headers
             content_payload = {
-                "note": content
+                "note": str(content)
             }
             url = f"{self.base_url}/incidents/{incident_number}/note/"
             headers = {
-                'Authorization': f'Token {self.__api_key}',  # Typically API keys are used as Bearer tokens or API Token
+                'Authorization': f'Token {self.__api_key}', 
                 'Content-Type': 'application/json'
             }
 
