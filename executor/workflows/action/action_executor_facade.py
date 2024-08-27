@@ -30,5 +30,6 @@ action_executor_facade.register(WorkflowAction.Type.SLACK_MESSAGE, SlackMessageE
 action_executor_facade.register(WorkflowAction.Type.SLACK_THREAD_REPLY, SlackThreadReplyExecutor())
 action_executor_facade.register(WorkflowAction.Type.MS_TEAMS_MESSAGE_WEBHOOK, MSTeamsMessageWebhookExecutor())
 action_executor_facade.register(WorkflowAction.Type.PAGERDUTY_NOTES, PagerdutyNotesExecutor())
+action_executor_facade.register(WorkflowAction.Type.ZENDUTY_NOTES, PagerdutyNotesExecutor())
 action_executor_facade.register(WorkflowAction.Type.SMTP_EMAIL, SMTPEmailWorkflowExecutor())
 
