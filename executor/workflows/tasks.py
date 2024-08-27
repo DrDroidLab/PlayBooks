@@ -47,6 +47,8 @@ def get_entry_point_type_text(entry_point):
         return "Slack Alert"
     elif entry_point.type == WorkflowEntryPointProto.Type.PAGERDUTY_INCIDENT:
         return "PagerDuty Incident"
+    elif entry_point.type == WorkflowEntryPointProto.Type.ZENDUTY_INCIDENT:
+        return "Zenduty Incident"
     elif entry_point.type == WorkflowEntryPointProto.Type.API:
         return "API"
     else:
@@ -64,7 +66,7 @@ def get_action_type_text(action):
     elif destination_type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
         return "Pagerduty"
     elif destination_type == WorkflowActionProto.Type.ZENDUTY_NOTES:
-        return "Pagerduty"
+        return "Zenduty"
     elif destination_type == WorkflowActionProto.Type.SMTP_EMAIL:
         return "Email"
     else:
@@ -249,11 +251,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         workflow_execution = workflow_executions.first()
         slack_thread_ts = None
         pd_incident_id = None
-        zd_incident_id = None
+        zd_incident_number = None
         if workflow_execution.metadata:
             slack_thread_ts = workflow_execution.metadata.get('event', {}).get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
-            zd_incident_number = workflow_execution.metadata.get('incident_id', None)
+            zd_incident_number = workflow_execution.metadata.get('event', {}).get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
@@ -287,11 +289,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             elif w_action.type == WorkflowActionProto.Type.ZENDUTY_NOTES:
-                if not zd_incident_id:
+                if not zd_incident_number:
                     logger.error(f"Zenduty incident id not found for workflow_execution_id: {workflow_execution_id}")
                     continue
                 w_action_dict = proto_to_dict(w_action)
-                w_action_dict['zenduty_notes'] = {'incident_number': zd_incident_number}
+                w_action_dict['zenduty_notes'] = {'incident_number': int(zd_incident_number)}
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             elif w_action.type == WorkflowActionProto.Type.SMTP_EMAIL:
@@ -474,6 +476,9 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto,
         return InterpretationProto()
     if trigger_text == "PagerDuty Incident" and destination_text != "Pagerduty":
         logger.info("Incorrect Format Type. PagerDuty Incident output can only be to PagerDuty")
+        return InterpretationProto()
+    if trigger_text == "Zenduty Incident" and destination_text != "Zenduty":
+        logger.info("Incorrect Format Type. Zenduty Incident output can only be to Zenduty")
         return InterpretationProto()
     if destination_text == "Pagerduty" and trigger_text != "PagerDuty Incident":
         logger.info("Incorrect Format Type. PagerDuty output can only be from PagerDuty Incident")

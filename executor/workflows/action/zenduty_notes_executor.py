@@ -33,16 +33,18 @@ class ZendutyNotesExecutor(WorkflowActionExecutor):
     def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
                 connector: ConnectorProto = None):
         zenduty_config: ZendutyNotesWorkflowAction = action.zenduty_notes
-        incident_number = zenduty_config.incident_number.value
+        incident_number = zenduty_config.incident_number
         if not incident_number:
-            raise ValueError('Pagerduty incident number is not configured in the notification config')
+            raise ValueError('Zenduty incident number is not configured in the notification config')
         logger.info(f"Sending note to incident {incident_number}")
         content = ""
         for i, interpretation in enumerate(execution_output):
             title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
+            content = []
             block_message = ""
+            text_message = ""
             if description:
                 block_message += f"{description}\n"
             if summary:
@@ -65,7 +67,7 @@ class ZendutyNotesExecutor(WorkflowActionExecutor):
                     content.append(f'{title} \n {block_message} \n {interpretation.file_path.value}')
                 elif interpretation.type == InterpretationProto.Type.JSON:
                     content.append(f"```{summary}```")
-            note_params = {'incident_id': incident_number, 'content': content}
+            note_params = {'incident_number': incident_number, 'content': content}
             try:
                 zenduty_api_processor = self.get_action_connector_processor(connector)
                 zenduty_api_processor.create_note(**note_params)
