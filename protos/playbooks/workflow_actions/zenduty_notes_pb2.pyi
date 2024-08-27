@@ -5,7 +5,6 @@ isort:skip_file
 import builtins
 import google.protobuf.descriptor
 import google.protobuf.message
-import google.protobuf.wrappers_pb2
 import sys
 
 if sys.version_info >= (3, 8):
@@ -20,14 +19,12 @@ class ZendutyNotesWorkflowAction(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     INCIDENT_NUMBER_FIELD_NUMBER: builtins.int
-    @property
-    def incident_number(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    incident_number: builtins.int
     def __init__(
         self,
         *,
-        incident_number: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        incident_number: builtins.int = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["incident_number", b"incident_number"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["incident_number", b"incident_number"]) -> None: ...
 
 global___ZendutyNotesWorkflowAction = ZendutyNotesWorkflowAction
