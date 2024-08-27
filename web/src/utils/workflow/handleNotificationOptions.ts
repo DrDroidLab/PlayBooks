@@ -26,6 +26,12 @@ function handleNotificationOptions(): any[] {
         NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
         NotificationOptionTypes.SMTP_EMAIL,
       ];
+    case "zenduty_incident":
+      return [
+        NotificationOptionTypes.SLACK_MESSAGE,
+        NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
+        NotificationOptionTypes.SMTP_EMAIL,
+      ];
     default:
       return [];
   }

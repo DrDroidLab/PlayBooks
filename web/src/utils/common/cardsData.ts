@@ -28,6 +28,11 @@ export const cardsData = [
     desc: "Authorise Doctor Droid to read incidents from PagerDuty",
   },
   {
+    url: "/integrations/zenduty_logo.svg",
+    enum: "ZENDUTY",
+    desc: "Authorise Doctor Droid to read incidents from Zenduty",
+  },
+  {
     url: "/integrations/elastic_search.png",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",

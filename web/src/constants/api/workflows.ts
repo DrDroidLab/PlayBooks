@@ -13,6 +13,8 @@ export const GET_WORKFLOW_EXECUTION_LOGS =
 export const GENERATE_CURL = "/executor/workflows/generate/curl";
 export const GENERATE_WEBHOOK =
   "/connectors/handlers/pagerduty/generate/webhook";
+export const GENERATE_ZENDUTY_WEBHOOK =
+  "/connectors/handlers/zenduty/generate/webhook";
 
 export const TEST_TRANSFORMER = "/executor/workflows/test_transformer";
 export const EXECUTE_WORKFLOW = "/executor/workflows/execute";
