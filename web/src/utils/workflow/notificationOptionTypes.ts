@@ -4,6 +4,7 @@ export const NotificationOptionTypes = {
   PAGERDUTY_NOTES: "pagerduty_notes",
   MS_TEAMS_MESSAGE_WEBHOOK: "ms_teams_message_webhook",
   SMTP_EMAIL: "smtp_email",
+  ZENDUTY_NOTES: "zenduty_notes",
 } as const;
 
 export type NotificationOptionTypesType =

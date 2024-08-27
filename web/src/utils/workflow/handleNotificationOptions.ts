@@ -31,6 +31,7 @@ function handleNotificationOptions(): any[] {
         NotificationOptionTypes.SLACK_MESSAGE,
         NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
         NotificationOptionTypes.SMTP_EMAIL,
+        NotificationOptionTypes.ZENDUTY_NOTES,
       ];
     default:
       return [];
