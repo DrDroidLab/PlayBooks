@@ -10,6 +10,7 @@ from django.conf import settings
 from accounts.authentication import AccountApiTokenAuthentication
 from accounts.models import get_request_account, Account, User, get_request_user, AccountApiToken
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
+from connectors.handlers.bots.zenduty_handler import handle_zd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
@@ -156,3 +157,16 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
+    
+@csrf_exempt
+@api_view(['POST'])
+# @authentication_classes([AccountApiTokenAuthentication])
+# @api_auth_check
+def zenuty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
+    try:
+        data = request_message.data
+        handle_zd_incident(data)
+        return JsonResponse({'success': False, 'message': 'zenduty incident Handling failed'}, status=200)
+    except Exception as e:
+        logger.error(f'Error handling zenduty incident: {str(e)}')
+        return JsonResponse({'success': False, 'message': f"zenduty incident Handling failed"}, status=500)

@@ -20,8 +20,8 @@ import protos.playbooks.workflow_actions.slack_message_pb2
 import protos.playbooks.workflow_actions.slack_thread_reply_pb2
 import protos.playbooks.workflow_actions.smtp_email_pb2
 import protos.playbooks.workflow_entry_points.api_entry_point_pb2
-import protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2
 import protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2
+import protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2
 import protos.playbooks.workflow_schedules.cron_schedule_pb2
 import protos.playbooks.workflow_schedules.interval_schedule_pb2
 import protos.playbooks.workflow_schedules.one_off_schedule_pb2
@@ -153,18 +153,20 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         API: WorkflowEntryPoint._Type.ValueType  # 1
         SLACK_CHANNEL_ALERT: WorkflowEntryPoint._Type.ValueType  # 2
         PAGERDUTY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 3
+        ZENDUTY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 4
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowEntryPoint.Type.ValueType  # 0
     API: WorkflowEntryPoint.Type.ValueType  # 1
     SLACK_CHANNEL_ALERT: WorkflowEntryPoint.Type.ValueType  # 2
     PAGERDUTY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 3
+    ZENDUTY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 4
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     API_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_ALERT_FIELD_NUMBER: builtins.int
-    PAGERDUTY_INCIDENT_FIELD_NUMBER: builtins.int
+    ZENDUTY_INCIDENT_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowEntryPoint.Type.ValueType
@@ -173,7 +175,7 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     @property
     def slack_channel_alert(self) -> protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint: ...
     @property
-    def pagerduty_incident(self) -> protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint: ...
+    def zenduty_incident(self) -> protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2.ZenDutyIncidentEntryPoint: ...
     def __init__(
         self,
         *,
@@ -181,11 +183,11 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         type: global___WorkflowEntryPoint.Type.ValueType = ...,
         api: protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint | None = ...,
         slack_channel_alert: protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint | None = ...,
-        pagerduty_incident: protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint | None = ...,
+        zenduty_incident: protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2.ZenDutyIncidentEntryPoint | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "pagerduty_incident"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "slack_channel_alert", b"slack_channel_alert", "zenduty_incident", b"zenduty_incident"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "slack_channel_alert", b"slack_channel_alert", "type", b"type", "zenduty_incident", b"zenduty_incident"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "zenduty_incident"] | None: ...
 
 global___WorkflowEntryPoint = WorkflowEntryPoint
 
