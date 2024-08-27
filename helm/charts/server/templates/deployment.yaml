@@ -37,7 +37,7 @@ spec:
             - name: REDIS_URL
               value: {{ .Values.redisUrl }}
             - name: EMAIL_PASSWORD_AUTH_ENABLED
-              value: {{ .Values.emailPasswordAuthEnabled }}
+              value: "{{ .Values.emailPasswordAuthEnabled }}"
             - name: OKTA_DOMAIN
               value: {{ .Values.oktaDomain }}
             - name: OKTA_CLIENT_ID

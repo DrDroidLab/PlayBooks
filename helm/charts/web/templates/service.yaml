@@ -9,6 +9,7 @@ spec:
     app: web
   ports:
     - protocol: TCP
+      name: http
       port: {{ .Values.service.port }}
       targetPort: 80
   type: LoadBalancer
