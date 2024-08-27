@@ -16,7 +16,7 @@ from connectors.models import Site
 from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
 from utils.time_utils import current_epoch_timestamp
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
-    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse
+    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetZendutyWebhookRequest, GetZendutyWebhookResponse
 from utils.uri_utils import build_absolute_uri, construct_curl
 
 logger = logging.getLogger(__name__)
@@ -139,6 +139,28 @@ def pagerduty_generate_webhook(request_message: GetPagerDutyWebhookRequest) -> H
     location = settings.PAGERDUTY_WEBHOOK_LOCATION
     protocol = settings.PAGERDUTY_WEBHOOK_HTTP_PROTOCOL
     enabled = settings.PAGERDUTY_WEBHOOK_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    curl = construct_curl('POST', uri, headers=headers, payload=None)
+    return HttpResponse(curl, content_type="text/plain", status=200)
+
+@web_api(GetZendutyWebhookRequest)
+def zenduty_generate_webhook(request_message: GetZendutyWebhookRequest) -> HttpResponse:
+    account: Account = get_request_account()
+    user: User = get_request_user()
+
+    qs = account.account_api_token.filter(created_by=user)
+    if qs:
+        account_api_token = qs.first()
+    else:
+        api_token = AccountApiToken(account=account, created_by=user)
+        api_token.save()
+        account_api_token = api_token
+
+    headers = {'Authorization': f'Bearer {account_api_token.key}'}
+    location = settings.ZENDUTY_WEBHOOK_LOCATION
+    protocol = settings.ZENDUTY_WEBHOOK_HTTP_PROTOCOL
+    enabled = settings.ZENDUTY_WEBHOOK_USE_SITE
     uri = build_absolute_uri(None, location, protocol, enabled)
 
     curl = construct_curl('POST', uri, headers=headers, payload=None)
