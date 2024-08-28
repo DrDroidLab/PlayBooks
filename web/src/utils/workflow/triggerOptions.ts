@@ -11,4 +11,8 @@ export const triggerOptions = [
     id: "pagerduty_incident",
     label: "PagerDuty",
   },
+  {
+    id: "rootly_incident",
+    label: "Rootly",
+  },
 ];

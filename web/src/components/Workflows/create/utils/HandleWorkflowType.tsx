@@ -4,6 +4,7 @@ import SlackTriggerForm from "../../triggers/SlackTriggerForm.tsx";
 import CopyCode from "../../../common/CopyCode/index.js";
 import { WorkflowEntryPointOptions } from "../../../../utils/workflow/types/entryPoint.ts";
 import PagerdutyTriggerForm from "../../triggers/PagerdutyTriggerForm.js";
+import RootlyTriggerForm from "../../triggers/RootlyTriggerForm.tsx";
 
 function HandleWorkflowType() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -14,6 +15,9 @@ function HandleWorkflowType() {
 
     case WorkflowEntryPointOptions.PAGERDUTY_INCIDENT:
       return <PagerdutyTriggerForm />;
+
+    case WorkflowEntryPointOptions.ROOTLY_INCIDENT:
+      return <RootlyTriggerForm />;
 
     case WorkflowEntryPointOptions.API:
       if (currentWorkflow.curl)

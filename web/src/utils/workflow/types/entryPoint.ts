@@ -2,6 +2,7 @@ export enum WorkflowEntryPointOptions {
   API = "api",
   SLACK_CHANNEL_ALERT = "slack_channel_alert",
   PAGERDUTY_INCIDENT = "pagerduty_incident",
+  ROOTLY_INCIDENT = "rootly_incident",
 }
 
 export type WorkflowEntryPointContractType = {
