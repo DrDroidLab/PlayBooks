@@ -13,9 +13,8 @@ class ZendutyApiProcessor(Processor):
 
     def create_note(self, incident_number: int, content):
         try:
-            # Prepare the request payload and headers
             content_payload = {
-                "note": str(content)
+                "note": content
             }
             url = f"{self.base_url}/incidents/{incident_number}/note/"
             headers = {
@@ -30,10 +29,10 @@ class ZendutyApiProcessor(Processor):
             response.raise_for_status()  # Raises an HTTPError for bad responses (4xx or 5xx)
 
             logger.info(f"Note created successfully for incident {incident_number}")
-            return response.json()  # Assuming the response is in JSON format
+            return response.json() 
 
         except requests.exceptions.HTTPError as http_err:
-            logger.error(f"HTTP error occurred: {http_err}")
+            logger.error(f"HTTP error occurred: {http_err} - {response.text}")
         except Exception as e:
             logger.error(f"Error creating note for incident {incident_number}: {e}")
 
