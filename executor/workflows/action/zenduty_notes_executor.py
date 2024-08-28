@@ -30,47 +30,55 @@ class ZendutyNotesExecutor(WorkflowActionExecutor):
         generated_credentials = generate_credentials_dict(zenduty_connector.type, zenduty_connector.keys)
         return ZendutyApiProcessor(**generated_credentials)
 
-    def execute(self, action: WorkflowAction, execution_output: [InterpretationProto],
+    def execute(self, action: WorkflowAction, execution_output: [InterpretationProto], # type: ignore
                 connector: ConnectorProto = None):
         zenduty_config: ZendutyNotesWorkflowAction = action.zenduty_notes
         incident_number = zenduty_config.incident_number
         if not incident_number:
             raise ValueError('Zenduty incident number is not configured in the notification config')
         logger.info(f"Sending note to incident {incident_number}")
-        content = ""
+
+        content_list = []  # Use a list to accumulate the content parts
+
         for i, interpretation in enumerate(execution_output):
             title = interpretation.title.value
             description = interpretation.description.value
             summary = interpretation.summary.value
-            content = []
             block_message = ""
             text_message = ""
+
             if description:
                 block_message += f"{description}\n"
             if summary:
                 block_message += f"{summary}\n"
             text_message = text_message + block_message
-            if(interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION):
+
+            if interpretation.model_type == InterpretationProto.ModelType.WORKFLOW_EXECUTION:
                 if title:
-                    content.append(f"{title}")
+                    content_list.append(f"{title}")
                 if block_message:
-                    content.append(f"{block_message}")
+                    content_list.append(f"{block_message}")
             elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_STEP:
-                content.append(f"{step_number}. {title}")
-                step_number += 1
+                step_number = i + 1  # Ensure step_number is defined
+                content_list.append(f"{step_number}. {title}")
             elif interpretation.model_type == InterpretationProto.ModelType.PLAYBOOK_TASK:
                 if interpretation.type == InterpretationProto.Type.TEXT:
-                    content.append(f"{block_message}")
+                    content_list.append(f"{block_message}")
                 elif interpretation.type == InterpretationProto.Type.IMAGE:
-                    content.append(f'{title} \n {block_message} \n {interpretation.object_url.value}')
+                    content_list.append(f'{title} \n {block_message} \n {interpretation.object_url.value}')
                 elif interpretation.type == InterpretationProto.Type.CSV_FILE:
-                    content.append(f'{title} \n {block_message} \n {interpretation.file_path.value}')
+                    content_list.append(f'{title} \n {block_message} \n {interpretation.file_path.value}')
                 elif interpretation.type == InterpretationProto.Type.JSON:
-                    content.append(f"```{summary}```")
-            note_params = {'incident_number': incident_number, 'content': content}
-            try:
-                zenduty_api_processor = self.get_action_connector_processor(connector)
-                zenduty_api_processor.create_note(**note_params)
-            except Exception as e:
-                logger.error(f"Error creating notes for incident: {incident_number}, Error:{e}")
-                raise e
+                    content_list.append(f"```{summary}```")
+
+        # Join the content list into a single string
+        content = "\n".join(content_list)
+
+        note_params = {'incident_number': incident_number, 'content': content}
+
+        try:
+            zenduty_api_processor = self.get_action_connector_processor(connector)
+            zenduty_api_processor.create_note(**note_params)
+        except Exception as e:
+            logger.error(f"Error creating notes for incident: {incident_number}, Error:{e}")
+            raise e
