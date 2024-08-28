@@ -21,6 +21,10 @@ export const handleEntryPointsInjector =
           service_name: workflow.trigger?.serviceName,
           incident_title: workflow.trigger?.title,
         };
+      case Types.WorkflowEntryPointOptions.ROOTLY_INCIDENT:
+        return {
+          incident_title: workflow.trigger?.title,
+        };
 
       default:
         return {};

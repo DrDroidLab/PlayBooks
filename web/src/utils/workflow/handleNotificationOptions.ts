@@ -26,6 +26,13 @@ function handleNotificationOptions(): any[] {
         NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
         NotificationOptionTypes.SMTP_EMAIL,
       ];
+    case "rootly_incident":
+      return [
+        NotificationOptionTypes.SLACK_MESSAGE,
+        NotificationOptionTypes.MS_TEAMS_MESSAGE_WEBHOOK,
+        NotificationOptionTypes.SMTP_EMAIL,
+        NotificationOptionTypes.ROOTLY_TIMELINE_EVENTS,
+      ];
     default:
       return [];
   }

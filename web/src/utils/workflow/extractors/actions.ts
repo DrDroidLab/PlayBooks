@@ -34,6 +34,11 @@ export const handleActionsExtractor = (
         channel: {},
         trigger: {},
       };
+    case Types.WorkflowActionOptions.ROOTLY_TIMELINE_EVENTS:
+      return {
+        channel: {},
+        trigger: {},
+      };
     case Types.WorkflowActionOptions.SMTP_EMAIL:
       return {
         channel: {},
