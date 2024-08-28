@@ -72,7 +72,8 @@ message WorkflowEntryPoint {
   oneof config {
     ApiWorkflowEntryPoint api = 101;
     SlackChannelAlertEntryPoint slack_channel_alert = 102;
-    ZenDutyIncidentEntryPoint zenduty_incident = 103;
+    PagerDutyIncidentEntryPoint pagerduty_incident = 103;
+    ZenDutyIncidentEntryPoint zenduty_incident = 104;
   }
 }
 
