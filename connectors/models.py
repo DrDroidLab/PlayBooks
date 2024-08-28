@@ -32,6 +32,7 @@ integrations_connector_type_display_name_map = {
     Source.CLICKHOUSE: 'CLICKHOUSE',
     Source.POSTGRES: 'POSTGRES',
     Source.PAGER_DUTY: 'PAGERDUTY',
+    Source.ROOTLY: 'ROOTLY',
     Source.OPS_GENIE: 'OPS GENIE',
     Source.EKS: 'EKS KUBERNETES',
     Source.SQL_DATABASE_CONNECTION: 'SQL DATABASE CONNECTION',
@@ -51,6 +52,7 @@ integrations_connector_type_category_map = {
     Source.SLACK: 'Alert Channels',
     Source.GOOGLE_CHAT: 'Alert Channels',
     Source.PAGER_DUTY: 'Alert Channels',
+    Source.ROOTLY: 'Alert Channels',
     Source.OPS_GENIE: 'Alert Channels',
     Source.MS_TEAMS: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
@@ -85,6 +87,11 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.PAGER_DUTY_API_KEY,
             SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL
+        ]
+    ],
+    Source.ROOTLY: [
+        [
+            SourceKeyType.ROOTLY_API_KEY,
         ]
     ],
     Source.SLACK: [
@@ -377,7 +384,8 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.SMTP_HOST: 'SMTP Host',
     SourceKeyType.SMTP_PORT: 'Port',
     SourceKeyType.SMTP_USER: 'Email User',
-    SourceKeyType.SMTP_PASSWORD: 'Password'
+    SourceKeyType.SMTP_PASSWORD: 'Password',
+    SourceKeyType.ROOTLY_API_KEY: 'API Key',
 }
 
 
@@ -500,6 +508,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.GRAFANA_API_KEY,
                              SourceKeyType.AGENT_PROXY_API_KEY,
                              SourceKeyType.PAGER_DUTY_API_KEY,
+                             SourceKeyType.ROOTLY_API_KEY,
                              SourceKeyType.GITHUB_ACTIONS_TOKEN,
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,

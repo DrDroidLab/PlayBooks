@@ -6,8 +6,6 @@ import "protos/base.proto";
 
 
 message RootlyIncidentEntryPoint {
-  google.protobuf.StringValue service_name = 1;
-  google.protobuf.StringValue incident_title = 2;
-  google.protobuf.StringValue service_id = 3;
-  google.protobuf.StringValue incident_id = 4;
+  google.protobuf.StringValue incident_title = 1;
+  google.protobuf.StringValue incident_id = 2;
 }
