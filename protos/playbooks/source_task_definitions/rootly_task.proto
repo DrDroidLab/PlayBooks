@@ -7,8 +7,8 @@ import "google/protobuf/struct.proto";
 
 message Rootly {
   message SendTimelineEvent {
-    google.protobuf.StringValue incident = 1;
-    google.protobuf.Struct content = 2;
+    google.protobuf.StringValue incident_id = 1;
+    google.protobuf.StringValue content = 2;
   }
 
   enum TaskType {
