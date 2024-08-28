@@ -6,6 +6,11 @@ import { handleInput } from "../utils/handleInputs.ts";
 import { generateSummaryUnsupportedNotifications } from "../../../utils/workflow/generateSummaryUnsupportedNotifications.ts";
 import { NotificationOptionTypes } from "../../../utils/workflow/notificationOptionTypes.ts";
 
+const unsupportedNotificationOptionsForSummary = [
+  NotificationOptionTypes.PAGERDUTY_NOTES,
+  NotificationOptionTypes.ROOTLY_TIMELINE_EVENTS,
+];
+
 const radioOptions = [
   {
     label: "Generate a link to execute this playbook",
@@ -44,7 +49,9 @@ function SummaryOptions() {
 
   useEffect(() => {
     if (
-      currentWorkflow.notification === NotificationOptionTypes.PAGERDUTY_NOTES
+      unsupportedNotificationOptionsForSummary.includes(
+        currentWorkflow.notification,
+      )
     ) {
       handleInput("generateSummary", false);
       setSelectedValue("default");
