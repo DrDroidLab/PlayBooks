@@ -162,6 +162,7 @@ enum Source {
   GRAFANA_LOKI = 46;
   KUBERNETES = 47;
   SMTP = 48;
+  ROOTLY = 50;
 }
 
 enum SourceKeyType {
@@ -272,6 +273,8 @@ enum SourceKeyType {
   SMTP_PORT = 78;
   SMTP_USER = 79;
   SMTP_PASSWORD = 80;
+
+  ROOTLY_API_KEY = 91;
 }
 
 enum SourceModelType {
@@ -352,4 +355,7 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
+
+  // Rootly Models
+  ROOTLY_INCIDENT = 1901;
 }

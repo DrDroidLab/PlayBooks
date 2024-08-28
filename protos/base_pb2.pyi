@@ -205,6 +205,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     GRAFANA_LOKI: _Source.ValueType  # 46
     KUBERNETES: _Source.ValueType  # 47
     SMTP: _Source.ValueType  # 48
+    ROOTLY: _Source.ValueType  # 50
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -257,6 +258,7 @@ MS_TEAMS: Source.ValueType  # 45
 GRAFANA_LOKI: Source.ValueType  # 46
 KUBERNETES: Source.ValueType  # 47
 SMTP: Source.ValueType  # 48
+ROOTLY: Source.ValueType  # 50
 global___Source = Source
 
 class _SourceKeyType:
@@ -345,6 +347,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     SMTP_PORT: _SourceKeyType.ValueType  # 78
     SMTP_USER: _SourceKeyType.ValueType  # 79
     SMTP_PASSWORD: _SourceKeyType.ValueType  # 80
+    ROOTLY_API_KEY: _SourceKeyType.ValueType  # 91
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -428,6 +431,7 @@ SMTP_HOST: SourceKeyType.ValueType  # 77
 SMTP_PORT: SourceKeyType.ValueType  # 78
 SMTP_USER: SourceKeyType.ValueType  # 79
 SMTP_PASSWORD: SourceKeyType.ValueType  # 80
+ROOTLY_API_KEY: SourceKeyType.ValueType  # 91
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -494,6 +498,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Elastic Search Models"""
     GCM_METRIC: _SourceModelType.ValueType  # 1701
     """GCM Models"""
+    ROOTLY_INCIDENT: _SourceModelType.ValueType  # 1901
+    """Rootly Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -555,6 +561,8 @@ ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
 GCM_METRIC: SourceModelType.ValueType  # 1701
 """GCM Models"""
+ROOTLY_INCIDENT: SourceModelType.ValueType  # 1901
+"""Rootly Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
