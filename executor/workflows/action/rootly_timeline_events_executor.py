@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 class RootlyTimelineEventsExecutor(WorkflowActionExecutor):
 
     def __init__(self):
-        self.source = Source.PAGER_DUTY
-        self.type = WorkflowAction.Type.PAGERDUTY_NOTES
+        self.source = Source.ROOTLY
+        self.type = WorkflowAction.Type.ROOTLY_TIMELINE_EVENTS
 
     def get_action_connector_processor(self, rootly_connector: ConnectorProto, **kwargs):
         if not rootly_connector:

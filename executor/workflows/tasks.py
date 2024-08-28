@@ -47,6 +47,8 @@ def get_entry_point_type_text(entry_point):
         return "Slack Alert"
     elif entry_point.type == WorkflowEntryPointProto.Type.PAGERDUTY_INCIDENT:
         return "PagerDuty Incident"
+    elif entry_point.type == WorkflowEntryPointProto.Type.ROOTLY_INCIDENT:
+        return "Rootly Incident"
     elif entry_point.type == WorkflowEntryPointProto.Type.API:
         return "API"
     else:
@@ -63,6 +65,8 @@ def get_action_type_text(action):
         return "Teams"
     elif destination_type == WorkflowActionProto.Type.PAGERDUTY_NOTES:
         return "Pagerduty"
+    elif destination_type == WorkflowActionProto.Type.ROOTLY_TIMELINE_EVENTS:
+        return "Rootly"
     elif destination_type == WorkflowActionProto.Type.SMTP_EMAIL:
         return "Email"
     else:
@@ -247,9 +251,11 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         workflow_execution = workflow_executions.first()
         slack_thread_ts = None
         pd_incident_id = None
+        rootly_incident_id = None
         if workflow_execution.metadata:
             slack_thread_ts = workflow_execution.metadata.get('event', {}).get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
+            rootly_incident_id = workflow_execution.metadata.get('event', {}).get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
         pe_proto: PlaybookExecution = playbook_execution.proto
@@ -280,6 +286,14 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                     continue
                 w_action_dict = proto_to_dict(w_action)
                 w_action_dict['pagerduty_notes'] = {'incident_id': pd_incident_id}
+                updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                action_executor_facade.execute(updated_w_action, execution_output)
+            elif w_action.type == WorkflowActionProto.Type.ROOTLY_TIMELINE_EVENTS:
+                if not rootly_incident_id:
+                    logger.error(f"Rootly incident id not found for workflow_execution_id: {workflow_execution_id}")
+                    continue
+                w_action_dict = proto_to_dict(w_action)
+                w_action_dict['rootly_timeline_events'] = {'incident_id': rootly_incident_id}
                 updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
                 action_executor_facade.execute(updated_w_action, execution_output)
             elif w_action.type == WorkflowActionProto.Type.SMTP_EMAIL:
@@ -465,6 +479,12 @@ def workflow_definition_interpreter(workflow_execution: WorkflowExecutionProto,
         return InterpretationProto()
     if destination_text == "Pagerduty" and trigger_text != "PagerDuty Incident":
         logger.info("Incorrect Format Type. PagerDuty output can only be from PagerDuty Incident")
+        return InterpretationProto()
+    if trigger_text == "Rootly Incident" and destination_text != "Rootly":
+        logger.info("Incorrect Format Type. Rootly Incident output can only be to Rootly")
+        return InterpretationProto()
+    if destination_text == "Rootly" and trigger_text != "Rootly Incident":
+        logger.info("Incorrect Format Type. Rootly output can only be from Rootly Incident")
         return InterpretationProto()
 
     playbook_name = playbook_execution.playbook.name.value
