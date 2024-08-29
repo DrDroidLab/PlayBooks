@@ -59,7 +59,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "setup_db"
         fluentd-async: "true"
     networks:
@@ -95,7 +95,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "server"
         fluentd-async: "true"
     networks:
@@ -127,7 +127,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "celery_worker"
         fluentd-async: "true"
     networks:
@@ -160,7 +160,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "workflow_scheduler_celery_worker"
         fluentd-async: "true"
     networks:
@@ -193,7 +193,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "workflow_executor_celery_worker"
         fluentd-async: "true"
     networks:
@@ -226,7 +226,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "workflow_action_execution_celery_worker"
         fluentd-async: "true"
     networks:
@@ -258,7 +258,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
+        fluentd-address: docker.for.mac.localhost:24224
         tag: "celery_beat"
         fluentd-async: "true"
     networks:
