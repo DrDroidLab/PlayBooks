@@ -4,6 +4,13 @@ from functools import wraps
 import uuid
 
 
+class SingleLineFilter(logging.Filter):
+    def filter(self, record):
+        if isinstance(record.msg, str):
+            record.msg = record.msg.replace('\n', ' ')
+        return True
+
+
 def log_function_call(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
