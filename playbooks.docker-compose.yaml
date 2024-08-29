@@ -60,7 +60,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
-        tag: "server"
+        tag: "setup_db"
         fluentd-async: "true"
     networks:
       - mynetwork
@@ -128,7 +128,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
-        tag: "server"
+        tag: "celery_worker"
         fluentd-async: "true"
     networks:
       - mynetwork
@@ -161,7 +161,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
-        tag: "server"
+        tag: "workflow_scheduler_celery_worker"
         fluentd-async: "true"
     networks:
       - mynetwork
@@ -194,7 +194,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
-        tag: "server"
+        tag: "workflow_executor_celery_worker"
         fluentd-async: "true"
     networks:
       - mynetwork
@@ -227,7 +227,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: ${FLUENTD_ADDRESS:-fluentd}:24224
-        tag: "server"
+        tag: "workflow_action_execution_celery_worker"
         fluentd-async: "true"
     networks:
       - mynetwork
