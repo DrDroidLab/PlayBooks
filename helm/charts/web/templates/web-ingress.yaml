@@ -3,9 +3,11 @@ kind: Ingress
 metadata:
   name: web-ingress
   annotations:
-    kubernetes.io/ingress.class: ALB # Use the correct ingress class
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/scheme: internet-facing
-    meta.helm.sh/release-name: {{ .Release.name }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/subnets: 
 spec:
   rules:
     - http:
@@ -52,7 +54,7 @@ spec:
                 name: server
                 port:
                   number: 8080
-          - path: /*
+          - path: /
             pathType: Prefix
             backend:
               service:
