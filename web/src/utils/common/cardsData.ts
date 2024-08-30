@@ -31,6 +31,7 @@ export const cardsData = [
     url: "/integrations/rootly_logo.png",
     enum: "ROOTLY",
     desc: "Authorise Doctor Droid to read incidents from Rootly",
+    docs: "https://docs.drdroid.io/docs/rootly",
   },
   {
     url: "/integrations/elastic_search.png",

@@ -13,8 +13,15 @@ function RootlyTriggerForm() {
       {currentWorkflow.webhook && (
         <div className="flex flex-col gap-2 lg:w-1/2">
           <p className="text-sm p-2 border border-violet-500 bg-violet-50 rounded">
-            Add these Webhook details in your Rootly HTTP Endpoint in your
-            incident workflow
+            Add these Webhook details in your Rootly HTTP Client in your
+            incident workflow. Read more about this{" "}
+            <a
+              href="https://docs.drdroid.io/docs/rootly-trigger"
+              target="_blank"
+              className="text-violet-500 hover:underline"
+              rel="noreferrer">
+              here
+            </a>
           </p>
           <CopyCode content={currentWorkflow.webhook} language={"curl"} />
         </div>

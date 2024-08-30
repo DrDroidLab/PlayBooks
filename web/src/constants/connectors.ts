@@ -23,4 +23,5 @@ export const connectors = {
   GRAFANA_LOKI: "GRAFANA_LOKI",
   ELASTIC_SEARCH: "ELASTIC_SEARCH",
   SMTP: "SMTP",
+  ROOTLY: "ROOTLY",
 };
