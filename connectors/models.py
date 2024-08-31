@@ -303,6 +303,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.SMTP_USER,
             SourceKeyType.SMTP_PASSWORD,
         ]
+    ],
+    Source.BIGQUERY: [
+        [
+            SourceKeyType.BIGQUERY_PROJECT_ID,
+            SourceKeyType.BIGQUERY_SERVICE_ACCOUNT_JSON,
+        ]
     ]
 }
 
@@ -377,7 +383,9 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.SMTP_HOST: 'SMTP Host',
     SourceKeyType.SMTP_PORT: 'Port',
     SourceKeyType.SMTP_USER: 'Email User',
-    SourceKeyType.SMTP_PASSWORD: 'Password'
+    SourceKeyType.SMTP_PASSWORD: 'Password',
+    SourceKeyType.BIGQUERY_PROJECT_ID: 'Project ID',
+    SourceKeyType.BIGQUERY_SERVICE_ACCOUNT_JSON: 'Service Account JSON'
 }
 
 

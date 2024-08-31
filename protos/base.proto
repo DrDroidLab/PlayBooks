@@ -162,6 +162,7 @@ enum Source {
   GRAFANA_LOKI = 46;
   KUBERNETES = 47;
   SMTP = 48;
+  BIGQUERY = 49;
 }
 
 enum SourceKeyType {
@@ -272,6 +273,9 @@ enum SourceKeyType {
   SMTP_PORT = 78;
   SMTP_USER = 79;
   SMTP_PASSWORD = 80;
+
+  BIGQUERY_PROJECT_ID = 81;
+  BIGQUERY_SERVICE_ACCOUNT_JSON = 82;
 }
 
 enum SourceModelType {
@@ -352,4 +356,9 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
+
+  // BIGQUERY Models
+  BIGQUERY_DATASET = 1801;
+  BIGQUERY_TABLE = 1802;
+  BIGQUERY_QUERY = 1803;
 }
