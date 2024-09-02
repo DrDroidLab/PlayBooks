@@ -23,7 +23,7 @@ export default function OptionRender({ data, removeErrors, id }) {
   };
 
   useEffect(() => {
-    if (data.default && !value) {
+    if (data.default && value === undefined) {
       updateCardById(key, data.default, currentTaskId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
