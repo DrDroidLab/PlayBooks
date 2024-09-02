@@ -156,4 +156,10 @@ export const cardsData = [
     desc: "Connect to SMTP Server",
     docs: "https://docs.drdroid.io/docs/email",
   },
+  {
+    url: "/integrations/bigquery_logo.webp",
+    enum: "BIG_QUERY",
+    desc: "Connect to Google BigQuery",
+    docs: "https://docs.drdroid.io/docs/bigquery",
+  },
 ];
