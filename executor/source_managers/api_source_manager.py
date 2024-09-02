@@ -92,7 +92,10 @@ class ApiSourceManager(PlaybookSourceManager):
             timeout = http_request.timeout.value if http_request.timeout else 120
             cookies = http_request.cookies.value
             cookies = json.loads(cookies) if cookies else None
-            ssl_verify = http_request.ssl_verify.value if http_request.ssl_verify else False
+
+            ssl_verify = False
+            if http_request.ssl_verify and http_request.ssl_verify.value:
+                ssl_verify = True
 
             request_method = method_proto_string_mapping.get(method)
             request_arguments = {
