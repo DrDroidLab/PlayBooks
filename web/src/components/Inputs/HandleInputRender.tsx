@@ -14,13 +14,14 @@ import StringArrayInput from "./InputTypes/StringArrayInput.tsx";
 import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMultipleSelectionInput.tsx";
 import TextButton from "./InputTypes/TextButton.tsx";
 import CronInput from "../common/CronInput/index.tsx";
+import Checkbox from "../common/Checkbox/index.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
   value: any;
   type?: HTMLInputTypeAttribute;
   label?: string;
-  handleChange?: (val: string) => void;
+  handleChange?: (val: string | boolean) => void;
   handleClick?: React.MouseEventHandler<HTMLButtonElement>;
   handleAddClick?: () => void;
   error?: string;
@@ -40,6 +41,7 @@ export type HandleInputRenderType = {
   typingContainerClassname?: string;
   buttonText?: string;
   buttonClickValue?: string;
+  isSmall?: boolean;
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLButtonElement>;
 
 function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
@@ -105,6 +107,17 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
       );
     case InputTypes.CRON:
       return <CronInput {...props} handleChange={props.handleChange!} />;
+    case InputTypes.CHECKBOX:
+      return (
+        <Checkbox
+          label={props.label ?? props.key ?? ""}
+          id={props.id ?? props.key ?? `checkbox-${props.label}`}
+          {...props}
+          isChecked={!!props.value}
+          onChange={() => props.handleChange!(!!!props.value)}
+          isSmall={props.isSmall ?? true}
+        />
+      );
     default:
       return <p className="text-xs font-semibold">Unsupported Input Type</p>;
   }

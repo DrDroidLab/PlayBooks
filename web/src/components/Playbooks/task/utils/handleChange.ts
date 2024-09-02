@@ -29,6 +29,16 @@ function handleChangeInput(
     removeErrors(key);
   };
 
+  const handleCheckboxChange = (value: boolean) => {
+    if (handleChange) {
+      handleChange(value);
+    } else {
+      updateCardById(key, value, currentTaskId);
+    }
+
+    removeErrors(key);
+  };
+
   switch (type) {
     case InputTypes.TEXT:
     case InputTypes.MULTILINE:
@@ -38,6 +48,8 @@ function handleChangeInput(
     case InputTypes.TYPING_DROPDOWN:
     case InputTypes.TYPING_DROPDOWN_MULTIPLE:
       return handleChangeFunction;
+    case InputTypes.CHECKBOX:
+      return handleCheckboxChange;
     case InputTypes.COMPOSITE:
     case InputTypes.STRING_ARRAY:
       return handleCompositeChange;
