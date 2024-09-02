@@ -162,6 +162,7 @@ enum Source {
   GRAFANA_LOKI = 46;
   KUBERNETES = 47;
   SMTP = 48;
+  BIG_QUERY = 49;
 }
 
 enum SourceKeyType {
@@ -272,6 +273,9 @@ enum SourceKeyType {
   SMTP_PORT = 78;
   SMTP_USER = 79;
   SMTP_PASSWORD = 80;
+
+  BIG_QUERY_PROJECT_ID = 81;
+  BIG_QUERY_SERVICE_ACCOUNT_JSON = 82;
 }
 
 enum SourceModelType {

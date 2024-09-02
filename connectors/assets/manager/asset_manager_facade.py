@@ -1,6 +1,5 @@
 import logging
 
-from accounts.models import Account
 from connectors.assets.manager.asset_manager import ConnectorAssetManager
 from connectors.assets.manager.azure_assets_manager import AzureAssetManager
 from connectors.assets.manager.clickhouse_assets_manager import ClickhouseAssetManager
