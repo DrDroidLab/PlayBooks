@@ -65,6 +65,7 @@ class Api(google.protobuf.message.Message):
         PAYLOAD_FIELD_NUMBER: builtins.int
         TIMEOUT_FIELD_NUMBER: builtins.int
         COOKIES_FIELD_NUMBER: builtins.int
+        SSL_VERIFY_FIELD_NUMBER: builtins.int
         method: global___Api.HttpRequest.Method.ValueType
         @property
         def url(self) -> google.protobuf.wrappers_pb2.StringValue: ...
@@ -76,6 +77,8 @@ class Api(google.protobuf.message.Message):
         def timeout(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
         @property
         def cookies(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+        @property
+        def ssl_verify(self) -> google.protobuf.wrappers_pb2.BoolValue: ...
         def __init__(
             self,
             *,
@@ -85,9 +88,10 @@ class Api(google.protobuf.message.Message):
             payload: google.protobuf.wrappers_pb2.StringValue | None = ...,
             timeout: google.protobuf.wrappers_pb2.UInt64Value | None = ...,
             cookies: google.protobuf.wrappers_pb2.StringValue | None = ...,
+            ssl_verify: google.protobuf.wrappers_pb2.BoolValue | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "method", b"method", "payload", b"payload", "timeout", b"timeout", "url", b"url"]) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "payload", b"payload", "ssl_verify", b"ssl_verify", "timeout", b"timeout", "url", b"url"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["cookies", b"cookies", "headers", b"headers", "method", b"method", "payload", b"payload", "ssl_verify", b"ssl_verify", "timeout", b"timeout", "url", b"url"]) -> None: ...
 
     TYPE_FIELD_NUMBER: builtins.int
     HTTP_REQUEST_FIELD_NUMBER: builtins.int
