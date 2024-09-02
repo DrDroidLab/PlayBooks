@@ -3,7 +3,7 @@ import json
 import requests
 from google.protobuf.struct_pb2 import Struct
 
-from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
+from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value, BoolValue
 from executor.playbook_source_manager import PlaybookSourceManager
 from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
@@ -68,6 +68,12 @@ class ApiSourceManager(PlaybookSourceManager):
                               data_type=LiteralType.LONG,
                               default_value=Literal(type=LiteralType.LONG, long=Int64Value(value=120)),
                               form_field_type=FormFieldType.TEXT_FT),
+                    FormField(key_name=StringValue(value="ssl_verify"),
+                              display_name=StringValue(value="SSL Verification"),
+                              description=StringValue(value='Enable/Disable SSL Verification'),
+                              data_type=LiteralType.BOOLEAN,
+                              default_value=Literal(type=LiteralType.BOOLEAN, boolean=BoolValue(value=True)),
+                              form_field_type=FormFieldType.CHECKBOX_FT),
                 ]
             },
         }
@@ -87,6 +93,10 @@ class ApiSourceManager(PlaybookSourceManager):
             cookies = http_request.cookies.value
             cookies = json.loads(cookies) if cookies else None
 
+            ssl_verify = False
+            if http_request.ssl_verify and http_request.ssl_verify.value:
+                ssl_verify = True
+
             request_method = method_proto_string_mapping.get(method)
             request_arguments = {
                 "method": request_method,
@@ -104,7 +114,7 @@ class ApiSourceManager(PlaybookSourceManager):
                 raise Exception(f"Unsupported api method: {request_method}")
 
             try:
-                response = requests.request(**request_arguments)
+                response = requests.request(**request_arguments, verify=ssl_verify)
                 response_headers = response.headers
                 response_headers_struct = Struct()
                 response_headers_struct.update(response_headers)
