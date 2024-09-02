@@ -205,6 +205,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     GRAFANA_LOKI: _Source.ValueType  # 46
     KUBERNETES: _Source.ValueType  # 47
     SMTP: _Source.ValueType  # 48
+    BIG_QUERY: _Source.ValueType  # 49
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -257,6 +258,7 @@ MS_TEAMS: Source.ValueType  # 45
 GRAFANA_LOKI: Source.ValueType  # 46
 KUBERNETES: Source.ValueType  # 47
 SMTP: Source.ValueType  # 48
+BIG_QUERY: Source.ValueType  # 49
 global___Source = Source
 
 class _SourceKeyType:
@@ -345,6 +347,8 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     SMTP_PORT: _SourceKeyType.ValueType  # 78
     SMTP_USER: _SourceKeyType.ValueType  # 79
     SMTP_PASSWORD: _SourceKeyType.ValueType  # 80
+    BIG_QUERY_PROJECT_ID: _SourceKeyType.ValueType  # 81
+    BIG_QUERY_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 82
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -428,6 +432,8 @@ SMTP_HOST: SourceKeyType.ValueType  # 77
 SMTP_PORT: SourceKeyType.ValueType  # 78
 SMTP_USER: SourceKeyType.ValueType  # 79
 SMTP_PASSWORD: SourceKeyType.ValueType  # 80
+BIG_QUERY_PROJECT_ID: SourceKeyType.ValueType  # 81
+BIG_QUERY_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 82
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:

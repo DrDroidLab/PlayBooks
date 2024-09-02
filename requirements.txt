@@ -29,6 +29,7 @@ environs==11.0.0
 fdb==2.0.2
 google-api-python-client==2.132.0
 google-auth-oauthlib==1.2.0
+google-cloud-bigquery==3.25.0
 gql==3.5.0
 grpcio-status==1.62.0
 grpcio-tools==1.51.1

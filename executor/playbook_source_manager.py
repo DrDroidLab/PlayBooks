@@ -167,8 +167,8 @@ class PlaybookSourceManager:
                     if task.execution_configuration.is_result_transformer_enabled.value:
                         lambda_function = task.execution_configuration.result_transformer_lambda_function
                         playbook_task_result_dict = proto_to_dict(playbook_task_result) if playbook_task_result else {}
-                        result_transformer_lambda_function_variable_set = apply_result_transformer(playbook_task_result_dict,
-                                                                                                   lambda_function)
+                        result_transformer_lambda_function_variable_set = apply_result_transformer(
+                            playbook_task_result_dict, lambda_function)
                         result_transformer_lambda_function_variable_set_proto = dict_to_proto(
                             result_transformer_lambda_function_variable_set,
                             Struct) if result_transformer_lambda_function_variable_set else Struct()

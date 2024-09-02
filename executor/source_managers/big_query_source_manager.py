@@ -3,23 +3,23 @@ from google.protobuf.wrappers_pb2 import StringValue, UInt64Value, Int64Value
 from connectors.utils import generate_credentials_dict
 from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_processors.bigquery_api_processor import BigQueryApiProcessor
-from protos.base_pb2 import Source, TimeRange, SourceModelType
+from protos.base_pb2 import Source, TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.literal_pb2 import LiteralType, Literal
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, TableResult, PlaybookTaskResultType
-from protos.playbooks.source_task_definitions.bigquery_task_pb2 import BigQuery
+from protos.playbooks.source_task_definitions.big_query_task_pb2 import BigQuery
 from protos.ui_definition_pb2 import FormField, FormFieldType
 
 
 class BigQuerySourceManager(PlaybookSourceManager):
 
     def __init__(self):
-        self.source = Source.BIGQUERY
+        self.source = Source.BIG_QUERY
         self.task_proto = BigQuery
         self.task_type_callable_map = {
             BigQuery.TaskType.QUERY_TABLE: {
                 'executor': self.execute_query_table,
-                'model_types': [SourceModelType.BIGQUERY_TABLE],
+                'model_types': [],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Query Table from a BigQuery Dataset',
                 'category': 'Tables',

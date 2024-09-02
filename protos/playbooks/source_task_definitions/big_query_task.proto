@@ -1,5 +1,5 @@
 syntax = "proto3";
-package protos.playbooks.source_task_definitions;
+package protos.playbooks;
 
 import "google/protobuf/wrappers.proto";
 
