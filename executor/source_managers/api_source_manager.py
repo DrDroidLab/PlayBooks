@@ -73,7 +73,7 @@ class ApiSourceManager(PlaybookSourceManager):
                               description=StringValue(value='Enable/Disable SSL Verification'),
                               data_type=LiteralType.BOOLEAN,
                               default_value=Literal(type=LiteralType.BOOLEAN, boolean=BoolValue(value=True)),
-                              form_field_type=FormFieldType.TEXT_FT),
+                              form_field_type=FormFieldType.CHECKBOX_FT),
                 ]
             },
         }
