@@ -356,7 +356,4 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
-
-  // BQ Models
-  BIG_QUERY_QUERY = 1801;
 }

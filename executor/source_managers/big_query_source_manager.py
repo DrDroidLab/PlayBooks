@@ -70,7 +70,6 @@ class BigQuerySourceManager(PlaybookSourceManager):
                 raise Exception(f"No data found for the query: {query}")
 
             rows = [dict(row) for row in bq_job]
-            print('rows', rows)
             count_result = len(rows)
             if count_result == 0:
                 raise Exception(f"No data found for the query: {query}")
