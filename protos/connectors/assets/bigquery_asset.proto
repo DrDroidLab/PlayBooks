@@ -1,0 +1,44 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+message BigQueryDatasetAssetModel {
+  google.protobuf.StringValue dataset = 1;
+}
+
+message BigQueryTableAssetModel {
+  google.protobuf.StringValue table = 1;
+}
+
+message BigQueryQueryAssetModel {
+  google.protobuf.StringValue query = 1;
+}
+
+message BigQueryDatasetAssetOptions {
+  repeated string datasets = 1;
+}
+
+message BigQueryAssetOptions {
+  repeated string datasets = 1;
+  repeated string tables = 2;
+  repeated string queries = 3;
+}
+
+message BigQueryAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    BigQueryDatasetAssetModel bigquery_dataset = 5;
+    BigQueryTableAssetModel bigquery_table = 6;
+    BigQueryQueryAssetModel bigquery_query = 7;
+  }
+}
+
+message BigQueryAssets {
+  repeated BigQueryAssetModel assets = 1;
+}
