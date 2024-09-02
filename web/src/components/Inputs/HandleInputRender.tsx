@@ -21,7 +21,7 @@ export type HandleInputRenderType = {
   value: any;
   type?: HTMLInputTypeAttribute;
   label?: string;
-  handleChange?: (val: string | boolean) => void;
+  handleChange?: (val: string) => void;
   handleClick?: React.MouseEventHandler<HTMLButtonElement>;
   handleAddClick?: () => void;
   error?: string;
@@ -114,7 +114,7 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
           id={props.id ?? props.key ?? `checkbox-${props.label}`}
           {...props}
           isChecked={!!props.value}
-          onChange={() => props.handleChange!(!!!props.value)}
+          onChange={() => props.handleChange!(JSON.stringify(!!!props.value))}
           isSmall={props.isSmall ?? true}
         />
       );

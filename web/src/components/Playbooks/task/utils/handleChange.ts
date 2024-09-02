@@ -29,11 +29,12 @@ function handleChangeInput(
     removeErrors(key);
   };
 
-  const handleCheckboxChange = (value: boolean) => {
+  const handleCheckboxChange = (value: string) => {
+    const val = JSON.parse(value);
     if (handleChange) {
-      handleChange(value);
+      handleChange(val);
     } else {
-      updateCardById(key, value, currentTaskId);
+      updateCardById(key, val, currentTaskId);
     }
 
     removeErrors(key);
