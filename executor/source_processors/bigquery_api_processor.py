@@ -1,4 +1,5 @@
 import logging
+import json
 from google.cloud import bigquery
 from executor.source_processors.processor import Processor
 
@@ -7,13 +8,13 @@ logger = logging.getLogger(__name__)
 class BigQueryApiProcessor(Processor):
     client = None
 
-    def __init__(self, project_id: str, credentials_json: str):
+    def __init__(self, project_id: str, service_account_json: str):
         self.project_id = project_id
-        self.credentials_json = credentials_json
+        self.service_account_json = json.loads(service_account_json)
 
     def get_connection(self):
         try:
-            client = bigquery.Client.from_service_account_json(self.credentials_json, project=self.project_id)
+            client = bigquery.Client.from_service_account_info(self.service_account_json, project=self.project_id)
             return client
         except Exception as e:
             logger.error(f"Exception occurred while creating BigQuery connection with error: {e}")

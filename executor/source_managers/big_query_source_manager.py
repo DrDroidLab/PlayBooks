@@ -24,15 +24,6 @@ class BigQuerySourceManager(PlaybookSourceManager):
                 'display_name': 'Query Table from a BigQuery Dataset',
                 'category': 'Tables',
                 'form_fields': [
-                    FormField(key_name=StringValue(value="dataset"),
-                              display_name=StringValue(value="Dataset"),
-                              description=StringValue(value='Select Dataset'),
-                              data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
-                    FormField(key_name=StringValue(value="table"),
-                              display_name=StringValue(value="Table"),
-                              data_type=LiteralType.STRING,
-                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT),
                     FormField(key_name=StringValue(value="query"),
                               display_name=StringValue(value="SQL Query"),
                               data_type=LiteralType.STRING,
@@ -69,16 +60,17 @@ class BigQuerySourceManager(PlaybookSourceManager):
 
             bq_client = self.get_connector_processor(bq_connector)
 
-            full_query = f"SELECT * FROM `{dataset}.{table}` WHERE {query} LIMIT {limit}"
+            full_query = f"{query} LIMIT {limit}"
 
             print("Playbook Task Downstream Request: Type -> {}, Account -> {}, Query -> {}".format(
                 "BigQuery", bq_connector.account_id.value, full_query), flush=True)
 
-            result = bq_client.query(full_query)
-            if 'rows' not in result or not result['rows']:
+            bq_job = bq_client.query(full_query)
+            if not bq_job or not bq_job.total_rows:
                 raise Exception(f"No data found for the query: {query}")
 
-            rows = result['rows']
+            rows = [dict(row) for row in bq_job]
+            print('rows', rows)
             count_result = len(rows)
             if count_result == 0:
                 raise Exception(f"No data found for the query: {query}")
