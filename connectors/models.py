@@ -45,6 +45,7 @@ integrations_connector_type_display_name_map = {
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
     Source.KUBERNETES: 'KUBERNETES',
     Source.SMTP: 'EMAIL SERVER',
+    Source.BIGQUERY: 'BigQuery'
 }
 
 integrations_connector_type_category_map = {
@@ -78,6 +79,7 @@ integrations_connector_type_category_map = {
     Source.BASH: 'Remote Server',
     Source.KUBERNETES: 'Cloud',
     Source.SMTP: 'Alert Channels',
+    Source.BIGQUERY: 'Database'
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -526,7 +528,9 @@ class ConnectorKey(models.Model):
                              SourceKeyType.ELASTIC_SEARCH_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
-                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, ]:
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,
+                             SourceKeyType.BIGQUERY_PROJECT_ID,
+                             SourceKeyType.BIGQUERY_SERVICE_ACCOUNT_JSON, ]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
