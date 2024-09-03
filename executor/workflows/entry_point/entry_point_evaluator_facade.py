@@ -3,10 +3,7 @@ import logging
 from executor.workflows.entry_point.api_entry_point import ApiEntryPointEvaluator
 from executor.workflows.entry_point.entry_point_evaluator import WorkflowEntryPointEvaluator
 from executor.workflows.entry_point.pager_duty_incident_entry_point import PagerDutyIncidentEntryPointEvaluator
-<<<<<<< HEAD
 from executor.workflows.entry_point.rootly_incident_entry_point import RootlyIncidentEntryPointEvaluator
-=======
->>>>>>> 6588b2f402ef53f21c3c17e13f67f5e4dcb2e902
 from executor.workflows.entry_point.zenduty_incident_entry_point import ZenDutyIncidentEntryPointEvaluator
 from executor.workflows.entry_point.slack_channel_alert_entry_point import SlackChannelAlertEntryPointEvaluator
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
