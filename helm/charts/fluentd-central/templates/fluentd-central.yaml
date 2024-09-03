@@ -1,21 +1,24 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: central-logs
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.name }}
+  name: central-log-pod
+  labels:
+    app: central-log
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: central-logs
-  template:
-    metadata:
-      labels:
-        app: central-logs
-    spec:
-      containers:
-        - name: central-logs
-          image: fluent/fluentd:v1.12-debian-1
-          ports:
-            - containerPort: 24224
+  containers:
+    - name: log-receiver
+      image: fluent/fluentd:v1.12-debian-1
+      volumeMounts:
+        - name: config-volume
+          mountPath: /fluentd/etc
+      ports:
+        - containerPort: 24224
+      args:
+        - "fluentd"
+        - "-c"
+        - "/fluentd/etc/fluent.conf"
+  volumes:
+    - name: config-volume
+      configMap:
+        name: fluentd-config-central
+      

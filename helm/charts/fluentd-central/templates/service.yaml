@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: central-log-server
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.name }}
+  name: central-log-service
+  labels:
+    app: central-log
 spec:
-  type: {{ .Values.service.type }}
   selector:
-    app: central-log-server
+    app: central-log
   ports:
     - protocol: TCP
-      name: http
-      port: 24224
-      targetPort: 24224
+      port: 24224       # Port exposed by the service
+      targetPort: 24224 # Port on the central log Pod
+  type: ClusterIP
