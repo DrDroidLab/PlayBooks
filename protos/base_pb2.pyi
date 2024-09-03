@@ -207,6 +207,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     SMTP: _Source.ValueType  # 48
     BIG_QUERY: _Source.ValueType  # 49
     ZENDUTY: _Source.ValueType  # 50
+    ROOTLY: _Source.ValueType  # 51
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -261,6 +262,7 @@ KUBERNETES: Source.ValueType  # 47
 SMTP: Source.ValueType  # 48
 BIG_QUERY: Source.ValueType  # 49
 ZENDUTY: Source.ValueType  # 50
+ROOTLY: Source.ValueType  # 51
 global___Source = Source
 
 class _SourceKeyType:
@@ -352,6 +354,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     BIG_QUERY_PROJECT_ID: _SourceKeyType.ValueType  # 81
     BIG_QUERY_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 82
     ZENDUTY_API_KEY: _SourceKeyType.ValueType  # 83
+    ROOTLY_API_KEY: _SourceKeyType.ValueType  # 84
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -438,6 +441,7 @@ SMTP_PASSWORD: SourceKeyType.ValueType  # 80
 BIG_QUERY_PROJECT_ID: SourceKeyType.ValueType  # 81
 BIG_QUERY_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 82
 ZENDUTY_API_KEY: SourceKeyType.ValueType  # 83
+ROOTLY_API_KEY: SourceKeyType.ValueType  # 84
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -506,6 +510,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """GCM Models"""
     ZENDUTY_INCIDENT: _SourceModelType.ValueType  # 1801
     """Zenduty Models"""
+    ROOTLY_INCIDENT: _SourceModelType.ValueType  # 1901
+    """Rootly Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -569,6 +575,8 @@ GCM_METRIC: SourceModelType.ValueType  # 1701
 """GCM Models"""
 ZENDUTY_INCIDENT: SourceModelType.ValueType  # 1801
 """Zenduty Models"""
+ROOTLY_INCIDENT: SourceModelType.ValueType  # 1901
+"""Rootly Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

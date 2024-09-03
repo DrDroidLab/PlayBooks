@@ -10,13 +10,14 @@ from django.conf import settings
 from accounts.authentication import AccountApiTokenAuthentication
 from accounts.models import get_request_account, Account, User, get_request_user, AccountApiToken
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
+from connectors.handlers.bots.rootly_handler import handle_rootly_incident
 from connectors.handlers.bots.zenduty_handler import handle_zd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
 from utils.time_utils import current_epoch_timestamp
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
-    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetZendutyWebhookRequest, GetZendutyWebhookResponse
+    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetRootlyWebhookRequest, GetRootlyWebhookResponse, GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetZendutyWebhookRequest, GetZendutyWebhookResponse
 from utils.uri_utils import build_absolute_uri, construct_curl
 
 logger = logging.getLogger(__name__)
@@ -166,6 +167,28 @@ def zenduty_generate_webhook(request_message: GetZendutyWebhookRequest) -> HttpR
     curl = construct_curl('POST', uri, headers=headers, payload=None)
     return HttpResponse(curl, content_type="text/plain", status=200)
 
+@web_api(GetRootlyWebhookRequest)
+def rootly_generate_webhook(request_message: GetRootlyWebhookRequest) -> HttpResponse:
+    account: Account = get_request_account()
+    user: User = get_request_user()
+
+    qs = account.account_api_token.filter(created_by=user)
+    if qs:
+        account_api_token = qs.first()
+    else:
+        api_token = AccountApiToken(account=account, created_by=user)
+        api_token.save()
+        account_api_token = api_token
+
+    headers = {'Authorization': f'Bearer {account_api_token.key}'}
+    location = settings.ROOTLY_WEBHOOK_LOCATION
+    protocol = settings.ROOTLY_WEBHOOK_HTTP_PROTOCOL
+    enabled = settings.ROOTLY_WEBHOOK_USE_SITE
+    uri = build_absolute_uri(None, location, protocol, enabled)
+
+    curl = construct_curl('POST', uri, headers=headers, payload=None)
+    return HttpResponse(curl, content_type="text/plain", status=200)
+
 
 @csrf_exempt
 @api_view(['POST'])
@@ -175,10 +198,23 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
         handle_pd_incident(data)
-        return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+        return JsonResponse({'success': True, 'message': 'pagerduty incident Handling sucessfull'}, status=200)
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([AccountApiTokenAuthentication])
+@api_auth_check
+def rootly_handle_incidents(request_message: HttpRequest) -> JsonResponse:
+    try:
+        data = request_message.data
+        handle_rootly_incident(data)
+        return JsonResponse({'success': True, 'message': 'rootly incident Handling sucessfull'}, status=200)
+    except Exception as e:
+        logger.error(f'Error handling rootly incident: {str(e)}')
+        return JsonResponse({'success': False, 'message': f"rootly incident Handling failed"}, status=500)
     
 @csrf_exempt
 @api_view(['POST'])
@@ -188,7 +224,7 @@ def zenuty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
         handle_zd_incident(data)
-        return JsonResponse({'success': False, 'message': 'zenduty incident Handling failed'}, status=200)
+        return JsonResponse({'success': True, 'message': 'zenduty incident Handling sucessfull'}, status=200)
     except Exception as e:
         logger.error(f'Error handling zenduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"zenduty incident Handling failed"}, status=500)

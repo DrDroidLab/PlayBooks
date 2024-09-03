@@ -164,6 +164,7 @@ enum Source {
   SMTP = 48;
   BIG_QUERY = 49;
   ZENDUTY = 50;
+  ROOTLY = 51;
 }
 
 enum SourceKeyType {
@@ -274,11 +275,13 @@ enum SourceKeyType {
   SMTP_PORT = 78;
   SMTP_USER = 79;
   SMTP_PASSWORD = 80;
-
+  
   BIG_QUERY_PROJECT_ID = 81;
   BIG_QUERY_SERVICE_ACCOUNT_JSON = 82;
 
   ZENDUTY_API_KEY = 83;
+
+  ROOTLY_API_KEY = 84;
 }
 
 enum SourceModelType {
@@ -362,4 +365,7 @@ enum SourceModelType {
 
   // Zenduty Models
   ZENDUTY_INCIDENT = 1801;
+
+  // Rootly Models
+  ROOTLY_INCIDENT = 1901;
 }

@@ -35,6 +35,12 @@ export const cardsData = [
     docs: "https://docs.drdroid.io/docs/zenduty",
   },
   {
+    url: "/integrations/rootly_logo.png",
+    enum: "ROOTLY",
+    desc: "Authorise Doctor Droid to read incidents from Rootly",
+    docs: "https://docs.drdroid.io/docs/rootly",
+  },
+  {
     url: "/integrations/elastic_search.png",
     enum: "ELASTIC_SEARCH",
     desc: "Setup Dr. Droid to periodically pull logs from your Elasic Search",

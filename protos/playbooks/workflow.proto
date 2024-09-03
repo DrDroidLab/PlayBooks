@@ -14,6 +14,7 @@ import "protos/playbooks/workflow_schedules/one_off_schedule.proto";
 
 import "protos/playbooks/workflow_entry_points/slack_alert_entry_point.proto";
 import "protos/playbooks/workflow_entry_points/pd_incident_entry_point.proto";
+import "protos/playbooks/workflow_entry_points/rootly_incident_entry_point.proto";
 import "protos/playbooks/workflow_entry_points/zd_incident_entry_point.proto";
 import "protos/playbooks/workflow_entry_points/api_entry_point.proto";
 
@@ -21,6 +22,7 @@ import "protos/playbooks/workflow_actions/api_trigger.proto";
 import "protos/playbooks/workflow_actions/slack_message.proto";
 import "protos/playbooks/workflow_actions/slack_thread_reply.proto";
 import "protos/playbooks/workflow_actions/pd_notes.proto";
+import "protos/playbooks/workflow_actions/rootly_timeline_events.proto";
 import "protos/playbooks/workflow_actions/zenduty_notes.proto";
 import "protos/playbooks/workflow_actions/ms_teams_message_webhook.proto";
 import "protos/playbooks/workflow_actions/smtp_email.proto";
@@ -67,6 +69,7 @@ message WorkflowEntryPoint {
     SLACK_CHANNEL_ALERT = 2;
     PAGERDUTY_INCIDENT = 3;
     ZENDUTY_INCIDENT = 4;
+    ROOTLY_INCIDENT = 5;
   }
   google.protobuf.UInt64Value id = 1;
   Type type = 2;
@@ -75,6 +78,7 @@ message WorkflowEntryPoint {
     SlackChannelAlertEntryPoint slack_channel_alert = 102;
     PagerDutyIncidentEntryPoint pagerduty_incident = 103;
     ZenDutyIncidentEntryPoint zenduty_incident = 104;
+    RootlyIncidentEntryPoint rootly_incident = 105;
   }
 }
 
@@ -96,6 +100,7 @@ message WorkflowAction {
     PAGERDUTY_NOTES = 5;
     SMTP_EMAIL = 6;
     ZENDUTY_NOTES = 7;
+    ROOTLY_TIMELINE_EVENTS = 8;
   }
   Type type = 1;
   Source source = 2;
@@ -108,6 +113,7 @@ message WorkflowAction {
     PagerdutyNotesWorkflowAction pagerduty_notes = 105;
     SMTPEmailWorkflowAction smtp_email = 106;
     ZendutyNotesWorkflowAction zenduty_notes = 107;
+    RootlyTimelineEventsWorkflowAction rootly_timeline_events = 108;
   }
 }
 
@@ -199,6 +205,7 @@ message WorkflowExecution {
       SLACK_MESSAGE = 1;
       PAGER_DUTY_INCIDENT = 2;
       ZENDUTY_INCIDENT = 3;
+      ROOTLY_INCIDENT = 4;
     }
     Type type = 1;
     google.protobuf.Struct event = 2;

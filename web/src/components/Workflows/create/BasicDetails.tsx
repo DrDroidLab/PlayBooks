@@ -46,8 +46,11 @@ function BasicDetails() {
     await triggerGenerateCurl(currentWorkflow.name);
   };
 
-  const handleGenerateWebhook = async () => {
-    await triggerGenerateWebhook(currentWorkflow.name);
+  const handleGenerateWebhook = async (tool_name: string) => {
+    await triggerGenerateWebhook({
+      workflow_name: currentWorkflow.name,
+      tool_name,
+    });
   };
 
   const handleGenerateZendutyWebhook = async () => {
@@ -66,7 +69,16 @@ function BasicDetails() {
         );
         return;
       case "pagerduty_incident":
-        handleGenerateWebhook();
+        handleGenerateWebhook("pagerduty");
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
+        return;
+      case "rootly_incident":
+        handleGenerateWebhook("rootly");
         dispatch(
           setCurrentWorkflowKey({
             key: "useTransformer",

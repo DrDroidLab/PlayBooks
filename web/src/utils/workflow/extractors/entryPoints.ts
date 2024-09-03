@@ -33,6 +33,13 @@ export const handleEntryPointsExtractor = (
         },
       };
 
+    case Types.WorkflowEntryPointOptions.ROOTLY_INCIDENT:
+      return {
+        trigger: {
+          title: entryPoint.incident_title,
+        },
+      };
+
     default:
       return {};
   }
