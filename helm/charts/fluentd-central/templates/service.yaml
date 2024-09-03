@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-log-server
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: central-log-server
+  ports:
+    - protocol: TCP
+      name: http
+      port: 24224
+      targetPort: 24224

@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
-  name: 'fluentd'
+  name: fluentd
   annotations:
     meta.helm.sh/release-name: {{ .Release.name }}
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: fluentd
@@ -14,25 +13,28 @@ spec:
       labels:
         app: fluentd
     spec:
+      serviceAccountName: fluentd-sa
       containers:
         - name: fluentd
           image: fluent/fluentd:v1.12-debian-1
           securityContext:
             runAsUser: 0
           volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: dockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
             - name: config-volume
               mountPath: /fluentd/etc
-            - name: posfile
-              mountPath: /var/log/fluentd
-            - name: varlog
-              mountPath: /var/log/containers
           command: ["fluentd", "-c", "/fluentd/etc/fluent.conf", "-p", "/fluentd/plugins"]
       volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: dockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
         - name: config-volume
           configMap:
             name: fluentd-config
-        - name: varlog
-          hostPath:
-            path: /var/log/containers
-        - name: posfile
-          emptyDir: {}

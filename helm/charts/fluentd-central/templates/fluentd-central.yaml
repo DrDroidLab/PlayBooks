@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-logs
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central-logs
+  template:
+    metadata:
+      labels:
+        app: central-logs
+    spec:
+      containers:
+        - name: central-logs
+          image: fluent/fluentd:v1.12-debian-1
+          ports:
+            - containerPort: 24224

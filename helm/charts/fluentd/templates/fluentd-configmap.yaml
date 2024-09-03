@@ -6,14 +6,18 @@ data:
   fluent.conf: |
     <source>
       @type tail
-      path /var/log/containers/celery-beat-*
-      pos_file /var/log/fluentd/celery-beat.pos
-      tag celery-beat
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd/containers.pos
+      tag kube.*
       <parse>
-        @type none 
+        @type none
       </parse>
     </source>
 
     <match **>
-      @type stdout
+      @type forward
+      <server>
+        host central-log-server
+        port 24224
+      </server>
     </match>
