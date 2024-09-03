@@ -385,6 +385,8 @@ def rootly_handle_webhook_call(rootly_connector_id, rootly_incident):
 rootly_handle_webhook_call_prerun_notifier = publish_pre_run_task(rootly_handle_webhook_call)
 rootly_handle_webhook_call_failure_notifier = publish_task_failure(rootly_handle_webhook_call)
 rootly_handle_webhook_call_postrun_notifier = publish_post_run_task(rootly_handle_webhook_call)
+
+@shared_task(max_retries=3, default_retry_delay=10)
 def zenduty_handle_webhook_call(zenduty_connector_id, zenduty_incident):
     try:
         zenduty_connector = get_db_connectors(connector_id=zenduty_connector_id)
