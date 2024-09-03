@@ -198,7 +198,7 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
         handle_pd_incident(data)
-        return JsonResponse({'success': False, 'message': 'pagerduty incident Handling failed'}, status=200)
+        return JsonResponse({'success': True, 'message': 'pagerduty incident Handling sucessfull'}, status=200)
     except Exception as e:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
@@ -211,7 +211,7 @@ def rootly_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
         handle_rootly_incident(data)
-        return JsonResponse({'success': False, 'message': 'rootly incident Handling failed'}, status=200)
+        return JsonResponse({'success': True, 'message': 'rootly incident Handling sucessfull'}, status=200)
     except Exception as e:
         logger.error(f'Error handling rootly incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"rootly incident Handling failed"}, status=500)
@@ -224,7 +224,7 @@ def zenuty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     try:
         data = request_message.data
         handle_zd_incident(data)
-        return JsonResponse({'success': False, 'message': 'zenduty incident Handling failed'}, status=200)
+        return JsonResponse({'success': True, 'message': 'zenduty incident Handling sucessfull'}, status=200)
     except Exception as e:
         logger.error(f'Error handling zenduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"zenduty incident Handling failed"}, status=500)
