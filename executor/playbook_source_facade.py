@@ -26,7 +26,9 @@ from executor.playbook_source_manager import PlaybookSourceManager
 from executor.source_managers.datadog_source_manager import DatadogSourceManager
 from executor.source_managers.eks_source_manager import EksSourceManager
 from executor.source_managers.postgres_source_manager import PostgresSourceManager
+from executor.source_managers.zenduty_source_manager import ZendutySourceManager
 from executor.source_managers.sql_database_connection_source_manager import SqlDatabaseConnectionSourceManager
+from executor.source_managers.rootly_source_manager import RootlySourceManager
 from executor.utils.playbooks_builder_utils import model_type_display_name_maps
 
 from protos.base_pb2 import Source, SourceModelType
@@ -142,3 +144,5 @@ playbook_source_facade.register(Source.SMTP, SMTPSourceManager())
 playbook_source_facade.register(Source.SLACK, SlackSourceManager())
 
 playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())
+playbook_source_facade.register(Source.ROOTLY, RootlySourceManager())
+playbook_source_facade.register(Source.ZENDUTY, ZendutySourceManager())

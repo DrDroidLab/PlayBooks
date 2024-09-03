@@ -16,12 +16,16 @@ import protos.playbooks.source_task_definitions.lambda_function_task_pb2
 import protos.playbooks.workflow_actions.api_trigger_pb2
 import protos.playbooks.workflow_actions.ms_teams_message_webhook_pb2
 import protos.playbooks.workflow_actions.pd_notes_pb2
+import protos.playbooks.workflow_actions.rootly_timeline_events_pb2
 import protos.playbooks.workflow_actions.slack_message_pb2
 import protos.playbooks.workflow_actions.slack_thread_reply_pb2
 import protos.playbooks.workflow_actions.smtp_email_pb2
+import protos.playbooks.workflow_actions.zenduty_notes_pb2
 import protos.playbooks.workflow_entry_points.api_entry_point_pb2
 import protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2
+import protos.playbooks.workflow_entry_points.rootly_incident_entry_point_pb2
 import protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2
+import protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2
 import protos.playbooks.workflow_schedules.cron_schedule_pb2
 import protos.playbooks.workflow_schedules.interval_schedule_pb2
 import protos.playbooks.workflow_schedules.one_off_schedule_pb2
@@ -153,18 +157,24 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         API: WorkflowEntryPoint._Type.ValueType  # 1
         SLACK_CHANNEL_ALERT: WorkflowEntryPoint._Type.ValueType  # 2
         PAGERDUTY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 3
+        ZENDUTY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 4
+        ROOTLY_INCIDENT: WorkflowEntryPoint._Type.ValueType  # 5
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowEntryPoint.Type.ValueType  # 0
     API: WorkflowEntryPoint.Type.ValueType  # 1
     SLACK_CHANNEL_ALERT: WorkflowEntryPoint.Type.ValueType  # 2
     PAGERDUTY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 3
+    ZENDUTY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 4
+    ROOTLY_INCIDENT: WorkflowEntryPoint.Type.ValueType  # 5
 
     ID_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     API_FIELD_NUMBER: builtins.int
     SLACK_CHANNEL_ALERT_FIELD_NUMBER: builtins.int
     PAGERDUTY_INCIDENT_FIELD_NUMBER: builtins.int
+    ZENDUTY_INCIDENT_FIELD_NUMBER: builtins.int
+    ROOTLY_INCIDENT_FIELD_NUMBER: builtins.int
     @property
     def id(self) -> google.protobuf.wrappers_pb2.UInt64Value: ...
     type: global___WorkflowEntryPoint.Type.ValueType
@@ -174,6 +184,10 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
     def slack_channel_alert(self) -> protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint: ...
     @property
     def pagerduty_incident(self) -> protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint: ...
+    @property
+    def zenduty_incident(self) -> protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2.ZenDutyIncidentEntryPoint: ...
+    @property
+    def rootly_incident(self) -> protos.playbooks.workflow_entry_points.rootly_incident_entry_point_pb2.RootlyIncidentEntryPoint: ...
     def __init__(
         self,
         *,
@@ -182,10 +196,12 @@ class WorkflowEntryPoint(google.protobuf.message.Message):
         api: protos.playbooks.workflow_entry_points.api_entry_point_pb2.ApiWorkflowEntryPoint | None = ...,
         slack_channel_alert: protos.playbooks.workflow_entry_points.slack_alert_entry_point_pb2.SlackChannelAlertEntryPoint | None = ...,
         pagerduty_incident: protos.playbooks.workflow_entry_points.pd_incident_entry_point_pb2.PagerDutyIncidentEntryPoint | None = ...,
+        zenduty_incident: protos.playbooks.workflow_entry_points.zd_incident_entry_point_pb2.ZenDutyIncidentEntryPoint | None = ...,
+        rootly_incident: protos.playbooks.workflow_entry_points.rootly_incident_entry_point_pb2.RootlyIncidentEntryPoint | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "slack_channel_alert", b"slack_channel_alert", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "pagerduty_incident"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "rootly_incident", b"rootly_incident", "slack_channel_alert", b"slack_channel_alert", "zenduty_incident", b"zenduty_incident"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["api", b"api", "config", b"config", "id", b"id", "pagerduty_incident", b"pagerduty_incident", "rootly_incident", b"rootly_incident", "slack_channel_alert", b"slack_channel_alert", "type", b"type", "zenduty_incident", b"zenduty_incident"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["config", b"config"]) -> typing_extensions.Literal["api", "slack_channel_alert", "pagerduty_incident", "zenduty_incident", "rootly_incident"] | None: ...
 
 global___WorkflowEntryPoint = WorkflowEntryPoint
 
@@ -208,6 +224,8 @@ class WorkflowAction(google.protobuf.message.Message):
         MS_TEAMS_MESSAGE_WEBHOOK: WorkflowAction._Type.ValueType  # 4
         PAGERDUTY_NOTES: WorkflowAction._Type.ValueType  # 5
         SMTP_EMAIL: WorkflowAction._Type.ValueType  # 6
+        ZENDUTY_NOTES: WorkflowAction._Type.ValueType  # 7
+        ROOTLY_TIMELINE_EVENTS: WorkflowAction._Type.ValueType  # 8
 
     class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
     UNKNOWN: WorkflowAction.Type.ValueType  # 0
@@ -217,6 +235,8 @@ class WorkflowAction(google.protobuf.message.Message):
     MS_TEAMS_MESSAGE_WEBHOOK: WorkflowAction.Type.ValueType  # 4
     PAGERDUTY_NOTES: WorkflowAction.Type.ValueType  # 5
     SMTP_EMAIL: WorkflowAction.Type.ValueType  # 6
+    ZENDUTY_NOTES: WorkflowAction.Type.ValueType  # 7
+    ROOTLY_TIMELINE_EVENTS: WorkflowAction.Type.ValueType  # 8
 
     @typing_extensions.final
     class WorkflowActionConnectorSource(google.protobuf.message.Message):
@@ -249,6 +269,8 @@ class WorkflowAction(google.protobuf.message.Message):
     MS_TEAMS_MESSAGE_WEBHOOK_FIELD_NUMBER: builtins.int
     PAGERDUTY_NOTES_FIELD_NUMBER: builtins.int
     SMTP_EMAIL_FIELD_NUMBER: builtins.int
+    ZENDUTY_NOTES_FIELD_NUMBER: builtins.int
+    ROOTLY_TIMELINE_EVENTS_FIELD_NUMBER: builtins.int
     type: global___WorkflowAction.Type.ValueType
     source: protos.base_pb2.Source.ValueType
     @property
@@ -265,6 +287,10 @@ class WorkflowAction(google.protobuf.message.Message):
     def pagerduty_notes(self) -> protos.playbooks.workflow_actions.pd_notes_pb2.PagerdutyNotesWorkflowAction: ...
     @property
     def smtp_email(self) -> protos.playbooks.workflow_actions.smtp_email_pb2.SMTPEmailWorkflowAction: ...
+    @property
+    def zenduty_notes(self) -> protos.playbooks.workflow_actions.zenduty_notes_pb2.ZendutyNotesWorkflowAction: ...
+    @property
+    def rootly_timeline_events(self) -> protos.playbooks.workflow_actions.rootly_timeline_events_pb2.RootlyTimelineEventsWorkflowAction: ...
     def __init__(
         self,
         *,
@@ -277,10 +303,12 @@ class WorkflowAction(google.protobuf.message.Message):
         ms_teams_message_webhook: protos.playbooks.workflow_actions.ms_teams_message_webhook_pb2.MSTeamsMessageWebhookWorkflowAction | None = ...,
         pagerduty_notes: protos.playbooks.workflow_actions.pd_notes_pb2.PagerdutyNotesWorkflowAction | None = ...,
         smtp_email: protos.playbooks.workflow_actions.smtp_email_pb2.SMTPEmailWorkflowAction | None = ...,
+        zenduty_notes: protos.playbooks.workflow_actions.zenduty_notes_pb2.ZendutyNotesWorkflowAction | None = ...,
+        rootly_timeline_events: protos.playbooks.workflow_actions.rootly_timeline_events_pb2.RootlyTimelineEventsWorkflowAction | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "ms_teams_message_webhook", b"ms_teams_message_webhook", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "smtp_email", b"smtp_email"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "ms_teams_message_webhook", b"ms_teams_message_webhook", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "smtp_email", b"smtp_email", "source", b"source", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["api", "slack_message", "slack_thread_reply", "ms_teams_message_webhook", "pagerduty_notes", "smtp_email"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "ms_teams_message_webhook", b"ms_teams_message_webhook", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "rootly_timeline_events", b"rootly_timeline_events", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "smtp_email", b"smtp_email", "zenduty_notes", b"zenduty_notes"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["action_connector_source", b"action_connector_source", "api", b"api", "ms_teams_message_webhook", b"ms_teams_message_webhook", "notification_config", b"notification_config", "pagerduty_notes", b"pagerduty_notes", "rootly_timeline_events", b"rootly_timeline_events", "slack_message", b"slack_message", "slack_thread_reply", b"slack_thread_reply", "smtp_email", b"smtp_email", "source", b"source", "type", b"type", "zenduty_notes", b"zenduty_notes"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["notification_config", b"notification_config"]) -> typing_extensions.Literal["api", "slack_message", "slack_thread_reply", "ms_teams_message_webhook", "pagerduty_notes", "smtp_email", "zenduty_notes", "rootly_timeline_events"] | None: ...
 
 global___WorkflowAction = WorkflowAction
 
@@ -573,11 +601,15 @@ class WorkflowExecution(google.protobuf.message.Message):
             UNKNOWN: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 0
             SLACK_MESSAGE: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 1
             PAGER_DUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 2
+            ZENDUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 3
+            ROOTLY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata._Type.ValueType  # 4
 
         class Type(_Type, metaclass=_TypeEnumTypeWrapper): ...
         UNKNOWN: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 0
         SLACK_MESSAGE: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 1
         PAGER_DUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 2
+        ZENDUTY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 3
+        ROOTLY_INCIDENT: WorkflowExecution.WorkflowExecutionMetadata.Type.ValueType  # 4
 
         TYPE_FIELD_NUMBER: builtins.int
         EVENT_FIELD_NUMBER: builtins.int

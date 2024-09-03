@@ -35,6 +35,18 @@ export const notificationOptions = [
         type: "checkbox",
         group: "notification",
       },
+      {
+        id: NotificationOptionTypes.ROOTLY_TIMELINE_EVENTS,
+        label: "Send event to rootly timeline",
+        type: "checkbox",
+        group: "notification",
+      },
+      {
+        id: NotificationOptionTypes.ZENDUTY_NOTES,
+        label: "Send a note to Zenduty Incident",
+        type: "checkbox",
+        group: "notification",
+      },
     ],
   },
 ];

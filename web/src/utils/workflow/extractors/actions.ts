@@ -30,6 +30,13 @@ export const handleActionsExtractor = (
         trigger: {},
       };
     case Types.WorkflowActionOptions.PAGERDUTY_NOTES:
+    case Types.WorkflowActionOptions.ROOTLY_TIMELINE_EVENTS:
+    case Types.WorkflowActionOptions.ZENDUTY_NOTES:
+      return {
+        channel: {},
+        trigger: {},
+      };
+    case Types.WorkflowActionOptions.ZENDUTY_NOTES:
       return {
         channel: {},
         trigger: {},

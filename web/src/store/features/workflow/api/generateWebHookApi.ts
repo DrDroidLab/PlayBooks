@@ -1,12 +1,14 @@
-import { GENERATE_WEBHOOK } from "../../../../constants/index.ts";
 import { apiSlice } from "../../../app/apiSlice.ts";
 import { setCurrentWorkflowKey } from "../workflowSlice.ts";
 
 export const generateWebhookApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    generateWebhook: builder.mutation<any, string>({
-      query: (workflow_name) => ({
-        url: GENERATE_WEBHOOK,
+    generateWebhook: builder.mutation<
+      any,
+      { workflow_name: string; tool_name: string }
+    >({
+      query: ({ workflow_name, tool_name }) => ({
+        url: `/connectors/handlers/${tool_name}/generate/webhook`,
         method: "POST",
         body: {
           workflow_name,
@@ -20,7 +22,7 @@ export const generateWebhookApi = apiSlice.injectEndpoints({
             setCurrentWorkflowKey({
               key: "webhook",
               value: data,
-            })
+            }),
           );
         } catch (e) {
           console.log(e);

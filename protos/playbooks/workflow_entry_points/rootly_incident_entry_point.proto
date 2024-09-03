@@ -1,0 +1,11 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+
+message RootlyIncidentEntryPoint {
+  google.protobuf.StringValue incident_title = 1;
+  google.protobuf.StringValue incident_id = 2;
+}

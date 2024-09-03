@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+
+message Rootly {
+  message SendTimelineEvent {
+    google.protobuf.StringValue incident_id = 1;
+    google.protobuf.StringValue content = 2;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SEND_TIMELINE_EVENT = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SendTimelineEvent send_timeline_event = 2;
+  }
+}
