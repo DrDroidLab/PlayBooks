@@ -206,6 +206,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     KUBERNETES: _Source.ValueType  # 47
     SMTP: _Source.ValueType  # 48
     BIG_QUERY: _Source.ValueType  # 49
+    ZENDUTY: _Source.ValueType  # 50
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -259,6 +260,7 @@ GRAFANA_LOKI: Source.ValueType  # 46
 KUBERNETES: Source.ValueType  # 47
 SMTP: Source.ValueType  # 48
 BIG_QUERY: Source.ValueType  # 49
+ZENDUTY: Source.ValueType  # 50
 global___Source = Source
 
 class _SourceKeyType:
@@ -349,6 +351,7 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     SMTP_PASSWORD: _SourceKeyType.ValueType  # 80
     BIG_QUERY_PROJECT_ID: _SourceKeyType.ValueType  # 81
     BIG_QUERY_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 82
+    ZENDUTY_API_KEY: _SourceKeyType.ValueType  # 83
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -434,6 +437,7 @@ SMTP_USER: SourceKeyType.ValueType  # 79
 SMTP_PASSWORD: SourceKeyType.ValueType  # 80
 BIG_QUERY_PROJECT_ID: SourceKeyType.ValueType  # 81
 BIG_QUERY_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 82
+ZENDUTY_API_KEY: SourceKeyType.ValueType  # 83
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -500,6 +504,8 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Elastic Search Models"""
     GCM_METRIC: _SourceModelType.ValueType  # 1701
     """GCM Models"""
+    ZENDUTY_INCIDENT: _SourceModelType.ValueType  # 1801
+    """Zenduty Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -561,6 +567,8 @@ ELASTIC_SEARCH_INDEX: SourceModelType.ValueType  # 1601
 """Elastic Search Models"""
 GCM_METRIC: SourceModelType.ValueType  # 1701
 """GCM Models"""
+ZENDUTY_INCIDENT: SourceModelType.ValueType  # 1801
+"""Zenduty Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final

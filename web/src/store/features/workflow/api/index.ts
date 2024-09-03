@@ -8,3 +8,4 @@ export * from "./getWorkflowExecutionLogsApi.ts";
 export * from "./getWorkflowExecutionsApi.ts";
 export * from "./generateCurlApi.ts";
 export * from "./execution";
+export * from "./generateZendutyWebHookApi.ts";

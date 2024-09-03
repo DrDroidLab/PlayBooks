@@ -16,6 +16,7 @@ import SummaryOptions from "./SummaryOptions.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import Transformer from "./Transformer.tsx";
+import { useGenerateZendutyWebHookMutation } from "../../../store/features/workflow/api/generateZendutyWebHookApi.ts";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -23,7 +24,15 @@ function BasicDetails() {
     useGenerateCurlMutation();
   const [triggerGenerateWebhook, { isLoading: generateWebhookLoading }] =
     useGenerateWebhookMutation();
+  const [
+    triggerGenerateZendutyWebhook,
+    { isLoading: generateZendutyWebhookLoading },
+  ] = useGenerateZendutyWebHookMutation();
   const dispatch = useDispatch();
+  const loading =
+    generateCurlLoading ||
+    generateWebhookLoading ||
+    generateZendutyWebhookLoading;
 
   const handleGenerateCurl = async () => {
     if (!currentWorkflow.name) {
@@ -41,6 +50,10 @@ function BasicDetails() {
     await triggerGenerateWebhook(currentWorkflow.name);
   };
 
+  const handleGenerateZendutyWebhook = async () => {
+    await triggerGenerateZendutyWebhook();
+  };
+
   const handleWorkflowType = () => {
     switch (currentWorkflow?.workflowType) {
       case "api":
@@ -54,6 +67,15 @@ function BasicDetails() {
         return;
       case "pagerduty_incident":
         handleGenerateWebhook();
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
+        return;
+      case "zenduty_incident":
+        handleGenerateZendutyWebhook();
         dispatch(
           setCurrentWorkflowKey({
             key: "useTransformer",
@@ -134,9 +156,7 @@ function BasicDetails() {
                 )
               }
             />
-            {(generateCurlLoading || generateWebhookLoading) && (
-              <CircularProgress size={20} />
-            )}
+            {loading && <CircularProgress size={20} />}
           </div>
         </div>
         <HandleWorkflowType />

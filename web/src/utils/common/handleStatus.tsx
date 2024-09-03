@@ -1,7 +1,7 @@
 import { ExecutionStatus } from "../../types";
 
 export const handleStatus = (status: string) => {
-  let className = "border p-1 text-sm bg-gray-50 w-fit rounded ";
+  let className = "border p-1 text-xs bg-gray-50 w-fit rounded-full ";
   switch (status) {
     case ExecutionStatus.WORKFLOW_CREATED:
     case ExecutionStatus.CREATED:
@@ -10,22 +10,22 @@ export const handleStatus = (status: string) => {
 
     case ExecutionStatus.WORKFLOW_SCHEDULED:
     case ExecutionStatus.SCHEDULED:
-      className += "bg-pink-200";
+      className += "bg-pink-500 text-white";
       break;
 
     case ExecutionStatus.WORKFLOW_RUNNING:
     case ExecutionStatus.RUNNING:
-      className += "bg-blue-200";
+      className += "bg-blue-500 text-white";
       break;
 
     case ExecutionStatus.WORKFLOW_FINISHED:
     case ExecutionStatus.FINISHED:
-      className += "bg-green-200";
+      className += "bg-green-500 text-white";
       break;
 
     case ExecutionStatus.WORKFLOW_FAILED:
     case ExecutionStatus.FAILED:
-      className += "bg-red-200";
+      className += "bg-red-500 text-white";
       break;
 
     default:

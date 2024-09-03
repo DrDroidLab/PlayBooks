@@ -142,3 +142,7 @@ message GetConnectedPlaybooksResponse {
 message GetPagerDutyWebhookRequest {}
 
 message GetPagerDutyWebhookResponse {}
+
+message GetZendutyWebhookRequest {}
+
+message GetZendutyWebhookResponse {}

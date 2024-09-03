@@ -4,15 +4,16 @@ import Heading from "../../components/Heading.tsx";
 import { useEffect } from "react";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.tsx";
 import TableSkeleton from "../../components/Skeleton/TableLoader.tsx";
-import ExecutionsTable from "../../components/Workflows/executions/ExecutionsTable.js";
 import { useLazyGetWorkflowQuery } from "../../store/features/workflow/api/getWorkflowApi.ts";
 import Loading from "../../components/common/Loading/index.tsx";
 import { useSelector } from "react-redux";
 import { currentWorkflowSelector } from "../../store/features/workflow/workflowSlice.ts";
 import { useGetWorkflowExecutionsQuery } from "../../store/features/workflow/api/getWorkflowExecutionsApi.ts";
 import { ChevronLeft } from "@mui/icons-material";
-import PaginatedTable from "../../components/PaginatedTable.tsx";
 import usePaginationComponent from "../../hooks/common/usePaginationComponent";
+import PaginatedTable from "../../components/common/Table/PaginatedTable.tsx";
+import { workflowExecutionColumns } from "../../utils/workflow/pages/workflowExecutions.ts";
+import { useWorkflowExecutionsListData } from "../../hooks/pages/index.ts";
 
 const WorkflowExecutions = () => {
   const { id: workflowId } = useParams();
@@ -26,6 +27,7 @@ const WorkflowExecutions = () => {
   const currentWorkflow = useSelector(currentWorkflowSelector);
   const workflowsList = data?.workflow_executions;
   const total = data?.meta?.total_count;
+  const { rows, actions } = useWorkflowExecutionsListData(workflowsList ?? []);
 
   useEffect(() => {
     if (workflowId != null) {
@@ -40,23 +42,21 @@ const WorkflowExecutions = () => {
   return (
     <div>
       <Heading heading={"Workflow Executions-" + currentWorkflow.name} />
-      <button
-        onClick={() => navigate(-1)}
-        className="p-1 text-sm border border-violet-500 rounded m-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
-        <ChevronLeft /> All Workflows
-      </button>
-      <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
-        <PaginatedTable
-          renderTable={ExecutionsTable}
-          data={workflowsList ?? []}
-          total={total}
-          tableContainerStyles={
-            workflowsList?.length
-              ? {}
-              : { maxHeight: "35vh", minHeight: "35vh" }
-          }
-        />
-      </SuspenseLoader>
+      <main className="p-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-1 text-sm border border-violet-500 rounded my-2 text-violet-500 flex items-center cursor-pointer hover:text-white hover:bg-violet-500 transition-all">
+          <ChevronLeft /> All Workflows
+        </button>
+        <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
+          <PaginatedTable
+            columns={workflowExecutionColumns}
+            data={rows}
+            actions={actions}
+            total={total}
+          />
+        </SuspenseLoader>
+      </main>
     </div>
   );
 };

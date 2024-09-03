@@ -3,6 +3,7 @@ export enum WorkflowActionOptions {
   SLACK_THREAD_REPLY = "slack_thread_reply",
   MS_TEAMS_MESSAGE_WEBHOOK = "ms_teams_message_webhook",
   PAGERDUTY_NOTES = "pagerduty_notes",
+  ZENDUTY_NOTES = "zenduty_notes",
   SMTP_EMAIL = "smtp_email",
 }
 

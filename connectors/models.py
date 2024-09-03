@@ -45,6 +45,7 @@ integrations_connector_type_display_name_map = {
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
     Source.KUBERNETES: 'KUBERNETES',
     Source.SMTP: 'EMAIL SERVER',
+    Source.ZENDUTY: 'ZENDUTY',
     Source.BIG_QUERY: 'BIG QUERY'
 }
 
@@ -53,6 +54,7 @@ integrations_connector_type_category_map = {
     Source.GOOGLE_CHAT: 'Alert Channels',
     Source.PAGER_DUTY: 'Alert Channels',
     Source.OPS_GENIE: 'Alert Channels',
+    Source.ZENDUTY: 'Alert Channels',
     Source.MS_TEAMS: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
@@ -87,6 +89,11 @@ integrations_connector_type_connector_keys_map = {
         [
             SourceKeyType.PAGER_DUTY_API_KEY,
             SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL
+        ]
+    ],
+    Source.ZENDUTY: [
+        [
+            SourceKeyType.ZENDUTY_API_KEY,
         ]
     ],
     Source.SLACK: [
@@ -386,6 +393,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.SMTP_PORT: 'Port',
     SourceKeyType.SMTP_USER: 'Email User',
     SourceKeyType.SMTP_PASSWORD: 'Password',
+    SourceKeyType.ZENDUTY_API_KEY: "API Key",
     SourceKeyType.BIG_QUERY_PROJECT_ID: 'Project ID',
     SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON: 'Service Account JSON'
 }
@@ -528,6 +536,8 @@ class ConnectorKey(models.Model):
                              SourceKeyType.ELASTIC_SEARCH_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, 
+                             SourceKeyType.ZENDUTY_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,
                              SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON]:
             key_value = '*********' + self.key[-4:]

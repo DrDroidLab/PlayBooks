@@ -44,7 +44,9 @@ function SummaryOptions() {
 
   useEffect(() => {
     if (
-      currentWorkflow.notification === NotificationOptionTypes.PAGERDUTY_NOTES
+      currentWorkflow.notification ===
+        NotificationOptionTypes.PAGERDUTY_NOTES ||
+      currentWorkflow.notification === NotificationOptionTypes.ZENDUTY_NOTES
     ) {
       handleInput("generateSummary", false);
       setSelectedValue("default");

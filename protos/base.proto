@@ -163,6 +163,7 @@ enum Source {
   KUBERNETES = 47;
   SMTP = 48;
   BIG_QUERY = 49;
+  ZENDUTY = 50;
 }
 
 enum SourceKeyType {
@@ -276,6 +277,8 @@ enum SourceKeyType {
 
   BIG_QUERY_PROJECT_ID = 81;
   BIG_QUERY_SERVICE_ACCOUNT_JSON = 82;
+
+  ZENDUTY_API_KEY = 83;
 }
 
 enum SourceModelType {
@@ -356,4 +359,7 @@ enum SourceModelType {
 
   // GCM Models
   GCM_METRIC = 1701;
+
+  // Zenduty Models
+  ZENDUTY_INCIDENT = 1801;
 }
