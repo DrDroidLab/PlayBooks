@@ -256,14 +256,12 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
         slack_thread_ts = None
         pd_incident_id = None
         rootly_incident_id = None
+        zd_incident_number = None
+
         if workflow_execution.metadata:
             slack_thread_ts = workflow_execution.metadata.get('event', {}).get('event', {}).get('ts', None)
             pd_incident_id = workflow_execution.metadata.get('incident_id', None)
             rootly_incident_id = workflow_execution.metadata.get('event', {}).get('incident_id', None)
-        zd_incident_number = None
-        if workflow_execution.metadata:
-            slack_thread_ts = workflow_execution.metadata.get('event', {}).get('event', {}).get('ts', None)
-            pd_incident_id = workflow_execution.metadata.get('incident_id', None)
             zd_incident_number = workflow_execution.metadata.get('event', {}).get('incident_id', None)
 
         playbook_execution = playbook_executions.first()
@@ -303,6 +301,8 @@ def workflow_action_execution(account_id, workflow_id, workflow_execution_id, pl
                     continue
                 w_action_dict = proto_to_dict(w_action)
                 w_action_dict['rootly_timeline_events'] = {'incident_id': rootly_incident_id}
+                updated_w_action = dict_to_proto(w_action_dict, WorkflowActionProto)
+                action_executor_facade.execute(updated_w_action, execution_output)
             elif w_action.type == WorkflowActionProto.Type.ZENDUTY_NOTES:
                 if not zd_incident_number:
                     logger.error(f"Zenduty incident id not found for workflow_execution_id: {workflow_execution_id}")
