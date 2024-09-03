@@ -162,7 +162,8 @@ enum Source {
   GRAFANA_LOKI = 46;
   KUBERNETES = 47;
   SMTP = 48;
-  ZENDUTY = 49;
+  BIG_QUERY = 49;
+  ZENDUTY = 50;
 }
 
 enum SourceKeyType {
@@ -274,7 +275,10 @@ enum SourceKeyType {
   SMTP_USER = 79;
   SMTP_PASSWORD = 80;
 
-  ZENDUTY_API_KEY = 81;
+  BIG_QUERY_PROJECT_ID = 81;
+  BIG_QUERY_SERVICE_ACCOUNT_JSON = 82;
+
+  ZENDUTY_API_KEY = 83;
 }
 
 enum SourceModelType {

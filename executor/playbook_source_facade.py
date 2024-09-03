@@ -1,5 +1,4 @@
 import logging
-from typing import Dict
 
 from google.protobuf.struct_pb2 import Struct
 from google.protobuf.wrappers_pb2 import StringValue
@@ -8,6 +7,7 @@ from connectors.models import integrations_connector_type_display_name_map
 from executor.source_managers.api_source_manager import ApiSourceManager
 from executor.source_managers.azure_source_manager import AzureSourceManager
 from executor.source_managers.bash_source_manager import BashSourceManager
+from executor.source_managers.big_query_source_manager import BigQuerySourceManager
 from executor.source_managers.documentation_source_manager import DocumentationSourceManager
 from executor.source_managers.elastic_search_source_manager import ElasticSearchSourceManager
 from executor.source_managers.gcm_source_manager import GcmSourceManager
@@ -134,6 +134,7 @@ playbook_source_facade.register(Source.POSTGRES, PostgresSourceManager())
 playbook_source_facade.register(Source.CLICKHOUSE, ClickhouseSourceManager())
 playbook_source_facade.register(Source.SQL_DATABASE_CONNECTION, SqlDatabaseConnectionSourceManager())
 playbook_source_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceManager())
+playbook_source_facade.register(Source.BIG_QUERY, BigQuerySourceManager())
 
 playbook_source_facade.register(Source.API, ApiSourceManager())
 playbook_source_facade.register(Source.BASH, BashSourceManager())
