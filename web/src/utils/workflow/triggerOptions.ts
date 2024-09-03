@@ -12,10 +12,13 @@ export const triggerOptions = [
     label: "PagerDuty",
   },
   {
+<<<<<<< HEAD
     id: "rootly_incident",
     label: "Rootly",
   },
   {
+=======
+>>>>>>> 6588b2f402ef53f21c3c17e13f67f5e4dcb2e902
     id: "zenduty_incident",
     label: "Zenduty",
   },
