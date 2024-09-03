@@ -1,0 +1,24 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+
+
+message Zenduty {
+  message SendNote {
+    google.protobuf.StringValue service = 1;
+    int32 incident_number = 2;
+    google.protobuf.Struct note = 3;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    SEND_NOTE = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    SendNote send_note = 2;
+  }
+}

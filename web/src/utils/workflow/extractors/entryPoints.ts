@@ -2,7 +2,7 @@ import * as Types from "../types/index.ts";
 
 export const handleEntryPointsExtractor = (
   type: Types.WorkflowEntryPointOptions,
-  entryPoint: Types.WorkflowEntryPointContractType
+  entryPoint: Types.WorkflowEntryPointContractType,
 ) => {
   switch (type) {
     case Types.WorkflowEntryPointOptions.API:
@@ -22,6 +22,20 @@ export const handleEntryPointsExtractor = (
       return {
         trigger: {
           serviceName: entryPoint.service_name,
+          title: entryPoint.incident_title,
+        },
+      };
+    case Types.WorkflowEntryPointOptions.ZENDUTY_INCIDENT:
+      return {
+        trigger: {
+          serviceName: entryPoint.service_name,
+          title: entryPoint.incident_title,
+        },
+      };
+
+    case Types.WorkflowEntryPointOptions.ROOTLY_INCIDENT:
+      return {
+        trigger: {
           title: entryPoint.incident_title,
         },
       };

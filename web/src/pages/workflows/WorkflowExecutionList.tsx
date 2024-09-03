@@ -2,11 +2,12 @@
 import Heading from "../../components/Heading.js";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader.js";
 import TableSkeleton from "../../components/Skeleton/TableLoader.js";
-import ExecutionsTable from "../../components/Workflows/executions/ExecutionsTable.js";
 import Search from "../../components/common/Search/index.tsx";
-import PaginatedTable from "../../components/PaginatedTable.tsx";
+import PaginatedTable from "../../components/common/Table/PaginatedTable.tsx";
 import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 import useSearch from "../../hooks/common/useSearch";
+import { useWorkflowExecutionsListData } from "../../hooks/pages/index.ts";
+import { workflowExecutionColumns } from "../../utils/workflow/pages/workflowExecutions.ts";
 
 const context = "WORKFLOW_EXECUTION";
 
@@ -15,6 +16,7 @@ const WorkflowExecutionList = () => {
   usePaginationComponent(refetch);
   const workflowsList = data?.[context.toLowerCase()];
   const total = data?.meta?.total_count;
+  const { rows, actions } = useWorkflowExecutionsListData(workflowsList ?? []);
 
   return (
     <div>
@@ -23,14 +25,10 @@ const WorkflowExecutionList = () => {
         <Search context={context} />
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <PaginatedTable
-            renderTable={ExecutionsTable}
-            data={workflowsList ?? []}
+            columns={workflowExecutionColumns}
+            data={rows}
+            actions={actions}
             total={total}
-            tableContainerStyles={
-              workflowsList?.length
-                ? {}
-                : { maxHeight: "35vh", minHeight: "35vh" }
-            }
           />
         </SuspenseLoader>
       </main>

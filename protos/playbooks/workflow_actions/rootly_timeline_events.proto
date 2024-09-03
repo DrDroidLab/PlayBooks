@@ -1,0 +1,9 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+
+message RootlyTimelineEventsWorkflowAction {
+  google.protobuf.StringValue incident_id = 1;
+}

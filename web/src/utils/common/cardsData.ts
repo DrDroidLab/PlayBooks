@@ -26,6 +26,19 @@ export const cardsData = [
     url: "/integrations/pagerduty_logo.png",
     enum: "PAGER_DUTY",
     desc: "Authorise Doctor Droid to read incidents from PagerDuty",
+    docs: "https://docs.drdroid.io/docs/pagerduty",
+  },
+  {
+    url: "/integrations/zenduty_logo.svg",
+    enum: "ZENDUTY",
+    desc: "Authorise Doctor Droid to read incidents from Zenduty",
+    docs: "https://docs.drdroid.io/docs/zenduty",
+  },
+  {
+    url: "/integrations/rootly_logo.png",
+    enum: "ROOTLY",
+    desc: "Authorise Doctor Droid to read incidents from Rootly",
+    docs: "https://docs.drdroid.io/docs/rootly",
   },
   {
     url: "/integrations/elastic_search.png",
@@ -155,5 +168,11 @@ export const cardsData = [
     enum: "SMTP",
     desc: "Connect to SMTP Server",
     docs: "https://docs.drdroid.io/docs/email",
+  },
+  {
+    url: "/integrations/bigquery_logo.webp",
+    enum: "BIG_QUERY",
+    desc: "Connect to Google BigQuery",
+    docs: "https://docs.drdroid.io/docs/bigquery",
   },
 ];

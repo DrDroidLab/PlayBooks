@@ -21,6 +21,7 @@ message Api {
     google.protobuf.StringValue payload = 4;
     google.protobuf.UInt64Value timeout = 5;
     google.protobuf.StringValue cookies = 6;
+    google.protobuf.BoolValue ssl_verify = 7;
   }
 
   enum TaskType {

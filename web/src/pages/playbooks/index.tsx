@@ -4,16 +4,22 @@ import usePaginationComponent from "../../hooks/common/usePaginationComponent";
 import CustomButton from "../../components/common/CustomButton";
 import { Add } from "@mui/icons-material";
 import Heading from "../../components/Heading";
-import PaginatedTable from "../../components/PaginatedTable";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
 import TableSkeleton from "../../components/Skeleton/TableLoader";
-import PlaybookTable from "../../components/Playbooks/PlayBookTable";
+import PaginatedTable from "../../components/common/Table/PaginatedTable";
+import useToggle from "../../hooks/common/useToggle";
+import PlaybookActionOverlay from "../../components/Playbooks/PlaybookActionOverlay";
+import { playbookColumns } from "../../utils/playbook/pages";
+import Loading from "../../components/common/Loading";
+import { usePlaybooksData } from "../../hooks/pages/playbooks";
 
 const Playbooks = () => {
   const navigate = useNavigate();
   const { data, isFetching, refetch } = useGetPlaybooksQuery();
   const playbookList = data?.playbooks;
   const total = data?.meta?.total_count;
+  const { rows, actions, selectedPlaybook, copyLoading, isActionOpen, toggle } =
+    usePlaybooksData(playbookList ?? []);
   usePaginationComponent(refetch);
 
   const handleCreatePlaybook = () => {
@@ -21,6 +27,10 @@ const Playbooks = () => {
       pathname: "/playbooks/create",
     });
   };
+
+  if (copyLoading) {
+    return <Loading title="Copying your playbook..." />;
+  }
 
   return (
     <div>
@@ -33,17 +43,19 @@ const Playbooks = () => {
         </div>
         <SuspenseLoader loading={isFetching} loader={<TableSkeleton />}>
           <PaginatedTable
-            renderTable={PlaybookTable}
-            data={playbookList ?? []}
+            columns={playbookColumns}
+            data={rows}
+            actions={actions}
             total={total}
-            tableContainerStyles={
-              playbookList?.length
-                ? {}
-                : { maxHeight: "35vh", minHeight: "35vh" }
-            }
           />
         </SuspenseLoader>
       </main>
+      <PlaybookActionOverlay
+        playbook={selectedPlaybook}
+        isOpen={isActionOpen}
+        toggleOverlay={toggle}
+        refreshTable={refetch}
+      />
     </div>
   );
 };

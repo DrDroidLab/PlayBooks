@@ -9,4 +9,6 @@ export const connectorsWithoutAssets = [
   connectors.MS_TEAMS,
   connectors.GRAFANA_LOKI,
   connectors.SMTP,
+  connectors.ROOTLY,
+  connectors.ZENDUTY,
 ];

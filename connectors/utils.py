@@ -189,6 +189,14 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['api_key'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.PAGER_DUTY_CONFIGURED_EMAIL:
                 credentials_dict['configured_email'] = conn_key.key.value
+    elif connector_type == Source.ROOTLY:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.ROOTLY_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
+    elif connector_type == Source.ZENDUTY:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.ZENDUTY_API_KEY:
+                credentials_dict['api_key'] = conn_key.key.value
     elif connector_type == Source.ELASTIC_SEARCH:
         for conn_key in connector_keys:
             if conn_key.key_type == SourceKeyType.ELASTIC_SEARCH_PROTOCOL:
@@ -247,6 +255,12 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['username'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.SMTP_PASSWORD:
                 credentials_dict['password'] = conn_key.key.value
+    elif connector_type == Source.BIG_QUERY:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.BIG_QUERY_PROJECT_ID:
+                credentials_dict['project_id'] = conn_key.key.value
+            elif conn_key.key_type == SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON:
+                credentials_dict['service_account_json'] = conn_key.key.value
     else:
         return None
     return credentials_dict

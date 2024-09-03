@@ -100,7 +100,9 @@ def trigger_alert_entry_point_workflows(account_id, entry_point_id, triggered_by
 
         event_context = None
         if alert_event_type in [WorkflowExecution.WorkflowExecutionMetadata.Type.SLACK_MESSAGE,
-                                WorkflowExecution.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT]:
+                                WorkflowExecution.WorkflowExecutionMetadata.Type.PAGER_DUTY_INCIDENT,
+                                WorkflowExecution.WorkflowExecutionMetadata.Type.ROOTLY_INCIDENT,
+                                WorkflowExecution.WorkflowExecutionMetadata.Type.ZENDUTY_INCIDENT]:
             wf_configuration: WorkflowConfiguration = workflow_proto.configuration
             if alert_event and wf_configuration.transformer_lambda_function:
                 transformer_lambda_function: Lambda.Function = wf_configuration.transformer_lambda_function
