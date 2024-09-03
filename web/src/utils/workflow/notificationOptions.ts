@@ -41,6 +41,12 @@ export const notificationOptions = [
         type: "checkbox",
         group: "notification",
       },
+      {
+        id: NotificationOptionTypes.ZENDUTY_NOTES,
+        label: "Send a note to Zenduty Incident",
+        type: "checkbox",
+        group: "notification",
+      },
     ],
   },
 ];

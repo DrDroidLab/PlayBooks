@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message BigQuery {
+  message QueryTable {
+    google.protobuf.StringValue dataset = 1;
+    google.protobuf.StringValue table = 2;
+    google.protobuf.StringValue query = 3;
+    google.protobuf.UInt64Value limit = 4;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    QUERY_TABLE = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    QueryTable query_table = 2;
+  }
+}

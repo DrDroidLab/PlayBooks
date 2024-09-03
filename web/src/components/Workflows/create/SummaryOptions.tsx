@@ -8,6 +8,7 @@ import { NotificationOptionTypes } from "../../../utils/workflow/notificationOpt
 
 const unsupportedNotificationOptionsForSummary = [
   NotificationOptionTypes.PAGERDUTY_NOTES,
+  NotificationOptionTypes.ZENDUTY_NOTES,
   NotificationOptionTypes.ROOTLY_TIMELINE_EVENTS,
 ];
 

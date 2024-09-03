@@ -46,6 +46,8 @@ integrations_connector_type_display_name_map = {
     Source.GRAFANA_LOKI: 'GRAFANA LOKI',
     Source.KUBERNETES: 'KUBERNETES',
     Source.SMTP: 'EMAIL SERVER',
+    Source.ZENDUTY: 'ZENDUTY',
+    Source.BIG_QUERY: 'BIG QUERY'
 }
 
 integrations_connector_type_category_map = {
@@ -54,6 +56,7 @@ integrations_connector_type_category_map = {
     Source.PAGER_DUTY: 'Alert Channels',
     Source.ROOTLY: 'Alert Channels',
     Source.OPS_GENIE: 'Alert Channels',
+    Source.ZENDUTY: 'Alert Channels',
     Source.MS_TEAMS: 'Alert Channels',
     Source.SENTRY: 'APM Tools',
     Source.NEW_RELIC: 'APM Tools',
@@ -76,10 +79,11 @@ integrations_connector_type_category_map = {
     Source.CLICKHOUSE: 'Database',
     Source.POSTGRES: 'Database',
     Source.SQL_DATABASE_CONNECTION: 'Database',
+    Source.BIG_QUERY: 'Database',
     Source.OPEN_AI: 'LLM Tools',
     Source.BASH: 'Remote Server',
     Source.KUBERNETES: 'Cloud',
-    Source.SMTP: 'Alert Channels',
+    Source.SMTP: 'Alert Channels'
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -92,6 +96,11 @@ integrations_connector_type_connector_keys_map = {
     Source.ROOTLY: [
         [
             SourceKeyType.ROOTLY_API_KEY,
+        ]
+    ],
+    Source.ZENDUTY: [
+        [
+            SourceKeyType.ZENDUTY_API_KEY,
         ]
     ],
     Source.SLACK: [
@@ -310,6 +319,12 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.SMTP_USER,
             SourceKeyType.SMTP_PASSWORD,
         ]
+    ],
+    Source.BIG_QUERY: [
+        [
+            SourceKeyType.BIG_QUERY_PROJECT_ID,
+            SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON,
+        ]
     ]
 }
 
@@ -386,6 +401,9 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.SMTP_USER: 'Email User',
     SourceKeyType.SMTP_PASSWORD: 'Password',
     SourceKeyType.ROOTLY_API_KEY: 'API Key',
+    SourceKeyType.ZENDUTY_API_KEY: "API Key",
+    SourceKeyType.BIG_QUERY_PROJECT_ID: 'Project ID',
+    SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON: 'Service Account JSON'
 }
 
 
@@ -527,7 +545,10 @@ class ConnectorKey(models.Model):
                              SourceKeyType.ELASTIC_SEARCH_API_KEY,
                              SourceKeyType.KUBERNETES_CLUSTER_TOKEN,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
-                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, ]:
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, 
+                             SourceKeyType.ZENDUTY_API_KEY,
+                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,
+                             SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),

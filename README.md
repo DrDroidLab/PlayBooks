@@ -57,7 +57,7 @@ Looking for Helm chart or custom branch deployment? Read our installation doc [h
 #### 3. Learn more: Watch tutorials on our [YouTube](https://www.youtube.com/@DrDroidDev) channel
 
 ## Connect with us:
-* Want to contribute? Read our [contribution guidelines](/CONTRIBUTION.md).
+* Want to contribute? Read our [contribution guidelines](https://docs.drdroid.io/docs/contributing).
 
 * For Feedback or Feature Requests: Share with us in Slack or Github issues.
 

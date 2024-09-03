@@ -1,5 +1,6 @@
 from executor.workflows.action.action_executor import WorkflowActionExecutor
 from executor.workflows.action.pager_duty_notes_executor import PagerdutyNotesExecutor
+from executor.workflows.action.zenduty_notes_executor import ZendutyNotesExecutor
 from executor.workflows.action.slack_message_executor import SlackMessageExecutor
 from executor.workflows.action.slack_thread_reply_executor import SlackThreadReplyExecutor
 from executor.workflows.action.ms_teams_message_webhook_executor import MSTeamsMessageWebhookExecutor
@@ -31,6 +32,7 @@ action_executor_facade.register(WorkflowAction.Type.SLACK_MESSAGE, SlackMessageE
 action_executor_facade.register(WorkflowAction.Type.SLACK_THREAD_REPLY, SlackThreadReplyExecutor())
 action_executor_facade.register(WorkflowAction.Type.MS_TEAMS_MESSAGE_WEBHOOK, MSTeamsMessageWebhookExecutor())
 action_executor_facade.register(WorkflowAction.Type.PAGERDUTY_NOTES, PagerdutyNotesExecutor())
+action_executor_facade.register(WorkflowAction.Type.ZENDUTY_NOTES, ZendutyNotesExecutor())
 action_executor_facade.register(WorkflowAction.Type.SMTP_EMAIL, SMTPEmailWorkflowExecutor())
 action_executor_facade.register(WorkflowAction.Type.ROOTLY_TIMELINE_EVENTS, RootlyTimelineEventsExecutor())
 

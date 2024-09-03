@@ -338,6 +338,10 @@ ROOTLY_WEBHOOK_LOCATION = env.str("ROOTLY_WEBHOOK_LOCATION", default='/connector
                                                                            '/handle_incidents')
 ROOTLY_WEBHOOK_HTTP_PROTOCOL = env.str("ROOTLY_WEBHOOK_HTTP_PROTOCOL", default='https')
 ROOTLY_WEBHOOK_USE_SITE = env.bool("ROOTLY_WEBHOOK_USE_SITE", default=True)
+ZENDUTY_WEBHOOK_LOCATION = env.str("ZENDUTY_WEBHOOK_LOCATION", default='/connectors/handlers/zenduty'
+                                                                           '/handle_incidents')
+ZENDUTY_WEBHOOK_HTTP_PROTOCOL = env.str("ZENDUTY_WEBHOOK_HTTP_PROTOCOL", default='https')
+ZENDUTY_WEBHOOK_USE_SITE = env.bool("ZENDUTY_WEBHOOK_USE_SITE", default=True)
 
 RESET_PASSWORD_LOCATION = env.str("RESET_PASSWORD_PAGE_URL", default='/reset-password-confirm/?reset_token={}&email={}')
 RESET_PASSWORD_SITE_HTTP_PROTOCOL = env.str("RESET_PASSWORD_SITE_HTTP_PROTOCOL", default='http')

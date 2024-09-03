@@ -385,3 +385,37 @@ def rootly_handle_webhook_call(rootly_connector_id, rootly_incident):
 rootly_handle_webhook_call_prerun_notifier = publish_pre_run_task(rootly_handle_webhook_call)
 rootly_handle_webhook_call_failure_notifier = publish_task_failure(rootly_handle_webhook_call)
 rootly_handle_webhook_call_postrun_notifier = publish_post_run_task(rootly_handle_webhook_call)
+def zenduty_handle_webhook_call(zenduty_connector_id, zenduty_incident):
+    try:
+        zenduty_connector = get_db_connectors(connector_id=zenduty_connector_id)
+        zenduty_connector = zenduty_connector.first()
+        if not zenduty_connector:
+            logger.error(
+                f"Error while handling Zenduty handle_receive_message: Connector not found for connector_id: "
+                f"{zenduty_connector}")
+            return
+        zenduty_connector_proto: Connector = zenduty_connector.unmasked_proto
+        account_id = zenduty_connector_proto.account_id.value
+        if 'incident_id' not in zenduty_incident or 'service_name' not in zenduty_incident:
+            logger.error(
+                f"Error while handling zenduty webhook call: Incident id or service name not found for zenduty event")
+            return
+
+        all_zd_incident_entry_points = get_db_workflow_entry_points(account_id=account_id,
+                                                                    entry_point_type=WorkflowEntryPoint.Type.ZENDUTY_INCIDENT,
+                                                                    is_active=True)
+        ep_protos = [e.proto for e in all_zd_incident_entry_points]
+        for ep in ep_protos:
+            is_triggered = entry_point_evaluator_facade.evaluate(ep, zenduty_incident)
+            if is_triggered:
+                trigger_alert_entry_point_workflows(account_id, ep.id.value, 'ZENDUTY',
+                                                    WorkflowExecution.WorkflowExecutionMetadata.Type.ZENDUTY_INCIDENT,
+                                                    zenduty_incident)
+    except Exception as e:
+        logger.error(f"Error while handling zenduty webhook call with error: {e} for event: {zenduty_incident}")
+    return
+
+
+zenduty_handle_webhook_call_prerun_notifier = publish_pre_run_task(zenduty_handle_webhook_call)
+zenduty_handle_webhook_call_failure_notifier = publish_task_failure(zenduty_handle_webhook_call)
+zenduty_handle_webhook_call_postrun_notifier = publish_post_run_task(zenduty_handle_webhook_call)

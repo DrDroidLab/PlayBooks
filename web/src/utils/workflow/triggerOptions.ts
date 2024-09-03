@@ -15,4 +15,8 @@ export const triggerOptions = [
     id: "rootly_incident",
     label: "Rootly",
   },
+  {
+    id: "zenduty_incident",
+    label: "Zenduty",
+  },
 ];

@@ -10,4 +10,5 @@ export const connectorsWithoutAssets = [
   connectors.GRAFANA_LOKI,
   connectors.SMTP,
   connectors.ROOTLY,
+  connectors.ZENDUTY,
 ];

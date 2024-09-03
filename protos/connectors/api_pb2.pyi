@@ -588,6 +588,26 @@ class GetPagerDutyWebhookResponse(google.protobuf.message.Message):
 global___GetPagerDutyWebhookResponse = GetPagerDutyWebhookResponse
 
 @typing_extensions.final
+class GetZendutyWebhookRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetZendutyWebhookRequest = GetZendutyWebhookRequest
+
+@typing_extensions.final
+class GetZendutyWebhookResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___GetZendutyWebhookResponse = GetZendutyWebhookResponse
+
+@typing_extensions.final
 class GetRootlyWebhookRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 

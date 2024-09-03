@@ -16,6 +16,7 @@ import SummaryOptions from "./SummaryOptions.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import Transformer from "./Transformer.tsx";
+import { useGenerateZendutyWebHookMutation } from "../../../store/features/workflow/api/generateZendutyWebHookApi.ts";
 
 function BasicDetails() {
   const currentWorkflow = useSelector(currentWorkflowSelector);
@@ -23,7 +24,15 @@ function BasicDetails() {
     useGenerateCurlMutation();
   const [triggerGenerateWebhook, { isLoading: generateWebhookLoading }] =
     useGenerateWebhookMutation();
+  const [
+    triggerGenerateZendutyWebhook,
+    { isLoading: generateZendutyWebhookLoading },
+  ] = useGenerateZendutyWebHookMutation();
   const dispatch = useDispatch();
+  const loading =
+    generateCurlLoading ||
+    generateWebhookLoading ||
+    generateZendutyWebhookLoading;
 
   const handleGenerateCurl = async () => {
     if (!currentWorkflow.name) {
@@ -42,6 +51,10 @@ function BasicDetails() {
       workflow_name: currentWorkflow.name,
       tool_name,
     });
+  };
+
+  const handleGenerateZendutyWebhook = async () => {
+    await triggerGenerateZendutyWebhook();
   };
 
   const handleWorkflowType = () => {
@@ -66,6 +79,15 @@ function BasicDetails() {
         return;
       case "rootly_incident":
         handleGenerateWebhook("rootly");
+        dispatch(
+          setCurrentWorkflowKey({
+            key: "useTransformer",
+            value: false,
+          }),
+        );
+        return;
+      case "zenduty_incident":
+        handleGenerateZendutyWebhook();
         dispatch(
           setCurrentWorkflowKey({
             key: "useTransformer",
@@ -146,9 +168,7 @@ function BasicDetails() {
                 )
               }
             />
-            {(generateCurlLoading || generateWebhookLoading) && (
-              <CircularProgress size={20} />
-            )}
+            {loading && <CircularProgress size={20} />}
           </div>
         </div>
         <HandleWorkflowType />

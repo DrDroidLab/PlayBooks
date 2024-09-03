@@ -2,14 +2,17 @@ import { AddRounded } from "@mui/icons-material";
 import CustomButton from "../../components/common/CustomButton";
 import Heading from "../../components/Heading";
 import SuspenseLoader from "../../components/Skeleton/SuspenseLoader";
-import PaginatedTable from "../../components/PaginatedTable";
 import TableSkeleton from "../../components/Skeleton/TableLoader";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
-import DynamicAlertsTable from "../../components/DynamicAlerts/Table";
 import { useSearchQuery } from "../../store/features/search/api/searchApi";
 import { selectedQuery } from "../../utils/dynamicAlerts/selectedQuery";
 import { useEffect } from "react";
+import { useDynamicAlertsData } from "../../hooks/pages";
+import { dynamicAlertColumns } from "../../utils/dynamicAlerts/pages";
+import { Column } from "../../components/common/Table/types";
+import PaginatedTable from "../../components/common/Table/PaginatedTable";
+import ActionOverlay from "../../components/DynamicAlerts/Table/ActionOverlay";
 
 const context = "WORKFLOW";
 
@@ -19,6 +22,9 @@ function DynamicAlerts() {
     context,
     selected: selectedQuery,
   });
+  const { rows, actions, isActionOpen, toggle, item } = useDynamicAlertsData(
+    data?.workflow ?? [],
+  );
 
   const handleCreateDynamicAlert = () => {
     navigate(routes.CREATE_DYNAMIC_ALERTS);
@@ -41,12 +47,14 @@ function DynamicAlerts() {
         </div>
         <SuspenseLoader loading={false} loader={<TableSkeleton />}>
           <PaginatedTable
-            renderTable={DynamicAlertsTable}
-            data={data?.workflow ?? []}
+            columns={dynamicAlertColumns as Column<any>[]}
+            data={rows}
+            actions={actions}
             total={data?.workflow?.length ?? 0}
           />
         </SuspenseLoader>
       </main>
+      <ActionOverlay isOpen={isActionOpen} toggleOverlay={toggle} item={item} />
     </div>
   );
 }

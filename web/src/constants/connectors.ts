@@ -24,4 +24,5 @@ export const connectors = {
   ELASTIC_SEARCH: "ELASTIC_SEARCH",
   SMTP: "SMTP",
   ROOTLY: "ROOTLY",
+  ZENDUTY: "ZENDUTY",
 };

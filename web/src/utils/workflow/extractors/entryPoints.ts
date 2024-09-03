@@ -25,6 +25,13 @@ export const handleEntryPointsExtractor = (
           title: entryPoint.incident_title,
         },
       };
+    case Types.WorkflowEntryPointOptions.ZENDUTY_INCIDENT:
+      return {
+        trigger: {
+          serviceName: entryPoint.service_name,
+          title: entryPoint.incident_title,
+        },
+      };
 
     case Types.WorkflowEntryPointOptions.ROOTLY_INCIDENT:
       return {

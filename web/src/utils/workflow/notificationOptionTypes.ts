@@ -5,6 +5,7 @@ export const NotificationOptionTypes = {
   ROOTLY_TIMELINE_EVENTS: "rootly_timeline_events",
   MS_TEAMS_MESSAGE_WEBHOOK: "ms_teams_message_webhook",
   SMTP_EMAIL: "smtp_email",
+  ZENDUTY_NOTES: "zenduty_notes",
 } as const;
 
 export type NotificationOptionTypesType =

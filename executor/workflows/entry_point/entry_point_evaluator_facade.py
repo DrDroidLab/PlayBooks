@@ -4,6 +4,7 @@ from executor.workflows.entry_point.api_entry_point import ApiEntryPointEvaluato
 from executor.workflows.entry_point.entry_point_evaluator import WorkflowEntryPointEvaluator
 from executor.workflows.entry_point.pager_duty_incident_entry_point import PagerDutyIncidentEntryPointEvaluator
 from executor.workflows.entry_point.rootly_incident_entry_point import RootlyIncidentEntryPointEvaluator
+from executor.workflows.entry_point.zenduty_incident_entry_point import ZenDutyIncidentEntryPointEvaluator
 from executor.workflows.entry_point.slack_channel_alert_entry_point import SlackChannelAlertEntryPointEvaluator
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint
 
@@ -32,3 +33,4 @@ entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.SLACK_CHANNEL_ALER
                                       SlackChannelAlertEntryPointEvaluator())
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.PAGERDUTY_INCIDENT, PagerDutyIncidentEntryPointEvaluator())
 entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.ROOTLY_INCIDENT, RootlyIncidentEntryPointEvaluator())
+entry_point_evaluator_facade.register(WorkflowEntryPoint.Type.ZENDUTY_INCIDENT, ZenDutyIncidentEntryPointEvaluator())

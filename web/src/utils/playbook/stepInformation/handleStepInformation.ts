@@ -80,6 +80,8 @@ export default function handleStepInformation(
       return StepInformation.smtp;
     case taskTypes.SLACK_SEND_MESSAGE:
       return StepInformation.slack;
+    case taskTypes.BIGQUERY_QUERY:
+      return StepInformation.bigquery;
 
     default:
       return [];
