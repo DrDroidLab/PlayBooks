@@ -25,7 +25,7 @@ services:
     build:
       context: ./fluentd
       dockerfile: Dockerfile
-    image: fluentd
+    image: fluent/fluentd:v1.12-debian-1
     volumes:
       - ./fluentd/fluentd.conf:/fluentd/etc/fluent.conf
     ports:
