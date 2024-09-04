@@ -36,7 +36,8 @@ function CronInput(props: CronInputTypes) {
           disabled={true}
           containerClassName="border p-2 rounded"
           suffix={
-            <div className="text-gray-400 flex items-center">
+            <div className="text-gray-400 flex items-center gap-1">
+              <span className="text-xs">UTC</span>
               <AccessTimeRounded fontSize="small" />
             </div>
           }
