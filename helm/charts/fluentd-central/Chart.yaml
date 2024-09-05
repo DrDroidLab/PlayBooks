@@ -1,0 +1,4 @@
+apiVersion: v2
+name: fluentd-central
+description: A Helm chart for Central Log Receiver
+version: 0.1.0

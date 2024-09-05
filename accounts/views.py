@@ -1,3 +1,4 @@
+import logging
 import uuid
 from typing import Union
 
@@ -33,6 +34,8 @@ from playbooks.utils.queryset import filter_page
 from utils.cryptography_utils import generate_code_verifier, generate_code_challenge
 from utils.proto_utils import proto_to_dict
 from utils.uri_utils import build_absolute_uri
+
+logger = logging.getLogger(__name__)
 
 
 @web_api(GetAccountApiTokensRequest)
@@ -265,7 +268,7 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
 
     if user:
         if not user.is_active:
-            print("Social Sign-in: User is not active - {}".format(user.id))
+            logger.error("Social Sign-in: User is not active - {}".format(user.id))
             return JsonResponse({'success': False, 'message': 'User is not active'}, status=403)
         user.last_login = timezone.now()
         user.save()
@@ -279,7 +282,7 @@ def login_okta(request_message: HttpRequest) -> JsonResponse:
         is_new_user = True
         EmailAddress.objects.create(user=user, email=email, verified=True, primary=True)
         generate_account_token_on_email_confirmed(request_message, email)
-        print("Social Sign-in: New user created - {}".format(user.id))
+        logger.info("Social Sign-in: New user created - {}".format(user.id))
 
     from dj_rest_auth.utils import jwt_encode
     auth_token, refresh_token = jwt_encode(user)

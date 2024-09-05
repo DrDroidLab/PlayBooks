@@ -1,6 +1,11 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.eks_api_processor import EKSApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class EksSourceMetadataExtractor(SourceMetadataExtractor):
@@ -13,6 +18,7 @@ class EksSourceMetadataExtractor(SourceMetadataExtractor):
         self.__k8_role_arn = k8_role_arn
         super().__init__(account_id, connector_id, Source.EKS)
 
+    @log_function_call
     def extract_clusters(self, save_to_db=False):
         model_data = {}
         aws_boto3_processor = EKSApiProcessor(self.__region, self.__aws_access_key, self.__aws_secret_key,

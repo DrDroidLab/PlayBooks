@@ -1,6 +1,11 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.datadog_api_processor import DatadogApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
@@ -11,6 +16,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
 
         super().__init__(account_id, connector_id, Source.DATADOG)
 
+    @log_function_call
     def extract_services(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_SERVICE
         model_data = {}
@@ -19,7 +25,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
             try:
                 services = self.__dd_api_processor.fetch_service_map(tag)
             except Exception as e:
-                print(f'Error fetching services for tag: {tag} - {e}')
+                logger.error(f'Error fetching services for tag: {tag} - {e}')
                 continue
             if not services:
                 continue
@@ -30,7 +36,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
         try:
             all_metrics = self.__dd_api_processor.fetch_metrics().get('data', [])
         except Exception as e:
-            print(f'Error fetching metrics: {e}')
+            logger.error(f'Error fetching metrics: {e}')
             all_metrics = []
         if not all_metrics:
             return model_data
@@ -40,13 +46,13 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 tags = self.__dd_api_processor.fetch_metric_tags(mt['id']).get('data', {}).get('attributes', {}).get(
                     'tags', [])
             except Exception as e:
-                print(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
+                logger.error(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
                 tags = []
             family = mt['id'].split('.')[0]
             for tag in tags:
                 if tag.startswith('service:'):
                     service = tag.split(':')[1]
-                    print(f'service: {service}')
+                    logger.info(f'service: {service}')
                     metrics = service_metric_map.get(service, [])
                     essential_tags = [tag for tag in tags if tag.startswith('env:') or tag.startswith('service:')]
                     metrics.append({'id': mt['id'], 'type': mt['type'], 'family': family, 'tags': essential_tags})
@@ -60,6 +66,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 self.create_or_update_model_metadata(model_type, service, metadata)
         return model_data
 
+    @log_function_call
     def extract_monitor(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_MONITOR
         model_data = {}
@@ -74,9 +81,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, monitor_id, monitor_dict)
         except Exception as e:
-            print(f'Error extracting monitors: {e}')
+            logger.error(f'Error extracting monitors: {e}')
         return model_data
 
+    @log_function_call
     def extract_dashboard(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_DASHBOARD
         model_data = {}
@@ -90,7 +98,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 try:
                     dashboard = self.__dd_api_processor.fetch_dashboard_details(dashboard_id)
                 except Exception as e:
-                    print(f'Error fetching dashboard details for dashboard_id: {dashboard_id} - {e}')
+                    logger.error(f'Error fetching dashboard details for dashboard_id: {dashboard_id} - {e}')
                     continue
                 if not dashboard:
                     continue
@@ -99,9 +107,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, dashboard_id, dashboard)
         except Exception as e:
-            print(f'Error extracting dashboards: {e}')
+            logger.error(f'Error extracting dashboards: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_aws_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AWS
         model_data = {}
@@ -121,9 +130,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, aws_account_id, account)
         except Exception as e:
-            print(f'Error extracting active aws integrations: {e}')
+            logger.error(f'Error extracting active aws integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_aws_log_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AWS_LOG
         model_data = {}
@@ -138,9 +148,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, aws_account_id, account_dict)
         except Exception as e:
-            print(f'Error extracting active aws log integrations: {e}')
+            logger.error(f'Error extracting active aws log integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_azure_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_AZURE
         model_data = {}
@@ -155,9 +166,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                     if save_to_db:
                         self.create_or_update_model_metadata(model_type, client_id, azure_account)
         except Exception as e:
-            print(f'Error extracting active azure integrations: {e}')
+            logger.error(f'Error extracting active azure integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_cloudflare_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_CLOUDFLARE
         model_data = {}
@@ -172,9 +184,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, c_id, ca)
         except Exception as e:
-            print(f'Error extracting active cloudflare integrations: {e}')
+            logger.error(f'Error extracting active cloudflare integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_confluent_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_CONFLUENT
         model_data = {}
@@ -189,9 +202,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, c_id, ca)
         except Exception as e:
-            print(f'Error extracting active confluent integrations: {e}')
+            logger.error(f'Error extracting active confluent integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_fastly_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_FASTLY
         model_data = {}
@@ -206,9 +220,10 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, f_id, fa)
         except Exception as e:
-            print(f'Error extracting active fastly integrations: {e}')
+            logger.error(f'Error extracting active fastly integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_active_gcp_integrations(self, save_to_db=False):
         model_type = SourceModelType.DATADOG_LIVE_INTEGRATION_GCP
         model_data = {}
@@ -223,16 +238,17 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, gcp_id, gcpa)
         except Exception as e:
-            print(f'Error extracting active gcp integrations: {e}')
+            logger.error(f'Error extracting active gcp integrations: {e}')
         return model_data
 
+    @log_function_call
     def extract_metrics(self, save_to_db=False):
         model_data = {}
 
         try:
             all_metrics = self.__dd_api_processor.fetch_metrics().get('data', [])
         except Exception as e:
-            print(f'Error fetching metrics: {e}')
+            logger.error(f'Error fetching metrics: {e}')
             all_metrics = []
         if not all_metrics:
             return model_data
@@ -241,7 +257,7 @@ class DatadogSourceMetadataExtractor(SourceMetadataExtractor):
                 tags = self.__dd_api_processor.fetch_metric_tags(mt['id']).get('data', {}).get('attributes', {}).get(
                     'tags', [])
             except Exception as e:
-                print(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
+                logger.error(f'Error fetching metric tags for metric: {mt["id"]} - {e}')
                 tags = []
             family = mt['id'].split('.')[0]
             model_data[mt['id']] = {**mt, 'tags': tags, 'family': family}

@@ -20,6 +20,7 @@ from management.crud.task_crud import check_scheduled_or_running_task_run_for_ta
 from management.models import TaskRun, PeriodicTaskStatus
 from management.utils.celery_task_signal_utils import publish_pre_run_task, publish_task_failure, publish_post_run_task
 from protos.connectors.connector_pb2 import Connector
+from utils.logging_utils import log_function_call
 from utils.time_utils import get_current_time
 from protos.base_pb2 import Source, SourceModelType, SourceKeyType
 from protos.playbooks.workflow_pb2 import WorkflowEntryPoint, WorkflowExecution
@@ -28,19 +29,18 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(max_retries=3, default_retry_delay=10)
+@log_function_call
 def slack_bot_data_fetch_storage_job(account_id, connector_id, source_metadata_model_id, channel_id: str,
                                      raw_data_json):
     current_time = get_current_time()
     if not source_metadata_model_id or not channel_id or not raw_data_json:
-        print(f"Invalid arguments provided for slack_bot_data_fetch_storage_job. Missing: "
-              f"source_metadata_model_id or channel_id or raw_data_json")
+        logger.error(f"Invalid arguments provided for slack_bot_data_fetch_storage_job. Missing: "
+                     f"source_metadata_model_id or channel_id or raw_data_json")
         return
-    print(f"Initiating slack_bot_data_fetch_storage_job for account:{account_id} connector: {connector_id} "
-          f"channel_id: {channel_id} at epoch: {current_time}")
     raw_data = pd.read_json(raw_data_json)
     if raw_data is None or not raw_data.shape[0] > 0:
-        print(f"slack_bot_data_fetch_storage_job: Found no data for channel_id: {channel_id} at epoch: "
-              f"{current_time} with connector_id: {connector_id}")
+        logger.error(f"slack_bot_data_fetch_storage_job: Found no data for channel_id: {channel_id} at epoch: "
+                     f"{current_time} with connector_id: {connector_id}")
         return
 
     extracted_data = []
@@ -75,8 +75,8 @@ def slack_bot_data_fetch_storage_job(account_id, connector_id, source_metadata_m
         saved_data: List[SlackConnectorDataReceived] = SlackConnectorDataReceived.objects.bulk_create(extracted_data,
                                                                                                       batch_size=1000)
     except Exception as e:
-        print(f"Exception occurred slack_connector_data_fetch_job: Error while bulk creating extracted data for "
-              f"account: {account_id}, connector: {connector_id} with error: {e}")
+        logger.error(f"Exception occurred slack_connector_data_fetch_job: Error while bulk creating extracted data for "
+                     f"account: {account_id}, connector: {connector_id} with error: {e}")
         raise e
 
 
@@ -90,21 +90,21 @@ def slack_bot_data_fetch_job(account_id, connector_id, source_metadata_model_id,
                              channel_id: str, latest_timestamp: str, oldest_timestamp: str):
     current_time = get_current_time()
     if not bot_auth_token or not source_metadata_model_id or not channel_id:
-        print(f"Invalid arguments provided for slack_bot_data_fetch_job. Missing bot_auth_token or "
-              f"source_metadata_model_id or channel_id")
+        logger.error(f"Invalid arguments provided for slack_bot_data_fetch_job. Missing bot_auth_token or "
+                     f"source_metadata_model_id or channel_id")
         return
 
     if not latest_timestamp:
-        print(f"Invalid arguments provided for slack_connector_data_fetch_job: Missing latest_timestamp. "
-              f"Setting it to current time: {current_time}")
+        logger.error(f"Invalid arguments provided for slack_connector_data_fetch_job: Missing latest_timestamp. "
+                     f"Setting it to current time: {current_time}")
         latest_timestamp = current_time
 
     if not oldest_timestamp:
         oldest_timestamp = ''
 
-    print(f"Initiating slack_connector_data_fetch_job for account:{account_id} connector: {connector_id} "
-          f"channel_id: {channel_id} at epoch: {current_time} with latest_timestamp: {latest_timestamp}, "
-          f"oldest_timestamp: {oldest_timestamp}")
+    logger.info(f"Initiating slack_connector_data_fetch_job for account:{account_id} connector: {connector_id} "
+                f"channel_id: {channel_id} at epoch: {current_time} with latest_timestamp: {latest_timestamp}, "
+                f"oldest_timestamp: {oldest_timestamp}")
     slack_api_processor = SlackApiProcessor(bot_auth_token)
     message_counter = 0
     visit_next_cursor = True
@@ -119,7 +119,7 @@ def slack_bot_data_fetch_job(account_id, connector_id, source_metadata_model_id,
                                                                                     oldest_timestamp, next_cursor)
 
                 if response_paginated.status_code == 429:
-                    print(f"Rate limit exceeded for workspace_id: {team_id} with error: {response_paginated}")
+                    logger.error(f"Rate limit exceeded for workspace_id: {team_id} with error: {response_paginated}")
                     if response_paginated.headers.get('Retry-After', None):
                         try:
                             wait_time = int(response_paginated.headers.get('Retry-After'))
@@ -130,17 +130,17 @@ def slack_bot_data_fetch_job(account_id, connector_id, source_metadata_model_id,
                     time.sleep(wait_time)
                     continue
             except IncompleteRead as e:
-                print(f"IncompleteRead occurred while fetching conversation history for channel_id: {channel_id} "
-                      f"with error: {e}")
+                logger.error(f"IncompleteRead occurred while fetching conversation history for channel_id: "
+                             f"{channel_id} with error: {e}")
                 continue
             except Exception as e:
                 failure_count = failure_count + 1
-                print(f"Exception occurred while fetching conversation history for channel_id: {channel_id} "
-                      f"with error: {e}")
+                logger.error(f"Exception occurred while fetching conversation history for channel_id: {channel_id} "
+                             f"with error: {e}")
                 # Add a delay of 100 seconds before retrying
                 time.sleep(100)
                 if failure_count > 20:
-                    print(f"Failed to fetch conversation history for channel_id: {channel_id} after 10 retries")
+                    logger.error(f"Failed to fetch conversation history for channel_id: {channel_id} after 10 retries")
                     visit_next_cursor = False
                     return None
                 continue
@@ -163,19 +163,19 @@ def slack_bot_data_fetch_job(account_id, connector_id, source_metadata_model_id,
                     temp = pd.DataFrame([{"full_message": message, "uuid": message.get('ts')}])
                     raw_data = pd.concat([temp, raw_data])
                     message_counter = message_counter + 1
-                print(f'{str(message_counter)}, messages published')
-                print(f'Extracted Data till {datetime.fromtimestamp(float(new_timestamp))}')
+                logger.info(f'{str(message_counter)}, messages published')
+                logger.info(f'Extracted Data till {datetime.fromtimestamp(float(new_timestamp))}')
                 if raw_data is None or not raw_data.shape[0] > 0:
-                    print(f"slack_connector_data_fetch_job: Found no data for channel_id: {channel_id} at "
-                          f"epoch: {current_time} with connector_id: {connector_id}")
+                    logger.error(f"slack_connector_data_fetch_job: Found no data for channel_id: {channel_id} at "
+                                 f"epoch: {current_time} with connector_id: {connector_id}")
                     break
                 raw_data_json = raw_data.to_json(orient='records')
                 saved_task = get_or_create_task(slack_bot_data_fetch_storage_job.__name__, account_id,
                                                 connector_id, source_metadata_model_id, channel_id, raw_data_json)
 
                 if not saved_task:
-                    print(f"Failed to create slack_bot_data_fetch_storage_job task for account: {account_id}, "
-                          f"connector: {connector_id}")
+                    logger.error(f"Failed to create slack_bot_data_fetch_storage_job task for account: {account_id}, "
+                                 f"connector: {connector_id}")
                     continue
                 if check_scheduled_or_running_task_run_for_task(saved_task):
                     continue
@@ -188,13 +188,14 @@ def slack_bot_data_fetch_job(account_id, connector_id, source_metadata_model_id,
                                                       account_id=account_id,
                                                       scheduled_at=datetime.fromtimestamp(float(current_time)))
                 except Exception as e:
-                    print(f"Exception occurred while saving slack_bot_data_fetch_storage_job task run for account: "
-                          f"{account_id}, connector: {connector_id} with error: {e}")
+                    logger.error(f"Exception occurred while saving slack_bot_data_fetch_storage_job task run for "
+                                 f"account: {account_id}, connector: {connector_id} with error: {e}")
                     continue
             if not visit_next_cursor:
                 break
     except Exception as e:
-        print(f"Exception occurred while fetching conversation history for channel_id: {channel_id} with error: {e}")
+        logger.error(f"Exception occurred while fetching conversation history for channel_id: {channel_id} with "
+                     f"error: {e}")
         return None
 
 

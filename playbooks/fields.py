@@ -1,5 +1,9 @@
+import logging
+
 from django import forms
 from django.contrib.postgres.fields import ArrayField
+
+logger = logging.getLogger(__name__)
 
 
 class ChoiceArrayField(ArrayField):
@@ -27,7 +31,7 @@ class ChoiceArrayField(ArrayField):
             'coerce': self._coerce,
         }
         defaults.update(kwargs)
-        print(defaults)
+        logger.info(defaults)
         # Skip our parent's formfield implementation completely as we don't
         # care for it.
         # pylint:disable=bad-super-call

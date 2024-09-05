@@ -123,7 +123,7 @@ def source_identifier(full_message_cell, channel_type):
     try:
         message = safe_eval(full_message_cell)
     except Exception as e:
-        print(f"Exception occurred while parsing full_message: {full_message_cell} with error: {e}")
+        logger.error(f"Exception occurred while parsing full_message: {full_message_cell} with error: {e}")
         return 'custom_bot'
 
     bot_name_mapping = {'Sentry': 'Sentry', 'Robusta': 'Robusta', 'AWS Chatbot': 'Cloudwatch', 'MetaBot': 'Metabase',

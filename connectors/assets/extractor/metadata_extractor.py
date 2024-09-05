@@ -3,6 +3,7 @@ from datetime import datetime, date
 
 from connectors.models import ConnectorMetadataModelStore
 from protos.base_pb2 import Source
+from utils.logging_utils import log_function_call
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class SourceMetadataExtractor:
         self.connector_id = connector_id
         self.source = source
 
+    @log_function_call
     def create_or_update_model_metadata(self, model_type, model_uid, metadata):
         try:
             if not self.account_id or not self.connector_id or not self.source:

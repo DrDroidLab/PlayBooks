@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-log-service
+  labels:
+    app: central-log
+spec:
+  selector:
+    app: central-log
+  ports:
+    - protocol: TCP
+      port: 24224       # Port exposed by the service
+      targetPort: 24224 # Port on the central log Pod
+  type: ClusterIP

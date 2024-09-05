@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+data:
+  fluent.conf: |
+    <source>
+      @type tail
+      path /var/log/containers/celery-beat-*.log
+      pos_file /var/log/fluentd/celery-beat.pos
+      tag celery-beat
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <source>
+      @type tail
+      path /var/log/containers/server-*.log
+      pos_file /var/log/fluentd/server.pos
+      tag server
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <source>
+      @type tail
+      path /var/log/containers/celery-worker-*.log
+      pos_file /var/log/fluentd/celery-worker.pos
+      tag celery-worker
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <source>
+      @type tail
+      path /var/log/containers/workflow_action_execution_celery_worker-*.log
+      pos_file /var/log/fluentd/workflow_action_execution_celery_worker.pos
+      tag workflow_action_execution_celery_worker
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <source>
+      @type tail
+      path /var/log/containers/workflow_executor_celery_worker-*.log
+      pos_file /var/log/fluentd/workflow_executor_celery_worker.pos
+      tag workflow_executor_celery_worker
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <source>
+      @type tail
+      path /var/log/containers/workflow_scheduler_celery_worker-*.log
+      pos_file /var/log/fluentd/workflow_scheduler_celery_worker.pos
+      tag workflow_scheduler_celery_worker
+      <parse>
+        @type none
+      </parse>
+    </source>
+
+    <match **>
+      @type forward
+      <server>
+        host central-log-service
+        port 24224
+      </server>
+    </match>
