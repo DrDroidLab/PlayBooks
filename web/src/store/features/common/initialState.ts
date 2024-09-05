@@ -3,6 +3,7 @@ export type InitialStateType = {
   connectorOptions?: any[];
   supportedTaskTypes?: any[];
   interpreterTypes?: any[];
+  productUpdateStatus?: any;
 };
 
 export const initialState: InitialStateType = {
@@ -10,4 +11,5 @@ export const initialState: InitialStateType = {
   connectorOptions: [],
   supportedTaskTypes: [],
   interpreterTypes: [],
+  productUpdateStatus: false,
 };
