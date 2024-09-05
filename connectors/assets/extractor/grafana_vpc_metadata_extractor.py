@@ -1,9 +1,13 @@
+import logging
 import re
 import time
 
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.vpc_api_processor import VpcApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 def promql_get_metric_name(promql):
@@ -35,13 +39,14 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
         self.__grafana_api_processor = VpcApiProcessor(agent_proxy_host, agent_proxy_api_key)
         super().__init__(account_id, connector_id, Source.GRAFANA_VPC)
 
+    @log_function_call
     def extract_data_source(self, save_to_db=False):
         model_type = SourceModelType.GRAFANA_DATASOURCE
         try:
             path = 'api/datasources'
             data_sources = self.__grafana_api_processor.v1_api_grafana(path=path)
         except Exception as e:
-            print(f"Exception occurred while fetching grafana data sources with error: {e}")
+            logger.error(f"Exception occurred while fetching grafana data sources with error: {e}")
             return
         if not data_sources:
             return
@@ -59,7 +64,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
         try:
             all_dashboards = self.__grafana_api_processor.v1_api_grafana(path=path)
         except Exception as e:
-            print(f"Exception occurred while fetching grafana dashboards with error: {e}")
+            logger.error(f"Exception occurred while fetching grafana dashboards with error: {e}")
             return
         if not all_dashboards:
             return
@@ -74,7 +79,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
             try:
                 dashboard_details = self.__grafana_api_processor.v1_api_grafana(path=path)
             except Exception as e:
-                print(f"Exception occurred while fetching grafana dashboard details with error: {e}")
+                logger.error(f"Exception occurred while fetching grafana dashboard details with error: {e}")
                 continue
             if not dashboard_details:
                 continue
@@ -89,7 +94,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
             path = 'api/datasources'
             all_data_sources = self.__grafana_api_processor.v1_api_grafana(path=path)
         except Exception as e:
-            print(f"Exception occurred while fetching grafana data sources with error: {e}")
+            logger.error(f"Exception occurred while fetching grafana data sources with error: {e}")
             return
         if not all_data_sources:
             return
@@ -98,7 +103,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
             path = "api/search"
             all_dashboards = self.__grafana_api_processor.v1_api_grafana(path=path)
         except Exception as e:
-            print(f"Exception occurred while fetching grafana dashboards with error: {e}")
+            logger.error(f"Exception occurred while fetching grafana dashboards with error: {e}")
             return
         if not all_dashboards:
             return
@@ -113,7 +118,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
                 path = "api/dashboards/uid/{}".format(uid)
                 dashboard_details = self.__grafana_api_processor.v1_api_grafana(path=path)
             except Exception as e:
-                print(f"Exception occurred while fetching grafana dashboard details with error: {e}")
+                logger.error(f"Exception occurred while fetching grafana dashboard details with error: {e}")
                 continue
             if not dashboard_details:
                 continue
@@ -167,14 +172,14 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
                                             try:
                                                 response = self.__grafana_api_processor.v1_api_grafana(path=path)
                                             except Exception as e:
-                                                print(
+                                                logger.error(
                                                     f"Exception occurred while fetching promql metric labels with error: {e}")
                                                 response = None
                                             while not response and retry_attempts < 3:
                                                 try:
                                                     response = self.__grafana_api_processor.v1_api_grafana(path=path)
                                                 except Exception as e:
-                                                    print(
+                                                    logger.error(
                                                         f"Exception occurred while fetching promql metric labels with error: {e}")
                                                     response = None
                                                 time.sleep(5)
@@ -192,7 +197,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
                                                             response = self.__grafana_api_processor.v1_api_grafana(
                                                                 path=path)
                                                         except Exception as e:
-                                                            print(
+                                                            logger.error(
                                                                 f"Exception occurred while fetching promql metric label values with error: {e}")
                                                             response = None
                                                         while not response and retry_attempts < 3:
@@ -200,7 +205,7 @@ class GrafanaVpcSourceMetadataExtractor(SourceMetadataExtractor):
                                                                 response = self.__grafana_api_processor.v1_api_grafana(
                                                                     path=path)
                                                             except Exception as e:
-                                                                print(
+                                                                logger.error(
                                                                     f"Exception occurred while fetching promql metric label values with error: {e}")
                                                                 response = None
                                                             time.sleep(5)

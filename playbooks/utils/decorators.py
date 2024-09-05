@@ -15,7 +15,7 @@ from accounts.authentication import AccountApiTokenAuthentication
 from protos.base_pb2 import ErrorMessage, Message
 from google.protobuf.message import Message as ProtoMessage
 from playbooks.threadlocal import get_current_request
-from utils.error_utils import error_dict
+from utils.logging_utils import log_function_call
 from utils.proto_utils import json_to_proto, proto_to_dict
 
 logger = logging.getLogger(__name__)
@@ -112,6 +112,7 @@ def web_api(request_schema):
         @authentication_classes([JWTCookieAuthentication])
         @login_required
         @post_proto_schema_validator(request_schema)
+        @log_function_call
         def wrapper(message):
             return func(message)
 
@@ -155,6 +156,7 @@ def account_post_api(request_schema):
         @authentication_classes([AccountApiTokenAuthentication])
         @api_auth_check
         @post_proto_schema_validator(request_schema)
+        @log_function_call
         def wrapper(message):
             return func(message)
 
@@ -171,6 +173,7 @@ def account_get_api():
         @authentication_classes([AccountApiTokenAuthentication])
         @api_auth_check
         @get_proto_schema_validator()
+        @log_function_call
         def wrapper(message):
             return func(message)
 
@@ -185,6 +188,7 @@ def auth_web_api(request_schema):
         @csrf_exempt
         @api_view(['POST'])
         @post_proto_schema_validator(request_schema)
+        @log_function_call
         def wrapper(message):
             return func(message)
 

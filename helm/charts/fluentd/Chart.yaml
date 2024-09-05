@@ -1,0 +1,8 @@
+apiVersion: v2
+name: fluentd
+description: A Helm chart for fluentd
+version: 0.1.0
+dependencies:
+  - name: server
+    version: 0.1.0
+    repository: "file://../server"

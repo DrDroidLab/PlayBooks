@@ -1,6 +1,11 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.aws_boto_3_api_processor import AWSBoto3ApiProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class CloudwatchSourceMetadataExtractor(SourceMetadataExtractor):
@@ -13,6 +18,7 @@ class CloudwatchSourceMetadataExtractor(SourceMetadataExtractor):
 
         super().__init__(account_id, connector_id, Source.CLOUDWATCH)
 
+    @log_function_call
     def extract_metric(self, save_to_db=False):
         model_type = SourceModelType.CLOUDWATCH_METRIC
         model_data = {}
@@ -37,9 +43,10 @@ class CloudwatchSourceMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, namespace, model_data[namespace])
         except Exception as e:
-            print(f'Error extracting metrics: {e}')
+            logger.error(f'Error extracting metrics: {e}')
         return model_data
 
+    @log_function_call
     def extract_log_groups(self, save_to_db=False):
         model_type = SourceModelType.CLOUDWATCH_LOG_GROUP
         model_data = {}
@@ -51,5 +58,5 @@ class CloudwatchSourceMetadataExtractor(SourceMetadataExtractor):
             if save_to_db:
                 self.create_or_update_model_metadata(model_type, self.__region, model_data[self.__region])
         except Exception as e:
-            print(f'Error extracting log groups: {e}')
+            logger.error(f'Error extracting log groups: {e}')
         return model_data

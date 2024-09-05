@@ -1,6 +1,11 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.clickhouse_db_processor import ClickhouseDBProcessor
 from protos.base_pb2 import Source, SourceModelType
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class ClickhouseSourceMetadataExtractor(SourceMetadataExtractor):
@@ -10,12 +15,13 @@ class ClickhouseSourceMetadataExtractor(SourceMetadataExtractor):
 
         super().__init__(account_id, connector_id, Source.CLICKHOUSE)
 
+    @log_function_call
     def extract_database(self, save_to_db=False):
         model_type = SourceModelType.CLICKHOUSE_DATABASE
         try:
             databases = self.__ch_db_processor.fetch_databases()
         except Exception as e:
-            print(f'Error fetching databases: {e}')
+            logger.error(f'Error fetching databases: {e}')
             return
         if not databases:
             return

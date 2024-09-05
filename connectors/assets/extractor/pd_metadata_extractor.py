@@ -1,7 +1,13 @@
+import logging
+
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from executor.source_processors.pd_api_processor import PdApiProcessor
 from protos.base_pb2 import Source, SourceModelType
 from datetime import datetime, timedelta
+
+from utils.logging_utils import log_function_call
+
+logger = logging.getLogger(__name__)
 
 
 class PagerDutyConnectorMetadataExtractor(SourceMetadataExtractor):
@@ -10,13 +16,14 @@ class PagerDutyConnectorMetadataExtractor(SourceMetadataExtractor):
         self.__client = PdApiProcessor(api_token)
         super().__init__(account_id, connector_id, Source.PAGER_DUTY)
 
+    @log_function_call
     def extract_alerts(self, save_to_db=False):
         model_type = SourceModelType.PAGERDUTY_INCIDENT
         try:
             since_time = (datetime.utcnow() - timedelta(days=7)).isoformat() + 'Z'
             incidents = self.__client.fetch_incidents()
             if not incidents:
-                print('No incidents found')
+                logger.info('No incidents found')
                 return
             recent_alerts = {}
             for incident in incidents:
@@ -28,7 +35,7 @@ class PagerDutyConnectorMetadataExtractor(SourceMetadataExtractor):
                 if filtered_alerts:
                     recent_alerts[incident_id] = filtered_alerts
         except Exception as e:
-            print(f'Error fetching incidents: {e}')
+            logger.error(f'Error fetching incidents: {e}')
             return
         if not recent_alerts:
             return
@@ -48,6 +55,6 @@ class PagerDutyConnectorMetadataExtractor(SourceMetadataExtractor):
                 if save_to_db:
                     self.create_or_update_model_metadata(model_type, incident_id, detailed_alerts)
             except Exception as e:
-                print(f'Error processing alerts for incident {incident_id}: {e}')
+                logger.error(f'Error processing alerts for incident {incident_id}: {e}')
                 continue
         return model_data
