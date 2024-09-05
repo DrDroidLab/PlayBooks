@@ -10,16 +10,18 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
   const dispatch = useDispatch();
 
   const handleProductUpdateSignup = (signupStatus: boolean) => {
-    dispatch(setCommonKey({
-      key: "productUpdateStatus",
-      value : true }
-    ));
+    dispatch(
+      setCommonKey({
+        key: "productUpdateStatus",
+        value: true,
+      }),
+    );
 
     posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_INTERACTED", {
       subscription_requested: signupStatus,
     });
     close();
-  }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -29,10 +31,14 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
 
   return (
     <div className="z-50">
-      <Overlay close={() => {handleProductUpdateSignup(false)}} visible={isOpen}>
-        <div className="relative bg-white py-6 px-4 rounded max-w-full w-[300px]">
+      <Overlay
+        close={() => {
+          handleProductUpdateSignup(false);
+        }}
+        visible={isOpen}>
+        <div className="relative bg-white py-8 px-4 rounded max-w-full w-[300px]">
           <div
-            onClick={close}
+            onClick={() => handleProductUpdateSignup(false)}
             className="absolute top-0 right-0 m-2 cursor-pointer">
             <CloseRounded />
           </div>
@@ -47,7 +53,9 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
               className="!bg-violet-500 !text-white hover:!text-violet-500 hover:!bg-transparent">
               Yes Please!
             </CustomButton>
-            <CustomButton onClick={() => handleProductUpdateSignup(false)}>No thanks</CustomButton>
+            <CustomButton onClick={() => handleProductUpdateSignup(false)}>
+              No thanks
+            </CustomButton>
           </div>
         </div>
       </Overlay>
