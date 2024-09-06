@@ -15,7 +15,7 @@ export const handleStatus = (status: string) => {
 
     case ExecutionStatus.WORKFLOW_RUNNING:
     case ExecutionStatus.RUNNING:
-      className += "bg-blue-500 text-white";
+      className += "bg-violet-500 text-white";
       break;
 
     case ExecutionStatus.WORKFLOW_FINISHED:
