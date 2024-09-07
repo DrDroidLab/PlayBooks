@@ -4,6 +4,7 @@ import {
   selectAccessToken,
   selectLastLogin,
 } from "../store/features/auth/authSlice.ts";
+import { commonKeySelector } from "../store/features/common/selectors/commonKeySelector.ts";
 import FakeLoading from "./common/Loading/FakeLoading.tsx";
 import RecieveUpdatesModal from "./Modals/RecieveUpdatesModal/index.tsx";
 import useToggle from "../hooks/common/useToggle.js";
@@ -11,6 +12,7 @@ import useToggle from "../hooks/common/useToggle.js";
 const RequireAuth = () => {
   const accessToken = useSelector(selectAccessToken);
   const lastLogin = useSelector(selectLastLogin);
+  const commonKey = useSelector(commonKeySelector)
   const location = useLocation();
   const { isOpen, toggle } = useToggle(true);
 
@@ -28,9 +30,7 @@ const RequireAuth = () => {
         <Navigate to="/signup" state={{ from: location }} replace />
       )}
 
-      {/* {!lastLogin && (
-        <RecieveUpdatesModal close={handleClose} isOpen={isOpen} />
-      )} */}
+      {!lastLogin && !commonKey.productUpdateStatus && <RecieveUpdatesModal close={toggle} isOpen={isOpen} />}
     </>
   );
 };

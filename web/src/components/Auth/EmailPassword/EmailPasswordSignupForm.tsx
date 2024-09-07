@@ -1,5 +1,6 @@
 import { CircularProgress } from "@mui/material";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import { Toast } from "../../Toast.tsx";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +11,12 @@ import {
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import ShowPasswordIcon from "./ShowPasswordIcon.tsx";
+import { setCommonKey } from "../../../store/features/common/commonSlice.ts";
 
 function EmailPasswordSignupForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [error, setError] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [triggerSignup, { isLoading }] = useSignupMutation();
@@ -34,6 +38,15 @@ function EmailPasswordSignupForm() {
 
   function redirectToLoginAfterSignup() {
     navigate("/login");
+  }
+
+  function deleteLastLogin() {
+    localStorage.removeItem("last_login")
+
+    dispatch(setCommonKey({
+      key: "productUpdateStatus",
+      value : false }
+    ));
   }
 
   const getError = (err) => {
@@ -66,6 +79,7 @@ function EmailPasswordSignupForm() {
       setPassword("");
       setFirstName("");
       setLastName("");
+      deleteLastLogin();
 
       redirectToLoginAfterSignup();
     } catch (err) {
