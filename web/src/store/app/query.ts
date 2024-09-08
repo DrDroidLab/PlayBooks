@@ -55,7 +55,7 @@ export const baseQueryWithReauthAndModify = async (args, api, extraOptions) => {
   const modifiedArgs = modifyRequestBody(args, api);
   let result: any = await baseQuery(modifiedArgs, api, extraOptions);
 
-  if (result.error?.status === 401 && !isUnAuth) {
+  if (result.error?.status === 401 && !isUnAuth(location.pathname)) {
     try {
       const refreshResult = await refreshToken();
       const newAccessToken = refreshResult.data?.access;

@@ -1,4 +1,11 @@
-export const cardsData = [
+type CardsDataType = {
+  url: string; // the logo url (from /public/integrations)
+  enum: string; // enum from the backend
+  desc?: string; // Description to show on the /data-sources/add page
+  docs?: string; // Link to the documentation (to be shown while configuring)
+};
+
+export const cardsData: CardsDataType[] = [
   {
     url: "/integrations/sentry.png",
     enum: "SENTRY",
