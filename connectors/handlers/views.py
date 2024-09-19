@@ -44,10 +44,10 @@ features:
         always_online: true
     slash_commands:
         - command: /execute-playbook
-        url: HOST_NAME/connectors/handlers/slack_bot/handle_slash_commands
-        description: Executes a Playbook
-        usage_hint: "[which playbook to execute]"
-        should_escape: false
+          url: HOST_NAME/connectors/handlers/slack_bot/handle_slash_commands
+          description: Executes a Playbook
+          usage_hint: "[which playbook to execute]"
+          should_escape: false
 oauth_config:
     scopes:
         bot:
