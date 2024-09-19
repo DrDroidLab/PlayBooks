@@ -42,6 +42,12 @@ features:
     bot_user:
         display_name: MyDroid
         always_online: true
+    slash_commands:
+        - command: /execute-playbook
+        url: HOST_NAME/connectors/handlers/slack_bot/handle_slash_commands
+        description: Executes a Playbook
+        usage_hint: "[which playbook to execute]"
+        should_escape: false
 oauth_config:
     scopes:
         bot:
@@ -59,6 +65,7 @@ oauth_config:
         - mpim:read
         - im:read
         - groups:history
+        - commands
 settings:
     event_subscriptions:
         request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
