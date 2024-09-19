@@ -21,9 +21,8 @@ from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppMa
 from utils.uri_utils import build_absolute_uri, construct_curl
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.workflows.tasks import test_workflow_notification
-from protos.playbooks.workflow_pb2 import Workflow, WorkflowSchedule, WorkflowAction as WorkflowActionProto, WorkflowEntryPoint,WorkflowConfiguration
-from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
-from protos.playbooks.workflow_schedules.one_off_schedule_pb2 import OneOffSchedule
+from protos.playbooks.workflow_pb2 import Workflow, WorkflowAction as WorkflowActionProto
+from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -89,27 +88,49 @@ settings:
 @csrf_exempt
 @api_view(['POST'])
 def slack_bot_handle_slash_commands(request_message: HttpRequest) -> JsonResponse:
-    channel_id = request_message.data.get('channel_id', [''])[0]
-    name = request_message.data.get('text', [''])[0]
+    channel_id = request_message.data.get('channel_id', [''])
+    name = request_message.data.get('text', '')
     account = Account.objects.get(id=1)
     user = User.objects.get(id=1)
     playbooks = get_db_playbooks(account=account, is_active=True, playbook_name=name)
     playbook = playbooks.first()
     if not playbook:
-        return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=404)
-    pb_proto = playbook.proto
-    workflow = Workflow(playbooks=[pb_proto], 
-                        actions=[WorkflowActionProto(type=WorkflowActionProto.Type.SLACK_MESSAGE, slack_message=SlackMessageWorkflowAction(
-                            slack_channel_id=channel_id,
-                            thread_ts=None
-                        ))], 
-                        configuration=WorkflowConfiguration(generate_summary=BoolValue(value=True)), 
-                        type=Workflow.Type.STANDARD, 
-                        entry_points=[WorkflowEntryPoint(type=WorkflowEntryPoint.Type.API,api={})],
-                        schedule=WorkflowSchedule(one_off=OneOffSchedule()),
-                        )
-    test_workflow_notification(workflow=workflow,account_id=account.id, message_type=WorkflowActionProto.Type.SLACK_MESSAGE, user=user)
-    return JsonResponse({'success': True, 'message': "Handling successfull"}, status=200)
+        print(f"No Playbook with name: {name} found")
+        return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=500)
+    workflow = {
+        "name": "Sample Test Workflow",
+        "schedule": {
+            "type": "ONE_OFF",
+            "one_off": {}
+        },
+        "playbooks": [
+            {
+                "id": playbook.id,
+            }
+        ],
+        "entry_points": [
+            {
+                "type": "API",
+                "api": {}
+            }
+        ],
+        "actions": [
+            {
+                "type": "SLACK_MESSAGE",
+                "slack_message": {
+                    "slack_channel_id": channel_id
+                }
+            }
+        ],
+        "configuration": {
+            "generate_summary": True,
+            "global_variable_set": {}
+        }
+    }
+    test_workflow_notification.delay(workflow_json=workflow,account_id=account.id, message_type=WorkflowActionProto.Type.SLACK_MESSAGE, user_email=user.email)
+    print(f"Sending message to slack channel with the id: {channel_id}")
+    message = f"{name} execution is in progress"
+    return JsonResponse({'success': True, 'message': message}, status=200)
 
 
 @csrf_exempt
