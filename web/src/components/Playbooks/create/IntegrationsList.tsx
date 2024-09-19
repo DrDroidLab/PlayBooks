@@ -3,21 +3,32 @@ import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { usePlaybookBuilderOptionsQuery } from "../../../store/features/playbook/api/index.ts";
 import IntegrationOption from "./IntegrationOption";
+import useDebounce from "../../../hooks/common/useDebounce.ts";
 
 function IntegrationsList() {
   const { data, isLoading } = usePlaybookBuilderOptionsQuery();
   const supportedTaskTypes = data?.supportedTaskTypes;
   const [query, setQuery] = useState("");
   const [items, setItems] = useState(supportedTaskTypes || []);
+  const queryString = useDebounce(query, 250);
 
   const search = () => {
     if (!query) {
       setItems([]);
     }
+    const queryStr = queryString.toLowerCase();
     const filteredItems = supportedTaskTypes?.filter(
       (item) =>
-        item?.source?.toLowerCase().includes(query) ||
-        item?.display_name?.toLowerCase().includes(query),
+        item?.source?.toLowerCase().includes(queryStr) ||
+        item?.display_name?.toLowerCase().includes(queryStr) ||
+        item?.task_type?.toLowerCase().includes(queryStr) ||
+        item?.result_type?.toLowerCase().includes(queryStr) ||
+        item?.category?.toLowerCase().includes(queryStr) ||
+        (item?.form_fields ?? []).some(
+          (f: any) =>
+            f?.key_name?.toLowerCase().includes(queryStr) ||
+            f?.display_name?.toLowerCase().includes(queryStr),
+        ),
     );
     setItems(filteredItems || []);
   };
@@ -37,10 +48,10 @@ function IntegrationsList() {
   }, {});
 
   useEffect(() => {
-    if (query) {
+    if (queryString) {
       search();
     }
-  }, [query]);
+  }, [queryString]);
 
   return (
     <div className="flex flex-col">
