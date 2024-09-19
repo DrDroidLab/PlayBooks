@@ -35,12 +35,12 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
     # read sample_manifest file string
     sample_manifest = """
 display_information:
-    name: MyDroid
+    name: MyFirstDroidApp
     description: App for Automating Investigation & Actions
     background_color: "#1f2126"
 features:
     bot_user:
-        display_name: MyDroid
+        display_name: MyFirstDroidApp
         always_online: true
     slash_commands:
         - command: /execute-playbook
