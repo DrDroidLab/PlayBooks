@@ -16,6 +16,7 @@ from connectors.handlers.bots.zenduty_handler import handle_zd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
 from playbooks.utils.decorators import web_api, api_auth_check
+from utils.proto_utils import proto_to_dict
 from utils.time_utils import current_epoch_timestamp
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
     GetRootlyWebhookRequest, GetPagerDutyWebhookRequest, GetZendutyWebhookRequest
@@ -146,7 +147,7 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
 @authentication_classes([SlackBotApiTokenAuthentication])
 @api_auth_check
 def slack_bot_command_execute_playbook(request_message: HttpRequest) -> JsonResponse:
-    channel_id = request_message.data.get('channel_id', [''])[0]
+    channel_id = request_message.data.get('channel_id', None)
     name = request_message.data.get('text', None)
     if not name:
         return JsonResponse({'success': False, 'message': 'Missing Playbook Name'}, status=400)
@@ -161,15 +162,14 @@ def slack_bot_command_execute_playbook(request_message: HttpRequest) -> JsonResp
     workflow = Workflow(playbooks=[pb_proto],
                         actions=[WorkflowActionProto(type=WorkflowActionProto.Type.SLACK_MESSAGE,
                                                      slack_message=SlackMessageWorkflowAction(
-                                                         slack_channel_id=channel_id,
-                                                         thread_ts=None
+                                                         slack_channel_id=StringValue(value=channel_id),
                                                      ))],
                         configuration=WorkflowConfiguration(generate_summary=BoolValue(value=True)),
                         type=Workflow.Type.STANDARD,
                         entry_points=[WorkflowEntryPoint(type=WorkflowEntryPoint.Type.API, api={})],
                         schedule=WorkflowSchedule(one_off=OneOffSchedule()),
                         )
-    test_workflow_notification.delay(workflow=workflow, account_id=account.id,
+    test_workflow_notification.delay(workflow_json=proto_to_dict(workflow), account_id=account.id,
                                      message_type=WorkflowActionProto.Type.SLACK_MESSAGE, created_by='SLACK_COMMAND')
     return JsonResponse({'success': True, 'message': "Handling successfull"}, status=200)
 

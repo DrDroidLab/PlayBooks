@@ -439,7 +439,8 @@ def test_workflows_notification(request_message: CreateWorkflowRequest) -> Union
                                       message=Message(title="Invalid Request",
                                                       description="Select a notification type"))
 
-    test_workflow_notification(user.email, account.id, workflow, workflow.actions[0].type)
+    workflow_dict = proto_to_dict(workflow)
+    test_workflow_notification(user.email, account.id, workflow_dict, workflow.actions[0].type)
     return CreateWorkflowResponse(success=BoolValue(value=True))
 
 
