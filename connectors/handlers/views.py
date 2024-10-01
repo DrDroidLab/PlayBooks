@@ -9,16 +9,24 @@ from django.conf import settings
 
 from accounts.authentication import AccountApiTokenAuthentication
 from accounts.models import get_request_account, Account, User, get_request_user, AccountApiToken
+from connectors.authentication import SlackBotApiTokenAuthentication
 from connectors.handlers.bots.pager_duty_handler import handle_pd_incident
 from connectors.handlers.bots.rootly_handler import handle_rootly_incident
 from connectors.handlers.bots.zenduty_handler import handle_zd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
-from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
+from playbooks.utils.decorators import web_api, api_auth_check
+from utils.proto_utils import proto_to_dict
 from utils.time_utils import current_epoch_timestamp
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
-    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetRootlyWebhookRequest, GetRootlyWebhookResponse, GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetZendutyWebhookRequest, GetZendutyWebhookResponse
+    GetRootlyWebhookRequest, GetPagerDutyWebhookRequest, GetZendutyWebhookRequest
 from utils.uri_utils import build_absolute_uri, construct_curl
+from executor.crud.playbooks_crud import get_db_playbooks
+from executor.workflows.tasks import test_workflow_notification
+from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
+from protos.playbooks.workflow_schedules.one_off_schedule_pb2 import OneOffSchedule
+from protos.playbooks.workflow_pb2 import Workflow, WorkflowAction as WorkflowActionProto, WorkflowSchedule, \
+    WorkflowEntryPoint, WorkflowConfiguration
 
 logger = logging.getLogger(__name__)
 
@@ -27,17 +35,24 @@ logger = logging.getLogger(__name__)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
+    user: User = get_request_user()
 
     # read sample_manifest file string
     sample_manifest = """
 display_information:
-    name: MyDroid
+    name: MyFirstDroidApp
     description: App for Automating Investigation & Actions
     background_color: "#1f2126"
 features:
     bot_user:
-        display_name: MyDroid
+        display_name: MyFirstDroidApp
         always_online: true
+    slash_commands:
+    - command: /execute_playbook
+      url: HOST_NAME/connectors/handlers/slack_bot/command_execute_playbook?token=TOKEN_VALUE
+      description: Executes Playbooks
+      usage_hint: "[which playbook to launch]"
+      should_escape: false
 oauth_config:
     scopes:
         bot:
@@ -55,6 +70,7 @@ oauth_config:
         - mpim:read
         - im:read
         - groups:history
+        - commands
 settings:
     event_subscriptions:
         request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
@@ -76,8 +92,11 @@ settings:
                                            app_manifest=StringValue(
                                                value="Host name not found for generating Manifest"))
 
+    api_token = AccountApiToken(account=account, created_by=user)
+    api_token.save()
     manifest_hostname = host_name.protocol + '://' + host_name.domain
     app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
+    app_manifest = app_manifest.replace("TOKEN_VALUE", api_token.key)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
@@ -123,6 +142,38 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
     return JsonResponse({'success': False, 'message': 'Slack Event Callback  Handling failed'}, status=400)
 
 
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([SlackBotApiTokenAuthentication])
+@api_auth_check
+def slack_bot_command_execute_playbook(request_message: HttpRequest) -> JsonResponse:
+    channel_id = request_message.data.get('channel_id', None)
+    name = request_message.data.get('text', None)
+    if not name:
+        return JsonResponse({'success': False, 'message': 'Missing Playbook Name'}, status=400)
+    account: Account = get_request_account()
+    playbooks = get_db_playbooks(account=account, is_active=True, playbook_name=name)
+    if not playbooks:
+        return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=404)
+    playbook = playbooks.first()
+    if not playbook:
+        return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=404)
+    pb_proto = playbook.proto
+    workflow = Workflow(playbooks=[pb_proto],
+                        actions=[WorkflowActionProto(type=WorkflowActionProto.Type.SLACK_MESSAGE,
+                                                     slack_message=SlackMessageWorkflowAction(
+                                                         slack_channel_id=StringValue(value=channel_id),
+                                                     ))],
+                        configuration=WorkflowConfiguration(generate_summary=BoolValue(value=True)),
+                        type=Workflow.Type.STANDARD,
+                        entry_points=[WorkflowEntryPoint(type=WorkflowEntryPoint.Type.API, api={})],
+                        schedule=WorkflowSchedule(one_off=OneOffSchedule()),
+                        )
+    test_workflow_notification.delay(workflow_json=proto_to_dict(workflow), account_id=account.id,
+                                     message_type=WorkflowActionProto.Type.SLACK_MESSAGE, created_by='SLACK_COMMAND')
+    return JsonResponse({'success': True, 'message': "Handling successfull"}, status=200)
+
+
 @web_api(GetPagerDutyWebhookRequest)
 def pagerduty_generate_webhook(request_message: GetPagerDutyWebhookRequest) -> HttpResponse:
     account: Account = get_request_account()
@@ -145,6 +196,7 @@ def pagerduty_generate_webhook(request_message: GetPagerDutyWebhookRequest) -> H
     curl = construct_curl('POST', uri, headers=headers, payload=None)
     return HttpResponse(curl, content_type="text/plain", status=200)
 
+
 @web_api(GetZendutyWebhookRequest)
 def zenduty_generate_webhook(request_message: GetZendutyWebhookRequest) -> HttpResponse:
     account: Account = get_request_account()
@@ -166,6 +218,7 @@ def zenduty_generate_webhook(request_message: GetZendutyWebhookRequest) -> HttpR
 
     curl = construct_curl('POST', uri, headers=headers, payload=None)
     return HttpResponse(curl, content_type="text/plain", status=200)
+
 
 @web_api(GetRootlyWebhookRequest)
 def rootly_generate_webhook(request_message: GetRootlyWebhookRequest) -> HttpResponse:
@@ -203,6 +256,7 @@ def pagerduty_handle_incidents(request_message: HttpRequest) -> JsonResponse:
         logger.error(f'Error handling pagerduty incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"pagerduty incident Handling failed"}, status=500)
 
+
 @csrf_exempt
 @api_view(['POST'])
 @authentication_classes([AccountApiTokenAuthentication])
@@ -215,7 +269,8 @@ def rootly_handle_incidents(request_message: HttpRequest) -> JsonResponse:
     except Exception as e:
         logger.error(f'Error handling rootly incident: {str(e)}')
         return JsonResponse({'success': False, 'message': f"rootly incident Handling failed"}, status=500)
-    
+
+
 @csrf_exempt
 @api_view(['POST'])
 @authentication_classes([AccountApiTokenAuthentication])
