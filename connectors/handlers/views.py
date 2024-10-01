@@ -15,20 +15,17 @@ from connectors.handlers.bots.rootly_handler import handle_rootly_incident
 from connectors.handlers.bots.zenduty_handler import handle_zd_incident
 from connectors.handlers.bots.slack_bot_handler import handle_slack_event_callback
 from connectors.models import Site
-from playbooks.utils.decorators import web_api, account_post_api, api_auth_check
+from playbooks.utils.decorators import web_api, api_auth_check
 from utils.time_utils import current_epoch_timestamp
 from protos.connectors.api_pb2 import GetSlackAppManifestResponse, GetSlackAppManifestRequest, \
-    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetRootlyWebhookRequest, GetRootlyWebhookResponse, \
-    GetPagerDutyWebhookRequest, GetPagerDutyWebhookResponse, GetZendutyWebhookRequest, GetZendutyWebhookResponse
+    GetRootlyWebhookRequest, GetPagerDutyWebhookRequest, GetZendutyWebhookRequest
 from utils.uri_utils import build_absolute_uri, construct_curl
 from executor.crud.playbooks_crud import get_db_playbooks
 from executor.workflows.tasks import test_workflow_notification
-from protos.playbooks.workflow_pb2 import Workflow, WorkflowSchedule, WorkflowAction as WorkflowActionProto, \
-    WorkflowEntryPoint, WorkflowConfiguration
 from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
 from protos.playbooks.workflow_schedules.one_off_schedule_pb2 import OneOffSchedule
-from protos.playbooks.workflow_pb2 import Workflow, WorkflowAction as WorkflowActionProto
-from utils.proto_utils import dict_to_proto
+from protos.playbooks.workflow_pb2 import Workflow, WorkflowAction as WorkflowActionProto, WorkflowSchedule, \
+    WorkflowEntryPoint, WorkflowConfiguration
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +34,7 @@ logger = logging.getLogger(__name__)
 def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
         Union[GetSlackAppManifestResponse, HttpResponse]:
     account: Account = get_request_account()
+    user: User = get_request_user()
 
     # read sample_manifest file string
     sample_manifest = """
@@ -93,10 +91,11 @@ settings:
                                            app_manifest=StringValue(
                                                value="Host name not found for generating Manifest"))
 
-    token_value = account.accountapitoken_set.create()
+    api_token = AccountApiToken(account=account, created_by=user)
+    api_token.save()
     manifest_hostname = host_name.protocol + '://' + host_name.domain
     app_manifest = sample_manifest.replace("HOST_NAME", manifest_hostname)
-    app_manifest = app_manifest.replace("TOKEN_VALUE", token_value.key)
+    app_manifest = app_manifest.replace("TOKEN_VALUE", api_token.key)
 
     return GetSlackAppManifestResponse(success=BoolValue(value=True), app_manifest=StringValue(value=app_manifest))
 
