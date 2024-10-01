@@ -27,6 +27,8 @@ from protos.playbooks.workflow_pb2 import Workflow, WorkflowSchedule, WorkflowAc
     WorkflowEntryPoint, WorkflowConfiguration
 from protos.playbooks.workflow_actions.slack_message_pb2 import SlackMessageWorkflowAction
 from protos.playbooks.workflow_schedules.one_off_schedule_pb2 import OneOffSchedule
+from protos.playbooks.workflow_pb2 import Workflow, WorkflowAction as WorkflowActionProto
+from utils.proto_utils import dict_to_proto
 
 logger = logging.getLogger(__name__)
 
@@ -39,15 +41,15 @@ def slack_manifest_create(request_message: GetSlackAppManifestRequest) -> \
     # read sample_manifest file string
     sample_manifest = """
 display_information:
-    name: MyDroid
+    name: MyFirstDroidApp
     description: App for Automating Investigation & Actions
     background_color: "#1f2126"
 features:
     bot_user:
-        display_name: MyDroid
+        display_name: MyFirstDroidApp
         always_online: true
     slash_commands:
-    - command: /run_playbook
+    - command: /execute_playbook
       url: HOST_NAME/connectors/handlers/slack_bot/command_execute_playbook?token=TOKEN_VALUE
       description: Executes Playbooks
       usage_hint: "[which playbook to launch]"
@@ -69,6 +71,7 @@ oauth_config:
         - mpim:read
         - im:read
         - groups:history
+        - commands
 settings:
     event_subscriptions:
         request_url: HOST_NAME/connectors/handlers/slack_bot/handle_callback_events
@@ -163,8 +166,8 @@ def slack_bot_command_execute_playbook(request_message: HttpRequest) -> JsonResp
                         entry_points=[WorkflowEntryPoint(type=WorkflowEntryPoint.Type.API, api={})],
                         schedule=WorkflowSchedule(one_off=OneOffSchedule()),
                         )
-    test_workflow_notification(workflow=workflow, account_id=account.id,
-                               message_type=WorkflowActionProto.Type.SLACK_MESSAGE, created_by='SLACK_COMMAND')
+    test_workflow_notification.delay(workflow=workflow, account_id=account.id,
+                                     message_type=WorkflowActionProto.Type.SLACK_MESSAGE, created_by='SLACK_COMMAND')
     return JsonResponse({'success': True, 'message': "Handling successfull"}, status=200)
 
 

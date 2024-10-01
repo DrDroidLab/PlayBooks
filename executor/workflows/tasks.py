@@ -33,7 +33,7 @@ from protos.playbooks.intelligence_layer.interpreter_pb2 import Interpretation a
 from protos.playbooks.workflow_pb2 import WorkflowExecutionStatusType, Workflow as WorkflowProto, \
     WorkflowAction as WorkflowActionProto, WorkflowConfiguration as WorkflowConfigurationProto, \
     WorkflowExecution as WorkflowExecutionProto, WorkflowSchedule as WorkflowScheduleProto, \
-    WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowConfiguration
+    WorkflowEntryPoint as WorkflowEntryPointProto, WorkflowConfiguration, Workflow
 from protos.base_pb2 import Source
 from google.protobuf.wrappers_pb2 import StringValue
 
@@ -329,8 +329,10 @@ workflow_action_execution_failure_notifier = publish_task_failure(workflow_actio
 workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
 
 
-def test_workflow_notification(created_by, account_id, workflow, message_type):
+@shared_task
+def test_workflow_notification(created_by, account_id, workflow_json, message_type):
     try:
+        workflow = dict_to_proto(d=workflow_json, proto_clazz=Workflow)
         account = Account.objects.get(id=account_id)
     except Exception as e:
         logger.error(f"Account not found for account_id: {account_id}, error: {e}")
