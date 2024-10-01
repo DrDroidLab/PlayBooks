@@ -208,6 +208,13 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     BIG_QUERY: _Source.ValueType  # 49
     ZENDUTY: _Source.ValueType  # 50
     ROOTLY: _Source.ValueType  # 51
+    JIRA_CLOUD: _Source.ValueType  # 52
+    ASANA: _Source.ValueType  # 53
+    CONFLUENCE_CLOUD: _Source.ValueType  # 54
+    CONFLUENCE_SELF_HOSTED: _Source.ValueType  # 55
+    GOOGLE_DRIVE: _Source.ValueType  # 56
+    NOTION: _Source.ValueType  # 57
+    DRD_PROXY_AGENT: _Source.ValueType  # 58
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -263,6 +270,13 @@ SMTP: Source.ValueType  # 48
 BIG_QUERY: Source.ValueType  # 49
 ZENDUTY: Source.ValueType  # 50
 ROOTLY: Source.ValueType  # 51
+JIRA_CLOUD: Source.ValueType  # 52
+ASANA: Source.ValueType  # 53
+CONFLUENCE_CLOUD: Source.ValueType  # 54
+CONFLUENCE_SELF_HOSTED: Source.ValueType  # 55
+GOOGLE_DRIVE: Source.ValueType  # 56
+NOTION: Source.ValueType  # 57
+DRD_PROXY_AGENT: Source.ValueType  # 58
 global___Source = Source
 
 class _SourceKeyType:
@@ -355,6 +369,13 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     BIG_QUERY_SERVICE_ACCOUNT_JSON: _SourceKeyType.ValueType  # 82
     ZENDUTY_API_KEY: _SourceKeyType.ValueType  # 83
     ROOTLY_API_KEY: _SourceKeyType.ValueType  # 84
+    JIRA_CLOUD_API_KEY: _SourceKeyType.ValueType  # 85
+    ASANA_ACCESS_TOKEN: _SourceKeyType.ValueType  # 86
+    CONFLUENCE_CLOUD_API_KEY: _SourceKeyType.ValueType  # 87
+    NOTION_API_KEY: _SourceKeyType.ValueType  # 88
+    DRD_PROXY_AGENT_HOST: _SourceKeyType.ValueType  # 89
+    DRD_PROXY_AGENT_API_TOKEN: _SourceKeyType.ValueType  # 90
+    DRD_PROXY_AGENT_API_KEY: _SourceKeyType.ValueType  # 91
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -442,6 +463,13 @@ BIG_QUERY_PROJECT_ID: SourceKeyType.ValueType  # 81
 BIG_QUERY_SERVICE_ACCOUNT_JSON: SourceKeyType.ValueType  # 82
 ZENDUTY_API_KEY: SourceKeyType.ValueType  # 83
 ROOTLY_API_KEY: SourceKeyType.ValueType  # 84
+JIRA_CLOUD_API_KEY: SourceKeyType.ValueType  # 85
+ASANA_ACCESS_TOKEN: SourceKeyType.ValueType  # 86
+CONFLUENCE_CLOUD_API_KEY: SourceKeyType.ValueType  # 87
+NOTION_API_KEY: SourceKeyType.ValueType  # 88
+DRD_PROXY_AGENT_HOST: SourceKeyType.ValueType  # 89
+DRD_PROXY_AGENT_API_TOKEN: SourceKeyType.ValueType  # 90
+DRD_PROXY_AGENT_API_KEY: SourceKeyType.ValueType  # 91
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -512,6 +540,11 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Zenduty Models"""
     ROOTLY_INCIDENT: _SourceModelType.ValueType  # 1901
     """Rootly Models"""
+    OPS_GENIE_ESCALATION: _SourceModelType.ValueType  # 2001
+    """OPS GENIE Models"""
+    OPS_GENIE_TEAM: _SourceModelType.ValueType  # 2002
+    GOOGLE_CHAT_SPACE: _SourceModelType.ValueType  # 2101
+    """Google Chat Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -577,6 +610,11 @@ ZENDUTY_INCIDENT: SourceModelType.ValueType  # 1801
 """Zenduty Models"""
 ROOTLY_INCIDENT: SourceModelType.ValueType  # 1901
 """Rootly Models"""
+OPS_GENIE_ESCALATION: SourceModelType.ValueType  # 2001
+"""OPS GENIE Models"""
+OPS_GENIE_TEAM: SourceModelType.ValueType  # 2002
+GOOGLE_CHAT_SPACE: SourceModelType.ValueType  # 2101
+"""Google Chat Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
