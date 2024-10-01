@@ -329,7 +329,7 @@ workflow_action_execution_failure_notifier = publish_task_failure(workflow_actio
 workflow_action_execution_postrun_notifier = publish_post_run_task(workflow_action_execution)
 
 
-def test_workflow_notification(user, account_id, workflow, message_type):
+def test_workflow_notification(created_by, account_id, workflow, message_type):
     try:
         account = Account.objects.get(id=account_id)
     except Exception as e:
@@ -380,7 +380,7 @@ def test_workflow_notification(user, account_id, workflow, message_type):
         uuid_str = uuid.uuid4().hex
         playbook_run_uuid = f'{str(current_time)}_{account.id}_{playbook_id}_pb_run_{uuid_str}'
 
-        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, user.email)
+        playbook_execution = create_playbook_execution(account, time_range, playbook_id, playbook_run_uuid, created_by)
 
         if workflow.configuration.generate_summary and workflow.configuration.generate_summary.value:
             execute_playbook(account_id, playbook_id, playbook_execution.id, proto_to_dict(time_range))
