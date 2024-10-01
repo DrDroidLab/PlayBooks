@@ -147,9 +147,13 @@ def slack_bot_handle_callback_events(request_message: HttpRequest) -> JsonRespon
 @api_auth_check
 def slack_bot_command_execute_playbook(request_message: HttpRequest) -> JsonResponse:
     channel_id = request_message.data.get('channel_id', [''])[0]
-    name = request_message.data.get('text', [''])[0]
+    name = request_message.data.get('text', None)
+    if not name:
+        return JsonResponse({'success': False, 'message': 'Missing Playbook Name'}, status=400)
     account: Account = get_request_account()
     playbooks = get_db_playbooks(account=account, is_active=True, playbook_name=name)
+    if not playbooks:
+        return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=404)
     playbook = playbooks.first()
     if not playbook:
         return JsonResponse({'success': False, 'message': 'Playbook not found'}, status=404)
