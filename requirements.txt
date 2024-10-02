@@ -23,6 +23,7 @@ django-cors-headers==3.13.0
 django-filter==22.1
 django-prometheus==2.4.0.dev5
 django-redis==5.2.0
+django-encrypted-model-fields==0.6.5
 djangorestframework-simplejwt==5.2.2
 elasticsearch==8.14.0
 environs==11.0.0
