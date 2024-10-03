@@ -136,20 +136,7 @@ DATABASES = {
         'PASSWORD': env.str('POSTGRES_PASSWORD', default='pass'),
         'HOST': _default_postgres_host,
         'PORT': env.str('POSTGRES_PORT', default='5432'),
-    },
-    # 'clickhouse': {
-    #     'ENGINE': 'clickhouse_backend.backend',
-    #     'HOST': env.str("CLICKHOUSE_HOST", default='localhost'),
-    #     'PORT': 9440,
-    #     'USER': env.str("CLICKHOUSE_USERNAME", default='default'),
-    #     'PASSWORD': env.str("CLICKHOUSE_PASSWORD", default=''),
-    #     'OPTIONS': {
-    #         'secure': True,
-    #         'settings': {
-    #             'allow_experimental_object_type': 1
-    #         }
-    #     }
-    # }
+    }
 }
 
 DATABASE_ROUTERS = ['playbooks.db.router.DbRouter']
