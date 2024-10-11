@@ -1,0 +1,68 @@
+name: Build and Push
+on:
+  push:
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ "main" ]
+
+env: 
+  Dockerfile-Backend: Dockerfile
+  Dockerfile-Web: web/Dockerfile
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.0.0 
+
+      - name: Setup AWS Creds 
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: login ECR 
+        if: github.event_name != 'pull_request'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Backend and and push
+        if: github.event_name != 'pull_request'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.BACKEND_ECR_REPOSITORY }} 
+        run: |
+          VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
+          TAG=$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION_TAG}
+          docker build --platform linux/amd64 --push -t ${TAG} -f ${Dockerfile-Backend} .
+
+      - name: Build Backend image
+        if: github.event_name == 'pull_request'
+        run: |
+          docker build --platform linux/amd64  -f ${Dockerfile-Backend}  .
+
+
+      - name: Build Web and and push
+        if: github.event_name != 'pull_request'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.WEB_ECR_REPOSITORY }} 
+        run: |
+          VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
+          TAG=$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION_TAG}
+          docker build --platform linux/amd64 --push -t ${TAG} -f ${Dockerfile-Web} .
+
+      - name: Build Backend image
+        if: github.event_name == 'pull_request'
+        run: |
+          docker build --platform linux/amd64  -f ${Dockerfile-Web}  .
+
+
+      
+
+
+
