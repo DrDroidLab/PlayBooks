@@ -56,7 +56,7 @@ jobs:
           TAG=$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION_TAG}
           docker build --platform linux/amd64 --push -t ${TAG} -f ${Dockerfile-Web} .
 
-      - name: Build Backend image
+      - name: Build Web image
         if: github.event_name == 'pull_request'
         run: |
           docker build --platform linux/amd64  -f ${Dockerfile-Web}  .
