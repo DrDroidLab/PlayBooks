@@ -15,7 +15,7 @@ jobs:
       - name: Access key and secret 
         # if: github.event_name == 'pull_request'
         run: |
-          echo  ${{ secrets.ACCESS_KEY_ID }} ${{ secrets.SECRET_ACCESS_KEY }} 
+          echo AccessKey `exp length ${{ secrets.ACCESS_KEY_ID }} ` exp length ${{ secrets.SECRET_ACCESS_KEY }}` 
 
       # - name: Checkout repository
       #   uses: actions/checkout@v3
