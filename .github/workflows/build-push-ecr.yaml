@@ -6,8 +6,8 @@ on:
     branches: [ "main" ]
 
 env: 
-  Dockerfile-Backend: Dockerfile
-  Dockerfile-Web: web/Dockerfile
+  Dockerfile_Backend: Dockerfile
+  Dockerfile_Web: web/Dockerfile
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,8 +21,8 @@ jobs:
       - name: Setup AWS Creds 
         uses: aws-actions/configure-aws-credentials@v1
         with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_AWS }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY_AWS }}
           aws-region: us-west-2
 
       - name: login ECR 
@@ -38,12 +38,12 @@ jobs:
         run: |
           VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
           TAG=$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION_TAG}
-          docker build --platform linux/amd64 --push -t ${TAG} -f ${Dockerfile-Backend} .
+          docker build --platform linux/amd64 --push -t ${TAG} -f ${{ env.Dockerfile_Backend }} .
 
       - name: Build Backend image
         if: github.event_name == 'pull_request'
         run: |
-          docker build --platform linux/amd64  -f ${Dockerfile-Backend}  .
+          docker build --platform linux/amd64  -f ${{ env.Dockerfile_Backend }}  .
 
 
       - name: Build Web and and push
@@ -54,13 +54,12 @@ jobs:
         run: |
           VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
           TAG=$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION_TAG}
-          docker build --platform linux/amd64 --push -t ${TAG} -f ${Dockerfile-Web} .
+          docker build --platform linux/amd64 --push -t ${TAG} -f ${{ env.Dockerfile_Web }} web/
 
       - name: Build Web image
         if: github.event_name == 'pull_request'
         run: |
-          docker build --platform linux/amd64  -f ${Dockerfile-Web}  .
-
+          docker build --platform linux/amd64 -f ${{ env.Dockerfile_Web }} web/ 
 
       
 
