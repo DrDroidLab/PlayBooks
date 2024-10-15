@@ -12,10 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build Web image
-        # if: github.event_name == 'pull_request'
-        run: |
-          env && cat ~/.aws/credentials 
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -23,7 +19,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.0.0 
 
       - name: Setup AWS Creds 
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v1
         with: 
           aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
