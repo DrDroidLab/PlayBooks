@@ -10,7 +10,7 @@ env:
   Dockerfile_Web: web/Dockerfile
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [ 'warp' ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
