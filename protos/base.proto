@@ -149,7 +149,7 @@ enum Source {
   EKS = 33;
   AGENT_PROXY = 34;
   GRAFANA_VPC = 35;
-  GITHUB_ACTIONS = 36;
+  GITHUB = 36;
   SQL_DATABASE_CONNECTION = 37;
   OPEN_AI = 38;
   REMOTE_SERVER = 39;
@@ -171,13 +171,16 @@ enum Source {
   CONFLUENCE_SELF_HOSTED = 55;
   GOOGLE_DRIVE = 56;
   NOTION = 57;
-
   DRD_PROXY_AGENT = 58;
+  MONGODB = 59;
+  OPEN_SEARCH = 60;
+  LINEAR = 61;
+  JENKINS = 62;
+  GITHUB_ACTIONS = 63;
 }
 
 enum SourceKeyType {
   UNKNOWN_SKT = 0;
-
   SENTRY_API_KEY = 1;
   SENTRY_ORG_SLUG = 6;
 
@@ -204,6 +207,7 @@ enum SourceKeyType {
   AWS_REGION = 20;
   AWS_ASSUMED_ROLE_ARN = 23;
   EKS_ROLE_ARN = 40;
+  AWS_DRD_CLOUD_ROLE_ARN = 93;
 
   GOOGLE_CHAT_BOT_OAUTH_TOKEN = 16;
   GOOGLE_CHAT_BOT_SPACES = 17;
@@ -218,7 +222,7 @@ enum SourceKeyType {
   CLICKHOUSE_PASSWORD = 28;
 
   GCM_PROJECT_ID = 29;
-  GCM_SERVICE_ACCOUNT_JSON = 30;
+  GCM_PRIVATE_KEY = 30;
   GCM_CLIENT_EMAIL = 31;
   GCM_TOKEN_URI = 32;
 
@@ -239,7 +243,7 @@ enum SourceKeyType {
   AGENT_PROXY_HOST = 43;
   AGENT_PROXY_API_KEY = 44;
 
-  GITHUB_ACTIONS_TOKEN = 45;
+  GITHUB_TOKEN = 45;
 
   OPEN_AI_API_KEY = 47;
 
@@ -302,11 +306,27 @@ enum SourceKeyType {
   DRD_PROXY_AGENT_HOST = 89;
   DRD_PROXY_AGENT_API_TOKEN = 90;
   DRD_PROXY_AGENT_API_KEY = 91;
+
+  MONGODB_CONNECTION_STRING = 92;
+
+  OPEN_SEARCH_PROTOCOL = 94;
+  OPEN_SEARCH_HOST = 95;
+  OPEN_SEARCH_PORT = 96;
+  OPEN_SEARCH_USERNAME = 97;
+  OPEN_SEARCH_PASSWORD = 98;
+
+  LINEAR_API_KEY = 99;
+
+  JENKINS_URL = 100;
+  JENKINS_USERNAME = 101;
+  JENKINS_API_TOKEN = 102;
+
+  GITHUB_ACTIONS_TOKEN = 103;
 }
 
 enum SourceModelType {
   UNKNOWN_MT = 0;
-  // New Relic Models
+  //New Relic Models
   NEW_RELIC_POLICY = 1;
   NEW_RELIC_CONDITION = 2;
   NEW_RELIC_ENTITY = 3;
@@ -328,17 +348,19 @@ enum SourceModelType {
   DATADOG_METRIC = 111;
   DATADOG_QUERY = 112;
 
-
   //Cloudwatch Models
   CLOUDWATCH_METRIC = 201;
   CLOUDWATCH_LOG_GROUP = 202;
-
+  CLOUDWATCH_LOG_GROUP_QUERY = 203;
+  CLOUDWATCH_ALARMS = 204;
+  RDS_INSTANCES = 205;
 
   //Grafana Models
   GRAFANA_DATASOURCE = 301;
   GRAFANA_DASHBOARD = 302;
   GRAFANA_TARGET_METRIC_PROMQL = 303;
   GRAFANA_PROMETHEUS_DATASOURCE = 304;
+  GRAFANA_ALERT_RULE = 305;
 
   //Clickhouse Models
   CLICKHOUSE_DATABASE = 401;
@@ -365,28 +387,28 @@ enum SourceModelType {
   //Remote Server Models
   SSH_SERVER = 1100;
 
-  // Mimir Server Models
+  //Mimir Server Models
   GRAFANA_MIMIR_PROMQL = 1201;
 
-  // GKE Models
+  //GKE Models
   GKE_CLUSTER = 1301;
 
-  // MS TEAMS Models
+  //MS TEAMS Models
   MS_TEAMS_CHANNEL = 1401;
 
-  // Pagerduty Models
+  //Pagerduty Models
   PAGERDUTY_INCIDENT = 1501;
 
-  // Elastic Search Models
+  //Elastic Search Models
   ELASTIC_SEARCH_INDEX = 1601;
 
-  // GCM Models
+  //GCM Models
   GCM_METRIC = 1701;
 
-  // Zenduty Models
+  //Zen Duty Models
   ZENDUTY_INCIDENT = 1801;
 
-  // Rootly Models
+  //ROOTLY Models
   ROOTLY_INCIDENT = 1901;
 
   //OPS GENIE Models
@@ -395,4 +417,14 @@ enum SourceModelType {
 
   //Google Chat Models
   GOOGLE_CHAT_SPACE = 2101;
+
+  // MongoDB Models
+  MONGODB_DATABASE = 2201;
+  MONGODB_COLLECTION = 2202;
+
+  //Open Search Models
+  OPEN_SEARCH_INDEX = 2301;
+
+  // Asana Models
+  ASANA_PROJECT = 2401;
 }
