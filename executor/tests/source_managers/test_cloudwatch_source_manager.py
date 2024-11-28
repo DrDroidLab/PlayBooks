@@ -4,7 +4,6 @@ from unittest import mock, TestCase
 from unittest.mock import MagicMock
 from datetime import datetime
 
-
 django.setup()
 
 from executor.source_managers.cloudwatch_source_manager import CloudwatchSourceManager
