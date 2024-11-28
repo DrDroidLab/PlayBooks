@@ -1,20 +1,24 @@
 import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Overlay from "../../Overlay/index.tsx";
 import { CloseRounded } from "@mui/icons-material";
 import CustomButton from "../../common/CustomButton/index.tsx";
 import posthog from "posthog-js";
+import { setCommonKey } from "../../../store/features/common/commonSlice.ts";
 
 const RecieveUpdatesModal = ({ isOpen, close }) => {
-  const handleYes = () => {
-    posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_INTERACTED", {
-      subscription_requested: true,
-    });
-    close();
-  };
+  const dispatch = useDispatch();
 
-  const handleNo = () => {
+  const handleProductUpdateSignup = (signupStatus: boolean) => {
+    dispatch(
+      setCommonKey({
+        key: "productUpdateStatus",
+        value: true,
+      }),
+    );
+
     posthog.capture("POST_LOGIN_SUBSCRIPTION_UPDATE_INTERACTED", {
-      subscription_requested: false,
+      subscription_requested: signupStatus,
     });
     close();
   };
@@ -27,10 +31,14 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
 
   return (
     <div className="z-50">
-      <Overlay close={close} visible={isOpen}>
-        <div className="relative bg-white py-6 px-4 rounded max-w-full w-[300px]">
+      <Overlay
+        close={() => {
+          handleProductUpdateSignup(false);
+        }}
+        visible={isOpen}>
+        <div className="relative bg-white py-8 px-4 rounded max-w-full w-[300px]">
           <div
-            onClick={close}
+            onClick={() => handleProductUpdateSignup(false)}
             className="absolute top-0 right-0 m-2 cursor-pointer">
             <CloseRounded />
           </div>
@@ -41,11 +49,13 @@ const RecieveUpdatesModal = ({ isOpen, close }) => {
 
           <div className="flex items-center gap-2 mt-4">
             <CustomButton
-              onClick={handleYes}
+              onClick={() => handleProductUpdateSignup(true)}
               className="!bg-violet-500 !text-white hover:!text-violet-500 hover:!bg-transparent">
               Yes Please!
             </CustomButton>
-            <CustomButton onClick={handleNo}>No thanks</CustomButton>
+            <CustomButton onClick={() => handleProductUpdateSignup(false)}>
+              No thanks
+            </CustomButton>
           </div>
         </div>
       </Overlay>
