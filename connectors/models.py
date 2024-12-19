@@ -309,7 +309,7 @@ integrations_connector_type_connector_keys_map = {
     Source.GCM: [
         [
             SourceKeyType.GCM_PROJECT_ID,
-            SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
+            SourceKeyType.GCM_PRIVATE_KEY,
         ]
     ],
     Source.SMTP: [
@@ -349,7 +349,7 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.AWS_SECRET_KEY: 'AWS Secret Key',
     SourceKeyType.AWS_REGION: 'AWS Region',
     SourceKeyType.GCM_PROJECT_ID: 'Project ID',
-    SourceKeyType.GCM_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
+    SourceKeyType.GCM_PRIVATE_KEY: 'Service Account JSON',
     SourceKeyType.GCM_CLIENT_EMAIL: 'Client Email',
     SourceKeyType.GCM_TOKEN_URI: 'Token URI',
     SourceKeyType.CLICKHOUSE_INTERFACE: 'Interface',
@@ -531,7 +531,7 @@ class ConnectorKey(models.Model):
                              SourceKeyType.AGENT_PROXY_HOST,
                              SourceKeyType.AWS_ASSUMED_ROLE_ARN,
                              SourceKeyType.CLICKHOUSE_USER, SourceKeyType.CLICKHOUSE_PASSWORD,
-                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_SERVICE_ACCOUNT_JSON,
+                             SourceKeyType.GCM_PROJECT_ID, SourceKeyType.GCM_PRIVATE_KEY,
                              SourceKeyType.GCM_CLIENT_EMAIL, SourceKeyType.PAGER_DUTY_API_KEY,
                              SourceKeyType.POSTGRES_PASSWORD, SourceKeyType.POSTGRES_USER,
                              SourceKeyType.OPS_GENIE_API_KEY,
