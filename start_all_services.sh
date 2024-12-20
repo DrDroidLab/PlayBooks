@@ -21,18 +21,18 @@ export FLUENTD_ADDRESS=localhost:24224
 
 echo "Setting up Python virtual environment..."
 
-# Check if virtualenv is installed, if not, install it
-if ! command -v virtualenv &>/dev/null; then
-  echo "virtualenv not found, installing..."
-  pip install virtualenv
+# Create the virtual environment using python3 -m venv
+if [ ! -d "venv" ]; then
+  python3 -m venv venv
+  echo "Virtual environment created successfully."
 fi
 
-# Create and activate the virtual environment
-python3 -m venv venv
+# Activate the virtual environment
 source venv/bin/activate
 
 # Step 3: Install Python dependencies
 echo "Installing Python dependencies..."
+pip install --upgrade pip  # Upgrade pip to avoid any issues with older versions
 pip install -r requirements.txt
 
 # Step 4: Install frontend dependencies
