@@ -3,6 +3,7 @@ from hashlib import md5
 
 from django.contrib.sites.models import Site as DjangoSite
 from django.db import models
+from encrypted_model_fields.fields import EncryptedTextField, EncryptedCharField
 
 from protos.base_pb2 import Source, SourceKeyType, SourceModelType
 from utils.model_utils import generate_choices
@@ -496,8 +497,8 @@ class ConnectorKey(models.Model):
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
     key_type = models.IntegerField(null=True, blank=True, choices=generate_choices(SourceKeyType),
                                    default=SourceKeyType.UNKNOWN_SKT)
-    key = models.TextField()
-    key_md5 = models.CharField(max_length=255, null=True, blank=True)
+    key = EncryptedTextField()
+    key_md5 = EncryptedCharField(max_length=255, null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -42,6 +42,8 @@ spec:
               value: {{ .Values.oktaDomain }}
             - name: OKTA_CLIENT_ID
               value: {{ .Values.oktaClientId }}
+            - name: FIELD_ENCRYPTION_KEY
+              value: {{ .Values.fieldEcryptionKey }}
           ports:
             - containerPort: 8080
           command: ["/bin/sh","-c"]

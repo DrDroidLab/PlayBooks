@@ -52,9 +52,21 @@ Use this command to get started using Docker:
 ```
 docker-compose -f deploy.docker-compose.yaml up -d
 ```
+#### 3. Security
+The project uses default tokens to encrypt connector keys. Follow the following steps to generate a new token for your deployment:
+```
+from cryptography.fernet import Fernet
+
+# Generate a new Fernet key
+key = Fernet.generate_key()
+print(key.decode())  # Print it as a string to use in settings
+```
+Export this as an ENV variable 'FIELD_ENCRYPTION_KEY' in your deployment.
+ 
+
 Looking for Helm chart or custom branch deployment? Read our installation doc [here](https://docs.drdroid.io/docs/installation).
 
-#### 3. Learn more: Watch tutorials on our [YouTube](https://www.youtube.com/@DrDroidDev) channel
+#### 4. Learn more: Watch tutorials on our [YouTube](https://www.youtube.com/@DrDroidDev) channel
 
 ## Connect with us:
 * Want to contribute? Read our [contribution guidelines](https://docs.drdroid.io/docs/contributing).

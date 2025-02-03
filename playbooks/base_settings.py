@@ -26,7 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = env.str("DJANGO_SECRET_KEY", default='django-insecure-0=(%5(mscw_h4ah@i^n591qkor_(t+2d&+&j)4l8+4zpk65y%=')
+FIELD_ENCRYPTION_KEY = env.list("FIELD_ENCRYPTION_KEY", default=['4TPTg7NnvhEkj0rh5RXl_vdcL2LrgKIyblWPERGDOio='])
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
@@ -134,20 +136,7 @@ DATABASES = {
         'PASSWORD': env.str('POSTGRES_PASSWORD', default='pass'),
         'HOST': _default_postgres_host,
         'PORT': env.str('POSTGRES_PORT', default='5432'),
-    },
-    # 'clickhouse': {
-    #     'ENGINE': 'clickhouse_backend.backend',
-    #     'HOST': env.str("CLICKHOUSE_HOST", default='localhost'),
-    #     'PORT': 9440,
-    #     'USER': env.str("CLICKHOUSE_USERNAME", default='default'),
-    #     'PASSWORD': env.str("CLICKHOUSE_PASSWORD", default=''),
-    #     'OPTIONS': {
-    #         'secure': True,
-    #         'settings': {
-    #             'allow_experimental_object_type': 1
-    #         }
-    #     }
-    # }
+    }
 }
 
 DATABASE_ROUTERS = ['playbooks.db.router.DbRouter']
@@ -348,11 +337,11 @@ PAGERDUTY_WEBHOOK_HTTP_PROTOCOL = env.str("PAGERDUTY_WEBHOOK_HTTP_PROTOCOL", def
 PAGERDUTY_WEBHOOK_USE_SITE = env.bool("PAGERDUTY_WEBHOOK_USE_SITE", default=True)
 
 ROOTLY_WEBHOOK_LOCATION = env.str("ROOTLY_WEBHOOK_LOCATION", default='/connectors/handlers/rootly'
-                                                                           '/handle_incidents')
+                                                                     '/handle_incidents')
 ROOTLY_WEBHOOK_HTTP_PROTOCOL = env.str("ROOTLY_WEBHOOK_HTTP_PROTOCOL", default='https')
 ROOTLY_WEBHOOK_USE_SITE = env.bool("ROOTLY_WEBHOOK_USE_SITE", default=True)
 ZENDUTY_WEBHOOK_LOCATION = env.str("ZENDUTY_WEBHOOK_LOCATION", default='/connectors/handlers/zenduty'
-                                                                           '/handle_incidents')
+                                                                       '/handle_incidents')
 ZENDUTY_WEBHOOK_HTTP_PROTOCOL = env.str("ZENDUTY_WEBHOOK_HTTP_PROTOCOL", default='https')
 ZENDUTY_WEBHOOK_USE_SITE = env.bool("ZENDUTY_WEBHOOK_USE_SITE", default=True)
 
