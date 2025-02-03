@@ -1,0 +1,129 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - "@feature/unit_tests"
+  pull_request:
+    branches:
+      - "@feature/unit_tests"
+
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Backend Setup and Testing
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Backend Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Backend Unit Tests
+        run: |
+          pytest --html=report.html --self-contained-html --cov=. --cov-report=html || true
+        continue-on-error: true
+
+      - name: Ensure Report is Generated
+        run: |
+          if [ ! -f report.html ]; then
+            echo "<html><body><h1>No report generated</h1></body></html>" > report.html
+          fi
+
+      # Frontend Setup and Testing
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19"
+
+      - name: Install Frontend Dependencies
+        working-directory: ./web
+        run: npm install
+
+      - name: Run Frontend Unit Tests
+        working-directory: ./web
+        run: npm run test
+
+      - name: Generate Frontend Coverage Report
+        working-directory: ./web
+        run: npm run test:coverage
+
+      - name: Prepare Report Directory
+        run: |
+          mkdir -p ./public/reports/frontend
+          mkdir -p ./public/reports/frontend/coverage
+
+          mv ./web/reports/test-report.html ./public/reports/frontend/
+          mv ./web/coverage/lcov-report/* ./public/reports/frontend/coverage/
+
+          mkdir -p ./public/reports/backend
+          mkdir -p ./public/reports/backend/coverage
+
+          mv report.html ./public/reports/backend/
+          mv htmlcov/* ./public/reports/backend/coverage/
+
+      # Deploy reports to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/reports
+
+      # Create a GitHub Check Run with Report Links
+      - name: Create Check Run with Report Links
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { repo, owner } = context.repo;
+
+            const reportComment = `
+            ### Test Reports:
+            - [Frontend Coverage](https://DrDroidLab.github.io/PlayBooks/frontend/coverage/index.html)
+            - [Frontend Report](https://DrDroidLab.github.io/PlayBooks/frontend/test-report.html)
+            - [Backend Coverage](https://DrDroidLab.github.io/PlayBooks/backend/coverage/index.html)
+            - [Backend Report](https://DrDroidLab.github.io/PlayBooks/backend/report.html)
+            `;
+
+            // Create a Check Run using github object
+            await github.rest.checks.create({
+              owner: owner,
+              repo: repo,
+              name: 'Test Report Links',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: 'success',
+              output: {
+                title: 'Test Reports',
+                summary: reportComment,
+                text: 'Click the links above to view the test coverage and report details.'
+              }
+            });
+
+            // Comment on the Pull Request if it exists
+            if (context.payload.pull_request) {
+              const pr_number = context.payload.pull_request.number;
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: pr_number,
+                body: reportComment
+              });
+            }
