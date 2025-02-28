@@ -11,3 +11,5 @@ export * from "./elasticSearchQueryLogs.ts";
 export * from "./nrGoldenMetrics.ts";
 export * from "./nrDashboard.ts";
 export * from "./slackSendMessage.ts"
+export * from "./argoCd.ts";
+export * from "./jiraCloud.ts";

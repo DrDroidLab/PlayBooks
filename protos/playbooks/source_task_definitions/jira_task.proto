@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message Jira {
+  enum TaskType {
+    UNKNOWN = 0;
+    CREATE_TICKET = 1;
+    ASSIGN_TICKET = 2;
+    GET_USERS = 3;
+    GET_TICKET = 4;
+    SEARCH_TICKETS = 5;
+  }
+
+  message CreateTicket {
+    google.protobuf.StringValue project_key = 1;
+    google.protobuf.StringValue summary = 2;
+    google.protobuf.StringValue description = 3;
+    optional google.protobuf.StringValue issue_type = 4;
+    optional google.protobuf.StringValue priority = 5;
+    optional google.protobuf.StringValue labels = 6;
+  }
+
+  message AssignTicket {
+    google.protobuf.StringValue ticket_key = 1;
+    google.protobuf.StringValue assignee = 2;
+  }
+
+  message GetUsers {
+    google.protobuf.StringValue query = 1;
+  }
+
+  message GetTicket {
+    google.protobuf.StringValue ticket_key = 1;
+  }
+
+  message SearchTickets {
+    google.protobuf.StringValue query = 1;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    CreateTicket create_ticket = 2;
+    AssignTicket assign_ticket = 3;
+    GetUsers get_users = 4;
+    GetTicket get_ticket = 5;
+    SearchTickets search_tickets = 6;
+  }
+}

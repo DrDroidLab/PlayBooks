@@ -28,7 +28,7 @@ function PlaybookDescription() {
       }
       value={currentPlaybook?.description}
       onChange={handleDescription}
-      disabled={isPrefetched !== "" ?? false}
+      disabled={!!isPrefetched}
     />
   );
 }

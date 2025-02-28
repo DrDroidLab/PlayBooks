@@ -261,6 +261,20 @@ def generate_credentials_dict(connector_type, connector_keys):
                 credentials_dict['project_id'] = conn_key.key.value
             elif conn_key.key_type == SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON:
                 credentials_dict['service_account_json'] = conn_key.key.value
+    elif connector_type == Source.JIRA_CLOUD:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.JIRA_CLOUD_API_KEY:
+                credentials_dict['jira_cloud_api_key'] = conn_key.key.value
+            if conn_key.key_type == SourceKeyType.JIRA_DOMAIN:
+                credentials_dict['jira_domain'] = conn_key.key.value
+            if conn_key.key_type == SourceKeyType.JIRA_EMAIL:
+                credentials_dict['jira_email'] = conn_key.key.value
+    elif connector_type == Source.ARGOCD:
+        for conn_key in connector_keys:
+            if conn_key.key_type == SourceKeyType.ARGOCD_SERVER:
+                credentials_dict['argocd_server'] = conn_key.key.value
+            if conn_key.key_type == SourceKeyType.ARGOCD_TOKEN:
+                credentials_dict['argocd_token'] = conn_key.key.value
     else:
         return None
     return credentials_dict

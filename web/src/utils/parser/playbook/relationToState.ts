@@ -24,7 +24,7 @@ export const relationToState = (
             ...rule?.[rule?.type?.toLowerCase()],
             isNumeric:
               rule?.[rule?.type?.toLowerCase()]?.numeric_value_threshold !==
-                undefined ?? false,
+                undefined,
           },
         })),
       }));

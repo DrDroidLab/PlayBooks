@@ -14,6 +14,8 @@ from connectors.assets.manager.nr_assets_manager import NewRelicAssetManager
 from connectors.assets.manager.postgres_assets_manager import PostgresAssetManager
 from connectors.assets.manager.bash_assets_manager import BashAssetManager
 from connectors.assets.manager.slack_assets_manager import SlackAssetManager
+from connectors.assets.manager.jira_asset_manager import JiraAssetManager
+from connectors.assets.manager.argocd_asset_manager import ArgoCDAssetManager
 from protos.connectors.assets.asset_pb2 import \
     AccountConnectorAssetsModelFilters as AccountConnectorAssetsModelFiltersProto
 from protos.base_pb2 import Source, SourceModelType
@@ -65,3 +67,5 @@ asset_manager_facade.register(Source.GRAFANA_MIMIR, MimirAssetManager())
 asset_manager_facade.register(Source.AZURE, AzureAssetManager())
 asset_manager_facade.register(Source.GKE, GkeAssetManager())
 asset_manager_facade.register(Source.ELASTIC_SEARCH, ElasticSearchAssetManager())
+asset_manager_facade.register(Source.JIRA_CLOUD, JiraAssetManager())
+asset_manager_facade.register(Source.ARGOCD, ArgoCDAssetManager())

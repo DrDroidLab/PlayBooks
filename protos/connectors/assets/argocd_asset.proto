@@ -1,0 +1,30 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+
+message ArgoCDAppsAssetOptions {
+  repeated string apps = 1; // Names of apps, calling it apps to maintain code uniformity
+}
+
+message ArgoCDAppsAssetModel {
+  google.protobuf.StringValue name = 1; 
+  google.protobuf.StringValue path = 2;
+}
+
+message ArgoCDAssetModel{
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    ArgoCDAppsAssetModel argocd_apps = 101;
+  }
+}
+
+message ArgoCDAssets {
+  repeated ArgoCDAssetModel assets = 1; 
+}

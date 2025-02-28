@@ -6,6 +6,8 @@ from google.protobuf.wrappers_pb2 import StringValue
 from connectors.models import integrations_connector_type_display_name_map
 from executor.source_managers.api_source_manager import ApiSourceManager
 from executor.source_managers.azure_source_manager import AzureSourceManager
+from executor.source_managers.jira_source_manager import JiraSourceManager
+from executor.source_managers.argocd_source_manager import ArgoCDSourceManager
 from executor.source_managers.bash_source_manager import BashSourceManager
 from executor.source_managers.big_query_source_manager import BigQuerySourceManager
 from executor.source_managers.documentation_source_manager import DocumentationSourceManager
@@ -146,3 +148,5 @@ playbook_source_facade.register(Source.SLACK, SlackSourceManager())
 playbook_source_facade.register(Source.DOCUMENTATION, DocumentationSourceManager())
 playbook_source_facade.register(Source.ROOTLY, RootlySourceManager())
 playbook_source_facade.register(Source.ZENDUTY, ZendutySourceManager())
+playbook_source_facade.register(Source.JIRA_CLOUD, JiraSourceManager())
+playbook_source_facade.register(Source.ARGOCD, ArgoCDSourceManager())

@@ -17,6 +17,8 @@ import "protos/connectors/assets/bash_asset.proto";
 import "protos/connectors/assets/gke_asset.proto";
 import "protos/connectors/assets/elastic_search_asset.proto";
 import "protos/connectors/assets/gcm_asset.proto";
+import "protos/connectors/assets/jira_asset.proto";
+import "protos/connectors/assets/argocd_asset.proto";
 
 message ConnectorModelTypeOptions {
   SourceModelType model_type = 1;
@@ -37,6 +39,9 @@ message ConnectorModelTypeOptions {
     GkeClusterAssetOptions gke_cluster_model_options = 15;
     ElasticSearchIndexAssetOptions elastic_search_index_model_options = 16;
     GcmMetricAssetOptions gcm_metric_model_options = 18;
+    JiraUserAssetOptions jira_user_model_options = 19;
+    JiraProjectAssetOptions jira_project_model_options = 20;
+    ArgoCDAppsAssetOptions argocd_apps_model_options = 21;
   }
 }
 
@@ -64,6 +69,9 @@ message AccountConnectorAssetsModelFilters {
     GkeClusterAssetOptions gke_cluster_model_filters = 14;
     ElasticSearchIndexAssetOptions elastic_search_index_model_filters = 15;
     GcmMetricAssetOptions gcm_metric_model_filters = 17;
+    JiraUserAssetOptions jira_user_model_filters = 18;
+    JiraProjectAssetOptions jira_project_model_filters = 19;
+    ArgoCDAppsAssetOptions argocd_apps_model_filters = 20;
   }
 }
 
@@ -83,5 +91,7 @@ message AccountConnectorAssets {
     GkeAssets gke = 12;
     ElasticSearchAssets elastic_search = 13;
     GcmAssets gcm = 14;
+    JiraAssets jira_cloud = 15;
+    ArgoCDAssets argocd = 16;
   }
 }

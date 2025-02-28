@@ -175,4 +175,16 @@ export const cardsData = [
     desc: "Connect to Google BigQuery",
     docs: "https://docs.drdroid.io/docs/bigquery",
   },
+  {
+    url: "/integrations/argo_logo.png",
+    enum: "ARGOCD",
+    desc: "Connect to ArgoCD",
+    docs: "https://docs.drdroid.io/docs/argo-cd",
+  },
+  {
+    url: "/integrations/jira_logo.svg",
+    enum: "JIRA_CLOUD",
+    desc: "Connect to Jira Cloud",
+    docs: "https://docs.drdroid.io/docs/jira-cloud",
+  },
 ];
