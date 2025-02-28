@@ -7,7 +7,6 @@ export const jiraCloud = (key: KeyType, task: Task): any[] => {
     idValue: "key",
     labelValue: "name",
   });
-  console.log("options", options);
   switch (key) {
     case Key.PROJECT_KEY:
       return options;
