@@ -61,6 +61,8 @@ export const Key = {
   BODY: "body",
   CHANNEL: "channel",
   TEXT: "text",
+  PROJECT_KEY: "project_key",
+  ASSIGNEE_KEY: "assignee",
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
