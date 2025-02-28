@@ -84,6 +84,20 @@ class ArgoCDSourceManager(PlaybookSourceManager):
                               form_field_type=FormFieldType.TEXT_FT),
                 ]
             },
+            ArgoCD.TaskType.GET_APPLICATION_HEALTH: {
+                'executor': self.get_application_health,
+                'model_types': [SourceModelType.ARGOCD_APPS],
+                'result_type': PlaybookTaskResultType.TABLE,
+                'display_name': 'Get Application Health',
+                'category': 'CI/CD',
+                'form_fields': [
+                    FormField(key_name=StringValue(value="app_name"),
+                              display_name=StringValue(value="App Name"),
+                              description=StringValue(value='Select App Name'),
+                              data_type=LiteralType.STRING,
+                              form_field_type=FormFieldType.TYPING_DROPDOWN_FT)
+                ]
+            }
         }
 
     def get_connector_processor(self, argocd_connector, **kwargs):
@@ -239,3 +253,51 @@ class ArgoCDSourceManager(PlaybookSourceManager):
                          f"asset descriptor for account: {argocd_connector.account_id.value} and connector: "
                          f"{argocd_connector.id.value} with error: {e}")
         return None
+
+    def get_application_health(self, time_range: TimeRange, argocd_task: ArgoCD,
+                              argocd_connector: ConnectorProto) -> PlaybookTaskResult:
+        try:
+            app_name = argocd_task.get_application_health.app_name
+
+            argocd_api_processor = self.get_connector_processor(argocd_connector)
+            health_info = argocd_api_processor.get_application_health(app_name.value)
+
+            if not health_info:
+                return PlaybookTaskResult(
+                    type=PlaybookTaskResultType.TABLE,
+                    source=self.source,
+                    table=TableResult(
+                        raw_query=StringValue(value=f"No health information found for application {app_name.value}"),
+                        total_count=UInt64Value(value=0),
+                        rows=[]
+                    )
+                )
+
+            # Create table columns for the health information
+            status_column = TableResult.TableColumn(
+                name=StringValue(value='Status'),
+                value=StringValue(value=health_info['status'])
+            )
+            sync_status_column = TableResult.TableColumn(
+                name=StringValue(value='Sync Status'),
+                value=StringValue(value=health_info['sync_status'])
+            )
+
+            # Create a single row with all the health information
+            row = TableResult.TableRow(columns=[
+                status_column,
+                sync_status_column
+            ])
+
+            return PlaybookTaskResult(
+                type=PlaybookTaskResultType.TABLE,
+                source=self.source,
+                table=TableResult(
+                    raw_query=StringValue(value=f"Health status for application {app_name.value}"),
+                    total_count=UInt64Value(value=1),
+                    rows=[row]
+                )
+            )
+
+        except Exception as e:
+            raise Exception(f"Error while executing ArgoCD get_application_health task: {e}")

@@ -31,6 +31,10 @@ message ArgoCD {
     google.protobuf.StringValue app_name = 1;
   }
 
+  message GetApplicationHealth {
+    google.protobuf.StringValue app_name = 1;
+  }
+
   enum TaskType {
     UNKNOWN = 0;
     FETCH_DEPLOYMENT_INFO = 1;
@@ -38,6 +42,7 @@ message ArgoCD {
     FETCH_REVISION_HISTORY = 3;
     SYNC_APPLICATION = 4;
     FETCH_APPLICATION_STATE = 5;
+    GET_APPLICATION_HEALTH = 6;
   }
 
   TaskType type = 1;
@@ -47,5 +52,6 @@ message ArgoCD {
     FetchRevisionHistory fetch_revision_history = 4;
     SyncApplication sync_application = 5;
     FetchApplicationState fetch_application_state = 6;
+    GetApplicationHealth get_application_health = 7;
   }
 }

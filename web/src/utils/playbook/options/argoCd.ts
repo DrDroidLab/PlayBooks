@@ -10,6 +10,6 @@ export const argoCd = (key: KeyType, task: Task): any[] => {
   console.log(options);
   switch (key) {
     default:
-      return [];
+      return options;
   }
 };

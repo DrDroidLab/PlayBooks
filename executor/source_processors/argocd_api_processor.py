@@ -112,4 +112,37 @@ class ArgoCDAPIProcessor(Processor):
             logger.error(
                 f"Exception occurred while updating target revision for application '{app_name}' with error: {e}")
             raise e
+
+    def get_application_health(self, app_name):
+        """
+        Get the health status of a specific ArgoCD application.
+        
+        Args:
+            app_name (str): Name of the ArgoCD application
+            
+        Returns:
+            dict: Application health information including status, message, etc.
+            None: If there's an error or application not found
+        """
+        try:
+            url = f'{self.__server}/api/v1/applications/{app_name}'
+            headers = {
+                'Authorization': f'Bearer {self.__token}'
+            }
+            response = requests.get(url, headers=headers, verify=False)
+            logger.info(f"ArgoCD application health response: {response.json()}")
+            if response.status_code == 200:
+                app_data = response.json()
+                health = app_data.get('status', {}).get('health', {})
+                return {
+                    'status': health.get('status', 'Unknown'),
+                    'sync_status': app_data.get('status', {}).get('sync', {}).get('status', 'Unknown')
+                }
+            else:
+                logger.error(f"Error getting ArgoCD application health: {response.status_code} - {response.text}")
+                return None
+            
+        except Exception as e:
+            logger.error(f"Exception occurred while getting ArgoCD application health for {app_name} with error: {e}")
+            raise e
         
