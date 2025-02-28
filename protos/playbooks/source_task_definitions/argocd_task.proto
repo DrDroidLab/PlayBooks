@@ -1,0 +1,51 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "google/protobuf/wrappers.proto";
+
+message ArgoCD {
+  message FetchDeploymentInfo {
+    google.protobuf.Int64Value count = 1;
+    google.protobuf.StringValue app_name = 2;
+    google.protobuf.Int64Value time_since_in_minutes = 3;
+  }
+
+  message RollbackApplication {
+    google.protobuf.StringValue app_name = 1;
+    google.protobuf.StringValue revision = 2;
+    google.protobuf.StringValue deployment_id = 3;
+  }
+
+  message FetchRevisionHistory {
+    google.protobuf.Int64Value count = 1;
+    google.protobuf.StringValue app_name = 2;
+    google.protobuf.Int64Value time_since_in_minutes = 3;
+  }
+
+  message SyncApplication {
+    google.protobuf.StringValue app_name = 1;
+    google.protobuf.StringValue version = 2;
+  }
+
+  message FetchApplicationState {
+    google.protobuf.StringValue app_name = 1;
+  }
+
+  enum TaskType {
+    UNKNOWN = 0;
+    FETCH_DEPLOYMENT_INFO = 1;
+    ROLLBACK_APPLICATION = 2;
+    FETCH_REVISION_HISTORY = 3;
+    SYNC_APPLICATION = 4;
+    FETCH_APPLICATION_STATE = 5;
+  }
+
+  TaskType type = 1;
+  oneof task {
+    FetchDeploymentInfo fetch_deployment_info = 2;
+    RollbackApplication rollback_application = 3;
+    FetchRevisionHistory fetch_revision_history = 4;
+    SyncApplication sync_application = 5;
+    FetchApplicationState fetch_application_state = 6;
+  }
+}

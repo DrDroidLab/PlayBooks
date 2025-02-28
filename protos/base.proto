@@ -177,6 +177,7 @@ enum Source {
   LINEAR = 61;
   JENKINS = 62;
   GITHUB_ACTIONS = 63;
+  ARGOCD = 64;
 }
 
 enum SourceKeyType {
@@ -322,6 +323,12 @@ enum SourceKeyType {
   JENKINS_API_TOKEN = 102;
 
   GITHUB_ACTIONS_TOKEN = 103;
+
+  JIRA_EMAIL = 104;
+  JIRA_DOMAIN = 105;
+
+  ARGOCD_SERVER = 106;
+  ARGOCD_TOKEN = 107;
 }
 
 enum SourceModelType {
@@ -427,4 +434,11 @@ enum SourceModelType {
 
   // Asana Models
   ASANA_PROJECT = 2401;
+
+  // Jira Models
+  JIRA_PROJECT = 2501;
+  JIRA_USER = 2502;
+
+  // ArgoCD Models
+  ARGOCD_APPS = 2601;
 }

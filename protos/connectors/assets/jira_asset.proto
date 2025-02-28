@@ -1,0 +1,43 @@
+syntax = "proto3";
+package protos.connectors.assets;
+
+import "google/protobuf/wrappers.proto";
+import "protos/base.proto";
+import "protos/connectors/connector.proto";
+
+
+message JiraUserAssetModel {
+  google.protobuf.StringValue account_id = 1;
+  google.protobuf.StringValue display_name = 2;
+  google.protobuf.StringValue self_url = 3;
+}
+
+message JiraUserAssetOptions {
+  repeated string display_names = 1;
+}
+
+message JiraProjectAssetModel {
+  google.protobuf.StringValue id = 1;
+  google.protobuf.StringValue key = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.StringValue self_url = 4;
+}
+
+message JiraProjectAssetOptions {
+  repeated string names = 2;
+}
+
+message JiraAssetModel {
+  google.protobuf.UInt64Value id = 1;
+  Source connector_type = 2;
+  SourceModelType type = 3;
+  sfixed64 last_updated = 4;
+  oneof asset {
+    JiraProjectAssetModel jira_project = 101;
+    JiraUserAssetModel jira_user = 102;
+  }
+}
+
+message JiraAssets {
+  repeated JiraAssetModel assets = 1;
+}

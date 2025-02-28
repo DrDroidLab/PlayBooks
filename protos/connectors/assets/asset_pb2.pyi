@@ -8,6 +8,7 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
 import protos.base_pb2
+import protos.connectors.assets.argocd_asset_pb2
 import protos.connectors.assets.azure_asset_pb2
 import protos.connectors.assets.bash_asset_pb2
 import protos.connectors.assets.clickhouse_asset_pb2
@@ -18,6 +19,7 @@ import protos.connectors.assets.elastic_search_asset_pb2
 import protos.connectors.assets.gcm_asset_pb2
 import protos.connectors.assets.gke_asset_pb2
 import protos.connectors.assets.grafana_asset_pb2
+import protos.connectors.assets.jira_asset_pb2
 import protos.connectors.assets.newrelic_asset_pb2
 import protos.connectors.assets.postgres_asset_pb2
 import protos.connectors.assets.slack_asset_pb2
@@ -52,6 +54,9 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     GKE_CLUSTER_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     ELASTIC_SEARCH_INDEX_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     GCM_METRIC_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
+    JIRA_USER_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
+    JIRA_PROJECT_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
+    ARGOCD_APPS_MODEL_OPTIONS_FIELD_NUMBER: builtins.int
     model_type: protos.base_pb2.SourceModelType.ValueType
     @property
     def cloudwatch_log_group_model_options(self) -> protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions: ...
@@ -85,6 +90,12 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
     def elastic_search_index_model_options(self) -> protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchIndexAssetOptions: ...
     @property
     def gcm_metric_model_options(self) -> protos.connectors.assets.gcm_asset_pb2.GcmMetricAssetOptions: ...
+    @property
+    def jira_user_model_options(self) -> protos.connectors.assets.jira_asset_pb2.JiraUserAssetOptions: ...
+    @property
+    def jira_project_model_options(self) -> protos.connectors.assets.jira_asset_pb2.JiraProjectAssetOptions: ...
+    @property
+    def argocd_apps_model_options(self) -> protos.connectors.assets.argocd_asset_pb2.ArgoCDAppsAssetOptions: ...
     def __init__(
         self,
         *,
@@ -105,10 +116,13 @@ class ConnectorModelTypeOptions(google.protobuf.message.Message):
         gke_cluster_model_options: protos.connectors.assets.gke_asset_pb2.GkeClusterAssetOptions | None = ...,
         elastic_search_index_model_options: protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchIndexAssetOptions | None = ...,
         gcm_metric_model_options: protos.connectors.assets.gcm_asset_pb2.GcmMetricAssetOptions | None = ...,
+        jira_user_model_options: protos.connectors.assets.jira_asset_pb2.JiraUserAssetOptions | None = ...,
+        jira_project_model_options: protos.connectors.assets.jira_asset_pb2.JiraProjectAssetOptions | None = ...,
+        argocd_apps_model_options: protos.connectors.assets.argocd_asset_pb2.ArgoCDAppsAssetOptions | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["azure_workspace_model_options", b"azure_workspace_model_options", "clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "elastic_search_index_model_options", b"elastic_search_index_model_options", "gcm_metric_model_options", b"gcm_metric_model_options", "gke_cluster_model_options", b"gke_cluster_model_options", "grafana_prometheus_datasource_model_options", b"grafana_prometheus_datasource_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["azure_workspace_model_options", b"azure_workspace_model_options", "clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "elastic_search_index_model_options", b"elastic_search_index_model_options", "gcm_metric_model_options", b"gcm_metric_model_options", "gke_cluster_model_options", b"gke_cluster_model_options", "grafana_prometheus_datasource_model_options", b"grafana_prometheus_datasource_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "model_type", b"model_type", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["options", b"options"]) -> typing_extensions.Literal["cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", "grafana_target_metric_promql_model_options", "clickhouse_database_model_options", "slack_channel_model_options", "new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", "datadog_service_model_options", "postgres_database_model_options", "eks_cluster_model_options", "ssh_server_model_options", "azure_workspace_model_options", "grafana_prometheus_datasource_model_options", "gke_cluster_model_options", "elastic_search_index_model_options", "gcm_metric_model_options"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["argocd_apps_model_options", b"argocd_apps_model_options", "azure_workspace_model_options", b"azure_workspace_model_options", "clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "elastic_search_index_model_options", b"elastic_search_index_model_options", "gcm_metric_model_options", b"gcm_metric_model_options", "gke_cluster_model_options", b"gke_cluster_model_options", "grafana_prometheus_datasource_model_options", b"grafana_prometheus_datasource_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "jira_project_model_options", b"jira_project_model_options", "jira_user_model_options", b"jira_user_model_options", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["argocd_apps_model_options", b"argocd_apps_model_options", "azure_workspace_model_options", b"azure_workspace_model_options", "clickhouse_database_model_options", b"clickhouse_database_model_options", "cloudwatch_log_group_model_options", b"cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", b"cloudwatch_metric_model_options", "datadog_service_model_options", b"datadog_service_model_options", "eks_cluster_model_options", b"eks_cluster_model_options", "elastic_search_index_model_options", b"elastic_search_index_model_options", "gcm_metric_model_options", b"gcm_metric_model_options", "gke_cluster_model_options", b"gke_cluster_model_options", "grafana_prometheus_datasource_model_options", b"grafana_prometheus_datasource_model_options", "grafana_target_metric_promql_model_options", b"grafana_target_metric_promql_model_options", "jira_project_model_options", b"jira_project_model_options", "jira_user_model_options", b"jira_user_model_options", "model_type", b"model_type", "new_relic_entity_application_model_options", b"new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", b"new_relic_entity_dashboard_model_options", "options", b"options", "postgres_database_model_options", b"postgres_database_model_options", "slack_channel_model_options", b"slack_channel_model_options", "ssh_server_model_options", b"ssh_server_model_options"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["options", b"options"]) -> typing_extensions.Literal["cloudwatch_log_group_model_options", "cloudwatch_metric_model_options", "grafana_target_metric_promql_model_options", "clickhouse_database_model_options", "slack_channel_model_options", "new_relic_entity_application_model_options", "new_relic_entity_dashboard_model_options", "datadog_service_model_options", "postgres_database_model_options", "eks_cluster_model_options", "ssh_server_model_options", "azure_workspace_model_options", "grafana_prometheus_datasource_model_options", "gke_cluster_model_options", "elastic_search_index_model_options", "gcm_metric_model_options", "jira_user_model_options", "jira_project_model_options", "argocd_apps_model_options"] | None: ...
 
 global___ConnectorModelTypeOptions = ConnectorModelTypeOptions
 
@@ -156,6 +170,9 @@ class AccountConnectorAssetsModelFilters(google.protobuf.message.Message):
     GKE_CLUSTER_MODEL_FILTERS_FIELD_NUMBER: builtins.int
     ELASTIC_SEARCH_INDEX_MODEL_FILTERS_FIELD_NUMBER: builtins.int
     GCM_METRIC_MODEL_FILTERS_FIELD_NUMBER: builtins.int
+    JIRA_USER_MODEL_FILTERS_FIELD_NUMBER: builtins.int
+    JIRA_PROJECT_MODEL_FILTERS_FIELD_NUMBER: builtins.int
+    ARGOCD_APPS_MODEL_FILTERS_FIELD_NUMBER: builtins.int
     @property
     def cloudwatch_log_group_model_filters(self) -> protos.connectors.assets.cloudwatch_asset_pb2.CloudwatchLogGroupAssetOptions: ...
     @property
@@ -188,6 +205,12 @@ class AccountConnectorAssetsModelFilters(google.protobuf.message.Message):
     def elastic_search_index_model_filters(self) -> protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchIndexAssetOptions: ...
     @property
     def gcm_metric_model_filters(self) -> protos.connectors.assets.gcm_asset_pb2.GcmMetricAssetOptions: ...
+    @property
+    def jira_user_model_filters(self) -> protos.connectors.assets.jira_asset_pb2.JiraUserAssetOptions: ...
+    @property
+    def jira_project_model_filters(self) -> protos.connectors.assets.jira_asset_pb2.JiraProjectAssetOptions: ...
+    @property
+    def argocd_apps_model_filters(self) -> protos.connectors.assets.argocd_asset_pb2.ArgoCDAppsAssetOptions: ...
     def __init__(
         self,
         *,
@@ -207,10 +230,13 @@ class AccountConnectorAssetsModelFilters(google.protobuf.message.Message):
         gke_cluster_model_filters: protos.connectors.assets.gke_asset_pb2.GkeClusterAssetOptions | None = ...,
         elastic_search_index_model_filters: protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchIndexAssetOptions | None = ...,
         gcm_metric_model_filters: protos.connectors.assets.gcm_asset_pb2.GcmMetricAssetOptions | None = ...,
+        jira_user_model_filters: protos.connectors.assets.jira_asset_pb2.JiraUserAssetOptions | None = ...,
+        jira_project_model_filters: protos.connectors.assets.jira_asset_pb2.JiraProjectAssetOptions | None = ...,
+        argocd_apps_model_filters: protos.connectors.assets.argocd_asset_pb2.ArgoCDAppsAssetOptions | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["azure_workspace_model_filters", b"azure_workspace_model_filters", "clickhouse_database_model_filters", b"clickhouse_database_model_filters", "cloudwatch_log_group_model_filters", b"cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", b"cloudwatch_metric_model_filters", "datadog_service_model_filters", b"datadog_service_model_filters", "eks_cluster_model_filters", b"eks_cluster_model_filters", "elastic_search_index_model_filters", b"elastic_search_index_model_filters", "filters", b"filters", "gcm_metric_model_filters", b"gcm_metric_model_filters", "gke_cluster_model_filters", b"gke_cluster_model_filters", "grafana_prometheus_datasource_model_filters", b"grafana_prometheus_datasource_model_filters", "grafana_target_metric_promql_model_filters", b"grafana_target_metric_promql_model_filters", "new_relic_entity_application_model_filters", b"new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", b"new_relic_entity_dashboard_model_filters", "postgres_database_model_filters", b"postgres_database_model_filters", "slack_channel_model_filters", b"slack_channel_model_filters", "ssh_server_model_filters", b"ssh_server_model_filters"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["azure_workspace_model_filters", b"azure_workspace_model_filters", "clickhouse_database_model_filters", b"clickhouse_database_model_filters", "cloudwatch_log_group_model_filters", b"cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", b"cloudwatch_metric_model_filters", "datadog_service_model_filters", b"datadog_service_model_filters", "eks_cluster_model_filters", b"eks_cluster_model_filters", "elastic_search_index_model_filters", b"elastic_search_index_model_filters", "filters", b"filters", "gcm_metric_model_filters", b"gcm_metric_model_filters", "gke_cluster_model_filters", b"gke_cluster_model_filters", "grafana_prometheus_datasource_model_filters", b"grafana_prometheus_datasource_model_filters", "grafana_target_metric_promql_model_filters", b"grafana_target_metric_promql_model_filters", "new_relic_entity_application_model_filters", b"new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", b"new_relic_entity_dashboard_model_filters", "postgres_database_model_filters", b"postgres_database_model_filters", "slack_channel_model_filters", b"slack_channel_model_filters", "ssh_server_model_filters", b"ssh_server_model_filters"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["filters", b"filters"]) -> typing_extensions.Literal["cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", "grafana_target_metric_promql_model_filters", "clickhouse_database_model_filters", "slack_channel_model_filters", "new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", "datadog_service_model_filters", "postgres_database_model_filters", "eks_cluster_model_filters", "ssh_server_model_filters", "azure_workspace_model_filters", "grafana_prometheus_datasource_model_filters", "gke_cluster_model_filters", "elastic_search_index_model_filters", "gcm_metric_model_filters"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["argocd_apps_model_filters", b"argocd_apps_model_filters", "azure_workspace_model_filters", b"azure_workspace_model_filters", "clickhouse_database_model_filters", b"clickhouse_database_model_filters", "cloudwatch_log_group_model_filters", b"cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", b"cloudwatch_metric_model_filters", "datadog_service_model_filters", b"datadog_service_model_filters", "eks_cluster_model_filters", b"eks_cluster_model_filters", "elastic_search_index_model_filters", b"elastic_search_index_model_filters", "filters", b"filters", "gcm_metric_model_filters", b"gcm_metric_model_filters", "gke_cluster_model_filters", b"gke_cluster_model_filters", "grafana_prometheus_datasource_model_filters", b"grafana_prometheus_datasource_model_filters", "grafana_target_metric_promql_model_filters", b"grafana_target_metric_promql_model_filters", "jira_project_model_filters", b"jira_project_model_filters", "jira_user_model_filters", b"jira_user_model_filters", "new_relic_entity_application_model_filters", b"new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", b"new_relic_entity_dashboard_model_filters", "postgres_database_model_filters", b"postgres_database_model_filters", "slack_channel_model_filters", b"slack_channel_model_filters", "ssh_server_model_filters", b"ssh_server_model_filters"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["argocd_apps_model_filters", b"argocd_apps_model_filters", "azure_workspace_model_filters", b"azure_workspace_model_filters", "clickhouse_database_model_filters", b"clickhouse_database_model_filters", "cloudwatch_log_group_model_filters", b"cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", b"cloudwatch_metric_model_filters", "datadog_service_model_filters", b"datadog_service_model_filters", "eks_cluster_model_filters", b"eks_cluster_model_filters", "elastic_search_index_model_filters", b"elastic_search_index_model_filters", "filters", b"filters", "gcm_metric_model_filters", b"gcm_metric_model_filters", "gke_cluster_model_filters", b"gke_cluster_model_filters", "grafana_prometheus_datasource_model_filters", b"grafana_prometheus_datasource_model_filters", "grafana_target_metric_promql_model_filters", b"grafana_target_metric_promql_model_filters", "jira_project_model_filters", b"jira_project_model_filters", "jira_user_model_filters", b"jira_user_model_filters", "new_relic_entity_application_model_filters", b"new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", b"new_relic_entity_dashboard_model_filters", "postgres_database_model_filters", b"postgres_database_model_filters", "slack_channel_model_filters", b"slack_channel_model_filters", "ssh_server_model_filters", b"ssh_server_model_filters"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["filters", b"filters"]) -> typing_extensions.Literal["cloudwatch_log_group_model_filters", "cloudwatch_metric_model_filters", "grafana_target_metric_promql_model_filters", "clickhouse_database_model_filters", "slack_channel_model_filters", "new_relic_entity_application_model_filters", "new_relic_entity_dashboard_model_filters", "datadog_service_model_filters", "postgres_database_model_filters", "eks_cluster_model_filters", "ssh_server_model_filters", "azure_workspace_model_filters", "grafana_prometheus_datasource_model_filters", "gke_cluster_model_filters", "elastic_search_index_model_filters", "gcm_metric_model_filters", "jira_user_model_filters", "jira_project_model_filters", "argocd_apps_model_filters"] | None: ...
 
 global___AccountConnectorAssetsModelFilters = AccountConnectorAssetsModelFilters
 
@@ -232,6 +258,8 @@ class AccountConnectorAssets(google.protobuf.message.Message):
     GKE_FIELD_NUMBER: builtins.int
     ELASTIC_SEARCH_FIELD_NUMBER: builtins.int
     GCM_FIELD_NUMBER: builtins.int
+    JIRA_CLOUD_FIELD_NUMBER: builtins.int
+    ARGOCD_FIELD_NUMBER: builtins.int
     @property
     def connector(self) -> protos.connectors.connector_pb2.Connector: ...
     @property
@@ -260,6 +288,10 @@ class AccountConnectorAssets(google.protobuf.message.Message):
     def elastic_search(self) -> protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchAssets: ...
     @property
     def gcm(self) -> protos.connectors.assets.gcm_asset_pb2.GcmAssets: ...
+    @property
+    def jira_cloud(self) -> protos.connectors.assets.jira_asset_pb2.JiraAssets: ...
+    @property
+    def argocd(self) -> protos.connectors.assets.argocd_asset_pb2.ArgoCDAssets: ...
     def __init__(
         self,
         *,
@@ -277,9 +309,11 @@ class AccountConnectorAssets(google.protobuf.message.Message):
         gke: protos.connectors.assets.gke_asset_pb2.GkeAssets | None = ...,
         elastic_search: protos.connectors.assets.elastic_search_asset_pb2.ElasticSearchAssets | None = ...,
         gcm: protos.connectors.assets.gcm_asset_pb2.GcmAssets | None = ...,
+        jira_cloud: protos.connectors.assets.jira_asset_pb2.JiraAssets | None = ...,
+        argocd: protos.connectors.assets.argocd_asset_pb2.ArgoCDAssets | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["assets", b"assets"]) -> typing_extensions.Literal["cloudwatch", "grafana", "clickhouse", "slack", "new_relic", "datadog", "postgres", "eks", "bash", "azure", "gke", "elastic_search", "gcm"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["argocd", b"argocd", "assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "jira_cloud", b"jira_cloud", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["argocd", b"argocd", "assets", b"assets", "azure", b"azure", "bash", b"bash", "clickhouse", b"clickhouse", "cloudwatch", b"cloudwatch", "connector", b"connector", "datadog", b"datadog", "eks", b"eks", "elastic_search", b"elastic_search", "gcm", b"gcm", "gke", b"gke", "grafana", b"grafana", "jira_cloud", b"jira_cloud", "new_relic", b"new_relic", "postgres", b"postgres", "slack", b"slack"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["assets", b"assets"]) -> typing_extensions.Literal["cloudwatch", "grafana", "clickhouse", "slack", "new_relic", "datadog", "postgres", "eks", "bash", "azure", "gke", "elastic_search", "gcm", "jira_cloud", "argocd"] | None: ...
 
 global___AccountConnectorAssets = AccountConnectorAssets

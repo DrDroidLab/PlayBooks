@@ -220,6 +220,7 @@ class _SourceEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     LINEAR: _Source.ValueType  # 61
     JENKINS: _Source.ValueType  # 62
     GITHUB_ACTIONS: _Source.ValueType  # 63
+    ARGOCD: _Source.ValueType  # 64
 
 class Source(_Source, metaclass=_SourceEnumTypeWrapper): ...
 
@@ -287,6 +288,7 @@ OPEN_SEARCH: Source.ValueType  # 60
 LINEAR: Source.ValueType  # 61
 JENKINS: Source.ValueType  # 62
 GITHUB_ACTIONS: Source.ValueType  # 63
+ARGOCD: Source.ValueType  # 64
 global___Source = Source
 
 class _SourceKeyType:
@@ -398,6 +400,10 @@ class _SourceKeyTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._
     JENKINS_USERNAME: _SourceKeyType.ValueType  # 101
     JENKINS_API_TOKEN: _SourceKeyType.ValueType  # 102
     GITHUB_ACTIONS_TOKEN: _SourceKeyType.ValueType  # 103
+    JIRA_EMAIL: _SourceKeyType.ValueType  # 104
+    JIRA_DOMAIN: _SourceKeyType.ValueType  # 105
+    ARGOCD_SERVER: _SourceKeyType.ValueType  # 106
+    ARGOCD_TOKEN: _SourceKeyType.ValueType  # 107
 
 class SourceKeyType(_SourceKeyType, metaclass=_SourceKeyTypeEnumTypeWrapper): ...
 
@@ -504,6 +510,10 @@ JENKINS_URL: SourceKeyType.ValueType  # 100
 JENKINS_USERNAME: SourceKeyType.ValueType  # 101
 JENKINS_API_TOKEN: SourceKeyType.ValueType  # 102
 GITHUB_ACTIONS_TOKEN: SourceKeyType.ValueType  # 103
+JIRA_EMAIL: SourceKeyType.ValueType  # 104
+JIRA_DOMAIN: SourceKeyType.ValueType  # 105
+ARGOCD_SERVER: SourceKeyType.ValueType  # 106
+ARGOCD_TOKEN: SourceKeyType.ValueType  # 107
 global___SourceKeyType = SourceKeyType
 
 class _SourceModelType:
@@ -590,6 +600,11 @@ class _SourceModelTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper
     """Open Search Models"""
     ASANA_PROJECT: _SourceModelType.ValueType  # 2401
     """Asana Models"""
+    JIRA_PROJECT: _SourceModelType.ValueType  # 2501
+    """Jira Models"""
+    JIRA_USER: _SourceModelType.ValueType  # 2502
+    ARGOCD_APPS: _SourceModelType.ValueType  # 2601
+    """ArgoCD Models"""
 
 class SourceModelType(_SourceModelType, metaclass=_SourceModelTypeEnumTypeWrapper): ...
 
@@ -671,6 +686,11 @@ OPEN_SEARCH_INDEX: SourceModelType.ValueType  # 2301
 """Open Search Models"""
 ASANA_PROJECT: SourceModelType.ValueType  # 2401
 """Asana Models"""
+JIRA_PROJECT: SourceModelType.ValueType  # 2501
+"""Jira Models"""
+JIRA_USER: SourceModelType.ValueType  # 2502
+ARGOCD_APPS: SourceModelType.ValueType  # 2601
+"""ArgoCD Models"""
 global___SourceModelType = SourceModelType
 
 @typing_extensions.final
