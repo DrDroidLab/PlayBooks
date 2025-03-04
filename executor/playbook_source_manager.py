@@ -1,3 +1,4 @@
+import json
 from typing import Dict
 
 from google.protobuf.struct_pb2 import Struct
@@ -27,6 +28,45 @@ def apply_result_transformer(result_dict, lambda_function: Lambda.Function) -> D
     return transformer_result
 
 
+def flatten_dict(prefix: str, d: dict) -> dict:
+    items = {}
+    for k, v in d.items():
+        new_key = f"{prefix}.{k}"
+        if isinstance(v, dict):
+            items.update(flatten_dict(new_key, v))
+        elif isinstance(v, str):
+            items[new_key] = v.strip(" ")
+        else:
+            items[new_key] = v
+    return items
+
+
+def get_flat_global_variables(global_variable_set: dict):
+    flat_globals = {}
+    for gk, gv in global_variable_set.items():
+        parsed = None
+        # If gv is already a dict, use it directly.
+        if isinstance(gv, dict):
+            parsed = gv
+        else:
+            try:
+                parsed = json.loads(gv)
+            except Exception:
+                parsed = None
+        if parsed is not None and isinstance(parsed, dict):
+            # Flatten the dict with gk as the prefix.
+            flat_from_obj = flatten_dict(gk, parsed)
+            # Merge: only add if the key doesn't already exist.
+            for fk, fv in flat_from_obj.items():
+                if fk not in flat_globals:
+                    flat_globals[fk] = fv
+        else:
+            # Only add the direct key if it's not a dict.
+            flat_globals[gk] = gv
+
+    return flat_globals
+
+
 def resolve_global_variables(form_fields: [FormField], global_variable_set: Struct,
                              source_type_task_def: Dict) -> (Dict, Dict):
     all_string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
@@ -35,6 +75,9 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
     for ff in form_fields:
         if ff.is_composite:
             all_composite_fields[ff.key_name.value] = ff.composite_fields
+
+    global_variable_set_dict = proto_to_dict(global_variable_set)
+    global_variable_set = get_flat_global_variables(global_variable_set_dict)
 
     task_local_variable_map = {}
     for gk, gv in global_variable_set.items():

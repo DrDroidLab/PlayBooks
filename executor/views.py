@@ -183,7 +183,17 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
                                            message=Message(title="Invalid Request",
                                                            description="Bulk execution variable not found in global variables"))
 
-    bulk_execution_var_values = execution_global_variable_set[bulk_task_var].split(',')
+    bulk_value = execution_global_variable_set[bulk_task_var]
+    try:
+        parsed = json.loads(bulk_value)
+        print("parsed>>>>>\n\n\n\n", parsed)
+        if isinstance(parsed, list):
+            bulk_execution_var_values = parsed
+        else:
+            bulk_execution_var_values = bulk_value.split(',')
+    except Exception:
+        bulk_execution_var_values = bulk_value.split(',')
+    
     if not bulk_execution_var_values:
         return RunBulkPlaybookTaskResponse(meta=get_meta(tr=time_range), success=BoolValue(value=False),
                                            message=Message(title="Invalid Request",
