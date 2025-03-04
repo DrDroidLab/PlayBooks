@@ -37,6 +37,12 @@ export type ConditionRule = {
   [key in RuleType]?: any;
 };
 
+export type VariableConditionRule = {
+  variable_name: string;
+  operator: OperatorOptionType;
+  threshold: string;
+};
+
 export type StepRuleType = {
   [key in StepRuleTypes as LowercaseString<StepRuleTypes>]: {
     operator: OperatorOptionType;
@@ -51,6 +57,7 @@ export type StepRule = {
 
 export type ConditionRuleSet = {
   rules: ConditionRule[];
+  variable_rules?: VariableConditionRule[];
   step_rules?: StepRule[];
   logical_operator: LogicalOperator;
 };

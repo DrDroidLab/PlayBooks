@@ -1,9 +1,9 @@
-import { addRuleToRelationByIndex } from "../../utils/conditionals/addRuleToRelationByIndex.ts";
 import { ruleOptions } from "../../utils/conditionals/ruleOptions.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addRule,
   addStepRule,
+  addVariableRule,
   currentPlaybookSelector,
   setCurrentPlaybookKey,
 } from "../../store/features/playbook/playbookSlice.ts";
@@ -29,6 +29,7 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
   const condition = relation?.condition;
   const rules = ruleSet?.rules ?? [];
   const step_rules = ruleSet?.step_rules ?? [];
+  const variable_rules = ruleSet?.variable_rules ?? [];
   const globalRule = edge?.condition?.logical_operator ?? ruleOptions[0].id;
   const dispatch = useDispatch();
 
@@ -53,6 +54,11 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
     dispatch(addStepRule({ id: relation?.id, ruleSetIndex }));
   };
 
+  const addNewVariableRule = () => {
+    if (!relation?.id) return;
+    dispatch(addVariableRule({ id: relation?.id, ruleSetIndex }));
+  };
+
   const deleteRule = (conditionIndex: number) => {
     const temp = structuredClone(relations ?? []);
     const tempEdge = temp[edgeIndex];
@@ -70,6 +76,17 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
     if (!tempEdge.condition) return;
     const tempRuleSet = tempEdge.condition.rule_sets?.[ruleSetIndex];
     tempRuleSet.step_rules = tempRuleSet?.step_rules?.filter(
+      (_, i) => i !== conditionIndex,
+    );
+    setPlaybookRelations(temp);
+  };
+
+  const deleteVariableRule = (conditionIndex: number) => {
+    const temp = structuredClone(relations ?? []);
+    const tempEdge = temp[edgeIndex];
+    if (!tempEdge.condition) return;
+    const tempRuleSet = tempEdge.condition.rule_sets?.[ruleSetIndex];
+    tempRuleSet.variable_rules = tempRuleSet?.variable_rules?.filter(
       (_, i) => i !== conditionIndex,
     );
     setPlaybookRelations(temp);
@@ -107,6 +124,9 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
       case RuleType.STEP_RULE:
         deleteStepRule(index);
         break;
+      case RuleType.VARIABLE_RULE:
+        deleteVariableRule(index);
+        break;
       default:
         return;
     }
@@ -121,9 +141,11 @@ function useEdgeConditions(id: string, ruleSetIndex: number = 0) {
     condition,
     rules,
     step_rules,
+    variable_rules,
     handleRule,
     addNewStepRule,
     addNewRule,
+    addNewVariableRule,
     handleDeleteRule,
     handleGlobalRule,
   };
