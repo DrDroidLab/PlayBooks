@@ -61,7 +61,7 @@ class SecretResolver:
             ).values('key', 'value')
 
             if not secrets:
-                logger.warning(f"No secrets found for references: {secret_refs}")
+                logger.warning(f"No secrets found for given references")
                 return source_type_task_def
 
             # Create mapping of secret keys to values
