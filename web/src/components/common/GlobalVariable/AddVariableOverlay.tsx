@@ -11,6 +11,7 @@ import { Toast } from "../../Toast.tsx";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
+import { createPortal } from "react-dom";
 
 const AddVariableOverlay = ({ isOpen, close }) => {
   const [name, setName] = useState("");
@@ -41,7 +42,7 @@ const AddVariableOverlay = ({ isOpen, close }) => {
     resetState();
   };
 
-  return (
+  return createPortal(
     <Overlay close={close} visible={isOpen}>
       <div className="z-[200] bg-white max-w-sm rounded m-2">
         <div className={"p-4"}>
@@ -79,7 +80,8 @@ const AddVariableOverlay = ({ isOpen, close }) => {
         handleClose={() => setValidationError("")}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       />
-    </Overlay>
+    </Overlay>,
+    document.body,
   );
 };
 

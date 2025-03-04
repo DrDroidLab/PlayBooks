@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import styles from "./index.module.css";
+import { motion } from "framer-motion";
 
 const Overlay = (props) => {
   const { children, visible, close } = props;
@@ -23,9 +24,14 @@ const Overlay = (props) => {
     <>
       {visible && (
         <div className={styles.overlay}>
-          <div ref={overlayRef} className={styles.children}>
+          <motion.div
+            ref={overlayRef}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={styles.children}>
             {children}
-          </div>
+          </motion.div>
         </div>
       )}
     </>
