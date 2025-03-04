@@ -15,7 +15,7 @@ from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
-from executor.secret_resolver import SecretResolver
+from executor.secrets.secret_resolver import SecretResolver
 
 
 def apply_result_transformer(result_dict, lambda_function: Lambda.Function) -> Dict:

@@ -27,12 +27,12 @@ class SecretResolver:
     def resolve_secrets(cls, form_fields: [FormField], account_id: int, source_type_task_def: Dict) -> Dict:
         """
         Resolves secret references (prefixed with !) in task definition
-        
+
         Args:
             form_fields: List of form fields defining the task structure
             account_id: ID of the account owning the secrets
             source_type_task_def: Task definition dictionary to resolve secrets in
-            
+
         Returns:
             Dict with secrets resolved
         """

@@ -32,4 +32,5 @@ urlpatterns = [
     path('media/', include('media.urls')),
     path('', include('django_prometheus.urls')),
     path('', views.index),
+    path('secrets/', include('executor.secrets.urls')),
 ]
