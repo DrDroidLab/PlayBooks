@@ -186,7 +186,6 @@ def bulk_task_run(request_message: RunPlaybookTaskRequestV3) -> Union[RunBulkPla
     bulk_value = execution_global_variable_set[bulk_task_var]
     try:
         parsed = json.loads(bulk_value)
-        print("parsed>>>>>\n\n\n\n", parsed)
         if isinstance(parsed, list):
             bulk_execution_var_values = parsed
         else:
