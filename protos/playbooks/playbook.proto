@@ -94,6 +94,7 @@ message PlaybookTaskResultRule {
     TableResultRule table = 102;
     TableResultRule logs = 103;
     BashCommandOutputResultRule bash_command_output = 104;
+    GlobalVariableResultRule global_variable = 105;
   }
 }
 
@@ -114,6 +115,7 @@ message PlaybookStepResultCondition {
     LogicalOperator logical_operator = 1;
     repeated PlaybookTaskResultRule rules = 2;
     repeated PlaybookStepResultRule step_rules = 3;
+    repeated PlaybookTaskResultRule variable_rules = 4;
   }
   LogicalOperator logical_operator = 1;
   repeated RuleSet rule_sets = 2;

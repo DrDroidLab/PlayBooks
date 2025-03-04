@@ -56,6 +56,7 @@ class _PlaybookTaskResultTypeEnumTypeWrapper(google.protobuf.internal.enum_type_
     BASH_COMMAND_OUTPUT: _PlaybookTaskResultType.ValueType  # 4
     TEXT: _PlaybookTaskResultType.ValueType  # 5
     LOGS: _PlaybookTaskResultType.ValueType  # 6
+    GLOBAL_VARIABLE: _PlaybookTaskResultType.ValueType  # 7
 
 class PlaybookTaskResultType(_PlaybookTaskResultType, metaclass=_PlaybookTaskResultTypeEnumTypeWrapper): ...
 
@@ -66,6 +67,7 @@ API_RESPONSE: PlaybookTaskResultType.ValueType  # 3
 BASH_COMMAND_OUTPUT: PlaybookTaskResultType.ValueType  # 4
 TEXT: PlaybookTaskResultType.ValueType  # 5
 LOGS: PlaybookTaskResultType.ValueType  # 6
+GLOBAL_VARIABLE: PlaybookTaskResultType.ValueType  # 7
 global___PlaybookTaskResultType = PlaybookTaskResultType
 
 @typing_extensions.final

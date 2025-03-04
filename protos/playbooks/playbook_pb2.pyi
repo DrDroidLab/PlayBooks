@@ -250,6 +250,7 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
     TABLE_FIELD_NUMBER: builtins.int
     LOGS_FIELD_NUMBER: builtins.int
     BASH_COMMAND_OUTPUT_FIELD_NUMBER: builtins.int
+    GLOBAL_VARIABLE_FIELD_NUMBER: builtins.int
     type: protos.playbooks.playbook_commons_pb2.PlaybookTaskResultType.ValueType
     @property
     def task(self) -> global___PlaybookTask: ...
@@ -261,6 +262,8 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
     def logs(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule: ...
     @property
     def bash_command_output(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.BashCommandOutputResultRule: ...
+    @property
+    def global_variable(self) -> protos.playbooks.playbook_task_result_evaluator_pb2.GlobalVariableResultRule: ...
     def __init__(
         self,
         *,
@@ -270,10 +273,11 @@ class PlaybookTaskResultRule(google.protobuf.message.Message):
         table: protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule | None = ...,
         logs: protos.playbooks.playbook_task_result_evaluator_pb2.TableResultRule | None = ...,
         bash_command_output: protos.playbooks.playbook_task_result_evaluator_pb2.BashCommandOutputResultRule | None = ...,
+        global_variable: protos.playbooks.playbook_task_result_evaluator_pb2.GlobalVariableResultRule | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["bash_command_output", b"bash_command_output", "logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["bash_command_output", b"bash_command_output", "logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["rule", b"rule"]) -> typing_extensions.Literal["timeseries", "table", "logs", "bash_command_output"] | None: ...
+    def HasField(self, field_name: typing_extensions.Literal["bash_command_output", b"bash_command_output", "global_variable", b"global_variable", "logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["bash_command_output", b"bash_command_output", "global_variable", b"global_variable", "logs", b"logs", "rule", b"rule", "table", b"table", "task", b"task", "timeseries", b"timeseries", "type", b"type"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["rule", b"rule"]) -> typing_extensions.Literal["timeseries", "table", "logs", "bash_command_output", "global_variable"] | None: ...
 
 global___PlaybookTaskResultRule = PlaybookTaskResultRule
 
@@ -334,19 +338,23 @@ class PlaybookStepResultCondition(google.protobuf.message.Message):
         LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
         RULES_FIELD_NUMBER: builtins.int
         STEP_RULES_FIELD_NUMBER: builtins.int
+        VARIABLE_RULES_FIELD_NUMBER: builtins.int
         logical_operator: protos.base_pb2.LogicalOperator.ValueType
         @property
         def rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
         @property
         def step_rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule]: ...
+        @property
+        def variable_rules(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___PlaybookTaskResultRule]: ...
         def __init__(
             self,
             *,
             logical_operator: protos.base_pb2.LogicalOperator.ValueType = ...,
             rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
             step_rules: collections.abc.Iterable[protos.playbooks.playbook_step_result_evaluator_pb2.PlaybookStepResultRule] | None = ...,
+            variable_rules: collections.abc.Iterable[global___PlaybookTaskResultRule] | None = ...,
         ) -> None: ...
-        def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules", "step_rules", b"step_rules"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions.Literal["logical_operator", b"logical_operator", "rules", b"rules", "step_rules", b"step_rules", "variable_rules", b"variable_rules"]) -> None: ...
 
     LOGICAL_OPERATOR_FIELD_NUMBER: builtins.int
     RULE_SETS_FIELD_NUMBER: builtins.int

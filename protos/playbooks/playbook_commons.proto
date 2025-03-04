@@ -22,6 +22,7 @@ enum PlaybookTaskResultType {
   BASH_COMMAND_OUTPUT = 4;
   TEXT = 5;
   LOGS = 6;
+  GLOBAL_VARIABLE = 7;
 }
 
 message ExternalLink {
