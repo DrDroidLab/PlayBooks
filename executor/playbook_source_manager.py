@@ -15,6 +15,7 @@ from protos.playbooks.playbook_pb2 import PlaybookTask
 from protos.playbooks.source_task_definitions.lambda_function_task_pb2 import Lambda
 from protos.ui_definition_pb2 import FormField
 from utils.proto_utils import proto_to_dict, dict_to_proto
+from executor.secret_resolver import SecretResolver
 
 
 def apply_result_transformer(result_dict, lambda_function: Lambda.Function) -> Dict:
@@ -148,9 +149,18 @@ class PlaybookSourceManager:
 
                     form_fields = self.task_type_callable_map[task_type]['form_fields']
 
-                    # Resolve global variables in source_type_task_def
+                    # First resolve secrets
+                    resolved_source_type_task_def = SecretResolver.resolve_secrets(
+                        form_fields=form_fields,
+                        account_id=account_id,
+                        source_type_task_def=source_type_task_def
+                    )
+
+                    # Then resolve global variables
                     resolved_source_type_task_def, task_local_variable_map = resolve_global_variables(
-                        form_fields, global_variable_set, source_type_task_def)
+                        form_fields, global_variable_set, resolved_source_type_task_def
+                    )
+
                     source_task[task_type_name] = resolved_source_type_task_def
                     resolved_task_def_proto = dict_to_proto(source_task, self.task_proto)
 
