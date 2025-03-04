@@ -33,7 +33,7 @@ DEBUG = env.bool("DJANGO_DEBUG", default=True)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 # Set your own field encryption key
-FIELD_ENCRYPTION_KEY = env.list("FIELD_ENCRYPTION_KEY", default=['Bb25dPKXrIRmwNG7u0FosUGUFQjcb8ER'])
+FIELD_ENCRYPTION_KEY = env.list("FIELD_ENCRYPTION_KEY", default=['sY2EtYEgvPZk7Fu3pgl-BoVLN4hoXYmpJQdJiNNRlRE='])
 
 ALLOWED_HOSTS = ['*']
 

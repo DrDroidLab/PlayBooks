@@ -234,6 +234,7 @@ class UpdateSecretRequest(google.protobuf.message.Message):
     SECRET_ID_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
+    KEY_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
     @property
@@ -242,6 +243,8 @@ class UpdateSecretRequest(google.protobuf.message.Message):
     def name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    @property
+    def key(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     def __init__(
         self,
         *,
@@ -249,9 +252,10 @@ class UpdateSecretRequest(google.protobuf.message.Message):
         secret_id: google.protobuf.wrappers_pb2.StringValue | None = ...,
         name: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        key: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "meta", b"meta", "name", b"name", "secret_id", b"secret_id"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "meta", b"meta", "name", b"name", "secret_id", b"secret_id"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["description", b"description", "key", b"key", "meta", b"meta", "name", b"name", "secret_id", b"secret_id"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["description", b"description", "key", b"key", "meta", b"meta", "name", b"name", "secret_id", b"secret_id"]) -> None: ...
 
 global___UpdateSecretRequest = UpdateSecretRequest
 

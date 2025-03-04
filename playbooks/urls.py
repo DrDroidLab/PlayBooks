@@ -30,7 +30,7 @@ urlpatterns = [
     path('pb/', include('executor.urls')),
     path('management/', include('management.urls')),
     path('media/', include('media.urls')),
+    path('secrets/', include('executor.secrets.urls')),
     path('', include('django_prometheus.urls')),
     path('', views.index),
-    path('secrets/', include('executor.secrets.urls')),
 ]

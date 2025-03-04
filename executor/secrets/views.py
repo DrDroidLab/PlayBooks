@@ -158,7 +158,8 @@ def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretRes
     secret_id = request_message.secret_id.value
     name = request_message.name.value
     description = request_message.description.value
-    
+    key = request_message.key.value
+
     if not secret_id:
         return UpdateSecretResponse(
             meta=get_meta(),
@@ -174,7 +175,8 @@ def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretRes
             secret.name = name
         if description is not None:  # Allow empty description
             secret.description = description
-            
+        if key:
+            secret.key = key
         secret.last_updated_by = user
         secret.save()
         
