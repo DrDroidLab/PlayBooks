@@ -679,7 +679,7 @@ class Secret(models.Model):
     key = models.CharField(max_length=255, help_text="Reference key for the secret")
     value = EncryptedTextField()
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
-    creator = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='created_secrets')
+    created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='created_secrets')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='updated_secrets')

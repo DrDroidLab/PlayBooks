@@ -28,7 +28,7 @@ class Secret(google.protobuf.message.Message):
     KEY_FIELD_NUMBER: builtins.int
     MASKED_VALUE_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
-    CREATOR_FIELD_NUMBER: builtins.int
+    CREATED_BY_FIELD_NUMBER: builtins.int
     LAST_UPDATED_BY_FIELD_NUMBER: builtins.int
     CREATED_AT_FIELD_NUMBER: builtins.int
     UPDATED_AT_FIELD_NUMBER: builtins.int
@@ -42,7 +42,7 @@ class Secret(google.protobuf.message.Message):
     @property
     def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
-    def creator(self) -> google.protobuf.wrappers_pb2.StringValue: ...
+    def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def last_updated_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     created_at: builtins.int
@@ -55,14 +55,14 @@ class Secret(google.protobuf.message.Message):
         key: google.protobuf.wrappers_pb2.StringValue | None = ...,
         masked_value: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        creator: google.protobuf.wrappers_pb2.StringValue | None = ...,
+        created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         last_updated_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: builtins.int = ...,
         updated_at: builtins.int = ...,
         is_active: builtins.bool = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["creator", b"creator", "description", b"description", "id", b"id", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "creator", b"creator", "description", b"description", "id", b"id", "is_active", b"is_active", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value", "updated_at", b"updated_at"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "id", b"id", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "id", b"id", "is_active", b"is_active", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value", "updated_at", b"updated_at"]) -> None: ...
 
 global___Secret = Secret
 
@@ -71,15 +71,25 @@ class GetSecretsRequest(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     META_FIELD_NUMBER: builtins.int
+    SECRET_IDS_FIELD_NUMBER: builtins.int
+    KEY_FIELD_NUMBER: builtins.int
     @property
     def meta(self) -> protos.base_pb2.Meta: ...
+    @property
+    def secret_ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+        """Optional list of secret IDs to fetch"""
+    @property
+    def key(self) -> google.protobuf.wrappers_pb2.StringValue:
+        """Optional key to filter by (key_name)"""
     def __init__(
         self,
         *,
         meta: protos.base_pb2.Meta | None = ...,
+        secret_ids: collections.abc.Iterable[builtins.str] | None = ...,
+        key: google.protobuf.wrappers_pb2.StringValue | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["meta", b"meta"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["key", b"key", "meta", b"meta"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["key", b"key", "meta", b"meta", "secret_ids", b"secret_ids"]) -> None: ...
 
 global___GetSecretsRequest = GetSecretsRequest
 

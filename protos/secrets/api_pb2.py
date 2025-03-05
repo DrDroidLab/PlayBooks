@@ -15,7 +15,7 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 from protos import base_pb2 as protos_dot_base__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18protos/secrets/api.proto\x12\x0eprotos.secrets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"\xe5\x02\n\x06Secret\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12)\n\x03key\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cmasked_value\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12-\n\x07\x63reator\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0flast_updated_by\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x12\n\ncreated_at\x18\x07 \x01(\x03\x12\x12\n\nupdated_at\x18\x08 \x01(\x03\x12\x11\n\tis_active\x18\t \x01(\x08\"/\n\x11GetSecretsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\"\xa8\x01\n\x12GetSecretsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\'\n\x07secrets\x18\x04 \x03(\x0b\x32\x16.protos.secrets.Secret\"_\n\x10GetSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tsecret_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa6\x01\n\x11GetSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secret\"\xbc\x01\n\x13\x43reateSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12)\n\x03key\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa9\x01\n\x14\x43reateSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secret\"\x88\x04\n\x0eUpdateSecretOp\x12-\n\x02op\x18\x01 \x01(\x0e\x32!.protos.secrets.UpdateSecretOp.Op\x12/\n\tsecret_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x44\n\rupdate_secret\x18\x03 \x01(\x0b\x32+.protos.secrets.UpdateSecretOp.UpdateSecretH\x00\x12Q\n\x14update_secret_status\x18\x04 \x01(\x0b\x32\x31.protos.secrets.UpdateSecretOp.UpdateSecretStatusH\x00\x1an\n\x0cUpdateSecret\x12\x31\n\x0b\x64\x65scription\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x43\n\x12UpdateSecretStatus\x12-\n\tis_active\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\">\n\x02Op\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x11\n\rUPDATE_SECRET\x10\x01\x12\x18\n\x14UPDATE_SECRET_STATUS\x10\x02\x42\x08\n\x06update\"l\n\x13UpdateSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x39\n\x11update_secret_ops\x18\x02 \x03(\x0b\x32\x1e.protos.secrets.UpdateSecretOp\"\xa9\x01\n\x14UpdateSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secretb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18protos/secrets/api.proto\x12\x0eprotos.secrets\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x11protos/base.proto\"\xe8\x02\n\x06Secret\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12)\n\x03key\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x32\n\x0cmasked_value\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\ncreated_by\x18\x05 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x35\n\x0flast_updated_by\x18\x06 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x12\n\ncreated_at\x18\x07 \x01(\x03\x12\x12\n\nupdated_at\x18\x08 \x01(\x03\x12\x11\n\tis_active\x18\t \x01(\x08\"n\n\x11GetSecretsRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x12\n\nsecret_ids\x18\x02 \x03(\t\x12)\n\x03key\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa8\x01\n\x12GetSecretsResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12\'\n\x07secrets\x18\x04 \x03(\x0b\x32\x16.protos.secrets.Secret\"_\n\x10GetSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12/\n\tsecret_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa6\x01\n\x11GetSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secret\"\xbc\x01\n\x13\x43reateSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12)\n\x03key\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x31\n\x0b\x64\x65scription\x18\x04 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xa9\x01\n\x14\x43reateSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secret\"\x88\x04\n\x0eUpdateSecretOp\x12-\n\x02op\x18\x01 \x01(\x0e\x32!.protos.secrets.UpdateSecretOp.Op\x12/\n\tsecret_id\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x44\n\rupdate_secret\x18\x03 \x01(\x0b\x32+.protos.secrets.UpdateSecretOp.UpdateSecretH\x00\x12Q\n\x14update_secret_status\x18\x04 \x01(\x0b\x32\x31.protos.secrets.UpdateSecretOp.UpdateSecretStatusH\x00\x1an\n\x0cUpdateSecret\x12\x31\n\x0b\x64\x65scription\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x1a\x43\n\x12UpdateSecretStatus\x12-\n\tis_active\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\">\n\x02Op\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x11\n\rUPDATE_SECRET\x10\x01\x12\x18\n\x14UPDATE_SECRET_STATUS\x10\x02\x42\x08\n\x06update\"l\n\x13UpdateSecretRequest\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12\x39\n\x11update_secret_ops\x18\x02 \x03(\x0b\x32\x1e.protos.secrets.UpdateSecretOp\"\xa9\x01\n\x14UpdateSecretResponse\x12\x1a\n\x04meta\x18\x01 \x01(\x0b\x32\x0c.protos.Meta\x12+\n\x07success\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.BoolValue\x12 \n\x07message\x18\x03 \x01(\x0b\x32\x0f.protos.Message\x12&\n\x06secret\x18\x04 \x01(\x0b\x32\x16.protos.secrets.Secretb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.secrets.api_pb2', globals())
@@ -23,29 +23,29 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _SECRET._serialized_start=96
-  _SECRET._serialized_end=453
-  _GETSECRETSREQUEST._serialized_start=455
-  _GETSECRETSREQUEST._serialized_end=502
-  _GETSECRETSRESPONSE._serialized_start=505
-  _GETSECRETSRESPONSE._serialized_end=673
-  _GETSECRETREQUEST._serialized_start=675
-  _GETSECRETREQUEST._serialized_end=770
-  _GETSECRETRESPONSE._serialized_start=773
-  _GETSECRETRESPONSE._serialized_end=939
-  _CREATESECRETREQUEST._serialized_start=942
-  _CREATESECRETREQUEST._serialized_end=1130
-  _CREATESECRETRESPONSE._serialized_start=1133
-  _CREATESECRETRESPONSE._serialized_end=1302
-  _UPDATESECRETOP._serialized_start=1305
-  _UPDATESECRETOP._serialized_end=1825
-  _UPDATESECRETOP_UPDATESECRET._serialized_start=1572
-  _UPDATESECRETOP_UPDATESECRET._serialized_end=1682
-  _UPDATESECRETOP_UPDATESECRETSTATUS._serialized_start=1684
-  _UPDATESECRETOP_UPDATESECRETSTATUS._serialized_end=1751
-  _UPDATESECRETOP_OP._serialized_start=1753
-  _UPDATESECRETOP_OP._serialized_end=1815
-  _UPDATESECRETREQUEST._serialized_start=1827
-  _UPDATESECRETREQUEST._serialized_end=1935
-  _UPDATESECRETRESPONSE._serialized_start=1938
-  _UPDATESECRETRESPONSE._serialized_end=2107
+  _SECRET._serialized_end=456
+  _GETSECRETSREQUEST._serialized_start=458
+  _GETSECRETSREQUEST._serialized_end=568
+  _GETSECRETSRESPONSE._serialized_start=571
+  _GETSECRETSRESPONSE._serialized_end=739
+  _GETSECRETREQUEST._serialized_start=741
+  _GETSECRETREQUEST._serialized_end=836
+  _GETSECRETRESPONSE._serialized_start=839
+  _GETSECRETRESPONSE._serialized_end=1005
+  _CREATESECRETREQUEST._serialized_start=1008
+  _CREATESECRETREQUEST._serialized_end=1196
+  _CREATESECRETRESPONSE._serialized_start=1199
+  _CREATESECRETRESPONSE._serialized_end=1368
+  _UPDATESECRETOP._serialized_start=1371
+  _UPDATESECRETOP._serialized_end=1891
+  _UPDATESECRETOP_UPDATESECRET._serialized_start=1638
+  _UPDATESECRETOP_UPDATESECRET._serialized_end=1748
+  _UPDATESECRETOP_UPDATESECRETSTATUS._serialized_start=1750
+  _UPDATESECRETOP_UPDATESECRETSTATUS._serialized_end=1817
+  _UPDATESECRETOP_OP._serialized_start=1819
+  _UPDATESECRETOP_OP._serialized_end=1881
+  _UPDATESECRETREQUEST._serialized_start=1893
+  _UPDATESECRETREQUEST._serialized_end=2001
+  _UPDATESECRETRESPONSE._serialized_start=2004
+  _UPDATESECRETRESPONSE._serialized_end=2173
 # @@protoc_insertion_point(module_scope)

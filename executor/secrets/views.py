@@ -10,14 +10,13 @@ from executor.models import Secret
 from playbooks.utils.decorators import web_api
 from playbooks.utils.meta import get_meta
 from playbooks.utils.queryset import filter_page
-from protos.base_pb2 import Message
+from protos.base_pb2 import Message, Meta, Page
 from protos.secrets.api_pb2 import (
     GetSecretsRequest, GetSecretsResponse, 
     GetSecretRequest, GetSecretResponse,
     CreateSecretRequest, CreateSecretResponse,
     UpdateSecretRequest, UpdateSecretResponse,
     Secret as SecretProto,
-    UpdateSecretOp
 )
 
 logger = logging.getLogger(__name__)
@@ -37,27 +36,60 @@ def _secret_to_proto(secret: Secret) -> SecretProto:
         key=StringValue(value=secret.key),
         masked_value=StringValue(value=_mask_secret_value(secret.value)),
         description=StringValue(value=secret.description or ""),
-        creator=StringValue(value=secret.creator.email if secret.creator else ""),
+        created_by=StringValue(value=secret.created_by.email if secret.created_by else ""),
         last_updated_by=StringValue(value=secret.last_updated_by.email if secret.last_updated_by else ""),
         created_at=int(secret.created_at.replace(tzinfo=timezone.utc).timestamp()) if secret.created_at else 0,
         updated_at=int(secret.updated_at.replace(tzinfo=timezone.utc).timestamp()) if secret.updated_at else 0,
         is_active=secret.is_active
     )
 
+def _secret_to_proto_partial(secret: Secret) -> SecretProto:
+    """Convert a Secret model to a partial Secret proto (for list views)"""
+    return SecretProto(
+        id=StringValue(value=str(secret.id)),
+        key=StringValue(value=secret.key),
+        description=StringValue(value=secret.description or ""),
+        created_by=StringValue(value=secret.created_by.email if secret.created_by else ""),
+        created_at=int(secret.created_at.replace(tzinfo=timezone.utc).timestamp()) if secret.created_at else 0,
+        is_active=secret.is_active
+    )
+
+
 
 @web_api(GetSecretsRequest)
 def secrets_list(request_message: GetSecretsRequest) -> Union[GetSecretsResponse, HttpResponse]:
-    """List all active secrets for the current account"""
+    """List secrets with optional filtering by IDs or key"""
     account: Account = get_request_account()
-    
-    # Get all active secrets for this account
+    meta: Meta = request_message.meta
+    show_inactive = meta.show_inactive
+    page: Page = meta.page
+    list_all = True
+
+    # Base queryset
     qs = Secret.objects.filter(account=account, is_active=True)
-    
-    # Apply pagination
+
+    # Filter by specific IDs if provided
+    if request_message.secret_ids:
+        qs = qs.filter(id__in=request_message.secret_ids)
+        list_all = False
+    # Filter by key if provided
+    if request_message.key:
+        qs = qs.filter(key__icontains=request_message.key.value.lower())
+        list_all = False
+    # Otherwise filter by active status unless show_inactive is True
+    elif not show_inactive or not show_inactive.value:
+        qs = qs.filter(is_active=True)
+
     total_count = qs.count()
-    page = request_message.meta.page
-    secrets = [_secret_to_proto(secret) for secret in filter_page(qs.order_by("-created_at"), page)]
-    
+    qs = qs.order_by('-created_at')
+    qs = filter_page(qs, page)
+
+    # Use proto or proto_partial based on list_all flag
+    if list_all:
+        secrets = [_secret_to_proto_partial(secret) for secret in qs]
+    else:
+        secrets = [_secret_to_proto(secret) for secret in qs]
+
     return GetSecretsResponse(
         meta=get_meta(page=page, total_count=total_count),
         success=BoolValue(value=True),
@@ -108,7 +140,16 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
         return CreateSecretResponse(
             meta=get_meta(),
             success=BoolValue(value=False),
-            message=Message(title="Invalid Request", description="Key, and value are required")
+            message=Message(title="Invalid Request", description="Key and value are required")
+        )
+
+    # Validate key format -> (single word, no spaces, only alphanumeric and underscores)
+    if not key.isalnum() or ' ' in key:
+        return CreateSecretResponse(
+            meta=get_meta(),
+            success=BoolValue(value=False),
+            message=Message(title="Invalid Key", 
+                          description="Key must be a single word containing only letters, numbers, and underscores")
         )
     
     # Check if key already exists for this account
@@ -126,7 +167,7 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
             key=key,
             value=value,
             description=description,
-            creator=user,
+            created_by=user,
             last_updated_by=user,
             is_active=True
         )

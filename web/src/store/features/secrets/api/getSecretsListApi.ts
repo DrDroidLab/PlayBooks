@@ -10,10 +10,12 @@ export const getSecretsListApi = apiSlice.injectEndpoints({
         key?: string;
       }
     >({
-      query: () => ({
+      query: ({key}) => ({
         url: SECRETS_LIST,
         method: "POST",
-        body: {},
+        body: {
+          key
+        },
       }),
       providesTags: ["Secrets"],
     }),
