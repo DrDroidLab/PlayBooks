@@ -76,7 +76,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
         if ff.is_composite:
             all_composite_fields[ff.key_name.value] = ff.composite_fields
 
-    global_variable_set_dict = proto_to_dict(global_variable_set)
+    global_variable_set_dict = proto_to_dict(global_variable_set) if global_variable_set else {}
     global_variable_set = get_flat_global_variables(global_variable_set_dict)
 
     task_local_variable_map = {}
