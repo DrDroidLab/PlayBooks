@@ -1,20 +1,12 @@
-export const VariableOption = {
-  DROPDOWN: "DROPDOWN",
-} as const;
-
-export type VariableOptionType =
-  (typeof VariableOption)[keyof typeof VariableOption];
-
 export type SecretsInitialState = {
-  name: string;
+  id?: string;
+  key: string;
+  value: string;
   description: string;
-  options: string;
-  type: VariableOptionType;
 };
 
 export const secretsInitialState: SecretsInitialState = {
-  name: "",
+  key: "",
   description: "",
-  options: "",
-  type: VariableOption.DROPDOWN,
+  value: "",
 };

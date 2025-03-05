@@ -11,6 +11,8 @@ import PaginatedTable from "../../components/common/Table/PaginatedTable";
 import { secretsColumns } from "./utils";
 import { useSecretsData } from "./hooks";
 import CreateSecretButton from "../../components/secret-management/create/CreateSecretButton";
+import SecretCreateOverlay from "../../components/secret-management/create/SecretCreateOverlay";
+import SecretActionOverlay from "../../components/secret-management/SecretActionOverlay";
 
 function SecretManagement() {
   const [query, setQuery] = useState("");
@@ -57,21 +59,21 @@ function SecretManagement() {
         </SuspenseLoader>
       </main>
 
-      {/* {isActionOpen && (
-        <VariableActionOverlay
-          variable={selectedVariable}
+      {isActionOpen && (
+        <SecretActionOverlay
+          secret={selectedSecret}
           isOpen={isActionOpen}
           toggleOverlay={toggle}
           refreshTable={refetch}
         />
       )}
       {isConfigOpen && (
-        <VariableCreateOverlay
+        <SecretCreateOverlay
           isOpen={isConfigOpen}
           toggleOverlay={toggleConfig}
           id={selectedId}
         />
-      )} */}
+      )}
     </>
   );
 }

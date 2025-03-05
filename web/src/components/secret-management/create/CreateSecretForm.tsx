@@ -5,11 +5,6 @@ import CustomButton from "../../common/CustomButton";
 import { showSnackbar } from "../../../store/features/snackbar/snackbarSlice";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect } from "react";
-// import {
-//   useCreateVariableMutation,
-//   useGetVariableApiQuery,
-//   useUpdateVariableMutation,
-// } from "../../../store/features/variables/api";
 import TableLoader from "../../Skeleton/TableLoader";
 import { secretsSelector } from "../../../store/features/secrets/selectors";
 import {
@@ -17,6 +12,12 @@ import {
   setSecretKey,
 } from "../../../store/features/secrets/secretsSlice";
 import { SecretsInitialState } from "../../../store/features/secrets/initialState";
+import {
+  useCreateSecretMutation,
+  useGetSecretQuery,
+  useUpdateSecretMutation,
+} from "../../../store/features/secrets/api";
+import { SaveRounded } from "@mui/icons-material";
 
 type CreateSecretFormProps = {
   toggleOverlay?: () => void;
@@ -28,18 +29,19 @@ function CreateSecretForm({
   id,
 }: CreateSecretFormProps) {
   const dispatch = useDispatch();
-  // const [triggerCreate, { isLoading }] = useCreateVariableMutation();
-  // const [triggerUpdate, { isLoading: updateLoading }] =
-  //   useUpdateVariableMutation();
-  const { name, description, options } = useSelector(secretsSelector);
-  // const { isLoading: isLoadingVariable } = useGetVariableApiQuery(
-  //   {
-  //     id: id!,
-  //   },
-  //   {
-  //     skip: !id,
-  //   },
-  // );
+  const [triggerCreate, { isLoading }] = useCreateSecretMutation();
+  const [triggerUpdate, { isLoading: updateLoading }] =
+    useUpdateSecretMutation();
+  const secret = useSelector(secretsSelector);
+  const { key, description, value } = secret;
+  const { isLoading: isLoadingSecret } = useGetSecretQuery(
+    {
+      id: id!,
+    },
+    {
+      skip: !id,
+    },
+  );
 
   const handleChange = (key: keyof SecretsInitialState, value: any) => {
     dispatch(
@@ -52,8 +54,8 @@ function CreateSecretForm({
 
   const validate = () => {
     let error = "";
-    if (!name || !description || !options) {
-      error = "Please fill all fields";
+    if (!key || !value) {
+      error = "Please fill all the required fields";
     }
 
     if (error) {
@@ -69,11 +71,7 @@ function CreateSecretForm({
     if (validate()) return;
 
     try {
-      // await triggerCreate({
-      //   name,
-      //   description,
-      //   options: options.split(", "),
-      // }).unwrap();
+      await triggerCreate(secret).unwrap();
       dispatch(resetSecretState());
       toggleOverlay();
     } catch (e: any) {
@@ -95,12 +93,12 @@ function CreateSecretForm({
     if (validate()) return;
 
     try {
-      // await triggerUpdate({
-      //   id: id!,
-      //   name,
-      //   description,
-      //   options: options.split(", "),
-      // }).unwrap();
+      await triggerUpdate({
+        id: id!,
+        key,
+        description,
+        value: value,
+      }).unwrap();
       dispatch(resetSecretState());
       toggleOverlay();
     } catch (e: any) {
@@ -121,22 +119,22 @@ function CreateSecretForm({
     };
   }, [dispatch]);
 
-  // if (isLoadingVariable) {
-  //   return (
-  //     <div className="flex items-center justify-center my-3">
-  //       <TableLoader noOfLines={3} />
-  //     </div>
-  //   );
-  // }
+  if (isLoadingSecret) {
+    return (
+      <div className="flex items-center justify-center my-3">
+        <TableLoader noOfLines={3} />
+      </div>
+    );
+  }
 
   return (
     <form className="flex flex-col items-stretch gap-2 w-full">
       <CustomInput
         inputType={InputTypes.TEXT}
-        value={name}
+        value={key}
         label="Name"
-        placeholder="Enter variable name"
-        handleChange={(value) => handleChange("name", value)}
+        placeholder="Enter secret name"
+        handleChange={(value) => handleChange("key", value)}
         containerClassName="!w-full"
         className="w-full"
       />
@@ -144,37 +142,39 @@ function CreateSecretForm({
         inputType={InputTypes.MULTILINE}
         value={description}
         label="Description"
-        placeholder="What is this variable for?"
+        placeholder="What is this secret for?"
         handleChange={(value) => handleChange("description", value)}
         containerClassName="!w-full"
         className="w-full !h-20"
       />
       <CustomInput
-        inputType={InputTypes.MULTILINE}
-        value={options}
-        label="Options"
-        placeholder="Enter the valid options for this variable separated by commas"
-        handleChange={(value) => handleChange("options", value)}
+        inputType={InputTypes.TEXT}
+        value={value}
+        label="Value"
+        placeholder="Enter the secret value..."
+        handleChange={(value) => handleChange("value", value)}
         containerClassName="!w-full"
         className="w-full"
       />
       <div className="flex items-center gap-2">
         {id ? (
           <CustomButton
-            // disabled={updateLoading}
+            disabled={updateLoading}
             className="w-fit"
             onClick={handleUpdate}>
+            <SaveRounded fontSize="small" />
             Update
           </CustomButton>
         ) : (
           <CustomButton
-            // disabled={isLoading}
+            disabled={isLoading}
             className="w-fit"
             onClick={handleCreate}>
+            <SaveRounded fontSize="small" />
             Save
           </CustomButton>
         )}
-        {/* {(isLoading || updateLoading) && <CircularProgress size={15} />} */}
+        {(isLoading || updateLoading) && <CircularProgress size={15} />}
       </div>
     </form>
   );
