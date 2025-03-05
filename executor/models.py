@@ -697,6 +697,3 @@ class Secret(models.Model):
         indexes = [
             models.Index(fields=['key', 'account', 'is_active']),
         ]
-
-    def __str__(self):
-        return f"{self.account.name}:{self.key}"
