@@ -92,7 +92,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
                 for item in source_type_task_def[tk]:
                     if gv is None:
                         raise Exception(f"Global variable {gk} is None")
-                    source_type_task_def[tk] = item.replace(gk, gv)
+                    source_type_task_def[tk] = item.replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
             elif tk in all_composite_fields:
@@ -102,7 +102,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
                         if cf.data_type == LiteralType.STRING:
                             if gv is None:
                                 raise Exception(f"Global variable {gk} is None")
-                            item[cf.key_name.value] = item[cf.key_name.value].replace(gk, gv)
+                            item[cf.key_name.value] = item[cf.key_name.value].replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
     return source_type_task_def, task_local_variable_map
