@@ -676,7 +676,6 @@ class PlayBookStepRelationExecutionLog(models.Model):
 
 class Secret(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, help_text="Human-readable name")
     key = models.CharField(max_length=255, help_text="Reference key for the secret")
     value = EncryptedTextField()
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
