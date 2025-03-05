@@ -16,8 +16,8 @@ from protos.secrets.api_pb2 import (
     GetSecretRequest, GetSecretResponse,
     CreateSecretRequest, CreateSecretResponse,
     UpdateSecretRequest, UpdateSecretResponse,
-    DeleteSecretRequest, DeleteSecretResponse,
-    Secret as SecretProto
+    Secret as SecretProto,
+    UpdateSecretOp
 )
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,6 @@ def _secret_to_proto(secret: Secret) -> SecretProto:
     """Convert a Secret model to a Secret proto"""
     return SecretProto(
         id=StringValue(value=str(secret.id)),
-        name=StringValue(value=secret.name),
         key=StringValue(value=secret.key),
         masked_value=StringValue(value=_mask_secret_value(secret.value)),
         description=StringValue(value=secret.description or ""),
@@ -99,18 +98,17 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
     """Create a new secret"""
     account: Account = get_request_account()
     user = get_request_user()
-    
-    name = request_message.name.value
+
     key = request_message.key.value
     value = request_message.value.value
     description = request_message.description.value
     
     # Validate required fields
-    if not name or not key or not value:
+    if not key or not value:
         return CreateSecretResponse(
             meta=get_meta(),
             success=BoolValue(value=False),
-            message=Message(title="Invalid Request", description="Name, key, and value are required")
+            message=Message(title="Invalid Request", description="Key, and value are required")
         )
     
     # Check if key already exists for this account
@@ -125,7 +123,6 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
     try:
         secret = Secret.objects.create(
             account=account,
-            name=name,
             key=key,
             value=value,
             description=description,
@@ -151,41 +148,65 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
 
 @web_api(UpdateSecretRequest)
 def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretResponse, HttpResponse]:
-    """Update a secret's name or description (not the value)"""
+    """Update a secret using operations"""
     account: Account = get_request_account()
     user = get_request_user()
     
-    secret_id = request_message.secret_id.value
-    name = request_message.name.value
-    description = request_message.description.value
-    key = request_message.key.value
-
-    if not secret_id:
+    update_secret_ops = request_message.update_secret_ops
+    
+    if not update_secret_ops:
         return UpdateSecretResponse(
             meta=get_meta(),
             success=BoolValue(value=False),
-            message=Message(title="Invalid Request", description="Secret ID is required")
+            message=Message(title="Invalid Request", description="No update operations provided")
         )
+    
+    # All operations should reference the same secret
+    secret_ids = set(op.secret_id.value for op in update_secret_ops)
+    if len(secret_ids) != 1:
+        return UpdateSecretResponse(
+            meta=get_meta(),
+            success=BoolValue(value=False),
+            message=Message(title="Invalid Request", description="All operations must reference the same secret")
+        )
+    
+    secret_id = list(secret_ids)[0]
     
     try:
         secret = Secret.objects.get(id=secret_id, account=account, is_active=True)
         
-        # Update fields if provided
-        if name:
-            secret.name = name
-        if description is not None:  # Allow empty description
-            secret.description = description
-        if key:
-            secret.key = key
-        secret.last_updated_by = user
-        secret.save()
+        # Store the original user for later restoration
+        original_last_updated_by = secret.last_updated_by
         
-        return UpdateSecretResponse(
-            meta=get_meta(),
-            success=BoolValue(value=True),
-            message=Message(title="Success", description="Secret updated successfully"),
-            secret=_secret_to_proto(secret)
-        )
+        # Set the user who is making the update
+        secret.last_updated_by = user
+        secret.save(update_fields=['last_updated_by'])
+        
+        try:
+            # Apply all update operations
+            from executor.secrets.crud.secrets_update_processor import secrets_update_processor
+            secrets_update_processor.update(secret, update_secret_ops)
+            
+            # Get the updated secret
+            updated_secret = Secret.objects.get(id=secret_id)
+            
+            return UpdateSecretResponse(
+                meta=get_meta(),
+                success=BoolValue(value=True),
+                message=Message(title="Success", description="Secret updated successfully"),
+                secret=_secret_to_proto(updated_secret)
+            )
+        except Exception as e:
+            # Restore the original user if update fails
+            secret.last_updated_by = original_last_updated_by
+            secret.save(update_fields=['last_updated_by'])
+            
+            logger.error(f"Error updating secret: {str(e)}")
+            return UpdateSecretResponse(
+                meta=get_meta(),
+                success=BoolValue(value=False),
+                message=Message(title="Error", description=str(e))
+            )
     except Secret.DoesNotExist:
         return UpdateSecretResponse(
             meta=get_meta(),
@@ -199,46 +220,3 @@ def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretRes
             success=BoolValue(value=False),
             message=Message(title="Error", description="Failed to update secret")
         )
-
-
-@web_api(DeleteSecretRequest)
-def secret_delete(request_message: DeleteSecretRequest) -> Union[DeleteSecretResponse, HttpResponse]:
-    """Soft delete a secret by setting is_active to False"""
-    account: Account = get_request_account()
-    user = get_request_user()
-    
-    secret_id = request_message.secret_id.value
-    
-    if not secret_id:
-        return DeleteSecretResponse(
-            meta=get_meta(),
-            success=BoolValue(value=False),
-            message=Message(title="Invalid Request", description="Secret ID is required")
-        )
-    
-    try:
-        secret = Secret.objects.get(id=secret_id, account=account, is_active=True)
-        
-        # Soft delete by setting is_active to False
-        secret.is_active = False
-        secret.last_updated_by = user
-        secret.save()
-        
-        return DeleteSecretResponse(
-            meta=get_meta(),
-            success=BoolValue(value=True),
-            message=Message(title="Success", description="Secret deleted successfully")
-        )
-    except Secret.DoesNotExist:
-        return DeleteSecretResponse(
-            meta=get_meta(),
-            success=BoolValue(value=False),
-            message=Message(title="Not Found", description="Secret not found")
-        )
-    except Exception as e:
-        logger.error(f"Error deleting secret: {str(e)}")
-        return DeleteSecretResponse(
-            meta=get_meta(),
-            success=BoolValue(value=False),
-            message=Message(title="Error", description="Failed to delete secret")
-        ) 

@@ -27,10 +27,10 @@ urlpatterns = [
     path('executor/', include('executor.urls')),
     path('executor/workflows/', include('executor.workflows.urls')),
     path('executor/engine/', include('executor.engine_manager.urls')),
+    path('executor/secrets/', include('executor.secrets.urls')),
     path('pb/', include('executor.urls')),
     path('management/', include('management.urls')),
     path('media/', include('media.urls')),
-    path('secrets/', include('executor.secrets.urls')),
     path('', include('django_prometheus.urls')),
     path('', views.index),
 ]
