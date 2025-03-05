@@ -15,6 +15,7 @@ import TypingDropdownMultipleSelectionInput from "./InputTypes/TypingDropdownMul
 import TextButton from "./InputTypes/TextButton.tsx";
 import CronInput from "../common/CronInput/index.tsx";
 import Checkbox from "../common/Checkbox/index.tsx";
+import SearchInput from "./InputTypes/SearchInput.tsx";
 
 export type HandleInputRenderType = {
   inputType: InputType;
@@ -48,6 +49,8 @@ function HandleInputRender({ inputType, ...props }: HandleInputRenderType) {
   switch (inputType) {
     case InputTypes.TEXT:
       return <Text {...props} handleChange={props.handleChange!} />;
+    case InputTypes.SEARCH:
+      return <SearchInput {...props} handleChange={props.handleChange!} />;
     case InputTypes.MULTILINE:
       return <Multiline handleChange={props.handleChange!} {...props} />;
     case InputTypes.BUTTON:

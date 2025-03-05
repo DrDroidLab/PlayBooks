@@ -25,6 +25,8 @@ from utils.model_utils import generate_choices
 
 from accounts.models import Account
 from utils.proto_utils import dict_to_proto
+from encrypted_model_fields.fields import EncryptedTextField
+import uuid
 
 
 class PlayBookTask(models.Model):
@@ -670,3 +672,27 @@ class PlayBookStepRelationExecutionLog(models.Model):
                                                        InterpretationProto) if self.interpretation else InterpretationProto(),
 
         )
+
+
+class Secret(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    key = models.CharField(max_length=255, help_text="Reference key for the secret")
+    value = EncryptedTextField()
+    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
+    created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='created_secrets')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['key', 'account', 'is_active'],
+                condition=models.Q(is_active=True),
+                name='unique_active_key_per_account'
+            )
+        ]
+        indexes = [
+            models.Index(fields=['key', 'account', 'is_active']),
+        ]

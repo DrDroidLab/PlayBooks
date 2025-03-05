@@ -32,6 +32,9 @@ SECRET_KEY = env.str("DJANGO_SECRET_KEY", default='django-insecure-0=(%5(mscw_h4
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
+# Set your own field encryption key
+FIELD_ENCRYPTION_KEY = env.list("FIELD_ENCRYPTION_KEY", default=['sY2EtYEgvPZk7Fu3pgl-BoVLN4hoXYmpJQdJiNNRlRE='])
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
