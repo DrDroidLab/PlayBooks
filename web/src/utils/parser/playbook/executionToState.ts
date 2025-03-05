@@ -75,9 +75,22 @@ function executionToState(playbook_execution: any): Playbook {
       ? playbook.global_variable_set
       : playbook_execution?.execution_global_variable_set;
 
+  const globalVariables = Object.entries(variables ?? {}).reduce(
+    (acc, [key, value]) => {
+      if (typeof value === "string") {
+        acc[key] = value;
+      } else {
+        acc[key] = JSON.stringify(value);
+      }
+
+      return acc;
+    },
+    {},
+  );
+
   return {
     ...(currentPlaybook ?? playbook),
-    global_variable_set: variables ?? {},
+    global_variable_set: globalVariables ?? {},
     steps: playbookSteps,
     step_relations: playbookRelations,
     ui_requirement: {

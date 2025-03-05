@@ -17,6 +17,19 @@ function playbookToState(playbook: Playbook): Playbook {
       showError: false,
     },
   }));
+
+  const globalVariables = Object.entries(
+    playbook.global_variable_set ?? {},
+  ).reduce((acc, [key, value]) => {
+    if (typeof value === "string") {
+      acc[key] = value;
+    } else {
+      acc[key] = JSON.stringify(value);
+    }
+
+    return acc;
+  }, {});
+
   steps.forEach((step: Step) => {
     const stepTasks: Task[] = (step.tasks as Task[])
       .map((e) => {
@@ -64,6 +77,7 @@ function playbookToState(playbook: Playbook): Playbook {
   relationToState(playbook, tasks, steps);
   return {
     ...playbook,
+    global_variable_set: globalVariables,
     steps,
     ui_requirement: {
       tasks,

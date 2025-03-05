@@ -5,6 +5,7 @@ import { Playbook, Step, Task } from "../../../types/index.ts";
 import checkId from "../../common/checkId.ts";
 import { extractTimeFromHours } from "../../../components/Playbooks/task/taskConfiguration/comparison/utils/extractTimeFromHours.ts";
 import { handleMultipleRuleSets } from "./handleMultipleRuleSets.ts";
+import isJSONString from "../../../components/common/CodeAccordion/utils/isJSONString.ts";
 
 function stateToPlaybook(): Playbook | null {
   handleMultipleRuleSets();
@@ -17,6 +18,17 @@ function stateToPlaybook(): Playbook | null {
     currentPlaybook,
     "ui_requirement",
   );
+
+  playbook.global_variable_set = Object.entries(
+    playbook.global_variable_set ?? {},
+  )?.reduce((gvs, [key, value]) => {
+    if (isJSONString(value)) {
+      gvs[key] = JSON.parse(value);
+    } else {
+      gvs[key] = value;
+    }
+    return gvs;
+  }, {});
 
   playbook.steps = playbook?.steps?.map((step: Step) => ({
     ...step,
