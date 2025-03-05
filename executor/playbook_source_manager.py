@@ -85,7 +85,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
             if tk in all_string_fields:
                 if gv is None:
                     raise Exception(f"Global variable {gk} is None")
-                source_type_task_def[tk] = tv.replace(gk, gv)
+                source_type_task_def[tk] = tv.replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
             elif tk in all_string_array_fields:
