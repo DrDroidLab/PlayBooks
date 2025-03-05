@@ -15,13 +15,17 @@ from protos import base_pb2 as protos_dot_base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n9protos/playbooks/playbook_global_variable_evaluator.proto\x12\x10protos.playbooks\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xa4\x01\n\x18GlobalVariableResultRule\x12\x33\n\rvariable_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\"\n\x08operator\x18\x02 \x01(\x0e\x32\x10.protos.Operator\x12/\n\tthreshold\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n9protos/playbooks/playbook_global_variable_evaluator.proto\x12\x10protos.playbooks\x1a\x11protos/base.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xa1\x01\n\x15\x43ompareGlobalVariable\x12\x33\n\rvariable_name\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\"\n\x08operator\x18\x02 \x01(\x0e\x32\x10.protos.Operator\x12/\n\tthreshold\x18\x03 \x01(\x0b\x32\x1c.google.protobuf.StringValue\"\xde\x01\n\x18GlobalVariableResultRule\x12=\n\x04type\x18\x01 \x01(\x0e\x32/.protos.playbooks.GlobalVariableResultRule.Type\x12J\n\x17\x63ompare_global_variable\x18\x65 \x01(\x0b\x32\'.protos.playbooks.CompareGlobalVariableH\x00\"/\n\x04Type\x12\n\n\x06UNKOWN\x10\x00\x12\x1b\n\x17\x43OMPARE_GLOBAL_VARIABLE\x10\x01\x42\x06\n\x04ruleb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'protos.playbooks.playbook_global_variable_evaluator_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _GLOBALVARIABLERESULTRULE._serialized_start=131
-  _GLOBALVARIABLERESULTRULE._serialized_end=295
+  _COMPAREGLOBALVARIABLE._serialized_start=131
+  _COMPAREGLOBALVARIABLE._serialized_end=292
+  _GLOBALVARIABLERESULTRULE._serialized_start=295
+  _GLOBALVARIABLERESULTRULE._serialized_end=517
+  _GLOBALVARIABLERESULTRULE_TYPE._serialized_start=462
+  _GLOBALVARIABLERESULTRULE_TYPE._serialized_end=509
 # @@protoc_insertion_point(module_scope)

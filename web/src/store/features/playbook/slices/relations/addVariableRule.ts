@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { PlaybookUIState } from "../../../../../types";
+import { PlaybookUIState, VariableRuleTypes } from "../../../../../types";
 import { OperatorOptions } from "../../../../../utils/conditionals/types/operatorOptionTypes";
 import { playbookSlice } from "../../playbookSlice";
 
@@ -28,8 +28,11 @@ export const addVariableRuleAction = (
   const ruleSet = relation.condition.rule_sets[ruleSetIndex];
   if (!ruleSet.variable_rules) ruleSet.variable_rules = [];
   ruleSet.variable_rules.push({
-    operator: OperatorOptions.EQUAL_O,
-    variable_name: "",
-    threshold: "",
+    type: VariableRuleTypes.COMPARE_GLOBAL_VARIABLE,
+    compare_global_variable: {
+      operator: OperatorOptions.EQUAL_O,
+      variable_name: "",
+      threshold: "",
+    },
   });
 };

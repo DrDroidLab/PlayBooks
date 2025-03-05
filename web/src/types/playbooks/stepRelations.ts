@@ -12,6 +12,10 @@ export enum StepRuleTypes {
   COMPARE_TIME_WITH_CRON = "COMPARE_TIME_WITH_CRON",
 }
 
+export enum VariableRuleTypes {
+  COMPARE_GLOBAL_VARIABLE = "COMPARE_GLOBAL_VARIABLE",
+}
+
 enum RuleType {
   TIMESERIES = "timeseries",
   TABLE = "table",
@@ -37,11 +41,17 @@ export type ConditionRule = {
   [key in RuleType]?: any;
 };
 
-export type VariableConditionRule = {
-  variable_name: string;
-  operator: OperatorOptionType;
-  threshold: string;
+export type VariableConditionRuleType = {
+  [key in VariableRuleTypes as LowercaseString<VariableRuleTypes>]: {
+    variable_name: string;
+    operator: OperatorOptionType;
+    threshold: string;
+  };
 };
+
+export type VariableConditionRule = {
+  type: VariableRuleTypes;
+} & VariableConditionRuleType;
 
 export type StepRuleType = {
   [key in StepRuleTypes as LowercaseString<StepRuleTypes>]: {

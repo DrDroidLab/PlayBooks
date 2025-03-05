@@ -1,5 +1,9 @@
 import CustomInput from "../Inputs/CustomInput";
-import { InputTypes, VariableConditionRule } from "../../types";
+import {
+  InputTypes,
+  VariableConditionRule,
+  VariableRuleTypes,
+} from "../../types";
 import useIsPrefetched from "../../hooks/playbooks/useIsPrefetched";
 import { useSelector } from "react-redux";
 import { currentPlaybookSelector } from "../../store/features/playbook/selectors";
@@ -24,6 +28,8 @@ function VariableCondition({
   const isPrefetched = useIsPrefetched();
   const currentPlaybook = useSelector(currentPlaybookSelector);
   const { handleRule } = useEdgeConditions(id);
+  const ruleType = condition.type?.toLowerCase() as VariableRuleTypes;
+  const ruleData = condition?.[ruleType] ?? {};
 
   const handleChange = (val: string, type: string) => {
     handleRule(type, val, i, RuleType.VARIABLE_RULE);
@@ -45,9 +51,11 @@ function VariableCondition({
               id: key,
               label: key,
             }))}
-            value={condition.variable_name}
+            value={ruleData.variable_name}
             placeholder={`Variable Name`}
-            handleChange={(id: string) => handleChange(id, "variable_name")}
+            handleChange={(id: string) =>
+              handleChange(id, `${ruleType}.variable_name`)
+            }
             disabled={!!isPrefetched}
           />
         </div>
@@ -56,21 +64,25 @@ function VariableCondition({
             inputType={InputTypes.DROPDOWN}
             disabled={!!isPrefetched}
             options={operationOptions}
-            value={condition.operator}
+            value={ruleData.operator}
             placeholder={`Select Operator`}
-            handleChange={(id: string) => handleChange(id, `operator`)}
+            handleChange={(id: string) =>
+              handleChange(id, `${ruleType}.operator`)
+            }
           />
           <CustomInput
             inputType={InputTypes.TEXT}
             disabled={!!isPrefetched}
-            value={condition.threshold}
+            value={ruleData.threshold}
             placeholder={`Threshold/Value`}
-            handleChange={(id: string) => handleChange(id, `threshold`)}
+            handleChange={(id: string) =>
+              handleChange(id, `${ruleType}.threshold`)
+            }
           />
         </div>
 
         {showDelete && (
-          <DeleteRuleButton ruleType={RuleType.RULE} ruleIndex={i} />
+          <DeleteRuleButton ruleType={RuleType.VARIABLE_RULE} ruleIndex={i} />
         )}
       </div>
     </div>
