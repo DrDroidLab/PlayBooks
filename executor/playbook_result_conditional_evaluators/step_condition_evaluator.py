@@ -73,7 +73,8 @@ class StepConditionEvaluator:
 
             variable_rules: [PlaybookTaskResultRule] = rs.variable_rules
             for vr in variable_rules:
-                variable_evaluator = self._variable_rule_map.get(vr.type)
+                variable_evaluator = self._variable_rule_map.get()
+                print("WOOOOOOO 0", variable_evaluator, vr)
                 global_variable_set = next(
                     (tr.execution_global_variable_set for tr in playbook_task_execution_log), None)
                 if not variable_evaluator:
