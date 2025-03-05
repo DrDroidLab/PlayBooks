@@ -93,7 +93,7 @@ const CustomEdge = ({
               <CustomButton
                 className={`${
                   additionalData.id === id ? "shadow-md shadow-violet-500 " : ""
-                } w-10 h-10 rounded-full items-center p-0 justify-center font-normal step-notes absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+                } w-10 h-10 rounded-full items-center p-0 justify-center font-normal step-notes absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !min-w-0`}
                 onClick={handleAddConditionClick}>
                 <Tooltip title="Add Condition">
                   <Add fontSize="small" />
