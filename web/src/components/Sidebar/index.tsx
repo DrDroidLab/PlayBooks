@@ -5,6 +5,7 @@ import SlackConnectOverlay from "../SlackConnectOverlay";
 import { elements } from "./utils";
 import SidebarElement from "./SidebarElement";
 import {
+  LockRounded,
   LogoutRounded,
   SecurityRounded,
   SettingsRounded,
@@ -43,7 +44,7 @@ function Sidebar() {
         <SidebarElement
           to="/secret-management"
           label="Secret Management"
-          icon={<SecurityRounded />}
+          icon={<LockRounded fontSize="small" />}
         />
         <SidebarButtonElement
           label="Join Slack Community"

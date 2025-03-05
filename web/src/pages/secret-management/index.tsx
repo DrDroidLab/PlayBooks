@@ -36,7 +36,10 @@ function SecretManagement() {
 
   return (
     <>
-      <Heading heading={"All Variables"} />
+      <Heading
+        heading={"Secret Mangement"}
+        subHeading="Manage your secrets for Playbooks here"
+      />
       <main className="flex flex-col gap-4 p-2 pt-4">
         <div className="flex items-center gap-2">
           <CreateSecretButton />
