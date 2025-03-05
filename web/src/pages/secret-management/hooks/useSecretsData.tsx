@@ -9,13 +9,13 @@ export const useSecretsData = (data: any[]) => {
   const [selectedSecret, setSelectedSecret] = useState({});
   const [selectedId, setSelectedId] = useState("");
 
-  const handleDeleteSecret = (variable: any) => {
-    setSelectedSecret(variable);
+  const handleDeleteSecret = (secret: any) => {
+    setSelectedSecret(secret);
     toggle();
   };
 
-  const handleUpdateVariable = (variable: any) => {
-    setSelectedId(variable.id);
+  const handleUpdateVariable = (secret: any) => {
+    setSelectedId(secret.id);
     toggleConfig();
   };
 

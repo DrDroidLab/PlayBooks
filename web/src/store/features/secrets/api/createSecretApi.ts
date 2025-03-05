@@ -7,9 +7,7 @@ export const createSecretApi = apiSlice.injectEndpoints({
     createSecret: builder.mutation<any, Omit<SecretsInitialState, "id">>({
       query: (body) => ({
         url: SECRET_CREATE,
-        body: {
-          secret: body,
-        },
+        body,
         method: "POST",
       }),
       invalidatesTags: ["Secrets"],

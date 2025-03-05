@@ -40,6 +40,7 @@ function CreateSecretForm({
     },
     {
       skip: !id,
+      refetchOnMountOrArgChange: true,
     },
   );
 
@@ -137,6 +138,7 @@ function CreateSecretForm({
         handleChange={(value) => handleChange("key", value)}
         containerClassName="!w-full"
         className="w-full"
+        disabled={id !== undefined}
       />
       <CustomInput
         inputType={InputTypes.MULTILINE}

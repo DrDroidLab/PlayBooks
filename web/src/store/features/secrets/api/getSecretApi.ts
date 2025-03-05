@@ -22,7 +22,7 @@ export const getSecretApi = apiSlice.injectEndpoints({
           dispatch(
             setSecretKey({
               key: "key",
-              value: data?.name ?? "",
+              value: data?.key ?? "",
             }),
           );
           dispatch(
@@ -34,7 +34,7 @@ export const getSecretApi = apiSlice.injectEndpoints({
           dispatch(
             setSecretKey({
               key: "value",
-              value: (data?.options ?? []).join(", "),
+              value: (data?.value ?? []).join(", "),
             }),
           );
         } catch (error) {

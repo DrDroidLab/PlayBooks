@@ -8,11 +8,11 @@ export const deleteSecretApi = apiSlice.injectEndpoints({
         url: SECRET_DELETE,
         method: "POST",
         body: {
-          secret_id: id,
           update_secret_ops: [
             {
-              op: "UPDATE_STATUS",
-              update_status: {
+              secret_id: id,
+              op: "UPDATE_SECRET_STATUS",
+              update_secret_status: {
                 is_active: false,
               },
             },

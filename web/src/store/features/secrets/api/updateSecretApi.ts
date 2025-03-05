@@ -8,15 +8,13 @@ export const updateSecretApi = apiSlice.injectEndpoints({
       query: (secret) => ({
         url: SECRET_UPDATE,
         body: {
-          secret_id: secret.id,
           update_secret_ops: [
             {
               op: "UPDATE_SECRET",
+              secret_id: secret.id,
               update_secret: {
-                secret: {
-                  value: secret.value,
-                  description: secret.description,
-                },
+                value: secret.value,
+                description: secret.description,
               },
             },
           ],

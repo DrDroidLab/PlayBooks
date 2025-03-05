@@ -30,7 +30,7 @@ const SecretActionOverlay = ({
       {isOpen && (
         <Overlay visible={isOpen}>
           <div className={`${styles["actionOverlay"]} dark:bg-gray-900`}>
-            <header className="text-gray-500 dark:text-gray-400">
+            <header className="text-gray-500 dark:text-gray-400 flex items-center gap-1">
               Delete {secret.name}?
             </header>
             <div className={"flex items-center gap-2 mt-4"}>
