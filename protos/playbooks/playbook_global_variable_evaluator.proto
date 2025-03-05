@@ -1,0 +1,11 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+message GlobalVariableResultRule {
+  google.protobuf.StringValue variable_name = 1;
+  Operator operator = 2;
+  google.protobuf.StringValue threshold = 3;
+}

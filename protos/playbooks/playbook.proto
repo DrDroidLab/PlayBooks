@@ -9,6 +9,7 @@ import "protos/playbooks/intelligence_layer/interpreter.proto";
 
 import "protos/playbooks/playbook_task_result_evaluator.proto";
 import "protos/playbooks/playbook_step_result_evaluator.proto";
+import "protos/playbooks/playbook_global_variable_evaluator.proto";
 
 import "protos/playbooks/source_task_definitions/cloudwatch_task.proto";
 import "protos/playbooks/source_task_definitions/grafana_task.proto";
@@ -94,7 +95,6 @@ message PlaybookTaskResultRule {
     TableResultRule table = 102;
     TableResultRule logs = 103;
     BashCommandOutputResultRule bash_command_output = 104;
-    GlobalVariableResultRule global_variable = 105;
   }
 }
 
@@ -115,7 +115,7 @@ message PlaybookStepResultCondition {
     LogicalOperator logical_operator = 1;
     repeated PlaybookTaskResultRule rules = 2;
     repeated PlaybookStepResultRule step_rules = 3;
-    repeated PlaybookTaskResultRule variable_rules = 4;
+    repeated GlobalVariableResultRule variable_rules = 4;
   }
   LogicalOperator logical_operator = 1;
   repeated RuleSet rule_sets = 2;

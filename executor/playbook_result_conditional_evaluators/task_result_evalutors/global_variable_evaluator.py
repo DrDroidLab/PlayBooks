@@ -2,7 +2,7 @@ from executor.playbook_result_conditional_evaluators.task_result_evalutors.task_
 from protos.base_pb2 import Operator
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResultType
 from protos.playbooks.playbook_pb2 import PlaybookTaskResultRule
-from protos.playbooks.playbook_task_result_evaluator_pb2 import GlobalVariableResultRule
+from protos.playbooks.playbook_global_variable_evaluator_pb2 import GlobalVariableResultRule
 from utils.proto_utils import proto_to_dict
 from google.protobuf.struct_pb2 import Struct
 

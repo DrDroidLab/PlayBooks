@@ -52,9 +52,3 @@ message BashCommandOutputResultRule {
   google.protobuf.BoolValue case_sensitive = 4;
   google.protobuf.UInt64Value threshold = 5;
 }
-
-message GlobalVariableResultRule {
-  google.protobuf.StringValue variable_name = 1;
-  Operator operator = 2;
-  google.protobuf.DoubleValue threshold = 3;
-}

@@ -164,27 +164,3 @@ class BashCommandOutputResultRule(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal["case_sensitive", b"case_sensitive", "operator", b"operator", "pattern", b"pattern", "threshold", b"threshold", "type", b"type"]) -> None: ...
 
 global___BashCommandOutputResultRule = BashCommandOutputResultRule
-
-@typing_extensions.final
-class GlobalVariableResultRule(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    VARIABLE_NAME_FIELD_NUMBER: builtins.int
-    OPERATOR_FIELD_NUMBER: builtins.int
-    THRESHOLD_FIELD_NUMBER: builtins.int
-    @property
-    def variable_name(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    operator: protos.base_pb2.Operator.ValueType
-    @property
-    def threshold(self) -> google.protobuf.wrappers_pb2.DoubleValue: ...
-    def __init__(
-        self,
-        *,
-        variable_name: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        operator: protos.base_pb2.Operator.ValueType = ...,
-        threshold: google.protobuf.wrappers_pb2.DoubleValue | None = ...,
-    ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["threshold", b"threshold", "variable_name", b"variable_name"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["operator", b"operator", "threshold", b"threshold", "variable_name", b"variable_name"]) -> None: ...
-
-global___GlobalVariableResultRule = GlobalVariableResultRule
