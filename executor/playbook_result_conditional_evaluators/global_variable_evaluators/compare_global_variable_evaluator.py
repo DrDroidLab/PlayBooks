@@ -4,7 +4,7 @@ from protos.base_pb2 import Operator
 from protos.playbooks.playbook_pb2 import PlaybookTaskExecutionLog
 from protos.playbooks.playbook_global_variable_evaluator_pb2 import GlobalVariableResultRule, CompareGlobalVariable
 from utils.proto_utils import proto_to_dict
-
+from utils.dict_utils import get_nested_value
 
 class CompareGlobalVariableEvaluator(GlobalVariableEvaluator):
 
@@ -20,9 +20,7 @@ class CompareGlobalVariableEvaluator(GlobalVariableEvaluator):
         global_variable_set = next(
                     (tr.execution_global_variable_set for tr in playbook_task_execution_log), None)
         global_variable_set_dict = proto_to_dict(global_variable_set) if global_variable_set else {}
-        value = global_variable_set_dict.get(variable_name, None)
-
-        print("WOOOOOOO 2", global_variable_set, value)
+        value = get_nested_value(global_variable_set_dict, variable_name)
 
         # compare current time with first member of cron schedules
         if operator == Operator.EQUAL_O:
