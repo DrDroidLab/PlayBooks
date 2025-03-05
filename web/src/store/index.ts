@@ -14,6 +14,7 @@ import paginationSlice from "./features/pagination/paginationSlice.ts";
 import commonSlice from "./features/common/commonSlice.ts";
 import dynamicAlertsSlice from "./features/dynamicAlerts/dynamicAlertsSlice.ts";
 import sidebarSlice from "./features/sidebar/sidebarSlice.ts";
+import secretsSlice from "./features/secrets/secretsSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
     common: commonSlice,
     dynamicAlerts: dynamicAlertsSlice,
     sidebar: sidebarSlice,
+    secerts: secretsSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

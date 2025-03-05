@@ -14,6 +14,7 @@ export const InputTypes = {
   TEXT_BUTTON: "TEXT_BUTTON_FT",
   CRON: "CRON_FT",
   CHECKBOX: "CHECKBOX_FT",
+  SEARCH: "SEARCH_FT",
 } as const;
 
 export type InputType = (typeof InputTypes)[keyof typeof InputTypes];

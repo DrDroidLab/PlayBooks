@@ -4,7 +4,11 @@ import useToggle from "../../hooks/common/useToggle";
 import SlackConnectOverlay from "../SlackConnectOverlay";
 import { elements } from "./utils";
 import SidebarElement from "./SidebarElement";
-import { LogoutRounded, SettingsRounded } from "@mui/icons-material";
+import {
+  LogoutRounded,
+  SecurityRounded,
+  SettingsRounded,
+} from "@mui/icons-material";
 import SidebarButtonElement from "./SidebarButtonElement";
 import HeadElement from "./HeadElement";
 import useSidebar from "../../hooks/common/sidebar/useSidebar";
@@ -36,6 +40,11 @@ function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-2 w-full">
+        <SidebarElement
+          to="/secret-management"
+          label="Secret Management"
+          icon={<SecurityRounded />}
+        />
         <SidebarButtonElement
           label="Join Slack Community"
           icon={
