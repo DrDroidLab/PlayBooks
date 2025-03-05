@@ -76,7 +76,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
         if ff.is_composite:
             all_composite_fields[ff.key_name.value] = ff.composite_fields
 
-    global_variable_set_dict = proto_to_dict(global_variable_set)
+    global_variable_set_dict = proto_to_dict(global_variable_set) if global_variable_set else {}
     global_variable_set = get_flat_global_variables(global_variable_set_dict)
 
     task_local_variable_map = {}
@@ -85,14 +85,14 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
             if tk in all_string_fields:
                 if gv is None:
                     raise Exception(f"Global variable {gk} is None")
-                source_type_task_def[tk] = tv.replace(gk, gv)
+                source_type_task_def[tk] = tv.replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
             elif tk in all_string_array_fields:
                 for item in source_type_task_def[tk]:
                     if gv is None:
                         raise Exception(f"Global variable {gk} is None")
-                    source_type_task_def[tk] = item.replace(gk, gv)
+                    source_type_task_def[tk] = item.replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
             elif tk in all_composite_fields:
@@ -102,7 +102,7 @@ def resolve_global_variables(form_fields: [FormField], global_variable_set: Stru
                         if cf.data_type == LiteralType.STRING:
                             if gv is None:
                                 raise Exception(f"Global variable {gk} is None")
-                            item[cf.key_name.value] = item[cf.key_name.value].replace(gk, gv)
+                            item[cf.key_name.value] = item[cf.key_name.value].replace(gk, str(gv))
                 if gk in tv:
                     task_local_variable_map[gk] = gv
     return source_type_task_def, task_local_variable_map
