@@ -25,7 +25,6 @@ class SecretsUpdateProcessor(UpdateProcessorMixin):
             elem.value = update_op.value.value
             update_fields.append('value')
         
-        logger.info(f"Updating secret {elem.key} with fields: {update_fields}, {len(update_fields)}")
         if len(update_fields) > 1:  # Only save if we have fields to update
             try:
                 elem.save(update_fields=update_fields)
@@ -41,14 +40,10 @@ class SecretsUpdateProcessor(UpdateProcessorMixin):
         is_active = update_op.is_active.value
         
         # Can't reactivate a secret that's been deactivated
-        if not elem.is_active and is_active:
+        if not elem.is_active:
             raise Exception(f"Secret {elem.key} cannot be reactivated")
             
-        # No change needed
-        if elem.is_active == is_active:
-            return elem
-            
-        elem.is_active = is_active
+        elem.is_active = False
         try:
             elem.save(update_fields=['is_active', 'updated_at'])
         except Exception as ex:
