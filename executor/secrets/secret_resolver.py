@@ -37,11 +37,10 @@ class SecretResolver:
             Dict with secrets resolved
         """
         try:
-            # Get fields that might contain secrets
+            # Collect all secret references
             string_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING]
             string_array_fields = [ff.key_name.value for ff in form_fields if ff.data_type == LiteralType.STRING_ARRAY]
 
-            # Collect all secret references
             secret_refs = set()
             for field_name, value in source_type_task_def.items():
                 if field_name in string_fields:
@@ -64,10 +63,10 @@ class SecretResolver:
                 logger.warning(f"No secrets found for given references")
                 return source_type_task_def
 
-            # Create mapping of secret keys to values
+            # Create mapping
             secret_map = {s['key']: s['value'] for s in secrets}
 
-            # Replace secret references with values
+            # Final resolution
             resolved_def = source_type_task_def.copy()
             for field_name, value in source_type_task_def.items():
                 if field_name in string_fields:

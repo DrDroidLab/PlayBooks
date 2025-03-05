@@ -18,12 +18,12 @@ from protos.secrets.api_pb2 import (
     UpdateSecretRequest, UpdateSecretResponse,
     Secret as SecretProto,
 )
+from executor.secrets.crud.secrets_update_processor import secrets_update_processor
 
 logger = logging.getLogger(__name__)
 
 
 def _mask_secret_value(value):
-    """Mask the secret value, showing only the first and last characters"""
     if not value or len(value) <= 8:
         return "••••••••"
     return value[:2] + "••••••" + value[-2:]
@@ -37,7 +37,6 @@ def _secret_to_proto(secret: Secret) -> SecretProto:
         masked_value=StringValue(value=_mask_secret_value(secret.value)),
         description=StringValue(value=secret.description or ""),
         created_by=StringValue(value=secret.created_by.email if secret.created_by else ""),
-        last_updated_by=StringValue(value=secret.last_updated_by.email if secret.last_updated_by else ""),
         created_at=int(secret.created_at.replace(tzinfo=timezone.utc).timestamp()) if secret.created_at else 0,
         updated_at=int(secret.updated_at.replace(tzinfo=timezone.utc).timestamp()) if secret.updated_at else 0,
         is_active=secret.is_active
@@ -143,7 +142,6 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
             message=Message(title="Invalid Request", description="Key and value are required")
         )
 
-    # Validate key format -> (single word, no spaces, only alphanumeric and underscores)
     if not key.isalnum() or ' ' in key:
         return CreateSecretResponse(
             meta=get_meta(),
@@ -152,7 +150,6 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
                           description="Key must be a single word containing only letters, numbers, and underscores")
         )
     
-    # Check if key already exists for this account
     if Secret.objects.filter(account=account, key=key, is_active=True).exists():
         return CreateSecretResponse(
             meta=get_meta(),
@@ -168,10 +165,9 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
             value=value,
             description=description,
             created_by=user,
-            last_updated_by=user,
             is_active=True
         )
-        
+
         return CreateSecretResponse(
             meta=get_meta(),
             success=BoolValue(value=True),
@@ -191,7 +187,7 @@ def secret_create(request_message: CreateSecretRequest) -> Union[CreateSecretRes
 def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretResponse, HttpResponse]:
     """Update a secret using operations"""
     account: Account = get_request_account()
-    user = get_request_user()
+    _user = get_request_user()
     
     update_secret_ops = request_message.update_secret_ops
     
@@ -215,20 +211,8 @@ def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretRes
     
     try:
         secret = Secret.objects.get(id=secret_id, account=account, is_active=True)
-        
-        # Store the original user for later restoration
-        original_last_updated_by = secret.last_updated_by
-        
-        # Set the user who is making the update
-        secret.last_updated_by = user
-        secret.save(update_fields=['last_updated_by'])
-        
         try:
-            # Apply all update operations
-            from executor.secrets.crud.secrets_update_processor import secrets_update_processor
             secrets_update_processor.update(secret, update_secret_ops)
-            
-            # Get the updated secret
             updated_secret = Secret.objects.get(id=secret_id)
             
             return UpdateSecretResponse(
@@ -238,10 +222,6 @@ def secret_update(request_message: UpdateSecretRequest) -> Union[UpdateSecretRes
                 secret=_secret_to_proto(updated_secret)
             )
         except Exception as e:
-            # Restore the original user if update fails
-            secret.last_updated_by = original_last_updated_by
-            secret.save(update_fields=['last_updated_by'])
-            
             logger.error(f"Error updating secret: {str(e)}")
             return UpdateSecretResponse(
                 meta=get_meta(),

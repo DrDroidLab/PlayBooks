@@ -682,7 +682,6 @@ class Secret(models.Model):
     created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='created_secrets')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    last_updated_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='updated_secrets')
     is_active = models.BooleanField(default=True)
     description = models.TextField(blank=True)
 

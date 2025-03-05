@@ -29,7 +29,6 @@ class Secret(google.protobuf.message.Message):
     MASKED_VALUE_FIELD_NUMBER: builtins.int
     DESCRIPTION_FIELD_NUMBER: builtins.int
     CREATED_BY_FIELD_NUMBER: builtins.int
-    LAST_UPDATED_BY_FIELD_NUMBER: builtins.int
     CREATED_AT_FIELD_NUMBER: builtins.int
     UPDATED_AT_FIELD_NUMBER: builtins.int
     IS_ACTIVE_FIELD_NUMBER: builtins.int
@@ -43,8 +42,6 @@ class Secret(google.protobuf.message.Message):
     def description(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     @property
     def created_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
-    @property
-    def last_updated_by(self) -> google.protobuf.wrappers_pb2.StringValue: ...
     created_at: builtins.int
     updated_at: builtins.int
     is_active: builtins.bool
@@ -56,13 +53,12 @@ class Secret(google.protobuf.message.Message):
         masked_value: google.protobuf.wrappers_pb2.StringValue | None = ...,
         description: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
-        last_updated_by: google.protobuf.wrappers_pb2.StringValue | None = ...,
         created_at: builtins.int = ...,
         updated_at: builtins.int = ...,
         is_active: builtins.bool = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "id", b"id", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "id", b"id", "is_active", b"is_active", "key", b"key", "last_updated_by", b"last_updated_by", "masked_value", b"masked_value", "updated_at", b"updated_at"]) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["created_by", b"created_by", "description", b"description", "id", b"id", "key", b"key", "masked_value", b"masked_value"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["created_at", b"created_at", "created_by", b"created_by", "description", b"description", "id", b"id", "is_active", b"is_active", "key", b"key", "masked_value", b"masked_value", "updated_at", b"updated_at"]) -> None: ...
 
 global___Secret = Secret
 
