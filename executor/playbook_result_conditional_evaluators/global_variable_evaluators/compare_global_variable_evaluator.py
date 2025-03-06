@@ -24,14 +24,34 @@ class CompareGlobalVariableEvaluator(GlobalVariableEvaluator):
 
         # compare current time with first member of cron schedules
         if operator == Operator.EQUAL_O:
-            return threshold == value
+            return value == threshold
         elif operator == Operator.GREATER_THAN_O:
-            return threshold > value
+            try:
+                value = int(value)
+                threshold = int(threshold)
+            except ValueError:
+                return False
+            return value > threshold
         elif operator == Operator.GREATER_THAN_EQUAL_O:
-            return threshold >= value
+            try:
+                value = int(value)
+                threshold = int(threshold)
+            except ValueError:
+                return False
+            return value >= threshold
         elif operator == Operator.LESS_THAN_O:
-            return threshold < value
+            try:
+                value = int(value)
+                threshold = int(threshold)
+            except ValueError:
+                return False
+            return value < threshold
         elif operator == Operator.LESS_THAN_EQUAL_O:
-            return threshold <= value
+            try:
+                value = int(value)
+                threshold = int(threshold)
+            except ValueError:
+                return False
+            return value <= threshold
         else:
             raise ValueError(f'Operator {Operator.Name(operator)} not supported')
