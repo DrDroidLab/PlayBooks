@@ -7,3 +7,4 @@ export * from "./addStepRuleSetForDynamicAlert";
 export * from "./addRuleForDynamicAlert";
 export * from "./removeStepRuleSetForDynamicAlert";
 export * from "./addRelationKey";
+export * from "./addVariableRule";

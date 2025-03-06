@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos.playbooks;
+
+import "protos/base.proto";
+import "google/protobuf/wrappers.proto";
+
+message CompareGlobalVariable {
+  google.protobuf.StringValue variable_name = 1;
+  Operator operator = 2;
+  google.protobuf.StringValue threshold = 3;
+}
+
+message GlobalVariableResultRule {
+  enum Type {
+    UNKOWN = 0;
+    COMPARE_GLOBAL_VARIABLE = 1;
+  }
+
+  Type type = 1;
+  oneof rule {
+    CompareGlobalVariable compare_global_variable = 101;
+  }
+}
