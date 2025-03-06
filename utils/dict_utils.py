@@ -1,8 +1,7 @@
+import json
+
 def get_nested_value(dict, key):
     # First, try to find the key as-is in the global dictionary
-    if key in dict:
-        return dict[key]
-    
     if key in dict:
         return dict[key]
     
@@ -15,6 +14,14 @@ def get_nested_value(dict, key):
     for key in keys[1:]:
         if value is None:
             return None
+        
+        # Try and convert to dict/list
+        try:
+            value = json.loads(value)
+            if isinstance(value, list) or isinstance(value, dict):
+                value = value
+        except Exception:
+            pass
         
         # If the key represents an integer index, try list access
         if key.isdigit():
