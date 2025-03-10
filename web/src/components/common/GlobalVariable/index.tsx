@@ -6,12 +6,13 @@ import {
   updateGlobalVariable,
 } from "../../../store/features/playbook/playbookSlice.ts";
 import AddVariableOverlay from "./AddVariableOverlay.js";
-import { Add, CloseRounded } from "@mui/icons-material";
+import { Add, CloseRounded, DescriptionRounded } from "@mui/icons-material";
 import useIsPrefetched from "../../../hooks/playbooks/useIsPrefetched.ts";
 import CustomButton from "../CustomButton/index.tsx";
 import CustomInput from "../../Inputs/CustomInput.tsx";
 import { InputTypes } from "../../../types/inputs/inputTypes.ts";
 import { Tooltip } from "@mui/material";
+import { checkIfJSON } from "../../../utils/common/checkIfJSON.ts";
 
 function GlobalVariables() {
   const [isAddVariableOpen, setIsAddVariableOpen] = useState(false);
@@ -61,15 +62,36 @@ function GlobalVariables() {
                 </Tooltip>
               </div>
               <div className="flex gap-2 items-center">
-                <CustomInput
-                  inputType={InputTypes.TEXT}
-                  value={variables[key]}
-                  placeholder={"Enter variable value"}
-                  className="!w-[200px]"
-                  handleChange={(val) => {
-                    dispatch(updateGlobalVariable({ name: key, value: val }));
-                  }}
-                />
+                <div className="relative flex items-center gap-1">
+                  <CustomInput
+                    inputType={InputTypes.TEXT}
+                    value={variables[key]}
+                    placeholder={"Enter variable value"}
+                    className="!w-[200px]"
+                    handleChange={(val) => {
+                      dispatch(updateGlobalVariable({ name: key, value: val }));
+                    }}
+                  />
+                  <div className="absolute right-2">
+                    {checkIfJSON(variables[key]) && (
+                      <Tooltip
+                        title={
+                          <pre style={{ margin: 0 }}>
+                            {JSON.stringify(
+                              JSON.parse(variables[key]),
+                              null,
+                              2,
+                            )}
+                          </pre>
+                        }>
+                        <DescriptionRounded
+                          className="text-gray-500 bg-white cursor-pointer"
+                          fontSize="small"
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
                 {!isPrefetched && (
                   <CloseRounded
                     onClick={() => handleDelete(key)}

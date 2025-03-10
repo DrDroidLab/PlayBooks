@@ -1,3 +1,4 @@
+import json
 import logging
 
 from celery import shared_task
@@ -103,7 +104,16 @@ def execute_playbook_step_impl(tr: TimeRange, account: Account, step: PlaybookSt
                                                              execution_global_variable_set=execution_global_variable_set))
                     continue
 
-                bulk_execution_var_values = execution_global_variable_set[bulk_task_var].split(',')
+                bulk_value = execution_global_variable_set[bulk_task_var]
+                try:
+                    parsed = json.loads(bulk_value)
+                    if isinstance(parsed, list):
+                        bulk_execution_var_values = parsed
+                    else:
+                        bulk_execution_var_values = bulk_value.split(',')
+                except Exception:
+                    bulk_execution_var_values = bulk_value.split(',')
+
                 if not bulk_execution_var_values:
                     task_result = PlaybookTaskResult(
                         error=StringValue(value="Bulk execution variable values not found in global variables"))
