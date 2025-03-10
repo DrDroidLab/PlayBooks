@@ -64,9 +64,15 @@ const AddVariableOverlay = ({ isOpen, close }) => {
               placeholder={"Enter variable value"}
             />
           </div>
-          <p className="text-xs mt-2 text-gray-500 italic">
-            To enter an array variable, just enter the values with commas
-          </p>
+          <div>
+            <p className="text-xs mt-2 text-gray-500 italic">
+              To enter an array variable, just enter the values with commas
+            </p>
+            <p className="text-xs mt-2 text-gray-500 italic">
+              To enter a list of objects(dicts) in a variable, just write the
+              list (eg. {`[{ "key1": "value1" }, { "key2": "value1" }]`})
+            </p>
+          </div>
           <div className="flex items-center gap-2 mt-10">
             <CustomButton onClick={() => close()}>Cancel</CustomButton>
             <CustomButton onClick={handleSubmit}>Add</CustomButton>
