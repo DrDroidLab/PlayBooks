@@ -108,7 +108,7 @@ def generate_csv_for_table_result(table: TableResult, csv_file_path, csv_file_ti
     df = table_result_to_df(table)
     df.to_csv(csv_file_path, index=False)
     if df.empty:
-        return ''
+        return '', ''
     try:
         object_uid, object_url = save_csv_to_db(csv_file_path, csv_file_title)
         return object_uid, object_url

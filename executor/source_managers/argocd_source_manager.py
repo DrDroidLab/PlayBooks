@@ -17,7 +17,7 @@ from protos.base_pb2 import TimeRange
 from protos.connectors.connector_pb2 import Connector as ConnectorProto
 from protos.base_pb2 import Source, SourceModelType
 from protos.playbooks.playbook_commons_pb2 import PlaybookTaskResult, PlaybookTaskResultType, ApiResponseResult, \
-    TableResult
+    TableResult, TextResult
 from protos.ui_definition_pb2 import FormField, FormFieldType
 from connectors.assets.manager.asset_manager_facade import asset_manager_facade
 
@@ -157,7 +157,8 @@ class ArgoCDSourceManager(PlaybookSourceManager):
                         row = TableResult.TableRow(
                             columns=[name_column, time_column, revision_column, deployment_id_column])
                         rows.append(row)
-
+            
+            print(f"GOT ROWS: {rows}")
             if rows:
                 rows = sorted(rows, key=lambda x: x.columns[1].value.value, reverse=True)
 
@@ -175,12 +176,10 @@ class ArgoCDSourceManager(PlaybookSourceManager):
                 )
             else:
                 return PlaybookTaskResult(
-                    type=PlaybookTaskResultType.TABLE,
+                    type=PlaybookTaskResultType.TEXT,
                     source=self.source,
-                    table=TableResult(
-                        raw_query=StringValue(value="No Deployments found"),
-                        total_count=UInt64Value(value=len(rows)), 
-                        rows=rows
+                    text=TextResult(
+                        output=StringValue(value="No Deployments found")
                     )
                 )
         except Exception as e:
