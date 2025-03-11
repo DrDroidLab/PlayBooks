@@ -157,8 +157,7 @@ class ArgoCDSourceManager(PlaybookSourceManager):
                         row = TableResult.TableRow(
                             columns=[name_column, time_column, revision_column, deployment_id_column])
                         rows.append(row)
-            
-            print(f"GOT ROWS: {rows}")
+
             if rows:
                 rows = sorted(rows, key=lambda x: x.columns[1].value.value, reverse=True)
 
