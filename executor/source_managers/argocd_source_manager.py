@@ -35,7 +35,6 @@ class ArgoCDSourceManager(PlaybookSourceManager):
         self.task_type_callable_map = {
             ArgoCD.TaskType.FETCH_DEPLOYMENT_INFO: {
                 'executor': self.fetch_deployment_info,
-                'asset_descriptor': self.argocd_application_asset_descriptor,
                 'model_types': [SourceModelType.ARGOCD_APPS],
                 'result_type': PlaybookTaskResultType.TABLE,
                 'display_name': 'Fetch Latest Deployment Info',
@@ -221,36 +220,6 @@ class ArgoCDSourceManager(PlaybookSourceManager):
     @staticmethod
     def validate_command(argocd_task: ArgoCD):
         return "REQUIRES_APPROVAL"
-
-    @staticmethod
-    def argocd_application_asset_descriptor(argocd_connector: ConnectorProto, filters: dict = None) -> str:
-        try:
-            assets: AccountConnectorAssets = asset_manager_facade.get_asset_model_values(argocd_connector,
-                                                                                         SourceModelType.ARGOCD_APPS,
-                                                                                         AccountConnectorAssetsModelFilters())
-            if not assets:
-                logger.warning(
-                    f"ArgoCDSourcesManager.argocd_application_asset_descriptor:: No assets found for connector"
-                    f" app : {argocd_connector.account_id.value}, and Connector: {argocd_connector.id.value}")
-                return None
-
-            assets = assets[0]
-            argocd_assets: [ArgoCDAppsAssetModel] = assets.argocd.assets
-            all_app_asset: [ArgoCDAppsAssetModel] = [argocd_asset.argocd_apps for argocd_asset in argocd_assets if
-                                                     argocd_asset.type == SourceModelType.ARGOCD_APPS]
-            asset_list_string = ""
-            # TODO(VG: clean this up later)
-            asset_list_string += "These are all the application deployments in ArgoCD. If a user-asked application contains more application within itself, then don't fetch information for these contained applications.: \n\n"
-            for app_asset in all_app_asset:
-                asset_list_string += f"{app_asset.name.value} has path {app_asset.path.value},\n"
-                asset_list_string += "\n\n"
-            return asset_list_string
-
-        except Exception as e:
-            logger.error(f"ArgoCDSourcesManager.argocd_application_asset_descriptor:: Error while generating "
-                         f"asset descriptor for account: {argocd_connector.account_id.value} and connector: "
-                         f"{argocd_connector.id.value} with error: {e}")
-        return None
 
     def get_application_health(self, time_range: TimeRange, argocd_task: ArgoCD,
                               argocd_connector: ConnectorProto) -> PlaybookTaskResult:

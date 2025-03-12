@@ -28,7 +28,6 @@ class JiraSourceManager(PlaybookSourceManager):
         self.task_type_callable_map = {
             Jira.TaskType.CREATE_TICKET: {
                 'executor': self.create_ticket,
-                'asset_descriptor': self.jira_project_asset_descriptor,
                 'model_types': [SourceModelType.JIRA_PROJECT],
                 'result_type': PlaybookTaskResultType.API_RESPONSE,
                 'display_name': 'Create JIRA Ticket',
@@ -91,7 +90,6 @@ class JiraSourceManager(PlaybookSourceManager):
             },
             Jira.TaskType.ASSIGN_TICKET: {
                 'executor': self.assign_ticket,
-                'asset_descriptor': self.jira_user_asset_descriptor,
                 'model_types': [SourceModelType.JIRA_USER],
                 'result_type': PlaybookTaskResultType.API_RESPONSE,
                 'display_name': 'Assign JIRA Ticket',
@@ -147,7 +145,6 @@ class JiraSourceManager(PlaybookSourceManager):
             },
             Jira.TaskType.SEARCH_TICKETS: {
                 'executor': self.search_tickets,
-                'asset_descriptor': self.jira_project_asset_descriptor,
                 'model_types': [SourceModelType.JIRA_PROJECT],
                 'result_type': PlaybookTaskResultType.API_RESPONSE,
                 'display_name': 'Search JIRA Tickets',
@@ -539,64 +536,6 @@ class JiraSourceManager(PlaybookSourceManager):
                 text=TextResult(output=StringValue(value=error_msg)),
                 source=self.source
             )
-
-    @staticmethod
-    def jira_project_asset_descriptor(jira_connector: ConnectorProto, filters: dict = None):
-        try:
-            assets: AccountConnectorAssets = asset_manager_facade.get_asset_model_values(jira_connector,
-                                                                                         SourceModelType.JIRA_PROJECT,
-                                                                                         AccountConnectorAssetsModelFilters())
-            if not assets:
-                logger.warning(f"JiraSourceManager.jira_project_asset_descriptor:: No assets found for "
-                               f"project: {jira_connector.account_id.value}, and Connector: {jira_connector.id.value}")
-            assets = assets[0]
-            jira_assets: [JiraProjectAssetModel] = assets.jira_cloud.assets
-            all_project_asset: [JiraProjectAssetModel] = [jira_asset.jira_project for jira_asset in jira_assets if
-                                                   jira_asset.type == SourceModelType.JIRA_PROJECT]
-            asset_list_string = ''
-            for asset in all_project_asset:
-                asset_list_string += f"project_name: `{asset.name.value}`, project_key: `{asset.key.value}`"
-                asset_list_string += "\n\n"
-            return asset_list_string
-        except Exception as e:
-            logger.error(f"JiraSourceManager.jira_project_asset_descriptor:: Error while generating "
-                         f"asset descriptor for account: {jira_connector.account_id.value} and connector: "
-                         f"{jira_connector.id.value} with error: {e}")
-        return None
-
-
-    @staticmethod
-    def jira_user_asset_descriptor(jira_connector: ConnectorProto, filters: dict = None):
-        try:
-            assets: AccountConnectorAssets = asset_manager_facade.get_asset_model_values(
-                jira_connector,
-                SourceModelType.JIRA_USER,
-                AccountConnectorAssetsModelFilters()
-            )
-
-            if not assets:
-                logger.warning(f"JiraSourceManager.jira_user_asset_descriptor:: No user assets found for "
-                               f"account: {jira_connector.account_id.value}, and Connector: {jira_connector.id.value}")
-                return None
-
-            assets = assets[0]
-            jira_users: [JiraUserAssetModel] = assets.jira_cloud.assets
-            all_user_assets: [JiraUserAssetModel] = [jira_user for jira_user in jira_users if
-                                                     jira_user.type == SourceModelType.JIRA_USER]
-            
-            asset_list_string = ''
-            for asset in all_user_assets:
-                asset_list_string += f"User name: `{asset.jira_user.display_name.value}` and Account ID: {asset.jira_user.account_id.value}"
-                asset_list_string += "\n\n"
-
-            return asset_list_string
-
-        except Exception as e:
-            logger.error(f"JiraSourceManager.jira_user_asset_descriptor:: Error while generating "
-                         f"user asset descriptor for account: {jira_connector.account_id.value} and connector: "
-                         f"{jira_connector.id.value} with error: {e}")
-
-        return None
 
     @staticmethod
     def jira_project_user_summary(jira_connector: ConnectorProto, filters: dict = None):
