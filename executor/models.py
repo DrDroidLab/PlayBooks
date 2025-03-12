@@ -21,10 +21,11 @@ from protos.playbooks.playbook_pb2 import PlaybookTask as PlaybookTaskProto, Pla
     PlaybookStepExecutionLog as PlaybookStepExecutionLogProto, PlaybookExecution as PlaybookExecutionProto, \
     PlaybookStepRelation as PlaybookStepRelationProto, \
     PlaybookStepRelationExecutionLog as PlaybookStepRelationExecutionLogProto, PlaybookStepResultCondition
-from utils.model_utils import generate_choices
+from protos.secrets.api_pb2 import Secret as SecretProto
 
 from accounts.models import Account
 from utils.proto_utils import dict_to_proto
+from utils.model_utils import generate_choices
 from encrypted_model_fields.fields import EncryptedTextField
 import uuid
 
@@ -688,11 +689,51 @@ class Secret(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['key', 'account', 'is_active'],
-                condition=models.Q(is_active=True),
-                name='unique_active_key_per_account'
+                fields=['key', 'account'],
+                name='unique_key_per_account'
             )
         ]
         indexes = [
             models.Index(fields=['key', 'account', 'is_active']),
+            models.Index(fields=['account', 'created_by']),
         ]
+        
+    def deactivate(self):
+        """
+        Deactivate a secret by setting is_active to False and modifying the key
+        to prevent conflicts with future secrets using the same key
+        """
+        if not self.is_active:
+            return False
+            
+        self.is_active = False
+        # Generate a unique suffix for the key
+        unique_suffix = str(uuid.uuid4())
+        self.key = f"{self.key}_inactive_{unique_suffix}"
+        self.save(update_fields=['is_active', 'key', 'updated_at'])
+        return True
+        
+    @staticmethod
+    def _mask_secret_value(value):
+        """Mask secret value for display purposes"""
+        if not value or len(value) <= 8:
+            return "••••••••"
+        return value[:2] + "••••••" + value[-2:]
+    
+    def to_proto(self, include_masked_value: bool = True) -> 'SecretProto':
+        """Convert this Secret model to a Secret proto with full details"""
+        
+        proto = SecretProto(
+            id=StringValue(value=str(self.id)),
+            key=StringValue(value=self.key),
+            description=StringValue(value=self.description or ""),
+            created_by=StringValue(value=self.created_by.email if self.created_by else ""),
+            created_at=int(self.created_at.replace(tzinfo=timezone.utc).timestamp()) if self.created_at else 0,
+            updated_at=int(self.updated_at.replace(tzinfo=timezone.utc).timestamp()) if self.updated_at else 0,
+            is_active=self.is_active
+        )
+        
+        if include_masked_value:
+            proto.masked_value.value = self._mask_secret_value(self.value)
+
+        return proto

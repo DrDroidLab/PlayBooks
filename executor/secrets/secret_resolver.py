@@ -4,6 +4,7 @@ from typing import Dict, Set
 from protos.ui_definition_pb2 import FormField
 from protos.literal_pb2 import LiteralType
 from executor.models import Secret
+from executor.secrets.crud.secrets_crud_manager import secrets_crud_manager
 
 logger = logging.getLogger(__name__)
 
@@ -52,19 +53,23 @@ class SecretResolver:
             if not secret_refs:
                 return source_type_task_def
 
-            # Get referenced secrets from DB
-            secrets = Secret.objects.filter(
+            # Get referenced secrets from DB using the CRUD manager's list method
+            # Note: We don't filter by user here since secrets might be created by different users
+            # but need to be accessible for task execution
+            secrets_qs = secrets_crud_manager.list_secrets(
                 account_id=account_id,
-                is_active=True,
-                key__in=secret_refs
-            ).values('key', 'value')
+                user_id=None,  # Don't filter by user for task execution
+                secret_ids=None,
+                key_filter=None,
+                show_inactive=False
+            ).filter(key__in=secret_refs).values('key', 'value')
 
-            if not secrets:
+            if not secrets_qs:
                 logger.warning(f"No secrets found for given references")
                 return source_type_task_def
 
             # Create mapping
-            secret_map = {s['key']: s['value'] for s in secrets}
+            secret_map = {s['key']: s['value'] for s in secrets_qs}
 
             # Final resolution
             resolved_def = source_type_task_def.copy()
