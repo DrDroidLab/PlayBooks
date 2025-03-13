@@ -47,7 +47,9 @@ integrations_connector_type_display_name_map = {
     Source.KUBERNETES: 'KUBERNETES',
     Source.SMTP: 'EMAIL SERVER',
     Source.ZENDUTY: 'ZENDUTY',
-    Source.BIG_QUERY: 'BIG QUERY'
+    Source.BIG_QUERY: 'BIG QUERY',
+    Source.JIRA_CLOUD: 'JIRA',
+    Source.ARGOCD: 'ARGOCD',
 }
 
 integrations_connector_type_category_map = {
@@ -71,6 +73,7 @@ integrations_connector_type_category_map = {
     Source.ELASTIC_SEARCH: 'APM Tools',
     Source.GRAFANA_LOKI: 'APM Tools',
     Source.GITHUB_ACTIONS: 'CI/CD',
+    Source.ARGOCD: 'CI/CD',
     Source.CLOUDWATCH: 'Cloud',
     Source.GCM: 'Cloud',
     Source.EKS: 'Cloud',
@@ -83,7 +86,8 @@ integrations_connector_type_category_map = {
     Source.OPEN_AI: 'LLM Tools',
     Source.BASH: 'Remote Server',
     Source.KUBERNETES: 'Cloud',
-    Source.SMTP: 'Alert Channels'
+    Source.SMTP: 'Alert Channels',
+    Source.JIRA_CLOUD: 'Issue Tracking & Ticketing'
 }
 
 integrations_connector_type_connector_keys_map = {
@@ -325,7 +329,20 @@ integrations_connector_type_connector_keys_map = {
             SourceKeyType.BIG_QUERY_PROJECT_ID,
             SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON,
         ]
-    ]
+    ],
+    Source.JIRA_CLOUD: [
+        [
+            SourceKeyType.JIRA_CLOUD_API_KEY,
+            SourceKeyType.JIRA_EMAIL,
+            SourceKeyType.JIRA_DOMAIN,
+        ]
+    ],
+    Source.ARGOCD: [
+        [
+            SourceKeyType.ARGOCD_SERVER,
+            SourceKeyType.ARGOCD_TOKEN,
+        ]
+    ],
 }
 
 integrations_connector_key_display_name_map = {
@@ -403,7 +420,12 @@ integrations_connector_key_display_name_map = {
     SourceKeyType.ROOTLY_API_KEY: 'API Key',
     SourceKeyType.ZENDUTY_API_KEY: "API Key",
     SourceKeyType.BIG_QUERY_PROJECT_ID: 'Project ID',
-    SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON: 'Service Account JSON'
+    SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON: 'Service Account JSON',
+    SourceKeyType.JIRA_CLOUD_API_KEY: 'API Key',
+    SourceKeyType.JIRA_EMAIL: 'Email',
+    SourceKeyType.JIRA_DOMAIN: 'Domain',
+    SourceKeyType.ARGOCD_SERVER: 'ArgoCD Server',
+    SourceKeyType.ARGOCD_TOKEN: 'Token',
 }
 
 
@@ -547,8 +569,12 @@ class ConnectorKey(models.Model):
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_DATA,
                              SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH, 
                              SourceKeyType.ZENDUTY_API_KEY,
-                             SourceKeyType.KUBERNETES_CLUSTER_CERTIFICATE_AUTHORITY_PATH,
-                             SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON]:
+                             SourceKeyType.BIG_QUERY_SERVICE_ACCOUNT_JSON,
+                             SourceKeyType.JIRA_CLOUD_API_KEY,
+                             SourceKeyType.JIRA_EMAIL,
+                             SourceKeyType.JIRA_DOMAIN,
+                             SourceKeyType.ARGOCD_SERVER,
+                             SourceKeyType.ARGOCD_TOKEN]:
             key_value = '*********' + self.key[-4:]
         return ConnectorKeyProto(key_type=self.key_type,
                                  key=StringValue(value=key_value),
