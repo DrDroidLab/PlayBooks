@@ -38,6 +38,8 @@ spec:
               value: {{ .Values.redisUrl }}
             - name: CELERY_QUEUE
               value: {{ .Values.celeryQueue }}
+            - name: FIELD_ENCRYPTION_KEY
+              value: {{ .Values.fieldEcryptionKey }}
           command: ["/bin/sh","-c"]
           args: ["./start-celery-worker.sh"]
 
