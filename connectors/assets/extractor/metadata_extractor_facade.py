@@ -10,6 +10,8 @@ from connectors.assets.extractor.grafana_vpc_metadata_extractor import GrafanaVp
 from connectors.assets.extractor.metadata_extractor import SourceMetadataExtractor
 from connectors.assets.extractor.mimir_metadata_extractor import MimirSourceMetadataExtractor
 from connectors.assets.extractor.newrelic_metadata_extractor import NewrelicSourceMetadataExtractor
+from connectors.assets.extractor.jira_metadata_extractor import JiraSourceMetadataExtractor
+from connectors.assets.extractor.argocd_metadata_extractor import ArgoCDSourceMetadataExtractor
 from protos.base_pb2 import Source
 
 
@@ -40,3 +42,5 @@ source_metadata_extractor_facade.register(Source.GRAFANA_MIMIR, MimirSourceMetad
 source_metadata_extractor_facade.register(Source.AZURE, AzureConnectorMetadataExtractor)
 source_metadata_extractor_facade.register(Source.GKE, GkeSourceMetadataExtractor)
 source_metadata_extractor_facade.register(Source.ELASTIC_SEARCH, ElasticSearchSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.JIRA_CLOUD, JiraSourceMetadataExtractor)
+source_metadata_extractor_facade.register(Source.ARGOCD, ArgoCDSourceMetadataExtractor)

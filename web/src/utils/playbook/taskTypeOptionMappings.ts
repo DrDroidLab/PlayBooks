@@ -26,4 +26,12 @@ export const taskTypeOptionMappings = {
     Options.nrGoldenMetrics,
   [taskTypes.NEW_RELIC_ENTITY_DASHBOARD_WIDGET_NRQL_METRIC_EXECUTION]:
     Options.nrDashboard,
+  [taskTypes.ARGOCD_FETCH_DEPLOYMENT_INFO]: Options.argoCd,
+  [taskTypes.ARGOCD_ROLLBACK_APPLICATION]: Options.argoCd,
+  [taskTypes.ARGOCD_GET_APPLICATION_HEALTH]: Options.argoCd,
+  [taskTypes.JIRA_CREATE_TICKET]: Options.jiraCloud,
+  [taskTypes.JIRA_GET_USERS]: Options.jiraCloud,
+  [taskTypes.JIRA_ASSIGN_TICKET]: Options.jiraCloud,
+  [taskTypes.JIRA_GET_TICKET]: Options.jiraCloud,
+  [taskTypes.JIRA_SEARCH_TICKETS]: Options.jiraCloud,
 };
