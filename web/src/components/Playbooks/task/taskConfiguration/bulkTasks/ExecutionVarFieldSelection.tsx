@@ -6,6 +6,7 @@ import { isCSV } from "../../../../../utils/common/isCSV";
 import { updateCardById } from "../../../../../utils/execution/updateCardById";
 import useCurrentTask from "../../../../../hooks/playbooks/task/useCurrentTask";
 import useIsPrefetched from "../../../../../hooks/playbooks/useIsPrefetched";
+import isJSONString from "../../../../common/CodeAccordion/utils/isJSONString";
 
 const key = "execution_configuration.bulk_execution_var_field";
 
@@ -20,7 +21,11 @@ function ExecutionVarFieldSelection({ id }: ExecutionVarFieldSelectionProps) {
   const global_variable_set = currentPlaybook?.global_variable_set ?? {};
   const variableOptions = Object.entries(global_variable_set).reduce(
     (acc: any, [key, value]) => {
-      if (isCSV(value)) {
+      if (
+        isCSV(
+          isJSONString(JSON.stringify(value)) ? JSON.stringify(value) : value,
+        )
+      ) {
         acc.push({
           id: key,
           label: key,
