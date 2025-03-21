@@ -20,6 +20,7 @@ django-allauth==0.52.0
 django-celery-beat==2.4.0
 django-celery-email==3.0.0
 django-cors-headers==3.13.0
+django-encrypted-model-fields==0.6.5
 django-filter==22.1
 django-prometheus==2.4.0.dev5
 django-redis==5.2.0

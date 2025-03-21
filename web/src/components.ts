@@ -42,4 +42,5 @@ export const components = {
     import("./pages/dynamicAlerts/CreateDynamicAlert"),
   [PageKeys.DYNAMIC_ALERT_VIEW]: () =>
     import("./pages/dynamicAlerts/CreateDynamicAlert"),
+  [PageKeys.SECRET_MANAGEMENT]: () => import("./pages/secret-management"),
 };
