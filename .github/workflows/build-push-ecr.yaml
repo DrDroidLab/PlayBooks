@@ -29,25 +29,43 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
-          TAG=${{ secrets.DOCKERHUB_TEAM_NAME }}/${{ secrets.BACKEND_REPOSITORY }}:${VERSION_TAG}
-          docker build --platform linux/amd64 --push -t ${TAG} -f ${{ env.Dockerfile_Backend }} .
+          REPO_NAME=${{ secrets.DOCKERHUB_TEAM_NAME }}/${{ secrets.BACKEND_REPOSITORY }}
+          docker buildx build \
+            --platform linux/amd64 \
+            --tag ${REPO_NAME}:${VERSION_TAG} \
+            --tag ${REPO_NAME}:latest \
+            --push \
+            --file ${{ env.Dockerfile_Backend }} \
+            .
 
       - name: Build Backend image
         if: github.event_name == 'pull_request'
         run: |
-          docker build --platform linux/amd64  -f ${{ env.Dockerfile_Backend }}  .
+          docker buildx build \
+            --platform linux/amd64 \
+            --file ${{ env.Dockerfile_Backend }} \
+            .
 
       - name: Build Web and push
         if: github.event_name != 'pull_request'
         run: |
           VERSION_TAG=$(echo "${{ github.ref }}" | cut -d'/' -f 3)
-          TAG=${{ secrets.DOCKERHUB_TEAM_NAME }}/${{ secrets.WEB_REPOSITORY }}:${VERSION_TAG}
-          docker build --platform linux/amd64 --push -t ${TAG} -f ${{ env.Dockerfile_Web }} web/
+          REPO_NAME=${{ secrets.DOCKERHUB_TEAM_NAME }}/${{ secrets.WEB_REPOSITORY }}
+          docker buildx build \
+            --platform linux/amd64 \
+            --tag ${REPO_NAME}:${VERSION_TAG} \
+            --tag ${REPO_NAME}:latest \
+            --push \
+            --file ${{ env.Dockerfile_Web }} \
+            web/
 
       - name: Build Web image
         if: github.event_name == 'pull_request'
         run: |
-          docker build --platform linux/amd64 -f ${{ env.Dockerfile_Web }} web/ 
+          docker buildx build \
+            --platform linux/amd64 \
+            --file ${{ env.Dockerfile_Web }} \
+            web/ 
 
       
 
