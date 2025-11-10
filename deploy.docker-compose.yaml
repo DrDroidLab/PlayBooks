@@ -35,7 +35,7 @@ services:
       - mynetwork
 
   setup_db:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./setup_db.sh
     environment:
@@ -62,7 +62,7 @@ services:
       - mynetwork
 
   server:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-server.sh
     ports:
@@ -94,7 +94,7 @@ services:
       - mynetwork
 
   celery_worker:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
@@ -122,7 +122,7 @@ services:
       - mynetwork
 
   workflow_scheduler_celery_worker:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
@@ -151,7 +151,7 @@ services:
       - mynetwork
 
   workflow_executor_celery_worker:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
@@ -180,7 +180,7 @@ services:
       - mynetwork
 
   workflow_action_execution_celery_worker:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-celery-worker.sh
     environment:
@@ -209,7 +209,7 @@ services:
       - mynetwork
 
   celery_beat:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-backend:latest
+    image: drdroidlab/playbooks-backend:latest
     platform: linux/amd64
     command: ./start-celery-beat.sh
     environment:
@@ -237,7 +237,7 @@ services:
       - mynetwork
 
   web:
-    image: public.ecr.aws/y9s1f3r5/drdroid/playbooks-web:latest
+    image: drdroidlab/playbooks-web:latest
     platform: linux/amd64
     environment:
       - VITE_REACT_APP_POSTHOG_ENABLED=true
